@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <name>DKPro Text Classification Framework</name>
   <parent>
-    <groupId>de.tudarmstadt.ukp.dkpro.misc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.misc.superpom</artifactId>
-    <version>1.0.23</version>
+    <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+    <artifactId>dkpro-parent-pom</artifactId>
+    <version>3</version>
   </parent>
   <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
