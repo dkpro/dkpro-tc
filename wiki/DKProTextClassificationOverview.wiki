@@ -7,4 +7,4 @@ DKPro Text Classification is a framework intended to alleviate supervised machin
 
 = Basic System Architecture =
 
-http://code.google.com/images/dkprotc_overview.png
+https://dkpro-tc.googlecode.com/svn/wiki/images/DKProTC_overview.png
