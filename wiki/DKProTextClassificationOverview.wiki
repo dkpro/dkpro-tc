@@ -1,0 +1,10 @@
+DKPro Text Classification is a framework intended to alleviate supervised machine learning experiments with any kind of textual data. It comes with
+  * Getting Started example code for standard text collections, e.g. the Reuters-21578 Text Categorization corpus
+  * many feature extractors, e.g. n-grams, POS-tags etc.
+  * convenient parameters optimatization (based on [https://code.google.com/p/dkpro-lab/ DKPro Lab])
+  * comprehensive reporting of standard measures for text classification
+  * support for single- and multi-label classification as well as pair-wise document classification.
+
+= Basic System Architecture =
+
+http://code.google.com/images/dkprotc_overview.png
