@@ -1,3 +1,10 @@
+= Overview =
+This project is still in incubator stage. Any feedback is welcome.
+
+  * [GroovySetup Groovy Setup]
+
+
+
 = Basic System Architecture =
 
 https://dkpro-tc.googlecode.com/svn/wiki/images/DKProTC_overview.png
