@@ -51,7 +51,7 @@
 	</developers>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.io</module>
+		
 		<module>de.tudarmstadt.ukp.dkpro.tc.api</module>
 	<module>
   		de.tudarmstadt.ukp.dkpro.tc.experiments.reuters
@@ -129,13 +129,6 @@
 				<artifactId>
           			de.tudarmstadt.ukp.dkpro.tc.core
           		</artifactId>
-				<version>0.3.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.io
-                </artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
