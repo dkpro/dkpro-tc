@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
-import de.tudarmstadt.ukp.dkpro.tc.io.TwentyNewsgroupCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupCorpusReader;
 
 public class TwentyNewsgroupsExperiment
 {
