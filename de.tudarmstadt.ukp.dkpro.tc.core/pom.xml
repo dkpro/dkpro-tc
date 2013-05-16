@@ -55,7 +55,6 @@
     <dependency>
     	<groupId>mulan</groupId>
     	<artifactId>mulan</artifactId>
-    	<version>1.4.0</version>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
