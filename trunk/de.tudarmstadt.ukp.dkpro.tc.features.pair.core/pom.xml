@@ -35,9 +35,5 @@
     		de.tudarmstadt.ukp.dkpro.tc.features
     	</artifactId>
     </dependency>
-    <dependency>
-    	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.io</artifactId>
-    </dependency>
   </dependencies>
 </project>
