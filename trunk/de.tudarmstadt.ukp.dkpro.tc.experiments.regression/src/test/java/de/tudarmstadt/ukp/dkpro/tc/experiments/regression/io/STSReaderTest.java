@@ -8,7 +8,8 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 import org.uimafit.pipeline.JCasIterable;
 
-import de.tudarmstadt.ukp.dkpro.tc.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+
 
 public class STSReaderTest
 {
@@ -25,9 +26,9 @@ public class STSReaderTest
 
         int i=0;
         for (JCas jcas : new JCasIterable(reader)) {
-            
-            System.out.println(jcas.getView(AbstractPairReader.PART_ONE).getDocumentText());
-            System.out.println(jcas.getView(AbstractPairReader.PART_TWO).getDocumentText());
+
+            System.out.println(jcas.getView(Constants.PART_ONE).getDocumentText());
+            System.out.println(jcas.getView(Constants.PART_TWO).getDocumentText());
             i++;
         }
         assertEquals(750, i);
