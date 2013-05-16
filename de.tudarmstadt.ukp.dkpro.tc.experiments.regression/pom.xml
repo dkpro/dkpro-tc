@@ -5,8 +5,7 @@
     <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
     <version>0.3.0-SNAPSHOT</version>
   </parent>
-  <groupId>de.tudarmstadt.ukp.dkpro.tc.experiments</groupId>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.experiments.regression-asl</artifactId>
+  <artifactId>de.tudarmstadt.ukp.dkpro.tc.experiments.regression</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
@@ -14,13 +13,14 @@
   	</dependency>
 	<dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.io-asl</artifactId>
+        <artifactId>de.tudarmstadt.ukp.dkpro.tc.io</artifactId>
     </dependency>
 	<dependency>
-		<groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
+		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 		<artifactId>
-			de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
+			de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity
 		</artifactId>
+		<version>0.3.0-SNAPSHOT</version>
 	</dependency>
   </dependencies>
 </project>
