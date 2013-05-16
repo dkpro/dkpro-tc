@@ -28,7 +28,6 @@
         <artifactId>
             de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple
         </artifactId>
-        <version>0.8.0</version>
     </dependency>
      <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -50,13 +49,8 @@
         <classifier>jdk15</classifier>
     </dependency>
     <dependency>
-        <groupId>commons-cli</groupId>
-        <artifactId>commons-cli2</artifactId>
-        <version>2.0-CDH3</version>
-    </dependency>
-    <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.api-asl</artifactId>
+    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.api</artifactId>
     </dependency>
     <dependency>
     	<groupId>mulan</groupId>
@@ -86,7 +80,7 @@
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.features-asl
+    		de.tudarmstadt.ukp.dkpro.tc.features
     	</artifactId>
     </dependency>
     <dependency>
@@ -98,13 +92,13 @@
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.cleartk-ml-weka-ukp
+    		de.tudarmstadt.ukp.dkpro.tc.weka
     	</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
+    		de.tudarmstadt.ukp.dkpro.tc.features.pair.core
     	</artifactId>
     </dependency>
   </dependencies>

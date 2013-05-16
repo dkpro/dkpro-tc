@@ -51,23 +51,23 @@
 	</developers>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.io-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.api-asl</module>
-		<module>
-  		de.tudarmstadt.ukp.dkpro.tc.experiments.reuters-asl
+		<module>de.tudarmstadt.ukp.dkpro.tc.io</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.api</module>
+	<module>
+  		de.tudarmstadt.ukp.dkpro.tc.experiments.reuters
   	</module>
-		<module>
+	<module>
   		de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups
   	</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features-asl</module>
-		<module>
-  		de.tudarmstadt.ukp.dkpro.tc.cleartk-ml-weka-ukp
+		<module>de.tudarmstadt.ukp.dkpro.tc.features</module>
+	<module>
+  		de.tudarmstadt.ukp.dkpro.tc.weka
+  	</module>
+	<module>
+  		de.tudarmstadt.ukp.dkpro.tc.features.pair.core
   	</module>
 		<module>
-  		de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
-  	</module>
-		<module>
-  		de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
+  		de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity
   	</module>
 	</modules>
 	<dependencyManagement>
@@ -113,14 +113,14 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.api-asl
+          			de.tudarmstadt.ukp.dkpro.tc.api
           		</artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.cleartk-ml-weka-ukp
+          			de.tudarmstadt.ukp.dkpro.tc.weka
           		</artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
@@ -134,28 +134,28 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.io-asl
+                    de.tudarmstadt.ukp.dkpro.tc.io
                 </artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.features-asl
+          			de.tudarmstadt.ukp.dkpro.tc.features
           		</artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
 				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
+                    de.tudarmstadt.ukp.dkpro.tc.features.pair.core
                 </artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
 				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
+                    de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity
                 </artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
@@ -163,6 +163,13 @@
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>
 				<version>2.1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
+				<version>0.9.0-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
