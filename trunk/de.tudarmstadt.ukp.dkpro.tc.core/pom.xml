@@ -95,7 +95,7 @@
     	</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
+    	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
     		de.tudarmstadt.ukp.dkpro.tc.features.pair.core
     	</artifactId>
