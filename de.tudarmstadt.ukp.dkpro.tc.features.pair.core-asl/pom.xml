@@ -6,7 +6,7 @@
     <version>0.3.0-SNAPSHOT</version>
   </parent>
   <groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</artifactId>
+  <artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.core</artifactId>
   <dependencies>
   	    <dependency>
         <groupId>org.uimafit</groupId>
@@ -33,12 +33,12 @@
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.features-asl
+    		de.tudarmstadt.ukp.dkpro.tc.features
     	</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.io-asl</artifactId>
+    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.io</artifactId>
     </dependency>
   </dependencies>
 </project>
