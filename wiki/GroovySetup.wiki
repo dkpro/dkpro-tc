@@ -7,4 +7,4 @@ In order to define TC experiments in groovy, some plugins have to be installed i
 = Eclipse with m2e =
 
   * Install the Groovy-Eclipse "configurator for m2eclipse" using any of [http://docs.codehaus.org/display/GROOVY/Groovy-Eclipse+compiler+plugin+for+Maven#Groovy-EclipsecompilerpluginforMaven-Groovy-Eclipseconfiguratorform2Eclipse these update sites]
-  * Install the Groovy-Eclipse plujgin via the Eclipse marketplace or any of [http://groovy.codehaus.org/Eclipse+Plugin these update sites]
+  * Install the Groovy-Eclipse plugin via the Eclipse marketplace or any of [http://groovy.codehaus.org/Eclipse+Plugin these update sites]
