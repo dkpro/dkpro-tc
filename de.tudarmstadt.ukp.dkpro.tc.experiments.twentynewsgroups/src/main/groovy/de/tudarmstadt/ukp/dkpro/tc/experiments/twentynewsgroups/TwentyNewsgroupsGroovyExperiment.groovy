@@ -6,10 +6,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.resource.ResourceInitializationException
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
@@ -30,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.io.TwentyNewsgroupCorpusReader
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
- * 
+ *
  * @author Oliver Ferschke
  */
 public class TwentyNewsgroupsGroovyExperiment {
@@ -44,49 +42,47 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 	// === DIMENSIONS===========================================================
 
-	//TODO array-dimensions should be lists
-	
 	def languageCode = "en";
 	def dimLanguageCode = Dimension.create("languageCode", languageCode);
+    def dimFolds = Dimension.create("folds" , 2);
+    def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
+    def dimToLowerCase = Dimension.create("toLowerCase", true);
+    def dimMultiLabel = Dimension.create("multiLabel", false);
 
 	//UIMA parameters for FE configuration
-	def pipelineParameters = [
-		NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
-		NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
-	];
-	def dimPipelineParameters = Dimension.create("pipelineParameters",pipelineParameters);
+	def dimPipelineParameters = Dimension.create(
+        "pipelineParameters",
+        [
+            NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
+            NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
+        ]);
 
-	def dimFolds = Dimension.create("folds" , 2);
 
-	def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
-	def dimToLowerCase = Dimension.create("toLowerCase", true);
+	def dimClassificationArgs =
+        Dimension.create("classificationArguments",
+            [
+                ["weka.classifiers.bayes.NaiveBayes"].toArray(),
+                ["weka.classifiers.functions.SMO"].toArray()
+            ] as Object[]
+     );
 
-	def dimMultiLabel = Dimension.create("multiLabel", false);
+	def dimFeatureSets = Dimension.create(
+        "featureSet",
+        [
+            [
+                "de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
+                "de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
+            ].toArray()
+        ] as Object[]
+    );
 
-	def classificationArgs = [
-		["weka.classifiers.bayes.NaiveBayes"].toArray(),
-		["weka.classifiers.functions.SMO"].toArray()
-	] as Object[];
-	def dimClassificationArgs = Dimension.create("classificationArguments",classificationArgs);
 
-	def featureSets = [
-		[
-			"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
-			"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
-		].toArray()
-	] as Object[];
-	def dimFeatureSets = Dimension.create("featureSet",featureSets);
 
-	
-	
-	
-	//////////////////////////////////////////////////////////////////////////
-    //		TASK DEFINITION - can be extracted into separate class
-	//////////////////////////////////////////////////////////////////////////
-	
+    // === Experiments =========================================================
+
     /**
      * Crossvalidation setting
-     * 
+     *
      * @throws Exception
      */
 	void runCrossValidation() throws Exception
@@ -125,7 +121,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 
 		/*
-		 *	Wrap wired tasks in batch task 
+		 *	Wrap wired tasks in batch task
 		 */
 
 		BatchTask batchTask = [
@@ -144,7 +140,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 	/**
 	 * TrainTest Setting
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	void runTrainTest() throws Exception
@@ -199,7 +195,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 
 		/*
-		 *	Wrap wired tasks in batch task 
+		 *	Wrap wired tasks in batch task
 		 */
 
 		BatchTask batchTask = [
