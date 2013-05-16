@@ -18,9 +18,9 @@ import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.factory.initializable.Initializable;
 import org.uimafit.util.JCasUtil;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.meta.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class SingleLabelInstanceExtractorPair
@@ -72,8 +72,8 @@ public class SingleLabelInstanceExtractorPair
 
         for (PairFeatureExtractor featExt : pairFeatureExtractors) {
             try {
-                JCas view1 = jcas.getView(AbstractPairReader.PART_ONE);
-                JCas view2 = jcas.getView(AbstractPairReader.PART_TWO);
+                JCas view1 = jcas.getView(Constants.PART_ONE);
+                JCas view2 = jcas.getView(Constants.PART_TWO);
                 instance.addAll(featExt.extract(view1, view2));
             }
             catch (CASException e) {
