@@ -32,7 +32,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
-import de.tudarmstadt.ukp.dkpro.tc.io.ReutersCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
 
 public class ReutersTextClassification
 {
