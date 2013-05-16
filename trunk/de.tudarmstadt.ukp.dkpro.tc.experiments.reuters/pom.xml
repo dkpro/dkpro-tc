@@ -15,9 +15,5 @@
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>de.tudarmstadt.ukp.dkpro.tc.core</artifactId>
   	</dependency>
-    <dependency>
-        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.io</artifactId>
-    </dependency>
   </dependencies>
 </project>
