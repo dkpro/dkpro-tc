@@ -6,8 +6,10 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.resource.ResourceInitializationException
 
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
+import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
@@ -22,10 +24,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask
-import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
-
-
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
@@ -36,15 +36,12 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 	// === PARAMETERS===========================================================
 
-	//TODO should also be dimensions (but, we're passing readers, not datasets)
-
 	def corpusFilePathTrain = "src/main/resources/data/bydate-train";
 	def corpusFilePathTest  ="src/main/resources/data/bydate-test";
+    def languageCode = "en";
 
 	// === DIMENSIONS===========================================================
 
-	def languageCode = "en";
-	def dimLanguageCode = Dimension.create("languageCode", languageCode);
     def dimFolds = Dimension.create("folds" , 2);
     def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
@@ -86,15 +83,15 @@ public class TwentyNewsgroupsGroovyExperiment {
      *
      * @throws Exception
      */
-	void runCrossValidation() throws Exception
+	protected void runCrossValidation() throws Exception
 	{
 		/*
 		 * Define (instantiate) tasks
 		 */
 
 		PreprocessTask preprocessTask = [
-			reader:getReaderDesc(corpusFilePathTrain),
-			aggregate:getPreprocessing(languageCode),
+			reader:getReaderDesc(corpusFilePathTrain,languageCode),
+			aggregate:getPreprocessing(),
 			type: "Preprocessing-TwentyNewsgroupsCV"
 		];
 
@@ -127,7 +124,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 		BatchTask batchTask = [
 			type: "Evaluation-TwentyNewsgroups-CV",
-			parameterSpace : [dimLanguageCode, dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
+			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			tasks:           [preprocessTask, metaTask, featureExtractionTask, cvTask],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [CVBatchReport]
@@ -136,7 +133,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 		/*
 		 * Run
 		 */
-		Lab.newInstance("/lab/debug_context.xml").run(batchTask);
+		Lab.getInstance().run(batchTask);
 	}
 
 	/**
@@ -144,21 +141,21 @@ public class TwentyNewsgroupsGroovyExperiment {
 	 *
 	 * @throws Exception
 	 */
-	void runTrainTest() throws Exception
+	protected void runTrainTest() throws Exception
 	{
 		/*
 		 * Define (instantiate) tasks
 		 */
 
 		PreprocessTask preprocessTaskTrain = [
-			reader:getReaderDesc(corpusFilePathTrain),
-			aggregate:getPreprocessing(languageCode),
+			reader:getReaderDesc(corpusFilePathTrain, languageCode),
+			aggregate:getPreprocessing(),
 			type: "Preprocessing-TwentyNewsgroups-Train"
 		];
 
 		PreprocessTask preprocessTaskTest = [
-			reader:getReaderDesc(corpusFilePathTest),
-			aggregate:getPreprocessing(languageCode),
+			reader:getReaderDesc(corpusFilePathTest, languageCode),
+			aggregate:getPreprocessing(),
 			type: "Preprocessing-TwentyNewsgroups-Test"
 		];
 
@@ -201,36 +198,36 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 		BatchTask batchTask = [
 			type: "Evaluation-TwentyNewsgroups-TrainTest",
-			parameterSpace : [ dimLanguageCode, dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
+			parameterSpace : [ dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			tasks:           [ preprocessTaskTrain, preprocessTaskTest, metaTask, featuresTrainTask, featuresTestTask, testTask],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [ BatchReport, BatchOutcomeReport]
 		];
 
 		// Run
-		Lab.newInstance("/lab/debug_context.xml").run(batchTask);
+		Lab.getInstance().run(batchTask);
 	}
 
 
-	private CollectionReaderDescription getReaderDesc(String corpusFilePath)
+	private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
 			throws ResourceInitializationException, IOException
 	{
 		return createDescription(
-			TwentyNewsgroupCorpusReader.class,
-			TwentyNewsgroupCorpusReader.PARAM_PATH, corpusFilePath,
-			TwentyNewsgroupCorpusReader.PARAM_PATTERNS, [TwentyNewsgroupCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+			TwentyNewsgroupsCorpusReader.class,
+			TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
+			TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
 		);
 	}
 
-	private AnalysisEngineDescription getPreprocessing(String languageCode)
+	private AnalysisEngineDescription getPreprocessing()
 			throws ResourceInitializationException
 	{
 		return createAggregateDescription(
 			createPrimitiveDescription(
 				BreakIteratorSegmenter.class),
 			createPrimitiveDescription(
-				OpenNlpPosTagger.class,
-				OpenNlpPosTagger.PARAM_LANGUAGE, languageCode)
+				OpenNlpPosTagger.class)
 		);
 	}
 
