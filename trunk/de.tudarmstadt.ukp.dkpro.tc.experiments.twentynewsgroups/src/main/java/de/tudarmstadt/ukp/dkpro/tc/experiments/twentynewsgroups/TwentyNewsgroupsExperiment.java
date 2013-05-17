@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
-import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
 
 public class TwentyNewsgroupsExperiment
 {
@@ -187,11 +187,11 @@ public class TwentyNewsgroupsExperiment
         throws ResourceInitializationException, IOException
     {
 
-        return createDescription(TwentyNewsgroupCorpusReader.class,
-                TwentyNewsgroupCorpusReader.PARAM_PATH, corpusFilePath,
-                TwentyNewsgroupCorpusReader.PARAM_LANGUAGE, languageCode,
-                TwentyNewsgroupCorpusReader.PARAM_PATTERNS,
-                new String[] { TwentyNewsgroupCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
+        return createDescription(TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
     }
 
     protected  AnalysisEngineDescription getPreprocessing()

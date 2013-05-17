@@ -14,7 +14,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
-public class TwentyNewsgroupCorpusReader
+public class TwentyNewsgroupsCorpusReader
     extends TextReader
 {
 
