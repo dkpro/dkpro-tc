@@ -39,31 +39,38 @@ import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgro
 public class TwentyNewsgroupsExperiment
 {
 
-    static String jsonPath;
-    static JSONObject json;
-
-    public static String languageCode;
-    public static String corpusFilePathTrain;
-    public static String corpusFilePathTest;
+    private String languageCode;
+    private String corpusFilePathTrain;
+    private String corpusFilePathTest;
 
     public static void main(String[] args)
         throws Exception
     {
+        TwentyNewsgroupsExperiment experiment = new TwentyNewsgroupsExperiment();
+        ParameterSpace pSpace = experiment.setup();
 
-        jsonPath = FileUtils.readFileToString(new File("src/main/resources/config/train.json"));
-        json = (JSONObject) JSONSerializer.toJSON(jsonPath);
+        experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest(pSpace);
+    }
+    /**
+     * Initialize Experiment
+     *
+     * @return ParameterSpace for the experiment
+     * @throws Exception
+     */
+    protected ParameterSpace setup() throws Exception{
+        String jsonPath = FileUtils.readFileToString(new File("src/main/resources/config/train.json"));
+        JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
 
         languageCode = json.getString("languageCode");
         corpusFilePathTrain = json.getString("corpusFilePathTrain");
         corpusFilePathTest = json.getString("corpusFilePathTest");
 
-        runCrossValidation(ParameterSpaceParser.createParamSpaceFromJson(json));
-
-        runTrainTest(ParameterSpaceParser.createParamSpaceFromJson(json));
+        return ParameterSpaceParser.createParamSpaceFromJson(json);
     }
 
     // ##### CV #####
-    private static void runCrossValidation(ParameterSpace pSpace)
+    protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
         PreprocessTask preprocessTask = new PreprocessTask();
@@ -110,7 +117,7 @@ public class TwentyNewsgroupsExperiment
     }
 
     // ##### TRAIN-TEST #####
-    private static void runTrainTest(ParameterSpace pSpace)
+    protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
         PreprocessTask preprocessTaskTrain = new PreprocessTask();
@@ -176,7 +183,7 @@ public class TwentyNewsgroupsExperiment
         Lab.getInstance().run(batch);
     }
 
-    private static CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
+    protected  CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
         throws ResourceInitializationException, IOException
     {
 
@@ -187,7 +194,7 @@ public class TwentyNewsgroupsExperiment
                 new String[] { TwentyNewsgroupCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
     }
 
-    public static AnalysisEngineDescription getPreprocessing()
+    protected  AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
 
