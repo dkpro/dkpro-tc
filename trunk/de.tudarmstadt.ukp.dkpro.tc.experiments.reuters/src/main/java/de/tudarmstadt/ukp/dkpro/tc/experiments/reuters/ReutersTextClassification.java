@@ -36,10 +36,6 @@ import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
 
 public class ReutersTextClassification
 {
-
-    static String jsonPath;
-    static JSONObject json;
-
     public static String languageCode;
     public static String corpusFilePathTrain;
     public static String corpusFilePathTest;
@@ -48,24 +44,33 @@ public class ReutersTextClassification
     public static void main(String[] args)
         throws Exception
     {
+        ReutersTextClassification experiment= new ReutersTextClassification();
+        ParameterSpace pSpace = experiment.setup();
+        experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest(pSpace);
+    }
 
-        jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(
+    /**
+     * Initialize Experiment
+     *
+     * @return ParameterSpace for the experiment
+     * @throws Exception
+     */
+    private ParameterSpace setup() throws Exception{
+        String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(
                 "config/train.json").getFile()));
-        json = (JSONObject) JSONSerializer.toJSON(jsonPath);
+        JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
 
         goldLabelFilePath = json.getString("goldLabelFilePath");
         corpusFilePathTrain = json.getString("corpusFilePathTrain");
         corpusFilePathTest = json.getString("corpusFilePathTest");
         languageCode = json.getString("languageCode");
 
-        ParameterSpace pSpace = ParameterSpaceParser.createParamSpaceFromJson(json);
-
-        runCrossValidation(pSpace);
-        runTrainTest(pSpace);
+        return ParameterSpaceParser.createParamSpaceFromJson(json);
     }
 
     // ##### CV #####
-    private static void runCrossValidation(ParameterSpace pSpace)
+    protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
         PreprocessTask preprocessTask = new PreprocessTask();
@@ -113,7 +118,7 @@ public class ReutersTextClassification
     }
 
     // ##### TRAIN-TEST #####
-    private static void runTrainTest(ParameterSpace pSpace)
+    protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
 
