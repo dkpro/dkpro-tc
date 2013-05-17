@@ -55,7 +55,7 @@ public class TwentyNewsgroupsExperiment
     /**
      * Initialize Experiment
      *
-     * @return ParameterSpace for the experiment
+     * @return ParameterSpace for the javaExperiment
      * @throws Exception
      */
     protected ParameterSpace setup() throws Exception{
