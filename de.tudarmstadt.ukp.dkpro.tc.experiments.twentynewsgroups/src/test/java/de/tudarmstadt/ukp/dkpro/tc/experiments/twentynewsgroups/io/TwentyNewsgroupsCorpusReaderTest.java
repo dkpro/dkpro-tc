@@ -12,7 +12,7 @@ import org.uimafit.util.JCasUtil;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
-public class TwentyNewsgroupCorpusReaderTest
+public class TwentyNewsgroupsCorpusReaderTest
 {
 
     @Test
@@ -20,11 +20,11 @@ public class TwentyNewsgroupCorpusReaderTest
         throws Exception
     {
         CollectionReader reader = createCollectionReader(
-                TwentyNewsgroupCorpusReader.class,
-                TwentyNewsgroupCorpusReader.PARAM_PATH, "classpath:/data/",
-                TwentyNewsgroupCorpusReader.PARAM_LANGUAGE, "en",
-                TwentyNewsgroupCorpusReader.PARAM_PATTERNS, new String[] {
-                    TwentyNewsgroupCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_PATH, "classpath:/data/",
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, new String[] {
+                    TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
 
         int i=0;
         for (JCas jcas : new JCasIterable(reader)) {
