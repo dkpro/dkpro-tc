@@ -1,3 +1,5 @@
+package de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups;
+
 import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription
 import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription
 import static org.uimafit.factory.CollectionReaderFactory.createDescription
