@@ -23,6 +23,7 @@ public class ReutersCorpusReaderTest
                 ReutersCorpusReader.class,
                 ReutersCorpusReader.PARAM_PATH, "classpath:/data/training",
                 ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, "classpath:/data/cats.txt",
+                ReutersCorpusReader.PARAM_LANGUAGE, "en",
                 ReutersCorpusReader.PARAM_PATTERNS, new String[] {
                     ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" });
 

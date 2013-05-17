@@ -34,7 +34,6 @@ public class ParameterSpaceParser
     {
         // DIMENSIONS
 
-        languageCode = pipelineConfiguration.getString("languageCode");
         folds = pipelineConfiguration.getInt("folds");
 
         Object[] topNgramsKO = pipelineConfiguration.getJSONArray("topNgramsK").toArray();
@@ -77,7 +76,6 @@ public class ParameterSpaceParser
                 Dimension.create("topNgramsK", topNgramsK),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", true),
-                Dimension.create("languageCode", languageCode),
                 Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)));
         return pSpace;
     }

@@ -58,9 +58,10 @@ public class ReutersTextClassification
         corpusFilePathTest = json.getString("corpusFilePathTest");
         languageCode = json.getString("languageCode");
 
-        runCrossValidation(ParameterSpaceParser.createParamSpaceFromJson(json));
+        ParameterSpace pSpace = ParameterSpaceParser.createParamSpaceFromJson(json);
 
-        runTrainTest(ParameterSpaceParser.createParamSpaceFromJson(json));
+        runCrossValidation(pSpace);
+        runTrainTest(pSpace);
     }
 
     // ##### CV #####
@@ -68,8 +69,8 @@ public class ReutersTextClassification
         throws Exception
     {
         PreprocessTask preprocessTask = new PreprocessTask();
-        preprocessTask.setReader(getReaderDesc(corpusFilePathTrain));
-        preprocessTask.setAggregate(getPreprocessing(languageCode));
+        preprocessTask.setReader(getReaderDesc(corpusFilePathTrain, languageCode));
+        preprocessTask.setAggregate(getPreprocessing());
         preprocessTask.setType(preprocessTask.getType() + "-Reuters-CV");
 
         // get some meta data depending on the whole document collection that we need for training
@@ -108,7 +109,7 @@ public class ReutersTextClassification
         batch.addReport(CVBatchReport.class);
 
         // Run
-        Lab.newInstance("/lab/debug_context.xml").run(batch);
+        Lab.getInstance().run(batch);
     }
 
     // ##### TRAIN-TEST #####
@@ -117,13 +118,13 @@ public class ReutersTextClassification
     {
 
         PreprocessTask preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setReader(getReaderDesc(corpusFilePathTrain));
-        preprocessTaskTrain.setAggregate(getPreprocessing(languageCode));
+        preprocessTaskTrain.setReader(getReaderDesc(corpusFilePathTrain, languageCode));
+        preprocessTaskTrain.setAggregate(getPreprocessing());
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Reuters-Train");
 
         PreprocessTask preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setReader(getReaderDesc(corpusFilePathTest));
-        preprocessTaskTest.setAggregate(getPreprocessing(languageCode));
+        preprocessTaskTest.setReader(getReaderDesc(corpusFilePathTest, languageCode));
+        preprocessTaskTest.setAggregate(getPreprocessing());
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Reuters-Test");
 
         // get some meta data depending on the whole document collection that we need for training
@@ -173,24 +174,25 @@ public class ReutersTextClassification
         batch.addReport(BatchReport.class);
 
         // Run
-        Lab.newInstance("/lab/debug_context.xml").run(batch);
+        Lab.getInstance().run(batch);
     }
 
-    private static CollectionReaderDescription getReaderDesc(String filePath)
+    private static CollectionReaderDescription getReaderDesc(String filePath, String language)
         throws ResourceInitializationException, IOException
     {
-        return createDescription(ReutersCorpusReader.class, ReutersCorpusReader.PARAM_PATH,
-                filePath, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
-                ReutersCorpusReader.PARAM_PATTERNS,
-                new String[] { ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" });
+        return createDescription(
+                ReutersCorpusReader.class,
+                ReutersCorpusReader.PARAM_PATH, filePath,
+                ReutersCorpusReader.PARAM_LANGUAGE, language,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+                ReutersCorpusReader.PARAM_PATTERNS, new String[] { ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" });
     }
 
-    public static AnalysisEngineDescription getPreprocessing(String languageCode)
+    public static AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
         return createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class),
-                createPrimitiveDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        languageCode));
+                createPrimitiveDescription(OpenNlpPosTagger.class));
     }
 }
