@@ -36,10 +36,10 @@ import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
 
 public class ReutersTextClassification
 {
-    public String languageCode;
-    public String corpusFilePathTrain;
-    public String corpusFilePathTest;
-    public String goldLabelFilePath;
+    private String languageCode;
+    private String corpusFilePathTrain;
+    private String corpusFilePathTest;
+    private String goldLabelFilePath;
 
     public static void main(String[] args)
         throws Exception
