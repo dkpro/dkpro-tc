@@ -8,6 +8,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.resource.ResourceInitializationException
 
+import weka.classifiers.bayes.NaiveBayes
+import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
@@ -27,6 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 
 /**
@@ -61,8 +64,8 @@ public class TwentyNewsgroupsGroovyExperiment {
 	def dimClassificationArgs =
         Dimension.create("classificationArguments",
             [
-                ["weka.classifiers.bayes.NaiveBayes"].toArray(),
-                ["weka.classifiers.functions.SMO"].toArray()
+                [NaiveBayes.class.name].toArray(),
+                [SMO.class.name].toArray()
             ] as Object[]
      );
 
@@ -70,8 +73,8 @@ public class TwentyNewsgroupsGroovyExperiment {
         "featureSet",
         [
             [
-                "de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
-                "de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
+                NrOfTokensFeatureExtractor.class.name,
+                NGramFeatureExtractor.class.name
             ].toArray()
         ] as Object[]
     );
@@ -215,7 +218,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 			throws ResourceInitializationException, IOException
 	{
 		return createDescription(
-			TwentyNewsgroupsCorpusReader.class,
+			TwentyNewsgroupsCorpusReader,
 			TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
             TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
 			TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
@@ -226,10 +229,8 @@ public class TwentyNewsgroupsGroovyExperiment {
 			throws ResourceInitializationException
 	{
 		return createAggregateDescription(
-			createPrimitiveDescription(
-				BreakIteratorSegmenter.class),
-			createPrimitiveDescription(
-				OpenNlpPosTagger.class)
+			createPrimitiveDescription(BreakIteratorSegmenter),
+			createPrimitiveDescription(OpenNlpPosTagger)
 		);
 	}
 
