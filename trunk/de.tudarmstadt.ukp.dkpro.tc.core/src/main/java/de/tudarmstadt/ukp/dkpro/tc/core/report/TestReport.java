@@ -3,7 +3,6 @@ package de.tudarmstadt.ukp.dkpro.tc.core.report;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -78,9 +77,6 @@ public class TestReport
 
             // Mulan Evaluation
             boolean[][] actualsArray = MulanEvaluationWrapper.getBooleanArrayFromList(r.actuals);
-            // FIXME doesn't work for PCutL
-            double[] thresM = new double[r.predictions.size()];
-            Arrays.fill(thresM, t[0]);
 
             List<Measure> mulanResults = MulanEvaluationWrapper.getMulanEvals(r.predictions,
                     actualsArray, t[0]);
@@ -95,7 +91,7 @@ public class TestReport
 
             // Meka Evaluation
             Map<String, Double> mekaResults = MekaEvaluationUtils.calcMLStats(r.predictions,
-                    r.actuals, thresM, classNames);
+                    r.actuals, t, classNames);
             results.putAll(mekaResults);
 
             // average PR curve
