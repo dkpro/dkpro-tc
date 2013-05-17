@@ -36,10 +36,10 @@ import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
 
 public class ReutersTextClassification
 {
-    public static String languageCode;
-    public static String corpusFilePathTrain;
-    public static String corpusFilePathTest;
-    public static String goldLabelFilePath;
+    public String languageCode;
+    public String corpusFilePathTrain;
+    public String corpusFilePathTest;
+    public String goldLabelFilePath;
 
     public static void main(String[] args)
         throws Exception
@@ -56,7 +56,7 @@ public class ReutersTextClassification
      * @return ParameterSpace for the experiment
      * @throws Exception
      */
-    private ParameterSpace setup() throws Exception{
+    protected ParameterSpace setup() throws Exception{
         String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(
                 "config/train.json").getFile()));
         JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
@@ -182,7 +182,7 @@ public class ReutersTextClassification
         Lab.getInstance().run(batch);
     }
 
-    private static CollectionReaderDescription getReaderDesc(String filePath, String language)
+    private CollectionReaderDescription getReaderDesc(String filePath, String language)
         throws ResourceInitializationException, IOException
     {
         return createDescription(
@@ -193,7 +193,7 @@ public class ReutersTextClassification
                 ReutersCorpusReader.PARAM_PATTERNS, new String[] { ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" });
     }
 
-    public static AnalysisEngineDescription getPreprocessing()
+    private AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
         return createAggregateDescription(
