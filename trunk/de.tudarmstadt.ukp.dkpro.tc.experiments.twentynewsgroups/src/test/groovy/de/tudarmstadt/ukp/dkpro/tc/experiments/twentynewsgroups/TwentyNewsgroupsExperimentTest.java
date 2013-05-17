@@ -39,13 +39,13 @@ public class TwentyNewsgroupsExperimentTest
     @Test
     public void testGroovyCrossValidation() throws Exception
     {
-        groovyExperiment.runCrossValidation(pSpace);
+        groovyExperiment.runCrossValidation();
     }
 
     @Test
     public void testGroovyTrainTest() throws Exception
     {
-        groovyExperiment.runCrossValidation(pSpace);
+        groovyExperiment.runCrossValidation();
     }
 
     @Test
