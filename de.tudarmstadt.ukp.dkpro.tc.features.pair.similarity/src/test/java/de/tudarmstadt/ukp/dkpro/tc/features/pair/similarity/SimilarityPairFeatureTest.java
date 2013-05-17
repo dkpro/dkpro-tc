@@ -14,6 +14,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.cleartk.classifier.Feature;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uimafit.component.initialize.ConfigurationParameterInitializer;
 import org.uimafit.component.initialize.ExternalResourceInitializer;
@@ -25,6 +26,7 @@ import de.tudarmstadt.ukp.similarity.dkpro.resource.lexical.string.GreedyStringT
 
 public class SimilarityPairFeatureTest
 {
+    @Ignore
     @Test
     public void similarityPairFeatureTest()
         throws Exception
