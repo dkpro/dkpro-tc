@@ -19,7 +19,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
  */
 public class TwentyNewsgroupsExperimentTest
 {
-    TwentyNewsgroupsExperiment experiment;
+    TwentyNewsgroupsExperiment javaExperiment;
+    TwentyNewsgroupsGroovyExperiment groovyExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -28,21 +29,35 @@ public class TwentyNewsgroupsExperimentTest
             String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
             System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-            experiment = new TwentyNewsgroupsExperiment();
-            pSpace=experiment.setup();
+            javaExperiment = new TwentyNewsgroupsExperiment();
+            pSpace=javaExperiment.setup();
+
+            groovyExperiment = new TwentyNewsgroupsGroovyExperiment();
     }
 
 
     @Test
+    public void testGroovyCrossValidation() throws Exception
+    {
+        groovyExperiment.runCrossValidation(pSpace);
+    }
+
+    @Test
+    public void testGroovyTrainTest() throws Exception
+    {
+        groovyExperiment.runCrossValidation(pSpace);
+    }
+
+    @Test
     public void testJavaCrossValidation() throws Exception
     {
-        experiment.runCrossValidation(pSpace);
+        javaExperiment.runCrossValidation(pSpace);
     }
 
     @Test
     public void testJavaTrainTest() throws Exception
     {
-        experiment.runCrossValidation(pSpace);
+        javaExperiment.runCrossValidation(pSpace);
     }
 
     @Rule
