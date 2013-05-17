@@ -56,8 +56,6 @@ public class ParameterSpaceParser
             featureSets.add(featureSet);
         }
 
-        String languageCode = pipelineConfiguration.getString("languageCode");
-
         Object[] pipelineParameters = new Object[]{
                 NGramFeatureExtractor.PARAM_NGRAM_MIN_N, pipelineConfiguration.getInt("nGramMinSize"),
                 NGramFeatureExtractor.PARAM_NGRAM_MAX_N, pipelineConfiguration.getInt("nGramMaxSize")};
@@ -70,7 +68,6 @@ public class ParameterSpaceParser
         		Dimension.create("topNgramsK", topNgramsK),
         		Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", false),
-                Dimension.create("languageCode", languageCode),
                 Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters))
                 );
         return pSpace;

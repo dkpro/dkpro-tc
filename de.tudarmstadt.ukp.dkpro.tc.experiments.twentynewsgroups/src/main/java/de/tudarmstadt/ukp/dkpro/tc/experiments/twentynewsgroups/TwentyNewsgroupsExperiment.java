@@ -67,8 +67,8 @@ public class TwentyNewsgroupsExperiment
         throws Exception
     {
         PreprocessTask preprocessTask = new PreprocessTask();
-        preprocessTask.setReader(getReaderDesc(corpusFilePathTrain));
-        preprocessTask.setAggregate(getPreprocessing(languageCode));
+        preprocessTask.setReader(getReaderDesc(corpusFilePathTrain,languageCode));
+        preprocessTask.setAggregate(getPreprocessing());
         preprocessTask.setType(preprocessTask.getType() + "-TwentyNewsgroupsCV");
 
         // get some meta data depending on the whole document collection that we need for training
@@ -106,7 +106,7 @@ public class TwentyNewsgroupsExperiment
         batch.addReport(CVBatchReport.class);
 
         // Run
-        Lab.newInstance("/lab/debug_context.xml").run(batch);
+        Lab.getInstance().run(batch);
     }
 
     // ##### TRAIN-TEST #####
@@ -114,13 +114,13 @@ public class TwentyNewsgroupsExperiment
         throws Exception
     {
         PreprocessTask preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setReader(getReaderDesc(corpusFilePathTrain));
-        preprocessTaskTrain.setAggregate(getPreprocessing(languageCode));
+        preprocessTaskTrain.setReader(getReaderDesc(corpusFilePathTrain,languageCode));
+        preprocessTaskTrain.setAggregate(getPreprocessing());
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-TwentyNewsgroups-Train");
 
         PreprocessTask preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setReader(getReaderDesc(corpusFilePathTest));
-        preprocessTaskTest.setAggregate(getPreprocessing(languageCode));
+        preprocessTaskTest.setReader(getReaderDesc(corpusFilePathTest,languageCode));
+        preprocessTaskTest.setAggregate(getPreprocessing());
         preprocessTaskTrain.setType(preprocessTaskTest.getType() + "-TwentyNewsgroups-Test");
 
         // get some meta data depending on the whole document collection that we need for training
@@ -173,20 +173,21 @@ public class TwentyNewsgroupsExperiment
         batch.addReport(BatchOutcomeReport.class);
 
         // Run
-        Lab.newInstance("/lab/debug_context.xml").run(batch);
+        Lab.getInstance().run(batch);
     }
 
-    private static CollectionReaderDescription getReaderDesc(String corpusFilePath)
+    private static CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
         throws ResourceInitializationException, IOException
     {
 
         return createDescription(TwentyNewsgroupCorpusReader.class,
                 TwentyNewsgroupCorpusReader.PARAM_PATH, corpusFilePath,
+                TwentyNewsgroupCorpusReader.PARAM_LANGUAGE, languageCode,
                 TwentyNewsgroupCorpusReader.PARAM_PATTERNS,
                 new String[] { TwentyNewsgroupCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
     }
 
-    public static AnalysisEngineDescription getPreprocessing(String languageCode)
+    public static AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
 

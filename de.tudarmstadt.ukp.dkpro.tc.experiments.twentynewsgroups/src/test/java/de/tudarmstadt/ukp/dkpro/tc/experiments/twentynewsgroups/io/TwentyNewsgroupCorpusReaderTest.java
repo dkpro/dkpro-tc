@@ -22,6 +22,7 @@ public class TwentyNewsgroupCorpusReaderTest
         CollectionReader reader = createCollectionReader(
                 TwentyNewsgroupCorpusReader.class,
                 TwentyNewsgroupCorpusReader.PARAM_PATH, "classpath:/data/",
+                TwentyNewsgroupCorpusReader.PARAM_LANGUAGE, "en",
                 TwentyNewsgroupCorpusReader.PARAM_PATTERNS, new String[] {
                     TwentyNewsgroupCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
 

@@ -1,7 +1,7 @@
 {
 
-	"corpusFilePathTrain" : "src/test/resources/data/bydate-train",
-    "corpusFilePathTest" : "src/test/resources/data/bydate-test",
+	"corpusFilePathTrain" : "src/main/resources/data/bydate-train",
+    "corpusFilePathTest" : "src/main/resources/data/bydate-test",
 	
 	"languageCode" : "en",
 

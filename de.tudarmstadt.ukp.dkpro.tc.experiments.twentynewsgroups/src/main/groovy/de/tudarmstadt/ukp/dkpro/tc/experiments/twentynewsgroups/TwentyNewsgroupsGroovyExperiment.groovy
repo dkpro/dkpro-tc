@@ -38,8 +38,8 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 	//TODO should also be dimensions (but, we're passing readers, not datasets)
 
-	def corpusFilePathTrain = "src/test/resources/data/bydate-train";
-	def corpusFilePathTest  ="src/test/resources/data/bydate-test";
+	def corpusFilePathTrain = "src/main/resources/data/bydate-train";
+	def corpusFilePathTest  ="src/main/resources/data/bydate-test";
 
 	// === DIMENSIONS===========================================================
 
