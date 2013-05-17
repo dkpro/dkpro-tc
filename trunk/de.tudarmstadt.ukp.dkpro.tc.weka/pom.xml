@@ -19,5 +19,9 @@
   		<groupId>nz.ac.waikato.cms.weka</groupId>
   		<artifactId>meka</artifactId>
   	</dependency>
-  </dependencies>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  	</dependency>
+    </dependencies>
 </project>
