@@ -57,8 +57,7 @@ public class ReutersTextClassification
      * @throws Exception
      */
     protected ParameterSpace setup() throws Exception{
-        String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(
-                "config/train.json").getFile()));
+        String jsonPath = FileUtils.readFileToString(new File("src/main/resources/config/train.json"));
         JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
 
         goldLabelFilePath = json.getString("goldLabelFilePath");
