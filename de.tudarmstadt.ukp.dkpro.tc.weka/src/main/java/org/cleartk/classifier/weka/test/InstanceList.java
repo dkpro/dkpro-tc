@@ -1,7 +1,10 @@
 package org.cleartk.classifier.weka.test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cleartk.classifier.weka.util.WekaUtils;
 
 public class InstanceList
 {
@@ -59,5 +62,11 @@ public class InstanceList
     
     public int size() {
         return this.getInstanceList().size();
+    }
+    
+    public void toArffFile(File outputFile)
+            throws Exception
+    {
+        WekaUtils.instanceListToArffFile(outputFile, this);
     }
 }
