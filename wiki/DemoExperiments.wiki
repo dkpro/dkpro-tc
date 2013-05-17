@@ -1,0 +1,6 @@
+#summary Getting started with DKPro TC: Demo Experiments
+
+= Introduction =
+
+DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups
+
