@@ -7,4 +7,3 @@ We provide example TC experiments in Java and Groovy. In order to use the Groovy
 = Eclipse Setup =
   * Install the Groovy-Eclipse plugin via the Eclipse marketplace or from any of [http://groovy.codehaus.org/Eclipse+Plugin these update sites]. This gives you Groovy capabilities necessary for running and writing Groovy experiments.
   * If you use maven to build your projects (HIGHLY RECOMMENDED), install the Groovy-Eclipse "configurator for m2eclipse" using any of [http://docs.codehaus.org/display/GROOVY/Groovy-Eclipse+compiler+plugin+for+Maven#Groovy-EclipsecompilerpluginforMaven-Groovy-Eclipseconfiguratorform2Eclipse these update sites].
-  * Add the groovy libraries to the classpath. Rightclick your project and choose "Add Groovy libraries to classpath" in the Groovy menu.
