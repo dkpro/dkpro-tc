@@ -28,10 +28,16 @@ public class WekaUtilTest
         i2.addFeature(new Feature("featue2", 1));
         i2.addFeature(new Feature("featue3", "b"));
 
+        Instance i3 = new Instance();
+        i3.addFeature(new Feature("featue1", 1));
+        i3.addFeature(new Feature("featue2", 1));
+        i3.addFeature(new Feature("featue3", "b"));
                
         InstanceList iList = new InstanceList();
         iList.addInstance(i1, "1");
         iList.addInstance(i2, "2");
+        iList.addInstance(i3, "2");
+
         
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();

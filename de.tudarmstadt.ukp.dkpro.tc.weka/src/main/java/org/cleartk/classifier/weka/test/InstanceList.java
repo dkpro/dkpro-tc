@@ -2,6 +2,7 @@ package org.cleartk.classifier.weka.test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.cleartk.classifier.weka.util.WekaUtils;
@@ -43,6 +44,11 @@ public class InstanceList
     public List<String> getOutcomeList()
     {
         return outcomeList;
+    }
+    
+    public List<String> getUniqueOutcomes()
+    {
+        return new ArrayList<String>(new HashSet<String>(outcomeList));
     }
 
     public void setOutcomeList(List<String> outcomeList)
