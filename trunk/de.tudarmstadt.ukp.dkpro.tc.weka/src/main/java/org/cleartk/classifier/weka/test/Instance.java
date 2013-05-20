@@ -25,6 +25,11 @@ public class Instance
         features.add(feature);
     }
     
+    public void addFeatures(List<Feature> features)
+    {
+        features.addAll(features);
+    }
+    
     public String getOutcome()
     {
         return outcome;

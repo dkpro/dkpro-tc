@@ -42,7 +42,7 @@ public class WekaUtils
 
 
         // Make sure "outcome" is not the name of an attribute
-        Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getOutcomeList());
+        Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes());
         if (attributeStore.containsAttributeName(classAttributeName)) {
             System.err.println("A feature with name \"outcome\" was found. Renaming outcome attribute");
             outcomeAttribute = outcomeAttribute.copy(classAttributePrefix + classAttributeName);
@@ -52,6 +52,11 @@ public class WekaUtils
         Instances wekaInstances = new Instances(relationName, attributeStore.getAttributes(), instanceList.size());
         wekaInstances.setClass(outcomeAttribute);
 
+        if (!outputFile.exists()) {
+            outputFile.mkdirs();
+            outputFile.createNewFile();
+        }
+        
         ArffSaver saver = new ArffSaver();
         preprocessingFilter.setInputFormat(wekaInstances);
         saver.setRetrieval(Saver.INCREMENTAL);
