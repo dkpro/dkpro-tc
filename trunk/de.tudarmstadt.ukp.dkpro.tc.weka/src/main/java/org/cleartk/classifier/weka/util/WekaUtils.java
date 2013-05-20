@@ -99,8 +99,13 @@ public class WekaUtils
                     attributeValue = valIndex;
                 }
                 
-                featureValues[attributeStore.getAttributeOffset(attribute.name())] = attributeValue;
+                int offset = attributeStore.getAttributeOffset(attribute.name());
+                
+                if (offset != -1) {
+                    featureValues[offset] = attributeValue;
+                }            
             }
+            
             weka.core.Instance wekaInstance;
 
             if (useDenseInstances) {

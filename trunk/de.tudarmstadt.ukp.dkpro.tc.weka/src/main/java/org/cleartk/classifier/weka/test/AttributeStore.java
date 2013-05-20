@@ -43,6 +43,13 @@ public class AttributeStore
     }
     
     public int getAttributeOffset(String name) {
-        return nameOffsetMap.get(name);
+        if (!nameOffsetMap.containsKey(name)) {
+            System.err.println("No entry for: " + name);
+            return -1;
+        }
+        else {
+            return nameOffsetMap.get(name);
+
+        }
     }
 }
