@@ -16,25 +16,22 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchReport
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.CVReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.TestReport
-import de.tudarmstadt.ukp.dkpro.tc.core.task.CrossValidationTask
-import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
-import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
-import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask
+import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskCV
+import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
- *
+ * 
+ * The TwentyNewsgroupsGroovyExperiment does the same as TwentyNewsgroupsGroovyExtendedExperiment, 
+ * but it uses the BatchTaskCV and BatchTaskTrainTest to automatically wire the standard tasks for
+ * a basic CV and TrainTest setup. This is more convenient, but less flexible.
+ * 
+ * If you need to define a more complex experiment setup, look at TwentyNewsgroupsGroovyExtendedExperiment
+ * 
  * @author Oliver Ferschke
  */
 public class TwentyNewsgroupsGroovyExperiment {
@@ -90,57 +87,18 @@ public class TwentyNewsgroupsGroovyExperiment {
      */
 	protected void runCrossValidation() throws Exception
 	{
-		/*
-		 * Define (instantiate) tasks
-		 */
-
-		PreprocessTask preprocessTask = [
-			reader:getReaderDesc(corpusFilePathTrain,languageCode),
-			aggregate:getPreprocessing(),
-			type: "Preprocessing-TwentyNewsgroupsCV"
-		];
-
-		MetaInfoTask metaTask = [type: "MetaInfoTask-TwentyNewsgroupsCV"];
-
-		ExtractFeaturesTask featureExtractionTask = [
-			addInstanceId: false,
-			instanceExtractor:SingleLabelInstanceExtractor.class,
-			type: "FeatureExtraction-TwentyNewsgroupsCV"
-		];
-
-		CrossValidationTask cvTask = [
-			type: "CVTask-TwentyNewsgroupsCV",
-			reports: [CVReport]];
-
-
-		/*
-		 * Wire tasks
-		 */
-		metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTask.getType());
-		featureExtractionTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTask.getType());
-		featureExtractionTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-		cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-		cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY, featureExtractionTask.getType());
-
-
-		/*
-		 *	Wrap wired tasks in batch task
-		 */
-
-		BatchTask batchTask = [
-			type: "Evaluation-TwentyNewsgroups-CV",
+		BatchTaskCV batchTask = [
+			experimentName: "TwentyNewsgroups-CV-Groovy",
+			type: "Evaluation-TwentyNewsgroups-CV-Groovy",
+			reader:	getReaderDesc(corpusFilePathTrain, languageCode),			
+			aggregate:	getPreprocessing(),
 			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
-			tasks:           [preprocessTask, metaTask, featureExtractionTask, cvTask],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [CVBatchReport]
 		];
 
-		/*
-		 * Run
-		 */
 		Lab.getInstance().run(batchTask);
 	}
-
 	/**
 	 * TrainTest Setting
 	 *
@@ -148,65 +106,16 @@ public class TwentyNewsgroupsGroovyExperiment {
 	 */
 	protected void runTrainTest() throws Exception
 	{
-		/*
-		 * Define (instantiate) tasks
-		 */
-
-		PreprocessTask preprocessTaskTrain = [
-			reader:getReaderDesc(corpusFilePathTrain, languageCode),
-			aggregate:getPreprocessing(),
-			type: "Preprocessing-TwentyNewsgroups-Train"
-		];
-
-		PreprocessTask preprocessTaskTest = [
-			reader:getReaderDesc(corpusFilePathTest, languageCode),
-			aggregate:getPreprocessing(),
-			type: "Preprocessing-TwentyNewsgroups-Test"
-		];
-
-		MetaInfoTask metaTask = [type: "MetaInfoTask-TwentyNewsgroups-TrainTest"];
-
-		ExtractFeaturesTask featuresTrainTask = [
-			addInstanceId: true,
-			instanceExtractor:SingleLabelInstanceExtractor.class,
-			type: "FeatureExtraction-TwentyNewsgroups-Train"
-		];
-
-		ExtractFeaturesTask featuresTestTask = [
-			addInstanceId: true,
-			instanceExtractor:SingleLabelInstanceExtractor.class,
-			type: "FeatureExtraction-TwentyNewsgroups-Test"
-		];
-
-		TestTask testTask = [
-			type:"TestTask.TwentyNewsgroups",
-			reports: [ TestReport, OutcomeReport]
-		];
-
-
-		/*
-		 * Wire tasks
-		 */
-		metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTaskTrain.getType());
-		featuresTrainTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTaskTrain.getType());
-		featuresTrainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-		featuresTestTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTaskTest.getType());
-		featuresTestTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-		testTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-		testTask.addImportLatest(TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY, featuresTrainTask.getType());
-		testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY, featuresTestTask.getType());
-
-
-		/*
-		 *	Wrap wired tasks in batch task
-		 */
-
-		BatchTask batchTask = [
-			type: "Evaluation-TwentyNewsgroups-TrainTest",
-			parameterSpace : [ dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
-			tasks:           [ preprocessTaskTrain, preprocessTaskTest, metaTask, featuresTrainTask, featuresTestTask, testTask],
+	
+		BatchTaskTrainTest batchTask = [
+			experimentName: "TwentyNewsgroups-TrainTest-Groovy",
+			type: "Evaluation-TwentyNewsgroups-TrainTest-Groovy",
+			readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),			
+			readerTest:		getReaderDesc(corpusFilePathTest, languageCode),			
+			aggregate:	getPreprocessing(),
+			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
-			reports:         [ BatchReport, BatchOutcomeReport]
+			reports:         [CVBatchReport]
 		];
 
 		// Run
