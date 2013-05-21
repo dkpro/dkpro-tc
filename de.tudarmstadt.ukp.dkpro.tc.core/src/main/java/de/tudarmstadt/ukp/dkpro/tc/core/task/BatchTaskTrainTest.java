@@ -42,7 +42,7 @@ public class BatchTaskTrainTest
 	 * 
 	 * @throws IllegalStateException if not all necessary arguments have been set.
 	 */
-    private void init(){
+    private void init() throws IllegalStateException{
     	
     	if(experimentName==null||readerTrain==null||readerTest==null||aggregate==null){
     		throw new IllegalStateException("You must set Experiment Name, Test Reader, Training Reader and Aggregate.");
