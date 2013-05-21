@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.core.task;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeReport;
@@ -12,6 +13,11 @@ public class BatchTaskTrainTest
     extends BatchTask
 {
     
+	private String experimentName;
+	private CollectionReaderDescription readerTrain;
+	private CollectionReaderDescription readerTest;
+	private AnalysisEngineDescription aggregate;	
+	
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
     private MetaInfoTask metaTask;
@@ -19,8 +25,29 @@ public class BatchTaskTrainTest
     private ExtractFeaturesTask featuresTestTask;
     private TestTask testTask;
     
-    public BatchTaskTrainTest(String experimentName, CollectionReaderDescription readerTrain, CollectionReaderDescription readerTest, AnalysisEngineDescription aggregate)
+    public BatchTaskTrainTest(){/*needed for Groovy*/}
+    
+    public BatchTaskTrainTest(String aExperimentName, CollectionReaderDescription aReaderTrain, CollectionReaderDescription aReaderTest, AnalysisEngineDescription aAggregate)
     {        
+    	setExperimentName(aExperimentName);
+    	setReaderTrain(aReaderTrain);
+    	setReaderTest(aReaderTest);
+    	setAggregate(aAggregate);
+    }
+
+    /**
+	 * Initializes the experiment. This is called automatically before
+	 * execution. It's not done directly in the constructor, because we want to
+	 * be able to use setters instead of the three-argument constructor.
+	 * 
+	 * @throws IllegalStateException if not all necessary arguments have been set.
+	 */
+    private void init(){
+    	
+    	if(experimentName==null||readerTrain==null||readerTest==null||aggregate==null){
+    		throw new IllegalStateException("You must set Experiment Name, Test Reader, Training Reader and Aggregate.");
+    	}
+
         preprocessTaskTrain = new PreprocessTask();
         preprocessTaskTrain.setReader(readerTrain);
         preprocessTaskTrain.setAggregate(aggregate);
@@ -77,4 +104,30 @@ public class BatchTaskTrainTest
         addTask(featuresTestTask);
         addTask(testTask);
     }
+    
+    
+    @Override
+	public void execute(TaskContext aContext) throws Exception{
+    	init();
+		super.execute(aContext);				
+	}
+
+
+	public void setExperimentName(String experimentName) {
+		this.experimentName = experimentName;
+	}
+
+
+	public void setReaderTest(CollectionReaderDescription aReader) {
+		this.readerTest = aReader;
+	}
+
+	public void setReaderTrain(CollectionReaderDescription aReader) {
+		this.readerTrain = aReader;
+	}
+
+	public void setAggregate(AnalysisEngineDescription aggregate) {
+		this.aggregate = aggregate;
+	}
+
 }

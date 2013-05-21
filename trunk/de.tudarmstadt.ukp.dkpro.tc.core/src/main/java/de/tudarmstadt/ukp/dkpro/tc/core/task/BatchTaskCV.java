@@ -3,21 +3,45 @@ package de.tudarmstadt.ukp.dkpro.tc.core.task;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVReport;
 
 public class BatchTaskCV
     extends BatchTask
-{
-    
+{    
+	private String experimentName;
+	private CollectionReaderDescription reader;
+	private AnalysisEngineDescription aggregate;	
+	
     private PreprocessTask preprocessTask;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask trainTask;
     private CrossValidationTask cvTask;
     
-    public BatchTaskCV(String experimentName, CollectionReaderDescription reader, AnalysisEngineDescription aggregate)
-    {        
+    public BatchTaskCV(){/*needed for Groovy*/}
+    
+    public BatchTaskCV(String aExperimentName, CollectionReaderDescription aReader, AnalysisEngineDescription aAggregate)
+    {
+    	setExperimentName(aExperimentName);
+    	setReader(aReader);
+    	setAggregate(aAggregate);
+    }
+    
+    /**
+	 * Initializes the experiment. This is called automatically before
+	 * execution. It's not done directly in the constructor, because we want to
+	 * be able to use setters instead of the three-argument constructor.
+	 * 
+	 * @throws IllegalStateException if not all necessary arguments have been set.
+	 */
+    private void init() throws IllegalStateException{
+    	
+    	if(experimentName==null||reader==null||aggregate==null){
+    		throw new IllegalStateException("You must set Experiment Name, Test Reader, Training Reader and Aggregate.");
+    	}
+    	
         preprocessTask = new PreprocessTask();
         preprocessTask.setReader(reader);
         preprocessTask.setAggregate(aggregate);
@@ -51,6 +75,27 @@ public class BatchTaskCV
         addTask(preprocessTask);
         addTask(metaTask);
         addTask(trainTask);
-        addTask(cvTask);
+        addTask(cvTask);    	
     }
+    
+    @Override
+	public void execute(TaskContext aContext) throws Exception{
+    	init();
+		super.execute(aContext);				
+	}
+
+
+	public void setExperimentName(String experimentName) {
+		this.experimentName = experimentName;
+	}
+
+
+	public void setReader(CollectionReaderDescription reader) {
+		this.reader = reader;
+	}
+
+
+	public void setAggregate(AnalysisEngineDescription aggregate) {
+		this.aggregate = aggregate;
+	}
 }
