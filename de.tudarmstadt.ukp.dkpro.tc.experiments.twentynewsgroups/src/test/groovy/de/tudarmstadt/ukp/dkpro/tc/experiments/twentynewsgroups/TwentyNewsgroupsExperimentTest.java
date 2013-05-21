@@ -21,6 +21,7 @@ public class TwentyNewsgroupsExperimentTest
 {
     TwentyNewsgroupsExperiment javaExperiment;
     TwentyNewsgroupsGroovyExperiment groovyExperiment;
+    TwentyNewsgroupsGroovyExtendedExperiment groovyExtendedExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -33,30 +34,49 @@ public class TwentyNewsgroupsExperimentTest
             pSpace=javaExperiment.setup();
 
             groovyExperiment = new TwentyNewsgroupsGroovyExperiment();
+            groovyExtendedExperiment = new TwentyNewsgroupsGroovyExtendedExperiment();
     }
 
 
     @Test
     public void testGroovyCrossValidation() throws Exception
     {
-        groovyExperiment.runCrossValidation();
+        //Groovy setup with automatic task wiring
+    	groovyExperiment.runCrossValidation();
     }
 
     @Test
     public void testGroovyTrainTest() throws Exception
     {
+        //Groovy setup with automatic task wiring
         groovyExperiment.runCrossValidation();
+    }
+
+    @Test
+    public void testGroovyExtendedCrossValidation() throws Exception
+    {
+        //Groovy setup with manual task wiring
+    	groovyExtendedExperiment.runCrossValidation();
+    }
+
+    @Test
+    public void testGroovyExtendedTrainTest() throws Exception
+    {
+        //Groovy setup with manual task wiring
+    	groovyExtendedExperiment.runCrossValidation();
     }
 
     @Test
     public void testJavaCrossValidation() throws Exception
     {
+        //Java setup with automatic task wiring
         javaExperiment.runCrossValidation(pSpace);
     }
 
     @Test
     public void testJavaTrainTest() throws Exception
     {
+        //Java setup with automatic task wiring
         javaExperiment.runCrossValidation(pSpace);
     }
 
