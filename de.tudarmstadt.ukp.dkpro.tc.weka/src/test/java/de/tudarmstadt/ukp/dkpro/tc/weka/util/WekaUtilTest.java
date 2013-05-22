@@ -20,18 +20,18 @@ public class WekaUtilTest
         Instance i1 = new Instance();
         i1.addFeature(new Feature("feature1", 2));
         i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3-{{", "a"));
+        i1.addFeature(new Feature("feature3_{{", "a"));
 
 
         Instance i2 = new Instance();
         i2.addFeature(new Feature("feature1", 1));
         i2.addFeature(new Feature("feature2", 1));
-        i2.addFeature(new Feature("feature3-{{", "b"));
+        i2.addFeature(new Feature("feature3_{{", "b"));
 
         Instance i3 = new Instance();
         i3.addFeature(new Feature("feature1", 1));
         i3.addFeature(new Feature("feature2", 1));
-        i3.addFeature(new Feature("feature3-{{", "b"));
+        i3.addFeature(new Feature("feature3_{{", "b"));
                
         InstanceList iList = new InstanceList();
         iList.addInstance(i1, "1");

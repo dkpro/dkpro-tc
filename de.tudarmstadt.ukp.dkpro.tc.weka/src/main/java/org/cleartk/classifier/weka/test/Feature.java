@@ -147,7 +147,7 @@ public class Feature
         StringBuilder sb = new StringBuilder();
         for (int i=0; i<name.length(); i++) {
             String c = name.substring(i, i+1);
-            if (StringUtils.isAlphanumeric(c)) {
+            if (StringUtils.isAlphanumeric(c) || c.equals("_")) {
                 sb.append(c);
             }
             else {
