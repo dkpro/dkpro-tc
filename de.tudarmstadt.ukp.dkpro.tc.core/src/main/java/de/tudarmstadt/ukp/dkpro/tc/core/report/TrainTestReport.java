@@ -28,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
-public class TestReport
+public class TrainTestReport
     extends ReportBase
 {
 
@@ -161,7 +161,7 @@ public class TestReport
 
         // Write out properties
         getContext().storeBinary(TestTask.RESULTS_KEY, new PropertiesAdapter(props));
-        getContext().storeBinary(TestReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
+        getContext().storeBinary(TrainTestReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
 
     }
 

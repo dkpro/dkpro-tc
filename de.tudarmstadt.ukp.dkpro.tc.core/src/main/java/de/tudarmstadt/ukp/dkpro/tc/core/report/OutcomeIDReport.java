@@ -17,7 +17,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.meta.AddIdFeatureExtractor;
 
-public class OutcomeReport
+public class OutcomeIDReport
     extends ReportBase
 {
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";

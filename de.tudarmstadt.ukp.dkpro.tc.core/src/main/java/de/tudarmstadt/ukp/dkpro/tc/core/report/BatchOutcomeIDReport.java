@@ -9,7 +9,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
 
 
-public class BatchOutcomeReport
+public class BatchOutcomeIDReport
 	extends BatchReportBase
 {
     
@@ -23,10 +23,10 @@ public class BatchOutcomeReport
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (subcontext.getType().startsWith(TestTask.class.getName())) {
-                props.putAll(store.retrieveBinary(subcontext.getId(), OutcomeReport.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
+                props.putAll(store.retrieveBinary(subcontext.getId(), OutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
             }
         }
 
-        getContext().storeBinary(OutcomeReport.ID_OUTCOME_KEY, new PropertiesAdapter(props));
+        getContext().storeBinary(OutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter(props));
     }
 }

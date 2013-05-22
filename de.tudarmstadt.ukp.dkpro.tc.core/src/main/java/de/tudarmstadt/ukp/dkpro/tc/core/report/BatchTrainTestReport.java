@@ -18,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.CrossValidationTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
 
-public class BatchReport
+public class BatchTrainTestReport
     extends BatchReportBase
 {
     private static final String EVALUATION_FILE_XLS = "eval.xls";

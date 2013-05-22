@@ -6,8 +6,8 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeReport;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.TestReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.report.TrainTestReport;
 
 public class BatchTaskTrainTest
     extends BatchTask
@@ -75,8 +75,8 @@ public class BatchTaskTrainTest
         // Define the test task which operates on the results of the the train task
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.addReport(TestReport.class);
-        testTask.addReport(OutcomeReport.class);
+        testTask.addReport(TrainTestReport.class);
+        testTask.addReport(OutcomeIDReport.class);
         
         
         // wiring

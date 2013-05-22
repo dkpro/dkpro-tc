@@ -17,12 +17,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchReport
+import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.TestReport
+import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.core.report.TrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.core.task.CrossValidationTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
@@ -186,7 +186,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
 		TestTask testTask = [
 			type:"TestTask.TwentyNewsgroups",
-			reports: [ TestReport, OutcomeReport]
+			reports: [ TrainTestReport, OutcomeIDReport]
 		];
 
 
@@ -212,7 +212,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 			parameterSpace : [ dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			tasks:           [ preprocessTaskTrain, preprocessTaskTest, metaTask, featuresTrainTask, featuresTestTask, testTask],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
-			reports:         [ BatchReport, BatchOutcomeReport]
+			reports:         [ BatchTrainTestReport, BatchOutcomeIDReport]
 		];
 
 		// Run
