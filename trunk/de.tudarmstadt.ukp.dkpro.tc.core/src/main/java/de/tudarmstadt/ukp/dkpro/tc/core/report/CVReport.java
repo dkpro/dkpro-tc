@@ -91,9 +91,6 @@ public class CVReport
                 // Mulan Evaluation
                 boolean[][] actualsArray = MulanEvaluationWrapper
                         .getBooleanArrayFromList(r.actuals);
-                // FIXME doesn't work for PCutL
-                double[] thresM = new double[r.L];
-                Arrays.fill(thresM, t[0]);
                 List<Measure> mulanMeasures = MulanEvaluationWrapper.getMulanEvals(r.predictions,
                         actualsArray, t[0]);
                 HashMap<String, Double> mulanResults = new HashMap<String, Double>();
@@ -104,7 +101,7 @@ public class CVReport
 
                 // Meka Evaluation
                 HashMap<String, Double> mekaResults = MekaEvaluationUtils.calcMLStats(
-                        r.predictions, r.actuals, thresM, classNames);
+                        r.predictions, r.actuals, t, classNames);
                 ReportUtils.addToResults(mekaResults, results);
 
                 // Confusion Matrix
