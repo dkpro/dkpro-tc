@@ -20,8 +20,8 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeReport;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskTrainTest;
@@ -104,8 +104,8 @@ public class TwentyNewsgroupsExperiment
         batch.setType("Evaluation-TwentyNewsgroups-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchReport.class);
-        batch.addReport(BatchOutcomeReport.class);
+        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

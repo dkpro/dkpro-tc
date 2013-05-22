@@ -23,10 +23,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.MultiLabelInstanceExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.core.report.CVReport;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.TestReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.report.TrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.CrossValidationTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
@@ -167,7 +167,7 @@ public class ReutersTextClassification
                 featuresTrainTask.getType());
         testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY,
                 featuresTestTask.getType());
-        testTask.addReport(TestReport.class);
+        testTask.addReport(TrainTestReport.class);
 
         // Define the overall task scenario
         BatchTask batch = new BatchTask();
@@ -180,7 +180,7 @@ public class ReutersTextClassification
         batch.addTask(featuresTestTask);
         batch.addTask(testTask);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);
