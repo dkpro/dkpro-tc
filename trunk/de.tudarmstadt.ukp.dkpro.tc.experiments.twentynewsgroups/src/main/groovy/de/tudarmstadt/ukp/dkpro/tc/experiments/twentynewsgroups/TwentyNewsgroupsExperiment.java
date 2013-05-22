@@ -27,6 +27,17 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
 
+/**
+ * This Java-based experiment setup of the TwentyNewsgroupsExperiment
+ * loads all its configurations from a json file using the ParameterSpaceParser.
+ * Alternatively, the parameters could be defined directly in this class,
+ * which makes on-the-fly changes more difficult when the experiment is run
+ * on a server.
+ *
+ * For these cases, the self-sufficient Groovy versions are
+ * more suitable, since their source code can be changed and then executed
+ * without pre-compilation.
+ */
 public class TwentyNewsgroupsExperiment
 {
 
@@ -43,7 +54,7 @@ public class TwentyNewsgroupsExperiment
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
-    
+
     /**
      * Initialize Experiment
      *
