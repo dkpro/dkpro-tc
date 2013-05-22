@@ -34,6 +34,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
 
+/**
+ *  This experiment showcases multi label classification.
+ *  The experiment setup is done manually. If you want to use automatically
+ *  wired CV or TrainTest setups, have a look at the TwentyNewsgroupsExample.
+ */
 public class ReutersTextClassification
 {
     private String languageCode;
