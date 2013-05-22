@@ -25,6 +25,8 @@ package org.cleartk.classifier.weka.test;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * <br>
  * Copyright (c) 2007-2008, Regents of the University of Colorado <br>
@@ -57,7 +59,7 @@ public class Feature
 
     public Feature(String name, Object value)
     {
-        this.name = name;
+        this.name = escape(name);
         this.value = value;
     }
 
@@ -132,5 +134,27 @@ public class Feature
         hash = hash * 31 + (this.value == null ? 0 : this.value.hashCode());
         return hash;
     }
-
+    
+    
+    /**
+     * Escapes the names, as Weka does not seem to like special characters in attribute names.
+     * @param name
+     * @return
+     */
+    private String escape(String name) {
+        
+        // TODO improve the escaping
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<name.length(); i++) {
+            String c = name.substring(i, i+1);
+            if (StringUtils.isAlphanumeric(c)) {
+                sb.append(c);
+            }
+            else {
+                sb.append("u");
+                sb.append(c.codePointAt(0));
+            }
+        }
+        return sb.toString();
+    }
 }
