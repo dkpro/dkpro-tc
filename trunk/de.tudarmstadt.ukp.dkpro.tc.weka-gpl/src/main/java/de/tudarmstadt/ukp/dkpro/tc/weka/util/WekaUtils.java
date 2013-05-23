@@ -250,6 +250,116 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
     
+    public static void instanceListToArffFileMultiLabel(File outputFile, InstanceList instanceList, boolean useDenseInstances)
+    {
+// TODO TZ: ich hab hier schonmal den code der alten Version hinkopiert, das muss angepasst werden wie direkt oben drueber
+        
+//            ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+//            List<Attribute> outcomeAttributes = createOutcomeAttributes(new ArrayList<String>(
+//                    this.outcomeValues));
+//            // in Meka, class label attributes have to go on top
+//            attributes.addAll(outcomeAttributes);
+//
+//            attributes.addAll(((WekaFeaturesEncoder) this.classifierBuilder.getFeaturesEncoder())
+//                    .getWekaAttributes());
+//            Map<String, Attribute> attributeMap = ((WekaFeaturesEncoder) this.classifierBuilder
+//                    .getFeaturesEncoder()).getWekaAttributeMap();
+//
+//            Map<Attribute, Integer> attIdxLookupMap = new HashMap<Attribute, Integer>(attributes.size());
+//            for (int idx = 0; idx < attributes.size(); idx++) {
+//                attIdxLookupMap.put(attributes.get(idx), idx);
+//            }
+//
+//            // for Meka-internal use
+//            Instances instances = new Instances(relationTag + ": -C " + outcomeAttributes.size() + " ",
+//                    attributes, instanceFeatures.size());
+//            instances.setClassIndex(outcomeAttributes.size());
+//
+//            ArffSaver saver = new ArffSaver();
+//            try {
+//                preprocessingFilter.setInputFormat(instances);
+//                saver.setRetrieval(Saver.INCREMENTAL);
+//                saver.setFile(trainingDataFile);
+//                saver.setInstances(instances);
+//            }
+//            catch (Exception e) {
+//                throw new CleartkProcessingException(e);
+//            }
+//
+//            for (int i = 0; i < instanceFeatures.size(); i++) {
+//                Iterable<Feature> features = instanceFeatures.get(i);
+//
+//                double[] featureValues = new double[attributes.size()];
+//
+//                // set class label values
+//                List<String> instanceOutcome = Arrays.asList(instanceOutcomes.get(i));
+//                for (Attribute label : outcomeAttributes) {
+//                    featureValues[attIdxLookupMap.get(label)] = instanceOutcome.contains(label.name()
+//                            .substring(2)) ? 1.0d : 0.0d;
+//                }
+//
+//                // set feature values
+//                for (Feature feature : features) {
+//                    Attribute attribute = attributeMap.get(feature.getName());
+//                    Object featureValue = feature.getValue();
+//
+//                    double attributeValue;
+//                    if (featureValue instanceof Number) {
+//                        attributeValue = ((Number) feature.getValue()).doubleValue();
+//                    }
+//                    else if (featureValue instanceof Boolean) {
+//                        attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
+//                    }
+//                    else { // this branch is unsafe - the code is copied from SparseInstance (can it be
+//                           // done safer?)
+//                        Object stringValue = feature.getValue();
+//                        if (!attribute.isNominal() && !attribute.isString()) {
+//                            throw new IllegalArgumentException("Attribute neither nominal nor string!");
+//                        }
+//                        int valIndex = attribute.indexOfValue(stringValue.toString());
+//                        if (valIndex == -1) {
+//                            if (attribute.isNominal()) {
+//                                throw new IllegalArgumentException(
+//                                        "Value not defined for given nominal attribute!");
+//                            }
+//                            else {
+//                                attribute.addStringValue(stringValue.toString());
+//                                valIndex = attribute.indexOfValue(stringValue.toString());
+//                            }
+//                        }
+//                        attributeValue = valIndex;
+//                    }
+//                    featureValues[attIdxLookupMap.get(attribute)] = attributeValue;
+//                }
+//                Instance instance;
+//
+//                if (useDenseInstances) {
+//                    instance = new DenseInstance(1.0, featureValues);
+//                }
+//                else {
+//                    instance = new SparseInstance(1.0, featureValues);
+//                }
+//
+//                instance.setDataset(instances);
+//
+//                try {
+//                    preprocessingFilter.input(instance);
+//                    saver.writeIncremental(preprocessingFilter.output());
+//                }
+//                catch (Exception e) {
+//                    throw new CleartkProcessingException(e);
+//                }
+//            }
+//
+//            try {
+//                // finishes the incremental saving process
+//                saver.writeIncremental(null);
+//            }
+//            catch (IOException e) {
+//                throw new CleartkProcessingException(e);
+//            }
+    }
+    
     private static Attribute createOutcomeAttribute(List<String> outcomeValues)
     {
         // make the order of the attributes predictable
