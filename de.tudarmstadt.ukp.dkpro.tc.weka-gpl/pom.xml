@@ -7,12 +7,13 @@
   </parent>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
   <dependencies>
-  	<dependency>
-  		<groupId>weka-dev</groupId>
-  		<artifactId>weka</artifactId>
-  		<version>3.7.5</version>
-  	</dependency>
-  	<dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.tc.core-asl
+        </artifactId>
+    </dependency>
+   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>
   			de.tudarmstadt.ukp.dkpro.tc.api.features-asl
@@ -25,6 +26,23 @@
   	<dependency>
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>nz.ac.waikato.cms.weka</groupId>
+  		<artifactId>weka-dev</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>mulan</groupId>
+  		<artifactId>mulan</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>nz.ac.waikato.cms.weka</groupId>
+  		<artifactId>meka</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.commons</groupId>
+  		<artifactId>commons-math3</artifactId>
+  		<version>3.0</version>
   	</dependency>
   </dependencies>
 </project>
