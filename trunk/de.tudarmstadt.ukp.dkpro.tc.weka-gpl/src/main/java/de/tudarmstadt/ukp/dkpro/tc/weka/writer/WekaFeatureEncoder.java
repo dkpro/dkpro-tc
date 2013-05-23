@@ -16,7 +16,7 @@
  * with the cleartk-syntax-berkeley project or visit 
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html.
  */
-package de.tudarmstadt.ukp.dkpro.tc.weka;
+package de.tudarmstadt.ukp.dkpro.tc.weka.writer;
 
 import java.util.ArrayList;
 
@@ -25,6 +25,7 @@ import weka.core.Utils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
+import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
 
 /**
  * Copyright (c) 2012, Regents of the University of Colorado <br>

@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.weka;
+package de.tudarmstadt.ukp.dkpro.tc.weka.filter;
 
 import weka.core.DenseInstance;
 import weka.core.Instance;
