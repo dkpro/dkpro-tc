@@ -20,12 +20,12 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskCV;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 
 /**
  * This Java-based experiment setup of the TwentyNewsgroupsExperiment
