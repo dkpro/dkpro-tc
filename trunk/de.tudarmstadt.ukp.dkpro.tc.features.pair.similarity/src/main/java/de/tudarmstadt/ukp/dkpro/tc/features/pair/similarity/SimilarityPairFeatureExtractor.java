@@ -7,14 +7,14 @@ import java.util.Map;
 
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
 import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.descriptor.ExternalResource;
 
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.similarity.algorithms.api.JCasTextSimilarityMeasure;
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
 import de.tudarmstadt.ukp.similarity.dkpro.resource.TextSimilarityResourceBase;
@@ -32,7 +32,7 @@ public class SimilarityPairFeatureExtractor
     
     @Override
     public List<Feature> extract(JCas view1, JCas view2)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
 
         try {
@@ -70,10 +70,10 @@ public class SimilarityPairFeatureExtractor
             );
         }
         catch (FeaturePathException e) {
-            throw new CleartkExtractorException(e);
+            throw new TextClassificationException(e);
         }
         catch (SimilarityException e) {
-            throw new CleartkExtractorException(e);
+            throw new TextClassificationException(e);
         }
         
     }
