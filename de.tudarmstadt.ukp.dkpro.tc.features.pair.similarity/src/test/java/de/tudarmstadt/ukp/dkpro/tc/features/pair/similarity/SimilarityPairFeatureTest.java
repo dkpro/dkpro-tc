@@ -13,7 +13,6 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.cleartk.classifier.Feature;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.uimafit.component.initialize.ConfigurationParameterInitializer;
@@ -22,6 +21,7 @@ import org.uimafit.factory.ExternalResourceFactory;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.similarity.dkpro.resource.lexical.string.GreedyStringTilingMeasureResource;
 
 public class SimilarityPairFeatureTest
