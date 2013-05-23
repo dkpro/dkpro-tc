@@ -13,11 +13,39 @@
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.core</artifactId>
+        <artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
     	<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+        <artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-de-maxent
+        </artifactId>
+        <version>20120616.0</version>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent
+        </artifactId>
+        <version>20120616.0</version>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.core.opennlp-asl
+        </artifactId>
     </dependency>
   </dependencies>
 </project>

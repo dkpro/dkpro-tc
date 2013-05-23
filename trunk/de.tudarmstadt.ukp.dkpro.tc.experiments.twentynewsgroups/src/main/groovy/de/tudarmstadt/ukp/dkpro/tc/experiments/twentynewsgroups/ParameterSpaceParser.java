@@ -64,6 +64,7 @@ public class ParameterSpaceParser
         ParameterSpace pSpace = new ParameterSpace(
         		Dimension.create("classificationArguments",classificationArgsArray),
         		Dimension.create("featureSet", featureSets.toArray()),
+                Dimension.create("dataWriter", pipelineConfiguration.getString("dataWriter")),
         		Dimension.create("folds", folds),
         		Dimension.create("topNgramsK", topNgramsK),
         		Dimension.create("lowerCase", toLowerCase),

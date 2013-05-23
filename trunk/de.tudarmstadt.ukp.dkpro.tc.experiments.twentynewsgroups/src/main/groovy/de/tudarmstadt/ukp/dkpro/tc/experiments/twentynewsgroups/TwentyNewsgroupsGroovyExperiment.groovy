@@ -16,12 +16,12 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
-import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport
-import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskCV
-import de.tudarmstadt.ukp.dkpro.tc.core.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment

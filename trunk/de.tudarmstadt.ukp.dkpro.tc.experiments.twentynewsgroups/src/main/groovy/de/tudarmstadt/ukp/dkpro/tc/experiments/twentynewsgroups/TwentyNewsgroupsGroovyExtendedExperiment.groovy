@@ -1,36 +1,29 @@
 package de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups;
 
-import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription
-import static org.uimafit.factory.CollectionReaderFactory.createDescription
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.resource.ResourceInitializationException
 
-import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.CVBatchReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.CVReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.OutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.core.report.TrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.core.task.CrossValidationTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
-import de.tudarmstadt.ukp.dkpro.tc.core.task.TestTask
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
