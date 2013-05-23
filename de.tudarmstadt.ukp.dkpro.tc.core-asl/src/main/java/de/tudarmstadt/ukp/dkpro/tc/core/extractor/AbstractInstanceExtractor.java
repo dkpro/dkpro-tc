@@ -91,13 +91,13 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
     {
         super.collectionProcessComplete();
                     
-            // addInstanceId requires dense instances, thus reuse boolean
-            try {
-                DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-                writer.write(outputDirectory, instanceList, addInstanceId);
-            }
-            catch (Exception e) {
-                throw new AnalysisEngineProcessException(e);
-            }
+        // addInstanceId requires dense instances, thus reuse boolean
+        try {
+            DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
+            writer.write(outputDirectory, instanceList, addInstanceId);
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
     }
 }
