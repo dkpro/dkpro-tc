@@ -36,10 +36,8 @@ public class WekaUtils
     {
             
         Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
-
         
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
-
 
         // Make sure "outcome" is not the name of an attribute
         Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes());
