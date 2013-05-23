@@ -6,4 +6,48 @@
     <version>0.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
+    <dependencies>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple
+        </artifactId>
+    </dependency>
+    <dependency>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+        <version>2.4</version>
+        <classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
+        </artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.core.io.bincas-asl
+        </artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+        <artifactId>de.tudarmstadt.ukp.dkpro.tc.api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+        <artifactId>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.tc.features
+        </artifactId>
+    </dependency>
+    </dependencies>
 </project>
