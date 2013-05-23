@@ -72,7 +72,6 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.core-gpl</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
