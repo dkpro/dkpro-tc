@@ -11,5 +11,13 @@
   		<groupId>commons-lang</groupId>
   		<artifactId>commons-lang</artifactId>
   	</dependency>
+    <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-core</artifactId>
+    </dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>de.tudarmstadt.ukp.dkpro.tc.api</artifactId>
+  	</dependency>
   </dependencies>
 </project>
