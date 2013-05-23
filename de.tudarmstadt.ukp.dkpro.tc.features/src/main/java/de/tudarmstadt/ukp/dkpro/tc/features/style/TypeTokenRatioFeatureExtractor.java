@@ -6,22 +6,22 @@ import java.util.List;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class TypeTokenRatioFeatureExtractor
-    implements SimpleFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String FN_TTR = "TypeTokenRatio";
     
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
 
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();

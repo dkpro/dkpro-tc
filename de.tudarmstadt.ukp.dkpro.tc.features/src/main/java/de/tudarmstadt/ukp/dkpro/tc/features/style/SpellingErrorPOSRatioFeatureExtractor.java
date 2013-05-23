@@ -6,9 +6,6 @@ import java.util.List;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.anomaly.type.SpellingAnomaly;
@@ -24,6 +21,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
  * Computes for each coarse grained POS tag the ratio of being affected by a spelling error.
@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
  *
  */
 public class SpellingErrorPOSRatioFeatureExtractor
-    implements SimpleFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String FN_ADJ_ERROR_RATIO =  "AdjErrorRatio";
     public static final String FN_ADV_ERROR_RATIO =  "AdvErrorRatio";
@@ -50,7 +50,7 @@ public class SpellingErrorPOSRatioFeatureExtractor
     
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
         List<Feature> featList = new ArrayList<Feature>();
         

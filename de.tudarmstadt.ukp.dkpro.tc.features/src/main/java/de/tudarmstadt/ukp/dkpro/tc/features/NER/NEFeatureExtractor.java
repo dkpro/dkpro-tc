@@ -6,22 +6,24 @@ import java.util.List;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Location;
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Organization;
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Person;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 
-public class NEFeatureExtractor implements SimpleFeatureExtractor {
+public class NEFeatureExtractor
+    implements FeatureExtractor
+{
 
 	@Override
 	public List<Feature> extract(JCas view, Annotation focusAnnotation)
-			throws CleartkExtractorException {
+			throws TextClassificationException {
 
 		List<Feature> featList = new ArrayList<Feature>();
 

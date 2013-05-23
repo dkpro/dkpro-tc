@@ -11,24 +11,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.factory.initializable.Initializable;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
-
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class NGramFeatureExtractor
-    implements SimpleFeatureExtractor, Initializable
+    implements FeatureExtractor, Initializable
 {
 
     public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";
@@ -64,7 +61,7 @@ public class NGramFeatureExtractor
 
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
@@ -73,8 +70,9 @@ public class NGramFeatureExtractor
             try {
                 File stopwordsFile = new File(stopFile);
                 // each line of the file contains one stopword
-                Set<String> stopwords = Sets.newHashSet(Files.readLines(stopwordsFile,
-                        Charsets.UTF_8));
+                Set<String> stopwords = new HashSet<String>();
+                stopwords.addAll(FileUtils.readLines(stopwordsFile,
+                        "UTF_8"));
                 if (focusAnnotation == null) {
                     documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN,
                             maxN, stopwords);

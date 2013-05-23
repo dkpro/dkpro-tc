@@ -11,18 +11,18 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.factory.initializable.Initializable;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
 
 public class DependencyFeatureExtractor
-    implements SimpleFeatureExtractor, Initializable
+    implements FeatureExtractor, Initializable
 {
 
     public static final String PARAM_DEP_FILE = "DepFile";
@@ -38,10 +38,10 @@ public class DependencyFeatureExtractor
 
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
         if(focusAnnotation!=null){
-        	throw new CleartkExtractorException(new UnsupportedOperationException("FocusAnnotation not yet supported!"));
+        	throw new TextClassificationException(new UnsupportedOperationException("FocusAnnotation not yet supported!"));
         }
 
     	List<Feature> features = new ArrayList<Feature>();

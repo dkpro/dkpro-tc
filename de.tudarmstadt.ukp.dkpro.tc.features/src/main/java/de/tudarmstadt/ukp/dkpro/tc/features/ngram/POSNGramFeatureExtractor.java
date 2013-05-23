@@ -8,17 +8,17 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.factory.initializable.Initializable;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class POSNGramFeatureExtractor
     extends NGramFeatureExtractor
-    implements SimpleFeatureExtractor, Initializable
+    implements FeatureExtractor, Initializable
 {
 
     public static final String PARAM_POS_NGRAM_MIN_N = "POSNGramMinSize";
@@ -35,7 +35,7 @@ public class POSNGramFeatureExtractor
 
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentPOSNgrams;

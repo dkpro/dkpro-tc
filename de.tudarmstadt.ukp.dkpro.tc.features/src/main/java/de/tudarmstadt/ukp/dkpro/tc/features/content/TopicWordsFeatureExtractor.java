@@ -13,18 +13,18 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.factory.initializable.Initializable;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 
 
 public class TopicWordsFeatureExtractor
-    implements SimpleFeatureExtractor, Initializable
+    implements FeatureExtractor, Initializable
 {
 	//takes as parameter list of names of word-list-files in resources, outputs one attribute per list
     public static final String PARAM_TOPIC_FILE = "TopicFile";
@@ -35,7 +35,7 @@ public class TopicWordsFeatureExtractor
 	@Override
 	public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
 	//TODO: not adapted for focus annotations
-			throws CleartkExtractorException {
+			throws TextClassificationException {
                 if (topicFilePath==null || topicFilePath.isEmpty()) {
                 	System.out.println("Path to word list must be set!");       
                 }
