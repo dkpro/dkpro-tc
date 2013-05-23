@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Instance
 {
     private List<Feature> features;
@@ -37,12 +39,12 @@ public class Instance
 
     public void addFeature(Feature feature)
     {
-        features.add(feature);
+        this.features.add(feature);
     }
     
     public void addFeatures(List<Feature> features)
     {
-        features.addAll(features);
+        this.features.addAll(features);
     }
     
     public String getOutcome()
@@ -73,11 +75,25 @@ public class Instance
 
     public List<Feature> getFeatures()
     {
-        return features;
+        return this.features;
     }
 
     public void setFeatures(List<Feature> features)
     {
         this.features = features;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Feature feature : getFeatures()) {
+            sb.append(feature);
+            sb.append("\n");
+        }
+        sb.append(StringUtils.join(outcomes, "-"));
+        return sb.toString();
+    }
+    
+    
 }
