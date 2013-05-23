@@ -14,12 +14,12 @@ import junit.framework.Assert;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
-import org.cleartk.classifier.Feature;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class SpellingErrorPOSRatioFeatureExtractorTest
 {

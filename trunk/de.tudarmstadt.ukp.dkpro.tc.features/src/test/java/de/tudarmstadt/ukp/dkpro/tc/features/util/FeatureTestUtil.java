@@ -1,8 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.util;
 
 import junit.framework.Assert;
-
-import org.cleartk.classifier.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class FeatureTestUtil
 {

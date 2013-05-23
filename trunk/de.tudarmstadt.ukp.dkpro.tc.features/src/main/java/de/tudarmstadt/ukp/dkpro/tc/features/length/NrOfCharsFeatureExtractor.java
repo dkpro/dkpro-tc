@@ -6,17 +6,17 @@ import java.util.List;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
-import org.cleartk.classifier.feature.extractor.simple.SimpleFeatureExtractor;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 //TODO: adapt for specified focus annotation
 public class NrOfCharsFeatureExtractor
-    implements SimpleFeatureExtractor
+    implements FeatureExtractor
 {
 
     public static final String FN_NR_OF_CHARS = "NrofChars";
@@ -25,7 +25,7 @@ public class NrOfCharsFeatureExtractor
 
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws CleartkExtractorException
+        throws TextClassificationException
     {
         int nrOfChars = jcas.getDocumentText().length();
         int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
