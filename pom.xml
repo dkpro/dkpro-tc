@@ -69,6 +69,8 @@
 		<module>
   		de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity
   	</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
