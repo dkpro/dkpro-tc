@@ -6,4 +6,25 @@
     <version>0.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>weka-dev</groupId>
+  		<artifactId>weka</artifactId>
+  		<version>3.7.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>
+  			de.tudarmstadt.ukp.dkpro.tc.api.features-asl
+  		</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  	</dependency>
+  </dependencies>
 </project>
