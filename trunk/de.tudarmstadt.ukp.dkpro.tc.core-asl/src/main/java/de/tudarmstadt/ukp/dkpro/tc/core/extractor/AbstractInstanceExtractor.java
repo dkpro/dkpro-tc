@@ -33,13 +33,17 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
     public static final String PARAM_FEATURE_EXTRACTORS = "Extractors";
     @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     private String[] extractorClasses;
-    
+
     public static final String PARAM_DATA_WRITER_CLASS = "DataWriterClass";
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
+    public static final String PARAM_USE_DENSE_INSTANCES = "UseDenseInstances";
+    @ConfigurationParameter(name = PARAM_USE_DENSE_INSTANCES, mandatory = false)
+    private boolean useDenseInstances;
+
     protected List<FeatureExtractor> featureExtractors;
-    
+
     protected InstanceList instanceList;
 
     @Override
@@ -47,7 +51,7 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
         throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         instanceList = new InstanceList();
 
         if (extractorClasses.length == 0) {
@@ -90,11 +94,11 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
         throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
-                    
+
         // addInstanceId requires dense instances, thus reuse boolean
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, instanceList, addInstanceId);
+            writer.write(outputDirectory, instanceList, useDenseInstances);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
