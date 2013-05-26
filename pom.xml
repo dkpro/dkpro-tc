@@ -32,6 +32,12 @@
 		<url>http://www.ukp.tu-darmstadt.de/</url>
 	</organization>
 	<url>http://dkpro-tc.googlecode.com/</url>
+	<repositories>
+		<repository>
+			<id>ukp-oss-releases</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
+		</repository>
+	</repositories>
 	<developers>
 		<developer>
 			<id>oliver.ferschke</id>
@@ -51,24 +57,13 @@
 	</developers>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core</module>
-		
 		<module>de.tudarmstadt.ukp.dkpro.tc.api</module>
-	<module>
-  		de.tudarmstadt.ukp.dkpro.tc.experiments.reuters
-  	</module>
-	<module>
-  		de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups
-  	</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.reuters</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features</module>
-	<module>
-  		de.tudarmstadt.ukp.dkpro.tc.weka
-  	</module>
-	<module>
-  		de.tudarmstadt.ukp.dkpro.tc.features.pair.core
-  	</module>
-		<module>
-  		de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity
-  	</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.weka</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
@@ -155,27 +150,27 @@
                 </artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
-			         <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.api.features-asl
                 </artifactId>
-                <version>0.3.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
+				<version>0.3.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.weka-gpl
                 </artifactId>
-                <version>0.3.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
+				<version>0.3.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.core-asl
                 </artifactId>
-                <version>0.3.0-SNAPSHOT</version>
-            </dependency>
+				<version>0.3.0-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>
