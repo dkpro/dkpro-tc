@@ -56,12 +56,12 @@
 		</developer>
 	</developers>
 	<modules>
-		<module>de.tudarmstadt.ukp.dkpro.tc.core</module>
+		
 		<module>de.tudarmstadt.ukp.dkpro.tc.api</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.reuters</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.weka</module>
+		
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
