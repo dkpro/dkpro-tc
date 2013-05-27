@@ -31,6 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
@@ -53,6 +54,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
     // === DIMENSIONS===========================================================
 
+    def dimDataWriter = Dimension.create("dataWriter" , WekaDataWriter.class.name); //TODO we should init the batch task with this and not set is as a dimension
     def dimFolds = Dimension.create("folds" , 2);
     def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
@@ -138,6 +140,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-CV",
             parameterSpace : [
+                dimDataWriter,
                 dimFolds,
                 dimTopNgramsK,
                 dimToLowerCase,
@@ -226,6 +229,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
+                dimDataWriter,
                 dimFolds,
                 dimTopNgramsK,
                 dimToLowerCase,
