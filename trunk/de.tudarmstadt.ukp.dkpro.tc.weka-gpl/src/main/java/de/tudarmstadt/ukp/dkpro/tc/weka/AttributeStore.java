@@ -11,25 +11,46 @@ public class AttributeStore
 
     private ArrayList<Attribute> attributes;
     private Map<String, Integer> nameOffsetMap;
-    
+
     public AttributeStore()
     {
         attributes = new ArrayList<Attribute>();
         nameOffsetMap = new HashMap<String, Integer>();
     }
-    
-    public void addAttribute(String name, Attribute attribute) {
+
+    public void addAttributeAtBegin(String name, Attribute attribute)
+    {
         if (!nameOffsetMap.containsKey(name)) {
-            attributes.add(attribute);
-            nameOffsetMap.put(name, attributes.size()-1);
+            shift(nameOffsetMap);
+            attributes.add(0, attribute);
+            nameOffsetMap.put(name, 0);
         }
     }
-    
-    public boolean containsAttributeName(String name) {
+
+    private void shift(Map<String, Integer> nameOffsetMap)
+    {
+        for (String name : nameOffsetMap.keySet()) {
+            int i = nameOffsetMap.get(name) + 1;
+            nameOffsetMap.put(name, i);
+        }
+
+    }
+
+    public void addAttribute(String name, Attribute attribute)
+    {
+        if (!nameOffsetMap.containsKey(name)) {
+            attributes.add(attribute);
+            nameOffsetMap.put(name, attributes.size() - 1);
+        }
+    }
+
+    public boolean containsAttributeName(String name)
+    {
         return nameOffsetMap.containsKey(name);
     }
-    
-    public int size() {
+
+    public int size()
+    {
         return attributes.size();
     }
 
@@ -37,12 +58,14 @@ public class AttributeStore
     {
         return attributes;
     }
-    
-    public Attribute getAttribute(String name) {
+
+    public Attribute getAttribute(String name)
+    {
         return attributes.get(nameOffsetMap.get(name));
     }
-    
-    public int getAttributeOffset(String name) {
+
+    public int getAttributeOffset(String name)
+    {
         if (!nameOffsetMap.containsKey(name)) {
             System.err.println("No entry for: " + name);
             return -1;

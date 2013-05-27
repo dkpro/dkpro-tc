@@ -2,6 +2,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -62,7 +63,8 @@ public class WekaUtils
                         .classAttribute())).intValue());
                 if (trainLabels.indexOf(label) != -1) {
                     instance.setValue(
-                            testData.attribute(Constants.CLASS_ATTRIBUTE_NAME + COMPATIBLE_OUTCOME_CLASS), label);
+                            testData.attribute(Constants.CLASS_ATTRIBUTE_NAME
+                                    + COMPATIBLE_OUTCOME_CLASS), label);
                 }
                 else {
                     instance.setMissing(testData.classIndex());
@@ -79,7 +81,8 @@ public class WekaUtils
             compTestData = Filter.useFilter(compTestData, remove);
 
             // set new class attribute
-            compTestData.setClass(compTestData.attribute(Constants.CLASS_ATTRIBUTE_NAME + COMPATIBLE_OUTCOME_CLASS));
+            compTestData.setClass(compTestData.attribute(Constants.CLASS_ATTRIBUTE_NAME
+                    + COMPATIBLE_OUTCOME_CLASS));
         }
         // ================ MULTI LABEL BRANCH ======================
         else {
@@ -94,8 +97,8 @@ public class WekaUtils
 
             Add filter = new Add();
             for (int i = 0; i < numTrainLabels; i++) {
-                //numTestLabels +i (because index starts from 0)
-                filter.setAttributeIndex(new Integer(numTestLabels + i +1 ).toString());
+                // numTestLabels +i (because index starts from 0)
+                filter.setAttributeIndex(new Integer(numTestLabels + i + 1).toString());
                 filter.setNominalLabels("0,1");
                 filter.setAttributeName(trainData.attribute(i).name() + COMPATIBLE_OUTCOME_CLASS);
                 filter.setInputFormat(testData);
@@ -106,26 +109,26 @@ public class WekaUtils
             compTestData = new Instances(testData, testData.numInstances());
             for (int i = 0; i < testData.numInstances(); i++) {
                 weka.core.Instance instance = testData.instance(i);
-                //fullfill with 0.
-                for (int j=0;j<numTrainLabels;j++){
-                    instance.setValue(j + numTestLabels,0.);
+                // fullfill with 0.
+                for (int j = 0; j < numTrainLabels; j++) {
+                    instance.setValue(j + numTestLabels, 0.);
                 }
-                //fill the real values:
+                // fill the real values:
                 for (int j = 0; j < numTestLabels; j++) {
                     // part of train data
                     if (trainLabels.indexOf(instance.attribute(j).name()) != -1) {
                         // class label found in test data
-                        int index=trainLabels.indexOf(instance.attribute(j).name());
-                        instance.setValue(index + numTestLabels,instance.value(j));
+                        int index = trainLabels.indexOf(instance.attribute(j).name());
+                        instance.setValue(index + numTestLabels, instance.value(j));
                     }
                 }
                 compTestData.add(instance);
             }
 
             // remove old class attributes
-            Remove remove = new Remove();
             for (int i = 0; i < numTestLabels; i++) {
-                remove.setAttributeIndices(Integer.toString(1));
+                Remove remove = new Remove();
+                remove.setAttributeIndices("1");
                 remove.setInvertSelection(false);
                 remove.setInputFormat(compTestData);
                 compTestData = Filter.useFilter(compTestData, remove);
@@ -149,37 +152,40 @@ public class WekaUtils
         }
         return list;
     }
-    
+
     public static void instanceListToArffFile(File outputFile, InstanceList instanceList)
         throws Exception
     {
         instanceListToArffFile(outputFile, instanceList, false);
     }
 
-    public static void instanceListToArffFile(File outputFile, InstanceList instanceList, boolean useDenseInstances)
+    public static void instanceListToArffFile(File outputFile, InstanceList instanceList,
+            boolean useDenseInstances)
         throws Exception
     {
-                    
+
         Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
-        
+
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
         Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes());
         if (attributeStore.containsAttributeName(classAttributeName)) {
-            System.err.println("A feature with name \"outcome\" was found. Renaming outcome attribute");
+            System.err
+                    .println("A feature with name \"outcome\" was found. Renaming outcome attribute");
             outcomeAttribute = outcomeAttribute.copy(classAttributePrefix + classAttributeName);
         }
         attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
 
-        Instances wekaInstances = new Instances(relationName, attributeStore.getAttributes(), instanceList.size());
+        Instances wekaInstances = new Instances(relationName, attributeStore.getAttributes(),
+                instanceList.size());
         wekaInstances.setClass(outcomeAttribute);
 
         if (!outputFile.exists()) {
             outputFile.mkdirs();
             outputFile.createNewFile();
         }
-        
+
         ArffSaver saver = new ArffSaver();
         preprocessingFilter.setInputFormat(wekaInstances);
         saver.setRetrieval(Saver.INCREMENTAL);
@@ -222,14 +228,14 @@ public class WekaUtils
                     }
                     attributeValue = valIndex;
                 }
-                
+
                 int offset = attributeStore.getAttributeOffset(attribute.name());
-                
+
                 if (offset != -1) {
                     featureValues[offset] = attributeValue;
-                }            
+                }
             }
-            
+
             weka.core.Instance wekaInstance;
 
             if (useDenseInstances) {
@@ -243,128 +249,135 @@ public class WekaUtils
             wekaInstance.setClassValue(instanceList.getOutcome(i));
 
             preprocessingFilter.input(wekaInstance);
-            saver.writeIncremental(preprocessingFilter.output());        
+            saver.writeIncremental(preprocessingFilter.output());
         }
 
         // finishes the incremental saving process
         saver.writeIncremental(null);
     }
-    
-    public static void instanceListToArffFileMultiLabel(File outputFile, InstanceList instanceList, boolean useDenseInstances)
+
+    public static void instanceListToArffFileMultiLabel(File outputFile, InstanceList instanceList,
+            boolean useDenseInstances)
+        throws Exception
     {
-// TODO TZ: ich hab hier schonmal den code der alten Version hinkopiert, das muss angepasst werden wie direkt oben drueber
-        
-//            ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-//            List<Attribute> outcomeAttributes = createOutcomeAttributes(new ArrayList<String>(
-//                    this.outcomeValues));
-//            // in Meka, class label attributes have to go on top
-//            attributes.addAll(outcomeAttributes);
-//
-//            attributes.addAll(((WekaFeaturesEncoder) this.classifierBuilder.getFeaturesEncoder())
-//                    .getWekaAttributes());
-//            Map<String, Attribute> attributeMap = ((WekaFeaturesEncoder) this.classifierBuilder
-//                    .getFeaturesEncoder()).getWekaAttributeMap();
-//
-//            Map<Attribute, Integer> attIdxLookupMap = new HashMap<Attribute, Integer>(attributes.size());
-//            for (int idx = 0; idx < attributes.size(); idx++) {
-//                attIdxLookupMap.put(attributes.get(idx), idx);
-//            }
-//
-//            // for Meka-internal use
-//            Instances instances = new Instances(relationTag + ": -C " + outcomeAttributes.size() + " ",
-//                    attributes, instanceFeatures.size());
-//            instances.setClassIndex(outcomeAttributes.size());
-//
-//            ArffSaver saver = new ArffSaver();
-//            try {
-//                preprocessingFilter.setInputFormat(instances);
-//                saver.setRetrieval(Saver.INCREMENTAL);
-//                saver.setFile(trainingDataFile);
-//                saver.setInstances(instances);
-//            }
-//            catch (Exception e) {
-//                throw new CleartkProcessingException(e);
-//            }
-//
-//            for (int i = 0; i < instanceFeatures.size(); i++) {
-//                Iterable<Feature> features = instanceFeatures.get(i);
-//
-//                double[] featureValues = new double[attributes.size()];
-//
-//                // set class label values
-//                List<String> instanceOutcome = Arrays.asList(instanceOutcomes.get(i));
-//                for (Attribute label : outcomeAttributes) {
-//                    featureValues[attIdxLookupMap.get(label)] = instanceOutcome.contains(label.name()
-//                            .substring(2)) ? 1.0d : 0.0d;
-//                }
-//
-//                // set feature values
-//                for (Feature feature : features) {
-//                    Attribute attribute = attributeMap.get(feature.getName());
-//                    Object featureValue = feature.getValue();
-//
-//                    double attributeValue;
-//                    if (featureValue instanceof Number) {
-//                        attributeValue = ((Number) feature.getValue()).doubleValue();
-//                    }
-//                    else if (featureValue instanceof Boolean) {
-//                        attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
-//                    }
-//                    else { // this branch is unsafe - the code is copied from SparseInstance (can it be
-//                           // done safer?)
-//                        Object stringValue = feature.getValue();
-//                        if (!attribute.isNominal() && !attribute.isString()) {
-//                            throw new IllegalArgumentException("Attribute neither nominal nor string!");
-//                        }
-//                        int valIndex = attribute.indexOfValue(stringValue.toString());
-//                        if (valIndex == -1) {
-//                            if (attribute.isNominal()) {
-//                                throw new IllegalArgumentException(
-//                                        "Value not defined for given nominal attribute!");
-//                            }
-//                            else {
-//                                attribute.addStringValue(stringValue.toString());
-//                                valIndex = attribute.indexOfValue(stringValue.toString());
-//                            }
-//                        }
-//                        attributeValue = valIndex;
-//                    }
-//                    featureValues[attIdxLookupMap.get(attribute)] = attributeValue;
-//                }
-//                Instance instance;
-//
-//                if (useDenseInstances) {
-//                    instance = new DenseInstance(1.0, featureValues);
-//                }
-//                else {
-//                    instance = new SparseInstance(1.0, featureValues);
-//                }
-//
-//                instance.setDataset(instances);
-//
-//                try {
-//                    preprocessingFilter.input(instance);
-//                    saver.writeIncremental(preprocessingFilter.output());
-//                }
-//                catch (Exception e) {
-//                    throw new CleartkProcessingException(e);
-//                }
-//            }
-//
-//            try {
-//                // finishes the incremental saving process
-//                saver.writeIncremental(null);
-//            }
-//            catch (IOException e) {
-//                throw new CleartkProcessingException(e);
-//            }
+
+        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+
+        AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
+
+        List<Attribute> outcomeAttributes = createOutcomeAttributes(new ArrayList<String>(
+                instanceList.getUniqueOutcomes()));
+
+        // in Meka, class label attributes have to go on top
+        for (Attribute attribute : outcomeAttributes) {
+            attributeStore.addAttributeAtBegin(attribute.name(), attribute);
+        }
+
+        // for Meka-internal use
+        Instances wekaInstances = new Instances(relationName + ": -C " + outcomeAttributes.size()
+                + " ",
+                attributeStore.getAttributes(), instanceList.size());
+        wekaInstances.setClassIndex(outcomeAttributes.size());
+
+        if (!outputFile.exists()) {
+            outputFile.mkdirs();
+            outputFile.createNewFile();
+        }
+
+        ArffSaver saver = new ArffSaver();
+        preprocessingFilter.setInputFormat(wekaInstances);
+        saver.setRetrieval(Saver.INCREMENTAL);
+        saver.setFile(outputFile);
+        saver.setCompressOutput(true);
+        saver.setInstances(wekaInstances);
+
+        for (int i = 0; i < instanceList.size(); i++) {
+            Instance instance = instanceList.getInstance(i);
+
+            double[] featureValues = new double[attributeStore.size()];
+
+            // set class label values
+            List<String> instanceOutcome = instance.getOutcomes();
+            for (Attribute label : outcomeAttributes) {
+                String labelname = label.name();
+                featureValues[attributeStore.getAttributeOffset(labelname)] = instanceOutcome
+                        .contains(labelname.split(classAttributePrefix)[1]) ? 1.0d : 0.0d;
+            }
+
+            // set feature values
+            for (Feature feature : instance.getFeatures()) {
+                Attribute attribute = attributeStore.getAttribute(feature.getName());
+                Object featureValue = feature.getValue();
+
+                double attributeValue;
+                if (featureValue instanceof Number) {
+                    attributeValue = ((Number) feature.getValue()).doubleValue();
+                }
+                else if (featureValue instanceof Boolean) {
+                    attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
+                }
+                else { // this branch is unsafe - the code is copied from SparseInstance (can it be
+                       // done safer?)
+                    Object stringValue = feature.getValue();
+                    if (!attribute.isNominal() && !attribute.isString()) {
+                        throw new IllegalArgumentException("Attribute neither nominal nor string!");
+                    }
+                    int valIndex = attribute.indexOfValue(stringValue.toString());
+                    if (valIndex == -1) {
+                        if (attribute.isNominal()) {
+                            throw new IllegalArgumentException(
+                                    "Value not defined for given nominal attribute!");
+                        }
+                        else {
+                            attribute.addStringValue(stringValue.toString());
+                            valIndex = attribute.indexOfValue(stringValue.toString());
+                        }
+                    }
+                    attributeValue = valIndex;
+                }
+                int offset = attributeStore.getAttributeOffset(attribute.name());
+
+                if (offset != -1) {
+                    featureValues[offset] = attributeValue;
+                }
+            }
+            weka.core.Instance wekaInstance;
+
+            if (useDenseInstances) {
+                wekaInstance = new DenseInstance(1.0, featureValues);
+            }
+            else {
+                wekaInstance = new SparseInstance(1.0, featureValues);
+            }
+
+            wekaInstance.setDataset(wekaInstances);
+
+            preprocessingFilter.input(wekaInstance);
+            saver.writeIncremental(preprocessingFilter.output());
+        }
+
+        // finishes the incremental saving process
+        saver.writeIncremental(null);
     }
-    
+
     private static Attribute createOutcomeAttribute(List<String> outcomeValues)
     {
         // make the order of the attributes predictable
-        Collections.sort(outcomeValues); 
+        Collections.sort(outcomeValues);
 
         return new Attribute(classAttributeName, outcomeValues);
+    }
+
+    private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
+    {
+        // make the order of the attributes predictable
+        Collections.sort(outcomeValues);
+        List<Attribute> atts = new ArrayList<Attribute>();
+
+        for (String outcome : outcomeValues) {
+            atts.add(new Attribute(classAttributePrefix + outcome, Arrays
+                    .asList(new String[] { "0", "1" })));
+        }
+        return atts;
     }
 }

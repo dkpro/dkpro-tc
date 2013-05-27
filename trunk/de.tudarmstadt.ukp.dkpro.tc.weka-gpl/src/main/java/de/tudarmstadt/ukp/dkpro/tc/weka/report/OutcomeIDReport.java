@@ -1,8 +1,12 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
 
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -53,10 +57,22 @@ public class OutcomeIDReport
         }
 
         for (Instance inst : predictions) {
-            int classification = new Double(inst.value(predictions
-                    .attribute(Constants.CLASS_ATTRIBUTE_NAME
-                            + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
-            props.setProperty(inst.stringValue(attOffset), classValues[classification]);
+            if (TestTask.MULTILABEL) {
+                List<String> predictionOutcomes = new ArrayList<String>();
+                for (int i = 0; i < predictions.classIndex(); i++) {
+                    if (inst.value(predictions.attribute(i)) == 1.) {
+                        predictionOutcomes.add(predictions.attribute(i).name());
+                    }
+                }
+                props.setProperty(inst.stringValue(attOffset),
+                        StringUtils.join(predictionOutcomes, ","));
+            }
+            else {
+                int classification = new Double(inst.value(predictions
+                        .attribute(Constants.CLASS_ATTRIBUTE_NAME
+                                + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
+                props.setProperty(inst.stringValue(attOffset), classValues[classification]);
+            }
         }
 
         getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));

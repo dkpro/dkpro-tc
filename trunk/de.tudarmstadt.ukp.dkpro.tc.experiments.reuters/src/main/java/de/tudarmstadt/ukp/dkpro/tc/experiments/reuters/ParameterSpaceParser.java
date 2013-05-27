@@ -13,10 +13,10 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 
 /**
  * Creates the parameter spaces for the lab from a json configuration.
- *
+ * 
  * @author kutschke
  * @author oferschke
- *
+ * 
  */
 public class ParameterSpaceParser
 {
@@ -53,22 +53,26 @@ public class ParameterSpaceParser
         }
         Object[] classificationArgsArray = classificationArgs.toArray();
 
-        //Load config for feature extractor sets
+        // Load config for feature extractor sets
         JSONArray featureSetConf = pipelineConfiguration.getJSONArray("featureSets");
         List<Object[]> featureSets = new ArrayList<Object[]>();
         for (Object object : featureSetConf) {
-            Object[] featureSet = ((JSONObject)object).getJSONArray("featureSet").toArray(new String[] {});
+            Object[] featureSet = ((JSONObject) object).getJSONArray("featureSet").toArray(
+                    new String[] {});
             featureSets.add(featureSet);
         }
 
         String languageCode = pipelineConfiguration.getString("languageCode");
 
-        Object[] pipelineParameters = new Object[]{
-                NGramFeatureExtractor.PARAM_NGRAM_MIN_N, pipelineConfiguration.getInt("nGramMinSize"),
-                NGramFeatureExtractor.PARAM_NGRAM_MAX_N, pipelineConfiguration.getInt("nGramMaxSize")};
+        Object[] pipelineParameters = new Object[] {
+                NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+                pipelineConfiguration.getInt("nGramMinSize"),
+                NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+                pipelineConfiguration.getInt("nGramMaxSize") };
 
         ParameterSpace pSpace = new ParameterSpace(
-        		Dimension.create("languageCode", languageCode),
+                Dimension.create("dataWriter", pipelineConfiguration.getString("dataWriter")),
+                Dimension.create("languageCode", languageCode),
                 Dimension.create("threshold", threshold),
                 Dimension.create("classificationArguments", classificationArgsArray),
                 Dimension.create("featureSet", featureSets.toArray()),

@@ -20,23 +20,21 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
+import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 
 /**
- * This Java-based experiment setup of the TwentyNewsgroupsExperiment
- * loads all its configurations from a json file using the ParameterSpaceParser.
- * Alternatively, the parameters could be defined directly in this class,
- * which makes on-the-fly changes more difficult when the experiment is run
+ * This Java-based experiment setup of the TwentyNewsgroupsExperiment loads all its configurations
+ * from a json file using the ParameterSpaceParser. Alternatively, the parameters could be defined
+ * directly in this class, which makes on-the-fly changes more difficult when the experiment is run
  * on a server.
- *
- * For these cases, the self-sufficient Groovy versions are
- * more suitable, since their source code can be changed and then executed
- * without pre-compilation.
+ * 
+ * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
+ * can be changed and then executed without pre-compilation.
  */
 public class TwentyNewsgroupsExperiment
 {
@@ -57,12 +55,15 @@ public class TwentyNewsgroupsExperiment
 
     /**
      * Initialize Experiment
-     *
+     * 
      * @return ParameterSpace for the javaExperiment
      * @throws Exception
      */
-    protected ParameterSpace setup() throws Exception{
-        String jsonPath = FileUtils.readFileToString(new File("src/main/resources/config/train.json"));
+    protected ParameterSpace setup()
+        throws Exception
+    {
+        String jsonPath = FileUtils.readFileToString(new File(
+                "src/main/resources/config/train.json"));
         JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
 
         languageCode = json.getString("languageCode");
@@ -80,8 +81,8 @@ public class TwentyNewsgroupsExperiment
         BatchTaskCV batch = new BatchTaskCV(
                 "TwentyNewsgroupsCV",
                 getReaderDesc(corpusFilePathTrain, languageCode),
-                getPreprocessing()
-        );
+                getPreprocessing(),
+                SingleLabelInstanceExtractor.class);
         batch.setType("Evaluation-TwentyNewsgroups-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -99,19 +100,20 @@ public class TwentyNewsgroupsExperiment
                 "TwentyNewsgroupsTrainTest",
                 getReaderDesc(corpusFilePathTrain, languageCode),
                 getReaderDesc(corpusFilePathTest, languageCode),
-                getPreprocessing()
-        );
+                getPreprocessing(),
+                SingleLabelInstanceExtractor.class
+                );
         batch.setType("Evaluation-TwentyNewsgroups-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+        // batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);
     }
 
-    protected  CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
+    protected CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
         throws ResourceInitializationException, IOException
     {
 
@@ -122,7 +124,7 @@ public class TwentyNewsgroupsExperiment
                 new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
     }
 
-    protected  AnalysisEngineDescription getPreprocessing()
+    protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
 
