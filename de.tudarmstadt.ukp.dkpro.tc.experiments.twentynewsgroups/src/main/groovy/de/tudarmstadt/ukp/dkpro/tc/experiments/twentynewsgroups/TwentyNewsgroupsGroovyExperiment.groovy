@@ -46,7 +46,6 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 	// === DIMENSIONS===========================================================
 
-    def dimDataWriter = Dimension.create("dataWriter" , WekaDataWriter.class.name); //TODO we should init the batch task with this and not set is as a dimension
     def dimFolds = Dimension.create("folds" , 2);
     def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
@@ -95,8 +94,9 @@ public class TwentyNewsgroupsGroovyExperiment {
 			type: "Evaluation-TwentyNewsgroups-CV-Groovy",
 			reader:	getReaderDesc(corpusFilePathTrain, languageCode),
             instanceExtractor:  SingleLabelInstanceExtractor.class.name,
+            dataWriter:         WekaDataWriter.class.name,
 			aggregate:	getPreprocessing(),
-			parameterSpace : [dimDataWriter, dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
+			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [CVBatchReport]
 		];
@@ -117,8 +117,9 @@ public class TwentyNewsgroupsGroovyExperiment {
 			readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
 			readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
             instanceExtractor:  SingleLabelInstanceExtractor.class.name,
+            dataWriter:         WekaDataWriter.class.name,
 			aggregate:	getPreprocessing(),
-			parameterSpace : [dimDataWriter,dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
+			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [CVBatchReport]
 		];

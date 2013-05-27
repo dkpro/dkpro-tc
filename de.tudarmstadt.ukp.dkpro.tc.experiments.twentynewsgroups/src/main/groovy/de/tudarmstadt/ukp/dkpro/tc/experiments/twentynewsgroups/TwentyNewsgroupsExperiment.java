@@ -26,13 +26,14 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This Java-based experiment setup of the TwentyNewsgroupsExperiment loads all its configurations
  * from a json file using the ParameterSpaceParser. Alternatively, the parameters could be defined
  * directly in this class, which makes on-the-fly changes more difficult when the experiment is run
  * on a server.
- * 
+ *
  * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
  * can be changed and then executed without pre-compilation.
  */
@@ -55,7 +56,7 @@ public class TwentyNewsgroupsExperiment
 
     /**
      * Initialize Experiment
-     * 
+     *
      * @return ParameterSpace for the javaExperiment
      * @throws Exception
      */
@@ -82,7 +83,8 @@ public class TwentyNewsgroupsExperiment
                 "TwentyNewsgroupsCV",
                 getReaderDesc(corpusFilePathTrain, languageCode),
                 getPreprocessing(),
-                SingleLabelInstanceExtractor.class);
+                SingleLabelInstanceExtractor.class,
+                WekaDataWriter.class.getName());
         batch.setType("Evaluation-TwentyNewsgroups-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -101,7 +103,8 @@ public class TwentyNewsgroupsExperiment
                 getReaderDesc(corpusFilePathTrain, languageCode),
                 getReaderDesc(corpusFilePathTest, languageCode),
                 getPreprocessing(),
-                SingleLabelInstanceExtractor.class
+                SingleLabelInstanceExtractor.class,
+                WekaDataWriter.class.getName()
                 );
         batch.setType("Evaluation-TwentyNewsgroups-TrainTest");
         batch.setParameterSpace(pSpace);

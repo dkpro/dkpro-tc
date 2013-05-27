@@ -44,9 +44,6 @@ public class ExtractFeaturesTask
     protected Float ngramFreqThreshold;
     @Discriminator
     protected Float posNgramFreqThreshold;
-    @Discriminator
-    protected String dataWriter;
-
 
     @Discriminator
     protected String[] featureSet;
@@ -62,6 +59,16 @@ public class ExtractFeaturesTask
 
     @Discriminator
     protected Object[] pipelineParameters;
+
+    private String dataWriter;
+    public String getDataWriter()
+    {
+        return dataWriter;
+    }
+    public void setDataWriter(String aDataWriterClassName)
+    {
+        dataWriter = aDataWriterClassName;
+    }
 
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
     public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
@@ -120,7 +127,7 @@ public class ExtractFeaturesTask
                     MultiLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, featureSet,
 					SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
             ));
-            
+
             return createAggregateDescription(createPrimitiveDescription(
                     instanceExtractor, parameters.toArray()));
         }
@@ -128,7 +135,7 @@ public class ExtractFeaturesTask
             parameters
                     .addAll(Arrays.asList(
                             SingleLabelInstanceExtractor.PARAM_OUTPUT_DIRECTORY, outputDir.getAbsolutePath(),
-                            SingleLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter, 
+                            SingleLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
                             SingleLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
                             SingleLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, featureSet,
                             SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet

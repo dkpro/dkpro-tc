@@ -18,10 +18,11 @@ public class BatchTaskCV
     private CollectionReaderDescription reader;
     private AnalysisEngineDescription aggregate;
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
+    private String dataWriter;
 
     private PreprocessTask preprocessTask;
     private MetaInfoTask metaTask;
-    private ExtractFeaturesTask trainTask;
+    private ExtractFeaturesTask extractFeaturesTask;
     private CrossValidationTask cvTask;
 
     public BatchTaskCV()
@@ -30,19 +31,21 @@ public class BatchTaskCV
 
     public BatchTaskCV(String aExperimentName, CollectionReaderDescription aReader,
             AnalysisEngineDescription aAggregate,
-            Class<? extends AbstractInstanceExtractor> instanceExtractor)
+            Class<? extends AbstractInstanceExtractor> instanceExtractor, String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
         setReader(aReader);
         setAggregate(aAggregate);
         setInstanceExtractor(instanceExtractor);
+        setDataWriter(aDataWriterClassName);
+
     }
 
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
-     * 
+     *
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
      */
@@ -65,10 +68,11 @@ public class BatchTaskCV
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
         // Define the base task which generates an arff instances file
-        trainTask = new ExtractFeaturesTask();
-        trainTask.setAddInstanceId(false);
-        trainTask.setInstanceExtractor(instanceExtractor);
-        trainTask.setType(trainTask.getType() + "-" + experimentName);
+        extractFeaturesTask = new ExtractFeaturesTask();
+        extractFeaturesTask.setAddInstanceId(false);
+        extractFeaturesTask.setInstanceExtractor(instanceExtractor);
+        extractFeaturesTask.setDataWriter(dataWriter);
+        extractFeaturesTask.setType(extractFeaturesTask.getType() + "-" + experimentName);
 
         // Define the cross-validation task which operates on the results of the the train task
         cvTask = new CrossValidationTask();
@@ -78,16 +82,16 @@ public class BatchTaskCV
         // wiring
         metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
                 preprocessTask.getType());
-        trainTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
+        extractFeaturesTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
                 preprocessTask.getType());
-        trainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
+        extractFeaturesTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY,
-                trainTask.getType());
+                extractFeaturesTask.getType());
 
         addTask(preprocessTask);
         addTask(metaTask);
-        addTask(trainTask);
+        addTask(extractFeaturesTask);
         addTask(cvTask);
     }
 
@@ -117,5 +121,15 @@ public class BatchTaskCV
     public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor> instanceExtractor)
     {
         this.instanceExtractor = instanceExtractor;
+    }
+
+    public String getDataWriter()
+    {
+        return dataWriter;
+    }
+
+    public void setDataWriter(String dataWriter)
+    {
+        this.dataWriter = dataWriter;
     }
 }

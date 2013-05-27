@@ -20,6 +20,7 @@ public class BatchTaskTrainTest
     private CollectionReaderDescription readerTest;
     private AnalysisEngineDescription aggregate;
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
+    private String dataWriter;
 
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
@@ -34,20 +35,21 @@ public class BatchTaskTrainTest
 
     public BatchTaskTrainTest(String aExperimentName, CollectionReaderDescription aReaderTrain,
             CollectionReaderDescription aReaderTest, AnalysisEngineDescription aAggregate,
-            Class<? extends AbstractInstanceExtractor> instanceExtractor)
+            Class<? extends AbstractInstanceExtractor> instanceExtractor, String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
         setReaderTrain(aReaderTrain);
         setReaderTest(aReaderTest);
         setAggregate(aAggregate);
         setInstanceExtractor(instanceExtractor);
+        setDataWriter(aDataWriterClassName);
     }
 
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
-     * 
+     *
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
      */
@@ -78,11 +80,13 @@ public class BatchTaskTrainTest
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setAddInstanceId(false);
         featuresTrainTask.setInstanceExtractor(instanceExtractor);
+        featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
 
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setAddInstanceId(false);
         featuresTestTask.setInstanceExtractor(instanceExtractor);
+        featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
 
         // Define the test task which operates on the results of the the train task
@@ -147,5 +151,15 @@ public class BatchTaskTrainTest
     public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor> instanceExtractor)
     {
         this.instanceExtractor = instanceExtractor;
+    }
+
+    public String getDataWriter()
+    {
+        return dataWriter;
+    }
+
+    public void setDataWriter(String dataWriter)
+    {
+        this.dataWriter = dataWriter;
     }
 }
