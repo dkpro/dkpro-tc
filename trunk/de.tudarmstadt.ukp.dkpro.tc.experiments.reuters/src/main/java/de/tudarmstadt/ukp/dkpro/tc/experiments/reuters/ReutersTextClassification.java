@@ -22,6 +22,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.MultiLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
@@ -51,7 +52,7 @@ public class ReutersTextClassification
 
     /**
      * Initialize Experiment
-     *
+     * 
      * @return ParameterSpace for the experiment
      * @throws Exception
      */
@@ -105,7 +106,7 @@ public class ReutersTextClassification
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
-        // batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);
