@@ -27,7 +27,6 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This experiment showcases multi label classification. The experiment setup is done manually. If
@@ -80,7 +79,7 @@ public class ReutersTextClassification
                 getReaderDesc(corpusFilePathTrain, languageCode),
                 getPreprocessing(),
                 MultiLabelInstanceExtractor.class,
-                WekaDataWriter.class.getName());
+                MekaDataWriter.class.getName());
         batch.setType("Evaluation-Reuters-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
