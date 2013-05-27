@@ -3,8 +3,6 @@
 	"corpusFilePathTrain" : "src/main/resources/data/bydate-train",
     "corpusFilePathTest" : "src/main/resources/data/bydate-test",
     
-    "dataWriter" : "de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter",
-	
 	"languageCode" : "en",
 
 	"folds" : 2,

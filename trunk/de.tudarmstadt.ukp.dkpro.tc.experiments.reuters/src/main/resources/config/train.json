@@ -3,9 +3,6 @@
 	"corpusFilePathTest" : "src/test/resources/data/test",
 	"goldLabelFilePath" : "src/test/resources/data/cats.txt",
 	
-	"dataWriter" : "de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter",
-	
-	
 	"languageCode" : "en",
 
 	"folds" : 3,

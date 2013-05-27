@@ -13,10 +13,10 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 
 /**
  * Creates the parameter spaces for the lab from a json configuration.
- * 
+ *
  * @author kutschke
  * @author oferschke
- * 
+ *
  */
 public class ParameterSpaceParser
 {
@@ -71,7 +71,6 @@ public class ParameterSpaceParser
                 pipelineConfiguration.getInt("nGramMaxSize") };
 
         ParameterSpace pSpace = new ParameterSpace(
-                Dimension.create("dataWriter", pipelineConfiguration.getString("dataWriter")),
                 Dimension.create("languageCode", languageCode),
                 Dimension.create("threshold", threshold),
                 Dimension.create("classificationArguments", classificationArgsArray),

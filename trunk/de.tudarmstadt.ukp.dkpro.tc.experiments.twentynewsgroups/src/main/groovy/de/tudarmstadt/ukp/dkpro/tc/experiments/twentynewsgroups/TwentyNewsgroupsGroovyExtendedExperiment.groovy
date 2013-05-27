@@ -54,7 +54,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
     // === DIMENSIONS===========================================================
 
-    def dimDataWriter = Dimension.create("dataWriter" , WekaDataWriter.class.name); //TODO we should init the batch task with this and not set is as a dimension
     def dimFolds = Dimension.create("folds" , 2);
     def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
@@ -115,6 +114,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         ExtractFeaturesTask featureExtractionTask = [
             addInstanceId: false,
             instanceExtractor:SingleLabelInstanceExtractor.class,
+            dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroupsCV"
         ];
 
@@ -140,7 +140,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-CV",
             parameterSpace : [
-                dimDataWriter,
                 dimFolds,
                 dimTopNgramsK,
                 dimToLowerCase,
@@ -192,12 +191,14 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         ExtractFeaturesTask featuresTrainTask = [
             addInstanceId: true,
             instanceExtractor:SingleLabelInstanceExtractor.class,
+            dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroups-Train"
         ];
 
         ExtractFeaturesTask featuresTestTask = [
             addInstanceId: true,
             instanceExtractor:SingleLabelInstanceExtractor.class,
+            dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroups-Test"
         ];
 
@@ -229,7 +230,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
-                dimDataWriter,
                 dimFolds,
                 dimTopNgramsK,
                 dimToLowerCase,
