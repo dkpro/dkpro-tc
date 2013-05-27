@@ -16,22 +16,24 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
+import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
- * 
- * The TwentyNewsgroupsGroovyExperiment does the same as TwentyNewsgroupsGroovyExtendedExperiment, 
+ *
+ * The TwentyNewsgroupsGroovyExperiment does the same as TwentyNewsgroupsGroovyExtendedExperiment,
  * but it uses the BatchTaskCV and BatchTaskTrainTest to automatically wire the standard tasks for
  * a basic CV and TrainTest setup. This is more convenient, but less flexible.
- * 
+ *
  * If you need to define a more complex experiment setup, look at TwentyNewsgroupsGroovyExtendedExperiment
- * 
+ *
  * @author Oliver Ferschke
  */
 public class TwentyNewsgroupsGroovyExperiment {
@@ -44,6 +46,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 
 	// === DIMENSIONS===========================================================
 
+    def dimDataWriter = Dimension.create("dataWriter" , WekaDataWriter.class.name); //TODO we should init the batch task with this and not set is as a dimension
     def dimFolds = Dimension.create("folds" , 2);
     def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
@@ -90,9 +93,10 @@ public class TwentyNewsgroupsGroovyExperiment {
 		BatchTaskCV batchTask = [
 			experimentName: "TwentyNewsgroups-CV-Groovy",
 			type: "Evaluation-TwentyNewsgroups-CV-Groovy",
-			reader:	getReaderDesc(corpusFilePathTrain, languageCode),			
+			reader:	getReaderDesc(corpusFilePathTrain, languageCode),
+            instanceExtractor:  SingleLabelInstanceExtractor.class.name,
 			aggregate:	getPreprocessing(),
-			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
+			parameterSpace : [dimDataWriter, dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [CVBatchReport]
 		];
@@ -106,14 +110,15 @@ public class TwentyNewsgroupsGroovyExperiment {
 	 */
 	protected void runTrainTest() throws Exception
 	{
-	
+
 		BatchTaskTrainTest batchTask = [
 			experimentName: "TwentyNewsgroups-TrainTest-Groovy",
 			type: "Evaluation-TwentyNewsgroups-TrainTest-Groovy",
-			readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),			
-			readerTest:		getReaderDesc(corpusFilePathTest, languageCode),			
+			readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
+			readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
+            instanceExtractor:  SingleLabelInstanceExtractor.class.name,
 			aggregate:	getPreprocessing(),
-			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
+			parameterSpace : [dimDataWriter,dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
 			executionPolicy: ExecutionPolicy.RUN_AGAIN,
 			reports:         [CVBatchReport]
 		];
