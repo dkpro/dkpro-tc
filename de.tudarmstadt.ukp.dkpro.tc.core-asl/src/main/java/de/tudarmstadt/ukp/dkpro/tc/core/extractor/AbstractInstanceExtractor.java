@@ -38,10 +38,6 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
-    public static final String PARAM_USE_DENSE_INSTANCES = "UseDenseInstances";
-    @ConfigurationParameter(name = PARAM_USE_DENSE_INSTANCES, mandatory = false)
-    private boolean useDenseInstances;
-
     protected List<FeatureExtractor> featureExtractors;
 
     protected InstanceList instanceList;
@@ -98,7 +94,7 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
         // addInstanceId requires dense instances, thus reuse boolean
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, instanceList, useDenseInstances);
+            writer.write(outputDirectory, instanceList, addInstanceId);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

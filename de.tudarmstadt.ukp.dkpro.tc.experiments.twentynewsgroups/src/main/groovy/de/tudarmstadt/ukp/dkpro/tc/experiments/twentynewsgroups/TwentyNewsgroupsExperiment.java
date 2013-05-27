@@ -22,6 +22,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
@@ -33,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * from a json file using the ParameterSpaceParser. Alternatively, the parameters could be defined
  * directly in this class, which makes on-the-fly changes more difficult when the experiment is run
  * on a server.
- *
+ * 
  * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
  * can be changed and then executed without pre-compilation.
  */
@@ -56,7 +57,7 @@ public class TwentyNewsgroupsExperiment
 
     /**
      * Initialize Experiment
-     *
+     * 
      * @return ParameterSpace for the javaExperiment
      * @throws Exception
      */
@@ -110,7 +111,7 @@ public class TwentyNewsgroupsExperiment
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
-        // batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

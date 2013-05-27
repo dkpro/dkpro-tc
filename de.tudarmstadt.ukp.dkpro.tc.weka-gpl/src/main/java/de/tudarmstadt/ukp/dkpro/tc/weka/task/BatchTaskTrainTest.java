@@ -9,6 +9,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.extractor.AbstractInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
 
 public class BatchTaskTrainTest
@@ -35,7 +36,8 @@ public class BatchTaskTrainTest
 
     public BatchTaskTrainTest(String aExperimentName, CollectionReaderDescription aReaderTrain,
             CollectionReaderDescription aReaderTest, AnalysisEngineDescription aAggregate,
-            Class<? extends AbstractInstanceExtractor> instanceExtractor, String aDataWriterClassName)
+            Class<? extends AbstractInstanceExtractor> instanceExtractor,
+            String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
         setReaderTrain(aReaderTrain);
@@ -49,7 +51,7 @@ public class BatchTaskTrainTest
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
-     *
+     * 
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
      */
@@ -78,13 +80,13 @@ public class BatchTaskTrainTest
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
         featuresTrainTask = new ExtractFeaturesTask();
-        featuresTrainTask.setAddInstanceId(false);
+        featuresTrainTask.setAddInstanceId(true);
         featuresTrainTask.setInstanceExtractor(instanceExtractor);
         featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
 
         featuresTestTask = new ExtractFeaturesTask();
-        featuresTestTask.setAddInstanceId(false);
+        featuresTestTask.setAddInstanceId(true);
         featuresTestTask.setInstanceExtractor(instanceExtractor);
         featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
@@ -93,7 +95,7 @@ public class BatchTaskTrainTest
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.addReport(TrainTestReport.class);
-        // testTask.addReport(OutcomeIDReport.class);
+        testTask.addReport(OutcomeIDReport.class);
 
         // wiring
         metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
