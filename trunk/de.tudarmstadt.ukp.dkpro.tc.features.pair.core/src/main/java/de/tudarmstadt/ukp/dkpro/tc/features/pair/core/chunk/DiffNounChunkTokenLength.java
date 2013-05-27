@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.jcas.JCas;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
 
 public class DiffNounChunkTokenLength
@@ -18,13 +18,14 @@ public class DiffNounChunkTokenLength
 
     @Override
     public List<Feature> extract(JCas view1, JCas view2)
-            throws CleartkExtractorException
+        throws TextClassificationException
     {
         return Arrays
                 .asList(new Feature(
                         "DiffNounPhraseTokenLength",
-                        getAverageNounPhraseTokenLength(view1) - getAverageNounPhraseTokenLength(view2)));
-        
+                        getAverageNounPhraseTokenLength(view1)
+                                - getAverageNounPhraseTokenLength(view2)));
+
     }
 
     private double getAverageNounPhraseTokenLength(JCas view)
