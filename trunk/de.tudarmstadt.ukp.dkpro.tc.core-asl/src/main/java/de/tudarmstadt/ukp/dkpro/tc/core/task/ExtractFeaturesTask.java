@@ -61,14 +61,8 @@ public class ExtractFeaturesTask
     protected Object[] pipelineParameters;
 
     private String dataWriter;
-    public String getDataWriter()
-    {
-        return dataWriter;
-    }
-    public void setDataWriter(String aDataWriterClassName)
-    {
-        dataWriter = aDataWriterClassName;
-    }
+    
+    private boolean isRegressionExperiment = false;
 
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
     public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
@@ -123,6 +117,7 @@ public class ExtractFeaturesTask
             parameters.addAll(Arrays.asList(
                     MultiLabelInstanceExtractor.PARAM_OUTPUT_DIRECTORY, outputDir.getAbsolutePath(),
                     MultiLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
+                    MultiLabelInstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
                     MultiLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
                     MultiLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, featureSet,
 					SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
@@ -136,6 +131,7 @@ public class ExtractFeaturesTask
                     .addAll(Arrays.asList(
                             SingleLabelInstanceExtractor.PARAM_OUTPUT_DIRECTORY, outputDir.getAbsolutePath(),
                             SingleLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
+                            SingleLabelInstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
                             SingleLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
                             SingleLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, featureSet,
                             SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
@@ -156,4 +152,22 @@ public class ExtractFeaturesTask
                 new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
     }
 
+    public String getDataWriter()
+    {
+        return dataWriter;
+    }
+    public void setDataWriter(String aDataWriterClassName)
+    {
+        dataWriter = aDataWriterClassName;
+    }
+
+    public boolean isRegressionExperiment()
+    {
+        return isRegressionExperiment;
+    }
+
+    public void setRegressionExperiment(boolean isRegressionExperiment)
+    {
+        this.isRegressionExperiment = isRegressionExperiment;
+    }
 }

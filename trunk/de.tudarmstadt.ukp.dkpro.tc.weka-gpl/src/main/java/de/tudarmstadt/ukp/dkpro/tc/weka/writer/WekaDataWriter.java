@@ -14,10 +14,10 @@ public class WekaDataWriter
     public static final String arffFileName = "training-data.arff.gz";
     
     @Override
-    public void write(File outputDirectory, InstanceList instanceList, boolean useDenseInstances)
+    public void write(File outputDirectory, InstanceList instanceList, boolean useDenseInstances, boolean isRegressionExperiment)
             throws Exception
     {
-        WekaUtils.instanceListToArffFile(new File(outputDirectory, arffFileName), instanceList, useDenseInstances);
+        WekaUtils.instanceListToArffFile(new File(outputDirectory, arffFileName), instanceList, useDenseInstances, isRegressionExperiment);
     }
 
 }

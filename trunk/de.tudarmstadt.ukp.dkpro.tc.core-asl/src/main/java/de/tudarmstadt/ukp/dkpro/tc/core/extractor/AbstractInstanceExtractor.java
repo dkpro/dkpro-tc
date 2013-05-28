@@ -38,6 +38,10 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
+    public static final String PARAM_IS_REGRESSION = "IsRegressionExperiment";
+    @ConfigurationParameter(name = PARAM_IS_REGRESSION, mandatory = true, defaultValue = "false")
+    private boolean isRegressionExperiment;
+
     protected List<FeatureExtractor> featureExtractors;
 
     protected InstanceList instanceList;
@@ -94,7 +98,7 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
         // addInstanceId requires dense instances, thus reuse boolean
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, instanceList, addInstanceId);
+            writer.write(outputDirectory, instanceList, addInstanceId, isRegressionExperiment);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

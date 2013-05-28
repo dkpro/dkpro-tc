@@ -6,6 +6,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 
 public interface DataWriter
 {
-    public void write(File outputDirectory, InstanceList instanceList, boolean useDenseInstances)
+    public void write(File outputDirectory, InstanceList instanceList, boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception;
 }
