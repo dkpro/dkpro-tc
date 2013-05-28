@@ -156,11 +156,11 @@ public class WekaUtils
     public static void instanceListToArffFile(File outputFile, InstanceList instanceList)
         throws Exception
     {
-        instanceListToArffFile(outputFile, instanceList, false);
+        instanceListToArffFile(outputFile, instanceList, false, false);
     }
 
     public static void instanceListToArffFile(File outputFile, InstanceList instanceList,
-            boolean useDenseInstances)
+            boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception
     {
 
@@ -169,7 +169,7 @@ public class WekaUtils
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
-        Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes());
+        Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes(), isRegressionExperiment);
         if (attributeStore.containsAttributeName(classAttributeName)) {
             System.err
                     .println("A feature with name \"outcome\" was found. Renaming outcome attribute");
@@ -246,7 +246,13 @@ public class WekaUtils
             }
 
             wekaInstance.setDataset(wekaInstances);
-            wekaInstance.setClassValue(instanceList.getOutcome(i));
+            
+            if (isRegressionExperiment) {
+                wekaInstance.setClassValue(Double.parseDouble(instanceList.getOutcome(i)));
+            }
+            else {
+                wekaInstance.setClassValue(instanceList.getOutcome(i));
+            }
 
             preprocessingFilter.input(wekaInstance);
             saver.writeIncremental(preprocessingFilter.output());
@@ -360,12 +366,16 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
-    private static Attribute createOutcomeAttribute(List<String> outcomeValues)
+    private static Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
     {
-        // make the order of the attributes predictable
-        Collections.sort(outcomeValues);
-
-        return new Attribute(classAttributeName, outcomeValues);
+        if (isRegresion) {
+            return new Attribute(classAttributeName);
+        }
+        else {
+            // make the order of the attributes predictable
+            Collections.sort(outcomeValues);
+            return new Attribute(classAttributeName, outcomeValues);
+        }
     }
 
     private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
