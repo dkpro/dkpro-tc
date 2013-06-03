@@ -12,15 +12,15 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 // FIXME this seems to be named a bit misleading
 public class BaselinePairFeatureExtractor
-    implements FeatureExtractor
+implements PairFeatureExtractor
 {
 
-    @Override
-    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-        throws TextClassificationException
-    {
-        return Arrays.asList(
-                new Feature("Baseline",
-                        0));
-    }
+	@Override
+	public List<Feature> extract(JCas view1, JCas view2)
+			throws TextClassificationException {
+		return Arrays.asList(
+				new Feature("Baseline",
+						0));
+	}
+
 }
