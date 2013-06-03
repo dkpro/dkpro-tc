@@ -18,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class BaselinePairFeatureExtractorTest extends PairFeatureTestBase
 {
-	
+	@Ignore
     @Test
     public void baselinePairFeatureExtractorTest()
         throws Exception
