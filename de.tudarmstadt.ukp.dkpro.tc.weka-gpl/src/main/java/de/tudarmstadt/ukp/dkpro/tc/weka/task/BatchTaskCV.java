@@ -55,7 +55,7 @@ public class BatchTaskCV
 
         if (experimentName == null || reader == null || aggregate == null) {
             throw new IllegalStateException(
-                    "You must set Experiment Name, Test Reader, Training Reader and Aggregate.");
+                    "You must set experiment name, reader and aggregate.");
         }
 
         preprocessTask = new PreprocessTask();
