@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.tools.bzip2.CBZip2InputStream;
@@ -30,10 +32,17 @@ public class TaskUtils
     /**
      * Read instances from uncompressed or compressed arff files. Compression is determined by
      * filename suffix. For bz2 files, it is expected that the first two bytes mark the compression
-     * types (BZ) - thus, the first bytes of the stream are skipped.
+     * types (BZ) - thus, the first bytes of the stream are skipped. <br>
+     * For arff files with single-label outcome, the class attribute is expected at the end of the
+     * attribute set. For arff files with multi-label outcome, the class attribute is expected at
+     * the beginning of the attribute set; additionally the number of class labels must be specified
+     * in the relation tag behind a "-C" argument, e.g. "-C 3".
      * 
      * @param instancesFile
-     * @return
+     *            arff File
+     * @param multiLabel
+     *            whether this arff file contains single- or multi-label outcome
+     * @return instances with class attribute set
      * @throws FileNotFoundException
      * @throws IOException
      */
@@ -64,8 +73,9 @@ public class TaskUtils
             String relationTag = trainData.relationName();
             // for multi-label classification, class labels are expected at beginning of attribute
             // set and their number must be specified with the -C parameter in the relation tag
-            trainData.setClassIndex(Integer.parseInt(relationTag
-                    .substring(relationTag.indexOf("C")).split(" ")[1]));
+            Matcher m = Pattern.compile("-C\\s\\d+").matcher(relationTag);
+            m.find();
+            trainData.setClassIndex(Integer.parseInt(m.group().split("-C ")[1]));
         }
         else {
             // for single-label classification, class label expected as last attribute
@@ -74,7 +84,7 @@ public class TaskUtils
         reader.close();
         return trainData;
     }
-    
+
     @SuppressWarnings("unchecked")
     public static int getInstanceIdAttributeOffset(Instances data)
     {
@@ -82,7 +92,7 @@ public class TaskUtils
         Enumeration<Attribute> enumeration = data.enumerateAttributes();
         while (enumeration.hasMoreElements()) {
             Attribute att = enumeration.nextElement();
-//            System.out.println(att.name());
+            // System.out.println(att.name());
             if (att.name().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
                 return attOffset;
             }
@@ -90,7 +100,13 @@ public class TaskUtils
         }
         return -1;
     }
-    
+
+    /**
+     * Returns a list with names of the class attribute values. Only works for single-label outcome.
+     * 
+     * @param eval
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static List<String> getClassLabels(Evaluation eval)
     {
@@ -102,7 +118,21 @@ public class TaskUtils
         }
         return classLabelList;
     }
-    
+
+    /**
+     * Calculates the threshold to turn a ranking of label predictions into a bipartition (one
+     * threshold for each label)
+     * 
+     * @param threshold
+     *            PCut1, PCutL, or number between 0 and 1 (see Meka documentation for details on
+     *            this)
+     * @param r
+     *            Results file
+     * @param data
+     *            training data to use for automatically determining the threshold
+     * @return an array with thresholds for each label
+     * @throws Exception
+     */
     public static double[] getMekaThreshold(String threshold, Result r, Instances data)
         throws Exception
     {
