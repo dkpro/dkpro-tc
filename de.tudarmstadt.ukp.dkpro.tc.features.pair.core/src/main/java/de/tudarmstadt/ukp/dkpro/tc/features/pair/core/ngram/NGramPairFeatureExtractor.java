@@ -9,6 +9,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 
+/**
+ * Pair-wise feature extractor
+ * Returns the ngrams in a view with the view name as prefix
+ * @author erbs
+ *
+ */
 public class NGramPairFeatureExtractor
     extends NGramFeatureExtractor
 {

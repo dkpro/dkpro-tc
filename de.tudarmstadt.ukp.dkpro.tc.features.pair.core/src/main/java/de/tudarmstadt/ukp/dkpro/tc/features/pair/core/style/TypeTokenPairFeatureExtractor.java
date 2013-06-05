@@ -13,6 +13,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
 
+/**
+ * Pair-wise feature extractor
+ * Computes the type-token-ratio in a view and returns the difference of both views.
+ * @author erbs
+ *
+ */
 public class TypeTokenPairFeatureExtractor
     implements PairFeatureExtractor
 {
