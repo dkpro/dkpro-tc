@@ -6,10 +6,4 @@
     <version>0.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.api</artifactId>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.uimafit</groupId>
-  		<artifactId>uimafit</artifactId>
-  	</dependency>
-  </dependencies>
 </project>
