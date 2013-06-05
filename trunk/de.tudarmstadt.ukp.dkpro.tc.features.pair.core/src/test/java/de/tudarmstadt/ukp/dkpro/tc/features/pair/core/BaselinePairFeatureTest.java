@@ -20,7 +20,7 @@ public class BaselinePairFeatureTest extends PairFeatureTestBase
 {
 	
     @Test
-    public void baselinePairFeatureExtractorTest()
+    public void extractTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -35,7 +35,7 @@ public class BaselinePairFeatureTest extends PairFeatureTestBase
         assertEquals(1, features.size());
         
         for (Feature feature : features) {
-            assertFeature("Baseline", 0, feature);
+            assertFeature("BaselineFeature", 0, feature);
         }
     }
 }

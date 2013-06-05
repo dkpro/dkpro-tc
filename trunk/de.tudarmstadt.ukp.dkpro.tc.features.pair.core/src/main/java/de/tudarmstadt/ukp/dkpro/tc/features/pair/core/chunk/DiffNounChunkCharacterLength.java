@@ -11,6 +11,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
 
+/**
+ * Pair-wise feature extractor
+ * Computes the average character lenght of all noun chunks in a view and reuturns the difference of both views.
+ * @author erbs
+ *
+ */
 public class DiffNounChunkCharacterLength
     implements PairFeatureExtractor
 {

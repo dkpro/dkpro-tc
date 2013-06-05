@@ -12,6 +12,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
 
+/**
+ * Pair-wise feature extractor
+ * Computes the average token length of all noun chunks in a view and returns the difference of both views.
+ * @author erbs
+ *
+ */
 public class DiffNounChunkTokenLength
     implements PairFeatureExtractor
 {
@@ -28,6 +34,11 @@ public class DiffNounChunkTokenLength
 
     }
 
+    /**
+     * Returns avagerag token lenght of chunks in a view
+     * @param view the view of the JCas
+     * @return average token length of all chunks
+     */
     private double getAverageNounPhraseTokenLength(JCas view)
     {
         int totalNumber = 0;
