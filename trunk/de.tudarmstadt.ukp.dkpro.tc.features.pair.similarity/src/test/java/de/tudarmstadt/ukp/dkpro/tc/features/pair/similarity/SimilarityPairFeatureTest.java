@@ -15,8 +15,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.uimafit.component.initialize.ConfigurationParameterInitializer;
-import org.uimafit.component.initialize.ExternalResourceInitializer;
 import org.uimafit.factory.ExternalResourceFactory;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -38,7 +36,10 @@ public class SimilarityPairFeatureTest
         
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(
-                        BreakIteratorSegmenter.class,
+                        BreakIteratorSegmenter.class
+                ),
+                createPrimitiveDescription(
+                        SimilarityPairFeatureExtractor.class,
                         SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
                         SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource
                 )
@@ -54,11 +55,10 @@ public class SimilarityPairFeatureTest
         jcas2.setDocumentLanguage("en");
         jcas2.setDocumentText("Test is this.");
         engine.process(jcas2);
+        
 
         SimilarityPairFeatureExtractor extractor = new SimilarityPairFeatureExtractor();
-        ConfigurationParameterInitializer.initialize(extractor, engine.getUimaContext());
-        ExternalResourceInitializer.initialize(engine.getUimaContext(), extractor);
-
+        extractor.initialize(engine.getUimaContext());
         List<Feature> features = extractor.extract(jcas1, jcas2);
 
         Assert.assertEquals(1, features.size());
