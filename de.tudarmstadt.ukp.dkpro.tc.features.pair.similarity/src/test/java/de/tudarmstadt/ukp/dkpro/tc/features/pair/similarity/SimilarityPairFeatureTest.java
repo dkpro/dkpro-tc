@@ -1,69 +1,97 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
-import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.uimafit.factory.AnalysisEngineFactory.createPrimitive;
 import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.uimafit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.fit.testing.factory.TokenBuilder;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.uimafit.factory.ExternalResourceFactory;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.similarity.dkpro.resource.lexical.string.GreedyStringTilingMeasureResource;
 
 public class SimilarityPairFeatureTest
 {
+    
+    private static final String VIEW1 = "view1";
+    private static final String VIEW2 = "view2";
+    
+    public static class Annotator extends JCasAnnotator_ImplBase {
+        final static String MODEL_KEY = "PairFeatureExtractorResource";
+        @ExternalResource(key = MODEL_KEY)
+        private PairFeatureExtractor model;
+
+        @Override
+        public void process(JCas aJCas)
+            throws AnalysisEngineProcessException
+        {
+            System.out.println(model.getClass().getName());
+            
+            List<Feature> features;
+            try {
+                features = model.extract(aJCas.getView(VIEW1), aJCas.getView(VIEW2));
+            }
+            catch (CASException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+            catch (TextClassificationException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+            Assert.assertEquals(1, features.size());
+            
+            Iterator<Feature> iter = features.iterator();
+            System.out.println(iter.next());
+            
+        }
+    }
+
     @Ignore
     @Test
-    public void similarityPairFeatureTest()
-        throws Exception
-    {
+    public void configureAggregatedExample() throws Exception {
         ExternalResourceDescription gstResource = ExternalResourceFactory.createExternalResourceDescription(
                 GreedyStringTilingMeasureResource.class,
                 GreedyStringTilingMeasureResource.PARAM_MIN_MATCH_LENGTH, "3"
         );
         
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(
-                        BreakIteratorSegmenter.class
-                ),
-                createPrimitiveDescription(
-                        SimilarityPairFeatureExtractor.class,
-                        SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
-                        SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource
-                )
-        );
-        AnalysisEngine engine = createPrimitive(desc);
-
-        JCas jcas1 = engine.newJCas();
-        jcas1.setDocumentLanguage("en");
-        jcas1.setDocumentText("This is a test.");
-        engine.process(jcas1);
+        AnalysisEngineDescription desc = createPrimitiveDescription(
+                      Annotator.class,
+                      Annotator.MODEL_KEY, createExternalResourceDescription(
+                              SimilarityPairFeatureExtractor.class,
+                              SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
+                              SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource
+                      )
+       );
         
-        JCas jcas2 = engine.newJCas();
-        jcas2.setDocumentLanguage("en");
-        jcas2.setDocumentText("Test is this.");
-        engine.process(jcas2);
-        
+      AnalysisEngine engine = createPrimitive(desc);
+      JCas jcas = engine.newJCas();
+      TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class, Sentence.class);
 
-        SimilarityPairFeatureExtractor extractor = new SimilarityPairFeatureExtractor();
-        extractor.initialize(engine.getUimaContext());
-        List<Feature> features = extractor.extract(jcas1, jcas2);
+      JCas view1 = jcas.createView(VIEW1);
+      view1.setDocumentLanguage("en");
+      tb.buildTokens(view1, "This is a test .");
+      
+      JCas view2 = jcas.createView(VIEW2);
+      view2.setDocumentLanguage("en");
+      tb.buildTokens(view2, "Test is this .");
 
-        Assert.assertEquals(1, features.size());
-        
-        Iterator<Feature> iter = features.iterator();
-        System.out.println(iter.next());
+      engine.process(jcas);
     }
 }

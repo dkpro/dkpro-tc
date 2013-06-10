@@ -5,30 +5,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.component.JCasAnnotator_ImplBase;
-import org.uimafit.component.initialize.ConfigurationParameterInitializer;
-import org.uimafit.component.initialize.ExternalResourceInitializer;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.descriptor.ExternalResource;
-import org.uimafit.factory.initializable.Initializable;
 
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.similarity.algorithms.api.JCasTextSimilarityMeasure;
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
 import de.tudarmstadt.ukp.similarity.dkpro.resource.TextSimilarityResourceBase;
 
 public class SimilarityPairFeatureExtractor
-    extends JCasAnnotator_ImplBase
-    implements PairFeatureExtractor, Initializable
+    extends PairFeatureExtractorResource_ImplBase
 {
     public static final String PARAM_SEGMENT_FEATURE_PATH = "SegmentFeaturePath";
     @ConfigurationParameter(name=PARAM_SEGMENT_FEATURE_PATH, mandatory=true, defaultValue="de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
@@ -39,20 +31,9 @@ public class SimilarityPairFeatureExtractor
     private TextSimilarityResourceBase measure;
     
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-        
-        ConfigurationParameterInitializer.initialize(this, context);
-        ExternalResourceInitializer.initialize(context, this);       
-    }
-    
-    @Override
     public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-
         try {
             double similarity;
             switch (measure.getMode()) {
@@ -108,12 +89,5 @@ public class SimilarityPairFeatureExtractor
         }
         
         return items;
-    }
-
-    @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
-    {
-        // do nothing
     }
 }
