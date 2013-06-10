@@ -18,7 +18,6 @@ import org.apache.uima.fit.testing.factory.TokenBuilder;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -63,7 +62,6 @@ public class SimilarityPairFeatureTest
         }
     }
 
-    @Ignore
     @Test
     public void configureAggregatedExample() throws Exception {
         ExternalResourceDescription gstResource = ExternalResourceFactory.createExternalResourceDescription(

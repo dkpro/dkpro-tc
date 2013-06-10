@@ -22,13 +22,13 @@ import de.tudarmstadt.ukp.similarity.dkpro.resource.TextSimilarityResourceBase;
 public class SimilarityPairFeatureExtractor
     extends PairFeatureExtractorResource_ImplBase
 {
-    public static final String PARAM_SEGMENT_FEATURE_PATH = "SegmentFeaturePath";
+    public static final String PARAM_SEGMENT_FEATURE_PATH = "segmentFeaturePath";
     @ConfigurationParameter(name=PARAM_SEGMENT_FEATURE_PATH, mandatory=true, defaultValue="de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     private String segmentFeaturePath;
     
-    public static final String PARAM_TEXT_SIMILARITY_RESOURCE = "TextRelatednessResource";
+    public static final String PARAM_TEXT_SIMILARITY_RESOURCE = "textSimilarityResource";
     @ExternalResource(key=PARAM_TEXT_SIMILARITY_RESOURCE, mandatory=true)
-    private TextSimilarityResourceBase measure;
+    private TextSimilarityResourceBase textSimilarityResource;
     
     @Override
     public List<Feature> extract(JCas view1, JCas view2)
@@ -36,12 +36,12 @@ public class SimilarityPairFeatureExtractor
     {
         try {
             double similarity;
-            switch (measure.getMode()) {
+            switch (textSimilarityResource.getMode()) {
                 case text:
-                    similarity = measure.getSimilarity(view1.getDocumentText(), view2.getDocumentText());
+                    similarity = textSimilarityResource.getSimilarity(view1.getDocumentText(), view2.getDocumentText());
                     break;
                 case jcas:
-                    similarity = ((JCasTextSimilarityMeasure) measure).getSimilarity(view1, view2);
+                    similarity = ((JCasTextSimilarityMeasure) textSimilarityResource).getSimilarity(view1, view2);
                     break;
                 default: 
                     List<String> f1 = getItems(view1);
@@ -61,11 +61,11 @@ public class SimilarityPairFeatureExtractor
                         }
                     }
                     
-                    similarity = measure.getSimilarity(f1, f2);
+                    similarity = textSimilarityResource.getSimilarity(f1, f2);
             }
 
             return Arrays.asList(
-                    new Feature("Similarity" + measure.getName(), similarity)
+                    new Feature("Similarity" + textSimilarityResource.getName(), similarity)
             );
         }
         catch (FeaturePathException e) {
