@@ -1,11 +1,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
+import java.util.List;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.AbstractInstanceExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -17,6 +20,7 @@ public class BatchTaskCV
     private String experimentName;
     private CollectionReaderDescription reader;
     private AnalysisEngineDescription aggregate;
+    private List<Class<? extends MetaCollector>> metaCollectorClasses;
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
     private String dataWriter;
 
@@ -31,14 +35,16 @@ public class BatchTaskCV
 
     public BatchTaskCV(String aExperimentName, CollectionReaderDescription aReader,
             AnalysisEngineDescription aAggregate,
-            Class<? extends AbstractInstanceExtractor> instanceExtractor, String aDataWriterClassName)
+            List<Class<? extends MetaCollector>> metaCollectorClasses,
+            Class<? extends AbstractInstanceExtractor> instanceExtractor,
+            String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
         setReader(aReader);
         setAggregate(aAggregate);
         setInstanceExtractor(instanceExtractor);
         setDataWriter(aDataWriterClassName);
-
+        setMetaCollectorClasses(metaCollectorClasses);
     }
 
     /**
@@ -62,10 +68,11 @@ public class BatchTaskCV
         preprocessTask.setReader(reader);
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
-
+        
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setType(metaTask.getType() + "-" + experimentName);
+        metaTask.setMetaCollectorClasses(getMetaCollectorClasses());
 
         // Define the base task which generates an arff instances file
         extractFeaturesTask = new ExtractFeaturesTask();
@@ -73,7 +80,8 @@ public class BatchTaskCV
         extractFeaturesTask.setInstanceExtractor(instanceExtractor);
         extractFeaturesTask.setDataWriter(dataWriter);
         extractFeaturesTask.setType(extractFeaturesTask.getType() + "-" + experimentName);
-
+        extractFeaturesTask.setMetaCollectorClasses(getMetaCollectorClasses());
+        
         // Define the cross-validation task which operates on the results of the the train task
         cvTask = new CrossValidationTask();
         cvTask.setType(cvTask.getType() + "-" + experimentName);
@@ -132,4 +140,15 @@ public class BatchTaskCV
     {
         this.dataWriter = dataWriter;
     }
+
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    {
+        return metaCollectorClasses;
+    }
+
+    public void setMetaCollectorClasses(List<Class<? extends MetaCollector>> metaCollectorClasses)
+    {
+        this.metaCollectorClasses = metaCollectorClasses;
+    }
+    
 }

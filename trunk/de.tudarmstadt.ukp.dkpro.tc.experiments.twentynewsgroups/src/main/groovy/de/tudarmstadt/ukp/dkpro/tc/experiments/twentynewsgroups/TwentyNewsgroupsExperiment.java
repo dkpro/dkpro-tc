@@ -6,6 +6,8 @@ import static org.uimafit.factory.CollectionReaderFactory.createDescription;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -21,7 +23,9 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
@@ -79,11 +83,12 @@ public class TwentyNewsgroupsExperiment
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-
+        
         BatchTaskCV batch = new BatchTaskCV(
                 "TwentyNewsgroupsCV",
                 getReaderDesc(corpusFilePathTrain, languageCode),
                 getPreprocessing(),
+                getMetaCollectors(),
                 SingleLabelInstanceExtractor.class,
                 WekaDataWriter.class.getName());
         batch.setType("Evaluation-TwentyNewsgroups-CV");
@@ -99,14 +104,16 @@ public class TwentyNewsgroupsExperiment
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
+
         BatchTaskTrainTest batch = new BatchTaskTrainTest(
                 "TwentyNewsgroupsTrainTest",
                 getReaderDesc(corpusFilePathTrain, languageCode),
                 getReaderDesc(corpusFilePathTest, languageCode),
                 getPreprocessing(),
+                getMetaCollectors(),
                 SingleLabelInstanceExtractor.class,
                 WekaDataWriter.class.getName()
-                );
+        );
         batch.setType("Evaluation-TwentyNewsgroups-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -136,5 +143,13 @@ public class TwentyNewsgroupsExperiment
                 createPrimitiveDescription(BreakIteratorSegmenter.class),
                 createPrimitiveDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         languageCode));
+    }
+    
+    protected List<Class<? extends MetaCollector>> getMetaCollectors()
+    {
+        List<Class<? extends MetaCollector>> metaCollectors = new ArrayList<Class<? extends MetaCollector>>();
+        metaCollectors.add(NGramMetaCollector.class);
+        
+        return metaCollectors;
     }
 }
