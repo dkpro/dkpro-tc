@@ -77,16 +77,8 @@
 	</modules>
 	  <dependencies>
   	<dependency>
-  		<groupId>org.uimafit</groupId>
-  		<artifactId>uimafit</artifactId>
-  	</dependency>
-  	<dependency>
   		<groupId>org.apache.uima</groupId>
   		<artifactId>uimafit</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.uima</groupId>
-  		<artifactId>uimafit-legacy-support</artifactId>
   	</dependency>
   </dependencies>
 	<dependencyManagement>
@@ -94,7 +86,7 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.core-asl</artifactId>
-				<version>1.4.0</version>
+				<version>1.5.0-SNAPSHOT</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -113,11 +105,6 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimafit-legacy-support</artifactId>
-				<version>2.0.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
 				<groupId>nz.ac.waikato.cms.weka</groupId>
 				<artifactId>weka-dev</artifactId>
 				<version>3.7.9</version>
@@ -131,20 +118,6 @@
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
           			de.tudarmstadt.ukp.dkpro.tc.api
-          		</artifactId>
-				<version>0.3.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.weka
-          		</artifactId>
-				<version>0.3.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.core
           		</artifactId>
 				<version>0.3.0-SNAPSHOT</version>
 			</dependency>
@@ -216,11 +189,6 @@
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimafit</artifactId>
 				<version>2.0.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.uimafit</groupId>
-				<artifactId>uimafit</artifactId>
-				<version>1.4.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
