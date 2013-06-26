@@ -35,7 +35,7 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
                 ),
                 createPrimitiveDescription(
                         SpellChecker.class,
-                        SpellChecker.PARAM_DICT_PATH, "src/test/resources/dictionary/en_US_dict.txt"
+                        SpellChecker.PARAM_MODEL_LOCATION, "src/test/resources/dictionary/en_US_dict.txt"
                 )
         );
         AnalysisEngine engine = createPrimitive(desc);
