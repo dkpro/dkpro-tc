@@ -23,7 +23,7 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.MLUtils;
 import weka.core.Result;
-import de.tudarmstadt.ukp.dkpro.tc.features.meta.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 
 public class TaskUtils
