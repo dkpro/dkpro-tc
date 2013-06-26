@@ -12,10 +12,6 @@
         <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.uimafit</groupId>
-    	<artifactId>uimafit</artifactId>
-    </dependency>
-    <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
     	<artifactId>
     		de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl
@@ -57,6 +53,10 @@
   		<artifactId>
   			de.tudarmstadt.ukp.dkpro.tc.api.features-asl
   		</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
   	</dependency>
   </dependencies>
 </project>
