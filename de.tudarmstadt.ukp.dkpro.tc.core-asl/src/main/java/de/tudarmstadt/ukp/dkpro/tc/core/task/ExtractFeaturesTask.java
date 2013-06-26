@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -24,10 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.extractor.AbstractInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.MultiLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractorPair;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.POSNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 
 public class ExtractFeaturesTask
     extends UimaTaskBase
@@ -64,53 +63,49 @@ public class ExtractFeaturesTask
     
     private boolean isRegressionExperiment = false;
 
+    private List<Class<? extends MetaCollector>> metaCollectorClasses;
+
+    
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
-    public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
-    {
-        return instanceExtractor;
-    }
-
-    public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor> aInstanceExtractor)
-    {
-        instanceExtractor = aInstanceExtractor;
-    }
-
-    public boolean getAddInstanceId()
-    {
-        return addInstanceId;
-    }
-
-    public void setAddInstanceId(boolean aAddInstanceId)
-    {
-        addInstanceId = aAddInstanceId;
-    }
-    private boolean addInstanceId=false;
-
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
         File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
-        File metaDir = aContext.getStorageLocation(META_KEY, AccessMode.READONLY);
 
+        // collect parameter/key pairs that need to be set
+        Map<String,String> parameterKeyPairs = new HashMap<String,String>();
+        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+            try {
+                parameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
+            }
+            catch (InstantiationException e) {
+                throw new ResourceInitializationException(e);
+            }
+            catch (IllegalAccessException e) {
+                throw new ResourceInitializationException(e);
+            }
+        }
+        
         List<Object> parameters = new ArrayList<Object>();
         parameters.addAll(Arrays.asList(pipelineParameters));
 
-        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_NGRAM_FD_FILE,
-                metaDir.getAbsolutePath() + "/" + NGramMetaCollector.NGRAM_FD_KEY));
-        parameters.addAll(Arrays.asList(POSNGramFeatureExtractor.PARAM_POS_NGRAM_FD_FILE,
-                metaDir.getAbsolutePath() + "/" + POSNGramMetaCollector.POS_NGRAM_FD_KEY));
-
-        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
-
-        // TODO YC NGRAM Freq Threshold
-        if (ngramFreqThreshold != null) {
-            parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_FREQ_THRESHOLD,
-                    ngramFreqThreshold));
+        for (String key : parameterKeyPairs.keySet()) {
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE), parameterKeyPairs.get(key));
+            parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
-
-        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
+        
+// TODO feature parameters are going to be handled via FE-resources
+//        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
+//
+//        // TODO YC NGRAM Freq Threshold
+//        if (ngramFreqThreshold != null) {
+//            parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_FREQ_THRESHOLD,
+//                    ngramFreqThreshold));
+//        }
+//
+//        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
 
         // FIXME do we still need that switch?
         if (multiLabel) {
@@ -170,4 +165,35 @@ public class ExtractFeaturesTask
     {
         this.isRegressionExperiment = isRegressionExperiment;
     }
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    {
+        return metaCollectorClasses;
+    }
+
+    public void setMetaCollectorClasses(List<Class<? extends MetaCollector>> metaCollectorClasses)
+    {
+        this.metaCollectorClasses = metaCollectorClasses;
+    }
+    
+    public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
+    {
+        return instanceExtractor;
+    }
+
+    public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor> aInstanceExtractor)
+    {
+        instanceExtractor = aInstanceExtractor;
+    }
+
+    public boolean getAddInstanceId()
+    {
+        return addInstanceId;
+    }
+
+    public void setAddInstanceId(boolean aAddInstanceId)
+    {
+        addInstanceId = aAddInstanceId;
+    }
+    
+    private boolean addInstanceId=false;
 }

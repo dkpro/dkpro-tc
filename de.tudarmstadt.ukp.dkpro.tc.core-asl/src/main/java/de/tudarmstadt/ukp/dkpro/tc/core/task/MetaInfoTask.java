@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -19,14 +21,12 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.POSNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 
 public class MetaInfoTask
     extends UimaTaskBase
 {
+
     public static final String META_KEY = "meta";
     public static final String INPUT_KEY = "preprocessing_input";
 
@@ -35,6 +35,8 @@ public class MetaInfoTask
 
     @Discriminator
     protected Object[] pipelineParameters;
+    
+    private List<Class<? extends MetaCollector>> metaCollectorClasses;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -48,29 +50,50 @@ public class MetaInfoTask
         );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        File ngramsFile = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
-                NGramMetaCollector.NGRAM_FD_KEY);
-        File posngramsFile = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
-                POSNGramMetaCollector.POS_NGRAM_FD_KEY);
+        
+        // collect parameter/key pairs that need to be set
+        Map<String,String> parameterKeyPairs = new HashMap<String,String>();
+        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+            try {
+                parameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
+            }
+            catch (InstantiationException e) {
+                throw new ResourceInitializationException(e);
+            }
+            catch (IllegalAccessException e) {
+                throw new ResourceInitializationException(e);
+            }
+        }
+        
+        List<Object> parameters = new ArrayList<Object>();
+        parameters.addAll(Arrays.asList(pipelineParameters));
 
-        List<Object> ngramParameters = new ArrayList<Object>();
-        ngramParameters.addAll(Arrays.asList(pipelineParameters));
-        ngramParameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, ngramsFile,
-        		NGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
+        for (String key : parameterKeyPairs.keySet()) {
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE), parameterKeyPairs.get(key));
+            parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
+        }
+        
+        AnalysisEngineDescription[] aeds = new AnalysisEngineDescription[metaCollectorClasses.size()];
+        int i=0;
+        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+            aeds[i] = createPrimitiveDescription(metaCollectorClass, parameters.toArray());
+            i++;
+        }
+        
+        return createAggregateDescription(aeds);
+    }
+    
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    {
+        return metaCollectorClasses;
+    }
 
-        List<Object> posParameters = new ArrayList<Object>();
-        posParameters.addAll(Arrays.asList(pipelineParameters));
-        posParameters.addAll(Arrays.asList(POSNGramFeatureExtractor.PARAM_POS_NGRAM_FD_FILE, posngramsFile,
-                POSNGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
-
-        return createAggregateDescription(
-                createPrimitiveDescription(NGramMetaCollector.class, ngramParameters.toArray()),
-                createPrimitiveDescription(POSNGramMetaCollector.class, posParameters.toArray())
-        );
+    public void setMetaCollectorClasses(List<Class<? extends MetaCollector>> metaCollectorClasses)
+    {
+        this.metaCollectorClasses = metaCollectorClasses;
     }
 }
