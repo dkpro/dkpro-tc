@@ -22,10 +22,12 @@ import org.uimafit.factory.initializable.Initializable;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
 public class NGramFeatureExtractor
-    implements FeatureExtractor, Initializable
+    implements FeatureExtractor, Initializable, MetaDependent
 {
 
     public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";
@@ -58,7 +60,16 @@ public class NGramFeatureExtractor
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
-
+    
+    @Override
+    public List<String> getMetaCollectorClasses()
+    {
+        List<String> metaCollectorClasses = new ArrayList<String>();
+        metaCollectorClasses.add(NGramMetaCollector.class.getName());
+        
+        return metaCollectorClasses;
+    }
+    
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
         throws TextClassificationException
