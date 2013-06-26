@@ -20,8 +20,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.meta.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class SingleLabelInstanceExtractorPair
