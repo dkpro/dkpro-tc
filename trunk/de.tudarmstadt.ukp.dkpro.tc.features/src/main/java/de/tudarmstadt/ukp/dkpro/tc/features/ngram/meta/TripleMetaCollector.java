@@ -3,8 +3,10 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +21,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.NC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TripleFeatureExtractor;
 
 public class TripleMetaCollector
     extends FreqDistBasedMetaCollector
@@ -99,5 +102,13 @@ public class TripleMetaCollector
 //            }
         }
         return chunkString;
+    }
+    
+    @Override
+    public Map<String, String> getParameterKeyPairs()
+    {
+        Map<String,String> mapping = new HashMap<String,String>();
+        mapping.put(TripleFeatureExtractor.PARAM_TRIPLE_FD_FILE, TRIPLE_FD_KEY);
+        return mapping;
     }
 }

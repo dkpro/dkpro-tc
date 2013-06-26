@@ -2,6 +2,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -11,6 +13,7 @@ import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.DependencyFeatureExtractor;
 
 public class DependencyMetaCollector
     extends FreqDistBasedMetaCollector
@@ -50,5 +53,13 @@ public class DependencyMetaCollector
         }
         
         return governor + "-" + type + "-" + dependent;
+    }
+    
+    @Override
+    public Map<String, String> getParameterKeyPairs()
+    {
+        Map<String,String> mapping = new HashMap<String,String>();
+        mapping.put(DependencyFeatureExtractor.PARAM_DEP_FILE, DEP_FD_KEY);
+        return mapping;
     }
 }

@@ -1,7 +1,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -16,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
 public class NGramMetaCollector
-extends FreqDistBasedMetaCollector
+    extends FreqDistBasedMetaCollector
 {
 	public static final String NGRAM_FD_KEY = "ngrams.ser";
 
@@ -63,5 +65,13 @@ extends FreqDistBasedMetaCollector
 		for (String ngram : documentNGrams.getKeys()) {
 			fd.addSample(ngram, documentNGrams.getCount(ngram));
 		}
-			}
+	}
+
+    @Override
+    public Map<String, String> getParameterKeyPairs()
+    {
+        Map<String,String> mapping = new HashMap<String,String>();
+        mapping.put(NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
+        return mapping;
+    }
 }
