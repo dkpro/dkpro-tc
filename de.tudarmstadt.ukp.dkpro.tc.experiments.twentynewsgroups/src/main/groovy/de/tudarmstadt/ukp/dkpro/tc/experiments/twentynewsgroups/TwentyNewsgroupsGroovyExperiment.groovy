@@ -20,6 +20,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
@@ -94,6 +95,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 			type: "Evaluation-TwentyNewsgroups-CV-Groovy",
 			reader:	getReaderDesc(corpusFilePathTrain, languageCode),
             instanceExtractor:  SingleLabelInstanceExtractor.class.name,
+            metaCollectorClasses: [NGramMetaCollector.class],
             dataWriter:         WekaDataWriter.class.name,
 			aggregate:	getPreprocessing(),
 			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
@@ -117,6 +119,7 @@ public class TwentyNewsgroupsGroovyExperiment {
 			readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
 			readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
             instanceExtractor:  SingleLabelInstanceExtractor.class.name,
+            metaCollectorClasses: [NGramMetaCollector.class],
             dataWriter:         WekaDataWriter.class.name,
 			aggregate:	getPreprocessing(),
 			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
