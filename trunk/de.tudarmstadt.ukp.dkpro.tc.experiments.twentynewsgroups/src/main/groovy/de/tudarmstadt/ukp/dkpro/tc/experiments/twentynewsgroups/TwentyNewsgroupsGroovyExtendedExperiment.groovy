@@ -23,6 +23,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
@@ -109,13 +110,17 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Preprocessing-TwentyNewsgroupsCV"
         ];
 
-        MetaInfoTask metaTask = [type: "MetaInfoTask-TwentyNewsgroupsCV"];
+        MetaInfoTask metaTask = [
+            type: "MetaInfoTask-TwentyNewsgroupsCV",
+            metaCollectorClasses: [NGramMetaCollector.class]
+        ];
 
         ExtractFeaturesTask featureExtractionTask = [
             addInstanceId: false,
             instanceExtractor:SingleLabelInstanceExtractor.class,
             dataWriter:         WekaDataWriter.class.name,
-            type: "FeatureExtraction-TwentyNewsgroupsCV"
+            type: "FeatureExtraction-TwentyNewsgroupsCV",
+            metaCollectorClasses: [NGramMetaCollector.class]
         ];
 
         CrossValidationTask cvTask = [
@@ -186,20 +191,25 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Preprocessing-TwentyNewsgroups-Test"
         ];
 
-        MetaInfoTask metaTask = [type: "MetaInfoTask-TwentyNewsgroups-TrainTest"];
+        MetaInfoTask metaTask = [
+            type: "MetaInfoTask-TwentyNewsgroups-TrainTest",
+            metaCollectorClasses: [NGramMetaCollector.class]
+        ];
 
         ExtractFeaturesTask featuresTrainTask = [
             addInstanceId: true,
             instanceExtractor:SingleLabelInstanceExtractor.class,
             dataWriter:         WekaDataWriter.class.name,
-            type: "FeatureExtraction-TwentyNewsgroups-Train"
+            type: "FeatureExtraction-TwentyNewsgroups-Train",
+            metaCollectorClasses: [NGramMetaCollector.class]
         ];
 
         ExtractFeaturesTask featuresTestTask = [
             addInstanceId: true,
             instanceExtractor:SingleLabelInstanceExtractor.class,
             dataWriter:         WekaDataWriter.class.name,
-            type: "FeatureExtraction-TwentyNewsgroups-Test"
+            type: "FeatureExtraction-TwentyNewsgroups-Test",
+            metaCollectorClasses: [NGramMetaCollector.class]
         ];
 
         TestTask testTask = [
