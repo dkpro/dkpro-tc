@@ -6,13 +6,13 @@ import java.io.IOException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.component.JCasAnnotator_ImplBase;
 import org.uimafit.descriptor.ConfigurationParameter;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 
 public abstract class FreqDistBasedMetaCollector
-    extends JCasAnnotator_ImplBase
+    extends MetaCollector
 {
 
     public static final String PARAM_LOWER_CASE = "lowerCase";
