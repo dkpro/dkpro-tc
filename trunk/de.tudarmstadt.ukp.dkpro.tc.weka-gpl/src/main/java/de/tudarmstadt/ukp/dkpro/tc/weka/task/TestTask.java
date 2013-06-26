@@ -19,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.meta.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
