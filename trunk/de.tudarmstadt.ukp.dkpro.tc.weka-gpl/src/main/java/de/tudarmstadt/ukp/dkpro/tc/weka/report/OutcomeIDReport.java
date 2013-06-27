@@ -64,7 +64,7 @@ public class OutcomeIDReport
                         predictionOutcomes.add(predictions.attribute(i).name());
                     }
                 }
-                props.setProperty(inst.stringValue(attOffset),
+                props.setProperty(inst.stringValue(attOffset + 1),
                         StringUtils.join(predictionOutcomes, ","));
             }
             else {
