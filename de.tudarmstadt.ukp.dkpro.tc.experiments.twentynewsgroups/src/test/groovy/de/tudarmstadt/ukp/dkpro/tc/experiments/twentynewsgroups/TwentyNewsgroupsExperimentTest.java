@@ -10,12 +10,11 @@ import org.junit.rules.TestName;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 
 /**
- * This is not exactly a unit test (yet).
- * It just ensures that the experiments run without throwing any exception.
- * Additional unit tests should test the inner workings of the experiments
- *
+ * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
+ * any exception. Additional unit tests should test the inner workings of the experiments
+ * 
  * @author Oliver Ferschke
- *
+ * 
  */
 public class TwentyNewsgroupsExperimentTest
 {
@@ -25,59 +24,66 @@ public class TwentyNewsgroupsExperimentTest
     ParameterSpace pSpace;
 
     @Before
-    public void setup() throws Exception
+    public void setup()
+        throws Exception
     {
-            String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
-            System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+        String path = "target/repository/" + getClass().getSimpleName() + "/"
+                + name.getMethodName();
+        System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-            javaExperiment = new TwentyNewsgroupsExperiment();
-            pSpace=javaExperiment.setup();
+        javaExperiment = new TwentyNewsgroupsExperiment();
+        pSpace = javaExperiment.setup();
 
-            groovyExperiment = new TwentyNewsgroupsGroovyExperiment();
-            groovyExtendedExperiment = new TwentyNewsgroupsGroovyExtendedExperiment();
-    }
-
-
-    @Test
-    public void testGroovyCrossValidation() throws Exception
-    {
-        //Groovy setup with automatic task wiring
-    	groovyExperiment.runCrossValidation();
+        groovyExperiment = new TwentyNewsgroupsGroovyExperiment();
+        groovyExtendedExperiment = new TwentyNewsgroupsGroovyExtendedExperiment();
     }
 
     @Test
-    public void testGroovyTrainTest() throws Exception
+    public void testGroovyCrossValidation()
+        throws Exception
     {
-        //Groovy setup with automatic task wiring
+        // Groovy setup with automatic task wiring
         groovyExperiment.runCrossValidation();
     }
 
     @Test
-    public void testGroovyExtendedCrossValidation() throws Exception
+    public void testGroovyTrainTest()
+        throws Exception
     {
-        //Groovy setup with manual task wiring
-    	groovyExtendedExperiment.runCrossValidation();
+        // Groovy setup with automatic task wiring
+        groovyExperiment.runTrainTest();
     }
 
     @Test
-    public void testGroovyExtendedTrainTest() throws Exception
+    public void testGroovyExtendedCrossValidation()
+        throws Exception
     {
-        //Groovy setup with manual task wiring
-    	groovyExtendedExperiment.runCrossValidation();
+        // Groovy setup with manual task wiring
+        groovyExtendedExperiment.runCrossValidation();
     }
 
     @Test
-    public void testJavaCrossValidation() throws Exception
+    public void testGroovyExtendedTrainTest()
+        throws Exception
     {
-        //Java setup with automatic task wiring
+        // Groovy setup with manual task wiring
+        groovyExtendedExperiment.runTrainTest();
+    }
+
+    @Test
+    public void testJavaCrossValidation()
+        throws Exception
+    {
+        // Java setup with automatic task wiring
         javaExperiment.runCrossValidation(pSpace);
     }
 
     @Test
-    public void testJavaTrainTest() throws Exception
+    public void testJavaTrainTest()
+        throws Exception
     {
-        //Java setup with automatic task wiring
-        javaExperiment.runCrossValidation(pSpace);
+        // Java setup with automatic task wiring
+        javaExperiment.runTrainTest(pSpace);
     }
 
     @Rule
@@ -86,6 +92,6 @@ public class TwentyNewsgroupsExperimentTest
     @Before
     public void printSeparator()
     {
-            System.out.println("\n=== " + name.getMethodName() + " =====================");
+        System.out.println("\n=== " + name.getMethodName() + " =====================");
     }
 }
