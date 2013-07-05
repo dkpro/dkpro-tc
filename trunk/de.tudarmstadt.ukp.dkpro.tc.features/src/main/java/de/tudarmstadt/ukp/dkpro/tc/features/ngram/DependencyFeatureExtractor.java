@@ -5,34 +5,40 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.UimaContext;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.factory.initializable.Initializable;
-import org.uimafit.util.JCasUtil;
+import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
 
 public class DependencyFeatureExtractor
-    implements FeatureExtractor, Initializable
+    extends FeatureExtractorResource_ImplBase
 {
 
     public static final String PARAM_DEP_FILE = "DepFile";
-    public static final String PARAM_DEP_FREQ_THRESHOLD = "DepFreqThreshold";
-    public static final String PARAM_LOWER_CASE = "LowerCaseDeps";
-
+    @ConfigurationParameter(name=PARAM_DEP_FILE, mandatory=true)
     private String depFile;
-    private int depFreqThreshold = 2;
+
+    public static final String PARAM_DEP_FREQ_THRESHOLD = "DepFreqThreshold";
+    @ConfigurationParameter(name=PARAM_DEP_FREQ_THRESHOLD, mandatory=false, defaultValue = "2")
+    private int depFreqThreshold;
+
+    public static final String PARAM_LOWER_CASE = "LowerCaseDeps";
+    @ConfigurationParameter(name=PARAM_LOWER_CASE, mandatory=false, defaultValue = "true")
+    private boolean lowerCaseDeps;
+    
     protected Set<String> depSet;
-    private boolean lowerCaseDeps = true;
 
     private FrequencyDistribution<String> trainingDepsFD;
 
@@ -68,13 +74,18 @@ public class DependencyFeatureExtractor
     }
 
     @Override
-    public void initialize(UimaContext context)
+    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException
     {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
 
         depSet = getTopDeps();
-    }
 
+        return true;
+    }
+    
     private Set<String> getTopDeps()
             throws ResourceInitializationException
     {

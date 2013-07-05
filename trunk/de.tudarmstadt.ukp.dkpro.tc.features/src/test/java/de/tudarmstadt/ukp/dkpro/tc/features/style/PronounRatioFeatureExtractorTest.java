@@ -3,9 +3,9 @@ package de.tudarmstadt.ukp.dkpro.tc.features.style;
 import static de.tudarmstadt.ukp.dkpro.tc.features.style.PronounRatioFeatureExtractor.FN_HE_RATIO;
 import static de.tudarmstadt.ukp.dkpro.tc.features.style.PronounRatioFeatureExtractor.FN_WE_RATIO;
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
-import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 
 import java.util.List;
 

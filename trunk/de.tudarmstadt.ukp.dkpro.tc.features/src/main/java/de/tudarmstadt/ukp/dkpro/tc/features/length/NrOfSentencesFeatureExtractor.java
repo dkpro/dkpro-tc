@@ -3,17 +3,17 @@ package de.tudarmstadt.ukp.dkpro.tc.features.length;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class NrOfSentencesFeatureExtractor
-    implements FeatureExtractor
+    extends FeatureExtractorResource_ImplBase
 {
 
     public static final String FN_NR_OF_SENTENCES = "NrofSentences";

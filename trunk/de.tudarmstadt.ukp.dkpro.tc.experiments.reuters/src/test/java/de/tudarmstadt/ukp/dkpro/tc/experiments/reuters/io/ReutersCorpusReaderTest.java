@@ -1,13 +1,13 @@
 package de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io;
 
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.junit.Assert.assertEquals;
-import static org.uimafit.factory.CollectionReaderFactory.createCollectionReader;
 
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.pipeline.JCasIterable;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
-import org.uimafit.pipeline.JCasIterable;
-import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;

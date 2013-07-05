@@ -1,19 +1,15 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.extractor;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
-import org.uimafit.component.JCasAnnotator_ImplBase;
-import org.uimafit.component.initialize.ConfigurationParameterInitializer;
-import org.uimafit.component.initialize.ExternalResourceInitializer;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.factory.initializable.Initializable;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
@@ -31,8 +27,8 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
     protected boolean addInstanceId;
 
     public static final String PARAM_FEATURE_EXTRACTORS = "Extractors";
-    @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    private String[] extractorClasses;
+    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected FeatureExtractor[] extractors;
 
     public static final String PARAM_DATA_WRITER_CLASS = "DataWriterClass";
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
@@ -41,8 +37,6 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
     public static final String PARAM_IS_REGRESSION = "IsRegressionExperiment";
     @ConfigurationParameter(name = PARAM_IS_REGRESSION, mandatory = true, defaultValue = "false")
     private boolean isRegressionExperiment;
-
-    protected List<FeatureExtractor> featureExtractors;
 
     protected InstanceList instanceList;
 
@@ -54,34 +48,9 @@ public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
 
         instanceList = new InstanceList();
 
-        if (extractorClasses.length == 0) {
-            context.getLogger().log(Level.SEVERE, "No feature extractor has been defined.");
+        if (extractors.length == 0) {
+            context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
             throw new ResourceInitializationException();
-        }
-
-        // instantiate FEs and add to list. They are then used by the extending
-        // (SL/ML)InstanceExtractor
-        featureExtractors = new ArrayList<FeatureExtractor>();
-        try {
-            for (String name : extractorClasses) {
-                featureExtractors.add((FeatureExtractor) Class.forName(name).newInstance());
-            }
-        }
-        catch (Exception e) {
-            context.getLogger()
-                    .log(Level.SEVERE,
-                            "Could not load feature extractors. Check the fully qualified feature extractor class names defined in your configuration.");
-            throw new ResourceInitializationException(e);
-        }
-
-        // UIMA Magic - init FE-AEs
-        for (FeatureExtractor featExt : featureExtractors) {
-            ConfigurationParameterInitializer.initialize(featExt, context);
-            ExternalResourceInitializer.initialize(context, featExt);
-
-            if (featExt instanceof Initializable) {
-                ((Initializable) featExt).initialize(context);
-            }
         }
     }
 

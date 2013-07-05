@@ -12,22 +12,22 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.uima.UimaContext;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.factory.initializable.Initializable;
+import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
 public class NGramFeatureExtractor
-    implements FeatureExtractor, Initializable, MetaDependent
+    extends FeatureExtractorResource_ImplBase
+    implements MetaDependent
 {
 
     public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";
@@ -123,21 +123,20 @@ public class NGramFeatureExtractor
     }
 
     @Override
-    public void initialize(UimaContext context)
+    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException
     {
-
-        if (context.getConfigParameterValue(PARAM_FREQ_THRESHOLD) != null) {
-            this.useFreqThreshold = true;
-            // TODO YC USING THRESH
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
         }
 
         topKSet = getTopNgrams();
 
         prefix = "ngrams_";
-
+        
+        return true;
     }
-
+    
     private Set<String> getTopNgrams()
         throws ResourceInitializationException
     {

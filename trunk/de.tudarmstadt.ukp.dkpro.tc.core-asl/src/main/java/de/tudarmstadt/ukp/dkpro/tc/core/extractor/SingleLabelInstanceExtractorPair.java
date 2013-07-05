@@ -1,24 +1,22 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.extractor;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
+import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.factory.initializable.Initializable;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
-import org.uimafit.component.initialize.ConfigurationParameterInitializer;
-import org.uimafit.component.initialize.ExternalResourceInitializer;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.factory.initializable.Initializable;
-import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -29,10 +27,8 @@ public class SingleLabelInstanceExtractorPair
 {
 
     public static final String PARAM_PAIR_FEATURE_EXTRACTORS = "PairExtractors";
-    @ConfigurationParameter(name = PARAM_PAIR_FEATURE_EXTRACTORS, mandatory = true)
-    private String[] pairExtractorClasses;
-
-    protected List<PairFeatureExtractor> pairFeatureExtractors;
+    @ExternalResource(key = PARAM_PAIR_FEATURE_EXTRACTORS, mandatory = true)
+    private PairFeatureExtractorResource_ImplBase[] pairExtractors;
 
     @Override
     public void initialize(UimaContext context)
@@ -40,20 +36,9 @@ public class SingleLabelInstanceExtractorPair
     {
         super.initialize(context);
 
-        pairFeatureExtractors = new ArrayList<PairFeatureExtractor>();
-        try{
-            for (String name : pairExtractorClasses) {
-                pairFeatureExtractors.add((PairFeatureExtractor) Class.forName(name).newInstance());
-            }
-        }
-        catch (Exception e) {
-            context.getLogger().log(Level.SEVERE, "Could not load feature extractors. Check the fully qualified feature extractor class names defined in your configuration.");
-            throw new ResourceInitializationException(e);
-        }
-
-        for (PairFeatureExtractor featExt : pairFeatureExtractors) {
+        for (PairFeatureExtractor featExt : pairExtractors) {
             ConfigurationParameterInitializer.initialize(featExt, context);
-            ExternalResourceInitializer.initialize(context, featExt);
+            ExternalResourceInitializer.initialize(featExt, context);
 
             if (featExt instanceof Initializable) {
                 ((Initializable) featExt).initialize(context);
@@ -67,7 +52,7 @@ public class SingleLabelInstanceExtractorPair
     {
         Instance instance = new Instance();
 
-        for (FeatureExtractor featExt : featureExtractors) {
+        for (FeatureExtractor featExt : extractors) {
             try {
                 instance.addFeatures(featExt.extract(jcas, null));
             }
@@ -76,7 +61,7 @@ public class SingleLabelInstanceExtractorPair
             }
         }
 
-        for (PairFeatureExtractor featExt : pairFeatureExtractors) {
+        for (PairFeatureExtractor featExt : pairExtractors) {
             try {
                 JCas view1 = jcas.getView(Constants.PART_ONE);
                 JCas view2 = jcas.getView(Constants.PART_TWO);

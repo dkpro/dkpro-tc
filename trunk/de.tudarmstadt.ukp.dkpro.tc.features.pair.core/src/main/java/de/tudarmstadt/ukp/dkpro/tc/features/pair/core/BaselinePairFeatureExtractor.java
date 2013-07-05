@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 // FIXME this seems to be named a bit misleading
@@ -15,7 +16,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
  *
  */
 public class BaselinePairFeatureExtractor
-implements PairFeatureExtractor
+    extends PairFeatureExtractorResource_ImplBase
 {
 
 	@Override

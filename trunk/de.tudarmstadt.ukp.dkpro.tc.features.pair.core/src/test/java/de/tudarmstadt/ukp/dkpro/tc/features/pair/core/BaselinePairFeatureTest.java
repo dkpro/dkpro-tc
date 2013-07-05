@@ -1,11 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core;
 
+import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 import static org.junit.Assert.assertEquals;
-import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-
-import static de.tudarmstadt.ukp.dkpro.tc.features.pair.core.FeatureTestUtil.assertFeature;
 
 import java.util.List;
 
@@ -15,6 +14,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 
 public class BaselinePairFeatureTest extends PairFeatureTestBase
 {
@@ -29,7 +29,7 @@ public class BaselinePairFeatureTest extends PairFeatureTestBase
         );
         AnalysisEngine engine = createPrimitive(desc);
 
-        BaselinePairFeatureExtractor extractor = new BaselinePairFeatureExtractor();
+        PairFeatureExtractorResource_ImplBase extractor = new BaselinePairFeatureExtractor();
         List<Feature> features = runExtractor(engine, extractor);
 
         assertEquals(1, features.size());

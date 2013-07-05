@@ -5,32 +5,39 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.UimaContext;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.factory.initializable.Initializable;
+import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TripleMetaCollector;
 
 public class TripleFeatureExtractor
-    implements FeatureExtractor, Initializable
+    extends FeatureExtractorResource_ImplBase
 {
 
     public static final String PARAM_TRIPLE_FD_FILE = "TripleFDFile";
-    public static final String PARAM_THRESHOLD = "TripleThreshold";
-    public static final String PARAM_LOWER_CASE = "LowerCaseTriples";
-
+    @ConfigurationParameter(name=PARAM_TRIPLE_FD_FILE, mandatory=true)
     private String fdFile;
-    private int threshold = 2;
+
+    public static final String PARAM_THRESHOLD = "TripleThreshold";
+    @ConfigurationParameter(name=PARAM_THRESHOLD, mandatory=false, defaultValue = "2")
+    private int threshold;
+
+    public static final String PARAM_LOWER_CASE = "LowerCaseTriples";
+    @ConfigurationParameter(name=PARAM_LOWER_CASE, mandatory=false, defaultValue = "true")
+    private boolean lowerCaseTriples;
+
+
     protected Set<String> tripleSet;
-    private boolean lowerCaseTriples = true;
 
     private FrequencyDistribution<String> trainingFD;
 
@@ -57,10 +64,16 @@ public class TripleFeatureExtractor
     }
 
     @Override
-    public void initialize(UimaContext context)
+    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException
     {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
+
         tripleSet = loadTriples();
+
+        return true;
     }
 
     private Set<String> loadTriples()

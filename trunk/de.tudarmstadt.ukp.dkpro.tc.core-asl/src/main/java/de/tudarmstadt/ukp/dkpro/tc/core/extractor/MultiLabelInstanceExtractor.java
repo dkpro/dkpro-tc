@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -23,7 +23,7 @@ public class MultiLabelInstanceExtractor
     {
         // TODO do we want to account for cases, where one Cas creates more than one Instance?
         Instance instance = new Instance();
-        for (FeatureExtractor featExt : featureExtractors) {
+        for (FeatureExtractor featExt : extractors) {
             try {
                 instance.addFeatures(featExt.extract(jcas, null));
             }
