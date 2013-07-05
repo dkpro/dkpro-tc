@@ -8,11 +8,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class PairFeatureTestBase {
 	
-	public List<Feature> runExtractor(AnalysisEngine engine, PairFeatureExtractor extractor) throws ResourceInitializationException, TextClassificationException, AnalysisEngineProcessException{
+	public List<Feature> runExtractor(AnalysisEngine engine, PairFeatureExtractorResource_ImplBase extractor) throws ResourceInitializationException, TextClassificationException, AnalysisEngineProcessException{
 
 		JCas jcas1 = engine.newJCas();
         jcas1.setDocumentLanguage("en");

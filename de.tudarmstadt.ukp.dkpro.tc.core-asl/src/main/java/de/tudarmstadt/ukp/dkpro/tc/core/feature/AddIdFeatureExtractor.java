@@ -8,7 +8,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
@@ -20,7 +20,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
  *
  */
 public class AddIdFeatureExtractor
-    implements FeatureExtractor
+    extends FeatureExtractorResource_ImplBase
 {
 
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";

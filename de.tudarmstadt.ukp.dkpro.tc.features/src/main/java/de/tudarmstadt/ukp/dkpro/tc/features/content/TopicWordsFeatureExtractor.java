@@ -1,35 +1,35 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.content;
 
-import static org.uimafit.util.JCasUtil.toText;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.uima.UimaContext;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.factory.initializable.Initializable;
-import org.uimafit.util.JCasUtil;
+import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 
 
 public class TopicWordsFeatureExtractor
-    implements FeatureExtractor, Initializable
+    extends FeatureExtractorResource_ImplBase
 {
 	//takes as parameter list of names of word-list-files in resources, outputs one attribute per list
     public static final String PARAM_TOPIC_FILE = "TopicFile";
-    
+    @ConfigurationParameter(name=PARAM_TOPIC_FILE, mandatory=true)
     private String topicFilePath;
+    
     private String prefix;
 
 	@Override
@@ -41,7 +41,7 @@ public class TopicWordsFeatureExtractor
                 }
         		List<String> topics = null;
         		List<Feature> featList = new ArrayList<Feature>();
-         		List<String> tokens = toText(JCasUtil.select(jcas, Token.class));
+         		List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
 		        try {
 				    topics = FileUtils.readLines(new File(topicFilePath));
 				    for (String t : topics) {
@@ -76,19 +76,15 @@ public class TopicWordsFeatureExtractor
  	}
  
     @Override
-    public void initialize(UimaContext context)
+    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException
     {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
 
-        initializeParameters(context);
         prefix = "TopicWords_";
 
+        return true;
     }
-    
-    private void initializeParameters(UimaContext context) {
-        if (context.getConfigParameterValue(PARAM_TOPIC_FILE) != null) {
-            this.topicFilePath = (String) context.getConfigParameterValue(PARAM_TOPIC_FILE);
-        }
-	}
-	
 }

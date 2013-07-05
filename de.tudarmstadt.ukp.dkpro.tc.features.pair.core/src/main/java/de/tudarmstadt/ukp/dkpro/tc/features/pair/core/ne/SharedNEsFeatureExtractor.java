@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.uimafit.util.JCasUtil;
 
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
 
 /**
  * Pair-wise feature extractor
@@ -21,7 +21,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureExtractor;
  *
  */
 public class SharedNEsFeatureExtractor
-    implements PairFeatureExtractor
+    extends PairFeatureExtractorResource_ImplBase
 {
 
     @Override

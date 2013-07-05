@@ -2,34 +2,35 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.UimaContext;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.factory.initializable.Initializable;
+import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class POSNGramFeatureExtractor
     extends NGramFeatureExtractor
-    implements FeatureExtractor, Initializable
 {
 
-    public static final String PARAM_POS_NGRAM_MIN_N = "POSNGramMinSize";
-    public static final String PARAM_POS_NGRAM_MAX_N = "POSNGramMaxSize";
     public static final String PARAM_POS_NGRAM_FD_FILE = "POSNGramFDFile";
-
     @ConfigurationParameter(name = PARAM_POS_NGRAM_FD_FILE, mandatory = true)
     private String fdFile;
+    
+    public static final String PARAM_POS_NGRAM_MIN_N = "POSNGramMinSize";
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_MIN_N, mandatory = false, defaultValue="1")
+    private int minN;
 
-    private int minN = 1;
-    private int maxN = 3;
+    public static final String PARAM_POS_NGRAM_MAX_N = "POSNGramMaxSize";
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_MAX_N, mandatory = false, defaultValue="3")
+    private int maxN;
+    
     protected Set<String> topKSet;
     private String prefix;
 
@@ -53,13 +54,17 @@ public class POSNGramFeatureExtractor
     }
 
     @Override
-    public void initialize(UimaContext context)
+    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException
     {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
 
         topKSet = super.getTopNgrams(fdFile);
 
         prefix = "POS_";
-
+        
+        return true;
     }
 }

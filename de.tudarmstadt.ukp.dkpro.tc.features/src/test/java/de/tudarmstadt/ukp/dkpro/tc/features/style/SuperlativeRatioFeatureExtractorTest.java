@@ -3,9 +3,9 @@ package de.tudarmstadt.ukp.dkpro.tc.features.style;
 import static de.tudarmstadt.ukp.dkpro.tc.features.style.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADJ;
 import static de.tudarmstadt.ukp.dkpro.tc.features.style.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADV;
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
-import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
-import static org.uimafit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.uimafit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +15,8 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.SerializedCasReader;
@@ -64,7 +66,6 @@ public class ExtractFeaturesTask
     private boolean isRegressionExperiment = false;
 
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
-
     
     private Class<? extends AbstractInstanceExtractor> instanceExtractor;
 
@@ -96,6 +97,19 @@ public class ExtractFeaturesTask
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
         
+        ExternalResourceDescription[] extractorResources = new ExternalResourceDescription[featureSet.length];
+        for (int i=0; i < featureSet.length; i++) {
+            System.out.println(featureSet[i]);
+            try {
+                extractorResources[i] = ExternalResourceFactory.createExternalResourceDescription(
+                        (Class) Class.forName(featureSet[i]).getClass()
+                );
+            }
+            catch (ClassNotFoundException e) {
+                throw new ResourceInitializationException(e);
+            } 
+        }
+               
 // TODO feature parameters are going to be handled via FE-resources
 //        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
 //
@@ -114,7 +128,7 @@ public class ExtractFeaturesTask
                     MultiLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
                     MultiLabelInstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
                     MultiLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                    MultiLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, featureSet,
+                    MultiLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
 					SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
             ));
 
@@ -128,7 +142,7 @@ public class ExtractFeaturesTask
                             SingleLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
                             SingleLabelInstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
                             SingleLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                            SingleLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, featureSet,
+                            SingleLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
                             SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
 			));
             return createAggregateDescription(createPrimitiveDescription(
@@ -196,4 +210,5 @@ public class ExtractFeaturesTask
     }
     
     private boolean addInstanceId=false;
+
 }
