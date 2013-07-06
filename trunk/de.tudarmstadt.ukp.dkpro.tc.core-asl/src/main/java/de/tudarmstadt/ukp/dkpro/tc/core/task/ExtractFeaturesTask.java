@@ -102,7 +102,7 @@ public class ExtractFeaturesTask
             System.out.println(featureSet[i]);
             try {
                 extractorResources[i] = ExternalResourceFactory.createExternalResourceDescription(
-                        (Class) Class.forName(featureSet[i]).getClass()
+                        (Class) Class.forName(featureSet[i])
                 );
             }
             catch (ClassNotFoundException e) {
