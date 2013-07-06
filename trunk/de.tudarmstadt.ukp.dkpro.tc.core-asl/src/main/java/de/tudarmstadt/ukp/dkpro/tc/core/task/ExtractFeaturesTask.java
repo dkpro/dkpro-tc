@@ -90,7 +90,6 @@ public class ExtractFeaturesTask
         }
         
         List<Object> parameters = new ArrayList<Object>();
-        parameters.addAll(Arrays.asList(pipelineParameters));
 
         for (String key : parameterKeyPairs.keySet()) {
             File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE), parameterKeyPairs.get(key));
@@ -102,13 +101,17 @@ public class ExtractFeaturesTask
             System.out.println(featureSet[i]);
             try {
                 extractorResources[i] = ExternalResourceFactory.createExternalResourceDescription(
-                        (Class) Class.forName(featureSet[i])
+                        (Class) Class.forName(featureSet[i]),
+                        parameters.toArray()
                 );
             }
             catch (ClassNotFoundException e) {
                 throw new ResourceInitializationException(e);
             } 
         }
+        
+        parameters.addAll(Arrays.asList(pipelineParameters));
+
                
 // TODO feature parameters are going to be handled via FE-resources
 //        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
