@@ -4,9 +4,9 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollecti
 import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
-import org.uimafit.pipeline.JCasIterable;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 
