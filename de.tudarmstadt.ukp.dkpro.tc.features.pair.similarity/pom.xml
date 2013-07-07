@@ -14,10 +14,6 @@
   		</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>org.uimafit</groupId>
-  		<artifactId>uimafit</artifactId>
-  	</dependency>
-  	<dependency>
   		<groupId>de.tudarmstadt.ukp.similarity.dkpro</groupId>
   		<artifactId>
   			de.tudarmstadt.ukp.similarity.dkpro.core-asl
