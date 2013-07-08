@@ -55,7 +55,7 @@ public class PreprocessTask
         AnalysisEngineDescription xmiWriter = createPrimitiveDescription(
                 SerializedCasWriter.class,
                 SerializedCasWriter.PARAM_COMPRESSION, CompressionMethod.GZIP,
-                SerializedCasWriter.PARAM_PATH, aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE).getPath()
+                SerializedCasWriter.PARAM_TARGET_LOCATION, aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE).getPath()
         );
 
         return createAggregateDescription(aggregate, xmiWriter);
