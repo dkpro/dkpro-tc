@@ -22,7 +22,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractorPair;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -77,7 +76,6 @@ public class RegressionExperiment
 
         // Define the base task which generates an arff instances file
         ExtractFeaturesTask trainTask = new ExtractFeaturesTask();
-        trainTask.setInstanceExtractor(SingleLabelInstanceExtractorPair.class);
         trainTask.setDataWriter(WekaDataWriter.class.getName());
         trainTask.setRegressionExperiment(true);
         trainTask.setType(trainTask.getType() + nameCV);
@@ -122,7 +120,7 @@ public class RegressionExperiment
 
         return createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class),
-                createPrimitiveDescription(OpenNlpPosTagger.class,
-                        OpenNlpPosTagger.PARAM_LANGUAGE, languageCode));
+                createPrimitiveDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+                        languageCode));
     }
 }

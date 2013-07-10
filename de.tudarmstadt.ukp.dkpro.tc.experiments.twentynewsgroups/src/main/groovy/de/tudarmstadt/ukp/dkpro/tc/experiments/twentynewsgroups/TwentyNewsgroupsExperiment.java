@@ -22,7 +22,6 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
@@ -83,13 +82,9 @@ public class TwentyNewsgroupsExperiment
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        
-        BatchTaskCV batch = new BatchTaskCV(
-                "TwentyNewsgroupsCV",
-                getReaderDesc(corpusFilePathTrain, languageCode),
-                getPreprocessing(),
-                getMetaCollectors(),
-                SingleLabelInstanceExtractor.class,
+
+        BatchTaskCV batch = new BatchTaskCV("TwentyNewsgroupsCV", getReaderDesc(
+                corpusFilePathTrain, languageCode), getPreprocessing(), getMetaCollectors(),
                 WekaDataWriter.class.getName());
         batch.setType("Evaluation-TwentyNewsgroups-CV");
         batch.setParameterSpace(pSpace);
@@ -105,15 +100,10 @@ public class TwentyNewsgroupsExperiment
         throws Exception
     {
 
-        BatchTaskTrainTest batch = new BatchTaskTrainTest(
-                "TwentyNewsgroupsTrainTest",
-                getReaderDesc(corpusFilePathTrain, languageCode),
-                getReaderDesc(corpusFilePathTest, languageCode),
-                getPreprocessing(),
-                getMetaCollectors(),
-                SingleLabelInstanceExtractor.class,
-                WekaDataWriter.class.getName()
-        );
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
+                getReaderDesc(corpusFilePathTrain, languageCode), getReaderDesc(corpusFilePathTest,
+                        languageCode), getPreprocessing(), getMetaCollectors(),
+                WekaDataWriter.class.getName());
         batch.setType("Evaluation-TwentyNewsgroups-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -144,12 +134,12 @@ public class TwentyNewsgroupsExperiment
                 createPrimitiveDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         languageCode));
     }
-    
+
     protected List<Class<? extends MetaCollector>> getMetaCollectors()
     {
         List<Class<? extends MetaCollector>> metaCollectors = new ArrayList<Class<? extends MetaCollector>>();
         metaCollectors.add(NGramMetaCollector.class);
-        
+
         return metaCollectors;
     }
 }

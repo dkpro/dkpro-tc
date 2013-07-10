@@ -24,10 +24,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.AbstractInstanceExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.MultiLabelInstanceExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractorPair;
+import de.tudarmstadt.ukp.dkpro.tc.core.extractor.InstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 
 public class ExtractFeaturesTask
@@ -62,12 +59,10 @@ public class ExtractFeaturesTask
     protected Object[] pipelineParameters;
 
     private String dataWriter;
-    
+
     private boolean isRegressionExperiment = false;
 
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
-    
-    private Class<? extends AbstractInstanceExtractor> instanceExtractor;
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
@@ -76,7 +71,7 @@ public class ExtractFeaturesTask
         File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
 
         // collect parameter/key pairs that need to be set
-        Map<String,String> parameterKeyPairs = new HashMap<String,String>();
+        Map<String, String> parameterKeyPairs = new HashMap<String, String>();
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
             try {
                 parameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
@@ -88,69 +83,49 @@ public class ExtractFeaturesTask
                 throw new ResourceInitializationException(e);
             }
         }
-        
+
         List<Object> parameters = new ArrayList<Object>();
 
         for (String key : parameterKeyPairs.keySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE), parameterKeyPairs.get(key));
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+                    parameterKeyPairs.get(key));
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
-        
+
         ExternalResourceDescription[] extractorResources = new ExternalResourceDescription[featureSet.length];
-        for (int i=0; i < featureSet.length; i++) {
+        for (int i = 0; i < featureSet.length; i++) {
             System.out.println(featureSet[i]);
             try {
                 extractorResources[i] = ExternalResourceFactory.createExternalResourceDescription(
-                        (Class) Class.forName(featureSet[i]),
-                        parameters.toArray()
-                );
+                        (Class) Class.forName(featureSet[i]), parameters.toArray());
             }
             catch (ClassNotFoundException e) {
                 throw new ResourceInitializationException(e);
-            } 
+            }
         }
-        
+
         parameters.addAll(Arrays.asList(pipelineParameters));
 
-               
-// TODO feature parameters are going to be handled via FE-resources
-//        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
-//
-//        // TODO YC NGRAM Freq Threshold
-//        if (ngramFreqThreshold != null) {
-//            parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_FREQ_THRESHOLD,
-//                    ngramFreqThreshold));
-//        }
-//
-//        parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
+        // TODO feature parameters are going to be handled via FE-resources
+        // parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
+        //
+        // // TODO YC NGRAM Freq Threshold
+        // if (ngramFreqThreshold != null) {
+        // parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_FREQ_THRESHOLD,
+        // ngramFreqThreshold));
+        // }
+        //
+        // parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
 
-        // FIXME do we still need that switch?
-        if (multiLabel) {
-            parameters.addAll(Arrays.asList(
-                    MultiLabelInstanceExtractor.PARAM_OUTPUT_DIRECTORY, outputDir.getAbsolutePath(),
-                    MultiLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
-                    MultiLabelInstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
-                    MultiLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                    MultiLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
-					SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
-            ));
+        parameters.addAll(Arrays.asList(InstanceExtractor.PARAM_OUTPUT_DIRECTORY,
+                outputDir.getAbsolutePath(), InstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
+                InstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
+                InstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
+                InstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet));
 
-            return createAggregateDescription(createPrimitiveDescription(
-                    instanceExtractor, parameters.toArray()));
-        }
-        else {
-            parameters
-                    .addAll(Arrays.asList(
-                            SingleLabelInstanceExtractor.PARAM_OUTPUT_DIRECTORY, outputDir.getAbsolutePath(),
-                            SingleLabelInstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
-                            SingleLabelInstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
-                            SingleLabelInstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                            SingleLabelInstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
-                            SingleLabelInstanceExtractorPair.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet
-			));
-            return createAggregateDescription(createPrimitiveDescription(
-                    instanceExtractor, parameters.toArray()));
-        }
+        return createAggregateDescription(createPrimitiveDescription(InstanceExtractor.class,
+                parameters.toArray()));
 
     }
 
@@ -168,6 +143,7 @@ public class ExtractFeaturesTask
     {
         return dataWriter;
     }
+
     public void setDataWriter(String aDataWriterClassName)
     {
         dataWriter = aDataWriterClassName;
@@ -182,6 +158,7 @@ public class ExtractFeaturesTask
     {
         this.isRegressionExperiment = isRegressionExperiment;
     }
+
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         return metaCollectorClasses;
@@ -191,16 +168,17 @@ public class ExtractFeaturesTask
     {
         this.metaCollectorClasses = metaCollectorClasses;
     }
-    
-    public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
-    {
-        return instanceExtractor;
-    }
 
-    public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor> aInstanceExtractor)
-    {
-        instanceExtractor = aInstanceExtractor;
-    }
+    // public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
+    // {
+    // return instanceExtractor;
+    // }
+
+    // public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor>
+    // aInstanceExtractor)
+    // {
+    // instanceExtractor = aInstanceExtractor;
+    // }
 
     public boolean getAddInstanceId()
     {
@@ -211,7 +189,7 @@ public class ExtractFeaturesTask
     {
         addInstanceId = aAddInstanceId;
     }
-    
-    private boolean addInstanceId=false;
+
+    private boolean addInstanceId = false;
 
 }
