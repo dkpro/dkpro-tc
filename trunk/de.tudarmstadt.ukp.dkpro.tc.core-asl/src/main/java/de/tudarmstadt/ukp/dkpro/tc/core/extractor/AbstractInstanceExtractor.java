@@ -14,7 +14,7 @@ import org.apache.uima.util.Level;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 
-public abstract class AbstractInstanceExtractor<OUTCOME_TYPE>
+public abstract class AbstractInstanceExtractor
     extends JCasAnnotator_ImplBase
 {
 

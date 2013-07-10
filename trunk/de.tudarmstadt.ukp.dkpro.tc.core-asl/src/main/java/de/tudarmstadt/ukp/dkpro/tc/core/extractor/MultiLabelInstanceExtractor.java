@@ -14,7 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class MultiLabelInstanceExtractor
-    extends AbstractInstanceExtractor<String[]>
+    extends AbstractInstanceExtractor
 {
 
     @Override
