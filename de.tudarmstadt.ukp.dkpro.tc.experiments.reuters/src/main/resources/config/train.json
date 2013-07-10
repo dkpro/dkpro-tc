@@ -43,7 +43,6 @@
 	"classification" : 
 	[
 		{
-		    "threshold" : "0.3",
 		    "trainingArgs" : 
 			[
 		    	"weka.classifiers.multilabel.BR", 
