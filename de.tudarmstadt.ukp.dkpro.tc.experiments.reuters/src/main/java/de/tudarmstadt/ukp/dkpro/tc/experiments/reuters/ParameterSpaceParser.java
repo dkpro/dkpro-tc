@@ -13,19 +13,16 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 
 /**
  * Creates the parameter spaces for the lab from a json configuration.
- *
+ * 
  * @author kutschke
  * @author oferschke
- *
+ * 
  */
 public class ParameterSpaceParser
 {
 
-    public static String languageCode;
     public static int folds;
-    public static Integer[] topNgramsK;
     public static Boolean[] toLowerCase;
-
     public static String threshold;
 
     public static ParameterSpace createParamSpaceFromJson(JSONObject pipelineConfiguration)
@@ -35,23 +32,24 @@ public class ParameterSpaceParser
         // DIMENSIONS
 
         folds = pipelineConfiguration.getInt("folds");
+        threshold = pipelineConfiguration.getString("threshold");
 
-        Object[] topNgramsKO = pipelineConfiguration.getJSONArray("topNgramsK").toArray();
-        topNgramsK = Arrays.asList(topNgramsKO).toArray(new Integer[topNgramsKO.length]);
         Object[] toLowerCaseO = pipelineConfiguration.getJSONArray("toLowerCase").toArray();
         toLowerCase = Arrays.asList(toLowerCaseO).toArray(new Boolean[toLowerCaseO.length]);
+        Object[] pipelineParameters = new Object[] {
+                NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+                pipelineConfiguration.getInt("nGramMinSize"),
+                NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+                pipelineConfiguration.getInt("nGramMaxSize") };
 
+        // Load config for classifier
         JSONArray classificationArgsO = pipelineConfiguration.getJSONArray("classification");
         List<Object[]> classificationArgs = new ArrayList<Object[]>();
         for (Object object : classificationArgsO) {
-
             JSONObject jObj = (JSONObject) object;
             Object[] array = jObj.getJSONArray("trainingArgs").toArray(new String[] {});
-            threshold = jObj.getString("threshold");
-
             classificationArgs.add(array);
         }
-        Object[] classificationArgsArray = classificationArgs.toArray();
 
         // Load config for feature extractor sets
         JSONArray featureSetConf = pipelineConfiguration.getJSONArray("featureSets");
@@ -62,21 +60,21 @@ public class ParameterSpaceParser
             featureSets.add(featureSet);
         }
 
-        String languageCode = pipelineConfiguration.getString("languageCode");
-
-        Object[] pipelineParameters = new Object[] {
-                NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
-                pipelineConfiguration.getInt("nGramMinSize"),
-                NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
-                pipelineConfiguration.getInt("nGramMaxSize") };
+        // Load config for feature extractor set parameters
+        JSONArray featureParametersConf = pipelineConfiguration.getJSONArray("featureParameters");
+        List<Object[]> featureParameters = new ArrayList<Object[]>();
+        for (Object object : featureParametersConf) {
+            Object[] featureParameter = ((JSONObject) object).getJSONArray("featureParameter")
+                    .toArray(new String[] {});
+            featureParameters.add(featureParameter);
+        }
 
         ParameterSpace pSpace = new ParameterSpace(
-                Dimension.create("languageCode", languageCode),
                 Dimension.create("threshold", threshold),
-                Dimension.create("classificationArguments", classificationArgsArray),
+                Dimension.create("classificationArguments", classificationArgs.toArray()),
                 Dimension.create("featureSet", featureSets.toArray()),
+                Dimension.create("featureParameters", featureParameters.toArray()),
                 Dimension.create("folds", folds),
-                Dimension.create("topNgramsK", topNgramsK),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", true),
                 Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)));

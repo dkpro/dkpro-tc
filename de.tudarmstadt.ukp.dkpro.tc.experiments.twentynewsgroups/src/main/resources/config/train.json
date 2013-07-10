@@ -1,25 +1,44 @@
 {
-
 	"corpusFilePathTrain" : "src/main/resources/data/bydate-train",
     "corpusFilePathTest" : "src/main/resources/data/bydate-test",
     
 	"languageCode" : "en",
-
 	"folds" : 2,
-	"topNgramsK" : 
-	[
-	    	500, 1000
-	],
-	
 	"nGramMinSize" : 1,
 	"nGramMaxSize" : 3,
-	
 	"toLowerCase" : 
 	[
 		true
 	],
-		
-		"classification" : 
+	
+	"featureSets" : 
+	[
+		{
+		    "featureSet" : 
+			[
+				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
+			]
+		}
+	],
+	
+	"featureParameters" : 
+	[
+		{
+			"featureParameter" : 
+			[
+		    		"TopK", "500"
+			]
+		},
+		{
+		    "featureParameter" : 
+			[
+		    		"TopK", "1000"
+			]
+		}
+	],
+	
+	"classification" : 
 	[
 		{
 			"trainingArgs" : 
@@ -31,17 +50,6 @@
 		    "trainingArgs" : 
 			[
 		    	"weka.classifiers.functions.SMO"
-			]
-		}
-	],
-
-	"featureSets" : 
-	[
-		{
-		    "featureSet" : 
-			[
-				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
-				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
 			]
 		}
 	]

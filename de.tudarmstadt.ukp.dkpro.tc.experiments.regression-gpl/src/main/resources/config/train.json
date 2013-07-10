@@ -1,12 +1,9 @@
 {
-
 	"inputFile" : "src/main/resources/sts2012/STS.input.MSRpar.txt",
     "goldFile" : "src/main/resources/sts2012/STS.gs.MSRpar.txt",
 	
 	"languageCode" : "en",
-
 	"folds" : 2,
-		
 	"toLowerCase" : 
 	[
 		true
