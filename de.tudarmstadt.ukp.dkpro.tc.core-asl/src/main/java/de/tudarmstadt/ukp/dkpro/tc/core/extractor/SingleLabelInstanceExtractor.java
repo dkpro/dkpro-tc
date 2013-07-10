@@ -13,7 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class SingleLabelInstanceExtractor
-    extends AbstractInstanceExtractor<String>
+    extends AbstractInstanceExtractor
 {
 
     @Override
@@ -41,14 +41,14 @@ public class SingleLabelInstanceExtractor
             }
         }
 
-         Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas,
+        Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas,
                 TextClassificationOutcome.class);
 
         // set and write labels for single-label classification
         if (outcome.size() > 1) {
             throw new AnalysisEngineProcessException(
-                    new Throwable("Cannot deal with multi-labeled instances. Please use MultiLabelInstanceExtractor instead.")
-            );
+                    new Throwable(
+                            "Cannot deal with multi-labeled instances. Please use MultiLabelInstanceExtractor instead."));
         }
         instance.setOutcomes(outcome.iterator().next().getOutcome());
         this.instanceList.addInstance(instance);

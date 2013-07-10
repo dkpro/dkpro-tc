@@ -23,7 +23,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class SingleLabelInstanceExtractorPair
-    extends AbstractInstanceExtractor<String>
+    extends AbstractInstanceExtractor
 {
 
     public static final String PARAM_PAIR_FEATURE_EXTRACTORS = "PairExtractors";
@@ -90,8 +90,8 @@ public class SingleLabelInstanceExtractorPair
         // set and write labels for single-label classification
         if (outcome.size() > 1) {
             throw new AnalysisEngineProcessException(
-                    new Throwable("Cannot deal with multi-labeled instances. Please use MultiLabelInstanceExtractor instead.")
-            );
+                    new Throwable(
+                            "Cannot deal with multi-labeled instances. Please use MultiLabelInstanceExtractor instead."));
         }
         instance.setOutcomes(outcome.iterator().next().getOutcome());
         this.instanceList.addInstance(instance);
