@@ -6,6 +6,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescript
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -22,6 +23,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -68,27 +70,31 @@ public class RegressionExperiment
         preprocessTask.setAggregate(getPreprocessing());
         preprocessTask.setType(preprocessTask.getType() + "-RegressionExampleCV");
 
-        // get some meta data depending on the whole document collection that we need for training
-        MetaInfoTask metaTask = new MetaInfoTask();
-        metaTask.setType(metaTask.getType() + nameCV);
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
-                preprocessTask.getType());
+        // // get some meta data depending on the whole document collection that we need for
+        // training
+        // MetaInfoTask metaTask = new MetaInfoTask();
+        // metaTask.setType(metaTask.getType() + nameCV);
+        // metaTask.setMetaCollectorClasses(new ArrayList<Class<? extends MetaCollector>>());
+        // metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
+        // preprocessTask.getType());
 
         // Define the base task which generates an arff instances file
         ExtractFeaturesTask trainTask = new ExtractFeaturesTask();
         trainTask.setDataWriter(WekaDataWriter.class.getName());
+        trainTask.setMetaCollectorClasses(new ArrayList<Class<? extends MetaCollector>>());
         trainTask.setRegressionExperiment(true);
         trainTask.setType(trainTask.getType() + nameCV);
         trainTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
                 preprocessTask.getType());
-        trainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
+        // trainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
+        // metaTask.getType());
 
         // Define the cross-validation task which operates on the results of the the train task
         TaskBase cvTask = new CrossValidationTask();
         cvTask.setType(cvTask.getType() + nameCV);
-        cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY,
                 trainTask.getType());
+        // cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         cvTask.addReport(CVRegressionReport.class);
 
         // Define the overall task scenario
@@ -96,7 +102,7 @@ public class RegressionExperiment
         batch.setType("Evaluation" + nameCV);
         batch.setParameterSpace(pSpace);
         batch.addTask(preprocessTask);
-        batch.addTask(metaTask);
+        // batch.addTask(metaTask);
         batch.addTask(trainTask);
         batch.addTask(cvTask);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

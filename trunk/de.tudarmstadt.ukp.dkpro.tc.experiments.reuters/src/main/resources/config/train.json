@@ -2,21 +2,42 @@
 	"corpusFilePathTrain" : "src/test/resources/data/training",
 	"corpusFilePathTest" : "src/test/resources/data/test",
 	"goldLabelFilePath" : "src/test/resources/data/cats.txt",
+	"threshold" : "0.5",
 	
 	"languageCode" : "en",
-
-	"folds" : 3,
-	"topNgramsK" : 
-	[
-	    	500
-	],
-	
+	"folds" : 2,
 	"nGramMinSize" : 1,
 	"nGramMaxSize" : 3,
-	
 	"toLowerCase" : 
 	[
 		true
+	],
+	
+	"featureSets" : 
+	[
+		{
+		    "featureSet" : 
+			[
+				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
+			]
+		}
+	],
+	
+	"featureParameters" : 
+	[
+		{
+			"featureParameter" : 
+			[
+		    		"TopK", "500"
+			]
+		},
+		{
+			"featureParameter" : 
+			[
+		    		"TopK", "1000"
+			]
+		}
 	],
 		
 	"classification" : 
@@ -30,18 +51,6 @@
 		    	"weka.classifiers.bayes.NaiveBayes"
 			]
 		}
-	],
-	"featureSets" : 
-	[
-		{
-		    "featureSet" : 
-			[
-				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
-				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
-			]
-		}
-	]
-	
-		
+	]	
 }
 	

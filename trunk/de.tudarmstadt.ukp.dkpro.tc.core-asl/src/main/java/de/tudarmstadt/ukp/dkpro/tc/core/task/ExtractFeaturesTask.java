@@ -35,33 +35,15 @@ public class ExtractFeaturesTask
     public static final String INPUT_KEY = "preprocessing_input";
 
     @Discriminator
-    protected Boolean lowerCase;
-    @Discriminator
-    protected Integer topNgramsK;
-    @Discriminator
-    protected Float ngramFreqThreshold;
-    @Discriminator
-    protected Float posNgramFreqThreshold;
-
-    @Discriminator
     protected String[] featureSet;
-
     @Discriminator
     protected String[] pairFeatureSet;
-
     @Discriminator
-    boolean multiLabel;
-
-    @Discriminator
-    boolean featuresInMemory = false;
-
-    @Discriminator
-    protected Object[] pipelineParameters;
+    protected Object[] featureParameters;
 
     private String dataWriter;
-
     private boolean isRegressionExperiment = false;
-
+    private boolean addInstanceId = false;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
 
     @Override
@@ -85,6 +67,10 @@ public class ExtractFeaturesTask
         }
 
         List<Object> parameters = new ArrayList<Object>();
+        // adding FE parameters, if any
+        if (featureParameters != null) {
+            parameters.addAll(Arrays.asList(featureParameters));
+        }
 
         for (String key : parameterKeyPairs.keySet()) {
             File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
@@ -94,7 +80,7 @@ public class ExtractFeaturesTask
 
         ExternalResourceDescription[] extractorResources = new ExternalResourceDescription[featureSet.length];
         for (int i = 0; i < featureSet.length; i++) {
-            System.out.println(featureSet[i]);
+            // System.out.println(featureSet[i]);
             try {
                 extractorResources[i] = ExternalResourceFactory.createExternalResourceDescription(
                         (Class) Class.forName(featureSet[i]), parameters.toArray());
@@ -104,18 +90,11 @@ public class ExtractFeaturesTask
             }
         }
 
-        parameters.addAll(Arrays.asList(pipelineParameters));
-
-        // TODO feature parameters are going to be handled via FE-resources
-        // parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_USE_TOP_K, topNgramsK));
-        //
         // // TODO YC NGRAM Freq Threshold
         // if (ngramFreqThreshold != null) {
         // parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_FREQ_THRESHOLD,
         // ngramFreqThreshold));
         // }
-        //
-        // parameters.addAll(Arrays.asList(NGramFeatureExtractor.PARAM_LOWER_CASE, lowerCase));
 
         parameters.addAll(Arrays.asList(InstanceExtractor.PARAM_OUTPUT_DIRECTORY,
                 outputDir.getAbsolutePath(), InstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
@@ -169,17 +148,6 @@ public class ExtractFeaturesTask
         this.metaCollectorClasses = metaCollectorClasses;
     }
 
-    // public Class<? extends AbstractInstanceExtractor> getInstanceExtractor()
-    // {
-    // return instanceExtractor;
-    // }
-
-    // public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor>
-    // aInstanceExtractor)
-    // {
-    // instanceExtractor = aInstanceExtractor;
-    // }
-
     public boolean getAddInstanceId()
     {
         return addInstanceId;
@@ -189,7 +157,5 @@ public class ExtractFeaturesTask
     {
         addInstanceId = aAddInstanceId;
     }
-
-    private boolean addInstanceId = false;
 
 }

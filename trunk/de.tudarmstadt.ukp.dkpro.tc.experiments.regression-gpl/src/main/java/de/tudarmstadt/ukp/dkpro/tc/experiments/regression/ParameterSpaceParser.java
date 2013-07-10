@@ -62,6 +62,7 @@ public class ParameterSpaceParser
         }
 
         Object[] pipelineParameters = new Object[] {};
+        Object[] featureParameters = new Object[] {};
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("classificationArguments", classificationArgsArray),
@@ -70,8 +71,8 @@ public class ParameterSpaceParser
                 Dimension.create("folds", folds),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", false),
-                Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)));
-
+                Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)),
+                Dimension.create("featureParameters", featureParameters));
         return pSpace;
     }
 }

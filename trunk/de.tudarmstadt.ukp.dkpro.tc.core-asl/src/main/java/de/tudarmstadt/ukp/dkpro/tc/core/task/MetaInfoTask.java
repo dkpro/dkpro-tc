@@ -31,11 +31,8 @@ public class MetaInfoTask
     public static final String INPUT_KEY = "preprocessing_input";
 
     @Discriminator
-    boolean lowerCase;
-
-    @Discriminator
     protected Object[] pipelineParameters;
-    
+
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
 
     @Override
@@ -43,20 +40,18 @@ public class MetaInfoTask
         throws ResourceInitializationException, IOException
     {
         String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-        return createDescription(
-                SerializedCasReader.class,
-                SerializedCasReader.PARAM_PATH, path + "/",
-                SerializedCasReader.PARAM_PATTERNS, new String[]{ SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" }
-        );
+        return createDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
+                + "/", SerializedCasReader.PARAM_PATTERNS,
+                new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
     }
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        
+
         // collect parameter/key pairs that need to be set
-        Map<String,String> parameterKeyPairs = new HashMap<String,String>();
+        Map<String, String> parameterKeyPairs = new HashMap<String, String>();
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
             try {
                 parameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
@@ -68,25 +63,27 @@ public class MetaInfoTask
                 throw new ResourceInitializationException(e);
             }
         }
-        
+
         List<Object> parameters = new ArrayList<Object>();
         parameters.addAll(Arrays.asList(pipelineParameters));
 
         for (String key : parameterKeyPairs.keySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE), parameterKeyPairs.get(key));
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+                    parameterKeyPairs.get(key));
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
-        
-        AnalysisEngineDescription[] aeds = new AnalysisEngineDescription[metaCollectorClasses.size()];
-        int i=0;
+
+        AnalysisEngineDescription[] aeds = new AnalysisEngineDescription[metaCollectorClasses
+                .size()];
+        int i = 0;
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
             aeds[i] = createPrimitiveDescription(metaCollectorClass, parameters.toArray());
             i++;
         }
-        
+
         return createAggregateDescription(aeds);
     }
-    
+
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         return metaCollectorClasses;

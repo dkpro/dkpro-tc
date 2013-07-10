@@ -20,6 +20,7 @@ import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgro
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
@@ -47,7 +48,6 @@ public class TwentyNewsgroupsGroovyExperiment {
     // === DIMENSIONS===========================================================
 
     def dimFolds = Dimension.create("folds" , 2);
-    def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
@@ -80,6 +80,20 @@ public class TwentyNewsgroupsGroovyExperiment {
     ] as Object[]
     );
 
+    def dimFeatureParameters = Dimension.create(
+    "featureParameters",
+    [
+        [
+            "TopK",
+            "500"
+        ].toArray(),
+        [
+            "TopK",
+            "1000"
+        ].toArray()
+    ] as Object[]
+    );
+
 
 
     // === Experiments =========================================================
@@ -100,7 +114,7 @@ public class TwentyNewsgroupsGroovyExperiment {
             aggregate:	getPreprocessing(),
             parameterSpace : [
                 dimFolds,
-                dimTopNgramsK,
+                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -130,7 +144,7 @@ public class TwentyNewsgroupsGroovyExperiment {
             aggregate:	getPreprocessing(),
             parameterSpace : [
                 dimFolds,
-                dimTopNgramsK,
+                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -138,7 +152,7 @@ public class TwentyNewsgroupsGroovyExperiment {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [CVBatchReport]];
+            reports:         [BatchTrainTestReport]];
 
         // Run
         Lab.getInstance().run(batchTask);

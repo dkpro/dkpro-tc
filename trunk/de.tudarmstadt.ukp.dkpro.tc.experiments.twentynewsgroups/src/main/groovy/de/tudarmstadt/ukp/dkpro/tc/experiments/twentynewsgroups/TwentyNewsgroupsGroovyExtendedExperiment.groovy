@@ -55,7 +55,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     // === DIMENSIONS===========================================================
 
     def dimFolds = Dimension.create("folds" , 2);
-    def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
@@ -84,6 +83,20 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         [
             NrOfTokensFeatureExtractor.class.name,
             NGramFeatureExtractor.class.name
+        ].toArray()
+    ] as Object[]
+    );
+
+    def dimFeatureParameters = Dimension.create(
+    "featureParameters",
+    [
+        [
+            "TopK",
+            "500"
+        ].toArray(),
+        [
+            "TopK",
+            "1000"
         ].toArray()
     ] as Object[]
     );
@@ -146,7 +159,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Evaluation-TwentyNewsgroups-CV",
             parameterSpace : [
                 dimFolds,
-                dimTopNgramsK,
+                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -242,7 +255,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
                 dimFolds,
-                dimTopNgramsK,
+                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
