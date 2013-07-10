@@ -7,7 +7,6 @@ import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.AbstractInstanceExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
@@ -24,7 +23,6 @@ public class BatchTaskTrainTest
     private CollectionReaderDescription readerTest;
     private AnalysisEngineDescription aggregate;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
-    private Class<? extends AbstractInstanceExtractor> instanceExtractor;
     private String dataWriter;
 
     private PreprocessTask preprocessTaskTrain;
@@ -39,17 +37,13 @@ public class BatchTaskTrainTest
     }
 
     public BatchTaskTrainTest(String aExperimentName, CollectionReaderDescription aReaderTrain,
-            CollectionReaderDescription aReaderTest,
-            AnalysisEngineDescription aAggregate,
-            List<Class<? extends MetaCollector>> metaCollectorClasses,
-            Class<? extends AbstractInstanceExtractor> instanceExtractor,
-            String aDataWriterClassName)
+            CollectionReaderDescription aReaderTest, AnalysisEngineDescription aAggregate,
+            List<Class<? extends MetaCollector>> metaCollectorClasses, String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
         setReaderTrain(aReaderTrain);
         setReaderTest(aReaderTest);
         setAggregate(aAggregate);
-        setInstanceExtractor(instanceExtractor);
         setDataWriter(aDataWriterClassName);
         setMetaCollectorClasses(metaCollectorClasses);
     }
@@ -89,14 +83,12 @@ public class BatchTaskTrainTest
 
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setAddInstanceId(true);
-        featuresTrainTask.setInstanceExtractor(instanceExtractor);
         featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.setMetaCollectorClasses(getMetaCollectorClasses());
 
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setAddInstanceId(true);
-        featuresTestTask.setInstanceExtractor(instanceExtractor);
         featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.setMetaCollectorClasses(getMetaCollectorClasses());
@@ -158,11 +150,6 @@ public class BatchTaskTrainTest
     public void setAggregate(AnalysisEngineDescription aggregate)
     {
         this.aggregate = aggregate;
-    }
-
-    public void setInstanceExtractor(Class<? extends AbstractInstanceExtractor> instanceExtractor)
-    {
-        this.instanceExtractor = instanceExtractor;
     }
 
     public String getDataWriter()

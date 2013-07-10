@@ -16,7 +16,6 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.SingleLabelInstanceExtractor
 import de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
@@ -39,44 +38,46 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  */
 public class TwentyNewsgroupsGroovyExperiment {
 
-	// === PARAMETERS===========================================================
+    // === PARAMETERS===========================================================
 
-	def corpusFilePathTrain = "src/main/resources/data/bydate-train";
-	def corpusFilePathTest  ="src/main/resources/data/bydate-test";
+    def corpusFilePathTrain = "src/main/resources/data/bydate-train";
+    def corpusFilePathTest  ="src/main/resources/data/bydate-test";
     def languageCode = "en";
 
-	// === DIMENSIONS===========================================================
+    // === DIMENSIONS===========================================================
 
     def dimFolds = Dimension.create("folds" , 2);
     def dimTopNgramsK = Dimension.create("topNgramsK" , [500, 1000] as int[] );
     def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
-	//UIMA parameters for FE configuration
-	def dimPipelineParameters = Dimension.create(
-        "pipelineParameters",
+    //UIMA parameters for FE configuration
+    def dimPipelineParameters = Dimension.create(
+    "pipelineParameters",
+    [
+        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        1,
+        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        3
+    ]);
+
+
+    def dimClassificationArgs =
+    Dimension.create("classificationArguments",
+    [
+        [NaiveBayes.class.name].toArray(),
+        [SMO.class.name].toArray()
+    ] as Object[]
+    );
+
+    def dimFeatureSets = Dimension.create(
+    "featureSet",
+    [
         [
-            NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
-            NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
-        ]);
-
-
-	def dimClassificationArgs =
-        Dimension.create("classificationArguments",
-            [
-                [NaiveBayes.class.name].toArray(),
-                [SMO.class.name].toArray()
-            ] as Object[]
-     );
-
-	def dimFeatureSets = Dimension.create(
-        "featureSet",
-        [
-            [
-                NrOfTokensFeatureExtractor.class.name,
-                NGramFeatureExtractor.class.name
-            ].toArray()
-        ] as Object[]
+            NrOfTokensFeatureExtractor.class.name,
+            NGramFeatureExtractor.class.name
+        ].toArray()
+    ] as Object[]
     );
 
 
@@ -88,74 +89,87 @@ public class TwentyNewsgroupsGroovyExperiment {
      *
      * @throws Exception
      */
-	protected void runCrossValidation() throws Exception
-	{
-		BatchTaskCV batchTask = [
-			experimentName: "TwentyNewsgroups-CV-Groovy",
-			type: "Evaluation-TwentyNewsgroups-CV-Groovy",
-			reader:	getReaderDesc(corpusFilePathTrain, languageCode),
-            instanceExtractor:  SingleLabelInstanceExtractor.class.name,
+    protected void runCrossValidation() throws Exception
+    {
+        BatchTaskCV batchTask = [
+            experimentName: "TwentyNewsgroups-CV-Groovy",
+            type: "Evaluation-TwentyNewsgroups-CV-Groovy",
+            reader:	getReaderDesc(corpusFilePathTrain, languageCode),
             metaCollectorClasses: [NGramMetaCollector.class],
             dataWriter:         WekaDataWriter.class.name,
-			aggregate:	getPreprocessing(),
-			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
-			executionPolicy: ExecutionPolicy.RUN_AGAIN,
-			reports:         [CVBatchReport]
-		];
+            aggregate:	getPreprocessing(),
+            parameterSpace : [
+                dimFolds,
+                dimTopNgramsK,
+                dimToLowerCase,
+                dimMultiLabel,
+                dimClassificationArgs,
+                dimFeatureSets,
+                dimPipelineParameters
+            ],
+            executionPolicy: ExecutionPolicy.RUN_AGAIN,
+            reports:         [CVBatchReport]];
 
-		Lab.getInstance().run(batchTask);
-	}
-	/**
-	 * TrainTest Setting
-	 *
-	 * @throws Exception
-	 */
-	protected void runTrainTest() throws Exception
-	{
+        Lab.getInstance().run(batchTask);
+    }
+    /**
+     * TrainTest Setting
+     *
+     * @throws Exception
+     */
+    protected void runTrainTest() throws Exception
+    {
 
-		BatchTaskTrainTest batchTask = [
-			experimentName: "TwentyNewsgroups-TrainTest-Groovy",
-			type: "Evaluation-TwentyNewsgroups-TrainTest-Groovy",
-			readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
-			readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
-            instanceExtractor:  SingleLabelInstanceExtractor.class.name,
+        BatchTaskTrainTest batchTask = [
+            experimentName: "TwentyNewsgroups-TrainTest-Groovy",
+            type: "Evaluation-TwentyNewsgroups-TrainTest-Groovy",
+            readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
+            readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
             metaCollectorClasses: [NGramMetaCollector.class],
             dataWriter:         WekaDataWriter.class.name,
-			aggregate:	getPreprocessing(),
-			parameterSpace : [dimFolds, dimTopNgramsK, dimToLowerCase, dimMultiLabel, dimClassificationArgs, dimFeatureSets, dimPipelineParameters],
-			executionPolicy: ExecutionPolicy.RUN_AGAIN,
-			reports:         [CVBatchReport]
-		];
+            aggregate:	getPreprocessing(),
+            parameterSpace : [
+                dimFolds,
+                dimTopNgramsK,
+                dimToLowerCase,
+                dimMultiLabel,
+                dimClassificationArgs,
+                dimFeatureSets,
+                dimPipelineParameters
+            ],
+            executionPolicy: ExecutionPolicy.RUN_AGAIN,
+            reports:         [CVBatchReport]];
 
-		// Run
-		Lab.getInstance().run(batchTask);
-	}
+        // Run
+        Lab.getInstance().run(batchTask);
+    }
 
 
-	private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
-			throws ResourceInitializationException, IOException
-	{
-		return createDescription(
-			TwentyNewsgroupsCorpusReader,
-			TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
-            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
-			TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-		);
-	}
+    private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
+            throws ResourceInitializationException, IOException
+    {
+        return createDescription(
+        TwentyNewsgroupsCorpusReader,
+        TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
+        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+        );
+    }
 
-	private AnalysisEngineDescription getPreprocessing()
-			throws ResourceInitializationException
-	{
-		return createAggregateDescription(
-			createPrimitiveDescription(BreakIteratorSegmenter),
-			createPrimitiveDescription(OpenNlpPosTagger)
-		);
-	}
+    private AnalysisEngineDescription getPreprocessing()
+    throws ResourceInitializationException
+    {
+        return createAggregateDescription(
+        createPrimitiveDescription(BreakIteratorSegmenter),
+        createPrimitiveDescription(OpenNlpPosTagger)
+        );
+    }
 
-	public static void main(String[] args)
-	{
-		new TwentyNewsgroupsGroovyExperiment().runCrossValidation();
-		new TwentyNewsgroupsGroovyExperiment().runTrainTest();
-	}
+    public static void main(String[] args)
+    {
+        new TwentyNewsgroupsGroovyExperiment().runCrossValidation();
+        new TwentyNewsgroupsGroovyExperiment().runTrainTest();
+    }
 
 }
