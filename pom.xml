@@ -37,6 +37,10 @@
 			<id>ukp-oss-releases</id>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
 		</repository>
+		 <repository>
+          <id>ukp-oss-snapshots</id>
+          <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
+        </repository>		
 	  <repository>
 	    <id>apache.snapshots</id>
 	    <name>Apache Snapshot Repository</name>
