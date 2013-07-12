@@ -17,7 +17,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 /**
  * Pair-wise feature extractor
  * Returns if two views share the same named entities.
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
 public class SharedNEsFeatureExtractor
@@ -36,11 +36,13 @@ public class SharedNEsFeatureExtractor
 
     }
 
+    /**
+     * 
+     * @param view the view to be processed
+     * @return all named entities in this view
+     */
     private Collection<String> getNEs(JCas view)
     {
-        // if(JCasUtil.select(view, NamedEntity.class).size() > 0){
-        // System.out.println("Named entites exist!");
-        // }
         List<String> entities = new ArrayList<String>();
         for (NamedEntity entity : JCasUtil.select(view, NamedEntity.class)) {
             entities.add(entity.getCoveredText());

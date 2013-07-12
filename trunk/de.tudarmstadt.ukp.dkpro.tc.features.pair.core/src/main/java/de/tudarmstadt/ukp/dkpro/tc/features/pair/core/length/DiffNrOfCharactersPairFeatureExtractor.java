@@ -12,7 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 /**
  * Pair-wise feature extractor
  * Computes the number of characters in a view and returns the difference of both views.
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
 public class DiffNrOfCharactersPairFeatureExtractor

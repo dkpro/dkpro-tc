@@ -16,7 +16,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 /**
  * Pair-wise feature extractor.
  * Computes how many noun chunks two views share.
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
 public class SharedNounChunks
@@ -48,6 +48,12 @@ public class SharedNounChunks
 
 			}
 
+	/**
+	 * Computes the ratio of shared nouns
+	 * @param view1 First view to be processed
+	 * @param view2 Second view to be processed
+	 * @return The quotient of shared noun chunks in both views and noun chunks in the first view
+	 */
 	private double getSharedNounChunksCount(JCas view1, JCas view2)
 	{
 
