@@ -24,7 +24,7 @@ public class TripleFeatureExtractor
     extends FeatureExtractorResource_ImplBase
 {
 
-    public static final String PARAM_TRIPLE_FD_FILE = "TripleFDFile";
+    public static final String PARAM_TRIPLE_FD_FILE = "TripleFdFile";
     @ConfigurationParameter(name=PARAM_TRIPLE_FD_FILE, mandatory=true)
     private String fdFile;
 
