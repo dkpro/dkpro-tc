@@ -14,7 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 /**
  * Pair-wise feature extractor
  * Computes the average character lenght of all noun chunks in a view and reuturns the difference of both views.
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
 public class DiffNounChunkCharacterLength
@@ -34,6 +34,11 @@ public class DiffNounChunkCharacterLength
 
     }
 
+    /**
+     * Computes the average length of noun phrase in a view
+     * @param view The view to be proecessed
+     * @return average length of noun phrases in characters
+     */
     private double getAverageNounPhraseCharacterLength(JCas view)
     {
         int totalNumber = 0;

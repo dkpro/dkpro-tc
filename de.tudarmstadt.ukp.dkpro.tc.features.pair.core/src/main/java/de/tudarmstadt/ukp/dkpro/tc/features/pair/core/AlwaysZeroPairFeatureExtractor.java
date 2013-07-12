@@ -9,13 +9,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
-// FIXME this seems to be named a bit misleading
 /**
  * This class always assigns the baseline value (=0) as a feature
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
-public class BaselinePairFeatureExtractor
+public class AlwaysZeroPairFeatureExtractor
     extends PairFeatureExtractorResource_ImplBase
 {
 

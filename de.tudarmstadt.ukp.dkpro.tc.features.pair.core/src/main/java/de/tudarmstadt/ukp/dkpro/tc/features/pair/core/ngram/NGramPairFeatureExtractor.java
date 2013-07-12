@@ -12,7 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 /**
  * Pair-wise feature extractor
  * Returns the ngrams in a view with the view name as prefix
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
 public class NGramPairFeatureExtractor

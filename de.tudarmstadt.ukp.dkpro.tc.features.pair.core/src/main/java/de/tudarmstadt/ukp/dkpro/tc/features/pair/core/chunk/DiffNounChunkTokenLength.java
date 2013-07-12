@@ -15,7 +15,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 /**
  * Pair-wise feature extractor
  * Computes the average token length of all noun chunks in a view and returns the difference of both views.
- * @author erbs
+ * @author nico.erbs@gmail.com
  *
  */
 public class DiffNounChunkTokenLength
@@ -35,7 +35,7 @@ public class DiffNounChunkTokenLength
     }
 
     /**
-     * Returns avagerag token lenght of chunks in a view
+     * Returns average token length of chunks in a view
      * @param view the view of the JCas
      * @return average token length of all chunks
      */

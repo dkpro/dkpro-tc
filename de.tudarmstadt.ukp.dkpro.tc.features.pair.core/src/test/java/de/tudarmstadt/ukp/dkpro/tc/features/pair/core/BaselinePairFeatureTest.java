@@ -29,7 +29,7 @@ public class BaselinePairFeatureTest extends PairFeatureTestBase
         );
         AnalysisEngine engine = createPrimitive(desc);
 
-        PairFeatureExtractorResource_ImplBase extractor = new BaselinePairFeatureExtractor();
+        PairFeatureExtractorResource_ImplBase extractor = new AlwaysZeroPairFeatureExtractor();
         List<Feature> features = runExtractor(engine, extractor);
 
         assertEquals(1, features.size());
