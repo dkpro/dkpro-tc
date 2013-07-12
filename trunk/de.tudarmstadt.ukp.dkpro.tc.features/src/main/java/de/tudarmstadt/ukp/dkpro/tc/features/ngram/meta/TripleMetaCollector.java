@@ -108,7 +108,7 @@ public class TripleMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String,String> mapping = new HashMap<String,String>();
-        mapping.put(TripleFeatureExtractor.PARAM_TRIPLE_FD_FILE, TRIPLE_FD_KEY);
+        mapping.put(TripleMetaCollector.PARAM_TRIPLE_FD_FILE, TRIPLE_FD_KEY);
         return mapping;
     }
 }
