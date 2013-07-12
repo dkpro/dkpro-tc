@@ -100,15 +100,14 @@ public class TestTask
             filteredTestData = new Instances(testData);
         }
 
-        // train the classifier on the train set split
-        cl.buildClassifier(filteredTrainData);
-
         // file to hold Crossvalidation results
         File evalOutput = new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + EVALUATION_DATA_KEY);
 
         // evaluation
         if (multiLabel) {
+        	//we don't need to build the classifier - multi label evaluation does this automatically
+        	
             Result r = Evaluation.evaluateModel((MultilabelClassifier) cl, filteredTrainData,
                     filteredTestData, threshold);
             Result.writeResultToFile(r, evalOutput.getAbsolutePath());
@@ -143,6 +142,9 @@ public class TestTask
             }
         }
         else {
+            // train the classifier on the train set split - not necessary in multilabel setup, but in single label setup
+            cl.buildClassifier(filteredTrainData);
+
             weka.classifiers.Evaluation eval = new weka.classifiers.Evaluation(filteredTrainData);
             eval.evaluateModel(cl, filteredTestData);
             weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
