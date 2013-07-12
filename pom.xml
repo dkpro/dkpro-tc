@@ -26,6 +26,11 @@
 			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<organization>
 		<name>Ubiquitous Knowledge Processing (UKP) Lab</name>
