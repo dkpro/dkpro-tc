@@ -74,7 +74,7 @@ public class BatchTaskTrainTest
         preprocessTaskTest = new PreprocessTask();
         preprocessTaskTest.setReader(readerTest);
         preprocessTaskTest.setAggregate(aggregate);
-        preprocessTaskTrain.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
+        preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
