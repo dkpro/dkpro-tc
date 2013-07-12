@@ -7,6 +7,8 @@ Note: This project is still in incubator stage and subject to frequent change.
 
 
 
+
+
 = Basic System Architecture =
 
-https://dkpro-tc.googlecode.com/svn/wiki/images/DKProTC_overview.png
+<img src="https://dkpro-tc.googlecode.com/svn/wiki/images/DKProTC_overview.png" alt="TC System Architecture" width="600" height="400">
