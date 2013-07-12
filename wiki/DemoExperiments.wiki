@@ -2,5 +2,148 @@
 
 = Introduction =
 
-DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups
+In this introduction we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
+DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
+
+Two basic example experiments can be found in:
+
+de.tudarmstadt.ukp.dkpro.tc.experiments
+
+The first ist called "reuters" and the second is called "twentynewsgroups". Both come with a set of data and can be run right away. The "reuters" example is a multi-classification task, whereas the "twentynewsgroups" is a binary classification task. As the latter is easier, we will start with that one:
+
+== Binary Classification (twentynewsgroups) Example ==
+
+It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
+
+These are some of the files you should find in this project:
+
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── groovy
+│   │   │   └── de
+│   │   │       └── tudarmstadt
+│   │   │           └── ukp
+│   │   │               └── dkpro
+│   │   │                   └── tc
+│   │   │                       └── experiments
+│   │   │                           └── twentynewsgroups
+│   │   │                               ├── io
+│   │   │                               │   └── TwentyNewsgroupsCorpusReader.java
+│   │   │                               ├── ParameterSpaceParser.java
+│   │   │                               ├── TwentyNewsgroupsExperiment.java
+│   │   │                               ├── TwentyNewsgroupsGroovyExperiment.groovy
+│   │   │                               └── TwentyNewsgroupsGroovyExtendedExperiment.groovy
+│   │   └── resources
+│   │       ├── config
+│   │       │   └── train.json
+│   │       ├── data
+│   │       │   ├── bydate-test
+│   │       │   │   ├── alt.atheism
+│   │       │   │   ├── comp.graphics
+│   │       │   │   ├── comp.os.ms-windows.misc
+│   │       │   │   └── comp.sys.ibm.pc.hardware
+│   │       │   └── bydate-train
+│   │       │       ├── alt.atheism
+│   │       │       ├── comp.2.graphics
+│   │       │       ├── comp.2.os.ms-windows.misc
+│   │       │       └── comp.2.sys.ibm.pc.hardware
+│   │       ├── lab
+│   │       │   └── debug_context.xml
+│   │       └── log4j.properties
+└── target
+.....
+
+The most important file is the
+
+=== TwentyNewsgroupsGroovyExperiment.groovy ===
+
+This takes care of 
+
+  * loading the data
+  * extracting features
+    * which are defined
+  * training classifiers
+    * which can be listed
+  * evaluating classifiers
+    * either with designated train/test sets or using cross-validation
+  * writing results
+
+Let's look at each of these individually:
+
+    def corpusFilePathTrain = "src/main/resources/data/bydate-train";
+    def corpusFilePathTest  ="src/main/resources/data/bydate-test";
+    def languageCode = "en";
+
+This defines the data to be used - split into training and testing data. The language is English.
+
+The method 
+
+private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
+
+takes the said paths and gathers the data to be processed. In this case all the .txt-files that can be found in the directories.
+
+The collected data is then processed via
+
+private AnalysisEngineDescription getPreprocessing()
+
+In the given examples two preprocessing methods are used:
+
+BreakIteratorSegmenter
+OpenNlpPosTagger
+
+A segmenter and a Part-of-Speech Tagger. 
+
+From the words and the POS tags n-gram features are extracted - precisely uni-, bi- and trigram, as defined here:
+
+def dimPipelineParameters = Dimension.create("pipelineParameters" ...
+
+and here
+
+def dimFeatureSets = Dimension.create("featureSet"...
+
+The classifiers as defined here:
+
+def dimClassificationArgs = Dimension.create("classificationArguments"...
+
+using a subset of the gathered features, as defined here:
+
+def dimFeatureParameters = Dimension.create("featureParameters",
+
+Two basic train and test methods are implemented in this example: x-fold-cross-validation and training/testing on specified sets.
+
+=== runCrossValidation() ===
+
+In the presented example, two folds are used:
+
+def dimFolds = Dimension.create("folds" , 2);
+
+gluing all of the various parameters and processing tasks together to actually perform all the tasks is governed by
+
+runCrossValidation()
+
+=== runTrainTest() ===
+
+And similarly for the designated test and train sets.
+
+=== main() ===
+
+This calls both the cross-validation and the train/test runs. Please note, that here it can be specified where the resulting data will be stored:
+
+System.setProperty("DKPRO_HOME", "/the/path/to/my/results/");
+
+There you will find a set of directories storing intermediate and final evaluation results of your experiments.
+
+  * Evaluation*CV* contains the cross-validation results, whereas
+  * TestTask*TrainTest* contains the results on the test set.
+
+the eval.xls file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set).
+
+Once you got this example running as it is, you can start adapting various parameters:
+
+  * using different data sets - which are completely up to you
+  * using different features - any that you can think of. Information on how to use customized features will be added here
+  * using different classifiers - please refer to the WEKA-JavaDoc for further information on that. Currently, we are using WEKA for classification.
+
+== Multi-Label Classification == 
