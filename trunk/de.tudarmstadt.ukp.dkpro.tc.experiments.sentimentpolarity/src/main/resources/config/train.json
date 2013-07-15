@@ -1,0 +1,52 @@
+{
+	"corpusFilePathTrain" : "src/main/resources/data/train-small",
+    "corpusFilePathTest" : "src/main/resources/data/test-small",
+    
+	"languageCode" : "en",
+	"nGramMinSize" : 1,
+	"nGramMaxSize" : 3,
+	"toLowerCase" : 
+	[
+		true
+	],
+	
+	"featureSets" : 
+	[
+		{
+		    "featureSet" : 
+			[
+				"de.tudarmstadt.ukp.dkpro.tc.features.content.QuestionsFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
+			]
+		}
+	],
+	
+	"featureParameters" : 
+	[
+		{
+			"featureParameter" : 
+			[
+		    		"TopK", "500"
+			]
+		},
+		{
+		    "featureParameter" : 
+			[
+		    		"TopK", "5000"
+			]
+		}
+	],
+	
+	"classification" : 
+	[
+		{
+		    "trainingArgs" : 
+			[
+		    	"weka.classifiers.functions.SMO",
+		    	"-C",
+		    	"10"
+			]
+		}
+	]
+}	
