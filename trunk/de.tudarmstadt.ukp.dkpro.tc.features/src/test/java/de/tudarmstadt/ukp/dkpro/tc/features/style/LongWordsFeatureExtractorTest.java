@@ -1,11 +1,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import static de.tudarmstadt.ukp.dkpro.tc.features.style.QuestionsRatioFeatureExtractor.FN_QUESTION_RATIO;
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -18,10 +18,10 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class QuestionRatioFeatureExtractorTest
+public class LongWordsFeatureExtractorTest
 {
     @Test
-    public void questionRatioFeatureExtractorTest()
+    public void longWordsFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -32,16 +32,15 @@ public class QuestionRatioFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Is he a tester???? Really?? He is a tester! Oh yes.");
+        jcas.setDocumentText("This is a test of incredibly surprising long words.");
         engine.process(jcas);
         
-        QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
+        LongWordsFeatureExtractor extractor = new LongWordsFeatureExtractor();
         List<Feature> features = extractor.extract(jcas, null);
 
-        Assert.assertEquals(1, features.size());
-        
-        for (Feature feature : features) {
-            assertFeature(FN_QUESTION_RATIO, 0.5, feature);
-        }
+        Assert.assertEquals(2, features.size());
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(LongWordsFeatureExtractor.FN_LW_RATIO, 0.2, iter.next());
+        assertFeature(LongWordsFeatureExtractor.FN_SW_RATIO, 0.4, iter.next());
     }
 }

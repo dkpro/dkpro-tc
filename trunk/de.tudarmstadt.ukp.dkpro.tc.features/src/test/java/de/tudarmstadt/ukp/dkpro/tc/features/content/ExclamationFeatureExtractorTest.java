@@ -1,6 +1,5 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.style;
+package de.tudarmstadt.ukp.dkpro.tc.features.content;
 
-import static de.tudarmstadt.ukp.dkpro.tc.features.style.QuestionsRatioFeatureExtractor.FN_QUESTION_RATIO;
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
@@ -17,11 +16,12 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.features.content.ExclamationFeatureExtractor;
 
-public class QuestionRatioFeatureExtractorTest
+public class ExclamationFeatureExtractorTest
 {
     @Test
-    public void questionRatioFeatureExtractorTest()
+    public void exclamationRatioFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -32,16 +32,16 @@ public class QuestionRatioFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Is he a tester???? Really?? He is a tester! Oh yes.");
+        jcas.setDocumentText("He is a tester!!! Tester! Is he? Oh yes.");
         engine.process(jcas);
         
-        QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
+        ExclamationFeatureExtractor extractor = new ExclamationFeatureExtractor();
         List<Feature> features = extractor.extract(jcas, null);
 
         Assert.assertEquals(1, features.size());
         
         for (Feature feature : features) {
-            assertFeature(FN_QUESTION_RATIO, 0.5, feature);
+            assertFeature(ExclamationFeatureExtractor.FEATURE_NAME, 0.5, feature);
         }
     }
 }
