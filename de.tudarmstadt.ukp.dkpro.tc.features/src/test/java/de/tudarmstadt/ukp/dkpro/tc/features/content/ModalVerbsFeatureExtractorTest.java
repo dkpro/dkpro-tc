@@ -1,12 +1,11 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.style;
+package de.tudarmstadt.ukp.dkpro.tc.features.content;
 
-import static de.tudarmstadt.ukp.dkpro.tc.features.style.POSRatioFeatureExtractor.FN_N_RATIO;
-import static de.tudarmstadt.ukp.dkpro.tc.features.style.POSRatioFeatureExtractor.FN_PUNC_RATIO;
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -20,11 +19,10 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class POSRatioFeatureExtractorTest
+public class ModalVerbsFeatureExtractorTest
 {
-	
     @Test
-    public void posContextFeatureExtractorTest()
+    public void modalVerbsFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -32,28 +30,33 @@ public class POSRatioFeatureExtractorTest
                 createPrimitiveDescription(
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
-                )
-                
+                )  
         );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("As the emeritus pope leaves the Vatican for the papal residence of Castel Gandolfo – and becomes the first pontiff to resign in 600 years – the operation to choose his successor begins. With the throne of St Peter declared empty and the interregnum formally begun, as many of the 208 cardinals who can make the journey will be expected to travel to the Vatican to help run the church in the absence of a pope.");
+        jcas.setDocumentText("I can. I could. You might. You may. I must. He should. He must. We will. They would. You shall.");
         engine.process(jcas);
         
-        POSRatioFeatureExtractor extractor = new POSRatioFeatureExtractor();
+        
+        ModalVerbsFeatureExtractor extractor = new ModalVerbsFeatureExtractor();
         List<Feature> features = extractor.extract(jcas, null);
 
         Assert.assertEquals(11, features.size());
-        
-        for (Feature feature : features) {
-            if (feature.getName().equals(FN_N_RATIO)) {
-                assertFeature(FN_N_RATIO, 0.2658, feature, 0.0001);
-            }
-            else if (feature.getName().equals(FN_PUNC_RATIO)) {
-                assertFeature(FN_PUNC_RATIO, 0.0380, feature, 0.0001);
-            }
-        }
+       
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(ModalVerbsFeatureExtractor.FN_CAN, 10.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_COULD, 10.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_MIGHT, 10.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_MAY, 10.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_MUST, 20.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_SHOULD, 10.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_WILL, 10.0, iter.next());
+        assertFeature(ModalVerbsFeatureExtractor.FN_WOULD, 10.0, iter.next()); 
+        assertFeature(ModalVerbsFeatureExtractor.FN_SHALL, 10.0, iter.next()); 
+        assertFeature(ModalVerbsFeatureExtractor.FN_ALL, 100.0, iter.next()); //all verbs are modal here
+        assertFeature(ModalVerbsFeatureExtractor.FN_UNCERT, 70.0, iter.next()); //70% of the verbs express uncertainty
+
     }
 }
