@@ -33,7 +33,7 @@ These are some of the files you should find in this project:
    │                          ├── TwentyNewsgroupsExperiment.java
    │                          ├── TwentyNewsgroupsGroovyExperiment.groovy
    │                          └── TwentyNewsgroupsGroovyExtendedExperiment.groovy
-   └─ resources
+   └─ main.resources
           ├── config
           │   └── train.json
           ├── data
@@ -52,19 +52,21 @@ These are some of the files you should find in this project:
           └── log4j.properties
 }}}
 
+There are three ways to run the experiment:
 
-=== TwentyNewsgroupsGroovyExperiment.groovy ===
+_TwentyNewsgroupsExperiment_ (Java configuration using a _JSON_ file and _ParameterSpaceParser_ for configuration)
+_TwentyNewsgroupsGroovyExperiment_ (Groovy configuration re-using pre-configured Train/Test and CV setup)
+_TwentyNewsgroupsGroovyExtendedExperiment_ (Pure Groovy configuration)
 
-This takes care of 
+=== TwentyNewsgroupsGroovyExperiment ===
+
+It takes care of 
 
   * loading the data
-  * extracting features
-    * which are defined
-  * training classifiers
-    * which can be listed
-  * evaluating classifiers
-    * either with designated train/test sets or using cross-validation
-  * writing results
+  * extracting features (which feature extractors are used and how to configure them)
+  * training classifiers (which classifiers to use and how to configure them)
+  * evaluating classifiers (either with designated train/test sets or using cross-validation)
+  * writing results (which reports to use)
 
 Let's look at each of these individually:
 
@@ -82,7 +84,7 @@ The method
 private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
 }}}
 
-takes the said paths and gathers the data to be processed. In this case all the .txt-files that can be found in the directories.
+takes the said paths and gathers the data to be processed. In this case all the .txt-files that can be found in (sub-)directories.
 
 The collected data is then processed via
 
@@ -105,10 +107,16 @@ From the words and the POS tags n-gram features are extracted - precisely uni-, 
 def dimPipelineParameters = Dimension.create("pipelineParameters" ...
 }}}
 
-and here
+The feature extractors which will be used are defined as
 
 {{{
 def dimFeatureSets = Dimension.create("featureSet"...
+}}}
+
+along with their configuration
+
+{{{
+def dimFeatureParameters = Dimension.create("featureParameters",
 }}}
 
 The classifiers as defined here:
@@ -117,11 +125,6 @@ The classifiers as defined here:
 def dimClassificationArgs = Dimension.create("classificationArguments"...
 }}}
 
-using a subset of the gathered features, as defined here:
-
-{{{
-def dimFeatureParameters = Dimension.create("featureParameters",
-}}}
 
 Two basic train and test methods are implemented in this example: x-fold-cross-validation and training/testing on specified sets.
 
