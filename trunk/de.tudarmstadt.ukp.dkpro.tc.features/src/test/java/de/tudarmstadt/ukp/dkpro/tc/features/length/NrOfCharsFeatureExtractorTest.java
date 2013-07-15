@@ -18,10 +18,10 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class NrOfTokensFeatureExtractorTest
+public class NrOfCharsFeatureExtractorTest
 {
     @Test
-    public void nrOfTokensFeatureExtractorTest()
+    public void nrOfCharsFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -31,16 +31,17 @@ public class NrOfTokensFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test.");
+        jcas.setDocumentText("This is a test. This is a test.");
         engine.process(jcas);
         
-        NrOfTokensFeatureExtractor extractor = new NrOfTokensFeatureExtractor();
+        NrOfCharsFeatureExtractor extractor = new NrOfCharsFeatureExtractor();
         List<Feature> features = extractor.extract(jcas, null);
 
-        Assert.assertEquals(2, features.size());
+        Assert.assertEquals(3, features.size());
         
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensFeatureExtractor.FN_NR_OF_TOKENS, 5, iter.next());
-        assertFeature(NrOfTokensFeatureExtractor.FN_TOKENS_PER_SENTENCE, 5.0, iter.next());
+        assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS, 31, iter.next());
+        assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, iter.next());
+        assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS_PER_TOKEN, 3.1, iter.next());
     }
 }
