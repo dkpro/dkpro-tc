@@ -18,10 +18,10 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class NrOfTokensFeatureExtractorTest
+public class NrOfSentencesFeatureExtractorTest
 {
     @Test
-    public void nrOfTokensFeatureExtractorTest()
+    public void nrOfSentencesFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -31,16 +31,15 @@ public class NrOfTokensFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test.");
+        jcas.setDocumentText("This is a test! Does it thes sentences? Oh yes, it does!");
         engine.process(jcas);
         
-        NrOfTokensFeatureExtractor extractor = new NrOfTokensFeatureExtractor();
+        NrOfSentencesFeatureExtractor extractor = new NrOfSentencesFeatureExtractor();
         List<Feature> features = extractor.extract(jcas, null);
 
-        Assert.assertEquals(2, features.size());
+        Assert.assertEquals(1, features.size());
         
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensFeatureExtractor.FN_NR_OF_TOKENS, 5, iter.next());
-        assertFeature(NrOfTokensFeatureExtractor.FN_TOKENS_PER_SENTENCE, 5.0, iter.next());
+        assertFeature(NrOfSentencesFeatureExtractor.FN_NR_OF_SENTENCES, 3, iter.next());
     }
 }
