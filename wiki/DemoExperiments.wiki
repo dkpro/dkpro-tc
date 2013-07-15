@@ -1,6 +1,6 @@
 #summary Getting started with DKPro TC: Demo Experiments
 
-= Introduction =
+=Introduction=
 
 In this introduction, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
@@ -19,7 +19,7 @@ de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups
 
 All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ and the _sentimentpolarity_ experiment are binary classification tasks. We will start with that last one:
 
-== Binary Classification (twentynewsgroups) Example ==
+==Binary Classification (twentynewsgroups) Example==
 
 It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
 
@@ -61,7 +61,7 @@ There are three ways to run the experiment:
 `TwentyNewsgroupsGroovyExperiment` (Groovy configuration re-using pre-configured Train/Test and CV setup)
 `TwentyNewsgroupsGroovyExtendedExperiment` (Pure Groovy configuration)
 
-=== TwentyNewsgroupsGroovyExperiment ===
+===TwentyNewsgroupsGroovyExperiment===
 
 It takes care of 
 
@@ -131,7 +131,7 @@ def dimClassificationArgs = Dimension.create("classificationArguments"...
 
 Two basic train and test methods are implemented in this example: x-fold-cross-validation and training/testing on specified sets.
 
-=== runCrossValidation() ===
+===runCrossValidation()===
 
 In the presented example, two folds are used:
 
@@ -143,11 +143,11 @@ gluing all of the various parameters and processing tasks together to actually p
 
 runCrossValidation()
 
-=== runTrainTest() ===
+===runTrainTest()===
 
 And similarly for the designated test and train sets.
 
-=== main() ===
+===main()===
 
 This calls both the cross-validation and the train/test runs. Please note, that here it can be specified where the resulting data will be stored:
 
@@ -168,6 +168,6 @@ Once you got this example running as it is, you can start adapting various param
   * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
   * using different classifiers - please refer to the WEKA-JavaDoc for further information on that. Currently, we only support WEKA for classification.
 
-== Multi-Label Classification == 
+==Multi-Label Classification== 
 
 tbd.
