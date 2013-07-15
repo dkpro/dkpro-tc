@@ -45,6 +45,25 @@ public class RegressionExperiment
     public static String inputFile;
     public static String goldFile;
 
+    /**
+     * Initialize Experiment
+     * 
+     * @return ParameterSpace for the experiment
+     * @throws Exception
+     */
+    protected ParameterSpace setup()
+        throws Exception
+    {
+        String jsonPath = FileUtils.readFileToString(new File(
+                "src/main/resources/config/train.json"));
+        JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
+        goldFile = json.getString("goldFile");
+        inputFile = json.getString("inputFile");
+        languageCode = json.getString("languageCode");
+
+        return ParameterSpaceParser.createParamSpaceFromJson(json);
+    }
+
     public static void main(String[] args)
         throws Exception
     {
@@ -55,14 +74,14 @@ public class RegressionExperiment
         languageCode = json.getString("languageCode");
         inputFile = json.getString("inputFile");
         goldFile = json.getString("goldFile");
-
-        runCrossValidation(ParameterSpaceParser.createParamSpaceFromJson(json));
+        RegressionExperiment experiment = new RegressionExperiment();
+        experiment.runCrossValidation(ParameterSpaceParser.createParamSpaceFromJson(json));
 
         // runTrainTest(ParameterSpaceParser.createParamSpaceFromJson(json));
     }
 
     // ##### CV #####
-    private static void runCrossValidation(ParameterSpace pSpace)
+    protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
         PreprocessTask preprocessTask = new PreprocessTask();
