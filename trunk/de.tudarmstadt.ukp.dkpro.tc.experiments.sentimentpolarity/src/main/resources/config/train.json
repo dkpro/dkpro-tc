@@ -15,7 +15,7 @@
 		{
 		    "featureSet" : 
 			[
-				"de.tudarmstadt.ukp.dkpro.tc.features.style.QuestionRatioFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.style.QuestionsRatioFeatureExtractor",
 				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
 				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
 			]
