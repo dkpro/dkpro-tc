@@ -4,6 +4,9 @@
 
 In this introduction, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
+
+Please make sure that you have set up an environment_variable *DKPRO_HOME* either system-wide or per-project in the Eclipse run configuration. The variable should point to a (possibly yet empty) directory which is intended to store any sort of resources which are to be used by any DKPro component.
+
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
 Currently, there are three basic example experiments:
@@ -54,9 +57,9 @@ These are some of the files you should find in this project:
 
 There are three ways to run the experiment:
 
-_TwentyNewsgroupsExperiment_ (Java configuration using a _JSON_ file and _ParameterSpaceParser_ for configuration)
-_TwentyNewsgroupsGroovyExperiment_ (Groovy configuration re-using pre-configured Train/Test and CV setup)
-_TwentyNewsgroupsGroovyExtendedExperiment_ (Pure Groovy configuration)
+`TwentyNewsgroupsExperiment` (Java configuration using a _JSON_ file and `ParameterSpaceParser` for configuration)
+`TwentyNewsgroupsGroovyExperiment` (Groovy configuration re-using pre-configured Train/Test and CV setup)
+`TwentyNewsgroupsGroovyExtendedExperiment` (Pure Groovy configuration)
 
 === TwentyNewsgroupsGroovyExperiment ===
 
@@ -154,15 +157,17 @@ System.setProperty("DKPRO_HOME", "/the/path/to/my/results/");
 
 There you will find a set of directories storing intermediate and final evaluation results of your experiments.
 
-  * _Evaluation..CV.._ contains the cross-validation results, whereas
-  * _Evaluation..TrainTest.._ contains the results on the test set.
+  * `Evaluation..CV..` contains the cross-validation results, whereas
+  * `Evaluation..TrainTest..` contains the results on the test set.
 
-the eval.xls file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set).
+E.g., the `eval.xls` file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set).
 
 Once you got this example running as it is, you can start adapting various parameters:
 
   * using different data sets - which are completely up to you
-  * using different features - any that you can think of. Information on how to use customized features will be added here
-  * using different classifiers - please refer to the WEKA-JavaDoc for further information on that. Currently, we are using WEKA for classification.
+  * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
+  * using different classifiers - please refer to the WEKA-JavaDoc for further information on that. Currently, we only support WEKA for classification.
 
 == Multi-Label Classification == 
+
+tbd.
