@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>DKPro Text Classification Framework</name>
 	<parent>
@@ -16,9 +15,9 @@
 		<java.target>1.6</java.target>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/trunk</developerConnection>
-		<url>http://code.google.com/p/dkpro-tc/source/browse/</url>
+		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/branches/0.3.x</connection>
+		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/branches/0.3.x</developerConnection>
+		<url>http://code.google.com/p/dkpro-tc/source/browse/branches/0.3.x</url>
 	</scm>
 	<licenses>
 		<license>
