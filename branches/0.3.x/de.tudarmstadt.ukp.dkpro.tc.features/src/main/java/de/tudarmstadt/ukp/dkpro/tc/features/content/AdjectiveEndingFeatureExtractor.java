@@ -1,0 +1,115 @@
+package de.tudarmstadt.ukp.dkpro.tc.features.content;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
+
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+
+/*
+ * Gender-Preferential Text Mining of E-mail Discourse
+ * Malcolm Corney, Olivier de Vel, Alison Anderson, George Mohay
+ * 
+ * Counts ratio of English adjective and adverb endings 
+ * (in proportion to all adjectives/adverbs)
+ * that may signalize neuroticism,
+ * respectively express the emotional level of a person. Can be used
+ * for autorship attribution or such style-related tasks.
+ * 
+ * Output is multiplied by 100 to avoid too small numbers.
+ */
+public class AdjectiveEndingFeatureExtractor
+    extends  FeatureExtractorResource_ImplBase
+{
+    public static final String FN_ENDING1    = "EndingAble";
+    public static final String FN_ENDING2   = "EndingAl";
+    public static final String FN_ENDING3  = "EndingFul";
+    public static final String FN_ENDING4   = "EndingIble";
+    public static final String FN_ENDING5 = "EndingLess";
+    public static final String FN_ENDING6   = "EndingOus";
+    public static final String FN_ENDING7   = "EndingIve";
+    public static final String FN_ENDING8   = "EndingIc";
+    public static final String FN_ENDING9   = "EndingLy"; //adverb, but anyway
+
+    
+    @Override
+    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
+    {
+            
+        int able = 0;
+        int al = 0;
+        int ful = 0;
+        int ible = 0;
+        int ic = 0;
+        int ive = 0;
+        int less = 0;
+        int ous = 0;
+        int ly = 0;
+        
+        int n = 0;
+        for (ADJ adj : JCasUtil.select(jcas, ADJ.class)) {
+            n++;
+            
+            String text = adj.getCoveredText().toLowerCase();
+            if (text.endsWith("able") ) {
+                able++;
+            }
+            else if (text.endsWith("al")) {
+                al++;
+            }
+            else if (text.endsWith("ful")) {
+                ful++;
+            }
+            else if (text.endsWith("ible")) {
+                ible++;
+            }
+            else if (text.endsWith("ic")) {
+                ic++;
+            }
+            else if (text.endsWith("ive")) {
+                ive++;
+            }
+            else if (text.endsWith("less")) {
+                less++;
+            }
+            else if (text.endsWith("ous")) {
+                ous++;
+            }
+        }
+        
+        int m = 0;
+        for (ADV adv : JCasUtil.select(jcas, ADV.class)) {
+            m++;
+            
+            String text = adv.getCoveredText().toLowerCase();
+            if (text.endsWith("ly") ) {
+                ly++;
+            }
+        }
+        
+     
+        List<Feature> featList = new ArrayList<Feature>();
+        if (n > 0) {
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING1, (double) able*100 / n)));    
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING2, (double) al*100 / n)));    
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING3, (double) ful*100 / n)));    
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING4, (double) ible*100 / n)));    
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING5, (double) less*100 / n)));    
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING6, (double) ous*100 / n)));   
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING7, (double) ive*100 / n))); 
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING8, (double) ic*100 / n)));           
+        }
+        if (m > 0) {
+            featList.addAll(Arrays.asList(new Feature(FN_ENDING9, (double) ly*100 / m)));
+        }
+
+        return featList;
+    }
+}    
