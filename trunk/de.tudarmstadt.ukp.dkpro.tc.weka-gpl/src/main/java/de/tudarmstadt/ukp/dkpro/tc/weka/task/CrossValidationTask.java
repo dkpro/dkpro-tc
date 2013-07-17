@@ -159,9 +159,23 @@ public class CrossValidationTask
                         filteredTrainData);
                 eval.evaluateModel(cl, filteredTestData);
                 weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
+                
+                Add filter = new Add();
 
-                for (int i = 0; i < filteredTestData.numInstances(); i++) {
-                    double prediction = cl.classifyInstance(filteredTestData.instance(i));
+                filter.setAttributeIndex(new Integer(test.classIndex()+1).toString());
+                filter.setAttributeName("goldlabel");
+                filter.setInputFormat(test);
+                test = Filter.useFilter(test, filter);
+            
+            // fill values of gold standard classification with original values from test set
+            for (int i = 0; i < test.size(); i++) {
+                
+            	test.instance(i).setValue(test.classIndex()-1, filteredTestData.instance(i).classValue());
+                
+            }
+
+            for (int i = 0; i < filteredTestData.numInstances(); i++) {
+                double prediction = cl.classifyInstance(filteredTestData.instance(i));
                     Instance instance = test.instance(i);
                     instance.setClassValue(prediction);
                 }

@@ -148,6 +148,20 @@ public class TestTask
             weka.classifiers.Evaluation eval = new weka.classifiers.Evaluation(filteredTrainData);
             eval.evaluateModel(cl, filteredTestData);
             weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
+            
+            Add filter = new Add();
+
+            filter.setAttributeIndex(new Integer(testData.classIndex()+1).toString());
+            filter.setAttributeName("goldlabel");
+            filter.setInputFormat(testData);
+            testData = Filter.useFilter(testData, filter);
+        
+        // fill values of gold standard classification with original values from test set
+        for (int i = 0; i < testData.size(); i++) {
+            
+        	testData.instance(i).setValue(testData.classIndex()-1, filteredTestData.instance(i).classValue());
+            
+        }
 
             for (int i = 0; i < filteredTestData.numInstances(); i++) {
                 double prediction = cl.classifyInstance(filteredTestData.instance(i));
