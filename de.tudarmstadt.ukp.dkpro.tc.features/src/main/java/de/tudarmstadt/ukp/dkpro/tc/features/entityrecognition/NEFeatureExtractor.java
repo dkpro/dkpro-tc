@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.NER;
+package de.tudarmstadt.ukp.dkpro.tc.features.entityrecognition;
 
 import java.util.ArrayList;
 import java.util.Arrays;

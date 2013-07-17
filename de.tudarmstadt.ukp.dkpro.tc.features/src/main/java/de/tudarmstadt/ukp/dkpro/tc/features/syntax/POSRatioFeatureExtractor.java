@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.style;
+package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 

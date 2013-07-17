@@ -1,6 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import static de.tudarmstadt.ukp.dkpro.tc.features.style.PluralRatioFeatureExtractor.FN_PLURAL_RATIO;
+import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.PluralRatioFeatureExtractor.FN_PLURAL_RATIO;
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
@@ -18,6 +18,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.features.syntax.PluralRatioFeatureExtractor;
 
 public class PluralRatioFeatureExtractorTest
 {
