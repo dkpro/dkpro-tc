@@ -11,6 +11,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.FeatureValuesReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
 
@@ -96,6 +97,7 @@ public class BatchTaskTrainTest
         // Define the test task which operates on the results of the the train task
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
+        testTask.addReport(FeatureValuesReport.class);
         testTask.addReport(TrainTestReport.class);
         testTask.addReport(OutcomeIDReport.class);
 
