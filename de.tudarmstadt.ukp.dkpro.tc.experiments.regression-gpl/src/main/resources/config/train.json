@@ -24,16 +24,8 @@
 		    "featureSet" : 
 			[
 				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor"
 			]
 		}
-	],
-    "pairFeatureSets" : 
-    [
-        {
-            "pairFeatureSet" : 
-            [
-                "de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor",
-            ]
-        }
-    ]
+	]
 }	

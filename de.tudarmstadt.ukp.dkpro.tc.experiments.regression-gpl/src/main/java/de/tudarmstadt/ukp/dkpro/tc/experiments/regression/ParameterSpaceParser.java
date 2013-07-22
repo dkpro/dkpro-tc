@@ -53,13 +53,13 @@ public class ParameterSpaceParser
             featureSets.add(featureSet);
         }
 
-        JSONArray pairFeatureSetConf = pipelineConfiguration.getJSONArray("pairFeatureSets");
-        List<Object[]> pairFeatureSets = new ArrayList<Object[]>();
-        for (Object object : pairFeatureSetConf) {
-            Object[] pairFeatureSet = ((JSONObject) object).getJSONArray("pairFeatureSet").toArray(
-                    new String[] {});
-            pairFeatureSets.add(pairFeatureSet);
-        }
+        // JSONArray pairFeatureSetConf = pipelineConfiguration.getJSONArray("pairFeatureSets");
+        // List<Object[]> pairFeatureSets = new ArrayList<Object[]>();
+        // for (Object object : pairFeatureSetConf) {
+        // Object[] pairFeatureSet = ((JSONObject) object).getJSONArray("pairFeatureSet").toArray(
+        // new String[] {});
+        // pairFeatureSets.add(pairFeatureSet);
+        // }
 
         Object[] pipelineParameters = new Object[] {};
         Object[] featureParameters = new Object[] {};
@@ -67,7 +67,7 @@ public class ParameterSpaceParser
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("classificationArguments", classificationArgsArray),
                 Dimension.create("featureSet", featureSets.toArray()),
-                Dimension.create("pairFeatureSet", pairFeatureSets.toArray()),
+                // Dimension.create("pairFeatureSet", pairFeatureSets.toArray()),
                 Dimension.create("folds", folds),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", false),
