@@ -9,17 +9,20 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
- * Pair-wise feature extractor
- * Computes the average token length of all noun chunks in a view and returns the difference of both views.
+ * Pair-wise feature extractor Computes the average token length of all noun chunks in a view and
+ * returns the difference of both views.
+ * 
  * @author nico.erbs@gmail.com
- *
+ * 
  */
 public class DiffNounChunkTokenLength
-    extends PairFeatureExtractorResource_ImplBase
+    extends FeatureExtractorResource_ImplBase
+    implements PairFeatureExtractor
 {
 
     @Override
@@ -36,7 +39,9 @@ public class DiffNounChunkTokenLength
 
     /**
      * Returns average token length of chunks in a view
-     * @param view the view of the JCas
+     * 
+     * @param view
+     *            the view of the JCas
      * @return average token length of all chunks
      */
     private double getAverageNounPhraseTokenLength(JCas view)

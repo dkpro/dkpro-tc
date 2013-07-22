@@ -36,28 +36,29 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
                 ),
                 createPrimitiveDescription(
                         SpellChecker.class,
-                        SpellChecker.PARAM_MODEL_LOCATION, "src/test/resources/dictionary/en_US_dict.txt"
+                        SpellChecker.PARAM_MODEL_LOCATION,
+                        "src/test/resources/dictionary/en_US_dict.txt"
                 )
-        );
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("As tthe pope leavess the Vatican for the papal residenze of Castel Gandolfo – and becomes the first pontiff to resign in 600 years – the operation to choose his successor begins.");
         engine.process(jcas);
-        
+
         SpellingErrorPOSRatioFeatureExtractor extractor = new SpellingErrorPOSRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(11, features.size());
-        
-//        for (SpellingAnomaly anomaly : JCasUtil.select(jcas, SpellingAnomaly.class)) {
-//            System.out.println(anomaly);
-//            for (POS pos : JCasUtil.selectCovered(jcas, POS.class, anomaly)) {
-//                System.out.println(pos);
-//            }
-//        }
-        
+
+        // for (SpellingAnomaly anomaly : JCasUtil.select(jcas, SpellingAnomaly.class)) {
+        // System.out.println(anomaly);
+        // for (POS pos : JCasUtil.selectCovered(jcas, POS.class, anomaly)) {
+        // System.out.println(pos);
+        // }
+        // }
+
         for (Feature feature : features) {
             if (feature.getName().equals(FN_ART_ERROR_RATIO)) {
                 assertFeature(FN_ART_ERROR_RATIO, 0.1111, feature, 0.0001);

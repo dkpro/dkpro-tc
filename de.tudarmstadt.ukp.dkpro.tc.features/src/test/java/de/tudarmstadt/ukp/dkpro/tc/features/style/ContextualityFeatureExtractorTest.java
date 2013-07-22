@@ -40,20 +40,20 @@ public class ContextualityFeatureExtractorTest
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
                 )
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
-        
+
         ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(9, features.size());
-        
+
         for (Feature feature : features) {
             if (feature.getName().equals(CONTEXTUALITY_MEASURE_FN)) {
                 assertFeature(CONTEXTUALITY_MEASURE_FN, 50.2, feature);

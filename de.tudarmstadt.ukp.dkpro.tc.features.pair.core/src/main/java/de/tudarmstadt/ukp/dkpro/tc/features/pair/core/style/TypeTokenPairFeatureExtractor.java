@@ -10,41 +10,45 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
- * Pair-wise feature extractor
- * Computes the type-token-ratio in a view and returns the difference of type-token-rations in both views.
+ * Pair-wise feature extractor Computes the type-token-ratio in a view and returns the difference of
+ * type-token-rations in both views.
+ * 
  * @author nico.erbs@gmail.com
- *
+ * 
  */
 public class TypeTokenPairFeatureExtractor
-extends PairFeatureExtractorResource_ImplBase
+    extends FeatureExtractorResource_ImplBase
+    implements PairFeatureExtractor
 {
 
-	@Override
-	public List<Feature> extract(JCas view1, JCas view2)
-			throws TextClassificationException
-			{
-		return Arrays.asList(
-				new Feature("DiffTypeTokenRatio",
+    @Override
+    public List<Feature> extract(JCas view1, JCas view2)
+        throws TextClassificationException
+    {
+        return Arrays.asList(
+                new Feature("DiffTypeTokenRatio",
 
-						getTypeTokenRatio(view1) / getTypeTokenRatio(view2))
-				);
-			}
+                        getTypeTokenRatio(view1) / getTypeTokenRatio(view2))
+                );
+    }
 
-	/**
-	 * 
-	 * @param view the view for which the type-token-ratio is computed
-	 * @return type-token-ratio
-	 */
-	private double getTypeTokenRatio(JCas view)
-	{
-		Set<String> types = new HashSet<String>();
-		for (Lemma lemma : JCasUtil.select(view, Lemma.class)) {
-			types.add(lemma.getValue());
-		}
-		return types.size() / (double) JCasUtil.select(view, Lemma.class).size();
-	}
+    /**
+     * 
+     * @param view
+     *            the view for which the type-token-ratio is computed
+     * @return type-token-ratio
+     */
+    private double getTypeTokenRatio(JCas view)
+    {
+        Set<String> types = new HashSet<String>();
+        for (Lemma lemma : JCasUtil.select(view, Lemma.class)) {
+            types.add(lemma.getValue());
+        }
+        return types.size() / (double) JCasUtil.select(view, Lemma.class).size();
+    }
 }

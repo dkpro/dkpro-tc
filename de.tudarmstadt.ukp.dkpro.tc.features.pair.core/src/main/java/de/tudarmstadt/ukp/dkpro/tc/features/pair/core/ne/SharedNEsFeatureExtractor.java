@@ -11,17 +11,19 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
- * Pair-wise feature extractor
- * Returns if two views share the same named entities.
+ * Pair-wise feature extractor Returns if two views share the same named entities.
+ * 
  * @author nico.erbs@gmail.com
- *
+ * 
  */
 public class SharedNEsFeatureExtractor
-    extends PairFeatureExtractorResource_ImplBase
+    extends FeatureExtractorResource_ImplBase
+    implements PairFeatureExtractor
 {
 
     @Override
@@ -38,7 +40,8 @@ public class SharedNEsFeatureExtractor
 
     /**
      * 
-     * @param view the view to be processed
+     * @param view
+     *            the view to be processed
      * @return all named entities in this view
      */
     private Collection<String> getNEs(JCas view)

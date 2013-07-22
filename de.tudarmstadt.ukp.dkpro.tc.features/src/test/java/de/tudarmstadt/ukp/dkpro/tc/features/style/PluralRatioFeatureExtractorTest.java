@@ -32,20 +32,20 @@ public class PluralRatioFeatureExtractorTest
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
                 )
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test. These are tests and cars and flowers.");
         engine.process(jcas);
-        
+
         PluralRatioFeatureExtractor extractor = new PluralRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature(FN_PLURAL_RATIO, 0.75, feature);
         }

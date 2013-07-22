@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
@@ -19,6 +18,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -38,24 +38,25 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class ContextualityMeasureFeatureExtractor
     extends FeatureExtractorResource_ImplBase
+    implements DocumentFeatureExtractor
 {
     public static final String CONTEXTUALITY_MEASURE_FN = "ContextualityMeasure";
-    
+
     @Override
-    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         List<Feature> featList = new ArrayList<Feature>();
-        
+
         double total = JCasUtil.select(jcas, POS.class).size();
-        double noun = select(jcas,   N.class).size() / total;
-        double adj =  select(jcas, ADJ.class).size() / total;
-        double prep = select(jcas,  PP.class).size() / total;
-        double art =  select(jcas, ART.class).size() / total;// !includes determiners
-        double pro =  select(jcas,  PR.class).size() / total;
-        double verb = select(jcas,   V.class).size() / total;
-        double adv =  select(jcas, ADV.class).size() / total;
-        
+        double noun = select(jcas, N.class).size() / total;
+        double adj = select(jcas, ADJ.class).size() / total;
+        double prep = select(jcas, PP.class).size() / total;
+        double art = select(jcas, ART.class).size() / total;// !includes determiners
+        double pro = select(jcas, PR.class).size() / total;
+        double verb = select(jcas, V.class).size() / total;
+        double adv = select(jcas, ADV.class).size() / total;
+
         int interjCount = 0;
         for (POS tag : JCasUtil.select(jcas, O.class)) {
             // FIXME this is tagset specific
@@ -78,7 +79,7 @@ public class ContextualityMeasureFeatureExtractor
         featList.addAll(Arrays.asList(new Feature("AdverbRate", adv)));
         featList.addAll(Arrays.asList(new Feature("InterjectionRate", interj)));
         featList.addAll(Arrays.asList(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure)));
-        
+
         return featList;
     }
 

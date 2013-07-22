@@ -26,19 +26,19 @@ public class NrOfCharsFeatureExtractorTest
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-        );
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test. This is a test.");
         engine.process(jcas);
-        
+
         NrOfCharsFeatureExtractor extractor = new NrOfCharsFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(3, features.size());
-        
+
         Iterator<Feature> iter = features.iterator();
         assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS, 31, iter.next());
         assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, iter.next());

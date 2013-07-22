@@ -10,8 +10,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -21,8 +19,6 @@ import net.sf.json.JSONSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
-
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractor;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -48,7 +44,6 @@ public class TaskUtils
                 .getFile()));
         return (JSONObject) JSONSerializer.toJSON(jsonPath);
     }
-
 
     /**
      * Saves a serializable object of type <T> to disk. Output file may be uncompressed, gzipped or
@@ -135,23 +130,23 @@ public class TaskUtils
         return (T) deserializedObject;
     }
 
-    /**
-     * Instantiates feature extractors from a list of fully qualified class names
-     * 
-     * @param extractorNames
-     *            a list of fully qualified class names
-     * @return a list of SimpleFeatureExtractor
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     */
-    public static List<FeatureExtractor> getExtractorsByName(List<String> extractorNames)
-        throws ClassNotFoundException, IllegalAccessException, InstantiationException
-    {
-        List<FeatureExtractor> extractors = new ArrayList<FeatureExtractor>();
-        for (String name : extractorNames) {
-            extractors.add((FeatureExtractor) Class.forName(name).newInstance());
-        }
-        return extractors;
-    }
+    // /**
+    // * Instantiates feature extractors from a list of fully qualified class names
+    // *
+    // * @param extractorNames
+    // * a list of fully qualified class names
+    // * @return a list of SimpleFeatureExtractor
+    // * @throws ClassNotFoundException
+    // * @throws IllegalAccessException
+    // * @throws InstantiationException
+    // */
+    // public static List<FeatureExtractor> getExtractorsByName(List<String> extractorNames)
+    // throws ClassNotFoundException, IllegalAccessException, InstantiationException
+    // {
+    // List<FeatureExtractor> extractors = new ArrayList<FeatureExtractor>();
+    // for (String name : extractorNames) {
+    // extractors.add((FeatureExtractor) Class.forName(name).newInstance());
+    // }
+    // return extractors;
+    // }
 }

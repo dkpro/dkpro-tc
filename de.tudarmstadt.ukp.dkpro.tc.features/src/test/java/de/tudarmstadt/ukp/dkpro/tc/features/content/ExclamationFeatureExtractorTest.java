@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.features.content.ExclamationFeatureExtractor;
 
 public class ExclamationFeatureExtractorTest
 {
@@ -26,20 +25,20 @@ public class ExclamationFeatureExtractorTest
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("He is a tester!!! Tester! Is he? Oh yes.");
         engine.process(jcas);
-        
+
         ExclamationFeatureExtractor extractor = new ExclamationFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature(ExclamationFeatureExtractor.FEATURE_NAME, 0.5, feature);
         }

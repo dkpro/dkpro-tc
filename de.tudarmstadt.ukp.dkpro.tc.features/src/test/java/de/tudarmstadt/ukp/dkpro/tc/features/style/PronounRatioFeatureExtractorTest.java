@@ -33,20 +33,20 @@ public class PronounRatioFeatureExtractorTest
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
                 )
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("He is no tester. I am a tester.");
         engine.process(jcas);
-        
+
         PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(6, features.size());
-        
+
         for (Feature feature : features) {
             if (feature.getName().equals(FN_HE_RATIO)) {
                 assertFeature(FN_HE_RATIO, 0.5, feature);

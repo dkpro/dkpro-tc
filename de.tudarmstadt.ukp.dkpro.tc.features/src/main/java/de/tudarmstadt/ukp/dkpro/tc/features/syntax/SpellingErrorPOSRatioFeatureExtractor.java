@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.anomaly.type.SpellingAnomaly;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
@@ -21,39 +20,41 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
- * Computes for each coarse grained POS tag the ratio of being affected by a spelling error.
- * For example, if there are 4 spelling errors in the document, and 3 of them affect nouns, while one affects a verb,
- * the ratio will be 0.75 for nouns, 0.25 for verbs, and 0.0 for all other POS.
+ * Computes for each coarse grained POS tag the ratio of being affected by a spelling error. For
+ * example, if there are 4 spelling errors in the document, and 3 of them affect nouns, while one
+ * affects a verb, the ratio will be 0.75 for nouns, 0.25 for verbs, and 0.0 for all other POS.
  * 
  * @author zesch
- *
+ * 
  */
 public class SpellingErrorPOSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
+    implements DocumentFeatureExtractor
 {
-    public static final String FN_ADJ_ERROR_RATIO =  "AdjErrorRatio";
-    public static final String FN_ADV_ERROR_RATIO =  "AdvErrorRatio";
-    public static final String FN_ART_ERROR_RATIO =  "ArtErrorRatio";
+    public static final String FN_ADJ_ERROR_RATIO = "AdjErrorRatio";
+    public static final String FN_ADV_ERROR_RATIO = "AdvErrorRatio";
+    public static final String FN_ART_ERROR_RATIO = "ArtErrorRatio";
     public static final String FN_CARD_ERROR_RATIO = "CardErrorRatio";
     public static final String FN_CONJ_ERROR_RATIO = "ConjErrorRatio";
-    public static final String FN_N_ERROR_RATIO =    "NounErrorRatio";
-    public static final String FN_O_ERROR_RATIO =    "OtherErrorRatio";
-    public static final String FN_PP_ERROR_RATIO =   "PrepErrorRatio";
-    public static final String FN_PR_ERROR_RATIO =   "PronErrorRatio";
+    public static final String FN_N_ERROR_RATIO = "NounErrorRatio";
+    public static final String FN_O_ERROR_RATIO = "OtherErrorRatio";
+    public static final String FN_PP_ERROR_RATIO = "PrepErrorRatio";
+    public static final String FN_PR_ERROR_RATIO = "PronErrorRatio";
     public static final String FN_PUNC_ERROR_RATIO = "PuncErrorRatio";
-    public static final String FN_V_ERROR_RATIO =    "VerbErrorRatio";
-    
+    public static final String FN_V_ERROR_RATIO = "VerbErrorRatio";
+
     @Override
-    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         List<Feature> featList = new ArrayList<Feature>();
-        
+
         int nrOfSpellingAnomalies = 0;
         int adjErrors = 0;
         int advErrors = 0;
@@ -66,7 +67,7 @@ public class SpellingErrorPOSRatioFeatureExtractor
         int pronErrors = 0;
         int puncErrors = 0;
         int verbErrors = 0;
-        
+
         for (SpellingAnomaly anomaly : JCasUtil.select(jcas, SpellingAnomaly.class)) {
             for (POS pos : JCasUtil.selectCovered(jcas, POS.class, anomaly)) {
                 if (pos instanceof ADJ) {
@@ -103,23 +104,33 @@ public class SpellingErrorPOSRatioFeatureExtractor
                     verbErrors++;
                 }
             }
-            
+
             nrOfSpellingAnomalies++;
         }
 
-        
-        featList.addAll(Arrays.asList(new Feature(FN_ADJ_ERROR_RATIO,  (double) adjErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_ADV_ERROR_RATIO,  (double) advErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_ART_ERROR_RATIO,  (double) artErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_CARD_ERROR_RATIO, (double) cardErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_CONJ_ERROR_RATIO, (double) conjErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_N_ERROR_RATIO,    (double) nounErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_O_ERROR_RATIO,    (double) otherErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_PR_ERROR_RATIO,   (double) pronErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_PP_ERROR_RATIO,   (double) prepErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_PUNC_ERROR_RATIO, (double) puncErrors / nrOfSpellingAnomalies)));
-        featList.addAll(Arrays.asList(new Feature(FN_V_ERROR_RATIO,    (double) verbErrors / nrOfSpellingAnomalies)));
-        
+        featList.addAll(Arrays.asList(new Feature(FN_ADJ_ERROR_RATIO, (double) adjErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_ADV_ERROR_RATIO, (double) advErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_ART_ERROR_RATIO, (double) artErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_CARD_ERROR_RATIO, (double) cardErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_CONJ_ERROR_RATIO, (double) conjErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_N_ERROR_RATIO, (double) nounErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_O_ERROR_RATIO, (double) otherErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_PR_ERROR_RATIO, (double) pronErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_PP_ERROR_RATIO, (double) prepErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_PUNC_ERROR_RATIO, (double) puncErrors
+                / nrOfSpellingAnomalies)));
+        featList.addAll(Arrays.asList(new Feature(FN_V_ERROR_RATIO, (double) verbErrors
+                / nrOfSpellingAnomalies)));
+
         return featList;
     }
-}    
+}

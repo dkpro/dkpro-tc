@@ -26,17 +26,17 @@ public class LongWordsFeatureExtractorTest
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test of incredibly surprising long words.");
         engine.process(jcas);
-        
+
         LongWordsFeatureExtractor extractor = new LongWordsFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(2, features.size());
         Iterator<Feature> iter = features.iterator();
