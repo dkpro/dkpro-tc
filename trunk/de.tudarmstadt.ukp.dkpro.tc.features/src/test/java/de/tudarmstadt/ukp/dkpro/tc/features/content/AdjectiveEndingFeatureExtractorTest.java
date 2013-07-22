@@ -31,20 +31,19 @@ public class AdjectiveEndingFeatureExtractorTest
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
                 )
-        );
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("Lovable phenomenal beautiful incredible fantastic gorgeous positive nice good mainly harmless.");
         engine.process(jcas);
-        
-        
+
         AdjectiveEndingFeatureExtractor extractor = new AdjectiveEndingFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(9, features.size());
-        
+
         Iterator<Feature> iter = features.iterator();
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING1, 10.0, iter.next());
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING2, 10.0, iter.next());
@@ -53,7 +52,13 @@ public class AdjectiveEndingFeatureExtractorTest
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING5, 10.0, iter.next());
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING6, 10.0, iter.next());
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING7, 10.0, iter.next());
-        assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING8, 10.0, iter.next()); //10% of adjectives has this ending
-        assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING9, 100.0, iter.next()); //100% of adverbs has this ending     
+        assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING8, 10.0, iter.next()); // 10% of
+                                                                                      // adjectives
+                                                                                      // has this
+                                                                                      // ending
+        assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING9, 100.0, iter.next()); // 100% of
+                                                                                       // adverbs
+                                                                                       // has this
+                                                                                       // ending
     }
 }

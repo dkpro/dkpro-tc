@@ -14,26 +14,27 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 
-public class BaselinePairFeatureTest extends PairFeatureTestBase
+public class BaselinePairFeatureTest
+    extends PairFeatureTestBase
 {
-	
+
     @Test
     public void extractTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
-        PairFeatureExtractorResource_ImplBase extractor = new AlwaysZeroPairFeatureExtractor();
+        PairFeatureExtractor extractor = new AlwaysZeroPairFeatureExtractor();
         List<Feature> features = runExtractor(engine, extractor);
 
         assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature("BaselineFeature", 0, feature);
         }

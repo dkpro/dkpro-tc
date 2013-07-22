@@ -8,7 +8,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 public abstract class FeatureExtractorResource_ImplBase
     extends Resource_ImplBase
-    implements FeatureExtractor
 {
 
     @Override

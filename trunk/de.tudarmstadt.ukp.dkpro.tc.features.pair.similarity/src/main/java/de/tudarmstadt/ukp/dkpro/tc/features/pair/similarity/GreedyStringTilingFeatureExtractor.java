@@ -6,13 +6,15 @@ import java.util.List;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
 import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.GreedyStringTiling;
 
 public class GreedyStringTilingFeatureExtractor
-    extends PairFeatureExtractorResource_ImplBase
+    extends FeatureExtractorResource_ImplBase
+    implements PairFeatureExtractor
 {
 
     protected GreedyStringTiling measure = new GreedyStringTiling(3);
@@ -23,7 +25,8 @@ public class GreedyStringTilingFeatureExtractor
     {
 
         try {
-            double similarity = measure.getSimilarity(view1.getDocumentText(), view2.getDocumentText());
+            double similarity = measure.getSimilarity(view1.getDocumentText(),
+                    view2.getDocumentText());
 
             return Arrays.asList(new Feature("Similarity" + measure.getName(), similarity));
         }

@@ -25,20 +25,20 @@ public class NumberWordsFeatureExtractorTest
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("Where r u 2morrow? W8 4 me! Gonna have gr8 party face2face! 555 123 456");
         engine.process(jcas);
-        
+
         NumberWordsFeatureExtractor extractor = new NumberWordsFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature(NumberWordsFeatureExtractor.FEATURE_NAME, 0.44, feature, 0.01);
         }

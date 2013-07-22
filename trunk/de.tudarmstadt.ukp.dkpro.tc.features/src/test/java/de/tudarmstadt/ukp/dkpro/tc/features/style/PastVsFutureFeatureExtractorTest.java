@@ -32,17 +32,17 @@ public class PastVsFutureFeatureExtractorTest
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
                 )
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("They tested. We test. She tests. You will test.");
         engine.process(jcas);
-        
+
         PastVsFutureFeatureExtractor extractor = new PastVsFutureFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(3, features.size());
         Iterator<Feature> iter = features.iterator();

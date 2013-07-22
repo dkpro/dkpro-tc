@@ -21,13 +21,14 @@ import org.apache.uima.resource.ResourceSpecifier;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FocusAnnotationFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
 public class NGramFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements MetaDependent
+    implements MetaDependent, FocusAnnotationFeatureExtractor
 {
 
     public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";
@@ -60,16 +61,16 @@ public class NGramFeatureExtractor
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
-    
+
     @Override
     public List<String> getMetaCollectorClasses()
     {
         List<String> metaCollectorClasses = new ArrayList<String>();
         metaCollectorClasses.add(NGramMetaCollector.class.getName());
-        
+
         return metaCollectorClasses;
     }
-    
+
     @Override
     public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
         throws TextClassificationException
@@ -133,10 +134,10 @@ public class NGramFeatureExtractor
         topKSet = getTopNgrams();
 
         prefix = "ngrams_";
-        
+
         return true;
     }
-    
+
     private Set<String> getTopNgrams()
         throws ResourceInitializationException
     {

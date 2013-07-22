@@ -26,21 +26,21 @@ public class TokenRatioFeatureExtractorTest
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("He is no tester. I am a Tester.");
         engine.process(jcas);
-        
+
         String token = "tester";
         TokenRatioFeatureExtractor extractor = new TokenRatioFeatureExtractor(token);
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature(FN_TOKEN_RATIO + "_" + token, 0.2, feature);
         }

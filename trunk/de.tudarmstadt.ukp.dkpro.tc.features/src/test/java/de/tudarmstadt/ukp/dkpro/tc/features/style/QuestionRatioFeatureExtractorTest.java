@@ -27,20 +27,20 @@ public class QuestionRatioFeatureExtractorTest
     {
         AnalysisEngineDescription desc = createAggregateDescription(
                 createPrimitiveDescription(BreakIteratorSegmenter.class)
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("Is he a tester???? Really?? He is a tester! Oh yes.");
         engine.process(jcas);
-        
+
         QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature(FN_QUESTION_RATIO, 0.5, feature);
         }

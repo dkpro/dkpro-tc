@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -17,6 +17,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 //TODO: adapt for specified focus annotation
 public class NrOfCharsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
+    implements DocumentFeatureExtractor
 {
 
     public static final String FN_NR_OF_CHARS = "NrofChars";
@@ -24,13 +25,13 @@ public class NrOfCharsFeatureExtractor
     public static final String FN_NR_OF_CHARS_PER_TOKEN = "NrofCharsPerToken";
 
     @Override
-    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         int nrOfChars = jcas.getDocumentText().length();
         int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
         int nrOfTokens = JCasUtil.select(jcas, Token.class).size();
-        
+
         List<Feature> featList = new ArrayList<Feature>();
         featList.addAll(Arrays.asList(new Feature(FN_NR_OF_CHARS, nrOfChars)));
 
@@ -45,7 +46,7 @@ public class NrOfCharsFeatureExtractor
             charPerToken = (double) nrOfChars / nrOfTokens;
         }
         featList.addAll(Arrays.asList(new Feature(FN_NR_OF_CHARS_PER_TOKEN, charPerToken)));
-        
+
         return featList;
     }
 }

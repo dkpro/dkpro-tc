@@ -33,20 +33,20 @@ public class SuperlativeRatioFeatureExtractorTest
                         OpenNlpPosTagger.class,
                         OpenNlpPosTagger.PARAM_LANGUAGE, "en"
                 )
-                
-        );
+
+                );
         AnalysisEngine engine = createPrimitive(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a normal test. This is the best, biggest, and greatest test ever.");
         engine.process(jcas);
-        
+
         SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(2, features.size());
-        
+
         for (Feature feature : features) {
             if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADJ)) {
                 assertFeature(FN_SUPERLATIVE_RATIO_ADJ, 0.75, feature);

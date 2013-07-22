@@ -36,10 +36,13 @@ public class ExtractFeaturesTask
 
     @Discriminator
     protected String[] featureSet;
-    @Discriminator
-    protected String[] pairFeatureSet;
+    // @Discriminator
+    // protected String[] pairFeatureSet;
     @Discriminator
     protected Object[] featureParameters;
+
+    @Discriminator
+    protected String featureAnnotation;
 
     private String dataWriter;
     private boolean isRegressionExperiment = false;
@@ -98,10 +101,12 @@ public class ExtractFeaturesTask
 
         parameters.addAll(Arrays.asList(InstanceExtractor.PARAM_OUTPUT_DIRECTORY,
                 outputDir.getAbsolutePath(), InstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
-                InstanceExtractor.PARAM_IS_REGRESSION, isRegressionExperiment,
+                InstanceExtractor.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
                 InstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
                 InstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
-                InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet));
+                // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
+                InstanceExtractor.PARAM_FEATURE_ANNOTATION, featureAnnotation
+                ));
 
         return createAggregateDescription(createPrimitiveDescription(InstanceExtractor.class,
                 parameters.toArray()));
