@@ -196,6 +196,17 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	 <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 	<profiles>
 		<profile>
 			<id>groovy</id>
