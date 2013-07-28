@@ -7,7 +7,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -32,14 +32,12 @@ public class BatchTaskCV
     }
 
     public BatchTaskCV(String aExperimentName, CollectionReaderDescription aReader,
-            AnalysisEngineDescription aAggregate,
-            List<Class<? extends MetaCollector>> metaCollectorClasses, String aDataWriterClassName)
+            AnalysisEngineDescription aAggregate, String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
         setReader(aReader);
         setAggregate(aAggregate);
         setDataWriter(aDataWriterClassName);
-        setMetaCollectorClasses(metaCollectorClasses);
     }
 
     /**
@@ -66,14 +64,12 @@ public class BatchTaskCV
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setType(metaTask.getType() + "-" + experimentName);
-        metaTask.setMetaCollectorClasses(getMetaCollectorClasses());
 
         // Define the base task which generates an arff instances file
         extractFeaturesTask = new ExtractFeaturesTask();
         extractFeaturesTask.setAddInstanceId(false);
         extractFeaturesTask.setDataWriter(dataWriter);
         extractFeaturesTask.setType(extractFeaturesTask.getType() + "-" + experimentName);
-        extractFeaturesTask.setMetaCollectorClasses(getMetaCollectorClasses());
 
         // Define the cross-validation task which operates on the results of the the train task
         cvTask = new CrossValidationTask();
@@ -129,15 +125,4 @@ public class BatchTaskCV
     {
         this.dataWriter = dataWriter;
     }
-
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
-    {
-        return metaCollectorClasses;
-    }
-
-    public void setMetaCollectorClasses(List<Class<? extends MetaCollector>> metaCollectorClasses)
-    {
-        this.metaCollectorClasses = metaCollectorClasses;
-    }
-
 }

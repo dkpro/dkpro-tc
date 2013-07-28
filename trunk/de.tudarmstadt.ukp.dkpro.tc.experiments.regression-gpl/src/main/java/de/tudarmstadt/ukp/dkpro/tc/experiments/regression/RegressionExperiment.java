@@ -1,12 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.experiments.regression;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -23,7 +21,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -100,7 +97,6 @@ public class RegressionExperiment
         // Define the base task which generates an arff instances file
         ExtractFeaturesTask trainTask = new ExtractFeaturesTask();
         trainTask.setDataWriter(WekaDataWriter.class.getName());
-        trainTask.setMetaCollectorClasses(new ArrayList<Class<? extends MetaCollector>>());
         trainTask.setRegressionExperiment(true);
         trainTask.setType(trainTask.getType() + nameCV);
         trainTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
@@ -135,7 +131,7 @@ public class RegressionExperiment
         throws ResourceInitializationException, IOException
     {
 
-        return createDescription(STSReader.class, STSReader.PARAM_INPUT_FILE, inputFile,
+        return createReaderDescription(STSReader.class, STSReader.PARAM_INPUT_FILE, inputFile,
                 STSReader.PARAM_GOLD_FILE, goldFile);
     }
 
@@ -143,9 +139,9 @@ public class RegressionExperiment
         throws ResourceInitializationException
     {
 
-        return createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class),
-                createPrimitiveDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+        return createEngineDescription(
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         languageCode));
     }
 }

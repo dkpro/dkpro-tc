@@ -5,6 +5,6 @@ import java.util.List;
 public interface MetaDependent
 {
 
-    public List<String> getMetaCollectorClasses();
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses();
     
 }

@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.core.meta;
+package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
 import java.util.Map;
 

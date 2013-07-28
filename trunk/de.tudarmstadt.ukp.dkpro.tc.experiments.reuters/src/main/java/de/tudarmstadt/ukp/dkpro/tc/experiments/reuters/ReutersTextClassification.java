@@ -1,13 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.experiments.reuters;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -22,9 +19,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.reuters.io.ReutersCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
@@ -80,8 +75,7 @@ public class ReutersTextClassification
     {
 
         BatchTaskCV batch = new BatchTaskCV("ReutersCV", getReaderDesc(corpusFilePathTrain,
-                languageCode), getPreprocessing(), getMetaCollectors(),
-                MekaDataWriter.class.getName());
+                languageCode), getPreprocessing(), MekaDataWriter.class.getName());
         batch.setType("Evaluation-Reuters-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -98,7 +92,7 @@ public class ReutersTextClassification
         BatchTaskTrainTest batch = new BatchTaskTrainTest("ReutersTrainTest", getReaderDesc(
                 corpusFilePathTrain, languageCode),
                 getReaderDesc(corpusFilePathTest, languageCode), getPreprocessing(),
-                getMetaCollectors(), MekaDataWriter.class.getName());
+                MekaDataWriter.class.getName());
         batch.setType("Evaluation-Reuters-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -112,7 +106,7 @@ public class ReutersTextClassification
     private CollectionReaderDescription getReaderDesc(String filePath, String language)
         throws ResourceInitializationException, IOException
     {
-        return createDescription(ReutersCorpusReader.class, ReutersCorpusReader.PARAM_PATH,
+        return createReaderDescription(ReutersCorpusReader.class, ReutersCorpusReader.PARAM_PATH,
                 filePath, ReutersCorpusReader.PARAM_LANGUAGE, language,
                 ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
                 ReutersCorpusReader.PARAM_PATTERNS,
@@ -122,15 +116,9 @@ public class ReutersTextClassification
     private AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createAggregateDescription(createPrimitiveDescription(BreakIteratorSegmenter.class),
-                createPrimitiveDescription(OpenNlpPosTagger.class));
-    }
-
-    protected List<Class<? extends MetaCollector>> getMetaCollectors()
-    {
-        List<Class<? extends MetaCollector>> metaCollectors = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectors.add(NGramMetaCollector.class);
-
-        return metaCollectors;
+        return createEngineDescription(
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class)
+        );
     }
 }

@@ -22,6 +22,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FocusAnnotationFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
@@ -63,10 +64,10 @@ public class NGramFeatureExtractor
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<String> getMetaCollectorClasses()
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
-        List<String> metaCollectorClasses = new ArrayList<String>();
-        metaCollectorClasses.add(NGramMetaCollector.class.getName());
+        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        metaCollectorClasses.add(NGramMetaCollector.class);
 
         return metaCollectorClasses;
     }

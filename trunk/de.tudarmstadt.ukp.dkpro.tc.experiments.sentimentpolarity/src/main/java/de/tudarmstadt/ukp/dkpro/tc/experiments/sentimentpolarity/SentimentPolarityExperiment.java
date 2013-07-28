@@ -1,13 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.experiments.sentimentpolarity;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -22,9 +19,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.experiments.sentimentpolarity.io.MovieReviewCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
@@ -79,7 +74,7 @@ public class SentimentPolarityExperiment
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("SentimentPolarityTrainTest",
                 getReaderDesc(corpusFilePathTrain, languageCode), getReaderDesc(corpusFilePathTest,
-                        languageCode), getPreprocessing(), getMetaCollectors(),
+                        languageCode), getPreprocessing(),
                 WekaDataWriter.class.getName());
         batch.setType("Evaluation-SentimentPolarity-TrainTest");
         batch.setParameterSpace(pSpace);
@@ -95,7 +90,7 @@ public class SentimentPolarityExperiment
         throws ResourceInitializationException, IOException
     {
 
-        return createDescription(MovieReviewCorpusReader.class,
+        return createReaderDescription(MovieReviewCorpusReader.class,
                 MovieReviewCorpusReader.PARAM_PATH, corpusFilePath,
                 MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
                 MovieReviewCorpusReader.PARAM_PATTERNS,
@@ -106,17 +101,9 @@ public class SentimentPolarityExperiment
         throws ResourceInitializationException
     {
 
-        return createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class),
-                createPrimitiveDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+        return createEngineDescription(
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         languageCode));
-    }
-
-    protected List<Class<? extends MetaCollector>> getMetaCollectors()
-    {
-        List<Class<? extends MetaCollector>> metaCollectors = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectors.add(NGramMetaCollector.class);
-
-        return metaCollectors;
     }
 }
