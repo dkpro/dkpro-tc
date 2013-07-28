@@ -1,9 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
 import java.io.IOException;
@@ -108,8 +107,8 @@ public class ExtractFeaturesTask
                 InstanceExtractor.PARAM_FEATURE_ANNOTATION, featureAnnotation
                 ));
 
-        return createAggregateDescription(createPrimitiveDescription(InstanceExtractor.class,
-                parameters.toArray()));
+        return createEngineDescription(InstanceExtractor.class,
+                parameters.toArray());
 
     }
 
@@ -118,7 +117,7 @@ public class ExtractFeaturesTask
         throws ResourceInitializationException, IOException
     {
         String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-        return createDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
+        return createReaderDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
                 + "/", SerializedCasReader.PARAM_PATTERNS,
                 new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
     }
