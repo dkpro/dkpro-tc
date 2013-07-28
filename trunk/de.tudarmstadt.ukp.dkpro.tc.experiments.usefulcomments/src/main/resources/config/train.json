@@ -1,0 +1,54 @@
+{
+	"annotationsPathTrain" : "src/main/resources/data/annotationsTrain",
+    "annotationsPathTest" : "src/main/resources/data/annotationsTest",
+    "corpusPath" : "src/main/resources/data/corpus",
+
+    
+	"languageCode" : "en",
+	"nGramMinSize" : 1,
+	"nGramMaxSize" : 3,
+	"toLowerCase" : 
+	[
+		true
+	],
+	
+	"featureSets" : 
+	[
+		{
+		    "featureSet" : 
+			[
+				"de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor",
+				"de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor"
+			]
+		}
+	],
+	
+	"featureParameters" : 
+	[
+		{
+			"featureParameter" : 
+			[
+		    		"TopK", "500"
+			]
+		},
+		{
+		    "featureParameter" : 
+			[
+		    		"TopK", "5000"
+			]
+		}
+	],
+	
+	"classification" : 
+	[
+		{
+		    "trainingArgs" : 
+			[
+		    	"weka.classifiers.functions.SMO",
+		    	"-C",
+		    	"10"
+			]
+		}
+	]
+}	
