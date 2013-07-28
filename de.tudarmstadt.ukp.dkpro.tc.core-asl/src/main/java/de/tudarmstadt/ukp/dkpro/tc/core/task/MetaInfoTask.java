@@ -20,7 +20,8 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 public class MetaInfoTask
     extends UimaTaskBase
@@ -29,6 +30,9 @@ public class MetaInfoTask
     public static final String META_KEY = "meta";
     public static final String INPUT_KEY = "preprocessing_input";
 
+    @Discriminator
+    protected String[] featureSet;
+    
     @Discriminator
     protected Object[] pipelineParameters;
 
@@ -48,6 +52,19 @@ public class MetaInfoTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
+        // automatically determine the required metaCollector classes from the provided feature extractors 
+        try {
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatures(featureSet);
+        }
+        catch (ClassNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }
+        catch (InstantiationException e) {
+            throw new ResourceInitializationException(e);
+        }
+        catch (IllegalAccessException e) {
+            throw new ResourceInitializationException(e);
+        }
 
         // collect parameter/key pairs that need to be set
         Map<String, String> parameterKeyPairs = new HashMap<String, String>();
@@ -72,24 +89,12 @@ public class MetaInfoTask
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
 
-        AnalysisEngineDescription[] aeds = new AnalysisEngineDescription[metaCollectorClasses
-                .size()];
-        int i = 0;
+        List<AnalysisEngineDescription> aeds = new ArrayList<AnalysisEngineDescription>();
+
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            aeds[i] = createEngineDescription(metaCollectorClass, parameters.toArray());
-            i++;
+            aeds.add(createEngineDescription(metaCollectorClass, parameters.toArray()));
         }
 
-        return createEngineDescription(aeds);
-    }
-
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
-    {
-        return metaCollectorClasses;
-    }
-
-    public void setMetaCollectorClasses(List<Class<? extends MetaCollector>> metaCollectorClasses)
-    {
-        this.metaCollectorClasses = metaCollectorClasses;
+        return createEngineDescription(aeds.toArray(new AnalysisEngineDescription[0]));
     }
 }

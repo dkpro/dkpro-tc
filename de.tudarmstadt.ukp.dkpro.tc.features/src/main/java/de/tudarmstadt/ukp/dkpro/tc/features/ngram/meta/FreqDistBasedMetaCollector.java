@@ -9,7 +9,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 
 public abstract class FreqDistBasedMetaCollector
     extends MetaCollector

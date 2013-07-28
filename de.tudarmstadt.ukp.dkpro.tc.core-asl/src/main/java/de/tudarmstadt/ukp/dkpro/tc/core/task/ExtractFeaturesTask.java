@@ -23,8 +23,9 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.extractor.InstanceExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 public class ExtractFeaturesTask
     extends UimaTaskBase
@@ -54,6 +55,20 @@ public class ExtractFeaturesTask
     {
         File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
 
+        // automatically determine the required metaCollector classes from the provided feature extractors
+        try {
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatures(featureSet);
+        }
+        catch (ClassNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }
+        catch (InstantiationException e) {
+            throw new ResourceInitializationException(e);
+        }
+        catch (IllegalAccessException e) {
+            throw new ResourceInitializationException(e);
+        }
+        
         // collect parameter/key pairs that need to be set
         Map<String, String> parameterKeyPairs = new HashMap<String, String>();
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
@@ -140,16 +155,6 @@ public class ExtractFeaturesTask
     public void setRegressionExperiment(boolean isRegressionExperiment)
     {
         this.isRegressionExperiment = isRegressionExperiment;
-    }
-
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
-    {
-        return metaCollectorClasses;
-    }
-
-    public void setMetaCollectorClasses(List<Class<? extends MetaCollector>> metaCollectorClasses)
-    {
-        this.metaCollectorClasses = metaCollectorClasses;
     }
 
     public boolean getAddInstanceId()

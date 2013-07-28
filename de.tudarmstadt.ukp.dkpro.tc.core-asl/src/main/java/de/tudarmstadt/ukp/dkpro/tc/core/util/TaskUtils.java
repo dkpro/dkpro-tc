@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -19,6 +21,10 @@ import net.sf.json.JSONSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
+
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -149,4 +155,30 @@ public class TaskUtils
     // }
     // return extractors;
     // }
+    
+    /**
+     * Get a list of MetaCollector classes from a list of feature extractors.
+     * 
+     * @param featureSet
+     * @return
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
+    public static List<Class<? extends MetaCollector>> getMetaCollectorsFromFeatures(String[] featureSet)
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    {
+        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        
+        for (String element : featureSet) {
+            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class.forName(element).newInstance();
+            if (featureExtractor instanceof MetaDependent) {
+                MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
+                metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
+            }
+        }
+        
+        return metaCollectorClasses;
+
+    }
 }
