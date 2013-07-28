@@ -1,8 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class MetaInfoTask
         throws ResourceInitializationException, IOException
     {
         String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-        return createDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
+        return createReaderDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
                 + "/", SerializedCasReader.PARAM_PATTERNS,
                 new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
     }
@@ -77,11 +76,11 @@ public class MetaInfoTask
                 .size()];
         int i = 0;
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            aeds[i] = createPrimitiveDescription(metaCollectorClass, parameters.toArray());
+            aeds[i] = createEngineDescription(metaCollectorClass, parameters.toArray());
             i++;
         }
 
-        return createAggregateDescription(aeds);
+        return createEngineDescription(aeds);
     }
 
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()

@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.IOException;
 
@@ -52,12 +51,12 @@ public class PreprocessTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        AnalysisEngineDescription xmiWriter = createPrimitiveDescription(
+        AnalysisEngineDescription xmiWriter = createEngineDescription(
                 SerializedCasWriter.class,
                 SerializedCasWriter.PARAM_COMPRESSION, CompressionMethod.GZIP,
                 SerializedCasWriter.PARAM_TARGET_LOCATION, aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE).getPath()
         );
 
-        return createAggregateDescription(aggregate, xmiWriter);
+        return createEngineDescription(aggregate, xmiWriter);
     }
 }
