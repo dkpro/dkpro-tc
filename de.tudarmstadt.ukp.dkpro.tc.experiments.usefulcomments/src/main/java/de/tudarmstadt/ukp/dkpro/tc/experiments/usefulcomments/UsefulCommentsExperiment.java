@@ -43,6 +43,8 @@ public class UsefulCommentsExperiment
     private String corpusPath;
     private String annotationsPathTrain;
     private String annotationsPathTest;
+    private float usefulThreshold;
+    private float notUsefulThreshold;
 
     public static void main(String[] args)
         throws Exception
@@ -70,6 +72,8 @@ public class UsefulCommentsExperiment
         corpusPath = json.getString("corpusPath");
         annotationsPathTrain = json.getString("annotationsPathTrain");
         annotationsPathTest = json.getString("annotationsPathTest");
+        usefulThreshold = (float) json.getDouble("usefulThreshold");
+        notUsefulThreshold = (float) json.getDouble("notUsefulThreshold");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
     }
@@ -80,12 +84,12 @@ public class UsefulCommentsExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("UsefulCommentsTrainTest",
-                getReaderDesc(annotationsPathTrain, corpusPath, languageCode),
-                getReaderDesc(annotationsPathTest, corpusPath, languageCode), getPreprocessing(), getMetaCollectors(),
+                getReaderDesc(annotationsPathTrain, corpusPath, languageCode, usefulThreshold, notUsefulThreshold),
+                getReaderDesc(annotationsPathTest, corpusPath, languageCode, usefulThreshold, notUsefulThreshold), getPreprocessing(), getMetaCollectors(),
                 WekaDataWriter.class.getName());
         batch.setType("Evaluation-UsefulComments-TrainTest");
         batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.setExecutionPolicy(ExecutionPolicy.USE_EXISTING);
         batch.addReport(BatchTrainTestReport.class);
         batch.addReport(BatchOutcomeIDReport.class);
 
@@ -93,14 +97,22 @@ public class UsefulCommentsExperiment
         Lab.getInstance().run(batch);
     }
 
-    protected CollectionReaderDescription getReaderDesc(String annotationsPath, String corpusPath, String languageCode)
+    protected CollectionReaderDescription getReaderDesc(
+    		String annotationsPath,
+    		String corpusPath,
+    		String languageCode,
+    		float usefulThreshold,
+    		float notUsefulTHreshold)
         throws ResourceInitializationException, IOException
     {
 
         return createDescription(CommentsReader.class,
         		CommentsReader.PARAM_CORPUS_PATH, corpusPath,
-        		CommentsReader.PARAM_ANNOTATIONS_PATH, annotationsPath
-                );
+        		CommentsReader.PARAM_ANNOTATIONS_PATH, annotationsPath,
+        		CommentsReader.PARAM_LANGUAGE, languageCode,
+        		CommentsReader.PARAM_USEFUL_COMMENT_THRESHOLD, usefulThreshold,
+        		CommentsReader.PARAM_NOT_USEFUL_COMMENT_THRESHOLD, notUsefulThreshold
+        		);
     }
 
     protected AnalysisEngineDescription getPreprocessing()
