@@ -2,6 +2,8 @@
 	"annotationsPathTrain" : "src/main/resources/data/annotationsTrain",
     "annotationsPathTest" : "src/main/resources/data/annotationsTest",
     "corpusPath" : "src/main/resources/data/corpus",
+	"usefulThreshold" : 0.5,
+	"notUsefulThreshold" : 0.5,
 
     
 	"languageCode" : "en",
