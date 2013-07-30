@@ -11,7 +11,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -21,6 +24,8 @@ import net.sf.json.JSONSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
+import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.internal.ReflectionUtil;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
@@ -158,14 +163,8 @@ public class TaskUtils
     
     /**
      * Get a list of MetaCollector classes from a list of feature extractors.
-     * 
-     * @param featureSet
-     * @return
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws ClassNotFoundException
      */
-    public static List<Class<? extends MetaCollector>> getMetaCollectorsFromFeatures(String[] featureSet)
+    public static List<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(String[] featureSet)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
@@ -179,6 +178,24 @@ public class TaskUtils
         }
         
         return metaCollectorClasses;
+    }
+    
+    /**
+     * Get a list of required type names.
+     */
+    public static Set<String> getRequiredTypesFromFeatureExtractors(String[] featureSet)
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    {
+        Set<String> requiredTypes = new HashSet<String>();
+        
+        for (String element : featureSet) {
+            TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(element), TypeCapability.class);
 
+            if (annotation != null) {
+                requiredTypes.addAll(Arrays.asList(annotation.inputs()));
+            }
+        }
+        
+        return requiredTypes;
     }
 }

@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.length;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -13,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FocusAnnotationFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
 public class NrOfSentencesFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FocusAnnotationFeatureExtractor

@@ -54,7 +54,7 @@ public class MetaInfoTask
     {
         // automatically determine the required metaCollector classes from the provided feature extractors 
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatures(featureSet);
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
         }
         catch (ClassNotFoundException e) {
             throw new ResourceInitializationException(e);
