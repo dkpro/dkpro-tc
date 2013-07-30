@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -48,6 +49,8 @@ public class ExtractFeaturesTask
     private boolean isRegressionExperiment = false;
     private boolean addInstanceId = false;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
+    private Set<String> requiredTypes;
+
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
@@ -57,7 +60,8 @@ public class ExtractFeaturesTask
 
         // automatically determine the required metaCollector classes from the provided feature extractors
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatures(featureSet);
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
+            requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
         }
         catch (ClassNotFoundException e) {
             throw new ResourceInitializationException(e);

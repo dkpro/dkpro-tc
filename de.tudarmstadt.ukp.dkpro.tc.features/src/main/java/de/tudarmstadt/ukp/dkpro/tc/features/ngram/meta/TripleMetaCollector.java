@@ -21,7 +21,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.NC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TripleFeatureExtractor;
 
 public class TripleMetaCollector
     extends FreqDistBasedMetaCollector
