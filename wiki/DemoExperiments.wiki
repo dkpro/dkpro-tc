@@ -21,7 +21,7 @@ de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl
 All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ and the _sentimentpolarity_ experiment are binary classification tasks. 
 The _regression_ demo shows how to use DKPro-TC for regression experiments.
 
-==Binary Classification (twentynewsgroups) Example==
+==Binary Classification with DKPro-TC: twentynewsgroups demo ==
 
 It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
 
@@ -170,6 +170,6 @@ Once you got this example running as it is, you can start adapting various param
   * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
   * using different classifiers - please refer to the WEKA-JavaDoc for further information on that. Currently, we only support WEKA for classification.
 
-==Multi-Label Classification== 
+==Multi-labelClassification with DKPro-TC: reuters demo ==
 
 tbd.
