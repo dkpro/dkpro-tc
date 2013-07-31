@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
-import org.cleartk.classifier.Feature;
-import org.cleartk.classifier.feature.extractor.CleartkExtractorException;
+
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class SharedKeyphraseFeatureExtractor extends
 		AbstractKeyphraseFeatureExtractor {
@@ -19,21 +18,16 @@ public class SharedKeyphraseFeatureExtractor extends
 		this.number = number;
 	}
 	
-	@Override
-	public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
-			throws CleartkExtractorException
-			{
-		try {
-			return Arrays.asList(
-					new Feature("SharedKeyphrases_" + number, 
-							(
-									Collections.disjoint(getKeyphrases(jcas.getView(PART_ONE), number),
-											getKeyphrases(jcas.getView(PART_ONE), number))
-					)));
-		} catch (CASException e) {
-			throw new CleartkExtractorException(e);
-		}
-			}
+    @Override
+    public List<de.tudarmstadt.ukp.dkpro.tc.api.features.Feature> extract(JCas view1, JCas view2)
+        throws TextClassificationException
+    {
 
-
+        return Arrays.asList(
+                new Feature("SharedKeyphrases_" + number, 
+                        (
+                                Collections.disjoint(getKeyphrases(view1, number),
+                                        getKeyphrases(view2, number))
+                )));
+    }
 }

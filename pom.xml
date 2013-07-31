@@ -75,6 +75,7 @@
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl</module>
@@ -84,7 +85,6 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.keyphrases-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -121,6 +121,13 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
+          			de.tudarmstadt.ukp.dkpro.tc.api-asl
+          		</artifactId>
+				<version>0.4.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>
           			de.tudarmstadt.ukp.dkpro.tc.features-asl
           		</artifactId>
 				<version>0.4.0-SNAPSHOT</version>
@@ -133,7 +140,7 @@
 				<version>0.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc.features.pair</groupId>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
                 </artifactId>
@@ -186,22 +193,6 @@
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimafit</artifactId>
 				<version>2.0.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-					de.tudarmstadt.ukp.dkpro.tc.api-asl
-				</artifactId>
-				<version>0.4.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>
-					de.tudarmstadt.ukp.dkpro.tc.features.pair
-				</groupId>
-				<artifactId>
-					de.tudarmstadt.ukp.dkpro.tc.features.pair.keyphrases-asl
-				</artifactId>
-				<version>0.4.0-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
