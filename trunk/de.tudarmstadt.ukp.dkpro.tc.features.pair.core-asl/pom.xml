@@ -31,7 +31,7 @@
     		de.tudarmstadt.ukp.dkpro.tc.api.features-asl
     	</artifactId>
     </dependency>
-        <dependency>
+    <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
     		de.tudarmstadt.ukp.dkpro.tc.features-asl
