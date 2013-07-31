@@ -2,7 +2,9 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,8 +47,10 @@ public class FeatureValuesReport
                 + TestTask.EVALUATION_DATA_KEY);
         String[] classValues;
         List<String> attrNames = new ArrayList<String>();
-        List<String[]> attrClassAverages = new ArrayList<String[]>();
 
+        Map<Integer,HashMap<Integer,Double>> map =new HashMap<Integer,HashMap<Integer,Double>>(); // hashmap storing sum over attribute values for every class label
+        Map<Integer,HashMap<Integer,Integer>> countMap =new HashMap<Integer,HashMap<Integer,Integer>>(); // hashmap storing counts of attribute values for every class label
+        
         // -----MULTI LABEL-----------
         if (TestTask.MULTILABEL) {
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
@@ -57,56 +61,62 @@ public class FeatureValuesReport
             }
             String threshold = r.getInfo("Threshold");
             double[] t = TaskUtils.getMekaThreshold(threshold, r, predictions);
-
-            // loop over labels
-            for (int classindex = 0; classindex < predictions.classIndex(); classindex++) {
-                // attribute average val for each label
-                String[] attrAverages = new String[predictions.numAttributes()
-                        - (predictions.classIndex() * 2)];
-
-                // loop over attributes (jumping outcome and predicted labels)
-                for (int attrIndex = predictions.classIndex() * 2; attrIndex < predictions
-                        .numAttributes(); attrIndex++) {
-                    Attribute att = predictions.attribute(attrIndex);
-
-                    // only numeric attributes
-                    if (att.isNumeric()) {
-                        // add att names only once
-                        if (!attrNames.contains(att.name())) {
+            
+            //iterate over instances
+            for (Instance inst : predictions) {
+            	//iterate over attributes
+            	for (int attrIndex = predictions.classIndex() * 2; attrIndex < predictions.numAttributes(); attrIndex++) {
+            		Attribute att = predictions.attribute(attrIndex);
+                    //only numeric attributes involved in average calculation
+            		if (att.isNumeric()) {
+                    	if(map.get(att.index() - predictions.classIndex() * 2) == null) {
+                    		map.put(att.index() - predictions.classIndex() * 2, new HashMap<Integer,Double>());
+                    		countMap.put(att.index() - predictions.classIndex() * 2, new HashMap<Integer,Integer>());
+                    	}
+                    	if (!attrNames.contains(att.name())) {
                             attrNames.add(att.name());
                         }
-                        double sumOverSelectedInst = 0.0;
-                        int numInstances = 0;
-                        for (Instance inst : predictions) {
-                            // outcome class
-                            if (t[classindex] <= inst.value(classindex)) {
-                                double val = inst.value(att);
-                                if (val != 0 && val != Double.NaN) {
-                                    sumOverSelectedInst += val;
-                                }
-                                numInstances++;
-                            }
-                        }
-                        // sumOverSelectedInst here contains sum of one attribute per in-class
-                        // instances
-                        if (numInstances > 0) {
-                            attrAverages[att.index() - predictions.classIndex() * 2] = ((Double) (sumOverSelectedInst / numInstances))
-                                    .toString();
-                        }
-                        else {
-                            attrAverages[att.index() - predictions.classIndex() * 2] = "0.0";
-                        }
+                    	//iterate over class labels
+                    	for (int classindex = 0; classindex < predictions.classIndex(); classindex++) {
+                    		//check if label confidence is above threshold
+                    		if (t[classindex] <= inst.value(classindex)) {
+                    			if (map.get(att.index() - predictions.classIndex() * 2).get(classindex) == null) {
+                            		map.get(att.index() - predictions.classIndex() * 2).put(classindex,inst.value(att));
+                            		countMap.get(att.index() - predictions.classIndex() * 2).put(classindex, 1);
+                            	}
+                            	else {
+                            		map.get(att.index() - predictions.classIndex() * 2).put(classindex, map.get(att.index() - predictions.classIndex() * 2).get(classindex) + inst.value(att));
+                            		countMap.get(att.index() - predictions.classIndex() * 2).put(classindex, countMap.get(att.index() - predictions.classIndex() * 2).get(classindex) + 1);
+                            	}
+                    		}
+                    		//ensuring that the hashmaps don't go uninitialized in case no label confidence is above threshold
+                    		else if (map.get(att.index() - predictions.classIndex() * 2).get(classindex) == null) {
+                    			map.get(att.index() - predictions.classIndex() * 2).put(classindex, 0.0);
+                        		countMap.get(att.index() - predictions.classIndex() * 2).put(classindex, 0);
+                    		}
+                    	}
                     }
-                }
-                attrClassAverages.add(attrAverages);
+            	}
             }
             // FIXME transpose table
             props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
-            for (int classindex = 0; classindex < predictions
-                    .classIndex(); classindex++) {
-                props.setProperty(classValues[classindex],
-                        StringUtils.join(attrClassAverages.get(classindex), ","));
-            }
+            for (int classindex = 0; classindex < predictions.classIndex(); classindex++) {
+            	String str = "";
+            	for (int i=predictions.classIndex() * 2; i<predictions.numAttributes(); i++,str += ",") {
+            		Attribute att = predictions.attribute(i);
+            		if(att.isNumeric()) {
+            			int count = countMap.get(att.index() - predictions.classIndex() * 2).get(classindex);
+            			if (count == 0) {
+            				str = str + (new Double(0.0)).toString();
+            			}
+            			else {
+            				str = str + (new Double(map.get(att.index() - predictions.classIndex() * 2).get(classindex)/count)).toString();
+            			}
+            		}
+            	}
+            	str = str.substring(0, str.length() - 1);
+            	props.setProperty(classValues[classindex],str);
+            }           
         }
         // -----SINGLE LABEL-----------
         else {
@@ -114,53 +124,47 @@ public class FeatureValuesReport
             for (int i = 0; i < predictions.numClasses(); i++) {
                 classValues[i] = predictions.classAttribute().value(i); // distinct outcome classes
             }
-            // loops twice for binary class etc.
-            for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
-                // average value for each attribute in one outcome class
-                String[] attrAverages = new String[predictions.numAttributes()];
-                for (int attrIndex = 0; attrIndex < predictions.numAttributes(); attrIndex++) {
-                    Attribute att = predictions.attribute(attrIndex);
-                    if (att.isNumeric()) {
-                        // add att names only once
-                        if (!attrNames.contains(att.name())) {
+            
+            for (int attrIndex = 0; attrIndex < predictions.numAttributes(); attrIndex++) {
+        		map.put(attrIndex, new HashMap<Integer,Double>());
+        		countMap.put(attrIndex, new HashMap<Integer,Integer>());
+        	}
+            
+            //iterate over instances
+            for (Instance inst : predictions) {
+            	//iterate over attributes
+            	for (int attrIndex = 0; attrIndex < predictions.numAttributes(); attrIndex++) {
+            		Attribute att = predictions.attribute(attrIndex);
+            		int classification = new Double(inst.value(predictions
+                            .attribute(Constants.CLASS_ATTRIBUTE_NAME
+                                    + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
+            		//only numeric attributes involved in average calculation
+            		if (att.isNumeric()) {
+                    	if (!attrNames.contains(att.name())) {
                             attrNames.add(att.name());
                         }
-                        double sumOverSelectedInst = 0.0;
-                        int numInstances = 0;
-                        for (Instance inst : predictions) {
-                            // outcome class number
-                            int classification = new Double(inst.value(predictions
-                                    .attribute(Constants.CLASS_ATTRIBUTE_NAME
-                                            + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
-                            if (classification == classindex) { // positive or negative for binary
-                                double val = inst.value(att);
-                                if (val != 0 && val != Double.NaN) {
-                                    sumOverSelectedInst += val;
-                                }
-                                numInstances++;
-                            }
-                        }
-                        // sumOverSelectedInst here contains sum of one attribute per in-class
-                        // instances
-                        if (numInstances > 0) {
-                            attrAverages[att.index()] = ((Double) (sumOverSelectedInst / numInstances))
-                                    .toString();
-                        }
-                        else {
-                            attrAverages[att.index()] = "0.0";
-                        }
+                    	if (map.get(attrIndex).get(classification) == null) {
+                    		map.get(attrIndex).put(classification,inst.value(att));
+                    		countMap.get(attrIndex).put(classification, 1);
+                    	}
+                    	else {
+                    		map.get(attrIndex).put(classification, map.get(attrIndex).get(classification) + inst.value(att));
+                    		countMap.get(attrIndex).put(classification, countMap.get(attrIndex).get(classification) + 1);
+                    	}
                     }
-                }
-                attrClassAverages.add(attrAverages);
+            	}
             }
             // FIXME transpose table
             props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
             for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
-                props.setProperty(classValues[classindex],
-                        StringUtils.join(attrClassAverages.get(classindex), ","));
+            	String str = "";
+            	for (int i=0; i<predictions.numAttributes(); i++,str += ",") {
+            		str = str + (new Double(map.get(i).get(classindex)/countMap.get(i).get(classindex))).toString();
+            	}
+            	str = str.substring(0, str.length() - 1);
+                props.setProperty(classValues[classindex],str);
             }
         }
-
         getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
     }
 
