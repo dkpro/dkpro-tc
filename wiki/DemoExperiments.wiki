@@ -5,19 +5,21 @@
 In this introduction, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
 
-Please make sure that you have set up an environment_variable *DKPRO_HOME* either system-wide or per-project in the Eclipse run configuration. The variable should point to a (possibly yet empty) directory which is intended to store any sort of resources which are to be used by any DKPro component.
+Please make sure that you have set up an environment variable *DKPRO_HOME*. The variable should point to a (possibly yet empty) directory which is intended to store any sort of resources which are to be used by any DKPro component.
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
-Currently, there are three basic example experiments:
+Currently, there are four basic example experiments:
 
 {{{
-de.tudarmstadt.ukp.dkpro.tc.experiments.reuters
-de.tudarmstadt.ukp.dkpro.tc.experiments.sentimentpolarity
-de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups
+de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl
+de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity-gpl
+de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl
+de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl
 }}}
 
-All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ and the _sentimentpolarity_ experiment are binary classification tasks. We will start with that last one:
+All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ and the _sentimentpolarity_ experiment are binary classification tasks. 
+The _regression_ demo shows how to use DKPro-TC for regression experiments.
 
 ==Binary Classification (twentynewsgroups) Example==
 
