@@ -106,7 +106,7 @@ OpenNlpPosTagger
 
 A segmenter and a Part-of-Speech Tagger. 
 
-From the words and the POS tags n-gram features are extracted - precisely uni-, bi- and trigram, as defined here:
+From the words and the POS tags n-gram features are extracted - precisely uni-, bi- and trigrams, as defined here:
 
 {{{
 def dimPipelineParameters = Dimension.create("pipelineParameters" ...
@@ -141,17 +141,15 @@ In the presented example, two folds are used:
 def dimFolds = Dimension.create("folds" , 2);
 }}}
 
-gluing all of the various parameters and processing tasks together to actually perform all the tasks is governed by
-
-runCrossValidation()
+Gluing all of the various parameters and processing tasks together to actually perform all the tasks is governed by `runCrossValidation()`
 
 ===runTrainTest()===
 
-And similarly for the designated test and train sets.
+Similarly, for the designated test and train sets.
 
 ===main()===
 
-This calls both the cross-validation and the train/test runs. Please note, that here it can be specified where the resulting data will be stored:
+This calls both the cross-validation and the train/test runs. Please note that, if you haven't set *DKPRO_HOME* otherwise, here is your last change to specify where the resulting data will be stored:
 
 {{{
 System.setProperty("DKPRO_HOME", "/the/path/to/my/results/");
