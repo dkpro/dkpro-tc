@@ -34,7 +34,7 @@
         <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.features
+    		de.tudarmstadt.ukp.dkpro.tc.features-asl
     	</artifactId>
     </dependency>
   </dependencies>
