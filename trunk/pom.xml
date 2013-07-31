@@ -73,19 +73,18 @@
 		</developer>
 	</developers>
 	<modules>
-		<module>de.tudarmstadt.ukp.dkpro.tc.api</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.regression-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.reuters</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.experiments.twentynewsgroups</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.api-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.keyphrases-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
-		<module>
-			de.tudarmstadt.ukp.dkpro.tc.experiments.sentimentpolarity
-		</module>
 	</modules>
 	<dependencies>
 		<dependency>
