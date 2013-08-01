@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -48,8 +49,14 @@ public class FeatureValuesReport
         String[] classValues;
         List<String> attrNames = new ArrayList<String>();
 
-        Map<Integer,HashMap<Integer,Double>> map =new HashMap<Integer,HashMap<Integer,Double>>(); // hashmap storing sum over attribute values for every class label
-        Map<Integer,HashMap<Integer,Integer>> countMap =new HashMap<Integer,HashMap<Integer,Integer>>(); // hashmap storing counts of attribute values for every class label
+        Map<PairKey<Integer,Integer>,ArrayList<Double>> map = new HashMap<PairKey<Integer,Integer>,ArrayList<Double>>();
+        // hashmap storing an array list of values per attribute per class label
+        
+        PairKey<Integer,Integer> pk;
+        //to hold a temporary pair key
+        
+        int predictionsClassIndex = predictions.classIndex();
+        int predictionsNumAttributes = predictions.numAttributes();
         
         // -----MULTI LABEL-----------
         if (TestTask.MULTILABEL) {
@@ -65,53 +72,52 @@ public class FeatureValuesReport
             //iterate over instances
             for (Instance inst : predictions) {
             	//iterate over attributes
-            	for (int attrIndex = predictions.classIndex() * 2; attrIndex < predictions.numAttributes(); attrIndex++) {
+            	for (int attrIndex = predictionsClassIndex * 2; attrIndex < predictionsNumAttributes; attrIndex++) {
             		Attribute att = predictions.attribute(attrIndex);
                     //only numeric attributes involved in average calculation
             		if (att.isNumeric()) {
-                    	if(map.get(att.index() - predictions.classIndex() * 2) == null) {
-                    		map.put(att.index() - predictions.classIndex() * 2, new HashMap<Integer,Double>());
-                    		countMap.put(att.index() - predictions.classIndex() * 2, new HashMap<Integer,Integer>());
-                    	}
                     	if (!attrNames.contains(att.name())) {
                             attrNames.add(att.name());
                         }
                     	//iterate over class labels
-                    	for (int classindex = 0; classindex < predictions.classIndex(); classindex++) {
+                    	for (int classindex = 0; classindex < predictionsClassIndex; classindex++) {
+                    		pk = new PairKey<Integer,Integer>(att.index() - predictionsClassIndex * 2,classindex);
                     		//check if label confidence is above threshold
                     		if (t[classindex] <= inst.value(classindex)) {
-                    			if (map.get(att.index() - predictions.classIndex() * 2).get(classindex) == null) {
-                            		map.get(att.index() - predictions.classIndex() * 2).put(classindex,inst.value(att));
-                            		countMap.get(att.index() - predictions.classIndex() * 2).put(classindex, 1);
+                    			if (!map.containsKey(pk)) {
+                            		map.put(pk,new ArrayList<Double>());
                             	}
-                            	else {
-                            		map.get(att.index() - predictions.classIndex() * 2).put(classindex, map.get(att.index() - predictions.classIndex() * 2).get(classindex) + inst.value(att));
-                            		countMap.get(att.index() - predictions.classIndex() * 2).put(classindex, countMap.get(att.index() - predictions.classIndex() * 2).get(classindex) + 1);
-                            	}
+                    			ArrayList<Double> existing = map.get(pk);
+                    			existing.add(inst.value(att));
+                    			map.put(pk,existing);
                     		}
-                    		//ensuring that the hashmaps don't go uninitialized in case no label confidence is above threshold
-                    		else if (map.get(att.index() - predictions.classIndex() * 2).get(classindex) == null) {
-                    			map.get(att.index() - predictions.classIndex() * 2).put(classindex, 0.0);
-                        		countMap.get(att.index() - predictions.classIndex() * 2).put(classindex, 0);
-                    		}
+                    		//ensuring that a numeric attribute and class label pair always have a key (even if empty)
+                    		else if (!map.containsKey(pk)) {
+                        		map.put(pk,new ArrayList<Double>());
+                        	}
                     	}
                     }
             	}
             }
             // FIXME transpose table
             props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
-            for (int classindex = 0; classindex < predictions.classIndex(); classindex++) {
+            for (int classindex = 0; classindex < predictionsClassIndex; classindex++) {
             	String str = "";
-            	for (int i=predictions.classIndex() * 2; i<predictions.numAttributes(); i++,str += ",") {
+            	for (int i=predictionsClassIndex * 2; i<predictionsNumAttributes; i++,str += ",") {
             		Attribute att = predictions.attribute(i);
-            		if(att.isNumeric()) {
-            			int count = countMap.get(att.index() - predictions.classIndex() * 2).get(classindex);
-            			if (count == 0) {
-            				str = str + (new Double(0.0)).toString();
+            		pk = new PairKey<Integer,Integer>(att.index() - predictionsClassIndex * 2,classindex);
+            		if(map.containsKey(pk)) {
+            			Iterator<Double> it = map.get(pk).iterator();
+            			double sum = 0.0;
+            			int count = 0;
+            			if(!it.hasNext()) {
+            				count = 1;
             			}
-            			else {
-            				str = str + (new Double(map.get(att.index() - predictions.classIndex() * 2).get(classindex)/count)).toString();
+            			while(it.hasNext()) {
+            				sum += it.next();
+            				count++;
             			}
+            			str = str + (new Double(sum/count)).toString();
             		}
             	}
             	str = str.substring(0, str.length() - 1);
@@ -125,15 +131,10 @@ public class FeatureValuesReport
                 classValues[i] = predictions.classAttribute().value(i); // distinct outcome classes
             }
             
-            for (int attrIndex = 0; attrIndex < predictions.numAttributes(); attrIndex++) {
-        		map.put(attrIndex, new HashMap<Integer,Double>());
-        		countMap.put(attrIndex, new HashMap<Integer,Integer>());
-        	}
-            
             //iterate over instances
             for (Instance inst : predictions) {
             	//iterate over attributes
-            	for (int attrIndex = 0; attrIndex < predictions.numAttributes(); attrIndex++) {
+            	for (int attrIndex = 0; attrIndex < predictionsNumAttributes; attrIndex++) {
             		Attribute att = predictions.attribute(attrIndex);
             		int classification = new Double(inst.value(predictions
                             .attribute(Constants.CLASS_ATTRIBUTE_NAME
@@ -143,14 +144,13 @@ public class FeatureValuesReport
                     	if (!attrNames.contains(att.name())) {
                             attrNames.add(att.name());
                         }
-                    	if (map.get(attrIndex).get(classification) == null) {
-                    		map.get(attrIndex).put(classification,inst.value(att));
-                    		countMap.get(attrIndex).put(classification, 1);
+                    	pk = new PairKey<Integer,Integer>(attrIndex,classification);
+                    	if (!map.containsKey(pk)) {
+                    		map.put(pk,new ArrayList<Double>());
                     	}
-                    	else {
-                    		map.get(attrIndex).put(classification, map.get(attrIndex).get(classification) + inst.value(att));
-                    		countMap.get(attrIndex).put(classification, countMap.get(attrIndex).get(classification) + 1);
-                    	}
+                    	ArrayList<Double> existing = map.get(pk);
+            			existing.add(inst.value(att));
+            			map.put(pk,existing);
                     }
             	}
             }
@@ -158,9 +158,20 @@ public class FeatureValuesReport
             props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
             for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
             	String str = "";
-            	for (int i=0; i<predictions.numAttributes(); i++,str += ",") {
-            		if(!map.get(i).isEmpty()) {
-            			str = str + (new Double(map.get(i).get(classindex)/countMap.get(i).get(classindex))).toString();
+            	for (int i=0; i<predictionsNumAttributes; i++,str += ",") {
+            		pk = new PairKey<Integer,Integer>(i,classindex);
+            		if(map.containsKey(pk)) {
+            			Iterator<Double> it = map.get(pk).iterator();
+            			double sum = 0.0;
+            			int count = 0;
+            			if(!it.hasNext()) {
+            				count = 1;
+            			}
+            			while(it.hasNext()) {
+            				sum += it.next();
+            				count++;
+            			}
+            			str = str + (new Double(sum/count)).toString();
             		}
             	}
             	str = str.substring(0, str.length() - 1);
@@ -172,4 +183,26 @@ public class FeatureValuesReport
         getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
     }
 
+}
+
+//FIXME consider adding class as public to a separate file under a relevant package
+
+class PairKey<A, B> {
+	public final A a;
+	public final B b;
+
+	PairKey(A a, B b) { this.a = a; this.b = b; }
+
+	public static <A, B> PairKey<A, B> make(A a, B b) { return new PairKey<A, B>(a, b); }
+
+	public int hashCode() {
+		return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
+	}
+
+	public boolean equals(Object o) {
+		if (o == null || o.getClass() != this.getClass()) { return false; }
+		PairKey that = (PairKey) o;
+		return (a == null ? that.a == null : a.equals(that.a))
+				&& (b == null ? that.b == null : b.equals(that.b));
+	}
 }
