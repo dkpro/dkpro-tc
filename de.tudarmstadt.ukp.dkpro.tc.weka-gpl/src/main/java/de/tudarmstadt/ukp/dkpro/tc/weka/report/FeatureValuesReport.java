@@ -49,15 +49,15 @@ public class FeatureValuesReport
         String[] classValues;
         List<String> attrNames = new ArrayList<String>();
 
-        Map<PairKey<Integer,Integer>,ArrayList<Double>> map = new HashMap<PairKey<Integer,Integer>,ArrayList<Double>>();
+        Map<PairKey<Integer, Integer>, ArrayList<Double>> map = new HashMap<PairKey<Integer, Integer>, ArrayList<Double>>();
         // hashmap storing an array list of values per attribute per class label
-        
-        PairKey<Integer,Integer> pk;
-        //to hold a temporary pair key
-        
+
+        PairKey<Integer, Integer> pk;
+        // to hold a temporary pair key
+
         int predictionsClassIndex = predictions.classIndex();
         int predictionsNumAttributes = predictions.numAttributes();
-        
+
         // -----MULTI LABEL-----------
         if (TestTask.MULTILABEL) {
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
@@ -68,61 +68,64 @@ public class FeatureValuesReport
             }
             String threshold = r.getInfo("Threshold");
             double[] t = TaskUtils.getMekaThreshold(threshold, r, predictions);
-            
-            //iterate over instances
+
+            // iterate over instances
             for (Instance inst : predictions) {
-            	//iterate over attributes
-            	for (int attrIndex = predictionsClassIndex * 2; attrIndex < predictionsNumAttributes; attrIndex++) {
-            		Attribute att = predictions.attribute(attrIndex);
-                    //only numeric attributes involved in average calculation
-            		if (att.isNumeric()) {
-                    	if (!attrNames.contains(att.name())) {
+                // iterate over attributes
+                for (int attrIndex = predictionsClassIndex * 2; attrIndex < predictionsNumAttributes; attrIndex++) {
+                    Attribute att = predictions.attribute(attrIndex);
+                    // only numeric attributes involved in average calculation
+                    if (att.isNumeric()) {
+                        if (!attrNames.contains(att.name())) {
                             attrNames.add(att.name());
                         }
-                    	//iterate over class labels
-                    	for (int classindex = 0; classindex < predictionsClassIndex; classindex++) {
-                    		pk = new PairKey<Integer,Integer>(att.index() - predictionsClassIndex * 2,classindex);
-                    		//check if label confidence is above threshold
-                    		if (t[classindex] <= inst.value(classindex)) {
-                    			if (!map.containsKey(pk)) {
-                            		map.put(pk,new ArrayList<Double>());
-                            	}
-                    			ArrayList<Double> existing = map.get(pk);
-                    			existing.add(inst.value(att));
-                    			map.put(pk,existing);
-                    		}
-                    		//ensuring that a numeric attribute and class label pair always have a key (even if empty)
-                    		else if (!map.containsKey(pk)) {
-                        		map.put(pk,new ArrayList<Double>());
-                        	}
-                    	}
+                        // iterate over class labels
+                        for (int classindex = 0; classindex < predictionsClassIndex; classindex++) {
+                            pk = new PairKey<Integer, Integer>(att.index() - predictionsClassIndex
+                                    * 2, classindex);
+                            // check if label confidence is above threshold
+                            if (t[classindex] <= inst.value(classindex)) {
+                                if (!map.containsKey(pk)) {
+                                    map.put(pk, new ArrayList<Double>());
+                                }
+                                ArrayList<Double> existing = map.get(pk);
+                                existing.add(inst.value(att));
+                                map.put(pk, existing);
+                            }
+                            // ensuring that a numeric attribute and class label pair always have a
+                            // key (even if empty)
+                            else if (!map.containsKey(pk)) {
+                                map.put(pk, new ArrayList<Double>());
+                            }
+                        }
                     }
-            	}
+                }
             }
             // FIXME transpose table
             props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
             for (int classindex = 0; classindex < predictionsClassIndex; classindex++) {
-            	String str = "";
-            	for (int i=predictionsClassIndex * 2; i<predictionsNumAttributes; i++,str += ",") {
-            		Attribute att = predictions.attribute(i);
-            		pk = new PairKey<Integer,Integer>(att.index() - predictionsClassIndex * 2,classindex);
-            		if(map.containsKey(pk)) {
-            			Iterator<Double> it = map.get(pk).iterator();
-            			double sum = 0.0;
-            			int count = 0;
-            			if(!it.hasNext()) {
-            				count = 1;
-            			}
-            			while(it.hasNext()) {
-            				sum += it.next();
-            				count++;
-            			}
-            			str = str + (new Double(sum/count)).toString();
-            		}
-            	}
-            	str = str.substring(0, str.length() - 1);
-            	props.setProperty(classValues[classindex],str);
-            }           
+                String str = "";
+                for (int i = predictionsClassIndex * 2; i < predictionsNumAttributes; i++, str += ",") {
+                    Attribute att = predictions.attribute(i);
+                    pk = new PairKey<Integer, Integer>(att.index() - predictionsClassIndex * 2,
+                            classindex);
+                    if (map.containsKey(pk)) {
+                        Iterator<Double> it = map.get(pk).iterator();
+                        double sum = 0.0;
+                        int count = 0;
+                        if (!it.hasNext()) {
+                            count = 1;
+                        }
+                        while (it.hasNext()) {
+                            sum += it.next();
+                            count++;
+                        }
+                        str = str + (new Double(sum / count)).toString();
+                    }
+                }
+                str = str.substring(0, str.length() - 1);
+                props.setProperty(classValues[classindex], str);
+            }
         }
         // -----SINGLE LABEL-----------
         else {
@@ -130,54 +133,54 @@ public class FeatureValuesReport
             for (int i = 0; i < predictions.numClasses(); i++) {
                 classValues[i] = predictions.classAttribute().value(i); // distinct outcome classes
             }
-            
-            //iterate over instances
+
+            // iterate over instances
             for (Instance inst : predictions) {
-            	//iterate over attributes
-            	for (int attrIndex = 0; attrIndex < predictionsNumAttributes; attrIndex++) {
-            		Attribute att = predictions.attribute(attrIndex);
-            		int classification = new Double(inst.value(predictions
+                // iterate over attributes
+                for (int attrIndex = 0; attrIndex < predictionsNumAttributes; attrIndex++) {
+                    Attribute att = predictions.attribute(attrIndex);
+                    int classification = new Double(inst.value(predictions
                             .attribute(Constants.CLASS_ATTRIBUTE_NAME
                                     + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
-            		//only numeric attributes involved in average calculation
-            		if (att.isNumeric()) {
-                    	if (!attrNames.contains(att.name())) {
+                    // only numeric attributes involved in average calculation
+                    if (att.isNumeric()) {
+                        if (!attrNames.contains(att.name())) {
                             attrNames.add(att.name());
                         }
-                    	pk = new PairKey<Integer,Integer>(attrIndex,classification);
-                    	if (!map.containsKey(pk)) {
-                    		map.put(pk,new ArrayList<Double>());
-                    	}
-                    	ArrayList<Double> existing = map.get(pk);
-            			existing.add(inst.value(att));
-            			map.put(pk,existing);
+                        pk = new PairKey<Integer, Integer>(attrIndex, classification);
+                        if (!map.containsKey(pk)) {
+                            map.put(pk, new ArrayList<Double>());
+                        }
+                        ArrayList<Double> existing = map.get(pk);
+                        existing.add(inst.value(att));
+                        map.put(pk, existing);
                     }
-            	}
+                }
             }
-            // FIXME transpose table
-            props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
-            for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
-            	String str = "";
-            	for (int i=0; i<predictionsNumAttributes; i++,str += ",") {
-            		pk = new PairKey<Integer,Integer>(i,classindex);
-            		if(map.containsKey(pk)) {
-            			Iterator<Double> it = map.get(pk).iterator();
-            			double sum = 0.0;
-            			int count = 0;
-            			if(!it.hasNext()) {
-            				count = 1;
-            			}
-            			while(it.hasNext()) {
-            				sum += it.next();
-            				count++;
-            			}
-            			str = str + (new Double(sum/count)).toString();
-            		}
-            	}
-            	str = str.substring(0, str.length() - 1);
-            	if(!str.isEmpty()) {
-            		props.setProperty(classValues[classindex],str);
-            	}
+        }
+        // FIXME transpose table
+        props.setProperty("class_values", StringUtils.join(attrNames, ","));// column titles
+        for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
+            String str = "";
+            for (int i = 0; i < predictionsNumAttributes; i++, str += ",") {
+                pk = new PairKey<Integer, Integer>(i, classindex);
+                if (map.containsKey(pk)) {
+                    Iterator<Double> it = map.get(pk).iterator();
+                    double sum = 0.0;
+                    int count = 0;
+                    if (!it.hasNext()) {
+                        count = 1;
+                    }
+                    while (it.hasNext()) {
+                        sum += it.next();
+                        count++;
+                    }
+                    str = str + (new Double(sum / count)).toString();
+                }
+            }
+            str = str.substring(0, str.length() - 1);
+            if (!str.isEmpty()) {
+                props.setProperty(classValues[classindex], str);
             }
         }
         getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
@@ -185,24 +188,36 @@ public class FeatureValuesReport
 
 }
 
-//FIXME consider adding class as public to a separate file under a relevant package
+// FIXME consider adding class as public to a separate file under a relevant package
 
-class PairKey<A, B> {
-	public final A a;
-	public final B b;
+class PairKey<A, B>
+{
+    public final A a;
+    public final B b;
 
-	PairKey(A a, B b) { this.a = a; this.b = b; }
+    PairKey(A a, B b)
+    {
+        this.a = a;
+        this.b = b;
+    }
 
-	public static <A, B> PairKey<A, B> make(A a, B b) { return new PairKey<A, B>(a, b); }
+    public static <A, B> PairKey<A, B> make(A a, B b)
+    {
+        return new PairKey<A, B>(a, b);
+    }
 
-	public int hashCode() {
-		return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
-	}
+    public int hashCode()
+    {
+        return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
+    }
 
-	public boolean equals(Object o) {
-		if (o == null || o.getClass() != this.getClass()) { return false; }
-		PairKey that = (PairKey) o;
-		return (a == null ? that.a == null : a.equals(that.a))
-				&& (b == null ? that.b == null : b.equals(that.b));
-	}
+    public boolean equals(Object o)
+    {
+        if (o == null || o.getClass() != this.getClass()) {
+            return false;
+        }
+        PairKey that = (PairKey) o;
+        return (a == null ? that.a == null : a.equals(that.a))
+                && (b == null ? that.b == null : b.equals(that.b));
+    }
 }
