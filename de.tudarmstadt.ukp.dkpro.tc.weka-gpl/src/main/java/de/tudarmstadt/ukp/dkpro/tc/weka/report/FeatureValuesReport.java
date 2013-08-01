@@ -159,10 +159,14 @@ public class FeatureValuesReport
             for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
             	String str = "";
             	for (int i=0; i<predictions.numAttributes(); i++,str += ",") {
-            		str = str + (new Double(map.get(i).get(classindex)/countMap.get(i).get(classindex))).toString();
+            		if(!map.get(i).isEmpty()) {
+            			str = str + (new Double(map.get(i).get(classindex)/countMap.get(i).get(classindex))).toString();
+            		}
             	}
             	str = str.substring(0, str.length() - 1);
-                props.setProperty(classValues[classindex],str);
+            	if(!str.isEmpty()) {
+            		props.setProperty(classValues[classindex],str);
+            	}
             }
         }
         getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
