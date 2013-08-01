@@ -83,7 +83,6 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.features-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.keyphrases-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
 	</modules>
 	<dependencies>
