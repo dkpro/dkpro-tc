@@ -42,6 +42,10 @@ public class AttributeStore
             attributes.add(attribute);
             nameOffsetMap.put(name, attributes.size() - 1);
         }
+        else {
+            // TODO do we need better error message?
+            System.err.println("Attribute with name " + name + " already present in feature store. Duplicate feature ignored.");
+        }
     }
 
     public boolean containsAttributeName(String name)
