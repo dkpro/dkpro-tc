@@ -25,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
+@Deprecated
 public class CrossValidationTask
     extends ExecutableTaskBase
 {
@@ -159,23 +160,24 @@ public class CrossValidationTask
                         filteredTrainData);
                 eval.evaluateModel(cl, filteredTestData);
                 weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
-                
+
                 Add filter = new Add();
 
-                filter.setAttributeIndex(new Integer(test.classIndex()+1).toString());
+                filter.setAttributeIndex(new Integer(test.classIndex() + 1).toString());
                 filter.setAttributeName("goldlabel");
                 filter.setInputFormat(test);
                 test = Filter.useFilter(test, filter);
-            
-            // fill values of gold standard classification with original values from test set
-            for (int i = 0; i < test.size(); i++) {
-                
-            	test.instance(i).setValue(test.classIndex()-1, filteredTestData.instance(i).classValue());
-                
-            }
 
-            for (int i = 0; i < filteredTestData.numInstances(); i++) {
-                double prediction = cl.classifyInstance(filteredTestData.instance(i));
+                // fill values of gold standard classification with original values from test set
+                for (int i = 0; i < test.size(); i++) {
+
+                    test.instance(i).setValue(test.classIndex() - 1,
+                            filteredTestData.instance(i).classValue());
+
+                }
+
+                for (int i = 0; i < filteredTestData.numInstances(); i++) {
+                    double prediction = cl.classifyInstance(filteredTestData.instance(i));
                     Instance instance = test.instance(i);
                     instance.setClassValue(prediction);
                 }
