@@ -21,8 +21,8 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 public class BatchTrainTestReport
     extends BatchReportBase
 {
-    private static final String EVALUATION_FILE_XLS = "eval.xls";
-    private static final String EVALUATION_FILE_CSV = "eval.csv";
+    public static final String EVALUATION_FILE_XLS = "eval.xls";
+    public static final String EVALUATION_FILE_CSV = "eval.csv";
 
     @Override
     public void execute()
