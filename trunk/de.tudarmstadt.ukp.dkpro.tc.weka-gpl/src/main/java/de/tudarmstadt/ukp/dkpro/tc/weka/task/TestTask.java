@@ -33,6 +33,9 @@ public class TestTask
     private boolean multiLabel;
 
     @Discriminator
+    private boolean isRegressionExperiment = false;
+
+    @Discriminator
     String threshold = "1.";
 
     public static final String INPUT_KEY_TRAIN = "input.train";
@@ -63,8 +66,8 @@ public class TestTask
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
 
-        // in regression experiments, outcome is numeric
-        if (!trainData.classAttribute().isNumeric()) {
+        // do not balance in regression experiments
+        if (!isRegressionExperiment) {
             testData = WekaUtils.makeOutcomeClassesCompatible(trainData, testData, multiLabel);
         }
 

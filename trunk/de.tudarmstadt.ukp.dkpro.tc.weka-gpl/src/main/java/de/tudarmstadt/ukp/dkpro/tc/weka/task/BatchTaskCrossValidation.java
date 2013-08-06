@@ -29,7 +29,6 @@ public class BatchTaskCrossValidation
     private AnalysisEngineDescription aggregate;
     private String dataWriter;
     private int numFolds;
-    private boolean isRegressionExperiment = false;
     private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
 
@@ -86,7 +85,6 @@ public class BatchTaskCrossValidation
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
         extractFeaturesTrainTask.setAddInstanceId(addInstanceId);
-        extractFeaturesTrainTask.setRegressionExperiment(isRegressionExperiment);
         extractFeaturesTrainTask.setDataWriter(dataWriter);
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
@@ -97,7 +95,6 @@ public class BatchTaskCrossValidation
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
         extractFeaturesTestTask.setAddInstanceId(addInstanceId);
-        extractFeaturesTestTask.setRegressionExperiment(isRegressionExperiment);
         extractFeaturesTestTask.setDataWriter(dataWriter);
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
@@ -198,11 +195,6 @@ public class BatchTaskCrossValidation
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
-    }
-
-    public void setRegressionExperiment(boolean isRegressionExperiment)
-    {
-        this.isRegressionExperiment = isRegressionExperiment;
     }
 
     public void setAddInstanceId(boolean addInstanceId)
