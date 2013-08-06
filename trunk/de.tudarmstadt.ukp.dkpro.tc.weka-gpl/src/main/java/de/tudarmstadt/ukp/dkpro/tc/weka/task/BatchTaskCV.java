@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVReport;
 
+@Deprecated
 public class BatchTaskCV
     extends BatchTask
 {
@@ -27,10 +28,12 @@ public class BatchTaskCV
     private ExtractFeaturesTask extractFeaturesTask;
     private CrossValidationTask cvTask;
 
+    @Deprecated
     public BatchTaskCV()
     {/* needed for Groovy */
     }
 
+    @Deprecated
     public BatchTaskCV(String aExperimentName, CollectionReaderDescription aReader,
             AnalysisEngineDescription aAggregate, String aDataWriterClassName)
     {
@@ -77,9 +80,10 @@ public class BatchTaskCV
         cvTask.addReport(CVReport.class);
 
         // wiring
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
+        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN,
                 preprocessTask.getType());
-        extractFeaturesTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
+        extractFeaturesTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY,
+                PreprocessTask.OUTPUT_KEY_TRAIN,
                 preprocessTask.getType());
         extractFeaturesTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
                 metaTask.getType());
