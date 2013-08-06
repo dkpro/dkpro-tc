@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class ExtractFeaturesTask
 {
 
     public static final String OUTPUT_KEY = "output";
-    public static final String INPUT_KEY = "preprocessing_input";
+    public static final String INPUT_KEY = "input";
 
     @Discriminator
     protected String[] featureSet;
@@ -45,12 +46,22 @@ public class ExtractFeaturesTask
     @Discriminator
     protected String featureAnnotation;
 
+    @Discriminator
+    private File filesRoot;
+
+    @Discriminator
+    private Collection<String> files_training;
+
+    @Discriminator
+    private Collection<String> files_validation;
+
     private String dataWriter;
+    private boolean isTesting = false;
+
     private boolean isRegressionExperiment = false;
     private boolean addInstanceId = false;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
     private Set<String> requiredTypes;
-
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
@@ -58,7 +69,8 @@ public class ExtractFeaturesTask
     {
         File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
 
-        // automatically determine the required metaCollector classes from the provided feature extractors
+        // automatically determine the required metaCollector classes from the provided feature
+        // extractors
         try {
             metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
             requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
@@ -72,7 +84,7 @@ public class ExtractFeaturesTask
         catch (IllegalAccessException e) {
             throw new ResourceInitializationException(e);
         }
-        
+
         // collect parameter/key pairs that need to be set
         Map<String, String> parameterKeyPairs = new HashMap<String, String>();
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
@@ -135,10 +147,28 @@ public class ExtractFeaturesTask
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-        return createReaderDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
-                + "/", SerializedCasReader.PARAM_PATTERNS,
-                new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
+        // TrainTest setup: input files are set as imports
+        if (filesRoot == null) {
+            String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
+            return createReaderDescription(SerializedCasReader.class,
+                    SerializedCasReader.PARAM_PATH,
+                    path
+                            + "/", SerializedCasReader.PARAM_PATTERNS,
+                    new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
+
+        }
+        // CV setup: filesRoot and files_atrining have to be set as dimension
+        else {
+            Collection<String> patterns = new ArrayList<String>();
+            Collection<String> files = isTesting ? files_validation : files_training;
+            for (String f : files) {
+                patterns.add(SerializedCasReader.INCLUDE_PREFIX + "**/*" + f);
+            }
+
+            return createReaderDescription(SerializedCasReader.class,
+                    SerializedCasReader.PARAM_PATH, filesRoot,
+                    SerializedCasReader.PARAM_PATTERNS, patterns);
+        }
     }
 
     public String getDataWriter()
@@ -171,4 +201,8 @@ public class ExtractFeaturesTask
         addInstanceId = aAddInstanceId;
     }
 
+    public void setTesting(boolean isTesting)
+    {
+        this.isTesting = isTesting;
+    }
 }
