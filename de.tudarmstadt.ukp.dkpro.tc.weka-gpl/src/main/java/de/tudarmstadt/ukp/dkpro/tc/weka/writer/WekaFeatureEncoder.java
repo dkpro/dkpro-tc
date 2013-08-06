@@ -25,6 +25,7 @@ import weka.core.Utils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
 
 /**
@@ -39,9 +40,11 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
 public class WekaFeatureEncoder
 {
 
-    public static AttributeStore getAttributeStore(InstanceList instanceList) {
+    public static AttributeStore getAttributeStore(InstanceList instanceList)
+        throws TextClassificationException
+    {
         AttributeStore attributeStore = new AttributeStore();
-        
+
         for (Instance instance : instanceList.getInstanceList()) {
             for (Feature feature : instance.getFeatures()) {
                 if (!attributeStore.containsAttributeName(feature.getName())) {
@@ -50,10 +53,10 @@ public class WekaFeatureEncoder
                 }
             }
         }
-        
+
         return attributeStore;
     }
-    
+
     public static Attribute featureToAttribute(Feature feature)
     {
         String name = Utils.quote(feature.getName());

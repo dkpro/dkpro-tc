@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import weka.core.Attribute;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class AttributeStore
 {
@@ -37,6 +38,7 @@ public class AttributeStore
     }
 
     public void addAttribute(String name, Attribute attribute)
+        throws TextClassificationException
     {
         if (!nameOffsetMap.containsKey(name)) {
             attributes.add(attribute);
@@ -44,7 +46,8 @@ public class AttributeStore
         }
         else {
             // TODO do we need better error message?
-            System.err.println("Attribute with name " + name + " already present in feature store. Duplicate feature ignored.");
+            throw new TextClassificationException("Attribute with name " + name
+                    + " already present in feature store. Duplicate feature ignored.");
         }
     }
 
