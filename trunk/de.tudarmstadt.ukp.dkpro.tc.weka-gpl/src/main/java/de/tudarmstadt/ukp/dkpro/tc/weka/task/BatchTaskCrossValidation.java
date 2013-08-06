@@ -18,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 
 public class BatchTaskCrossValidation
     extends BatchTask
@@ -155,7 +155,7 @@ public class BatchTaskCrossValidation
         crossValidationTask.addTask(extractFeaturesTestTask);
         crossValidationTask.addTask(testTask);
         if (innerReport != null) {
-            crossValidationTask.addReport(TrainTestReport.class);
+            crossValidationTask.addReport(BatchTrainTestReport.class);
         }
 
         addTask(preprocessTask);
