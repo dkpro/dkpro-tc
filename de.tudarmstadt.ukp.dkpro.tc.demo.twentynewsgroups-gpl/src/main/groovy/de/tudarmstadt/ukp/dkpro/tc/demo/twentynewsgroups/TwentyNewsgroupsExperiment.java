@@ -23,7 +23,8 @@ import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorp
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
@@ -42,6 +43,7 @@ public class TwentyNewsgroupsExperiment
     private String languageCode;
     private String corpusFilePathTrain;
     private String corpusFilePathTest;
+    private int numFolds;
 
     public static void main(String[] args)
         throws Exception
@@ -69,6 +71,7 @@ public class TwentyNewsgroupsExperiment
         languageCode = json.getString("languageCode");
         corpusFilePathTrain = json.getString("corpusFilePathTrain");
         corpusFilePathTest = json.getString("corpusFilePathTest");
+        numFolds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
     }
@@ -78,10 +81,12 @@ public class TwentyNewsgroupsExperiment
         throws Exception
     {
 
-        BatchTaskCV batch = new BatchTaskCV("TwentyNewsgroupsCV", getReaderDesc(
-                corpusFilePathTrain, languageCode), getPreprocessing(),
-                WekaDataWriter.class.getName());
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
+                getReaderDesc(
+                        corpusFilePathTrain, languageCode), getPreprocessing(),
+                WekaDataWriter.class.getName(), numFolds);
         batch.setType("Evaluation-TwentyNewsgroups-CV");
+        batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(CVBatchReport.class);

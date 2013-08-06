@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.SentimentPolarityExperiment;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
@@ -40,6 +39,14 @@ public class SentimentPolarityExperimentTest
     {
         // Java setup with automatic task wiring
         javaExperiment.runTrainTest(pSpace);
+    }
+
+    @Test
+    public void testJavaCrossValidation()
+        throws Exception
+    {
+        // Java setup with automatic task wiring
+        javaExperiment.runCrossvalidation(pSpace);
     }
 
     @Rule

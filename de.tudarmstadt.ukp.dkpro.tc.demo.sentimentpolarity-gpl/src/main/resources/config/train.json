@@ -3,6 +3,7 @@
     "corpusFilePathTest" : "src/main/resources/data/test-small",
     
 	"languageCode" : "en",
+	"folds" : 3,
 	"nGramMinSize" : 1,
 	"nGramMaxSize" : 3,
 	"toLowerCase" : 

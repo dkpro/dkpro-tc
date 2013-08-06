@@ -1,8 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
@@ -16,13 +15,14 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -44,10 +44,10 @@ public class TwentyNewsgroupsGroovyExperiment {
     def corpusFilePathTrain = "src/main/resources/data/bydate-train";
     def corpusFilePathTest  ="src/main/resources/data/bydate-test";
     def languageCode = "en";
+    def numFolds = 2;
 
     // === DIMENSIONS===========================================================
 
-    def dimFolds = Dimension.create("folds" , 2);
     def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
@@ -105,15 +105,14 @@ public class TwentyNewsgroupsGroovyExperiment {
      */
     protected void runCrossValidation() throws Exception
     {
-        BatchTaskCV batchTask = [
+        BatchTaskCrossValidation batchTask = [
             experimentName: "TwentyNewsgroups-CV-Groovy",
             type: "Evaluation-TwentyNewsgroups-CV-Groovy",
             reader:	getReaderDesc(corpusFilePathTrain, languageCode),
-            metaCollectorClasses: [NGramMetaCollector.class],
             dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
+            innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFolds,
                 dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
@@ -122,7 +121,8 @@ public class TwentyNewsgroupsGroovyExperiment {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [CVBatchReport]];
+            reports:         [CVBatchReport],
+            numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);
     }
@@ -139,11 +139,9 @@ public class TwentyNewsgroupsGroovyExperiment {
             type: "Evaluation-TwentyNewsgroups-TrainTest-Groovy",
             readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
             readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
-            metaCollectorClasses: [NGramMetaCollector.class],
             dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
             parameterSpace : [
-                dimFolds,
                 dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
@@ -152,7 +150,10 @@ public class TwentyNewsgroupsGroovyExperiment {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchTrainTestReport]];
+            reports:         [
+                BatchTrainTestReport,
+                BatchOutcomeIDReport]
+        ];
 
         // Run
         Lab.getInstance().run(batchTask);
@@ -162,7 +163,7 @@ public class TwentyNewsgroupsGroovyExperiment {
     private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
             throws ResourceInitializationException, IOException
     {
-        return createDescription(
+        return createReaderDescription(
         TwentyNewsgroupsCorpusReader,
         TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
@@ -174,16 +175,16 @@ public class TwentyNewsgroupsGroovyExperiment {
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createAggregateDescription(
-        createPrimitiveDescription(BreakIteratorSegmenter),
-        createPrimitiveDescription(OpenNlpPosTagger)
+        return createEngineDescription(
+        createEngineDescription(BreakIteratorSegmenter),
+        createEngineDescription(OpenNlpPosTagger)
         );
     }
 
     public static void main(String[] args)
     {
-        new TwentyNewsgroupsGroovyExperiment().runCrossValidation();
         new TwentyNewsgroupsGroovyExperiment().runTrainTest();
+        new TwentyNewsgroupsGroovyExperiment().runCrossValidation();
     }
 
 }

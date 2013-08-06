@@ -21,9 +21,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.io.ReutersCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
@@ -38,6 +37,7 @@ public class ReutersTextClassification
     private String corpusFilePathTrain;
     private String corpusFilePathTest;
     private String goldLabelFilePath;
+    private int numFolds;
 
     public static void main(String[] args)
         throws Exception
@@ -65,6 +65,7 @@ public class ReutersTextClassification
         corpusFilePathTrain = json.getString("corpusFilePathTrain");
         corpusFilePathTest = json.getString("corpusFilePathTest");
         languageCode = json.getString("languageCode");
+        numFolds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
     }
@@ -74,8 +75,9 @@ public class ReutersTextClassification
         throws Exception
     {
 
-        BatchTaskCV batch = new BatchTaskCV("ReutersCV", getReaderDesc(corpusFilePathTrain,
-                languageCode), getPreprocessing(), MekaDataWriter.class.getName());
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("ReutersCV", getReaderDesc(
+                corpusFilePathTrain,
+                languageCode), getPreprocessing(), MekaDataWriter.class.getName(), numFolds);
         batch.setType("Evaluation-Reuters-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -96,7 +98,6 @@ public class ReutersTextClassification
         batch.setType("Evaluation-Reuters-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
         batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
@@ -118,7 +119,6 @@ public class ReutersTextClassification
     {
         return createEngineDescription(
                 createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class)
-        );
+                createEngineDescription(OpenNlpPosTagger.class));
     }
 }

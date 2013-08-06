@@ -18,29 +18,20 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.demo.regression.io.STSReader;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVRegressionReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 public class RegressionExperiment
 {
-
-    private static final String nameCV = "-RegressionExampleCV";
-
     static String jsonPath;
     static JSONObject json;
 
     public static String languageCode;
     public static String inputFile;
     public static String goldFile;
+    public static int numFolds;
 
     /**
      * Initialize Experiment
@@ -57,6 +48,7 @@ public class RegressionExperiment
         goldFile = json.getString("goldFile");
         inputFile = json.getString("inputFile");
         languageCode = json.getString("languageCode");
+        numFolds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
     }
@@ -64,64 +56,21 @@ public class RegressionExperiment
     public static void main(String[] args)
         throws Exception
     {
-
-        jsonPath = FileUtils.readFileToString(new File("src/main/resources/config/train.json"));
-        json = (JSONObject) JSONSerializer.toJSON(jsonPath);
-
-        languageCode = json.getString("languageCode");
-        inputFile = json.getString("inputFile");
-        goldFile = json.getString("goldFile");
         RegressionExperiment experiment = new RegressionExperiment();
-        experiment.runCrossValidation(ParameterSpaceParser.createParamSpaceFromJson(json));
-
-        // runTrainTest(ParameterSpaceParser.createParamSpaceFromJson(json));
+        experiment.runCrossValidation(experiment.setup());
     }
 
     // ##### CV #####
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        PreprocessTask preprocessTask = new PreprocessTask();
-        preprocessTask.setReader(getReaderDesc(inputFile, goldFile));
-        preprocessTask.setAggregate(getPreprocessing());
-        preprocessTask.setType(preprocessTask.getType() + "-RegressionExampleCV");
-
-        // // get some meta data depending on the whole document collection that we need for
-        // training
-        // MetaInfoTask metaTask = new MetaInfoTask();
-        // metaTask.setType(metaTask.getType() + nameCV);
-        // metaTask.setMetaCollectorClasses(new ArrayList<Class<? extends MetaCollector>>());
-        // metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
-        // preprocessTask.getType());
-
-        // Define the base task which generates an arff instances file
-        ExtractFeaturesTask trainTask = new ExtractFeaturesTask();
-        trainTask.setDataWriter(WekaDataWriter.class.getName());
-        trainTask.setRegressionExperiment(true);
-        trainTask.setType(trainTask.getType() + nameCV);
-        trainTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY,
-                preprocessTask.getType());
-        // trainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
-        // metaTask.getType());
-
-        // Define the cross-validation task which operates on the results of the the train task
-        TaskBase cvTask = new CrossValidationTask();
-        cvTask.setType(cvTask.getType() + nameCV);
-        cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY,
-                trainTask.getType());
-        // cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        cvTask.addReport(CVRegressionReport.class);
-
-        // Define the overall task scenario
-        BatchTask batch = new BatchTask();
-        batch.setType("Evaluation" + nameCV);
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
+                getReaderDesc(inputFile, goldFile), getPreprocessing(),
+                WekaDataWriter.class.getName(), numFolds);
+        batch.setType("Evaluation-RegressionExample-CV");
         batch.setParameterSpace(pSpace);
-        batch.addTask(preprocessTask);
-        // batch.addTask(metaTask);
-        batch.addTask(trainTask);
-        batch.addTask(cvTask);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(CVBatchReport.class);
+        // TODO add report
 
         // Run
         Lab.getInstance().run(batch);
