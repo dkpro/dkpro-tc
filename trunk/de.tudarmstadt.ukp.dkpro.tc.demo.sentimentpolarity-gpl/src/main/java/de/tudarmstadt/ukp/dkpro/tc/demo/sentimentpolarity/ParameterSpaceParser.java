@@ -66,6 +66,7 @@ public class ParameterSpaceParser
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
+                Dimension.create("folds", pipelineConfiguration.getInt("folds")),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)),
                 Dimension.create("featureSet", featureSets.toArray()),

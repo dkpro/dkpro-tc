@@ -1,8 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
@@ -19,10 +18,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
@@ -54,7 +52,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
     // === DIMENSIONS===========================================================
 
-    def dimFolds = Dimension.create("folds" , 2);
+    def dimFolds = Dimension.create("folds", 2);
     def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
@@ -106,10 +104,11 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     // === Experiments =========================================================
 
     /**
-     * Crossvalidation setting
+     * Crossvalidation setting. Not adapted for the new CV setup yet.
      *
      * @throws Exception
      */
+    @Deprecated
     protected void runCrossValidation() throws Exception
     {
         /*
@@ -124,16 +123,12 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
         MetaInfoTask metaTask = [
             type: "MetaInfoTask-TwentyNewsgroupsCV",
-            metaCollectorClasses: [
-                NGramMetaCollector.class]
         ];
 
         ExtractFeaturesTask featureExtractionTask = [
             addInstanceId: false,
             dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroupsCV",
-            metaCollectorClasses: [
-                NGramMetaCollector.class]
         ];
 
         CrossValidationTask cvTask = [
@@ -144,8 +139,8 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         /*
          * Wire tasks
          */
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTask.getType());
-        featureExtractionTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTask.getType());
+        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTask.getType());
+        featureExtractionTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTask.getType());
         featureExtractionTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY, featureExtractionTask.getType());
@@ -195,35 +190,33 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         PreprocessTask preprocessTaskTrain = [
             reader:getReaderDesc(corpusFilePathTrain, languageCode),
             aggregate:getPreprocessing(),
-            type: "Preprocessing-TwentyNewsgroups-Train"
+            type: "Preprocessing-TwentyNewsgroups-Train",
+            isTesting: false
         ];
 
         PreprocessTask preprocessTaskTest = [
             reader:getReaderDesc(corpusFilePathTest, languageCode),
             aggregate:getPreprocessing(),
-            type: "Preprocessing-TwentyNewsgroups-Test"
+            type: "Preprocessing-TwentyNewsgroups-Test",
+            isTesting: true
         ];
 
         MetaInfoTask metaTask = [
             type: "MetaInfoTask-TwentyNewsgroups-TrainTest",
-            metaCollectorClasses: [
-                NGramMetaCollector.class]
         ];
 
         ExtractFeaturesTask featuresTrainTask = [
             addInstanceId: true,
             dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroups-Train",
-            metaCollectorClasses: [
-                NGramMetaCollector.class]
+            isTesting: false
         ];
 
         ExtractFeaturesTask featuresTestTask = [
             addInstanceId: true,
             dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroups-Test",
-            metaCollectorClasses: [
-                NGramMetaCollector.class]
+            isTesting: true
         ];
 
         TestTask testTask = [
@@ -237,15 +230,13 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         /*
          * Wire tasks
          */
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTaskTrain.getType());
-        featuresTrainTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTaskTrain.getType());
+        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTaskTrain.getType());
+        featuresTrainTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTaskTrain.getType());
         featuresTrainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        featuresTestTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY, preprocessTaskTest.getType());
+        featuresTestTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TEST, preprocessTaskTest.getType());
         featuresTestTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        testTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
         testTask.addImportLatest(TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY, featuresTrainTask.getType());
         testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY, featuresTestTask.getType());
-
 
         /*
          *	Wrap wired tasks in batch task
@@ -284,7 +275,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
             throws ResourceInitializationException, IOException
     {
-        return createDescription(
+        return createReaderDescription(
         TwentyNewsgroupsCorpusReader,
         TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
@@ -296,9 +287,9 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createAggregateDescription(
-        createPrimitiveDescription(BreakIteratorSegmenter),
-        createPrimitiveDescription(OpenNlpPosTagger)
+        return createEngineDescription(
+        createEngineDescription(BreakIteratorSegmenter),
+        createEngineDescription(OpenNlpPosTagger)
         );
     }
 

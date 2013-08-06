@@ -21,7 +21,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 public class ParameterSpaceParser
 {
 
-    public static int folds;
     public static Boolean[] toLowerCase;
 
     public static ParameterSpace createParamSpaceFromJson(JSONObject pipelineConfiguration)
@@ -29,9 +28,6 @@ public class ParameterSpaceParser
 
     {
         // DIMENSIONS
-
-        folds = pipelineConfiguration.getInt("folds");
-
         Object[] toLowerCaseO = pipelineConfiguration.getJSONArray("toLowerCase").toArray();
         toLowerCase = Arrays.asList(toLowerCaseO).toArray(new Boolean[toLowerCaseO.length]);
         Object[] pipelineParameters = new Object[] {
@@ -69,7 +65,6 @@ public class ParameterSpaceParser
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
-                Dimension.create("folds", folds),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)),
                 Dimension.create("featureSet", featureSets.toArray()),

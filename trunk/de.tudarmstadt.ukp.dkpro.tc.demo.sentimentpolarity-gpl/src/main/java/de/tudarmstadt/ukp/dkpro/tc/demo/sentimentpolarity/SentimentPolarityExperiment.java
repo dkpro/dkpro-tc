@@ -20,8 +20,12 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.io.MovieReviewCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.CrossValidationBatchReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
@@ -37,6 +41,7 @@ public class SentimentPolarityExperiment
     private String languageCode;
     private String corpusFilePathTrain;
     private String corpusFilePathTest;
+    private int folds;
 
     public static void main(String[] args)
         throws Exception
@@ -45,6 +50,8 @@ public class SentimentPolarityExperiment
         ParameterSpace pSpace = experiment.setup();
 
         experiment.runTrainTest(pSpace);
+        experiment.runCrossvalidation(pSpace);
+        experiment.runOldCrossvalidation(pSpace);
     }
 
     /**
@@ -63,8 +70,54 @@ public class SentimentPolarityExperiment
         languageCode = json.getString("languageCode");
         corpusFilePathTrain = json.getString("corpusFilePathTrain");
         corpusFilePathTest = json.getString("corpusFilePathTest");
+        folds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
+    }
+
+    // ##### CROSSVALIDATION #####
+    protected void runCrossvalidation(ParameterSpace pSpace)
+        throws Exception
+    {
+
+        BatchTaskCrossValidation batch = new
+                BatchTaskCrossValidation("SentimentPolarityTrainTest",
+                        getReaderDesc(corpusFilePathTest, languageCode),
+                        getPreprocessing(),
+                        WekaDataWriter.class.getName(), folds);
+        batch.setType("Evaluation-SentimentPolarity-CV");
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.setInnerReport(TrainTestReport.class);
+        batch.addReport(CrossValidationBatchReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
+    /**
+     * Only for comparison. Will be deleted soon.
+     * 
+     * @param pSpace
+     * @throws Exception
+     */
+    protected void runOldCrossvalidation(ParameterSpace pSpace)
+        throws Exception
+    {
+
+        BatchTaskCV batch = new
+                BatchTaskCV("SentimentPolarityTrainTest",
+                        // BatchTaskCV batch = new BatchTaskCV("SentimentPolarityTrainTest",
+                        getReaderDesc(corpusFilePathTest, languageCode),
+                        getPreprocessing(),
+                        WekaDataWriter.class.getName());
+        batch.setType("Evaluation-SentimentPolarity-CV-Old");
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(CVBatchReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
     }
 
     // ##### TRAIN-TEST #####
@@ -73,14 +126,14 @@ public class SentimentPolarityExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("SentimentPolarityTrainTest",
-                getReaderDesc(corpusFilePathTrain, languageCode), getReaderDesc(corpusFilePathTest,
-                        languageCode), getPreprocessing(),
+                getReaderDesc(corpusFilePathTrain, languageCode),
+                getReaderDesc(corpusFilePathTest, languageCode),
+                getPreprocessing(),
                 WekaDataWriter.class.getName());
         batch.setType("Evaluation-SentimentPolarity-TrainTest");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

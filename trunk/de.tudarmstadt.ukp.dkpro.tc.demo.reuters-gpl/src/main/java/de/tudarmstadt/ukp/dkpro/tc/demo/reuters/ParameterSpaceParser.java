@@ -21,7 +21,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 public class ParameterSpaceParser
 {
 
-    public static int folds;
     public static Boolean[] toLowerCase;
     public static String threshold;
 
@@ -31,7 +30,6 @@ public class ParameterSpaceParser
     {
         // DIMENSIONS
 
-        folds = pipelineConfiguration.getInt("folds");
         threshold = pipelineConfiguration.getString("threshold");
 
         Object[] toLowerCaseO = pipelineConfiguration.getJSONArray("toLowerCase").toArray();
@@ -74,7 +72,6 @@ public class ParameterSpaceParser
                 Dimension.create("classificationArguments", classificationArgs.toArray()),
                 Dimension.create("featureSet", featureSets.toArray()),
                 Dimension.create("featureParameters", featureParameters.toArray()),
-                Dimension.create("folds", folds),
                 Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", true),
                 Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)));
