@@ -55,10 +55,11 @@ public class ExtractFeaturesTask
     @Discriminator
     private Collection<String> files_validation;
 
+    @Discriminator
+    private boolean isRegressionExperiment = false;
+
     private String dataWriter;
     private boolean isTesting = false;
-
-    private boolean isRegressionExperiment = false;
     private boolean addInstanceId = false;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
     private Set<String> requiredTypes;
