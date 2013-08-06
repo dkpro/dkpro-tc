@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,31 +29,53 @@ public class MetaInfoTask
 {
 
     public static final String META_KEY = "meta";
-    public static final String INPUT_KEY = "preprocessing_input";
+    public static final String INPUT_KEY = "input";
 
     @Discriminator
     protected String[] featureSet;
-    
+
     @Discriminator
     protected Object[] pipelineParameters;
 
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
 
+    @Discriminator
+    private File filesRoot;
+
+    @Discriminator
+    private Collection<String> files_training;
+
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-        return createReaderDescription(SerializedCasReader.class, SerializedCasReader.PARAM_PATH, path
-                + "/", SerializedCasReader.PARAM_PATTERNS,
-                new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
+        // TrainTest setup: input files are set as imports
+        if (filesRoot == null || files_training == null) {
+            String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
+            return createReaderDescription(SerializedCasReader.class,
+                    SerializedCasReader.PARAM_PATH,
+                    path + "/", SerializedCasReader.PARAM_PATTERNS,
+                    new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
+        }
+        // CV setup: filesRoot and files_atrining have to be set as dimension
+        else {
+            Collection<String> patterns = new ArrayList<String>();
+            for (String f : files_training) {
+
+                patterns.add(SerializedCasReader.INCLUDE_PREFIX + "**/*" + f);
+            }
+            return createReaderDescription(SerializedCasReader.class,
+                    SerializedCasReader.PARAM_PATH, filesRoot,
+                    SerializedCasReader.PARAM_PATTERNS, patterns);
+        }
     }
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        // automatically determine the required metaCollector classes from the provided feature extractors 
+        // automatically determine the required metaCollector classes from the provided feature
+        // extractors
         try {
             metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
         }
@@ -82,6 +105,15 @@ public class MetaInfoTask
 
         List<Object> parameters = new ArrayList<Object>();
         parameters.addAll(Arrays.asList(pipelineParameters));
+
+        // make sure that the meta key import can be resolved (even when no meta features have been
+        // extracted, as in the regression demo)
+        // TODO better way to do this?
+        if (parameterKeyPairs.size() == 0) {
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE)
+                    .getPath());
+            file.mkdir();
+        }
 
         for (String key : parameterKeyPairs.keySet()) {
             File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
