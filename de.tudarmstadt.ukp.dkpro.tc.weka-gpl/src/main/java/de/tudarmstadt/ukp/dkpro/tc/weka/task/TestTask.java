@@ -63,7 +63,10 @@ public class TestTask
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
 
-        testData = WekaUtils.makeOutcomeClassesCompatible(trainData, testData, multiLabel);
+        // in regression experiments, outcome is numeric
+        if (!trainData.classAttribute().isNumeric()) {
+            testData = WekaUtils.makeOutcomeClassesCompatible(trainData, testData, multiLabel);
+        }
 
         Classifier cl;
         String[] mlArgs;
@@ -106,8 +109,9 @@ public class TestTask
 
         // evaluation
         if (multiLabel) {
-        	//we don't need to build the classifier - multi label evaluation does this automatically
-        	
+            // we don't need to build the classifier - multi label evaluation does this
+            // automatically
+
             Result r = Evaluation.evaluateModel((MultilabelClassifier) cl, filteredTrainData,
                     filteredTestData, threshold);
             Result.writeResultToFile(r, evalOutput.getAbsolutePath());
@@ -142,26 +146,28 @@ public class TestTask
             }
         }
         else {
-            // train the classifier on the train set split - not necessary in multilabel setup, but in single label setup
+            // train the classifier on the train set split - not necessary in multilabel setup, but
+            // in single label setup
             cl.buildClassifier(filteredTrainData);
 
             weka.classifiers.Evaluation eval = new weka.classifiers.Evaluation(filteredTrainData);
             eval.evaluateModel(cl, filteredTestData);
             weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
-            
+
             Add filter = new Add();
 
-            filter.setAttributeIndex(new Integer(testData.classIndex()+1).toString());
+            filter.setAttributeIndex(new Integer(testData.classIndex() + 1).toString());
             filter.setAttributeName("goldlabel");
             filter.setInputFormat(testData);
             testData = Filter.useFilter(testData, filter);
-        
-        // fill values of gold standard classification with original values from test set
-        for (int i = 0; i < testData.size(); i++) {
-            
-        	testData.instance(i).setValue(testData.classIndex()-1, filteredTestData.instance(i).classValue());
-            
-        }
+
+            // fill values of gold standard classification with original values from test set
+            for (int i = 0; i < testData.size(); i++) {
+
+                testData.instance(i).setValue(testData.classIndex() - 1,
+                        filteredTestData.instance(i).classValue());
+
+            }
 
             for (int i = 0; i < filteredTestData.numInstances(); i++) {
                 double prediction = cl.classifyInstance(filteredTestData.instance(i));
