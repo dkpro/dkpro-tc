@@ -20,8 +20,10 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.io.ReutersCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
@@ -79,9 +81,10 @@ public class ReutersTextClassification
                 corpusFilePathTrain,
                 languageCode), getPreprocessing(), MekaDataWriter.class.getName(), numFolds);
         batch.setType("Evaluation-Reuters-CV");
+        batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(CVBatchReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -96,9 +99,11 @@ public class ReutersTextClassification
                 getReaderDesc(corpusFilePathTest, languageCode), getPreprocessing(),
                 MekaDataWriter.class.getName());
         batch.setType("Evaluation-Reuters-TrainTest");
+        batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

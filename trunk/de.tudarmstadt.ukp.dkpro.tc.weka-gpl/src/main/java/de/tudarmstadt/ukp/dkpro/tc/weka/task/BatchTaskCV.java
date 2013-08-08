@@ -1,13 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
-import java.util.List;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -20,7 +17,6 @@ public class BatchTaskCV
     private String experimentName;
     private CollectionReaderDescription reader;
     private AnalysisEngineDescription aggregate;
-    private List<Class<? extends MetaCollector>> metaCollectorClasses;
     private String dataWriter;
 
     private PreprocessTask preprocessTask;

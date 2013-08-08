@@ -18,9 +18,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
@@ -121,7 +121,7 @@ public class TwentyNewsgroupsGroovyExperiment {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [CVBatchReport],
+            reports:         [BatchCrossValidationReport],
             numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);
@@ -141,6 +141,7 @@ public class TwentyNewsgroupsGroovyExperiment {
             readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
             dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
+            innerReport: TrainTestReport.class,
             parameterSpace : [
                 dimFeatureParameters,
                 dimToLowerCase,
@@ -176,8 +177,8 @@ public class TwentyNewsgroupsGroovyExperiment {
     throws ResourceInitializationException
     {
         return createEngineDescription(
-        createEngineDescription(BreakIteratorSegmenter),
-        createEngineDescription(OpenNlpPosTagger)
+        createEngineDescription(BreakIteratorSegmenter.class),
+        createEngineDescription(OpenNlpPosTagger.class)
         );
     }
 

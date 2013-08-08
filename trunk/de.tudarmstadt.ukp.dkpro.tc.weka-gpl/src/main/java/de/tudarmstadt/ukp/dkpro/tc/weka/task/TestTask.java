@@ -106,7 +106,7 @@ public class TestTask
             filteredTestData = new Instances(testData);
         }
 
-        // file to hold Crossvalidation results
+        // file to hold prediction results
         File evalOutput = new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + EVALUATION_DATA_KEY);
 
