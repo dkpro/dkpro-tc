@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,25 +66,39 @@ public class BatchCrossValidationReport
                 // columns
                 for (int j = 0; j < evalMatrix[0].length; j++) {
                     String header = evalMatrix[0][j];
-                    double[] vals = new double[evalMatrix.length - 1];
+                    String[] vals = new String[evalMatrix.length - 1];
                     // rows
                     for (int k = 1; k < evalMatrix.length; k++) {
-                        try {
-                            vals[k - 1] = Double.parseDouble(evalMatrix[k][j]);
-                        }
-                        catch (NumberFormatException e) {
-                            // skip non-numeric lines
-                            vals = null;
-                            break;
-                        }
+                        vals[k - 1] = evalMatrix[k][j];
+
                     }
                     Mean mean = new Mean();
                     StandardDeviation std = new StandardDeviation();
-                    if (vals != null) {
-                        resultMap.put(
-                                header,
-                                String.valueOf(mean.evaluate(vals) + "\u00B1"
-                                        + String.valueOf(std.evaluate(vals))));
+
+                    double[] dVals = new double[vals.length];
+                    Set<String> sVals = new HashSet<String>();
+                    for (int k = 0; k < vals.length; k++) {
+                        try {
+                            dVals[k] = Double.parseDouble(vals[k]);
+                            sVals = null;
+                        }
+                        catch (NumberFormatException e) {
+                            dVals = null;
+                            sVals.add(vals[k]);
+                        }
+                    }
+
+                    if (dVals != null) {
+                        resultMap.put(header, String.valueOf(mean.evaluate(dVals) + "\u00B1"
+                                + String.valueOf(std.evaluate(dVals))));
+                    }
+                    else {
+                        if (sVals.size() > 1) {
+                            resultMap.put(header, "---");
+                        }
+                        else {
+                            resultMap.put(header, vals[0]);
+                        }
                     }
                 }
 
