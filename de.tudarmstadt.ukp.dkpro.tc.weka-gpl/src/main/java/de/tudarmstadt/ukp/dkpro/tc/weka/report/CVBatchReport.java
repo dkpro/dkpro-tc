@@ -17,6 +17,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask;
 
+@Deprecated
 public class CVBatchReport
     extends BatchReportBase
 {

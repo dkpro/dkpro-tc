@@ -22,7 +22,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 
-public class CrossValidationBatchReport
+public class BatchCrossValidationReport
     extends BatchReportBase
 {
     private static final String EVALUATION_FILE_XLS = "eval.xls";

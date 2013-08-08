@@ -4,15 +4,20 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.FeatureValuesReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
 
+/**
+ * Train-Test setup
+ * 
+ * @author daxenberger
+ * 
+ */
 public class BatchTaskTrainTest
     extends BatchTask
 {
@@ -22,6 +27,7 @@ public class BatchTaskTrainTest
     private CollectionReaderDescription readerTest;
     private AnalysisEngineDescription aggregate;
     private String dataWriter;
+    private Class<? extends Report> innerReport;
 
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
@@ -34,6 +40,21 @@ public class BatchTaskTrainTest
     {/* needed for Groovy */
     }
 
+    /**
+     * Preconfigured train-test setup which should work out-of-the-box. You might want to set a
+     * report to collect the results.
+     * 
+     * @param aExperimentName
+     *            name of the experiment
+     * @param aReaderTrain
+     *            collection reader for train data
+     * @param aReaderTest
+     *            collection reader for test data
+     * @param aAggregate
+     *            preprocessing analysis engine aggregate
+     * @param aDataWriterClassName
+     *            data writer class name
+     */
     public BatchTaskTrainTest(String aExperimentName, CollectionReaderDescription aReaderTrain,
             CollectionReaderDescription aReaderTest, AnalysisEngineDescription aAggregate,
             String aDataWriterClassName)
@@ -67,19 +88,21 @@ public class BatchTaskTrainTest
     private void init()
     {
         if (experimentName == null || readerTrain == null || readerTest == null
-                || aggregate == null)
+                || aggregate == null || dataWriter == null)
 
         {
             throw new IllegalStateException(
-                    "You must set Experiment Name, Test Reader, Training Reader and Aggregate.");
+                    "You must set Experiment Name, Test Reader, Training Reader, DataWriter and Aggregate.");
         }
 
+        // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
         preprocessTaskTrain.setReader(readerTrain);
         preprocessTaskTrain.setAggregate(aggregate);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
 
+        // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
         preprocessTaskTest.setReader(readerTest);
         preprocessTaskTest.setAggregate(aggregate);
@@ -92,6 +115,7 @@ public class BatchTaskTrainTest
         metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN,
                 preprocessTaskTrain.getType());
 
+        // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setAddInstanceId(true);
         featuresTrainTask.setDataWriter(dataWriter);
@@ -102,6 +126,7 @@ public class BatchTaskTrainTest
                 PreprocessTask.OUTPUT_KEY_TRAIN,
                 preprocessTaskTrain.getType());
 
+        // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setAddInstanceId(true);
         featuresTestTask.setDataWriter(dataWriter);
@@ -112,11 +137,13 @@ public class BatchTaskTrainTest
                 PreprocessTask.OUTPUT_KEY_TEST,
                 preprocessTaskTest.getType());
 
-        // Define the test task which operates on the results of the the train task
+        // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.addReport(FeatureValuesReport.class);
-        testTask.addReport(TrainTestReport.class);
+        if (innerReport != null) {
+            testTask.addReport(innerReport);
+        }
         testTask.addReport(OutcomeIDReport.class);
         testTask.addImportLatest(TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY,
                 featuresTrainTask.getType());
@@ -129,8 +156,6 @@ public class BatchTaskTrainTest
         addTask(featuresTrainTask);
         addTask(featuresTestTask);
         addTask(testTask);
-
-        addReport(BatchTrainTestReport.class);
     }
 
     public void setExperimentName(String experimentName)
@@ -161,5 +186,16 @@ public class BatchTaskTrainTest
     public void setDataWriter(String dataWriter)
     {
         this.dataWriter = dataWriter;
+    }
+
+    /**
+     * Sets the report for the test task
+     * 
+     * @param innerReport
+     *            classification report or regression report
+     */
+    public void setInnerReport(Class<? extends Report> innerReport)
+    {
+        this.innerReport = innerReport;
     }
 }

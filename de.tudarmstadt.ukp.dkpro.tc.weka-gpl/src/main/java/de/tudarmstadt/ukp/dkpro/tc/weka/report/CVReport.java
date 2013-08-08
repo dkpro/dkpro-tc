@@ -30,6 +30,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
+@Deprecated
 public class CVReport
     extends ReportBase
 {

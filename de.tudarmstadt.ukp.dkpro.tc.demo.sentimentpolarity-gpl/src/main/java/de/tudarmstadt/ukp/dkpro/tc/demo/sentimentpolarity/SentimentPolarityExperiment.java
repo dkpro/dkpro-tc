@@ -20,9 +20,9 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.io.MovieReviewCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CrossValidationBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
@@ -89,7 +89,7 @@ public class SentimentPolarityExperiment
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.setInnerReport(TrainTestReport.class);
-        batch.addReport(CrossValidationBatchReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -131,6 +131,7 @@ public class SentimentPolarityExperiment
                 getPreprocessing(),
                 WekaDataWriter.class.getName());
         batch.setType("Evaluation-SentimentPolarity-TrainTest");
+        batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);

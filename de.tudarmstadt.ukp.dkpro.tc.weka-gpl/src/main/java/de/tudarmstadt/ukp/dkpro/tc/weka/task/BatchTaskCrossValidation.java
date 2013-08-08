@@ -20,6 +20,12 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 
+/**
+ * Crossvalidation setup
+ * 
+ * @author daxenberger
+ * 
+ */
 public class BatchTaskCrossValidation
     extends BatchTask
 {
@@ -28,7 +34,7 @@ public class BatchTaskCrossValidation
     private CollectionReaderDescription reader;
     private AnalysisEngineDescription aggregate;
     private String dataWriter;
-    private int numFolds;
+    private int numFolds = 10;
     private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
 
@@ -42,6 +48,21 @@ public class BatchTaskCrossValidation
     {/* needed for Groovy */
     }
 
+    /**
+     * Preconfigured crossvalidation setup which should work out-of-the-box. You might want to set a
+     * report to collect the results.
+     * 
+     * @param aExperimentName
+     *            name of the experiment
+     * @param aReader
+     *            collection reader for input data
+     * @param aAggregate
+     *            preprocessing analysis engine aggregate
+     * @param aDataWriterClassName
+     *            data writer class name
+     * @param aNumFolds
+     *            the number of folds for crossvalidation (default 10)
+     */
     public BatchTaskCrossValidation(String aExperimentName, CollectionReaderDescription aReader,
             AnalysisEngineDescription aAggregate, String aDataWriterClassName, int aNumFolds)
     {
@@ -68,8 +89,9 @@ public class BatchTaskCrossValidation
         ClassNotFoundException
     {
 
-        if (experimentName == null || reader == null || aggregate == null) {
-            throw new IllegalStateException("You must set experiment name, reader and aggregate.");
+        if (experimentName == null || reader == null || aggregate == null || dataWriter == null) {
+            throw new IllegalStateException(
+                    "You must set experiment name, reader, datawriter and aggregate.");
         }
 
         // preprocessing on the entire data set and only once
@@ -77,6 +99,39 @@ public class BatchTaskCrossValidation
         preprocessTask.setReader(reader);
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
+
+        // inner batch task (carried out numFolds times)
+        BatchTask crossValidationTask = new BatchTask()
+        {
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+                File xmiPathRoot = aContext.getStorageLocation(PreprocessTask.OUTPUT_KEY_TRAIN,
+                        AccessMode.READONLY);
+                Collection<File> files = FileUtils.listFiles(xmiPathRoot,
+                        new String[] { "ser.gz" },
+                        true);
+                String[] fileNames = new String[files.size()];
+                int i = 0;
+                for (File f : files) {
+                    fileNames[i] = f.getName();
+                    i++;
+                }
+                Arrays.sort(fileNames);
+
+                // don't change any names!!
+                FoldDimensionBundle<String> foldDim = new FoldDimensionBundle<String>("files",
+                        Dimension.create("", fileNames), numFolds);
+                Dimension<File> filesRootDim = Dimension.create("filesRoot", xmiPathRoot);
+
+                ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
+                setParameterSpace(pSpace);
+
+                super.execute(aContext);
+            }
+        };
+
+        // ================== SUBTASKS OF THE INNER BATCH TASK =======================
 
         // collecting meta features only on the training data (numFolds times)
         metaTask = new MetaInfoTask();
@@ -113,36 +168,8 @@ public class BatchTaskCrossValidation
         testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY,
                 extractFeaturesTestTask.getType());
 
-        // inner batch task (carried out numFolds times)
-        BatchTask crossValidationTask = new BatchTask()
-        {
-            public void execute(TaskContext aContext)
-                throws Exception
-            {
-                File xmiPathRoot = aContext.getStorageLocation(PreprocessTask.OUTPUT_KEY_TRAIN,
-                        AccessMode.READONLY);
-                Collection<File> files = FileUtils.listFiles(xmiPathRoot,
-                        new String[] { "ser.gz" },
-                        true);
-                String[] fileNames = new String[files.size()];
-                int i = 0;
-                for (File f : files) {
-                    fileNames[i] = f.getName();
-                    i++;
-                }
-                Arrays.sort(fileNames);
+        // ================== CONFIG OF THE INNER BATCH TASK =======================
 
-                // don't change any names!!
-                FoldDimensionBundle<String> foldDim = new FoldDimensionBundle<String>("files",
-                        Dimension.create("", fileNames), numFolds);
-                Dimension<File> filesRootDim = Dimension.create("filesRoot", xmiPathRoot);
-
-                ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
-                setParameterSpace(pSpace);
-
-                super.execute(aContext);
-            }
-        };
         crossValidationTask.addImportLatest(PreprocessTask.OUTPUT_KEY_TRAIN,
                 PreprocessTask.OUTPUT_KEY_TRAIN,
                 preprocessTask.getType());
@@ -151,6 +178,7 @@ public class BatchTaskCrossValidation
         crossValidationTask.addTask(extractFeaturesTrainTask);
         crossValidationTask.addTask(extractFeaturesTestTask);
         crossValidationTask.addTask(testTask);
+        // report of the inner batch task (sums up results for the folds)
         if (innerReport != null) {
             crossValidationTask.addReport(BatchTrainTestReport.class);
         }
@@ -202,6 +230,12 @@ public class BatchTaskCrossValidation
         this.addInstanceId = addInstanceId;
     }
 
+    /**
+     * Sets the report for the inner test task
+     * 
+     * @param innerReport
+     *            classification report or regression report
+     */
     public void setInnerReport(Class<? extends Report> innerReport)
     {
         this.innerReport = innerReport;
