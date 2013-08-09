@@ -41,13 +41,14 @@ public class BatchCrossValidationReport
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             String name = BatchTask.class.getSimpleName() + "CrossValidation";
-            if (subcontext.getLabel().startsWith(name
-                    )) {
+            // one CV batch (which internally ran numFolds times)
+            if (subcontext.getLabel().startsWith(name)) {
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
                 File eval = store.getStorageFolder(subcontext.getId(),
                         BatchTrainTestReport.EVALUATION_FILE_CSV);
+
                 Map<String, String> resultMap = new HashMap<String, String>();
 
                 String[][] evalMatrix = null;
@@ -69,7 +70,12 @@ public class BatchCrossValidationReport
                     String[] vals = new String[evalMatrix.length - 1];
                     // rows
                     for (int k = 1; k < evalMatrix.length; k++) {
-                        vals[k - 1] = evalMatrix[k][j];
+                        if (evalMatrix[k][j].equals("null")) {
+                            vals[k - 1] = String.valueOf(0.);
+                        }
+                        else {
+                            vals[k - 1] = evalMatrix[k][j];
+                        }
 
                     }
                     Mean mean = new Mean();
