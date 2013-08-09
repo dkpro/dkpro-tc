@@ -15,7 +15,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 
 public class BatchTrainTestReport
@@ -39,7 +38,7 @@ public class BatchTrainTestReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
-                        CrossValidationTask.RESULTS_KEY, new PropertiesAdapter()).getMap();
+                        TestTask.RESULTS_KEY, new PropertiesAdapter()).getMap();
 
                 String key = getKey(discriminatorsMap);
 
