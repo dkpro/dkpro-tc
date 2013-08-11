@@ -2,6 +2,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
@@ -20,6 +22,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FocusAnnotationFeatureExtractor;
@@ -84,11 +87,12 @@ public class NGramFeatureExtractor
         // try to check if stopword list is defined, if so, use it
         if (stopFile != null && !stopFile.isEmpty()) {
             try {
-                File stopwordsFile = new File(stopFile);
                 // each line of the file contains one stopword
+                URL stopUrl = ResourceUtils.resolveLocation(stopFile, null);
+                InputStream is = stopUrl.openStream();
                 Set<String> stopwords = new HashSet<String>();
-                stopwords.addAll(FileUtils.readLines(stopwordsFile,
-                        "UTF_8"));
+                stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
+                
                 if (focusAnnotation == null) {
                     documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN,
                             maxN, stopwords);
