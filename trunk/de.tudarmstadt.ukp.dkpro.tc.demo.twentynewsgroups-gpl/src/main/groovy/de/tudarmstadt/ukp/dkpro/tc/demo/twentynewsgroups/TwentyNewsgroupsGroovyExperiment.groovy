@@ -30,7 +30,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  * Groovy-Version of the TwentyNewsgroupsExperiment
  *
  * The TwentyNewsgroupsGroovyExperiment does the same as TwentyNewsgroupsGroovyExtendedExperiment,
- * but it uses the BatchTaskCV and BatchTaskTrainTest to automatically wire the standard tasks for
+ * but it uses the {@link BatchTaskCrossValidation} and {@link BatchTaskTrainTest} to automatically wire the standard tasks for
  * a basic CV and TrainTest setup. This is more convenient, but less flexible.
  *
  * If you need to define a more complex experiment setup, look at TwentyNewsgroupsGroovyExtendedExperiment
