@@ -84,6 +84,7 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
 	</modules>
 	<dependencies>
 		<dependency>
