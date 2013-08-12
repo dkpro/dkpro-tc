@@ -104,7 +104,9 @@ public class MetaInfoTask
         }
 
         List<Object> parameters = new ArrayList<Object>();
-        parameters.addAll(Arrays.asList(pipelineParameters));
+        if (pipelineParameters != null) {
+            parameters.addAll(Arrays.asList(pipelineParameters));
+        }
 
         // make sure that the meta key import can be resolved (even when no meta features have been
         // extracted, as in the regression demo)
