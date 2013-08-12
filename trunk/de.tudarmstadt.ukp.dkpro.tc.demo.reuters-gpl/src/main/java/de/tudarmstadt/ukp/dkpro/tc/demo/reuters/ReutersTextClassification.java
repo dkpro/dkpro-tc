@@ -80,7 +80,6 @@ public class ReutersTextClassification
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("ReutersCV", getReaderDesc(
                 corpusFilePathTrain,
                 languageCode), getPreprocessing(), MekaDataWriter.class.getName(), numFolds);
-        batch.setType("Evaluation-Reuters-CV");
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -98,7 +97,6 @@ public class ReutersTextClassification
                 corpusFilePathTrain, languageCode),
                 getReaderDesc(corpusFilePathTest, languageCode), getPreprocessing(),
                 MekaDataWriter.class.getName());
-        batch.setType("Evaluation-Reuters-TrainTest");
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

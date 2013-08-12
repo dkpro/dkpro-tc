@@ -85,7 +85,6 @@ public class SentimentPolarityExperiment
                         getReaderDesc(corpusFilePathTest, languageCode),
                         getPreprocessing(),
                         WekaDataWriter.class.getName(), folds);
-        batch.setType("Evaluation-SentimentPolarity-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.setInnerReport(TrainTestReport.class);
@@ -130,7 +129,6 @@ public class SentimentPolarityExperiment
                 getReaderDesc(corpusFilePathTest, languageCode),
                 getPreprocessing(),
                 WekaDataWriter.class.getName());
-        batch.setType("Evaluation-SentimentPolarity-TrainTest");
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

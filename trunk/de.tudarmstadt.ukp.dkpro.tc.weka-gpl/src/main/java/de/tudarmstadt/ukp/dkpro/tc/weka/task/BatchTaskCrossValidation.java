@@ -71,6 +71,8 @@ public class BatchTaskCrossValidation
         setAggregate(aAggregate);
         setDataWriter(aDataWriterClassName);
         setNumFolds(aNumFolds);
+        // set name of overall batch task
+        setType("Evaluation-" + experimentName);
     }
 
     /**

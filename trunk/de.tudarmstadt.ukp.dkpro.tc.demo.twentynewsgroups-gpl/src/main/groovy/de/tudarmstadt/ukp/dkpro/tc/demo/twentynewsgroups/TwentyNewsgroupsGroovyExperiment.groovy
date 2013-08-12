@@ -39,6 +39,8 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  */
 public class TwentyNewsgroupsGroovyExperiment {
 
+    def experimentName = "TwentyNewsgroups";
+
     // === PARAMETERS===========================================================
 
     def corpusFilePathTrain = "src/main/resources/data/bydate-train";
@@ -105,9 +107,11 @@ public class TwentyNewsgroupsGroovyExperiment {
      */
     protected void runCrossValidation() throws Exception
     {
+
         BatchTaskCrossValidation batchTask = [
-            experimentName: "TwentyNewsgroups-CV-Groovy",
-            type: "Evaluation-TwentyNewsgroups-CV-Groovy",
+            experimentName: experimentName + "-CV-Groovy",
+            // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
+            type: "Evaluation-"+ experimentName +"-CV-Groovy",
             reader:	getReaderDesc(corpusFilePathTrain, languageCode),
             dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
@@ -135,8 +139,9 @@ public class TwentyNewsgroupsGroovyExperiment {
     {
 
         BatchTaskTrainTest batchTask = [
-            experimentName: "TwentyNewsgroups-TrainTest-Groovy",
-            type: "Evaluation-TwentyNewsgroups-TrainTest-Groovy",
+            experimentName: experimentName + "-TrainTest-Groovy",
+            // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
+            type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
             readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
             dataWriter:         WekaDataWriter.class.name,
