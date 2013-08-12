@@ -20,9 +20,9 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
@@ -85,7 +85,6 @@ public class TwentyNewsgroupsExperiment
                 getReaderDesc(
                         corpusFilePathTrain, languageCode), getPreprocessing(),
                 WekaDataWriter.class.getName(), numFolds);
-        batch.setType("Evaluation-TwentyNewsgroups-CV");
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -104,7 +103,6 @@ public class TwentyNewsgroupsExperiment
                 getReaderDesc(corpusFilePathTrain, languageCode), getReaderDesc(corpusFilePathTest,
                         languageCode), getPreprocessing(),
                 WekaDataWriter.class.getName());
-        batch.setType("Evaluation-TwentyNewsgroups-TrainTest");
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

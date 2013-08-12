@@ -67,7 +67,6 @@ public class RegressionExperiment
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
                 getReaderDesc(inputFile, goldFile), getPreprocessing(),
                 WekaDataWriter.class.getName(), numFolds);
-        batch.setType("Evaluation-RegressionExample-CV");
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         // TODO add report

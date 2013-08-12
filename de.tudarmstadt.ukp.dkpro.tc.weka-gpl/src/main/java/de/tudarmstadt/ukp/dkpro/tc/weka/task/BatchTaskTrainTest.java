@@ -64,6 +64,8 @@ public class BatchTaskTrainTest
         setReaderTest(aReaderTest);
         setAggregate(aAggregate);
         setDataWriter(aDataWriterClassName);
+        // set name of overall batch task
+        setType("Evaluation-" + experimentName);
     }
 
     @Override
