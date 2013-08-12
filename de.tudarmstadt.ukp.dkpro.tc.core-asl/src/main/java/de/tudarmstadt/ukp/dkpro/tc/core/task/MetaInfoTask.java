@@ -23,6 +23,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class MetaInfoTask
     extends UimaTaskBase
@@ -74,6 +75,12 @@ public class MetaInfoTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
+        
+        // check for error conditions
+        if (featureSet == null) {
+            throw new ResourceInitializationException(new TextClassificationException("No feature extractors have been added to the experiment."));
+        }
+        
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
