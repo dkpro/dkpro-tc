@@ -9,7 +9,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.FeatureValuesReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
@@ -142,7 +141,6 @@ public class BatchTaskTrainTest
         // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.addReport(FeatureValuesReport.class);
         if (innerReport != null) {
             testTask.addReport(innerReport);
         }
