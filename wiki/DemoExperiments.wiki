@@ -155,11 +155,8 @@ This calls both the cross-validation and the train/test runs. Please note that, 
 System.setProperty("DKPRO_HOME", "/the/path/to/my/results/");
 }}}
 
-There you will find a set of directories storing intermediate and final evaluation results of your experiments.
-
-  * `Evaluation..CV..` contains the cross-validation results, whereas
-  * `Evaluation..TrainTest..` contains the results on the test set.
-
+There you will find a set of directories storing intermediate and final evaluation results of your experiments: 
+The `Evaluation...` folders (usually one for the TrainTest setup and one for Crossvalidation, named according to the experiment name setup on the overall BatchTask) contain the final results for all runs of the pipeline.
 E.g., the `eval.xls` file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set).
 
 Once you got this example running as it is, you can start adapting various parameters:
