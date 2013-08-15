@@ -8,8 +8,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.CompressionMethod;
-import de.tudarmstadt.ukp.dkpro.core.io.bincas.SerializedCasWriter;
+import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
@@ -64,9 +63,8 @@ public class PreprocessTask
     {
         String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
         AnalysisEngineDescription xmiWriter = createEngineDescription(
-                SerializedCasWriter.class,
-                SerializedCasWriter.PARAM_COMPRESSION, CompressionMethod.GZIP,
-                SerializedCasWriter.PARAM_TARGET_LOCATION,
+                BinaryCasWriter.class,
+                BinaryCasWriter.PARAM_TARGET_LOCATION,
                 aContext.getStorageLocation(output, AccessMode.READWRITE).getPath()
                 );
 
