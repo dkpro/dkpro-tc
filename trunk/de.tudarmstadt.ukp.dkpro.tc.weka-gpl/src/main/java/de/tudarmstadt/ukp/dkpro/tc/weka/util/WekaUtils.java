@@ -165,7 +165,7 @@ public class WekaUtils
     {
 
         // check for error conditions
-        if (instanceList.getUniqueOutcomes().size() == 0) {
+        if (instanceList.getUniqueOutcomes().isEmpty()) {
             throw new IllegalArgumentException("List of instance outcomes is empty.");
         }
         
