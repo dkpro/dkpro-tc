@@ -48,7 +48,7 @@ public class InstanceExtractor
     private String dataWriterClass;
 
     public static final String PARAM_FEATURE_ANNOTATION = "featureAnnotation";
-    @ConfigurationParameter(name = PARAM_FEATURE_ANNOTATION, description = "If set, this annotation will be passed to feature extractors.", mandatory = false)
+    @ConfigurationParameter(name = PARAM_FEATURE_ANNOTATION, description = "If set, this annotation will be passed to feature extractors implementing FocusAnnotationFeatureExtractor.", mandatory = false)
     private String featureAnnotation;
 
     public static final String PARAM_IS_REGRESSION_EXPERIMENT = "isRegressionExperiment";
@@ -154,13 +154,16 @@ public class InstanceExtractor
             }
         }
 
-        Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas,
-                TextClassificationOutcome.class);
-        String[] stringOutcomes = new String[outcome.size()];
+        Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas, TextClassificationOutcome.class);
 
+        if (outcome.size() == 0) {
+            throw new AnalysisEngineProcessException(new TextClassificationException("No outcome annotations present in current CAS."));
+        }
+        
         // TODO
         // we are currently relying on the user to set the right DataWriter for multi- and
         // single-label, i.e. a wrong configuration will cause exceptions later on
+        String[] stringOutcomes = new String[outcome.size()];
         Iterator<TextClassificationOutcome> iterator = outcome.iterator();
         for (int i = 0; i < outcome.size(); i++) {
             stringOutcomes[i] = iterator.next().getOutcome();
