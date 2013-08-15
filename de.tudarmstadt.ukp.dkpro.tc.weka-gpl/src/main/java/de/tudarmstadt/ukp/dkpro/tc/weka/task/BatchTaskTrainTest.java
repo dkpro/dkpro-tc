@@ -113,7 +113,7 @@ public class BatchTaskTrainTest
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setType(metaTask.getType() + "-" + experimentName);
-        metaTask.addImport(preprocessTaskTrain, MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
+        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
@@ -121,7 +121,7 @@ public class BatchTaskTrainTest
         featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTrainTask.addImport(preprocessTaskTrain, ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
+        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
@@ -129,7 +129,7 @@ public class BatchTaskTrainTest
         featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTestTask.addImport(preprocessTaskTest, ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TEST);
+        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY);
 
         // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
@@ -138,8 +138,8 @@ public class BatchTaskTrainTest
             testTask.addReport(innerReport);
         }
         testTask.addReport(OutcomeIDReport.class);
-        testTask.addImport(featuresTrainTask, TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY);
-        testTask.addImport(featuresTestTask, TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY);
+        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TRAIN);
+        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TEST);
 
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);
