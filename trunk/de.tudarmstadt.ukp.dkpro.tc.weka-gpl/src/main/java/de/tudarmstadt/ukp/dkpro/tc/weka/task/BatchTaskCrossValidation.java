@@ -112,7 +112,7 @@ public class BatchTaskCrossValidation
                 File xmiPathRoot = aContext.getStorageLocation(PreprocessTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
                 Collection<File> files = FileUtils.listFiles(xmiPathRoot,
-                        new String[] { "ser.gz" },
+                        new String[] { "bin" },
                         true);
                 String[] fileNames = new String[files.size()];
                 int i = 0;
@@ -164,8 +164,10 @@ public class BatchTaskCrossValidation
         if (innerReport != null) {
             testTask.addReport(innerReport);
         }
-        testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TRAIN);
-        testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TEST);
+        testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+                TestTask.INPUT_KEY_TRAIN);
+        testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
+                TestTask.INPUT_KEY_TEST);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 

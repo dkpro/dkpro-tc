@@ -20,7 +20,7 @@ import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.core.io.bincas.SerializedCasReader;
+import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -150,12 +150,10 @@ public class ExtractFeaturesTask
     {
         // TrainTest setup: input files are set as imports
         if (filesRoot == null) {
-            String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-            return createReaderDescription(SerializedCasReader.class,
-                    SerializedCasReader.PARAM_PATH,
-                    path
-                            + "/", SerializedCasReader.PARAM_PATTERNS,
-                    new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
+            File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
+            return createReaderDescription(BinaryCasReader.class,
+                    BinaryCasReader.PARAM_PATH, file,
+                    BinaryCasReader.PARAM_PATTERNS, BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
 
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
@@ -163,12 +161,12 @@ public class ExtractFeaturesTask
             Collection<String> patterns = new ArrayList<String>();
             Collection<String> files = isTesting ? files_validation : files_training;
             for (String f : files) {
-                patterns.add(SerializedCasReader.INCLUDE_PREFIX + "**/*" + f);
+                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/*" + f);
             }
 
-            return createReaderDescription(SerializedCasReader.class,
-                    SerializedCasReader.PARAM_PATH, filesRoot,
-                    SerializedCasReader.PARAM_PATTERNS, patterns);
+            return createReaderDescription(BinaryCasReader.class,
+                    BinaryCasReader.PARAM_PATH, filesRoot,
+                    BinaryCasReader.PARAM_PATTERNS, patterns);
         }
     }
 

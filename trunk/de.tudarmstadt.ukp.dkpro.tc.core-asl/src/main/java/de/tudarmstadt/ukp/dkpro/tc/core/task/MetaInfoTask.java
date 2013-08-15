@@ -16,7 +16,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.core.io.bincas.SerializedCasReader;
+import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -52,22 +52,21 @@ public class MetaInfoTask
     {
         // TrainTest setup: input files are set as imports
         if (filesRoot == null || files_training == null) {
-            String path = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY).getPath();
-            return createReaderDescription(SerializedCasReader.class,
-                    SerializedCasReader.PARAM_PATH,
-                    path + "/", SerializedCasReader.PARAM_PATTERNS,
-                    new String[] { SerializedCasReader.INCLUDE_PREFIX + "**/*.ser.gz" });
+            File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
+            return createReaderDescription(BinaryCasReader.class,
+                    BinaryCasReader.PARAM_PATH, file,
+                    BinaryCasReader.PARAM_PATTERNS, BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
             Collection<String> patterns = new ArrayList<String>();
             for (String f : files_training) {
 
-                patterns.add(SerializedCasReader.INCLUDE_PREFIX + "**/*" + f);
+                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/*" + f);
             }
-            return createReaderDescription(SerializedCasReader.class,
-                    SerializedCasReader.PARAM_PATH, filesRoot,
-                    SerializedCasReader.PARAM_PATTERNS, patterns);
+            return createReaderDescription(BinaryCasReader.class,
+                    BinaryCasReader.PARAM_PATH, filesRoot,
+                    BinaryCasReader.PARAM_PATTERNS, patterns);
         }
     }
 
@@ -75,12 +74,13 @@ public class MetaInfoTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        
+
         // check for error conditions
         if (featureSet == null) {
-            throw new ResourceInitializationException(new TextClassificationException("No feature extractors have been added to the experiment."));
+            throw new ResourceInitializationException(new TextClassificationException(
+                    "No feature extractors have been added to the experiment."));
         }
-        
+
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
