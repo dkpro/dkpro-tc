@@ -113,30 +113,23 @@ public class BatchTaskTrainTest
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setType(metaTask.getType() + "-" + experimentName);
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN,
-                preprocessTaskTrain.getType());
+        metaTask.addImport(preprocessTaskTrain, MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setAddInstanceId(true);
         featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
-        featuresTrainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
-                metaTask.getType());
-        featuresTrainTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY,
-                PreprocessTask.OUTPUT_KEY_TRAIN,
-                preprocessTaskTrain.getType());
+        featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        featuresTrainTask.addImport(preprocessTaskTrain, ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setAddInstanceId(true);
         featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
-        featuresTestTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
-                metaTask.getType());
-        featuresTestTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY,
-                PreprocessTask.OUTPUT_KEY_TEST,
-                preprocessTaskTest.getType());
+        featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        featuresTestTask.addImport(preprocessTaskTest, ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TEST);
 
         // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
@@ -145,10 +138,8 @@ public class BatchTaskTrainTest
             testTask.addReport(innerReport);
         }
         testTask.addReport(OutcomeIDReport.class);
-        testTask.addImportLatest(TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY,
-                featuresTrainTask.getType());
-        testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY,
-                featuresTestTask.getType());
+        testTask.addImport(featuresTrainTask, TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY);
+        testTask.addImport(featuresTestTask, TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY);
 
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);

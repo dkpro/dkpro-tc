@@ -105,6 +105,7 @@ public class BatchTaskCrossValidation
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
         {
+            @Override
             public void execute(TaskContext aContext)
                 throws Exception
             {
@@ -146,8 +147,7 @@ public class BatchTaskCrossValidation
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
                 + experimentName);
-        extractFeaturesTrainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
-                metaTask.getType());
+        extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
 
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
@@ -156,8 +156,7 @@ public class BatchTaskCrossValidation
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
-        extractFeaturesTestTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
-                metaTask.getType());
+        extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
 
         // classification (numFolds times)
         testTask = new TestTask();
@@ -165,16 +164,12 @@ public class BatchTaskCrossValidation
         if (innerReport != null) {
             testTask.addReport(innerReport);
         }
-        testTask.addImportLatest(TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY,
-                extractFeaturesTrainTask.getType());
-        testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY,
-                extractFeaturesTestTask.getType());
+        testTask.addImport(extractFeaturesTrainTask, TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY);
+        testTask.addImport(extractFeaturesTestTask, TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
-        crossValidationTask.addImportLatest(PreprocessTask.OUTPUT_KEY_TRAIN,
-                PreprocessTask.OUTPUT_KEY_TRAIN,
-                preprocessTask.getType());
+        crossValidationTask.addImport(preprocessTask, PreprocessTask.OUTPUT_KEY_TRAIN);
         crossValidationTask.setType(crossValidationTask.getType() + experimentName);
         crossValidationTask.addTask(metaTask);
         crossValidationTask.addTask(extractFeaturesTrainTask);

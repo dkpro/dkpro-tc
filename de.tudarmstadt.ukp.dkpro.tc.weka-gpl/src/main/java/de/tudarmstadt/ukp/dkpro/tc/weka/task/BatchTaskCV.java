@@ -76,16 +76,11 @@ public class BatchTaskCV
         cvTask.addReport(CVReport.class);
 
         // wiring
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN,
-                preprocessTask.getType());
-        extractFeaturesTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY,
-                PreprocessTask.OUTPUT_KEY_TRAIN,
-                preprocessTask.getType());
-        extractFeaturesTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY,
-                metaTask.getType());
-        cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY,
-                extractFeaturesTask.getType());
+        metaTask.addImport(preprocessTask, MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
+        extractFeaturesTask.addImport(preprocessTask, ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
+        extractFeaturesTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        cvTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        cvTask.addImport(extractFeaturesTask, CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY);
 
         addTask(preprocessTask);
         addTask(metaTask);
