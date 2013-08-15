@@ -164,6 +164,11 @@ public class WekaUtils
         throws Exception
     {
 
+        // check for error conditions
+        if (instanceList.getUniqueOutcomes().size() == 0) {
+            throw new IllegalArgumentException("List of instance outcomes is empty.");
+        }
+        
         Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
@@ -247,11 +252,12 @@ public class WekaUtils
 
             wekaInstance.setDataset(wekaInstances);
             
+            String outcome = instanceList.getOutcome(i);
             if (isRegressionExperiment) {
-                wekaInstance.setClassValue(Double.parseDouble(instanceList.getOutcome(i)));
+                wekaInstance.setClassValue(Double.parseDouble(outcome));
             }
             else {
-                wekaInstance.setClassValue(instanceList.getOutcome(i));
+                wekaInstance.setClassValue(outcome);
             }
 
             preprocessingFilter.input(wekaInstance);
