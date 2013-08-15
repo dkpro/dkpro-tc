@@ -1,7 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
 import java.util.Iterator;
@@ -69,7 +69,7 @@ public class SimilarityPairFeatureTest
                 GreedyStringTilingMeasureResource.PARAM_MIN_MATCH_LENGTH, "3"
         );
         
-        AnalysisEngineDescription desc = createPrimitiveDescription(
+        AnalysisEngineDescription desc = createEngineDescription(
                       Annotator.class,
                       Annotator.MODEL_KEY, createExternalResourceDescription(
                               SimilarityPairFeatureExtractor.class,
@@ -78,7 +78,7 @@ public class SimilarityPairFeatureTest
                       )
        );
         
-      AnalysisEngine engine = createPrimitive(desc);
+      AnalysisEngine engine = createEngine(desc);
       JCas jcas = engine.newJCas();
       TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class, Sentence.class);
 
