@@ -44,7 +44,7 @@ public class TestTask
     public static final String RESULTS_KEY = "results.prop";
     public static final String PREDICTIONS_KEY = "predictions.arff";
     public static final String TRAINING_DATA_KEY = "training-data.arff.gz";
-    public static final String EVALUATION_DATA_KEY = "evaluation.txt";
+    public static final String EVALUATION_DATA_KEY = "evaluation.bin";
 
     public static boolean MULTILABEL;
 
