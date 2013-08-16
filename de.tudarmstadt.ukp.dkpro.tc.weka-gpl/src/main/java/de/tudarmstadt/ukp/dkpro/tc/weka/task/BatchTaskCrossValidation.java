@@ -178,7 +178,7 @@ public class BatchTaskCrossValidation
         crossValidationTask.addTask(extractFeaturesTestTask);
         crossValidationTask.addTask(testTask);
         // report of the inner batch task (sums up results for the folds)
-        // we want to re-use the old CV report, we need to collect the evaluation.txt files from
+        // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
         if (innerReport != null) {
             crossValidationTask.addReport(BatchTrainTestReport.class);
