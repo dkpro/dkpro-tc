@@ -103,6 +103,9 @@ public class TrainTestReport
                     .read(evaluationFile.getAbsolutePath());
             results.put("correct", eval.correct());
             results.put("incorrect", eval.incorrect());
+            results.put("pctCorrect", eval.pctCorrect());
+            results.put("pctIncorrect", eval.pctIncorrect());
+            results.put("pctUnclassified", eval.pctUnclassified());
 
             // class-wise recall, precision, f1
             for (String label : TaskUtils.getClassLabels(eval)) {
