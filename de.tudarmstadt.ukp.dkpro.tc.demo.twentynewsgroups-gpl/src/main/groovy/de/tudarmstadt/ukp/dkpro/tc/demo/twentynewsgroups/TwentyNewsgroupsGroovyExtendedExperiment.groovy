@@ -60,6 +60,16 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     def dimPipelineParameters = Dimension.create(
     "pipelineParameters",
     [
+        "TopK",
+        "500",
+        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        1,
+        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        3
+    ],
+    [
+        "TopK",
+        "1000",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
         NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
@@ -69,37 +79,17 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
     def dimClassificationArgs =
     Dimension.create("classificationArguments",
-    [
-        [NaiveBayes.class.name].toArray(),
-        [SMO.class.name].toArray()
-    ] as Object[]
+    [NaiveBayes.class.name],
+    [SMO.class.name]
     );
 
     def dimFeatureSets = Dimension.create(
     "featureSet",
     [
-        [
             NrOfTokensFeatureExtractor.class.name,
             NGramFeatureExtractor.class.name
-        ].toArray()
-    ] as Object[]
+    ]
     );
-
-    def dimFeatureParameters = Dimension.create(
-    "featureParameters",
-    [
-        [
-            "TopK",
-            "500"
-        ].toArray(),
-        [
-            "TopK",
-            "1000"
-        ].toArray()
-    ] as Object[]
-    );
-
-
 
     // === Experiments =========================================================
 

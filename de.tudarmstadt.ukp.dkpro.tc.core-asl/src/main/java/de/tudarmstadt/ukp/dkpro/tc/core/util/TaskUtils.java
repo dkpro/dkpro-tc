@@ -164,7 +164,7 @@ public class TaskUtils
     /**
      * Get a list of MetaCollector classes from a list of feature extractors.
      */
-    public static List<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(String[] featureSet)
+    public static List<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(List<String> featureSet)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
@@ -183,7 +183,7 @@ public class TaskUtils
     /**
      * Get a list of required type names.
      */
-    public static Set<String> getRequiredTypesFromFeatureExtractors(String[] featureSet)
+    public static Set<String> getRequiredTypesFromFeatureExtractors(List<String> featureSet)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<String> requiredTypes = new HashSet<String>();

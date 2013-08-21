@@ -52,48 +52,43 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     public static void main(String[] args)
         throws Exception
     {
-        Dimension<String[]> dimClassificationArgs = Dimension.create(
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 "classificationArguments",
-                new String[][] {
-                        new String[] { SMO.class.getName() },
-                        new String[] { NaiveBayes.class.getName() }
-                }
-        );
-
-        Dimension<String[]> dimFeatureParameters = Dimension.create(
-                "featureParameters",
-                new String[][] {
-                        new String[] {"TopK", "500"},
-                        new String[] {"TopK", "1000"}
-
-                }
+                Arrays.asList(new String[] { SMO.class.getName() }),
+                Arrays.asList(new String[] { NaiveBayes.class.getName() })
         );
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 "pipelineParameters",
                 Arrays.asList(new Object[] {
+                        "TopK", "500" ,
+                        NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
+                }),
+                Arrays.asList(new Object[] {
+                        "TopK", "1000" ,
                         NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
                 })
         );
         
-        Dimension<String[]> dimFeatureSets = Dimension.create(
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
             "featureSet",
-            new String[][] {
-                 new String[]{
-                         NrOfTokensFeatureExtractor.class.getName(),
-                         NGramFeatureExtractor.class.getName()
-                 }
-             }
+            Arrays.asList(new String[] {
+                    NrOfTokensFeatureExtractor.class.getName(),
+                    NGramFeatureExtractor.class.getName()
+                 })
         );
+        
         TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
                 Dimension.create("lowerCase", new Boolean[] { true }),
                 dimPipelineParameters,
                 dimFeatureSets,
-                dimFeatureParameters,
                 dimClassificationArgs
         );
         
@@ -142,7 +137,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
 
         return createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
                 new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });

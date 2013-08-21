@@ -33,10 +33,10 @@ public class MetaInfoTask
     public static final String INPUT_KEY = "input";
 
     @Discriminator
-    protected String[] featureSet;
+    protected List<String> featureSet;
 
     @Discriminator
-    protected Object[] pipelineParameters;
+    protected List<Object> pipelineParameters;
 
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
 
@@ -112,7 +112,7 @@ public class MetaInfoTask
 
         List<Object> parameters = new ArrayList<Object>();
         if (pipelineParameters != null) {
-            parameters.addAll(Arrays.asList(pipelineParameters));
+            parameters.addAll(pipelineParameters);
         }
 
         // make sure that the meta key import can be resolved (even when no meta features have been

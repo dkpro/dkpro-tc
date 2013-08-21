@@ -37,11 +37,11 @@ public class ExtractFeaturesTask
     public static final String INPUT_KEY = "input";
 
     @Discriminator
-    protected String[] featureSet;
+    protected List<String> featureSet;
     // @Discriminator
     // protected String[] pairFeatureSet;
     @Discriminator
-    protected Object[] featureParameters;
+    protected List<Object> pipelineParameters;
 
     @Discriminator
     protected String featureAnnotation;
@@ -101,9 +101,12 @@ public class ExtractFeaturesTask
         }
 
         List<Object> parameters = new ArrayList<Object>();
-        // adding FE parameters, if any
-        if (featureParameters != null) {
-            parameters.addAll(Arrays.asList(featureParameters));
+        // adding pipeline parameters, if any
+        if (pipelineParameters != null) {
+            // convert parameters to string as external resources only take string parameters
+            for (Object parameter : pipelineParameters) {
+                parameters.add(parameter.toString());
+            }
         }
 
         for (String key : parameterKeyPairs.keySet()) {
@@ -112,12 +115,14 @@ public class ExtractFeaturesTask
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
 
-        ExternalResourceDescription[] extractorResources = new ExternalResourceDescription[featureSet.length];
-        for (int i = 0; i < featureSet.length; i++) {
+        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
+        for (String featureExtractor : featureSet) {
             // System.out.println(featureSet[i]);
             try {
-                extractorResources[i] = ExternalResourceFactory.createExternalResourceDescription(
-                        (Class) Class.forName(featureSet[i]), parameters.toArray());
+                extractorResources.add(
+                        ExternalResourceFactory.createExternalResourceDescription(
+                        (Class) Class.forName(featureExtractor), parameters.toArray())
+                );
             }
             catch (ClassNotFoundException e) {
                 throw new ResourceInitializationException(e);

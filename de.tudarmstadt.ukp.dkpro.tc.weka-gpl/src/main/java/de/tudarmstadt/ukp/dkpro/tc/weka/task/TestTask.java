@@ -1,7 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.List;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -27,7 +27,7 @@ public class TestTask
     extends ExecutableTaskBase
 {
     @Discriminator
-    private String[] classificationArguments;
+    private List<String> classificationArguments;
 
     @Discriminator
     private boolean multiLabel;
@@ -72,16 +72,16 @@ public class TestTask
         }
 
         Classifier cl;
-        String[] mlArgs;
+        List<String> mlArgs;
 
         if (multiLabel) {
-            mlArgs = Arrays.copyOfRange(classificationArguments, 1, classificationArguments.length);
-            cl = AbstractClassifier.forName(classificationArguments[0], new String[] {});
-            ((MultilabelClassifier) cl).setOptions(mlArgs);
+            mlArgs = classificationArguments.subList(1, classificationArguments.size());
+            cl = AbstractClassifier.forName(classificationArguments.get(0), new String[] {});
+            ((MultilabelClassifier) cl).setOptions(mlArgs.toArray(new String[0]));
         }
         else {
-            cl = AbstractClassifier.forName(classificationArguments[0],
-                    Arrays.copyOfRange(classificationArguments, 1, classificationArguments.length));
+            cl = AbstractClassifier.forName(classificationArguments.get(0),
+                    classificationArguments.subList(1, classificationArguments.size()).toArray(new String[0]));
         }
 
         Instances filteredTrainData;
