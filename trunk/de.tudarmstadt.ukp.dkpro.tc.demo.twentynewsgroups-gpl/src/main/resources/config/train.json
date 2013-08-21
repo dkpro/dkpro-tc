@@ -4,8 +4,8 @@
     
 	"languageCode" : "en",
 	"folds" : 2,
-	"nGramMinSize" : 1,
-	"nGramMaxSize" : 3,
+    "nGramMinSize" : 1,
+    "nGramMaxSize" : 3,
 	"toLowerCase" : 
 	[
 		true
@@ -22,16 +22,16 @@
 		}
 	],
 	
-	"featureParameters" : 
+	"pipelineParameters" : 
 	[
 		{
-			"featureParameter" : 
+			"pipelineParameter" : 
 			[
 		    		"TopK", "500"
 			]
 		},
 		{
-		    "featureParameter" : 
+		    "pipelineParameter" : 
 			[
 		    		"TopK", "1000"
 			]

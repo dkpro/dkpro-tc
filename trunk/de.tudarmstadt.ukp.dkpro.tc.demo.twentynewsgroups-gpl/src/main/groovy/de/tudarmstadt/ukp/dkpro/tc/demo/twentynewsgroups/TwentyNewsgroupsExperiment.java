@@ -118,7 +118,7 @@ public class TwentyNewsgroupsExperiment
     {
 
         return createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
                 new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
