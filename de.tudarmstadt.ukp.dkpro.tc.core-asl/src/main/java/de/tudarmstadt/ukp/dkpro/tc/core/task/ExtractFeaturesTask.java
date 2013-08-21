@@ -152,7 +152,7 @@ public class ExtractFeaturesTask
         if (filesRoot == null) {
             File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
             return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_PATH, file,
+                    BinaryCasReader.PARAM_SOURCE_LOCATION, file,
                     BinaryCasReader.PARAM_PATTERNS, BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
 
         }
@@ -165,7 +165,7 @@ public class ExtractFeaturesTask
             }
 
             return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_PATH, filesRoot,
+                    BinaryCasReader.PARAM_SOURCE_LOCATION, filesRoot,
                     BinaryCasReader.PARAM_PATTERNS, patterns);
         }
     }

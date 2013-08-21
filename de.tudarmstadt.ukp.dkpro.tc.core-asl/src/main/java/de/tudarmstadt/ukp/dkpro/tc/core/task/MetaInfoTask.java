@@ -54,7 +54,7 @@ public class MetaInfoTask
         if (filesRoot == null || files_training == null) {
             File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
             return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_PATH, file,
+                    BinaryCasReader.PARAM_SOURCE_LOCATION, file,
                     BinaryCasReader.PARAM_PATTERNS, BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
@@ -65,7 +65,7 @@ public class MetaInfoTask
                 patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/*" + f);
             }
             return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_PATH, filesRoot,
+                    BinaryCasReader.PARAM_SOURCE_LOCATION, filesRoot,
                     BinaryCasReader.PARAM_PATTERNS, patterns);
         }
     }
