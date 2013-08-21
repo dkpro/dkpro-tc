@@ -20,8 +20,7 @@ public class DependencyMetaCollector
 {
     public static final String DEP_FD_KEY = "dep.ser";
     
-    public static final String PARAM_DEP_FD_FILE = "DepFdFile";
-    @ConfigurationParameter(name = PARAM_DEP_FD_FILE, mandatory = true)
+    @ConfigurationParameter(name = DependencyFeatureExtractor.PARAM_DEP_FILE, mandatory = true)
     private File depFdFile;
     
     @Override
