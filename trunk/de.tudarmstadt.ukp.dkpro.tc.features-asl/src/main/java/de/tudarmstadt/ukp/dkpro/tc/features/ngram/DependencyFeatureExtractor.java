@@ -20,13 +20,15 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" })
 public class DependencyFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements DocumentFeatureExtractor, MetaDependent
 {
 
     public static final String PARAM_DEP_FILE = "DepFile";
@@ -113,5 +115,14 @@ public class DependencyFeatureExtractor
         }
 
         return depSet;
+    }
+    
+    @Override
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    {
+        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        metaCollectorClasses.add(DependencyMetaCollector.class);
+
+        return metaCollectorClasses;
     }
 }
