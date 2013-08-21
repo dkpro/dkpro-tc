@@ -53,50 +53,39 @@ public class TwentyNewsgroupsGroovyExperiment {
     def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
-    //UIMA parameters for FE configuration
-    def dimPipelineParameters = Dimension.create(
-    "pipelineParameters",
-    [
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
-        1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
-        3
-    ]);
-
-
     def dimClassificationArgs =
-    Dimension.create("classificationArguments",
-    [
-        [NaiveBayes.class.name].toArray(),
-        [SMO.class.name].toArray()
-    ] as Object[]
-    );
+    Dimension.create(
+    "classificationArguments",
+    [NaiveBayes.class.name],
+    [SMO.class.name]);
 
     def dimFeatureSets = Dimension.create(
     "featureSet",
     [
-        [
-            NrOfTokensFeatureExtractor.class.name,
-            NGramFeatureExtractor.class.name
-        ].toArray()
-    ] as Object[]
+        NrOfTokensFeatureExtractor.class.name,
+        NGramFeatureExtractor.class.name
+    ]
     );
 
-    def dimFeatureParameters = Dimension.create(
-    "featureParameters",
+    def dimPipelineParameters = Dimension.create(
+    "pipelineParameters",
     [
-        [
-            "TopK",
-            "500"
-        ].toArray(),
-        [
-            "TopK",
-            "1000"
-        ].toArray()
-    ] as Object[]
+        "TopK",
+        "500",
+        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        1,
+        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        3
+    ],
+    [
+        "TopK",
+        "1000",
+        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        1,
+        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        3
+    ]
     );
-
-
 
     // === Experiments =========================================================
 
@@ -171,7 +160,7 @@ public class TwentyNewsgroupsGroovyExperiment {
     {
         return createReaderDescription(
         TwentyNewsgroupsCorpusReader,
-        TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
         TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
