@@ -101,9 +101,7 @@ public class RegressionExperimentWithoutJson
         return createEngineDescription(
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(
-                        OpenNlpPosTagger.class,
-                        OpenNlpPosTagger.PARAM_LANGUAGE,
-                        LANGUAGE_CODE
+                        OpenNlpPosTagger.class
                 )
         );
     }
