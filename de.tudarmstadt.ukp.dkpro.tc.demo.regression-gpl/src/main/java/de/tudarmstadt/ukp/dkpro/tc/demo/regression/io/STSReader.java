@@ -3,7 +3,9 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.regression.io;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
@@ -84,14 +86,13 @@ public class STSReader
         return fileOffset < texts1.size();
     }   
 
-    // FIXME - abstractpairreader is designed in a way that we need to overwrite getNext() too
     @Override
     public void getNext(JCas jcas)
         throws IOException, CollectionException
     {
         super.getNext(jcas);
         
-        // as we are creating more than one CAS out of a single file, we need to have different document titles and URIs for each cas
+        // as we are creating more than one CAS out of a single file, we need to have different document titles and URIs for each CAS
         // otherwise, serialized CASes will be overwritten
         DocumentMetaData dmd = DocumentMetaData.get(jcas);
         dmd.setDocumentTitle(dmd.getDocumentTitle() + "-" + fileOffset);
@@ -126,13 +127,13 @@ public class STSReader
     @Override
     protected String getInitialViewDocId()
     {
-        return inputFile.getAbsolutePath();
+        return inputFile.getAbsolutePath() + "-" + fileOffset;
     }
 
     @Override
     protected String getInitialViewTitle()
     {
-        return inputFile.getName();
+        return inputFile.getName() + "-" + fileOffset;
     }
 
     @Override
@@ -154,20 +155,10 @@ public class STSReader
     }
 
     @Override
-    protected String getId(String part)
+    public Set<String> getTextClassificationOutcomes(JCas jcas)
     {
-        return part + "-" + fileOffset;
-    }
-
-    @Override
-    protected String getTitle(String part)
-    {
-        return part + "-" + fileOffset;
-    }
-
-    @Override
-    protected String[] getTextClassificationOutcome()
-    {
-        return new String[] {golds.get(fileOffset).toString()};
+        Set<String> outcomes = new HashSet<String>();
+        outcomes.add(golds.get(fileOffset).toString());
+        return outcomes;
     }
 }
