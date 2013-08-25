@@ -83,7 +83,6 @@ public class TwentyNewsgroupsWithoutJsonExperiment
                  })
         );
         
-        TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
                 Dimension.create("lowerCase", new Boolean[] { true }),
@@ -92,6 +91,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
                 dimClassificationArgs
         );
         
+        TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
