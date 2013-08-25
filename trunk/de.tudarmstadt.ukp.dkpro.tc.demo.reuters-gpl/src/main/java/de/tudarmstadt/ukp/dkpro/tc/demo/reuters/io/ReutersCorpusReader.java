@@ -113,6 +113,6 @@ public class ReutersCorpusReader
         for (String label : goldLabelMap.get(titleWithoutExtension)) {
             outcomes.add(label);
         }
-        return null;
+        return outcomes;
     }
 }

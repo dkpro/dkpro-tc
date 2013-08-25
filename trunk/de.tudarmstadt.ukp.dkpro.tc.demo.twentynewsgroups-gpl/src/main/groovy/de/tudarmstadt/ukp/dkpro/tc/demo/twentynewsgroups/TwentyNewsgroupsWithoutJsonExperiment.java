@@ -52,6 +52,14 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     public static void main(String[] args)
         throws Exception
     {
+        ParameterSpace pSpace = getParameterSpace();
+        
+        TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
+        experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest(pSpace);
+    }
+    
+    public static ParameterSpace getParameterSpace() {
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 "classificationArguments",
@@ -91,9 +99,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
                 dimClassificationArgs
         );
         
-        TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
-        experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
+        return pSpace;
     }
 
     // ##### CV #####
