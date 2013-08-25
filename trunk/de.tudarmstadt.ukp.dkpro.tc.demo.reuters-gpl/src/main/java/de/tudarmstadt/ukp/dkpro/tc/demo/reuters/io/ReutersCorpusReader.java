@@ -6,8 +6,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -22,10 +24,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
+import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class ReutersCorpusReader
     extends TextReader
+    implements TCReaderMultiLabel
 {
 
     /**
@@ -86,17 +90,29 @@ public class ReutersCorpusReader
             throw new CollectionException();
         }
 
-        DocumentMetaData dmd = DocumentMetaData.get(aCAS);
+        for (String outcomeValue : getTextClassificationOutcomes(jcas)) {
+            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+            outcome.setOutcome(outcomeValue);
+            outcome.addToIndexes();
+        }
+    }
+
+    @Override
+    public Set<String> getTextClassificationOutcomes(JCas jcas)
+        throws CollectionException
+    {
+        Set<String> outcomes = new HashSet<String>();
+    
+        DocumentMetaData dmd = DocumentMetaData.get(jcas);
         String titleWithoutExtension = FilenameUtils.removeExtension(dmd.getDocumentTitle());
 
         if (!goldLabelMap.containsKey(titleWithoutExtension)) {
-            throw new IOException("No gold label for document: " + dmd.getDocumentTitle());
+            throw new CollectionException(new Throwable("No gold label for document: " + dmd.getDocumentTitle()));
         }
 
         for (String label : goldLabelMap.get(titleWithoutExtension)) {
-            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-            outcome.setOutcome(label);
-            outcome.addToIndexes();
+            outcomes.add(label);
         }
+        return null;
     }
 }

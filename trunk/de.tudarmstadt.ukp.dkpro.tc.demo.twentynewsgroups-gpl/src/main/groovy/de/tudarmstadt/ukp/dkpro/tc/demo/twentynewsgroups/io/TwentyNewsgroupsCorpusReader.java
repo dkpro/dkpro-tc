@@ -12,10 +12,12 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
+import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class TwentyNewsgroupsCorpusReader
     extends TextReader
+    implements TCReaderSingleLabel
 {
 
     @Override
@@ -32,14 +34,17 @@ public class TwentyNewsgroupsCorpusReader
             throw new CollectionException();
         }
 
-        DocumentMetaData dmd = DocumentMetaData.get(aCAS);
-        File parentFile;
+        TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+        outcome.setOutcome(getTextClassificationOutcome(jcas));
+        outcome.addToIndexes();
+    }
+
+    @Override
+    public String getTextClassificationOutcome(JCas jcas)
+            throws CollectionException
+    {
         try {
-            parentFile = new File(new URI(dmd.getDocumentUri()).getPath()).getParentFile();
-            
-            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-            outcome.setOutcome(parentFile.getName());
-            outcome.addToIndexes();
+            return new File(new URI(DocumentMetaData.get(jcas).getDocumentUri()).getPath()).getParentFile().getName();
         }
         catch (URISyntaxException e) {
             throw new CollectionException(e);
