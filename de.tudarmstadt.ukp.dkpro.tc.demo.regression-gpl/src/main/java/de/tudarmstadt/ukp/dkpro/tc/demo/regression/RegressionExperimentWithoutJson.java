@@ -53,7 +53,7 @@ public class RegressionExperimentWithoutJson
         
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
-                Dimension.create("lowerCase", new Boolean[] { true }),
+                Dimension.create("lowerCase", true),
                 // this dimension is important
                 // TODO should that be a dimension or rather a pipeline parameter?
                 Dimension.create("isRegressionExperiment", true),
