@@ -106,7 +106,6 @@ public class TwentyNewsgroupsGroovyExperiment {
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -137,7 +136,6 @@ public class TwentyNewsgroupsGroovyExperiment {
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,

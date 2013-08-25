@@ -1,10 +1,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.collection.CollectionReaderDescription
+import org.apache.uima.fit.factory.AnalysisEngineFactory
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 
 import weka.classifiers.bayes.NaiveBayes
@@ -144,7 +143,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Evaluation-TwentyNewsgroups-CV",
             parameterSpace : [
                 dimFolds,
-                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -236,7 +234,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
                 dimFolds,
-                dimFeatureParameters,
                 dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -265,9 +262,9 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
             throws ResourceInitializationException, IOException
     {
-        return createReaderDescription(
+        return CollectionReaderFactory.createReaderDescription(
         TwentyNewsgroupsCorpusReader,
-        TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
+        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
         TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
@@ -277,9 +274,9 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createEngineDescription(
-        createEngineDescription(BreakIteratorSegmenter),
-        createEngineDescription(OpenNlpPosTagger)
+        return AnalysisEngineFactory.createEngineDescription(
+        AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter),
+        AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger)
         );
     }
 

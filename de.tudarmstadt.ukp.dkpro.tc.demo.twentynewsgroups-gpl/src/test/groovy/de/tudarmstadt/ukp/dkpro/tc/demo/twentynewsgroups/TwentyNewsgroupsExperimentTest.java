@@ -3,14 +3,12 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.TwentyNewsgroupsExperiment;
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.TwentyNewsgroupsGroovyExperiment;
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.TwentyNewsgroupsGroovyExtendedExperiment;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
@@ -21,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.TwentyNewsgroupsGroovyE
  */
 public class TwentyNewsgroupsExperimentTest
 {
-    TwentyNewsgroupsExperiment javaExperiment;
+    TwentyNewsgroupsWithoutJsonExperiment javaExperiment;
     TwentyNewsgroupsGroovyExperiment groovyExperiment;
     TwentyNewsgroupsGroovyExtendedExperiment groovyExtendedExperiment;
     ParameterSpace pSpace;
@@ -34,9 +32,8 @@ public class TwentyNewsgroupsExperimentTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        javaExperiment = new TwentyNewsgroupsExperiment();
-        pSpace = javaExperiment.setup();
-
+        javaExperiment = new TwentyNewsgroupsWithoutJsonExperiment();
+        pSpace = TwentyNewsgroupsWithoutJsonExperiment.getParameterSpace();
         groovyExperiment = new TwentyNewsgroupsGroovyExperiment();
         groovyExtendedExperiment = new TwentyNewsgroupsGroovyExtendedExperiment();
     }
@@ -57,6 +54,7 @@ public class TwentyNewsgroupsExperimentTest
         groovyExperiment.runTrainTest();
     }
 
+    @Ignore
     @Test
     public void testGroovyExtendedCrossValidation()
         throws Exception
