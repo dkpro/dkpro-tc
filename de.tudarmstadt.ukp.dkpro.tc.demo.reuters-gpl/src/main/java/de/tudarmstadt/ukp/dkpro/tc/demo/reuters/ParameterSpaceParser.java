@@ -29,16 +29,12 @@ public class ParameterSpaceParser
 
     {
         // DIMENSIONS
-
-        threshold = pipelineConfiguration.getString("threshold");
-
-        Object[] toLowerCaseO = pipelineConfiguration.getJSONArray("toLowerCase").toArray();
-        toLowerCase = Arrays.asList(toLowerCaseO).toArray(new Boolean[toLowerCaseO.length]);
-        Object[] pipelineParameters = new Object[] {
+        Object[] specialPipelineParameters = new Object[] {
                 NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
                 pipelineConfiguration.getInt("nGramMinSize"),
                 NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
                 pipelineConfiguration.getInt("nGramMaxSize") };
+        threshold = pipelineConfiguration.getString("threshold");
 
         // Load config for classifier
         JSONArray classificationArgsO = pipelineConfiguration.getJSONArray("classification");
@@ -49,32 +45,38 @@ public class ParameterSpaceParser
             classificationArgs.add(array);
         }
 
-        // Load config for feature extractor sets
-        JSONArray featureSetConf = pipelineConfiguration.getJSONArray("featureSets");
-        List<Object[]> featureSets = new ArrayList<Object[]>();
-        for (Object object : featureSetConf) {
-            Object[] featureSet = ((JSONObject) object).getJSONArray("featureSet").toArray(
-                    new String[] {});
-            featureSets.add(featureSet);
+        // Load config for pipeline parameters
+        JSONArray pipelineParamsArg0 = pipelineConfiguration.getJSONArray("pipelineParameters");
+        List<List<Object>> pipelineParameters = new ArrayList<List<Object>>();
+        for (Object object : pipelineParamsArg0) {
+            JSONObject jObj = (JSONObject) object;
+            Object[] array = jObj.getJSONArray("pipelineParameter").toArray(new String[0]);
+            List<Object> args = new ArrayList<Object>(Arrays.asList(array));
+            for (Object specialArg : specialPipelineParameters) {
+                args.add(specialArg);
+            }
+            pipelineParameters.add(args);
         }
 
-        // Load config for feature extractor set parameters
-        JSONArray featureParametersConf = pipelineConfiguration.getJSONArray("featureParameters");
-        List<Object[]> featureParameters = new ArrayList<Object[]>();
-        for (Object object : featureParametersConf) {
-            Object[] featureParameter = ((JSONObject) object).getJSONArray("featureParameter")
-                    .toArray(new String[] {});
-            featureParameters.add(featureParameter);
+        // Load feature extractor sets
+        JSONArray featureSetConf = pipelineConfiguration.getJSONArray("featureSets");
+        List<List<String>> featureSets = new ArrayList<List<String>>();
+        for (Object object : featureSetConf) {
+            JSONObject jObj = (JSONObject) object;
+            Object[] array = jObj.getJSONArray("featureSet").toArray(new String[0]);
+            List<String> args = new ArrayList<String>();
+            for (Object element : array) {
+                args.add((String) element);
+            }
+            featureSets.add(args);
         }
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("threshold", threshold),
                 Dimension.create("classificationArguments", classificationArgs.toArray()),
                 Dimension.create("featureSet", featureSets.toArray()),
-                Dimension.create("featureParameters", featureParameters.toArray()),
-                Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("multiLabel", true),
-                Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)));
+                Dimension.create("pipelineParameters", pipelineParameters.toArray()));
         return pSpace;
     }
 }

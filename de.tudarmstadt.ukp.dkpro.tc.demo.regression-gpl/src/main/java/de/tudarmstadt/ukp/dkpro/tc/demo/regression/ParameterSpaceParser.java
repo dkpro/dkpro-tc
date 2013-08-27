@@ -2,7 +2,6 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.regression;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -21,17 +20,13 @@ public class ParameterSpaceParser
 {
 
     public static int folds;
-    public static Boolean[] toLowerCase;
 
     public static ParameterSpace createParamSpaceFromJson(JSONObject pipelineConfiguration)
         throws IOException
 
     {
         // DIMENSIONS
-
         folds = pipelineConfiguration.getInt("folds");
-        Object[] toLowerCaseO = pipelineConfiguration.getJSONArray("toLowerCase").toArray();
-        toLowerCase = Arrays.asList(toLowerCaseO).toArray(new Boolean[toLowerCaseO.length]);
 
         JSONArray classificationArgsO = pipelineConfiguration.getJSONArray("classification");
         List<Object[]> classificationArgs = new ArrayList<Object[]>();
@@ -53,27 +48,13 @@ public class ParameterSpaceParser
             featureSets.add(featureSet);
         }
 
-        // JSONArray pairFeatureSetConf = pipelineConfiguration.getJSONArray("pairFeatureSets");
-        // List<Object[]> pairFeatureSets = new ArrayList<Object[]>();
-        // for (Object object : pairFeatureSetConf) {
-        // Object[] pairFeatureSet = ((JSONObject) object).getJSONArray("pairFeatureSet").toArray(
-        // new String[] {});
-        // pairFeatureSets.add(pairFeatureSet);
-        // }
-
-        Object[] pipelineParameters = new Object[] {};
-        Object[] featureParameters = new Object[] {};
-
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("classificationArguments", classificationArgsArray),
                 Dimension.create("featureSet", featureSets.toArray()),
                 // this is important
                 Dimension.create("isRegressionExperiment", true),
                 Dimension.create("folds", folds),
-                Dimension.create("lowerCase", toLowerCase),
-                Dimension.create("multiLabel", false),
-                Dimension.create("pipelineParameters", Arrays.asList(pipelineParameters)),
-                Dimension.create("featureParameters", featureParameters));
+                Dimension.create("multiLabel", false));
         return pSpace;
     }
 }

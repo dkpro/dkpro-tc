@@ -50,7 +50,6 @@ public class TwentyNewsgroupsGroovyExperiment {
 
     // === DIMENSIONS===========================================================
 
-    def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
     def dimClassificationArgs =
@@ -106,7 +105,6 @@ public class TwentyNewsgroupsGroovyExperiment {
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -136,7 +134,6 @@ public class TwentyNewsgroupsGroovyExperiment {
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,

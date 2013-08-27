@@ -21,21 +21,17 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 public class ParameterSpaceParser
 {
 
-    public static Boolean[] toLowerCase;
-
     public static ParameterSpace createParamSpaceFromJson(JSONObject pipelineConfiguration)
         throws IOException
 
     {
         // DIMENSIONS
-        Object[] toLowerCaseO = pipelineConfiguration.getJSONArray("toLowerCase").toArray();
-        toLowerCase = Arrays.asList(toLowerCaseO).toArray(new Boolean[toLowerCaseO.length]);
         Object[] specialPipelineParameters = new Object[] {
                 NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
                 pipelineConfiguration.getInt("nGramMinSize"),
                 NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
                 pipelineConfiguration.getInt("nGramMaxSize") };
-        
+
         // Load config for classifier
         JSONArray classificationArgsO = pipelineConfiguration.getJSONArray("classification");
         List<List<String>> classificationArgs = new ArrayList<List<String>>();
@@ -61,7 +57,7 @@ public class ParameterSpaceParser
             }
             featureSets.add(args);
         }
-        
+
         // Load config for pipeline parameters
         JSONArray pipelineParamsArg0 = pipelineConfiguration.getJSONArray("pipelineParameters");
         List<List<Object>> pipelineParameters = new ArrayList<List<Object>>();
@@ -77,7 +73,6 @@ public class ParameterSpaceParser
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
-                Dimension.create("lowerCase", toLowerCase),
                 Dimension.create("pipelineParameters", pipelineParameters.toArray()),
                 Dimension.create("featureSet", featureSets.toArray()),
                 Dimension.create("classificationArguments", classificationArgs.toArray()));

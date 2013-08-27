@@ -52,7 +52,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     // === DIMENSIONS===========================================================
 
     def dimFolds = Dimension.create("folds", 2);
-    def dimToLowerCase = Dimension.create("toLowerCase", true);
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
     //UIMA parameters for FE configuration
@@ -79,14 +78,13 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     def dimClassificationArgs =
     Dimension.create("classificationArguments",
     [NaiveBayes.class.name],
-    [SMO.class.name]
-    );
+    [SMO.class.name]);
 
     def dimFeatureSets = Dimension.create(
     "featureSet",
     [
-            NrOfTokensFeatureExtractor.class.name,
-            NGramFeatureExtractor.class.name
+        NrOfTokensFeatureExtractor.class.name,
+        NGramFeatureExtractor.class.name
     ]
     );
 
@@ -143,7 +141,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Evaluation-TwentyNewsgroups-CV",
             parameterSpace : [
                 dimFolds,
-                dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -234,7 +231,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
                 dimFolds,
-                dimToLowerCase,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
