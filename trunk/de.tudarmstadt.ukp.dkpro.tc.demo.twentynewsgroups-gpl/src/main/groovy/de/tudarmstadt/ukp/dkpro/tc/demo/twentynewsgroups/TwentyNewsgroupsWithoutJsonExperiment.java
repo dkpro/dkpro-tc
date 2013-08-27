@@ -33,72 +33,71 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
  * 
- * Defining the parameters directly in this class makes on-the-fly changes 
- * more difficult when the experiment is run on a server.
+ * Defining the parameters directly in this class makes on-the-fly changes more difficult when the
+ * experiment is run on a server.
  * 
- * For these cases, the self-sufficient Groovy versions are more suitable, 
- * since their source code can be changed and then executed without
- * pre-compilation.
+ * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
+ * can be changed and then executed without pre-compilation.
  */
 public class TwentyNewsgroupsWithoutJsonExperiment
 {
     public static final String LANGUAGE_CODE = "en";
-          
+
     public static int NUM_FOLDS = 3;
-    
+
     public static final String corpusFilePathTrain = "src/main/resources/data/bydate-train";
-    public static final String corpusFilePathTest  = "src/main/resources/data/bydate-test";
+    public static final String corpusFilePathTest = "src/main/resources/data/bydate-test";
 
     public static void main(String[] args)
         throws Exception
     {
         ParameterSpace pSpace = getParameterSpace();
-        
+
         TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
-    
-    public static ParameterSpace getParameterSpace() {
+
+    public static ParameterSpace getParameterSpace()
+    {
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 "classificationArguments",
                 Arrays.asList(new String[] { SMO.class.getName() }),
                 Arrays.asList(new String[] { NaiveBayes.class.getName() })
-        );
+                );
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 "pipelineParameters",
                 Arrays.asList(new Object[] {
-                        "TopK", "500" ,
+                        "TopK", "500",
                         NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
                 }),
                 Arrays.asList(new Object[] {
-                        "TopK", "1000" ,
+                        "TopK", "1000",
                         NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3
                 })
-        );
-        
+                );
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(
-            "featureSet",
-            Arrays.asList(new String[] {
-                    NrOfTokensFeatureExtractor.class.getName(),
-                    NGramFeatureExtractor.class.getName()
-                 })
-        );
-        
+                "featureSet",
+                Arrays.asList(new String[] {
+                        NrOfTokensFeatureExtractor.class.getName(),
+                        NGramFeatureExtractor.class.getName()
+                })
+                );
+
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.create("multiLabel", false),
-                Dimension.create("lowerCase", new Boolean[] { true }),
                 dimPipelineParameters,
                 dimFeatureSets,
                 dimClassificationArgs
-        );
-        
+                );
+
         return pSpace;
     }
 
@@ -125,7 +124,8 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
-                getReaderDesc(corpusFilePathTrain, LANGUAGE_CODE), getReaderDesc(corpusFilePathTest,
+                getReaderDesc(corpusFilePathTrain, LANGUAGE_CODE), getReaderDesc(
+                        corpusFilePathTest,
                         LANGUAGE_CODE), getPreprocessing(),
                 WekaDataWriter.class.getName());
         batch.setInnerReport(TrainTestReport.class);
