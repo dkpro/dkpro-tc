@@ -106,22 +106,16 @@ OpenNlpPosTagger
 
 A segmenter and a Part-of-Speech Tagger. 
 
-From the words and the POS tags n-gram features are extracted - precisely uni-, bi- and trigrams, as defined here:
-
-{{{
-def dimPipelineParameters = Dimension.create("pipelineParameters" ...
-}}}
-
 The feature extractors which will be used are defined as
 
 {{{
 def dimFeatureSets = Dimension.create("featureSet"...
 }}}
 
-along with their configuration
+Any configuration parameters which can be set for the feature extractors (e.g. uni-, bi- and trigrams for n-gram features) are defined as follows:
 
 {{{
-def dimFeatureParameters = Dimension.create("featureParameters",
+def dimPipelineParameters = Dimension.create("pipelineParameters" ...
 }}}
 
 The classifiers as defined here:
@@ -138,7 +132,7 @@ Two basic train and test methods are implemented in this example: x-fold-cross-v
 In the presented example, two folds are used:
 
 {{{
-def dimFolds = Dimension.create("folds" , 2);
+def numFolds = 2;
 }}}
 
 Gluing all of the various parameters and processing tasks together to actually perform all the tasks is governed by `runCrossValidation()`
