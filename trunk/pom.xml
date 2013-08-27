@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 		<artifactId>dkpro-parent-pom</artifactId>
-		<version>4</version>
+		<version>5-SNAPSHOT</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
@@ -196,32 +196,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<build>
-	    <!-- 
-	      - Workaround for conflict between Groovy version used in DKPro TC and Groovy
-	      - version required by the gmaven-plugin that the DKPro parent pom uses since version 4.
-	      -->
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.codehaus.gmaven</groupId>
-					<artifactId>gmaven-plugin</artifactId>
-					<dependencies>
-						<dependency>
-							<groupId>org.codehaus.groovy</groupId>
-							<artifactId>groovy-all</artifactId>
-							<version>1.8.8</version>
-						</dependency>
-						<dependency>
-							<groupId>org.apache.ant</groupId>
-							<artifactId>ant</artifactId>
-							<version>1.7.0</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 	<profiles>
 		<profile>
 			<id>groovy</id>
