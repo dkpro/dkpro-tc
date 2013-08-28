@@ -1,17 +1,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -19,7 +16,6 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.io.MovieReviewCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
@@ -39,8 +35,6 @@ public class SentimentPolarityExperiment
 {
 
     private String languageCode;
-    private String corpusFilePathTrain;
-    private String corpusFilePathTest;
     private int folds;
 
     public static void main(String[] args)
@@ -68,8 +62,6 @@ public class SentimentPolarityExperiment
         JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
 
         languageCode = json.getString("languageCode");
-        corpusFilePathTrain = json.getString("corpusFilePathTrain");
-        corpusFilePathTest = json.getString("corpusFilePathTest");
         folds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
@@ -82,7 +74,6 @@ public class SentimentPolarityExperiment
 
         BatchTaskCrossValidation batch = new
                 BatchTaskCrossValidation("SentimentPolarityTrainTest",
-                        getReaderDesc(corpusFilePathTest, languageCode),
                         getPreprocessing(),
                         WekaDataWriter.class.getName(), folds);
         batch.setParameterSpace(pSpace);
@@ -106,8 +97,6 @@ public class SentimentPolarityExperiment
 
         BatchTaskCV batch = new
                 BatchTaskCV("SentimentPolarityTrainTest",
-                        // BatchTaskCV batch = new BatchTaskCV("SentimentPolarityTrainTest",
-                        getReaderDesc(corpusFilePathTest, languageCode),
                         getPreprocessing(),
                         WekaDataWriter.class.getName());
         batch.setType("Evaluation-SentimentPolarity-CV-Old");
@@ -125,8 +114,6 @@ public class SentimentPolarityExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("SentimentPolarityTrainTest",
-                getReaderDesc(corpusFilePathTrain, languageCode),
-                getReaderDesc(corpusFilePathTest, languageCode),
                 getPreprocessing(),
                 WekaDataWriter.class.getName());
         batch.setInnerReport(TrainTestReport.class);
@@ -136,17 +123,6 @@ public class SentimentPolarityExperiment
 
         // Run
         Lab.getInstance().run(batch);
-    }
-
-    protected CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
-        throws ResourceInitializationException, IOException
-    {
-
-        return createReaderDescription(MovieReviewCorpusReader.class,
-                MovieReviewCorpusReader.PARAM_PATH, corpusFilePath,
-                MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
-                MovieReviewCorpusReader.PARAM_PATTERNS,
-                new String[] { MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
     }
 
     protected AnalysisEngineDescription getPreprocessing()

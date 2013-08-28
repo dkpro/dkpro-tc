@@ -4,7 +4,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
-import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.resource.ResourceInitializationException
 
 import weka.classifiers.bayes.NaiveBayes
@@ -39,16 +38,41 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  */
 public class TwentyNewsgroupsGroovyExperiment {
 
-    def experimentName = "TwentyNewsgroups";
-
     // === PARAMETERS===========================================================
 
+    def experimentName = "TwentyNewsgroups";
     def corpusFilePathTrain = "src/main/resources/data/bydate-train";
     def corpusFilePathTest  ="src/main/resources/data/bydate-test";
     def languageCode = "en";
     def numFolds = 2;
 
     // === DIMENSIONS===========================================================
+
+    def dimReaderTest = Dimension.createBundle("readerTest", [
+        readerTest: TwentyNewsgroupsCorpusReader.class,
+        readerTestParams: [
+            "sourceLocation",
+            corpusFilePathTest,
+            "language",
+            languageCode,
+            "patterns",
+            [
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+        ]
+    ]);
+
+    def dimReaderTrain = Dimension.createBundle("readerTrain", [
+        readerTrain: TwentyNewsgroupsCorpusReader.class,
+        readerTrainParams: [
+            "sourceLocation",
+            corpusFilePathTrain,
+            "language",
+            languageCode,
+            "patterns",
+            [
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+        ]
+    ]);
 
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
@@ -100,11 +124,11 @@ public class TwentyNewsgroupsGroovyExperiment {
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            reader:	getReaderDesc(corpusFilePathTrain, languageCode),
             dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
+                dimReaderTrain,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -128,12 +152,12 @@ public class TwentyNewsgroupsGroovyExperiment {
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            readerTrain:	getReaderDesc(corpusFilePathTrain, languageCode),
-            readerTest:		getReaderDesc(corpusFilePathTest, languageCode),
             dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
+                dimReaderTrain,
+                dimReaderTest,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -147,19 +171,6 @@ public class TwentyNewsgroupsGroovyExperiment {
 
         // Run
         Lab.getInstance().run(batchTask);
-    }
-
-
-    private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
-            throws ResourceInitializationException, IOException
-    {
-        return createReaderDescription(
-        TwentyNewsgroupsCorpusReader,
-        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
-        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-        );
     }
 
     private AnalysisEngineDescription getPreprocessing()

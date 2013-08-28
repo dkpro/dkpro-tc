@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.demo.regression.RegressionExperiment;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
@@ -21,6 +20,7 @@ public class RegressionExperimentTest
 {
     ParameterSpace pSpace;
     RegressionExperiment experiment;
+    RegressionExperimentWithoutJson experimentWithoutJson;
 
     @Before
     public void setup()
@@ -31,6 +31,7 @@ public class RegressionExperimentTest
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
         experiment = new RegressionExperiment();
+        experimentWithoutJson = new RegressionExperimentWithoutJson();
         pSpace = experiment.setup();
     }
 
@@ -39,6 +40,13 @@ public class RegressionExperimentTest
         throws Exception
     {
         experiment.runCrossValidation(pSpace);
+    }
+
+    @Test
+    public void testJavaWithoutJsonCrossValidation()
+        throws Exception
+    {
+        experimentWithoutJson.runCrossValidation(pSpace);
     }
 
     @Rule

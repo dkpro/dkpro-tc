@@ -1,17 +1,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.reuters;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -19,7 +16,6 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.io.ReutersCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
@@ -35,10 +31,6 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
  */
 public class ReutersTextClassification
 {
-    private String languageCode;
-    private String corpusFilePathTrain;
-    private String corpusFilePathTest;
-    private String goldLabelFilePath;
     private int numFolds;
 
     public static void main(String[] args)
@@ -62,11 +54,6 @@ public class ReutersTextClassification
         String jsonPath = FileUtils.readFileToString(new File(
                 "src/main/resources/config/train.json"));
         JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
-
-        goldLabelFilePath = json.getString("goldLabelFilePath");
-        corpusFilePathTrain = json.getString("corpusFilePathTrain");
-        corpusFilePathTest = json.getString("corpusFilePathTest");
-        languageCode = json.getString("languageCode");
         numFolds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
@@ -77,9 +64,8 @@ public class ReutersTextClassification
         throws Exception
     {
 
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("ReutersCV", getReaderDesc(
-                corpusFilePathTrain,
-                languageCode), getPreprocessing(), MekaDataWriter.class.getName(), numFolds);
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("ReutersCV",
+                getPreprocessing(), MekaDataWriter.class.getName(), numFolds);
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -93,10 +79,8 @@ public class ReutersTextClassification
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("ReutersTrainTest", getReaderDesc(
-                corpusFilePathTrain, languageCode),
-                getReaderDesc(corpusFilePathTest, languageCode), getPreprocessing(),
-                MekaDataWriter.class.getName());
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("ReutersTrainTest",
+                getPreprocessing(), MekaDataWriter.class.getName());
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -105,16 +89,6 @@ public class ReutersTextClassification
 
         // Run
         Lab.getInstance().run(batch);
-    }
-
-    private CollectionReaderDescription getReaderDesc(String filePath, String language)
-        throws ResourceInitializationException, IOException
-    {
-        return createReaderDescription(ReutersCorpusReader.class, ReutersCorpusReader.PARAM_PATH,
-                filePath, ReutersCorpusReader.PARAM_LANGUAGE, language,
-                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
-                ReutersCorpusReader.PARAM_PATTERNS,
-                new String[] { ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" });
     }
 
     private AnalysisEngineDescription getPreprocessing()

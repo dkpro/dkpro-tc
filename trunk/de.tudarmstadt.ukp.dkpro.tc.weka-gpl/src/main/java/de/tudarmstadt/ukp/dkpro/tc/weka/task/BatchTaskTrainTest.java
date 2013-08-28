@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
@@ -22,8 +21,6 @@ public class BatchTaskTrainTest
 {
 
     private String experimentName;
-    private CollectionReaderDescription readerTrain;
-    private CollectionReaderDescription readerTest;
     private AnalysisEngineDescription aggregate;
     private String dataWriter;
     private Class<? extends Report> innerReport;
@@ -54,13 +51,10 @@ public class BatchTaskTrainTest
      * @param aDataWriterClassName
      *            data writer class name
      */
-    public BatchTaskTrainTest(String aExperimentName, CollectionReaderDescription aReaderTrain,
-            CollectionReaderDescription aReaderTest, AnalysisEngineDescription aAggregate,
+    public BatchTaskTrainTest(String aExperimentName, AnalysisEngineDescription aAggregate,
             String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
-        setReaderTrain(aReaderTrain);
-        setReaderTest(aReaderTest);
         setAggregate(aAggregate);
         setDataWriter(aDataWriterClassName);
         // set name of overall batch task
@@ -88,24 +82,21 @@ public class BatchTaskTrainTest
      */
     private void init()
     {
-        if (experimentName == null || readerTrain == null || readerTest == null
-                || aggregate == null || dataWriter == null)
+        if (experimentName == null || aggregate == null || dataWriter == null)
 
         {
             throw new IllegalStateException(
-                    "You must set Experiment Name, Test Reader, Training Reader, DataWriter and Aggregate.");
+                    "You must set Experiment Name, DataWriter and Aggregate.");
         }
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setReader(readerTrain);
         preprocessTaskTrain.setAggregate(aggregate);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setReader(readerTest);
         preprocessTaskTest.setAggregate(aggregate);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
@@ -113,7 +104,8 @@ public class BatchTaskTrainTest
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setType(metaTask.getType() + "-" + experimentName);
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
+        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+                MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
@@ -121,7 +113,8 @@ public class BatchTaskTrainTest
         featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
+        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+                ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
@@ -129,7 +122,8 @@ public class BatchTaskTrainTest
         featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY);
+        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
+                ExtractFeaturesTask.INPUT_KEY);
 
         // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
@@ -138,8 +132,10 @@ public class BatchTaskTrainTest
             testTask.addReport(innerReport);
         }
         testTask.addReport(OutcomeIDReport.class);
-        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TRAIN);
-        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TEST);
+        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+                TestTask.INPUT_KEY_TRAIN);
+        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
+                TestTask.INPUT_KEY_TEST);
 
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);
@@ -152,16 +148,6 @@ public class BatchTaskTrainTest
     public void setExperimentName(String experimentName)
     {
         this.experimentName = experimentName;
-    }
-
-    public void setReaderTest(CollectionReaderDescription aReader)
-    {
-        this.readerTest = aReader;
-    }
-
-    public void setReaderTrain(CollectionReaderDescription aReader)
-    {
-        this.readerTrain = aReader;
     }
 
     public void setAggregate(AnalysisEngineDescription aggregate)
