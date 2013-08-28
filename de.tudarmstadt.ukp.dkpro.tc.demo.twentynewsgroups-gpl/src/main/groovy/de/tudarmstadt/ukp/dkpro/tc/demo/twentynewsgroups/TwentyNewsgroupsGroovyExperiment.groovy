@@ -56,8 +56,7 @@ public class TwentyNewsgroupsGroovyExperiment {
             "language",
             languageCode,
             "patterns",
-            [
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
     ]);
 
@@ -69,9 +68,7 @@ public class TwentyNewsgroupsGroovyExperiment {
             "language",
             languageCode,
             "patterns",
-            [
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-        ]
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
     ]);
 
     def dimMultiLabel = Dimension.create("multiLabel", false);

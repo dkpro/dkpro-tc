@@ -57,8 +57,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             "language",
             languageCode,
             "patterns",
-            [
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
     ]);
 
@@ -70,8 +69,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
             "language",
             languageCode,
             "patterns",
-            [
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
     ]);
 
