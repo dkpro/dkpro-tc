@@ -4,7 +4,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
-import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.resource.ResourceInitializationException
 
 import weka.classifiers.bayes.NaiveBayes
@@ -47,10 +46,31 @@ public class ExtremeConfigurationSettingsExperiment {
     def languageCode = "en";
     def numFolds = 2;
     def manyFolds = 10;
-    
+
     // === DIMENSIONS===========================================================
 
-    def dimToLowerCase = Dimension.create("toLowerCase", true);
+    def dimReaderTest = Dimension.createBundle("readerTest", [
+        readerTest: TwentyNewsgroupsCorpusReader.class,
+        readerTestParams: [
+            "sourceLocation",
+            corpusFilePathTest,
+            "language",
+            languageCode,
+            "patterns",
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+    ]);
+
+    def dimReaderTrain = Dimension.createBundle("readerTrain", [
+        readerTrain: TwentyNewsgroupsCorpusReader.class,
+        readerTrainParams: [
+            "sourceLocation",
+            corpusFilePathTrain,
+            "language",
+            languageCode,
+            "patterns",
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+    ]);
+
     def dimMultiLabel = Dimension.create("multiLabel", false);
 
     //UIMA parameters for FE configuration
@@ -109,13 +129,11 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            reader:	getReaderDesc(corpusFilePathTrain, languageCode),
             dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFeatureParameters,
-                dimToLowerCase,
+                dimReaderTrain,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -130,14 +148,12 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            readerTrain: getReaderDesc(corpusFilePathTrain, languageCode),
-            readerTest: getReaderDesc(corpusFilePathTest, languageCode),
             dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFeatureParameters,
-                dimToLowerCase,
+                dimReaderTrain,
+                dimReaderTest,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -159,13 +175,11 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            reader: getReaderDesc(corpusFilePathTrain, languageCode),
             dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFeatureParameters,
-                dimToLowerCase,
+                dimReaderTrain,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
@@ -180,14 +194,12 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            readerTrain: getReaderDesc(corpusFilePathTrain, languageCode),
-            readerTest: getReaderDesc(corpusFilePathTest, languageCode),
             dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimFeatureParameters,
-                dimToLowerCase,
+                dimReaderTrain,
+                dimReaderTest,
                 dimMultiLabel,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
@@ -203,24 +215,12 @@ public class ExtremeConfigurationSettingsExperiment {
         Lab.getInstance().run(batchTaskTrainTest);
     }
 
-    private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
-            throws ResourceInitializationException, IOException
-    {
-        return createReaderDescription(
-            TwentyNewsgroupsCorpusReader,
-            TwentyNewsgroupsCorpusReader.PARAM_PATH, corpusFilePath,
-            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
-            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-        );
-    }
-
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
         return createEngineDescription(
-            createEngineDescription(BreakIteratorSegmenter.class),
-            createEngineDescription(OpenNlpPosTagger.class)
+        createEngineDescription(BreakIteratorSegmenter.class),
+        createEngineDescription(OpenNlpPosTagger.class)
         );
     }
 }
