@@ -73,23 +73,22 @@ It takes care of
   * evaluating classifiers (either with designated train/test sets or using cross-validation)
   * writing results (which reports to use)
 
-Let's look at each of these individually:
+Parameters which should be tested for different values and combinations will be defined as [http://code.google.com/p/dkpro-lab/ discriminators]. These parameters are usually prefixed with _dim_ and will be injected into the `ParameterSpace`.
+
+The input data and reader(s) are defined as `DimensionBundle`.
 
 {{{
-    def corpusFilePathTrain = "src/main/resources/data/bydate-train";
-    def corpusFilePathTest  ="src/main/resources/data/bydate-test";
-    def languageCode = "en";
+def dimReaderTrain = Dimension.createBundle("readerTrain", [
+   readerTrain: TwentyNewsgroupsCorpusReader.class,
+   readerTrainParams: [
+      "sourceLocation", corpusFilePathTrain,
+      "language", languageCode,
+      "patterns", TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+   ]
+]);
 }}}
 
-This defines the data to be used - split into training and testing data. The language is English.
-
-The method 
-
-{{{
-private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
-}}}
-
-takes the said paths and gathers the data to be processed. In this case all the .txt-files that can be found in (sub-)directories.
+In this case, the `TwentyNewsgroupsCorpusReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`.
 
 The collected data is then processed via
 
