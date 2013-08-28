@@ -5,7 +5,7 @@
 	"languageCode" : "en",
 	"folds" : 2,
     "nGramMinSize" : 1,
-    "nGramMaxSize" : 3
+    "nGramMaxSize" : 3,
 	
 	"featureSets" : 
 	[
