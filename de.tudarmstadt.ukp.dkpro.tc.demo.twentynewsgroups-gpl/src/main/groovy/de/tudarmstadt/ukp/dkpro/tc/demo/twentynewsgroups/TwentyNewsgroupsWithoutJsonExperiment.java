@@ -1,14 +1,13 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -60,6 +59,26 @@ public class TwentyNewsgroupsWithoutJsonExperiment
 
     public static ParameterSpace getParameterSpace()
     {
+        // configure training data reader dimension
+        Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
+        dimReaderTrain.put("readerTrain", TwentyNewsgroupsCorpusReader.class);
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                ));
+
+        // configure test data reader dimension (only for train-test setup)
+        Map<String, Object> dimReaderTest = new HashMap<String, Object>();
+        dimReaderTrain.put("readerTest", TwentyNewsgroupsCorpusReader.class);
+        dimReaderTrain.put("readerTestParams", Arrays.asList(new Object[] {
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                ));
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 "classificationArguments",
@@ -92,6 +111,8 @@ public class TwentyNewsgroupsWithoutJsonExperiment
                 );
 
         ParameterSpace pSpace = new ParameterSpace(
+                Dimension.createBundle("readerTrain", dimReaderTrain),
+                Dimension.createBundle("readerTest", dimReaderTest),
                 Dimension.create("multiLabel", false),
                 dimPipelineParameters,
                 dimFeatureSets,
@@ -107,8 +128,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
-                getReaderDesc(corpusFilePathTrain, LANGUAGE_CODE), getPreprocessing(),
-                WekaDataWriter.class.getName(), NUM_FOLDS);
+                getPreprocessing(), WekaDataWriter.class.getName(), NUM_FOLDS);
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -124,10 +144,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
-                getReaderDesc(corpusFilePathTrain, LANGUAGE_CODE), getReaderDesc(
-                        corpusFilePathTest,
-                        LANGUAGE_CODE), getPreprocessing(),
-                WekaDataWriter.class.getName());
+                getPreprocessing(), WekaDataWriter.class.getName());
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -136,17 +153,6 @@ public class TwentyNewsgroupsWithoutJsonExperiment
 
         // Run
         Lab.getInstance().run(batch);
-    }
-
-    protected CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
-        throws ResourceInitializationException, IOException
-    {
-
-        return createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
     }
 
     protected AnalysisEngineDescription getPreprocessing()

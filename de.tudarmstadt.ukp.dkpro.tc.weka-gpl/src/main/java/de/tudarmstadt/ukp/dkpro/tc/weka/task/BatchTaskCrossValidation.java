@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
@@ -31,7 +30,6 @@ public class BatchTaskCrossValidation
 {
 
     private String experimentName;
-    private CollectionReaderDescription reader;
     private AnalysisEngineDescription aggregate;
     private String dataWriter;
     private int numFolds = 10;
@@ -63,11 +61,10 @@ public class BatchTaskCrossValidation
      * @param aNumFolds
      *            the number of folds for crossvalidation (default 10)
      */
-    public BatchTaskCrossValidation(String aExperimentName, CollectionReaderDescription aReader,
+    public BatchTaskCrossValidation(String aExperimentName,
             AnalysisEngineDescription aAggregate, String aDataWriterClassName, int aNumFolds)
     {
         setExperimentName(aExperimentName);
-        setReader(aReader);
         setAggregate(aAggregate);
         setDataWriter(aDataWriterClassName);
         setNumFolds(aNumFolds);
@@ -91,14 +88,13 @@ public class BatchTaskCrossValidation
         ClassNotFoundException
     {
 
-        if (experimentName == null || reader == null || aggregate == null || dataWriter == null) {
+        if (experimentName == null || aggregate == null || dataWriter == null) {
             throw new IllegalStateException(
-                    "You must set experiment name, reader, datawriter and aggregate.");
+                    "You must set experiment name, datawriter and aggregate.");
         }
 
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
-        preprocessTask.setReader(reader);
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
 
@@ -199,11 +195,6 @@ public class BatchTaskCrossValidation
     public void setExperimentName(String experimentName)
     {
         this.experimentName = experimentName;
-    }
-
-    public void setReader(CollectionReaderDescription reader)
-    {
-        this.reader = reader;
     }
 
     public void setAggregate(AnalysisEngineDescription aggregate)

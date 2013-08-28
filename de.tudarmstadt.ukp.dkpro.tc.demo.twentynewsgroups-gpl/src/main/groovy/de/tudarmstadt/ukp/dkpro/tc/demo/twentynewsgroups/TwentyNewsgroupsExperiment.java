@@ -1,17 +1,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -19,7 +16,6 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
@@ -68,9 +64,6 @@ public class TwentyNewsgroupsExperiment
                 "src/main/resources/config/train.json"));
         JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonPath);
 
-        languageCode = json.getString("languageCode");
-        corpusFilePathTrain = json.getString("corpusFilePathTrain");
-        corpusFilePathTest = json.getString("corpusFilePathTest");
         numFolds = json.getInt("folds");
 
         return ParameterSpaceParser.createParamSpaceFromJson(json);
@@ -82,9 +75,7 @@ public class TwentyNewsgroupsExperiment
     {
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
-                getReaderDesc(
-                        corpusFilePathTrain, languageCode), getPreprocessing(),
-                WekaDataWriter.class.getName(), numFolds);
+                getPreprocessing(), WekaDataWriter.class.getName(), numFolds);
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -100,9 +91,7 @@ public class TwentyNewsgroupsExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
-                getReaderDesc(corpusFilePathTrain, languageCode), getReaderDesc(corpusFilePathTest,
-                        languageCode), getPreprocessing(),
-                WekaDataWriter.class.getName());
+                getPreprocessing(), WekaDataWriter.class.getName());
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -113,16 +102,17 @@ public class TwentyNewsgroupsExperiment
         Lab.getInstance().run(batch);
     }
 
-    protected CollectionReaderDescription getReaderDesc(String corpusFilePath, String languageCode)
-        throws ResourceInitializationException, IOException
-    {
-
-        return createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
-    }
+    // protected CollectionReaderDescription getReaderDesc(String corpusFilePath, String
+    // languageCode)
+    // throws ResourceInitializationException, IOException
+    // {
+    //
+    // return createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+    // TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
+    // TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
+    // TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+    // new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
+    // }
 
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException

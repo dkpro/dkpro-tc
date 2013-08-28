@@ -1,16 +1,20 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 
 public class PreprocessTask
@@ -21,21 +25,21 @@ public class PreprocessTask
 
     private boolean isTesting = false;
 
+    @Discriminator
+    protected Class<? extends CollectionReader> readerTrain;
+
+    @Discriminator
+    protected Class<? extends CollectionReader> readerTest;
+
+    @Discriminator
+    protected List<Object> readerTrainParams;
+
+    @Discriminator
+    protected List<Object> readerTestParams;
+
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;
-    }
-
-    private CollectionReaderDescription reader;
-
-    public void setReader(CollectionReaderDescription aReader)
-    {
-        reader = aReader;
-    }
-
-    public CollectionReaderDescription getReader()
-    {
-        return reader;
     }
 
     private AnalysisEngineDescription aggregate;
@@ -54,7 +58,14 @@ public class PreprocessTask
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        return reader;
+        Class<? extends CollectionReader> reader = isTesting ? readerTest : readerTrain;
+        List<Object> readerParams = isTesting ? readerTestParams : readerTrainParams;
+
+        CollectionReaderDescription readerDesc = createReaderDescription(
+                reader,
+                readerParams.toArray());
+
+        return readerDesc;
     }
 
     @Override

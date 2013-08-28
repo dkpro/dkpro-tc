@@ -3,12 +3,15 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.io.MovieReviewCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 
 /**
@@ -25,6 +28,31 @@ public class ParameterSpaceParser
         throws IOException
 
     {
+
+        String corpusFilePathTrain = pipelineConfiguration.getString("corpusFilePathTrain");
+        String corpusFilePathTest = pipelineConfiguration.getString("corpusFilePathTest");
+        String languageCode = pipelineConfiguration.getString("languageCode");
+
+        // configure training data reader dimension
+        Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
+        dimReaderTrain.put("readerTrain", MovieReviewCorpusReader.class);
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+                MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
+                MovieReviewCorpusReader.PARAM_PATTERNS,
+                MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                ));
+
+        // configure test data reader dimension (only for train-test setup)
+        Map<String, Object> dimReaderTest = new HashMap<String, Object>();
+        dimReaderTest.put("readerTest", MovieReviewCorpusReader.class);
+        dimReaderTest.put("readerTestParams", Arrays.asList(new Object[] {
+                MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
+                MovieReviewCorpusReader.PARAM_PATTERNS,
+                MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                ));
+
         // Load classifier
         JSONArray classificationArgsO = pipelineConfiguration.getJSONArray("classification");
         List<Object[]> classificationArgs = new ArrayList<Object[]>();
@@ -62,6 +90,8 @@ public class ParameterSpaceParser
         }
 
         ParameterSpace pSpace = new ParameterSpace(
+                Dimension.createBundle("readerTrain", dimReaderTrain),
+                Dimension.createBundle("readerTest", dimReaderTest),
                 Dimension.create("multiLabel", false),
                 Dimension.create("folds", pipelineConfiguration.getInt("folds")),
                 Dimension.create("pipelineParameters", pipelineParameters.toArray()),

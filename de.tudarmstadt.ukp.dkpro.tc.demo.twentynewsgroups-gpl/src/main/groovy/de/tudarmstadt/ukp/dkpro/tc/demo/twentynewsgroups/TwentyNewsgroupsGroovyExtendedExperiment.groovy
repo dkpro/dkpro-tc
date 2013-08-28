@@ -1,9 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
-import org.apache.uima.collection.CollectionReaderDescription
 import org.apache.uima.fit.factory.AnalysisEngineFactory
-import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 
 import weka.classifiers.bayes.NaiveBayes
@@ -50,6 +48,32 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     def languageCode = "en";
 
     // === DIMENSIONS===========================================================
+
+    def dimReaderTest = Dimension.createBundle("readerTest", [
+        readerTest: TwentyNewsgroupsCorpusReader.class,
+        readerTestParams: [
+            "sourceLocation",
+            corpusFilePathTest,
+            "language",
+            languageCode,
+            "patterns",
+            [
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+        ]
+    ]);
+
+    def dimReaderTrain = Dimension.createBundle("readerTrain", [
+        readerTrain: TwentyNewsgroupsCorpusReader.class,
+        readerTrainParams: [
+            "sourceLocation",
+            corpusFilePathTrain,
+            "language",
+            languageCode,
+            "patterns",
+            [
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+        ]
+    ]);
 
     def dimFolds = Dimension.create("folds", 2);
     def dimMultiLabel = Dimension.create("multiLabel", false);
@@ -103,7 +127,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
          */
 
         PreprocessTask preprocessTask = [
-            reader:getReaderDesc(corpusFilePathTrain,languageCode),
             aggregate:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroupsCV"
         ];
@@ -126,11 +149,11 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         /*
          * Wire tasks
          */
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTask.getType());
-        featureExtractionTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTask.getType());
-        featureExtractionTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        cvTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        cvTask.addImportLatest(CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY, featureExtractionTask.getType());
+        metaTask.addImport(preprocessTask, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
+        featureExtractionTask.addImport(preprocessTask, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
+        featureExtractionTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
+        cvTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
+        cvTask.addImport(featureExtractionTask, ExtractFeaturesTask.OUTPUT_KEY, CrossValidationTask.INPUT_KEY);
 
 
         /*
@@ -140,6 +163,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-CV",
             parameterSpace : [
+                dimReaderTrain,
                 dimFolds,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -173,14 +197,12 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
          */
 
         PreprocessTask preprocessTaskTrain = [
-            reader:getReaderDesc(corpusFilePathTrain, languageCode),
             aggregate:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
             isTesting: false
         ];
 
         PreprocessTask preprocessTaskTest = [
-            reader:getReaderDesc(corpusFilePathTest, languageCode),
             aggregate:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
             isTesting: true
@@ -215,13 +237,13 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         /*
          * Wire tasks
          */
-        metaTask.addImportLatest(MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTaskTrain.getType());
-        featuresTrainTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN, preprocessTaskTrain.getType());
-        featuresTrainTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        featuresTestTask.addImportLatest(ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TEST, preprocessTaskTest.getType());
-        featuresTestTask.addImportLatest(MetaInfoTask.META_KEY, MetaInfoTask.META_KEY, metaTask.getType());
-        testTask.addImportLatest(TestTask.INPUT_KEY_TRAIN, ExtractFeaturesTask.OUTPUT_KEY, featuresTrainTask.getType());
-        testTask.addImportLatest(TestTask.INPUT_KEY_TEST, ExtractFeaturesTask.OUTPUT_KEY, featuresTestTask.getType());
+        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
+        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
+        featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
+        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY);
+        featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
+        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TRAIN);
+        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TEST);
 
         /*
          *	Wrap wired tasks in batch task
@@ -230,6 +252,8 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
+                dimReaderTrain,
+                dimReaderTest,
                 dimFolds,
                 dimMultiLabel,
                 dimClassificationArgs,
@@ -252,19 +276,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
         // Run
         Lab.getInstance().run(batchTask);
-    }
-
-
-    private CollectionReaderDescription getReaderDesc(String corpusFilePath, String language)
-            throws ResourceInitializationException, IOException
-    {
-        return CollectionReaderFactory.createReaderDescription(
-        TwentyNewsgroupsCorpusReader,
-        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, language,
-        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, [
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-        );
     }
 
     private AnalysisEngineDescription getPreprocessing()

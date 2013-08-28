@@ -30,11 +30,10 @@ public class BatchTaskCV
     }
 
     @Deprecated
-    public BatchTaskCV(String aExperimentName, CollectionReaderDescription aReader,
+    public BatchTaskCV(String aExperimentName,
             AnalysisEngineDescription aAggregate, String aDataWriterClassName)
     {
         setExperimentName(aExperimentName);
-        setReader(aReader);
         setAggregate(aAggregate);
         setDataWriter(aDataWriterClassName);
     }
@@ -56,7 +55,6 @@ public class BatchTaskCV
         }
 
         preprocessTask = new PreprocessTask();
-        preprocessTask.setReader(reader);
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
 
@@ -77,10 +75,12 @@ public class BatchTaskCV
 
         // wiring
         metaTask.addImport(preprocessTask, MetaInfoTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
-        extractFeaturesTask.addImport(preprocessTask, ExtractFeaturesTask.INPUT_KEY, PreprocessTask.OUTPUT_KEY_TRAIN);
+        extractFeaturesTask.addImport(preprocessTask, ExtractFeaturesTask.INPUT_KEY,
+                PreprocessTask.OUTPUT_KEY_TRAIN);
         extractFeaturesTask.addImport(metaTask, MetaInfoTask.META_KEY);
         cvTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        cvTask.addImport(extractFeaturesTask, CrossValidationTask.INPUT_KEY, ExtractFeaturesTask.OUTPUT_KEY);
+        cvTask.addImport(extractFeaturesTask, CrossValidationTask.INPUT_KEY,
+                ExtractFeaturesTask.OUTPUT_KEY);
 
         addTask(preprocessTask);
         addTask(metaTask);
@@ -99,11 +99,6 @@ public class BatchTaskCV
     public void setExperimentName(String experimentName)
     {
         this.experimentName = experimentName;
-    }
-
-    public void setReader(CollectionReaderDescription reader)
-    {
-        this.reader = reader;
     }
 
     public void setAggregate(AnalysisEngineDescription aggregate)

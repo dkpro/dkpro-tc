@@ -3,12 +3,15 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.reuters;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.io.ReutersCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 
 /**
@@ -21,14 +24,42 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 public class ParameterSpaceParser
 {
 
-    public static Boolean[] toLowerCase;
     public static String threshold;
 
     public static ParameterSpace createParamSpaceFromJson(JSONObject pipelineConfiguration)
         throws IOException
 
     {
+
+        String languageCode = pipelineConfiguration.getString("languageCode");
+        String corpusFilePathTrain = pipelineConfiguration.getString("corpusFilePathTrain");
+        String corpusFilePathTest = pipelineConfiguration.getString("corpusFilePathTest");
+        String goldLabelFilePath = pipelineConfiguration.getString("goldLabelFilePath");
+
         // DIMENSIONS
+
+        // configure training data reader dimension
+        Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
+        dimReaderTrain.put("readerTrain", ReutersCorpusReader.class);
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+                ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+                ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
+                ReutersCorpusReader.PARAM_PATTERNS,
+                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" }
+                ));
+
+        // configure test data reader dimension (only for train-test setup)
+        Map<String, Object> dimReaderTest = new HashMap<String, Object>();
+        dimReaderTest.put("readerTest", ReutersCorpusReader.class);
+        dimReaderTest.put("readerTestParams", Arrays.asList(new Object[] {
+                ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+                ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
+                ReutersCorpusReader.PARAM_PATTERNS,
+                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" }
+                ));
+
         Object[] specialPipelineParameters = new Object[] {
                 NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
                 pipelineConfiguration.getInt("nGramMinSize"),
@@ -72,6 +103,8 @@ public class ParameterSpaceParser
         }
 
         ParameterSpace pSpace = new ParameterSpace(
+                Dimension.createBundle("readerTrain", dimReaderTrain),
+                Dimension.createBundle("readerTest", dimReaderTest),
                 Dimension.create("threshold", threshold),
                 Dimension.create("classificationArguments", classificationArgs.toArray()),
                 Dimension.create("featureSet", featureSets.toArray()),
