@@ -43,21 +43,21 @@ public class ParameterSpaceParser
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
         dimReaderTrain.put("readerTrain", TwentyNewsgroupsCorpusReader.class);
-        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
                 ));
 
         // configure test data reader dimension (only for train-test setup)
         Map<String, Object> dimReaderTest = new HashMap<String, Object>();
         dimReaderTrain.put("readerTest", TwentyNewsgroupsCorpusReader.class);
-        dimReaderTrain.put("readerTestParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put("readerTestParams", Arrays.asList(
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
                 ));
 
         // Load config for classifier

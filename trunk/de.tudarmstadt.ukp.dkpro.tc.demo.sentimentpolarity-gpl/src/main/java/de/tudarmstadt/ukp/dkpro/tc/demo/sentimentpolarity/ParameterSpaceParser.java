@@ -36,21 +36,21 @@ public class ParameterSpaceParser
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
         dimReaderTrain.put("readerTrain", MovieReviewCorpusReader.class);
-        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(
                 MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
                 MovieReviewCorpusReader.PARAM_PATTERNS,
-                MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
                 ));
 
         // configure test data reader dimension (only for train-test setup)
         Map<String, Object> dimReaderTest = new HashMap<String, Object>();
         dimReaderTest.put("readerTest", MovieReviewCorpusReader.class);
-        dimReaderTest.put("readerTestParams", Arrays.asList(new Object[] {
+        dimReaderTest.put("readerTestParams", Arrays.asList(
                 MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
                 MovieReviewCorpusReader.PARAM_PATTERNS,
-                MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
+                MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
                 ));
 
         // Load classifier

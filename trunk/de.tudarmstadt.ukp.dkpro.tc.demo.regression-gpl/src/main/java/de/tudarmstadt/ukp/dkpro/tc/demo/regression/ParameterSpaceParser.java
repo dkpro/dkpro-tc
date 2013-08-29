@@ -37,10 +37,10 @@ public class ParameterSpaceParser
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
         dimReaderTrain.put("readerTrain", STSReader.class);
-        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(
                 STSReader.PARAM_INPUT_FILE, inputFile,
                 STSReader.PARAM_GOLD_FILE, goldFile
-        }));
+                ));
 
         JSONArray classificationArgsO = pipelineConfiguration.getJSONArray("classification");
         List<Object[]> classificationArgs = new ArrayList<Object[]>();

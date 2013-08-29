@@ -41,23 +41,23 @@ public class ParameterSpaceParser
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
         dimReaderTrain.put("readerTrain", ReutersCorpusReader.class);
-        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put("readerTrainParams", Arrays.asList(
                 ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
                 ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
                 ReutersCorpusReader.PARAM_PATTERNS,
-                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" }
+                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"
                 ));
 
         // configure test data reader dimension (only for train-test setup)
         Map<String, Object> dimReaderTest = new HashMap<String, Object>();
         dimReaderTest.put("readerTest", ReutersCorpusReader.class);
-        dimReaderTest.put("readerTestParams", Arrays.asList(new Object[] {
+        dimReaderTest.put("readerTestParams", Arrays.asList(
                 ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
                 ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
                 ReutersCorpusReader.PARAM_PATTERNS,
-                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt" }
+                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"
                 ));
 
         Object[] specialPipelineParameters = new Object[] {
