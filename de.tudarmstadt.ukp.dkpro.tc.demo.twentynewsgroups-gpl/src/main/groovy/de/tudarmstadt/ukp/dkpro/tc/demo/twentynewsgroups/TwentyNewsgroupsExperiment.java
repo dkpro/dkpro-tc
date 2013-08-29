@@ -37,8 +37,6 @@ public class TwentyNewsgroupsExperiment
 {
 
     private String languageCode;
-    private String corpusFilePathTrain;
-    private String corpusFilePathTest;
     private int numFolds;
 
     public static void main(String[] args)
@@ -101,18 +99,6 @@ public class TwentyNewsgroupsExperiment
         // Run
         Lab.getInstance().run(batch);
     }
-
-    // protected CollectionReaderDescription getReaderDesc(String corpusFilePath, String
-    // languageCode)
-    // throws ResourceInitializationException, IOException
-    // {
-    //
-    // return createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-    // TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-    // TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
-    // TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-    // new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
-    // }
 
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
