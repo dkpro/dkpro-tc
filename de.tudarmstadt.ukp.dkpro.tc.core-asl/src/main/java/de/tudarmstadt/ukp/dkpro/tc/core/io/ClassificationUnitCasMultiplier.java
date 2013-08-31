@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.core.extractor;
+package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  * JCas, all TextClassificationOutcomes covered by this TextClassificationUnit and all other
  * annotations types from the original JCas.
  * 
- * @author a_vovk
+ * @author Artem Vovk
  * 
  */
 public class ClassificationUnitCasMultiplier
