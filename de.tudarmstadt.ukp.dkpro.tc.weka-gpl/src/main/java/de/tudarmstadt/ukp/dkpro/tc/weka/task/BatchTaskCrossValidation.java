@@ -35,6 +35,7 @@ public class BatchTaskCrossValidation
     private int numFolds = 10;
     private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
+    private boolean isUnitClassification;
 
     private PreprocessTask preprocessTask;
     private MetaInfoTask metaTask;
@@ -97,6 +98,7 @@ public class BatchTaskCrossValidation
         preprocessTask = new PreprocessTask();
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
+        preprocessTask.setUnitClassification(isUnitClassification);
 
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
@@ -220,6 +222,11 @@ public class BatchTaskCrossValidation
     public void setAddInstanceId(boolean addInstanceId)
     {
         this.addInstanceId = addInstanceId;
+    }
+
+    public void setUnitClassification(boolean isUnitClassification)
+    {
+    	this.isUnitClassification = isUnitClassification;
     }
 
     /**

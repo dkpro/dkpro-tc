@@ -3,11 +3,11 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 import java.util.List;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * Pair-wise feature extractor
@@ -20,11 +20,11 @@ public class NGramPairFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
+    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
         prefix = prefix + jcas.getViewName() + "_";
 
-        return super.extract(jcas, focusAnnotation);
+        return super.extract(jcas, classificationUnit);
     }
 }

@@ -16,6 +16,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.extractor.ClassificationUnitCasMultiplier;
 
 public class PreprocessTask
     extends UimaTaskBase
@@ -54,6 +55,18 @@ public class PreprocessTask
         aggregate = aAggregate;
     }
 
+    private boolean isUnitClassification;
+
+    public boolean isUnitClassification()
+    {
+        return isUnitClassification;
+    }
+
+    public void setUnitClassification(boolean isUnitClassification)
+    {
+        this.isUnitClassification = isUnitClassification;
+    }
+
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
@@ -61,8 +74,7 @@ public class PreprocessTask
         Class<? extends CollectionReader> reader = isTesting ? readerTest : readerTrain;
         List<Object> readerParams = isTesting ? readerTestParams : readerTrainParams;
 
-        CollectionReaderDescription readerDesc = createReaderDescription(
-                reader,
+        CollectionReaderDescription readerDesc = createReaderDescription(reader,
                 readerParams.toArray());
 
         return readerDesc;
@@ -73,12 +85,16 @@ public class PreprocessTask
         throws ResourceInitializationException, IOException
     {
         String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
-        AnalysisEngineDescription xmiWriter = createEngineDescription(
-                BinaryCasWriter.class,
+        AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
-                aContext.getStorageLocation(output, AccessMode.READWRITE).getPath()
-                );
+                aContext.getStorageLocation(output, AccessMode.READWRITE).getPath());
+        if (this.isUnitClassification) {
+            AnalysisEngineDescription casMultiplier = createEngineDescription(ClassificationUnitCasMultiplier.class);
 
-        return createEngineDescription(aggregate, xmiWriter);
+            return createEngineDescription(aggregate, casMultiplier, xmiWriter);
+        }
+        else {
+            return createEngineDescription(aggregate, xmiWriter);
+        }
     }
 }

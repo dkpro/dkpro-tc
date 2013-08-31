@@ -25,17 +25,18 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FocusAnnotationFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClasificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
 "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NGramFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements MetaDependent, FocusAnnotationFeatureExtractor
+    implements MetaDependent, ClasificationUnitFeatureExtractor
 {
 
     public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";
@@ -79,7 +80,7 @@ public class NGramFeatureExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas jcas, Annotation focusAnnotation)
+    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
         List<Feature> features = new ArrayList<Feature>();
@@ -93,12 +94,12 @@ public class NGramFeatureExtractor
                 Set<String> stopwords = new HashSet<String>();
                 stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
                 
-                if (focusAnnotation == null) {
+                if (classificationUnit == null) {
                     documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN,
                             maxN, stopwords);
                 }
                 else {
-                    documentNgrams = NGramUtils.getAnnotationNgrams(jcas, focusAnnotation,
+                    documentNgrams = NGramUtils.getAnnotationNgrams(jcas, classificationUnit,
                             lowerCaseNGrams, minN, maxN, stopwords);
                 }
             }
@@ -107,11 +108,11 @@ public class NGramFeatureExtractor
             }
         }
         else {
-            if (focusAnnotation == null) {
+            if (classificationUnit == null) {
                 documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN, maxN);
             }
             else {
-                documentNgrams = NGramUtils.getAnnotationNgrams(jcas, focusAnnotation,
+                documentNgrams = NGramUtils.getAnnotationNgrams(jcas, classificationUnit,
                         lowerCaseNGrams, minN, maxN);
             }
         }
