@@ -12,13 +12,12 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClasificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FocusAnnotationFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
@@ -26,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 public class InstanceExtractor
     extends JCasAnnotator_ImplBase
@@ -47,15 +47,12 @@ public class InstanceExtractor
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
-    public static final String PARAM_FEATURE_ANNOTATION = "featureAnnotation";
-    @ConfigurationParameter(name = PARAM_FEATURE_ANNOTATION, description = "If set, this annotation will be passed to feature extractors implementing FocusAnnotationFeatureExtractor.", mandatory = false)
-    private String featureAnnotation;
-
     public static final String PARAM_IS_REGRESSION_EXPERIMENT = "isRegressionExperiment";
     @ConfigurationParameter(name = PARAM_IS_REGRESSION_EXPERIMENT, mandatory = true, defaultValue = "false")
     private boolean isRegressionExperiment;
 
-    // public static final String PARAM_PAIR_FEATURE_EXTRACTORS = "pairFeatureExtractors";
+    // public static final String PARAM_PAIR_FEATURE_EXTRACTORS =
+    // "pairFeatureExtractors";
     // @ExternalResource(key = PARAM_PAIR_FEATURE_EXTRACTORS, mandatory = false)
     // protected PairFeatureExtractorResource_ImplBase[] pairFeatureExtractors;
 
@@ -75,7 +72,8 @@ public class InstanceExtractor
         }
 
         // if (pairFeatureExtractors != null) {
-        // context.getLogger().log(Level.INFO, "Using pair feature extractors.");
+        // context.getLogger().log(Level.INFO,
+        // "Using pair feature extractors.");
         // }
     }
 
@@ -83,27 +81,26 @@ public class InstanceExtractor
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        // TODO do we want to account for cases, where one Cas creates more than one Instance?
         Instance instance = new Instance();
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
             try {
                 if (featExt instanceof DocumentFeatureExtractor) {
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
-                if (featExt instanceof FocusAnnotationFeatureExtractor) {
-                    if (featureAnnotation != null) {
-                        Annotation annoClass = (Annotation) Class.forName(featureAnnotation)
-                                .newInstance();
-                        Annotation annotation = JCasUtil.selectSingle(jcas, annoClass.getClass());
-                        instance.addFeatures(((FocusAnnotationFeatureExtractor) featExt).extract(
-                                jcas,
-                                annotation));
+                if (featExt instanceof ClasificationUnitFeatureExtractor) {
+                    TextClassificationUnit classificationUnit = null;
+                    Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
+                            TextClassificationUnit.class);
+                    if (classificationUnits.size() == 1) {
+                        classificationUnit = classificationUnits.iterator().next();
                     }
-                    else {
-                        instance.addFeatures(((FocusAnnotationFeatureExtractor) featExt).extract(
-                                jcas,
-                                null));
+                    else if (classificationUnits.size() > 1) {
+                        throw new AnalysisEngineProcessException(
+                                "There are more than one TextClassificationUnit anotations in the JCas.",
+                                null);
                     }
+                    instance.addFeatures(((ClasificationUnitFeatureExtractor) featExt).extract(
+                            jcas, classificationUnit));
                 }
                 if (featExt instanceof PairFeatureExtractor) {
                     JCas view1 = jcas.getView(Constants.PART_ONE);
@@ -115,15 +112,6 @@ public class InstanceExtractor
                 throw new AnalysisEngineProcessException(e);
             }
             catch (CASException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (InstantiationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (IllegalAccessException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (ClassNotFoundException e) {
                 throw new AnalysisEngineProcessException(e);
             }
         }
@@ -154,15 +142,19 @@ public class InstanceExtractor
             }
         }
 
-        Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas, TextClassificationOutcome.class);
+        Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas,
+                TextClassificationOutcome.class);
 
         if (outcome.size() == 0) {
-            throw new AnalysisEngineProcessException(new TextClassificationException("No outcome annotations present in current CAS."));
+            throw new AnalysisEngineProcessException(new TextClassificationException(
+                    "No outcome annotations present in current CAS."));
         }
-        
+
         // TODO
-        // we are currently relying on the user to set the right DataWriter for multi- and
-        // single-label, i.e. a wrong configuration will cause exceptions later on
+        // we are currently relying on the user to set the right DataWriter for
+        // multi- and
+        // single-label, i.e. a wrong configuration will cause exceptions later
+        // on
         String[] stringOutcomes = new String[outcome.size()];
         Iterator<TextClassificationOutcome> iterator = outcome.iterator();
         for (int i = 0; i < outcome.size(); i++) {

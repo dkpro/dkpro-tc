@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version="1.0" encoding="UTF-8"?><typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>TextClassification</name>
   <description/>
   <version>1.0</version>
@@ -11,13 +10,11 @@
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
         <featureDescription>
-          <description>The (gold standard) outcome</description>
           <name>outcome</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <description>The predicted outcome</description>
           <name>prediction</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
@@ -28,6 +25,11 @@
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
       </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

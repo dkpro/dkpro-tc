@@ -18,6 +18,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -42,19 +43,12 @@ public class ExtractFeaturesTask
     // protected String[] pairFeatureSet;
     @Discriminator
     protected List<Object> pipelineParameters;
-
-    @Discriminator
-    protected String featureAnnotation;
-
     @Discriminator
     private File filesRoot;
-
     @Discriminator
     private Collection<String> files_training;
-
     @Discriminator
     private Collection<String> files_validation;
-
     @Discriminator
     private boolean isRegressionExperiment = false;
 
@@ -63,6 +57,52 @@ public class ExtractFeaturesTask
     private boolean addInstanceId = false;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
     private Set<String> requiredTypes;
+    protected String featureAnnotation;
+
+    public String getFeatureAnnotation()
+    {
+        return this.featureAnnotation;
+    }
+
+    public void setFeatureAnnotation(String featureAnnotation)
+    {
+        this.featureAnnotation = featureAnnotation;
+    }
+
+    public String getDataWriter()
+    {
+        return dataWriter;
+    }
+
+    public void setDataWriter(String aDataWriterClassName)
+    {
+        dataWriter = aDataWriterClassName;
+    }
+
+    public boolean isRegressionExperiment()
+    {
+        return isRegressionExperiment;
+    }
+
+    public void setRegressionExperiment(boolean isRegressionExperiment)
+    {
+        this.isRegressionExperiment = isRegressionExperiment;
+    }
+
+    public boolean getAddInstanceId()
+    {
+        return addInstanceId;
+    }
+
+    public void setAddInstanceId(boolean aAddInstanceId)
+    {
+        addInstanceId = aAddInstanceId;
+    }
+
+    public void setTesting(boolean isTesting)
+    {
+        this.isTesting = isTesting;
+    }
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
@@ -117,12 +157,10 @@ public class ExtractFeaturesTask
 
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
         for (String featureExtractor : featureSet) {
-            // System.out.println(featureSet[i]);
             try {
-                extractorResources.add(
-                        ExternalResourceFactory.createExternalResourceDescription(
-                        (Class) Class.forName(featureExtractor), parameters.toArray())
-                );
+                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
+                        Class.forName(featureExtractor).asSubclass(Resource.class),
+                        parameters.toArray()));
             }
             catch (ClassNotFoundException e) {
                 throw new ResourceInitializationException(e);
@@ -139,13 +177,11 @@ public class ExtractFeaturesTask
                 outputDir.getAbsolutePath(), InstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
                 InstanceExtractor.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
                 InstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                InstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources,
-                // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
-                InstanceExtractor.PARAM_FEATURE_ANNOTATION, featureAnnotation
+                InstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources
+        // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
                 ));
 
-        return createEngineDescription(InstanceExtractor.class,
-                parameters.toArray());
+        return createEngineDescription(InstanceExtractor.class, parameters.toArray());
 
     }
 
@@ -157,8 +193,8 @@ public class ExtractFeaturesTask
         if (filesRoot == null) {
             File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
             return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_SOURCE_LOCATION, file,
-                    BinaryCasReader.PARAM_PATTERNS, BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
+                    BinaryCasReader.PARAM_SOURCE_LOCATION, file, BinaryCasReader.PARAM_PATTERNS,
+                    BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
 
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
@@ -173,40 +209,5 @@ public class ExtractFeaturesTask
                     BinaryCasReader.PARAM_SOURCE_LOCATION, filesRoot,
                     BinaryCasReader.PARAM_PATTERNS, patterns);
         }
-    }
-
-    public String getDataWriter()
-    {
-        return dataWriter;
-    }
-
-    public void setDataWriter(String aDataWriterClassName)
-    {
-        dataWriter = aDataWriterClassName;
-    }
-
-    public boolean isRegressionExperiment()
-    {
-        return isRegressionExperiment;
-    }
-
-    public void setRegressionExperiment(boolean isRegressionExperiment)
-    {
-        this.isRegressionExperiment = isRegressionExperiment;
-    }
-
-    public boolean getAddInstanceId()
-    {
-        return addInstanceId;
-    }
-
-    public void setAddInstanceId(boolean aAddInstanceId)
-    {
-        addInstanceId = aAddInstanceId;
-    }
-
-    public void setTesting(boolean isTesting)
-    {
-        this.isTesting = isTesting;
     }
 }
