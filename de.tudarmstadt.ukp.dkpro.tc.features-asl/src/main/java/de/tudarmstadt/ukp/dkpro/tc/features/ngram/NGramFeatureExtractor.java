@@ -25,7 +25,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClasificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -36,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NGramFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements MetaDependent, ClasificationUnitFeatureExtractor
+    implements MetaDependent, ClassificationUnitFeatureExtractor
 {
 
     public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";

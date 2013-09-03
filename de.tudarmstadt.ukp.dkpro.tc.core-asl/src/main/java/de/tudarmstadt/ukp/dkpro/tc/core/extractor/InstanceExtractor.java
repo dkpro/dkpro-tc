@@ -15,7 +15,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClasificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -87,7 +87,7 @@ public class InstanceExtractor
                 if (featExt instanceof DocumentFeatureExtractor) {
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
-                if (featExt instanceof ClasificationUnitFeatureExtractor) {
+                if (featExt instanceof ClassificationUnitFeatureExtractor) {
                     TextClassificationUnit classificationUnit = null;
                     Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
                             TextClassificationUnit.class);
@@ -99,7 +99,7 @@ public class InstanceExtractor
                                 "There are more than one TextClassificationUnit anotations in the JCas.",
                                 null);
                     }
-                    instance.addFeatures(((ClasificationUnitFeatureExtractor) featExt).extract(
+                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, classificationUnit));
                 }
                 if (featExt instanceof PairFeatureExtractor) {
