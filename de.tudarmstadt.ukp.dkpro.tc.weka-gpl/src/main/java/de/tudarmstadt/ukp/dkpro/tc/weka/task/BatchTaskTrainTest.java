@@ -24,6 +24,7 @@ public class BatchTaskTrainTest
     private AnalysisEngineDescription aggregate;
     private String dataWriter;
     private Class<? extends Report> innerReport;
+    private boolean isUnitClassification;
 
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
@@ -93,12 +94,14 @@ public class BatchTaskTrainTest
         preprocessTaskTrain = new PreprocessTask();
         preprocessTaskTrain.setAggregate(aggregate);
         preprocessTaskTrain.setTesting(false);
+        preprocessTaskTrain.setUnitClassification(isUnitClassification);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
         preprocessTaskTest.setAggregate(aggregate);
         preprocessTaskTest.setTesting(true);
+        preprocessTaskTest.setUnitClassification(isUnitClassification);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
@@ -163,6 +166,19 @@ public class BatchTaskTrainTest
     public void setDataWriter(String dataWriter)
     {
         this.dataWriter = dataWriter;
+    }
+
+    /**
+     * Set this to true, if you want to classify more than one classification unit (instance) per
+     * document (CAS). This requires a TextClassificationUnit annotation for all units to be
+     * classified.
+     * 
+     * @param isUnitClassification
+     *            if set to true, more than one instance per document will be expected
+     */
+    public void setUnitClassification(boolean isUnitClassification)
+    {
+        this.isUnitClassification = isUnitClassification;
     }
 
     /**
