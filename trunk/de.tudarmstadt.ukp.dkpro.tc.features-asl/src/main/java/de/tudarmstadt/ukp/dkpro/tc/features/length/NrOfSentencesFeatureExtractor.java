@@ -8,7 +8,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClasificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -17,7 +17,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
 public class NrOfSentencesFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements ClasificationUnitFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
 
     public static final String FN_NR_OF_SENTENCES = "NrofSentences";

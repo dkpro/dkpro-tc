@@ -12,7 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  * from a given classification unit.
  * 
  */
-public interface ClasificationUnitFeatureExtractor
+public interface ClassificationUnitFeatureExtractor
 {
     /**
      * Extract features from the classification unit within the given view.
