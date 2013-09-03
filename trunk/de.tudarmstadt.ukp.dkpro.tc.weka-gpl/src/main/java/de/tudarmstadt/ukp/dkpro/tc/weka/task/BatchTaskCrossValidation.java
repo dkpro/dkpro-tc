@@ -224,9 +224,17 @@ public class BatchTaskCrossValidation
         this.addInstanceId = addInstanceId;
     }
 
+    /**
+     * Set this to true, if you want to classify more than one classification unit (instance) per
+     * document (CAS). This requires a TextClassificationUnit annotation for all units to be
+     * classified.
+     * 
+     * @param isUnitClassification
+     *            if set to true, more than one instance per document will be expected
+     */
     public void setUnitClassification(boolean isUnitClassification)
     {
-    	this.isUnitClassification = isUnitClassification;
+        this.isUnitClassification = isUnitClassification;
     }
 
     /**
