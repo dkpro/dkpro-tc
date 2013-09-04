@@ -20,9 +20,8 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask;
 @Deprecated
 public class CVBatchReport
     extends BatchReportBase
+    implements ReportConstants
 {
-    private static final String EVALUATION_FILE_XLS = "eval.xls";
-    private static final String EVALUATION_FILE_CSV = "eval.csv";
 
     @Override
     public void execute()
@@ -61,9 +60,11 @@ public class CVBatchReport
             }
         }
 
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
-        getContext().storeBinary(EVALUATION_FILE_XLS, table.getExcelWriter());
-        getContext().storeBinary(EVALUATION_FILE_CSV, table.getCsvWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
     }
 
     private String getKey(Map<String, String> discriminatorsMap)

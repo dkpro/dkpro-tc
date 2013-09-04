@@ -25,9 +25,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 
 public class BatchCrossValidationReport
     extends BatchReportBase
+    implements ReportConstants
 {
-    private static final String EVALUATION_FILE_XLS = "eval.xls";
-    private static final String EVALUATION_FILE_CSV = "eval.csv";
 
     @Override
     public void execute()
@@ -46,8 +45,7 @@ public class BatchCrossValidationReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
-                File eval = store.getStorageFolder(subcontext.getId(),
-                        BatchTrainTestReport.EVALUATION_FILE_CSV);
+                File eval = store.getStorageFolder(subcontext.getId(), EVAL_FILE_NAME + SUFFIX_CSV);
 
                 Map<String, String> resultMap = new HashMap<String, String>();
 
@@ -128,9 +126,11 @@ public class BatchCrossValidationReport
             }
         }
 
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
-        getContext().storeBinary(EVALUATION_FILE_XLS, table.getExcelWriter());
-        getContext().storeBinary(EVALUATION_FILE_CSV, table.getCsvWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
     }
 
     private String getKey(Map<String, String> discriminatorsMap)
