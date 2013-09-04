@@ -19,9 +19,8 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 
 public class BatchTrainTestReport
     extends BatchReportBase
+    implements ReportConstants
 {
-    public static final String EVALUATION_FILE_XLS = "eval.xls";
-    public static final String EVALUATION_FILE_CSV = "eval.csv";
 
     @Override
     public void execute()
@@ -60,9 +59,11 @@ public class BatchTrainTestReport
             }
         }
 
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
-        getContext().storeBinary(EVALUATION_FILE_XLS, table.getExcelWriter());
-        getContext().storeBinary(EVALUATION_FILE_CSV, table.getCsvWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
     }
 
     private String getKey(Map<String, String> discriminatorsMap)
