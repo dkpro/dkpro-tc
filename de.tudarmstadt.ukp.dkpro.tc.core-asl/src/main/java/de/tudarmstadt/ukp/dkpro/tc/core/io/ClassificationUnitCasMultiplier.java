@@ -77,9 +77,11 @@ public class ClassificationUnitCasMultiplier
             throw new AnalysisEngineProcessException("Exception while creating JCas", null, e);
         }
 
-        // Set new ids for copied cases.
+        // Set new ids and URIs for copied cases.
         DocumentMetaData.get(copyJCas).setDocumentId(
                 DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX + counter);
+        DocumentMetaData.get(copyJCas).setDocumentUri(
+                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + counter);
 
         // Remove other TextClassificationUnit annotations except current (since one CAS should have
         // only have one classification unit).
