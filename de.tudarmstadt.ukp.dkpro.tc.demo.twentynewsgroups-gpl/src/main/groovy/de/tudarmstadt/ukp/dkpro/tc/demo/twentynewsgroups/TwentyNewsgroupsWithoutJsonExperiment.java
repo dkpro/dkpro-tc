@@ -18,6 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
@@ -39,6 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * can be changed and then executed without pre-compilation.
  */
 public class TwentyNewsgroupsWithoutJsonExperiment
+    implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
 
@@ -61,8 +63,8 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
-        dimReaderTrain.put("readerTrain", TwentyNewsgroupsCorpusReader.class);
-        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
+        dimReaderTrain.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(new Object[] {
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
@@ -71,8 +73,8 @@ public class TwentyNewsgroupsWithoutJsonExperiment
 
         // configure test data reader dimension (only for train-test setup)
         Map<String, Object> dimReaderTest = new HashMap<String, Object>();
-        dimReaderTrain.put("readerTest", TwentyNewsgroupsCorpusReader.class);
-        dimReaderTrain.put("readerTestParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
+        dimReaderTrain.put(DIM_READER_TEST_PARAMS, Arrays.asList(new Object[] {
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
@@ -81,14 +83,14 @@ public class TwentyNewsgroupsWithoutJsonExperiment
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                "classificationArguments",
+                DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }),
                 Arrays.asList(new String[] { NaiveBayes.class.getName() })
                 );
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                "pipelineParameters",
+                DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
                         "TopK", "500",
                         NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
@@ -103,7 +105,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(
-                "featureSet",
+                DIM_FEATURE_SET,
                 Arrays.asList(new String[] {
                         NrOfTokensFeatureExtractor.class.getName(),
                         NGramFeatureExtractor.class.getName()
@@ -113,7 +115,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readerTrain", dimReaderTrain),
                 Dimension.createBundle("readerTest", dimReaderTest),
-                Dimension.create("multiLabel", false),
+                Dimension.create(DIM_MULTI_LABEL, false),
                 dimPipelineParameters,
                 dimFeatureSets,
                 dimClassificationArgs
