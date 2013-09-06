@@ -17,6 +17,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 
 /**
@@ -37,6 +38,7 @@ public class BatchTaskCrossValidation
     private Class<? extends Report> innerReport;
     private boolean isUnitClassification;
 
+    private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTask;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask extractFeaturesTrainTask;
@@ -93,13 +95,17 @@ public class BatchTaskCrossValidation
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and aggregate.");
         }
+        
+        // check the validity of the experiment setup first
+        checkTask = new ValidityCheckTask();
 
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
         preprocessTask.setUnitClassification(isUnitClassification);
-
+        preprocessTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+        
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
         {
@@ -182,6 +188,7 @@ public class BatchTaskCrossValidation
             crossValidationTask.addReport(BatchTrainTestReport.class);
         }
 
+        addTask(checkTask);
         addTask(preprocessTask);
         addTask(crossValidationTask);
     }
