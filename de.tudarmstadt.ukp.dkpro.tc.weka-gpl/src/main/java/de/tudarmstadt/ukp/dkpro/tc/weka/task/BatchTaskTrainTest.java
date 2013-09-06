@@ -8,6 +8,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
@@ -26,6 +27,7 @@ public class BatchTaskTrainTest
     private Class<? extends Report> innerReport;
     private boolean isUnitClassification;
 
+    private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
     private MetaInfoTask metaTask;
@@ -89,6 +91,9 @@ public class BatchTaskTrainTest
             throw new IllegalStateException(
                     "You must set Experiment Name, DataWriter and Aggregate.");
         }
+        
+        // check the validity of the experiment setup first
+        checkTask = new ValidityCheckTask();
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
@@ -96,6 +101,7 @@ public class BatchTaskTrainTest
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setUnitClassification(isUnitClassification);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
+        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
@@ -140,6 +146,7 @@ public class BatchTaskTrainTest
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.INPUT_KEY_TEST);
 
+        addTask(checkTask);
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);
         addTask(metaTask);
