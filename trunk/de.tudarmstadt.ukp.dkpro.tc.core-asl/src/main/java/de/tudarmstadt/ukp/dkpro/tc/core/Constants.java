@@ -2,7 +2,7 @@ package de.tudarmstadt.ukp.dkpro.tc.core;
 
 import org.apache.uima.cas.CAS;
 
-public class Constants
+public interface Constants
 {
     /*
      * Pairwise classification
@@ -18,4 +18,25 @@ public class Constants
 
     public static final String CLASS_ATTRIBUTE_PREFIX = "__";
     public static final String CLASS_ATTRIBUTE_NAME = "outcome";
+    
+    /*
+     * Discriminators
+     */
+    
+    public static final String DIM_READER_TRAIN = "readerTrain";
+    public static final String DIM_READER_TRAIN_PARAMS = "readerTrainParams";
+    public static final String DIM_READER_TEST = "readerTest";
+    public static final String DIM_READER_TEST_PARAMS = "readerTestParams";
+    
+    public static final String DIM_FEATURE_SET = "featureSet";
+    
+    public static final String DIM_PIPELINE_PARAMS = "pipelineParameters";
+    
+    public static final String DIM_CLASSIFICATION_ARGS = "classificationArguments";
+    
+    public static final String DIM_IS_REGRESSION = "isRegressionExperiment";
+    public static final String DIM_MULTI_LABEL = "multiLabel";
+    public static final String DIM_LOWER_CASE = "lowerCase";
+
+
 }
