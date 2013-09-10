@@ -5,7 +5,14 @@
 In this introduction, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
 
-Please make sure that you have set up an environment variable *DKPRO_HOME*. The variable should point to a (possibly yet empty) directory which is intended to store any sort of resources which are to be used by any DKPro component.
+Please make sure that you have set up an environment variable *DKPRO_HOME*. The variable should point to a (possibly yet empty) directory which is intended to store any sort of resources which are to be used by any DKPro component. One way to set the variable *DKPRO_HOME* (there are several other ways) is to include the following line of code at the beginning of the main method of your experiment class:
+
+{{{
+System.setProperty("DKPRO_HOME", "pathToYourDKproDirectory");
+// example of pathToYourDKproDirectory: /home/user/workspace/DKPRO_HOME 
+}}}
+
+
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
