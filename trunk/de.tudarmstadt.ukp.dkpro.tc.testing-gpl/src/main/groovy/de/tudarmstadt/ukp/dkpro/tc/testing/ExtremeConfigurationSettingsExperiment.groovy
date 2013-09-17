@@ -25,14 +25,10 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
- * Groovy-Version of the TwentyNewsgroupsExperiment
+ * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
+ * The experiment setup was adapted from the TwentyNewsgroups example.
  *
- * The TwentyNewsgroupsGroovyExperiment does the same as TwentyNewsgroupsGroovyExtendedExperiment,
- * but it uses the BatchTaskCV and BatchTaskTrainTest to automatically wire the standard tasks for
- * a basic CV and TrainTest setup. This is more convenient, but less flexible.
- *
- * If you need to define a more complex experiment setup, look at TwentyNewsgroupsGroovyExtendedExperiment
- *
+ * @author zesch
  * @author Oliver Ferschke
  */
 public class ExtremeConfigurationSettingsExperiment {
