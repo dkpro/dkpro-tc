@@ -92,7 +92,7 @@ public class ClassificationUnitCasMultiplier
         // Remove TextClassificationOutcomes which are not covered by current
         // TextClassificationUnit.
         removeAnnotationsExceptGiven(copyJCas, outcomes);
-        getLogger().info("Creating CAS " + counter + " from " + annotations.size());
+        getLogger().debug("Creating CAS " + counter + " from " + annotations.size());
 
         return copyJCas;
     }
