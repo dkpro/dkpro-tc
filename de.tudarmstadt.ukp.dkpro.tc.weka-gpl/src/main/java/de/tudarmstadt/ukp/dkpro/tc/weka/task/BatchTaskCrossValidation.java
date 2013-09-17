@@ -24,6 +24,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
  * Crossvalidation setup
  * 
  * @author daxenberger
+ * @author zesch
  * 
  */
 public class BatchTaskCrossValidation

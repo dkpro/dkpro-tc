@@ -15,6 +15,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
  * Train-Test setup
  * 
  * @author daxenberger
+ * @author zesch
  * 
  */
 public class BatchTaskTrainTest

@@ -7,6 +7,12 @@ import java.util.Map;
 import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
+/**
+ * Data structure that stores a collection of Weka attributes.
+ * 
+ * @author zesch
+ *
+ */
 public class AttributeStore
 {
 
