@@ -17,6 +17,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.demo.regression.io.STSReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor;
@@ -36,21 +37,21 @@ public class RegressionExperimentWithoutJson
 
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
-        dimReaderTrain.put("readerTrain", STSReader.class);
-        dimReaderTrain.put("readerTrainParams", Arrays.asList(new Object[] {
+        dimReaderTrain.put(Constants.DIM_READER_TRAIN, STSReader.class);
+        dimReaderTrain.put(Constants.DIM_READER_TRAIN_PARAMS, Arrays.asList(new Object[] {
                 STSReader.PARAM_INPUT_FILE, inputFile,
                 STSReader.PARAM_GOLD_FILE, goldFile
         }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                "classificationArguments",
+                Constants.DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMOreg.class.getName() })
                 );
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(
-                "featureSet",
+                Constants.DIM_FEATURE_SET,
                 Arrays.asList(new String[] {
                         NrOfTokensFeatureExtractor.class.getName(),
                         GreedyStringTilingFeatureExtractor.class.getName()
@@ -59,10 +60,10 @@ public class RegressionExperimentWithoutJson
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readerTrain", dimReaderTrain),
-                Dimension.create("multiLabel", false),
+                Dimension.create(Constants.DIM_MULTI_LABEL, false),
                 // this dimension is important
                 // TODO should that be a dimension or rather a pipeline parameter?
-                Dimension.create("isRegressionExperiment", true),
+                Dimension.create(Constants.DIM_IS_REGRESSION, true),
                 dimFeatureSets,
                 dimClassificationArgs
                 );
