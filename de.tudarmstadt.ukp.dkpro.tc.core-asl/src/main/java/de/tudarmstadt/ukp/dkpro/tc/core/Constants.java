@@ -38,5 +38,11 @@ public interface Constants
     public static final String DIM_MULTI_LABEL = "multiLabel";
     public static final String DIM_LOWER_CASE = "lowerCase";
 
-
+    
+    /*
+     * Mainly for reports
+     */
+    public static final String EVAL_FILE_NAME = "evalulation_results";
+    public static final String SUFFIX_EXCEL = ".xls";
+    public static final String SUFFIX_CSV = ".csv";
 }

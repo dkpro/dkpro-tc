@@ -22,10 +22,11 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 public class BatchCrossValidationReport
     extends BatchReportBase
-    implements ReportConstants
+    implements Constants
 {
 
     @Override
