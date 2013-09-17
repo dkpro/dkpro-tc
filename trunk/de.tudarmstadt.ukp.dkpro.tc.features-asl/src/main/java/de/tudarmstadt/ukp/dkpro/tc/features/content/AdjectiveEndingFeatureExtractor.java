@@ -13,7 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
-/*
+/**
  * Gender-Preferential Text Mining of E-mail Discourse
  * Malcolm Corney, Olivier de Vel, Alison Anderson, George Mohay
  * 

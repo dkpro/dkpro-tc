@@ -13,6 +13,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
+/**
+ * Extracts the ratio of wrongly spelled tokens to all tokens.
+ * 
+ * @author zesch
+ *
+ */
 public class SpellingErrorRatioExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor

@@ -14,11 +14,11 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
-/*
+/**
  * Counts the ratio of number of sentences ending with exclamation(s) compared to all sentences.
  * Multiple exclamations in a row are considered as one exclamation sentence.
  * 
- * */
+ */
 
 public class ExclamationFeatureExtractor
     extends FeatureExtractorResource_ImplBase
