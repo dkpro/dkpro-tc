@@ -18,6 +18,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 
+/**
+ * Collects the final evaluation results in a train/test setting.
+ * 
+ * @author zesch
+ *
+ */
 public class BatchTrainTestReport
     extends BatchReportBase
     implements Constants
