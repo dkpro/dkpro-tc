@@ -20,6 +20,12 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
+/**
+ * Writes a instanceId / outcome pair for each classification instance.
+ * 
+ * @author zesch
+ *
+ */
 public class OutcomeIDReport
     extends ReportBase
 {
