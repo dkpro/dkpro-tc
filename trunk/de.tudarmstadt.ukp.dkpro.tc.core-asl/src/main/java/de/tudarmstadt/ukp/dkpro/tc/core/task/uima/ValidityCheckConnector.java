@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.core.extractor;
+package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
 import java.util.Collection;
 
@@ -11,10 +11,17 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
-public class ValidityChecker
+/**
+ * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on the CAS.
+ * 
+ * @author zesch
+ *
+ */
+public class ValidityCheckConnector
     extends JCasAnnotator_ImplBase
 {
     
