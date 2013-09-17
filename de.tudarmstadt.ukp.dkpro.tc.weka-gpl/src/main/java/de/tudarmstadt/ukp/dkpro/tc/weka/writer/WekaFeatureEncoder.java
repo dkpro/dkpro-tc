@@ -29,6 +29,8 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
 
 /**
+ * Converts the TC feature representation into the Weka representation.
+ * 
  * Copyright (c) 2012, Regents of the University of Colorado <br>
  * All rights reserved.
  * 
