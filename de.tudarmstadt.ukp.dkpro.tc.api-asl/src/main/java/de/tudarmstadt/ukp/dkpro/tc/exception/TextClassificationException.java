@@ -1,5 +1,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.exception;
 
+/**
+ * Exception thrown by DKPro TC components.
+ * 
+ * @author zesch
+ *
+ */
 public class TextClassificationException
     extends Exception
 {
