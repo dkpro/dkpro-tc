@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.core.extractor;
+package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
 import java.io.File;
 import java.util.Collection;
@@ -23,11 +23,19 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
-public class InstanceExtractor
+/**
+ * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature extractors on each CAS.
+ * 
+ * @author zesch
+ *
+ */
+public class ExtractFeaturesConnector
     extends JCasAnnotator_ImplBase
 {
 
