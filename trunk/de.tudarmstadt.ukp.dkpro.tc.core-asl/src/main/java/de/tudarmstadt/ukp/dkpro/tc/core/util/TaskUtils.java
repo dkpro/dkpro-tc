@@ -28,8 +28,8 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.internal.ReflectionUtil;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
