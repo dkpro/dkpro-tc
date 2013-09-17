@@ -51,4 +51,10 @@ public interface Constants
     public static final String EVAL_FILE_NAME = "evalulation_results";
     public static final String SUFFIX_EXCEL = ".xls";
     public static final String SUFFIX_CSV = ".csv";
+    
+    /*
+     * Weka 
+     */
+    public static final String ARFF_FILENAME = "training-data.arff.gz";
+
 }
