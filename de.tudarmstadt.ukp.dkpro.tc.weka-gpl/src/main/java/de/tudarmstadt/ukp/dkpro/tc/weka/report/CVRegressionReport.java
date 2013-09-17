@@ -23,6 +23,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
  * @author Oliver Ferschke
  *
  */
+@Deprecated
 public class CVRegressionReport
     extends ReportBase
 {

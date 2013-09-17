@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
+@Deprecated
 public class TrainTestReport
     extends ReportBase
 {
