@@ -20,12 +20,13 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
- * This JCasMultiplier creates a new JCas for each TextClassificationUnit annotation in the original
+ * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} annotation in the original
  * JCas. The newly created JCas contains one TextClassificationUnit annotation from the original
  * JCas, all TextClassificationOutcomes covered by this TextClassificationUnit and all other
  * annotations types from the original JCas.
  * 
  * @author Artem Vovk
+ * @author zesch
  * 
  */
 public class ClassificationUnitCasMultiplier

@@ -27,9 +27,15 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.InstanceExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
+/**
+ * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file) on disk.
+ * 
+ * @author zesch
+ *
+ */
 public class ExtractFeaturesTask
     extends UimaTaskBase
 {
@@ -173,15 +179,15 @@ public class ExtractFeaturesTask
         // ngramFreqThreshold));
         // }
 
-        parameters.addAll(Arrays.asList(InstanceExtractor.PARAM_OUTPUT_DIRECTORY,
-                outputDir.getAbsolutePath(), InstanceExtractor.PARAM_DATA_WRITER_CLASS, dataWriter,
-                InstanceExtractor.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
-                InstanceExtractor.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                InstanceExtractor.PARAM_FEATURE_EXTRACTORS, extractorResources
+        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
+                outputDir.getAbsolutePath(), ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
+                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
+                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources
         // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
                 ));
 
-        return createEngineDescription(InstanceExtractor.class, parameters.toArray());
+        return createEngineDescription(ExtractFeaturesConnector.class, parameters.toArray());
 
     }
 

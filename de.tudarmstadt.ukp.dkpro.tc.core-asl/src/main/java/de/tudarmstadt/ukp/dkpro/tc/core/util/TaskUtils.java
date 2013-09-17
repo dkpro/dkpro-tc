@@ -36,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaDependent;
  * etc).
  * 
  * @author Oliver Ferschke
+ * @author zesch
  * 
  */
 public class TaskUtils

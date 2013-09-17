@@ -2,6 +2,12 @@ package de.tudarmstadt.ukp.dkpro.tc.core;
 
 import org.apache.uima.cas.CAS;
 
+/**
+ * Basic constants that are used throughout the project
+ * 
+ * @author zesch
+ *
+ */
 public interface Constants
 {
     /*
