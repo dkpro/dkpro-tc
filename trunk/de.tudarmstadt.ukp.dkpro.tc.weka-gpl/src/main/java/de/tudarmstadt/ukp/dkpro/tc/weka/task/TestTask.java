@@ -23,6 +23,12 @@ import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
+/**
+ * Builds the classifier from the training data and performs classification on the test data.
+ * 
+ * @author zesch
+ *
+ */
 public class TestTask
     extends ExecutableTaskBase
 {

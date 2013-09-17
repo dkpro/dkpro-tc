@@ -26,6 +26,10 @@ import weka.core.Result;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 
+/**
+ * Utils required by Weka/Meka tasks.
+ *
+ */
 public class TaskUtils
 {
 
@@ -85,6 +89,9 @@ public class TaskUtils
         return trainData;
     }
 
+    /**
+     * @return The offset of the instanceId attribute within the weka instance
+     */
     @SuppressWarnings("unchecked")
     public static int getInstanceIdAttributeOffset(Instances data)
     {
