@@ -20,6 +20,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
+/**
+ * Given a list of topic terms, extracts the ratio of topic terms to all terms.
+ */
 public class TopicWordsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
@@ -56,6 +59,7 @@ public class TopicWordsFeatureExtractor
     }
 
     private List<Feature> countWordHits(String wordListName, List<String> tokens)
+            throws TextClassificationException
     {
 
         // word lists are stored in resources folder relative to feature extractor
@@ -66,8 +70,7 @@ public class TopicWordsFeatureExtractor
             topicwords = FileUtils.readLines(new File(wordListPath), "utf-8");
         }
         catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new TextClassificationException(e);
         }
         int wordcount = 0;
         for (String token : tokens) {

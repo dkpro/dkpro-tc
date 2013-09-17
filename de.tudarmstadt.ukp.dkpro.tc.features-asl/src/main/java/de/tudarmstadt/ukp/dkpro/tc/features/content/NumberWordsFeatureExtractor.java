@@ -14,7 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
-/*
+/**
  * Counts the ratio of tokens containing numbers or 
  * combinations of numbers and letters. Possibly useful to capture
  * teenage slang in online chats. For texts with lot of numbers

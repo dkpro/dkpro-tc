@@ -12,7 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
-/*
+/**
  * Counts the ratio of individual English modal verbs to all verbs:
  * Can, could, might, may, must, should, will, would, shall
  * 
