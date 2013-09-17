@@ -28,6 +28,8 @@ import java.io.Serializable;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * Internal representation of a feature.
+ *  
  * <br>
  * Copyright (c) 2007-2008, Regents of the University of Colorado <br>
  * All rights reserved.
@@ -144,6 +146,8 @@ public class Feature
     private String escape(String name) {
         
         // TODO improve the escaping
+        // the fix was necessary due to Issue 32
+        // http://code.google.com/p/dkpro-tc/issues/detail?id=32
         StringBuilder sb = new StringBuilder();
         for (int i=0; i<name.length(); i++) {
             String c = name.substring(i, i+1);

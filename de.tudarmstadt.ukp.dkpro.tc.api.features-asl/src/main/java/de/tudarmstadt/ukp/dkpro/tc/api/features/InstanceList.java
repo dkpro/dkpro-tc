@@ -5,6 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Data structure that holds a list of instances.
+ * 
+ * @author zesch
+ *
+ */
 public class InstanceList
 {
     private List<Instance> instanceList;

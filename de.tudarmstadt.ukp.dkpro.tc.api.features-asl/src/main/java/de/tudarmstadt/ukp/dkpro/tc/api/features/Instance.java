@@ -6,6 +6,12 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * Internal representation of an instance.
+ * 
+ * @author zesch
+ *
+ */
 public class Instance
 {
     private List<Feature> features;
