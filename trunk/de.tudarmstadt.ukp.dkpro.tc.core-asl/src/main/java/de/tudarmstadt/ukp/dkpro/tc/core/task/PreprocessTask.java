@@ -18,6 +18,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
+/**
+ * Performs the preprocessing steps, that were configured by the user, on the documents.
+ * 
+ * @author zesch
+ *
+ */
 public class PreprocessTask
     extends UimaTaskBase
 {

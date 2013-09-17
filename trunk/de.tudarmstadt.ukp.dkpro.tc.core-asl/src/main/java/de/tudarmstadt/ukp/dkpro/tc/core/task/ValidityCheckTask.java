@@ -17,11 +17,11 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.extractor.ValidityChecker;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
 
 /**
+ * Checks that everything has been configured properly and throws more meaningful exception otherwise than would have been thrown downstream.
  * This should be the first task in the TC pipeline.
- * It checks that everything has been configured properly and throws more meaningful exception otherwise than would have been thrown downstream.
  * 
  * @author zesch
  *
@@ -67,9 +67,9 @@ public class ValidityCheckTask
         if (pipelineParameters != null) {
             parameters.addAll(pipelineParameters);
         }
-        parameters.add(ValidityChecker.PARAM_IS_REGRESSION);
+        parameters.add(ValidityCheckConnector.PARAM_IS_REGRESSION);
         parameters.add(isRegressionExperiment);
         
-        return createEngineDescription(ValidityChecker.class, parameters.toArray());
+        return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }
 }

@@ -12,6 +12,13 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
+/**
+ * Abstract base class for readers used in pair-classification. 
+ * 
+ * @author Nico Erbs
+ * @author zesch
+ *
+ */
 public abstract class AbstractPairReader
     extends JCasCollectionReader_ImplBase
     implements TCReaderMultiLabel

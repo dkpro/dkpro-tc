@@ -25,6 +25,13 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
+/**
+ * Iterates over all documents and stores required collection-level meta data, 
+ * e.g. which n-grams appear in the documents.
+ * 
+ * @author zesch
+ *
+ */
 public class MetaInfoTask
     extends UimaTaskBase
 {
