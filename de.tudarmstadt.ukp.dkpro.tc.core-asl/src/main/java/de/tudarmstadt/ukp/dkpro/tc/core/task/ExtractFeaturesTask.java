@@ -31,10 +31,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
- * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file) on disk.
+ * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file)
+ * on disk.
  * 
  * @author zesch
- *
+ * 
  */
 public class ExtractFeaturesTask
     extends UimaTaskBase
@@ -57,8 +58,9 @@ public class ExtractFeaturesTask
     private Collection<String> files_validation;
     @Discriminator
     private boolean isRegressionExperiment = false;
-
+    @Discriminator
     private String dataWriter;
+
     private boolean isTesting = false;
     private boolean addInstanceId = false;
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
@@ -78,11 +80,6 @@ public class ExtractFeaturesTask
     public String getDataWriter()
     {
         return dataWriter;
-    }
-
-    public void setDataWriter(String aDataWriterClassName)
-    {
-        dataWriter = aDataWriterClassName;
     }
 
     public boolean isRegressionExperiment()
@@ -180,11 +177,12 @@ public class ExtractFeaturesTask
         // }
 
         parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
-                outputDir.getAbsolutePath(), ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+                outputDir.getAbsolutePath(), ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS,
+                dataWriter,
                 ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
                 ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources
-        // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
+                // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
                 ));
 
         return createEngineDescription(ExtractFeaturesConnector.class, parameters.toArray());
