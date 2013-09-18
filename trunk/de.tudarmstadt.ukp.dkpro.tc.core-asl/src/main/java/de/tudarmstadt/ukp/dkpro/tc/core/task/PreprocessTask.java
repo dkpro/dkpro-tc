@@ -22,7 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
  * Performs the preprocessing steps, that were configured by the user, on the documents.
  * 
  * @author zesch
- *
+ * 
  */
 public class PreprocessTask
     extends UimaTaskBase
@@ -44,6 +44,9 @@ public class PreprocessTask
     @Discriminator
     protected List<Object> readerTestParams;
 
+    @Discriminator
+    private boolean isUnitClassification;
+
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;
@@ -59,18 +62,6 @@ public class PreprocessTask
     public void setAggregate(AnalysisEngineDescription aAggregate)
     {
         aggregate = aAggregate;
-    }
-
-    private boolean isUnitClassification;
-
-    public boolean isUnitClassification()
-    {
-        return isUnitClassification;
-    }
-
-    public void setUnitClassification(boolean isUnitClassification)
-    {
-        this.isUnitClassification = isUnitClassification;
     }
 
     @Override
