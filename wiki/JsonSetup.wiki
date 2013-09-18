@@ -1,3 +1,5 @@
+#summary How to configure your experiments using JSON (not included in Demo examples)
+
 This tutorial explains how to use JSON instead of the (recommended) Groovy classes to configure your experiments. It refers to the [DemoExperiments Twenty Newsgroups Demo]. 
 Please note: This tutorial might not reflect the latest changes in the configuration of DKPro-TC experiments. It is rather intended as a starting point for users wanting to create their own experiment configuration using JSON.
 
