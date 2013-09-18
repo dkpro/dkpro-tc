@@ -30,10 +30,11 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
- * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature extractors on each CAS.
+ * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
+ * extractors on each CAS.
  * 
  * @author zesch
- *
+ * 
  */
 public class ExtractFeaturesConnector
     extends JCasAnnotator_ImplBase
@@ -158,11 +159,6 @@ public class ExtractFeaturesConnector
                     "No outcome annotations present in current CAS."));
         }
 
-        // TODO
-        // we are currently relying on the user to set the right DataWriter for
-        // multi- and
-        // single-label, i.e. a wrong configuration will cause exceptions later
-        // on
         String[] stringOutcomes = new String[outcome.size()];
         Iterator<TextClassificationOutcome> iterator = outcome.iterator();
         for (int i = 0; i < outcome.size(); i++) {
