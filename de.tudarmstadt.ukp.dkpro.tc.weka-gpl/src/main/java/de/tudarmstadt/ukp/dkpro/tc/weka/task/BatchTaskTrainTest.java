@@ -24,9 +24,7 @@ public class BatchTaskTrainTest
 
     private String experimentName;
     private AnalysisEngineDescription aggregate;
-    private String dataWriter;
     private Class<? extends Report> innerReport;
-    private boolean isUnitClassification;
 
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTaskTrain;
@@ -55,12 +53,10 @@ public class BatchTaskTrainTest
      * @param aDataWriterClassName
      *            data writer class name
      */
-    public BatchTaskTrainTest(String aExperimentName, AnalysisEngineDescription aAggregate,
-            String aDataWriterClassName)
+    public BatchTaskTrainTest(String aExperimentName, AnalysisEngineDescription aAggregate)
     {
         setExperimentName(aExperimentName);
         setAggregate(aAggregate);
-        setDataWriter(aDataWriterClassName);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
     }
@@ -86,13 +82,13 @@ public class BatchTaskTrainTest
      */
     private void init()
     {
-        if (experimentName == null || aggregate == null || dataWriter == null)
+        if (experimentName == null || aggregate == null)
 
         {
             throw new IllegalStateException(
                     "You must set Experiment Name, DataWriter and Aggregate.");
         }
-        
+
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
 
@@ -100,7 +96,6 @@ public class BatchTaskTrainTest
         preprocessTaskTrain = new PreprocessTask();
         preprocessTaskTrain.setAggregate(aggregate);
         preprocessTaskTrain.setTesting(false);
-        preprocessTaskTrain.setUnitClassification(isUnitClassification);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
         preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
@@ -108,7 +103,6 @@ public class BatchTaskTrainTest
         preprocessTaskTest = new PreprocessTask();
         preprocessTaskTest.setAggregate(aggregate);
         preprocessTaskTest.setTesting(true);
-        preprocessTaskTest.setUnitClassification(isUnitClassification);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
@@ -120,7 +114,6 @@ public class BatchTaskTrainTest
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setAddInstanceId(true);
-        featuresTrainTask.setDataWriter(dataWriter);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
@@ -129,7 +122,6 @@ public class BatchTaskTrainTest
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setAddInstanceId(true);
-        featuresTestTask.setDataWriter(dataWriter);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
@@ -164,29 +156,6 @@ public class BatchTaskTrainTest
     public void setAggregate(AnalysisEngineDescription aggregate)
     {
         this.aggregate = aggregate;
-    }
-
-    public String getDataWriter()
-    {
-        return dataWriter;
-    }
-
-    public void setDataWriter(String dataWriter)
-    {
-        this.dataWriter = dataWriter;
-    }
-
-    /**
-     * Set this to true, if you want to classify more than one classification unit (instance) per
-     * document (CAS). This requires a TextClassificationUnit annotation for all units to be
-     * classified.
-     * 
-     * @param isUnitClassification
-     *            if set to true, more than one instance per document will be expected
-     */
-    public void setUnitClassification(boolean isUnitClassification)
-    {
-        this.isUnitClassification = isUnitClassification;
     }
 
     /**
