@@ -1,0 +1,6 @@
+This tutorial explain how to use JSON instead of the (recommended) Groovy classes to configure your experiments
+
+= Example JSON file =
+
+
+= Example Java class building upon a JSON configuration =
