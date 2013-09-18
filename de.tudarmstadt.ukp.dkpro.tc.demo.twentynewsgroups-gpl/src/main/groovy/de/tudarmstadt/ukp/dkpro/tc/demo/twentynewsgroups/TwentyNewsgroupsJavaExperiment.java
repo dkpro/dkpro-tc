@@ -39,7 +39,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
  * can be changed and then executed without pre-compilation.
  */
-public class TwentyNewsgroupsWithoutJsonExperiment
+public class TwentyNewsgroupsJavaExperiment
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -54,27 +54,24 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
         ParameterSpace pSpace = getParameterSpace();
 
-        TwentyNewsgroupsWithoutJsonExperiment experiment = new TwentyNewsgroupsWithoutJsonExperiment();
+        TwentyNewsgroupsJavaExperiment experiment = new TwentyNewsgroupsJavaExperiment();
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 
     public static ParameterSpace getParameterSpace()
     {
-        // configure training data reader dimension
-        Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
-        dimReaderTrain.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaderTrain.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(new Object[] {
+        // configure training and test data reader dimension
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+        dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
+        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(new Object[] {
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
                 TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
                 ));
-
-        // configure test data reader dimension (only for train-test setup)
-        Map<String, Object> dimReaderTest = new HashMap<String, Object>();
-        dimReaderTrain.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
-        dimReaderTrain.put(DIM_READER_TEST_PARAMS, Arrays.asList(new Object[] {
+        dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
+        dimReaders.put(DIM_READER_TEST_PARAMS, Arrays.asList(new Object[] {
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
@@ -113,8 +110,8 @@ public class TwentyNewsgroupsWithoutJsonExperiment
                 );
 
         ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle("readerTrain", dimReaderTrain),
-                Dimension.createBundle("readerTest", dimReaderTest),
+                Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_MULTI_LABEL, false),
                 dimPipelineParameters,
                 dimFeatureSets,
@@ -130,7 +127,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
-                getPreprocessing(), WekaDataWriter.class.getName(), NUM_FOLDS);
+                getPreprocessing(), NUM_FOLDS);
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -146,7 +143,7 @@ public class TwentyNewsgroupsWithoutJsonExperiment
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
-                getPreprocessing(), WekaDataWriter.class.getName());
+                getPreprocessing());
         batch.setInnerReport(TrainTestReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

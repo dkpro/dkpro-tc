@@ -3,7 +3,6 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -19,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
  */
 public class TwentyNewsgroupsExperimentTest
 {
-    TwentyNewsgroupsWithoutJsonExperiment javaExperiment;
+    TwentyNewsgroupsJavaExperiment javaExperiment;
     TwentyNewsgroupsGroovyExperiment groovyExperiment;
     TwentyNewsgroupsGroovyExtendedExperiment groovyExtendedExperiment;
     ParameterSpace pSpace;
@@ -32,8 +31,8 @@ public class TwentyNewsgroupsExperimentTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        javaExperiment = new TwentyNewsgroupsWithoutJsonExperiment();
-        pSpace = TwentyNewsgroupsWithoutJsonExperiment.getParameterSpace();
+        javaExperiment = new TwentyNewsgroupsJavaExperiment();
+        pSpace = TwentyNewsgroupsJavaExperiment.getParameterSpace();
         groovyExperiment = new TwentyNewsgroupsGroovyExperiment();
         groovyExtendedExperiment = new TwentyNewsgroupsGroovyExtendedExperiment();
     }
@@ -52,15 +51,6 @@ public class TwentyNewsgroupsExperimentTest
     {
         // Groovy setup with automatic task wiring
         groovyExperiment.runTrainTest();
-    }
-
-    @Ignore
-    @Test
-    public void testGroovyExtendedCrossValidation()
-        throws Exception
-    {
-        // Groovy setup with manual task wiring
-        groovyExtendedExperiment.runCrossValidation();
     }
 
     @Test

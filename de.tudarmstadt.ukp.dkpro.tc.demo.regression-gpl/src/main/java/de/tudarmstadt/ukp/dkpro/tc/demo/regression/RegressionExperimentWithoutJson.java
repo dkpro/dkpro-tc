@@ -31,10 +31,8 @@ public class RegressionExperimentWithoutJson
     public static final String inputFile = "src/main/resources/sts2012/STS.input.MSRpar.txt";
     public static final String goldFile = "src/main/resources/sts2012/STS.gs.MSRpar.txt";
 
-    public static void main(String[] args)
-        throws Exception
+    public static ParameterSpace setup()
     {
-
         // configure training data reader dimension
         Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
         dimReaderTrain.put(Constants.DIM_READER_TRAIN, STSReader.class);
@@ -61,15 +59,21 @@ public class RegressionExperimentWithoutJson
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readerTrain", dimReaderTrain),
                 Dimension.create(Constants.DIM_MULTI_LABEL, false),
-                // this dimension is important
-                // TODO should that be a dimension or rather a pipeline parameter?
+                // this dimensions are important
                 Dimension.create(Constants.DIM_IS_REGRESSION, true),
+                Dimension.create(Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 dimFeatureSets,
                 dimClassificationArgs
                 );
+        return pSpace;
+    }
+
+    public static void main(String[] args)
+        throws Exception
+    {
 
         RegressionExperimentWithoutJson experiment = new RegressionExperimentWithoutJson();
-        experiment.runCrossValidation(pSpace);
+        experiment.runCrossValidation(setup());
     }
 
     // ##### CV #####
@@ -78,7 +82,6 @@ public class RegressionExperimentWithoutJson
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
                 getPreprocessing(),
-                WekaDataWriter.class.getName(),
                 NUM_FOLDS
                 );
         batch.setParameterSpace(pSpace);

@@ -12,6 +12,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
@@ -20,11 +21,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -36,10 +34,13 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  *
  * In TwentyNewsgroupsGroovyExperiment, this is done automatically in the BatchTaskCV and BatchTaskTrainTest,
  * which is more convenient, but less flexible.
+ * 
+ * Currently only supports train-test setup.
  *
  * @author Oliver Ferschke
+ * @author daxenberger
  */
-public class TwentyNewsgroupsGroovyExtendedExperiment {
+public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
 
     // === PARAMETERS===========================================================
 
@@ -49,36 +50,33 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
     // === DIMENSIONS===========================================================
 
-    def dimReaderTest = Dimension.createBundle("readerTest", [
+    def dimReaders = Dimension.createBundle("readers", [
         readerTest: TwentyNewsgroupsCorpusReader.class,
         readerTestParams: [
-            "sourceLocation",
-            corpusFilePathTest,
-            "language",
+            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+            corpusFilePathTrain,
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
             languageCode,
-            "patterns",
+            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-        ]
-    ]);
-
-    def dimReaderTrain = Dimension.createBundle("readerTrain", [
+        ],
         readerTrain: TwentyNewsgroupsCorpusReader.class,
         readerTrainParams: [
-            "sourceLocation",
+            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
             corpusFilePathTrain,
-            "language",
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
             languageCode,
-            "patterns",
+            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
     ]);
 
-    def dimFolds = Dimension.create("folds", 2);
-    def dimMultiLabel = Dimension.create("multiLabel", false);
+    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
-    "pipelineParameters",
+    DIM_PIPELINE_PARAMS,
     [
         "TopK",
         "500",
@@ -98,12 +96,12 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
 
     def dimClassificationArgs =
-    Dimension.create("classificationArguments",
+    Dimension.create(DIM_CLASSIFICATION_ARGS,
     [NaiveBayes.class.name],
     [SMO.class.name]);
 
     def dimFeatureSets = Dimension.create(
-    "featureSet",
+    DIM_FEATURE_SET,
     [
         NrOfTokensFeatureExtractor.class.name,
         NGramFeatureExtractor.class.name
@@ -111,77 +109,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
     );
 
     // === Experiments =========================================================
-
-    /**
-     * Crossvalidation setting. Not adapted for the new CV setup yet.
-     *
-     * @throws Exception
-     */
-    @Deprecated
-    protected void runCrossValidation() throws Exception
-    {
-        /*
-         * Define (instantiate) tasks
-         */
-
-        PreprocessTask preprocessTask = [
-            aggregate:getPreprocessing(),
-            type: "Preprocessing-TwentyNewsgroupsCV"
-        ];
-
-        MetaInfoTask metaTask = [
-            type: "MetaInfoTask-TwentyNewsgroupsCV",
-        ];
-
-        ExtractFeaturesTask featureExtractionTask = [
-            addInstanceId: false,
-            dataWriter:         WekaDataWriter.class.name,
-            type: "FeatureExtraction-TwentyNewsgroupsCV",
-        ];
-
-        CrossValidationTask cvTask = [
-            type: "CVTask-TwentyNewsgroupsCV",
-            reports: [CVReport]];
-
-
-        /*
-         * Wire tasks
-         */
-        metaTask.addImport(preprocessTask, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
-        featureExtractionTask.addImport(preprocessTask, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
-        featureExtractionTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
-        cvTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
-        cvTask.addImport(featureExtractionTask, ExtractFeaturesTask.OUTPUT_KEY, CrossValidationTask.INPUT_KEY);
-
-
-        /*
-         *	Wrap wired tasks in batch task
-         */
-
-        BatchTask batchTask = [
-            type: "Evaluation-TwentyNewsgroups-CV",
-            parameterSpace : [
-                dimReaderTrain,
-                dimFolds,
-                dimMultiLabel,
-                dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParameters
-            ],
-            tasks:           [
-                preprocessTask,
-                metaTask,
-                featureExtractionTask,
-                cvTask
-            ],
-            executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [CVBatchReport]];
-
-        /*
-         * Run
-         */
-        Lab.getInstance().run(batchTask);
-    }
 
     /**
      * TrainTest Setting
@@ -212,14 +139,12 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
         ExtractFeaturesTask featuresTrainTask = [
             addInstanceId: true,
-            dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroups-Train",
             isTesting: false
         ];
 
         ExtractFeaturesTask featuresTestTask = [
             addInstanceId: true,
-            dataWriter:         WekaDataWriter.class.name,
             type: "FeatureExtraction-TwentyNewsgroups-Test",
             isTesting: true
         ];
@@ -250,10 +175,9 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
         BatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
-                dimReaderTrain,
-                dimReaderTest,
-                dimFolds,
+                dimReaders,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
@@ -287,7 +211,6 @@ public class TwentyNewsgroupsGroovyExtendedExperiment {
 
     public static void main(String[] args)
     {
-        new TwentyNewsgroupsGroovyExtendedExperiment().runCrossValidation();
         new TwentyNewsgroupsGroovyExtendedExperiment().runTrainTest();
     }
 
