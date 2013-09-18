@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
@@ -36,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  *
  * @author Oliver Ferschke
  */
-public class TwentyNewsgroupsGroovyExperiment {
+public class TwentyNewsgroupsGroovyExperiment implements Constants {
 
     // === PARAMETERS===========================================================
 
@@ -48,39 +49,36 @@ public class TwentyNewsgroupsGroovyExperiment {
 
     // === DIMENSIONS===========================================================
 
-    def dimReaderTest = Dimension.createBundle("readerTest", [
+    def dimReaders = Dimension.createBundle("readers", [
         readerTest: TwentyNewsgroupsCorpusReader.class,
         readerTestParams: [
-            "sourceLocation",
+            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
             corpusFilePathTest,
-            "language",
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
             languageCode,
-            "patterns",
+            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+        ],
+        readerTrain: TwentyNewsgroupsCorpusReader.class,
+        readerTrainParams: [
+            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+            corpusFilePathTest,
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+            languageCode,
+            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
     ]);
 
-    def dimReaderTrain = Dimension.createBundle("readerTrain", [
-        readerTrain: TwentyNewsgroupsCorpusReader.class,
-        readerTrainParams: [
-            "sourceLocation",
-            corpusFilePathTrain,
-            "language",
-            languageCode,
-            "patterns",
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-    ]);
+    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
-    def dimMultiLabel = Dimension.create("multiLabel", false);
-
-    def dimClassificationArgs =
-    Dimension.create(
-    "classificationArguments",
+    def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [NaiveBayes.class.name],
     [SMO.class.name]);
 
     def dimFeatureSets = Dimension.create(
-    "featureSet",
+    DIM_FEATURE_SET,
     [
         NrOfTokensFeatureExtractor.class.name,
         NGramFeatureExtractor.class.name
@@ -88,7 +86,7 @@ public class TwentyNewsgroupsGroovyExperiment {
     );
 
     def dimPipelineParameters = Dimension.create(
-    "pipelineParameters",
+    DIM_PIPELINE_PARAMS,
     [
         "TopK",
         "500",
@@ -121,12 +119,12 @@ public class TwentyNewsgroupsGroovyExperiment {
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimReaderTrain,
+                dimReaders,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
@@ -149,13 +147,12 @@ public class TwentyNewsgroupsGroovyExperiment {
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            dataWriter:         WekaDataWriter.class.name,
             aggregate:	getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimReaderTrain,
-                dimReaderTest,
+                dimReaders,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
