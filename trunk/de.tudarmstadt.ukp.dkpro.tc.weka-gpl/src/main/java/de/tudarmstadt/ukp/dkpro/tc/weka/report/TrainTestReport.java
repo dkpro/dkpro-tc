@@ -21,12 +21,10 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.CrossValidationTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
-@Deprecated
 public class TrainTestReport
     extends ReportBase
 {
@@ -142,7 +140,7 @@ public class TrainTestReport
             ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
                     ReportUtils.createXYDataset(prcData));
             FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
-                    CrossValidationTask.OUTPUT_KEY, AccessMode.READWRITE)
+                    TestTask.OUTPUT_KEY, AccessMode.READWRITE)
                     + "/" + PR_CURVE_KEY));
             renderer.write(fos);
         }
