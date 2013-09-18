@@ -33,11 +33,9 @@ public class BatchTaskCrossValidation
 
     private String experimentName;
     private AnalysisEngineDescription aggregate;
-    private String dataWriter;
     private int numFolds = 10;
     private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
-    private boolean isUnitClassification;
 
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTask;
@@ -66,11 +64,10 @@ public class BatchTaskCrossValidation
      *            the number of folds for crossvalidation (default 10)
      */
     public BatchTaskCrossValidation(String aExperimentName,
-            AnalysisEngineDescription aAggregate, String aDataWriterClassName, int aNumFolds)
+            AnalysisEngineDescription aAggregate, int aNumFolds)
     {
         setExperimentName(aExperimentName);
         setAggregate(aAggregate);
-        setDataWriter(aDataWriterClassName);
         setNumFolds(aNumFolds);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
@@ -92,11 +89,11 @@ public class BatchTaskCrossValidation
         ClassNotFoundException
     {
 
-        if (experimentName == null || aggregate == null || dataWriter == null) {
+        if (experimentName == null || aggregate == null) {
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and aggregate.");
         }
-        
+
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
 
@@ -104,9 +101,8 @@ public class BatchTaskCrossValidation
         preprocessTask = new PreprocessTask();
         preprocessTask.setAggregate(aggregate);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
-        preprocessTask.setUnitClassification(isUnitClassification);
         preprocessTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
-        
+
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
         {
@@ -148,7 +144,6 @@ public class BatchTaskCrossValidation
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
         extractFeaturesTrainTask.setAddInstanceId(addInstanceId);
-        extractFeaturesTrainTask.setDataWriter(dataWriter);
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
                 + experimentName);
@@ -157,7 +152,6 @@ public class BatchTaskCrossValidation
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
         extractFeaturesTestTask.setAddInstanceId(addInstanceId);
-        extractFeaturesTestTask.setDataWriter(dataWriter);
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
@@ -212,16 +206,6 @@ public class BatchTaskCrossValidation
         this.aggregate = aggregate;
     }
 
-    public String getDataWriter()
-    {
-        return dataWriter;
-    }
-
-    public void setDataWriter(String dataWriter)
-    {
-        this.dataWriter = dataWriter;
-    }
-
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
@@ -230,19 +214,6 @@ public class BatchTaskCrossValidation
     public void setAddInstanceId(boolean addInstanceId)
     {
         this.addInstanceId = addInstanceId;
-    }
-
-    /**
-     * Set this to true, if you want to classify more than one classification unit (instance) per
-     * document (CAS). This requires a TextClassificationUnit annotation for all units to be
-     * classified.
-     * 
-     * @param isUnitClassification
-     *            if set to true, more than one instance per document will be expected
-     */
-    public void setUnitClassification(boolean isUnitClassification)
-    {
-        this.isUnitClassification = isUnitClassification;
     }
 
     /**
