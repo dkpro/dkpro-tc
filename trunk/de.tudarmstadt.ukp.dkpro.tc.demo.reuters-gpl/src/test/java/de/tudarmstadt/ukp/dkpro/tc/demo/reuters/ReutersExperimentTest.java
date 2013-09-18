@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.ReutersTextClassification;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
@@ -19,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.ReutersTextClassification;
  */
 public class ReutersExperimentTest
 {
-    ReutersTextClassification experiment;
+    ReutersTextClassificationGroovyExperiment experiment;
     ParameterSpace pSpace;
 
     @Before
@@ -30,22 +29,21 @@ public class ReutersExperimentTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        experiment = new ReutersTextClassification();
-        pSpace = experiment.setup();
+        experiment = new ReutersTextClassificationGroovyExperiment();
     }
 
     @Test
-    public void testJavaCrossValidation()
+    public void testGroovyCrossValidation()
         throws Exception
     {
-        experiment.runCrossValidation(pSpace);
+        experiment.runCrossValidation();
     }
 
     @Test
-    public void testJavaTrainTest()
+    public void testGroovyTrainTest()
         throws Exception
     {
-        experiment.runTrainTest(pSpace);
+        experiment.runTrainTest();
     }
 
     @Rule
