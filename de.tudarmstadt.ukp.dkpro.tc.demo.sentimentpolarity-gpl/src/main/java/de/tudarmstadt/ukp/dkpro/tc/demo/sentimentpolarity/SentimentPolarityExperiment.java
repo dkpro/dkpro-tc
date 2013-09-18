@@ -18,9 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.CVBatchReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCV;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
@@ -45,7 +43,6 @@ public class SentimentPolarityExperiment
 
         experiment.runTrainTest(pSpace);
         experiment.runCrossvalidation(pSpace);
-        experiment.runOldCrossvalidation(pSpace);
     }
 
     /**
@@ -80,29 +77,6 @@ public class SentimentPolarityExperiment
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.setInnerReport(TrainTestReport.class);
         batch.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
-
-    /**
-     * Only for comparison. Will be deleted soon.
-     * 
-     * @param pSpace
-     * @throws Exception
-     */
-    protected void runOldCrossvalidation(ParameterSpace pSpace)
-        throws Exception
-    {
-
-        BatchTaskCV batch = new
-                BatchTaskCV("SentimentPolarityTrainTest",
-                        getPreprocessing(),
-                        WekaDataWriter.class.getName());
-        batch.setType("Evaluation-SentimentPolarity-CV-Old");
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(CVBatchReport.class);
 
         // Run
         Lab.getInstance().run(batch);
