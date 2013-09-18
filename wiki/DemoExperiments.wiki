@@ -41,34 +41,28 @@ These are some of the files you should find in this project:
    │                   └── twentynewsgroups
    │                          ├── io
    │                          │   └── TwentyNewsgroupsCorpusReader.java
-   │                          ├── ParameterSpaceParser.java
-   │                          ├── TwentyNewsgroupsExperiment.java
-   │                          ├── TwentyNewsgroupsGroovyExperiment.groovy
-   │                          └── TwentyNewsgroupsGroovyExtendedExperiment.groovy
+   │                          ├── TwentyNewsgroupsJavaExperiment.java
+   │                          └── TwentyNewsgroupsGroovyExperiment.groovy
+   │                          
    └─ main.resources
-          ├── config
-          │   └── train.json
-          ├── data
-          │   ├── bydate-test
-          │   │   ├── alt.atheism
-          │   │   ├── comp.graphics
-          │   │   ├── comp.os.ms-windows.misc
-          │   │   └── comp.sys.ibm.pc.hardware
-          │   └── bydate-train
-          │       ├── alt.atheism
-          │       ├── comp.graphics
-          │       ├── comp.os.ms-windows.misc
-          │       └── comp.sys.ibm.pc.hardware
-          ├── lab
-          │   └── debug_context.xml
-          └── log4j.properties
+          └── data
+              ├── bydate-test
+              │   ├── alt.atheism
+              │   ├── comp.graphics
+              │   ├── comp.os.ms-windows.misc
+              │   └── comp.sys.ibm.pc.hardware
+              └── bydate-train
+                  ├── alt.atheism
+                  ├── comp.graphics
+                  ├── comp.os.ms-windows.misc
+                  └── comp.sys.ibm.pc.hardware
+
 }}}
 
-There are three ways to run the experiment:
+There are two ways to run the experiment:
 
-`TwentyNewsgroupsExperiment` (Java configuration using a _JSON_ file and `ParameterSpaceParser` for configuration)
 `TwentyNewsgroupsGroovyExperiment` (Groovy configuration re-using pre-configured Train/Test and CV setup)
-`TwentyNewsgroupsGroovyExtendedExperiment` (Pure Groovy configuration)
+`TwentyNewsgroupsJavaExperiment` (Pure Java configuration, *unsuited for on-the-fly changes*)
 
 ===TwentyNewsgroupsGroovyExperiment===
 
@@ -149,13 +143,9 @@ Similarly, for the designated test and train sets.
 
 ===main()===
 
-This calls both the cross-validation and the train/test runs. Please note that, if you haven't set *DKPRO_HOME* otherwise, here is your last change to specify where the resulting data will be stored:
+This calls both the cross-validation and the train/test runs. 
 
-{{{
-System.setProperty("DKPRO_HOME", "/the/path/to/my/results/");
-}}}
-
-There you will find a set of directories storing intermediate and final evaluation results of your experiments: 
+In your `DKPRO_HOME` folder, you will find a set of directories storing intermediate and final evaluation results of your experiments: 
 The `Evaluation...` folders (usually one for the TrainTest setup and one for Crossvalidation, named according to the experiment name setup on the overall BatchTask) contain the final results for all runs of the pipeline.
 E.g., the `eval.xls` file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set).
 
