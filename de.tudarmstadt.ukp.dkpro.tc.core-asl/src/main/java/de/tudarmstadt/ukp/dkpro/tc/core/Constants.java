@@ -44,6 +44,7 @@ public interface Constants
     public static final String DIM_MULTI_LABEL = "multiLabel";
     public static final String DIM_BIPARTITION_THRESHOLD = "threshold";
     public static final String DIM_LOWER_CASE = "lowerCase";
+    public static final String DIM_IS_UNIT_CLASSIFICATION = "isUnitClassification";
 
     public static final String DIM_DATA_WRITER = "dataWriter";
 
