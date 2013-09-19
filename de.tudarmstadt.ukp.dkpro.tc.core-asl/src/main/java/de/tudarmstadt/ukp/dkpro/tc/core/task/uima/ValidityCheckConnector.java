@@ -11,6 +11,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -71,6 +72,7 @@ public class ValidityCheckConnector
             Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
                     TextClassificationUnit.class);
 
+            // whether outcome annotation are present at all
             if (outcomes.size() == 0) {
                 throw new AnalysisEngineProcessException(
                         new TextClassificationException(
@@ -78,12 +80,28 @@ public class ValidityCheckConnector
                                         +
                                         "The reader must make sure that the expected outcome of the classification is annotated accordingly."));
             }
-            if (isMultiLabel && dataWriter.equals(Constants.WEKA_DATA_WRITER_NAME)) {
-                throw new AnalysisEngineProcessException(
-                        new TextClassificationException(
-                                "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
+
+            // iff multi-label classification is active, no single-label data writer may be used
+            if (isMultiLabel) {
+                if (dataWriter.equals(Constants.WEKA_DATA_WRITER_NAME)) {
+                    throw new AnalysisEngineProcessException(
+                            new TextClassificationException(
+                                    "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
+                }
             }
 
+            // iff single-label is configured, there may not be more than one outcome annotation per
+            // CAS
+            if (!isMultiLabel && outcomes.size() > 2) {
+                throw new AnalysisEngineProcessException(
+                        new TextClassificationException(
+                                "Your experiment is configured to be single-label, but I found more than one outcome annotation for "
+                                        + DocumentMetaData.get(jcas).getDocumentUri()
+                                        + ". Please configure your project to be multi-label or make sure to have only one outcome per instance."));
+            }
+
+            // iff unit classification is active, there must be classificationUnit annotations, each
+            // labeled with an outcome annotation
             if (isUnitClassification) {
                 if (classificationUnits.size() == 0) {
                     throw new AnalysisEngineProcessException(
