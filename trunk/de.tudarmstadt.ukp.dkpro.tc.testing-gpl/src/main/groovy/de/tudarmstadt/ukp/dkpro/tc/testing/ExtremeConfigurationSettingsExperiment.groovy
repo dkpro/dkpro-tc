@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
@@ -31,7 +32,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  * @author zesch
  * @author Oliver Ferschke
  */
-public class ExtremeConfigurationSettingsExperiment {
+public class ExtremeConfigurationSettingsExperiment implements Constants {
 
     def experimentName = "ExtremeConfigurationSettingsTest";
 
@@ -67,33 +68,38 @@ public class ExtremeConfigurationSettingsExperiment {
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
     ]);
 
-    def dimMultiLabel = Dimension.create("multiLabel", false);
-
+    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
+    
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
-    "pipelineParameters",
+    DIM_PIPELINE_PARAMS,
     [
+        "TopK",
+        "500",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
         NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
         3
-    ]);
+    ]
+    );
 
     //UIMA parameters for FE configuration
     def dimPipelineParametersEmpty = Dimension.create("pipelineParameters", []);
 
     def dimClassificationArgs =
-    Dimension.create("classificationArguments",
+    Dimension.create(
+    DIM_CLASSIFICATION_ARGS,
     [
         [NaiveBayes.class.name].toArray()
     ] as Object[]
     );
 
     def dimClassificationArgsEmpty =
-    Dimension.create("classificationArguments", [] as Object[]);
+    Dimension.create(DIM_CLASSIFICATION_ARGS, [] as Object[]);
 
     def dimFeatureSets = Dimension.create(
-    "featureSet",
+    DIM_FEATURE_SET,
     [
         [
             NrOfTokensFeatureExtractor.class.name,
@@ -102,20 +108,7 @@ public class ExtremeConfigurationSettingsExperiment {
     ] as Object[]
     );
 
-    def dimFeatureSetsEmpty = Dimension.create("featureSet", [] as Object[]);
-
-    def dimFeatureParameters = Dimension.create(
-    "featureParameters",
-    [
-        [
-            "TopK",
-            "500"
-        ].toArray()
-    ] as Object[]
-    );
-
-    def dimFeatureParametersEmpty = Dimension.create("featureParameters", [] as Object[]);
-
+    def dimFeatureSetsEmpty = Dimension.create(DIM_FEATURE_SET, [] as Object[]);
 
     // === Test =========================================================
 
@@ -125,12 +118,12 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
                 dimReaderTrain,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParametersEmpty
@@ -144,13 +137,13 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
                 dimReaderTrain,
                 dimReaderTest,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParametersEmpty
@@ -171,12 +164,12 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
                 dimReaderTrain,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
@@ -190,13 +183,13 @@ public class ExtremeConfigurationSettingsExperiment {
         BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            dataWriter: WekaDataWriter.class.name,
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
                 dimReaderTrain,
                 dimReaderTest,
                 dimMultiLabel,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
