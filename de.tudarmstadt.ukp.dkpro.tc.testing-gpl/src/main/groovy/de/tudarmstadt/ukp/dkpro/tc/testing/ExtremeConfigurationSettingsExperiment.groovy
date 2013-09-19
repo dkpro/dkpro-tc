@@ -46,31 +46,29 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def dimReaderTest = Dimension.createBundle("readerTest", [
+    def dimReaders = Dimension.createBundle("readers", [
         readerTest: TwentyNewsgroupsCorpusReader.class,
         readerTestParams: [
-            "sourceLocation",
+            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
             corpusFilePathTest,
-            "language",
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
             languageCode,
-            "patterns",
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-    ]);
-
-    def dimReaderTrain = Dimension.createBundle("readerTrain", [
+            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+        ],
         readerTrain: TwentyNewsgroupsCorpusReader.class,
         readerTrainParams: [
-            "sourceLocation",
-            corpusFilePathTrain,
-            "language",
+            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+            corpusFilePathTest,
+            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
             languageCode,
-            "patterns",
+            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
     ]);
 
     def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
-    
+
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
@@ -85,7 +83,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     );
 
     //UIMA parameters for FE configuration
-    def dimPipelineParametersEmpty = Dimension.create("pipelineParameters", []);
+    def dimPipelineParametersEmpty = Dimension.create(DIM_PIPELINE_PARAMS, []);
 
     def dimClassificationArgs =
     Dimension.create(
@@ -121,7 +119,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimReaderTrain,
+                dimReaders,
                 dimMultiLabel,
                 dimDataWriter,
                 dimClassificationArgs,
@@ -140,8 +138,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimReaderTrain,
-                dimReaderTest,
+                dimReaders,
                 dimMultiLabel,
                 dimDataWriter,
                 dimClassificationArgs,
@@ -167,7 +164,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimReaderTrain,
+                dimReaders,
                 dimMultiLabel,
                 dimDataWriter,
                 dimClassificationArgs,
@@ -186,8 +183,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             aggregate: getPreprocessing(),
             innerReport: TrainTestReport.class,
             parameterSpace : [
-                dimReaderTrain,
-                dimReaderTest,
+                dimReaders,
                 dimMultiLabel,
                 dimDataWriter,
                 dimClassificationArgs,
