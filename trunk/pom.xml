@@ -55,6 +55,16 @@
 			</releases>
 		</repository>
 	</repositories>
+	<distributionManagement>
+	  <repository>
+	    <id>ukp-central</id>
+	    <url>dav:http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
+	  </repository>
+	  <snapshotRepository>
+	    <id>ukp-central</id>
+	    <url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
+	  </snapshotRepository>
+	</distributionManagement>
 	<developers>
 		<developer>
 			<id>oliver.ferschke</id>
@@ -205,6 +215,15 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<build>
+	  <extensions> 
+    	<extension> 
+      		<groupId>org.apache.maven.wagon</groupId>
+      		<artifactId>wagon-webdav</artifactId>
+      		<version>1.0-beta-2</version>
+    		</extension> 
+  			</extensions> 
+	</build>
 	<profiles>
 		<profile>
 			<id>groovy</id>
@@ -272,7 +291,7 @@
 							</execution>
 						</executions>
 					</plugin>
-				</plugins>
+				</plugins>				
 			</build>
 		</profile>
 	</profiles>
