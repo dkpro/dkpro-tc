@@ -8,16 +8,16 @@
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
-	<version>0.4.0</version>
+	<version>0.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.target>1.6</java.target>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/tags/de.tudarmstadt.ukp.dkpro.tc-0.4.0</connection>
-		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/tags/de.tudarmstadt.ukp.dkpro.tc-0.4.0</developerConnection>
-		<url>http://code.google.com/p/dkpro-tc/source/browse/tags/de.tudarmstadt.ukp.dkpro.tc-0.4.0</url>
+		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/dkpro-tc/source/browse/</url>
 	</scm>
 	<licenses>
 		<license>
@@ -122,49 +122,49 @@
 				<artifactId>
           			de.tudarmstadt.ukp.dkpro.tc.api-asl
           		</artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
           			de.tudarmstadt.ukp.dkpro.tc.features-asl
           		</artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
                 </artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
                 </artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.api.features-asl
                 </artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.weka-gpl
                 </artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
                     de.tudarmstadt.ukp.dkpro.tc.core-asl
                 </artifactId>
-				<version>0.4.0</version>
+				<version>0.5.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
