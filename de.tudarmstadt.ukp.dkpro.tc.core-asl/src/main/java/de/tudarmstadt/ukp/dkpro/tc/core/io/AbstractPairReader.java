@@ -15,12 +15,12 @@ import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
 /**
  * Abstract base class for readers used in pair-classification. Please remember that, additionally
  * to the information set in this class, you need to implement one {@link TCReaderSingleLabel} or
- * {@link TCReaderMultiLabel} to set one or more outcome for each instance.
- * 
+ * {@link TCReaderMultiLabel} and set one or more outcomes for each instance.
+ *
  * @author Nico Erbs
  * @author zesch
  * @author daxenberger
- * 
+ *
  */
 public abstract class AbstractPairReader
     extends JCasCollectionReader_ImplBase
