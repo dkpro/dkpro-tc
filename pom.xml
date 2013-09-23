@@ -39,12 +39,12 @@
 	<url>http://dkpro-tc.googlecode.com/</url>
 	<repositories>
 		<repository>
-			<id>ukp-oss-releases</id>
+			<id>ukp-oss</id>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
 		</repository>
 		<repository>
 			<id>ukp-oss-snapshots</id>
-			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local/</url>
 		</repository>
 		<repository>
 			<id>apache.snapshots</id>
@@ -57,14 +57,14 @@
 	</repositories>
 	<distributionManagement>
 	  <repository>
-	    <id>ukp-central</id>
-	    <url>dav:http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
+	    <id>ukp-oss</id>
+	    <url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
 	  </repository>
-	  <snapshotRepository>
-	    <id>ukp-central</id>
-	    <url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
-	  </snapshotRepository>
-	</distributionManagement>
+  	<snapshotRepository>
+    	<id>ukp-oss-snapshots</id>
+    	<url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local</url>
+  	</snapshotRepository>
+  	</distributionManagement>
 	<developers>
 		<developer>
 			<id>oliver.ferschke</id>
