@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 		<artifactId>dkpro-parent-pom</artifactId>
-		<version>5-SNAPSHOT</version>
+		<version>5</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
