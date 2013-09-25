@@ -2,6 +2,7 @@
 
 Note: This project is still in incubator stage and subject to frequent change.
 
+  * [DeveloperSetup Developer Setup]
   * [GroovySetup Groovy Setup]
   * [JsonSetup Howto: Using JSON instead of Groovy to configure your experiments]
   * [DemoExperiments Getting Started: Demo Experiments]
