@@ -4,7 +4,7 @@
   * By default, access to snapshot artifacts is disabled in the settings.xml mentioned above. If you need access to snapshots, uncomment the respective line in the configuration.
 = Checking out a snapshot=
   * Open the SVN Repositories perspective in Eclipse (Menu -> Window ->   Show View -> Other... -> SVN -> SVN Repositories)
-  * Add a SVN repository with the URL http://dkpro-tc.googlecode.com/svn/trunk/
+  * Add a SVN repository with the URL http://dkpro-tc.googlecode.com/svn/
   * Expand the new repository node in the SVN Repositories view
   * Right-click on trunk and select Check out as Maven project
     * Note: if you do not see this menu item, make sure you have installed the Maven SCM handler for Subclipse.
