@@ -25,14 +25,14 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.similarity.dkpro.resource.lexical.string.GreedyStringTilingMeasureResource;
+import dkpro.similarity.uima.resource.lexical.string.GreedyStringTilingMeasureResource;
 
 public class SimilarityPairFeatureTest
 {
-    
+
     private static final String VIEW1 = "view1";
     private static final String VIEW2 = "view2";
-    
+
     public static class Annotator extends JCasAnnotator_ImplBase {
         final static String MODEL_KEY = "PairFeatureExtractorResource";
         @ExternalResource(key = MODEL_KEY)
@@ -43,7 +43,7 @@ public class SimilarityPairFeatureTest
             throws AnalysisEngineProcessException
         {
             System.out.println(model.getClass().getName());
-            
+
             List<Feature> features;
             try {
                 features = model.extract(aJCas.getView(VIEW1), aJCas.getView(VIEW2));
@@ -55,10 +55,10 @@ public class SimilarityPairFeatureTest
                 throw new AnalysisEngineProcessException(e);
             }
             Assert.assertEquals(1, features.size());
-            
+
             Iterator<Feature> iter = features.iterator();
             System.out.println(iter.next());
-            
+
         }
     }
 
@@ -68,7 +68,7 @@ public class SimilarityPairFeatureTest
                 GreedyStringTilingMeasureResource.class,
                 GreedyStringTilingMeasureResource.PARAM_MIN_MATCH_LENGTH, "3"
         );
-        
+
         AnalysisEngineDescription desc = createEngineDescription(
                       Annotator.class,
                       Annotator.MODEL_KEY, createExternalResourceDescription(
@@ -77,7 +77,7 @@ public class SimilarityPairFeatureTest
                               SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource
                       )
        );
-        
+
       AnalysisEngine engine = createEngine(desc);
       JCas jcas = engine.newJCas();
       TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class, Sentence.class);
@@ -85,7 +85,7 @@ public class SimilarityPairFeatureTest
       JCas view1 = jcas.createView(VIEW1);
       view1.setDocumentLanguage("en");
       tb.buildTokens(view1, "This is a test .");
-      
+
       JCas view2 = jcas.createView(VIEW2);
       view2.setDocumentLanguage("en");
       tb.buildTokens(view2, "Test is this .");
