@@ -1,6 +1,6 @@
 =Basic Setup (of Eclipse and Maven) =
   * If you have a current eclipse version, it should already come with m2e (Maven integration) built-in. If not, follow [https://code.google.com/p/dkpro-core-asl/wiki/UserSetup these instructions] and restart eclipse
-  * In order to connect your maven installation (e.g. the one that comes with m2e) with our maven infrastructure, add our public server to your maven settings. If you do not yet have a settings.xml file in your .m2 directory, use the one provided [https://dkpro-tc.googlecode.com/svn/wiki/misc/settings.xml here]. Otherwise, add the repositories from the same settings.xml to your existing configuration.
+  * In order to connect your Maven installation (e.g. the one that comes with m2e) with our Maven infrastructure, add our public server to your Maven configuration. If you do not yet have a settings.xml file in your .m2 directory, use the one provided [https://dkpro-tc.googlecode.com/svn/wiki/misc/settings.xml here]. Otherwise, add the repositories from the same settings.xml to your existing configuration.
 
 = Checking out a snapshot=
   * Open the SVN Repositories perspective in Eclipse (Menu -> Window ->   Show View -> Other... -> SVN -> SVN Repositories)
