@@ -8,4 +8,10 @@
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
   <name>DKPro TC Mallet Classification Engine</name>
   <description>Interface to the Mallet Machine Learning Toolkit</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>cc.mallet</groupId>
+  		<artifactId>mallet</artifactId>
+  	</dependency>
+  </dependencies>
 </project>
