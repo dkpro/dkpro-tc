@@ -3,10 +3,10 @@
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl</artifactId>
-  <version>0.4.0</version>
+  <version>0.5.0-SNAPSHOT</version>
   <dependencies>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
