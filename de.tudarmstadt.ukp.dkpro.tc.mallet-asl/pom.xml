@@ -13,5 +13,17 @@
   		<groupId>cc.mallet</groupId>
   		<artifactId>mallet</artifactId>
   	</dependency>
+    <dependency>
+        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+        <artifactId>
+            de.tudarmstadt.ukp.dkpro.tc.core-asl
+        </artifactId>
+    </dependency>
+   	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>
+  			de.tudarmstadt.ukp.dkpro.tc.api.features-asl
+  		</artifactId>
+  	</dependency>
   </dependencies>
 </project>
