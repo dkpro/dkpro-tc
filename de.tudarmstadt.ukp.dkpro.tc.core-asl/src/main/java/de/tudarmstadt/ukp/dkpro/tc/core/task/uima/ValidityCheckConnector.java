@@ -91,8 +91,8 @@ public class ValidityCheckConnector
             }
 
             // iff single-label is configured, there may not be more than one outcome annotation per
-            // CAS
-            if (!isMultiLabel && outcomes.size() > 2) {
+            // CAS, except this is the unit classification
+            if (!isMultiLabel && !isUnitClassification && outcomes.size() > 2) {
                 throw new AnalysisEngineProcessException(
                         new TextClassificationException(
                                 "Your experiment is configured to be single-label, but I found more than one outcome annotation for "
