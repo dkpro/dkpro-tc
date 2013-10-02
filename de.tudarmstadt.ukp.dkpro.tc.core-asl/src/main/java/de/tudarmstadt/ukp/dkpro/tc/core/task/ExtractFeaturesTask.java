@@ -33,9 +33,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 /**
  * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file)
  * on disk.
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public class ExtractFeaturesTask
     extends UimaTaskBase
@@ -153,7 +153,7 @@ public class ExtractFeaturesTask
         }
 
         for (String key : parameterKeyPairs.keySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
                     parameterKeyPairs.get(key));
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
