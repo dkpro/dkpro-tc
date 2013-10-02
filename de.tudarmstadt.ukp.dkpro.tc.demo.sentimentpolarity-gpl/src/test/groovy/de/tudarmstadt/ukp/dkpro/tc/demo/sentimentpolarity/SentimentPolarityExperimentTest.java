@@ -7,16 +7,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.ExperimentStarter;
+
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
- * any exception. Additional unit tests should test the inner workings of the experiments
+ * any exception.
  * 
  * @author Oliver Ferschke
+ * @author Artem Vovk
  * 
  */
 public class SentimentPolarityExperimentTest
 {
-    SentimentPolarityGroovyExperiment experiment;
 
     @Before
     public void setup()
@@ -25,24 +27,13 @@ public class SentimentPolarityExperimentTest
         String path = "target/repository/" + getClass().getSimpleName() + "/"
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
-
-        experiment = new SentimentPolarityGroovyExperiment();
     }
 
     @Test
-    public void testGroovyTrainTest()
+    public void testGroovyExperiment()
         throws Exception
     {
-        // Groovy setup with automatic task wiring
-        experiment.runTrainTest();
-    }
-
-    @Test
-    public void testGroovyCrossValidation()
-        throws Exception
-    {
-        // Groovy setup with automatic task wiring
-        experiment.runCrossValidation();
+        ExperimentStarter.start("scripts/SentimentPolarityGroovyExperiment.groovy");
     }
 
     @Rule
