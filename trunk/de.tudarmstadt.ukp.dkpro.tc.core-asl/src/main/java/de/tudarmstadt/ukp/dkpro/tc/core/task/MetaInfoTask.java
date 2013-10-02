@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -22,13 +24,14 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
- * Iterates over all documents and stores required collection-level meta data, 
+ * Iterates over all documents and stores required collection-level meta data,
  * e.g. which n-grams appear in the documents.
- * 
+ *
  * @author zesch
  *
  */
@@ -44,6 +47,9 @@ public class MetaInfoTask
 
     @Discriminator
     protected List<Object> pipelineParameters;
+
+    @Discriminator
+    protected boolean isPairClassification;
 
     private List<Class<? extends MetaCollector>> metaCollectorClasses;
 
@@ -126,23 +132,31 @@ public class MetaInfoTask
         // extracted, as in the regression demo)
         // TODO better way to do this?
         if (parameterKeyPairs.size() == 0) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE)
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY)
                     .getPath());
             file.mkdir();
         }
 
         for (String key : parameterKeyPairs.keySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
                     parameterKeyPairs.get(key));
             parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
 
-        List<AnalysisEngineDescription> aeds = new ArrayList<AnalysisEngineDescription>();
+        AggregateBuilder builder = new AggregateBuilder();
 
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            aeds.add(createEngineDescription(metaCollectorClass, parameters.toArray()));
+            // check whether we are dealing with pair classification and if so, add PART_ONE and PART_TWO views
+            if(isPairClassification){
+                builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
+                        CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_ONE);
+                builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
+                        CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_TWO);
+            }
+            else {
+                builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()));
+            }
         }
-
-        return createEngineDescription(aeds.toArray(new AnalysisEngineDescription[0]));
+        return builder.createAggregateDescription();
     }
 }

@@ -4,9 +4,9 @@ import org.apache.uima.cas.CAS;
 
 /**
  * Basic constants that are used throughout the project
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public interface Constants
 {
@@ -41,6 +41,7 @@ public interface Constants
     public static final String DIM_CLASSIFICATION_ARGS = "classificationArguments";
 
     public static final String DIM_IS_REGRESSION = "isRegressionExperiment";
+    public static final String DIM_IS_PAIR_CLASSIFICATION = "isPairClassification";
     public static final String DIM_MULTI_LABEL = "multiLabel";
     public static final String DIM_BIPARTITION_THRESHOLD = "threshold";
     public static final String DIM_LOWER_CASE = "lowerCase";

@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
@@ -16,13 +18,14 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
 /**
  * Performs the preprocessing steps, that were configured by the user, on the documents.
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public class PreprocessTask
     extends UimaTaskBase
@@ -46,6 +49,9 @@ public class PreprocessTask
 
     @Discriminator
     private boolean isUnitClassification;
+
+    @Discriminator
+    protected boolean isPairClassification;
 
     public void setTesting(boolean isTesting)
     {
@@ -85,9 +91,18 @@ public class PreprocessTask
         AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
                 aContext.getStorageLocation(output, AccessMode.READWRITE).getPath());
+
+        // check whether we are dealing with pair classification and if so, add PART_ONE and PART_TWO views
+        if(this.isPairClassification){
+            AggregateBuilder builder = new AggregateBuilder();
+            builder.add(createEngineDescription(aggregate),
+                    CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_ONE);
+            builder.add(createEngineDescription(aggregate),
+                    CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_TWO);
+            aggregate = builder.createAggregateDescription();
+        }
         if (this.isUnitClassification) {
             AnalysisEngineDescription casMultiplier = createEngineDescription(ClassificationUnitCasMultiplier.class);
-
             return createEngineDescription(aggregate, casMultiplier, xmiWriter);
         }
         else {
