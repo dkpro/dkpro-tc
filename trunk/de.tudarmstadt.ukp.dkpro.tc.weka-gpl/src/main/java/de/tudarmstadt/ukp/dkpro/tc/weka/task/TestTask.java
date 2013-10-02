@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  *
  * @author zesch
  * @author Artem Vovk
- * 
+ *
  */
 public class TestTask
     extends ExecutableTaskBase
@@ -85,7 +85,7 @@ public class TestTask
                 + "/" + TRAINING_DATA_KEY);
 
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
-        if (featureSearcher != null && attributeEvaluator != null) {
+        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
             trainData = attributeSelection(trainData, aContext);
         }
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
@@ -209,7 +209,7 @@ public class TestTask
     }
 
     /**
-     * 
+     *
      * @param trainData
      *            data to use for attribute selection
      * @param aContext
