@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
+import de.tudarmstadt.ukp.dkpro.tc.core.GroovyExperiment;
 import de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.io.MovieReviewCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
@@ -32,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  * @author Oliver Ferschke
  * @author daxenberger
  */
-public class SentimentPolarityGroovyExperiment implements Constants {
+public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Constants {
 
     // === PARAMETERS===========================================================
 
@@ -175,7 +176,7 @@ public class SentimentPolarityGroovyExperiment implements Constants {
         );
     }
 
-    public static void main(String[] args)
+    public void run()
     {
         new SentimentPolarityGroovyExperiment().runTrainTest();
         new SentimentPolarityGroovyExperiment().runCrossValidation();
