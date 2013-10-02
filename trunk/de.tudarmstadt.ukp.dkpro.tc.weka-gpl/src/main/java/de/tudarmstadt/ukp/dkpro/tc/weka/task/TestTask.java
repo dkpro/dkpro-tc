@@ -3,6 +3,11 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
+import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.ASSearch;
+import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.multilabel.Evaluation;
@@ -27,13 +32,23 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * Builds the classifier from the training data and performs classification on the test data.
  *
  * @author zesch
- *
+ * @author Artem Vovk
+ * 
  */
 public class TestTask
     extends ExecutableTaskBase
 {
     @Discriminator
     private List<String> classificationArguments;
+
+    @Discriminator
+    private List<String> featureSearcher;
+
+    @Discriminator
+    private List<String> attributeEvaluator;
+
+    @Discriminator
+    private boolean applySelection;
 
     @Discriminator
     private boolean multiLabel;
@@ -70,6 +85,9 @@ public class TestTask
                 + "/" + TRAINING_DATA_KEY);
 
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
+        if (featureSearcher != null && attributeEvaluator != null) {
+            trainData = attributeSelection(trainData, aContext);
+        }
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
 
         // do not balance in regression experiments
@@ -86,8 +104,8 @@ public class TestTask
             ((MultilabelClassifier) cl).setOptions(mlArgs.toArray(new String[0]));
         }
         else {
-            cl = AbstractClassifier.forName(classificationArguments.get(0),
-                    classificationArguments.subList(1, classificationArguments.size()).toArray(new String[0]));
+            cl = AbstractClassifier.forName(classificationArguments.get(0), classificationArguments
+                    .subList(1, classificationArguments.size()).toArray(new String[0]));
         }
 
         Instances filteredTrainData;
@@ -188,5 +206,41 @@ public class TestTask
         // Write out the predictions
         DataSink.write(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
                 .getAbsolutePath() + "/" + PREDICTIONS_KEY, testData);
+    }
+
+    /**
+     * 
+     * @param trainData
+     *            data to use for attribute selection
+     * @param aContext
+     *            context of the task
+     * @return data after attribute selection (if applySelection was false it returns reference to
+     *         the origignal data)
+     */
+    private Instances attributeSelection(Instances trainData, TaskContext aContext)
+        throws Exception
+    {
+        AttributeSelection selector = new AttributeSelection();
+
+        // Get feature searcher
+        ASSearch search = ASSearch.forName(featureSearcher.get(0),
+                featureSearcher.subList(1, featureSearcher.size()).toArray(new String[0]));
+        // Get attribute evaluator
+        ASEvaluation evaluation = ASEvaluation.forName(attributeEvaluator.get(0),
+                attributeEvaluator.subList(1, attributeEvaluator.size()).toArray(new String[0]));
+
+        selector.setSearch(search);
+        selector.setEvaluator(evaluation);
+        selector.SelectAttributes(trainData);
+
+        // Write the results of attribute selection
+        FileUtils.writeStringToFile(
+                new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
+                        .getAbsolutePath() + "/" + "attributeEvaluationResults.txt"),
+                selector.toResultsString());
+        if (applySelection) {
+            trainData = selector.reduceDimensionality(trainData);
+        }
+        return trainData;
     }
 }
