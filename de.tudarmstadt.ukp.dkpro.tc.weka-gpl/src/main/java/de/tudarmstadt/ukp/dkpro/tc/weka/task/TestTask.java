@@ -25,7 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Builds the classifier from the training data and performs classification on the test data.
- * 
+ *
  * @author zesch
  *
  */
@@ -39,10 +39,10 @@ public class TestTask
     private boolean multiLabel;
 
     @Discriminator
-    private boolean isRegressionExperiment = false;
+    private boolean isRegressionExperiment;
 
     @Discriminator
-    String threshold = "1.";
+    String threshold;
 
     public static final String INPUT_KEY_TRAIN = "input.train";
     public static final String INPUT_KEY_TEST = "input.test";
