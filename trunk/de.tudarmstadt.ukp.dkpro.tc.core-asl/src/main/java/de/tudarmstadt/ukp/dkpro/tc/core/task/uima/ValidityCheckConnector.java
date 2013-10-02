@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -13,6 +14,7 @@ import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
@@ -21,9 +23,9 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 /**
  * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on
  * the CAS.
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public class ValidityCheckConnector
     extends JCasAnnotator_ImplBase
@@ -44,6 +46,14 @@ public class ValidityCheckConnector
     public static final String PARAM_DATA_WRITER = "valCheckerDataWriter";
     @ConfigurationParameter(name = PARAM_DATA_WRITER, mandatory = true)
     private String dataWriter;
+
+    public static final String PARAM_BIPARTITION_THRESHOLD = "valCheckerBipartionThreshold";
+    @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = false)
+    private String bipartitionThreshold;
+
+    public static final String PARAM_IS_PAIR_CLASSIFICATION = "valCheckerIsPairClassification";
+    @ConfigurationParameter(name = PARAM_IS_PAIR_CLASSIFICATION, mandatory = true)
+    private boolean isPairClassification;
 
     private boolean firstCall;
 
@@ -88,6 +98,11 @@ public class ValidityCheckConnector
                             new TextClassificationException(
                                     "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
                 }
+                if(bipartitionThreshold == null){
+                    throw new AnalysisEngineProcessException(
+                            new TextClassificationException(
+                                    "Your experiment is configured to be multi-label. Please set a bipartition threshold."));
+                }
             }
 
             // iff single-label is configured, there may not be more than one outcome annotation per
@@ -119,6 +134,20 @@ public class ValidityCheckConnector
                                                     + ". Please add outcome annotations for all classification units."));
                         }
                     }
+                }
+            }
+
+            // iff
+            if(isPairClassification){
+                try {
+                    jcas.getView(AbstractPairReader.PART_ONE);
+                    jcas.getView(AbstractPairReader.PART_TWO);
+                }
+                catch (CASException e) {
+                    throw new AnalysisEngineProcessException(
+                            new TextClassificationException(
+                                    "Your experiment is configured to be pair classification, but I could not find the two views "
+                                            + AbstractPairReader.PART_ONE + " and " + AbstractPairReader.PART_TWO + ". Please use a reader that inhereits from " + AbstractPairReader.class.getName()));
                 }
             }
         }

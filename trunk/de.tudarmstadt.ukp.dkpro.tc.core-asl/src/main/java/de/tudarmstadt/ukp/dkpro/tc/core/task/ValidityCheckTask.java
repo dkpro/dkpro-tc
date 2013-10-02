@@ -23,9 +23,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
  * Checks that everything has been configured properly and throws more meaningful exception
  * otherwise than would have been thrown downstream. This should be the first task in the TC
  * pipeline.
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public class ValidityCheckTask
     extends UimaTaskBase
@@ -39,13 +39,17 @@ public class ValidityCheckTask
     @Discriminator
     protected List<Object> pipelineParameters;
     @Discriminator
-    private boolean isRegressionExperiment = false;
+    private boolean isRegressionExperiment;
     @Discriminator
-    private boolean multiLabel = false;
+    private boolean multiLabel;
+    @Discriminator
+    private String threshold;
     @Discriminator
     private String dataWriter;
     @Discriminator
-    private boolean isUnitClassification = false;
+    private boolean isPairClassification;
+    @Discriminator
+    private boolean isUnitClassification;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -84,6 +88,10 @@ public class ValidityCheckTask
         parameters.add(dataWriter);
         parameters.add(ValidityCheckConnector.PARAM_IS_UNIT_CLASSIFICATION);
         parameters.add(isUnitClassification);
+        parameters.add(ValidityCheckConnector.PARAM_IS_PAIR_CLASSIFICATION);
+        parameters.add(isPairClassification);
+        parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);
+        parameters.add(threshold);
 
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }
