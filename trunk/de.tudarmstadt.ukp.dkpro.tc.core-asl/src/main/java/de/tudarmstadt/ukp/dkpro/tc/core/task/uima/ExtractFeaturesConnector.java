@@ -32,9 +32,9 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
  * extractors on each CAS.
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public class ExtractFeaturesConnector
     extends JCasAnnotator_ImplBase
@@ -93,10 +93,16 @@ public class ExtractFeaturesConnector
         Instance instance = new Instance();
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
             try {
-                if (featExt instanceof DocumentFeatureExtractor) {
+                if (featExt instanceof PairFeatureExtractor) {
+                    JCas view1 = jcas.getView(Constants.PART_ONE);
+                    JCas view2 = jcas.getView(Constants.PART_TWO);
+                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
+                }
+                else if (featExt instanceof DocumentFeatureExtractor) {
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
-                if (featExt instanceof ClassificationUnitFeatureExtractor) {
+                // FIXME what to do when a feature extractor is both PairFE and ClassificationUnitFE?
+                else if (featExt instanceof ClassificationUnitFeatureExtractor) {
                     TextClassificationUnit classificationUnit = null;
                     Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
                             TextClassificationUnit.class);
@@ -111,11 +117,7 @@ public class ExtractFeaturesConnector
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, classificationUnit));
                 }
-                if (featExt instanceof PairFeatureExtractor) {
-                    JCas view1 = jcas.getView(Constants.PART_ONE);
-                    JCas view2 = jcas.getView(Constants.PART_TWO);
-                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
-                }
+
             }
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);

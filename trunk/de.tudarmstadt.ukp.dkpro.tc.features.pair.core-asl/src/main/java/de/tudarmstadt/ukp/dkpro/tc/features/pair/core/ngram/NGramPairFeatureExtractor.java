@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
  * Pair-wise feature extractor
  * Returns the ngrams in a view with the view name as prefix
  * @author nico.erbs@gmail.com
+ * @author daxenberger
  *
  */
 public class NGramPairFeatureExtractor
@@ -27,9 +28,9 @@ public class NGramPairFeatureExtractor
     {
         List<Feature> features = new ArrayList<Feature>();
 
-        prefix = new String("ngrams" + view1.getViewName() + "_");
+        prefix = new String("ngrams_" + view1.getViewName() + "_");
         features.addAll(super.extract(view1, null));
-        prefix = new String("ngrams" + view2.getViewName() + "_");
+        prefix = new String("ngrams_" + view2.getViewName() + "_");
         features.addAll(super.extract(view2, null));
         return features;
     }
