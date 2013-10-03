@@ -85,10 +85,15 @@ public class TestTask
                 + "/" + TRAINING_DATA_KEY);
 
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
-        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
-            trainData = attributeSelection(trainData, aContext);
-        }
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
+
+        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
+            AttributeSelection selector = attributeSelection(trainData, aContext);
+            if(applySelection){
+                trainData = selector.reduceDimensionality(trainData);
+                testData = selector.reduceDimensionality(testData);
+            }
+        }
 
         // do not balance in regression experiments
         if (!isRegressionExperiment) {
@@ -217,7 +222,7 @@ public class TestTask
      * @return data after attribute selection (if applySelection was false it returns reference to
      *         the origignal data)
      */
-    private Instances attributeSelection(Instances trainData, TaskContext aContext)
+    private AttributeSelection attributeSelection(Instances trainData, TaskContext aContext)
         throws Exception
     {
         AttributeSelection selector = new AttributeSelection();
@@ -238,9 +243,7 @@ public class TestTask
                 new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
                         .getAbsolutePath() + "/" + "attributeEvaluationResults.txt"),
                 selector.toResultsString());
-        if (applySelection) {
-            trainData = selector.reduceDimensionality(trainData);
-        }
-        return trainData;
+
+        return selector;
     }
 }
