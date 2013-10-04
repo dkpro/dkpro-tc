@@ -6,6 +6,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
 
+import weka.attributeSelection.InfoGainAttributeEval
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.multilabel.BR
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
@@ -29,11 +30,11 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
  *
- * Base class for running for Train-Test and CrossValidation experiments using the pre-configured BatchTask setups. 
+ * Base class for running for Train-Test and CrossValidation experiments using the pre-configured BatchTask setups.
  *
  * @author Oliver Ferschke
  * @author daxenberger
- * 
+ *
  */
 public class ReutersTextClassificationGroovyExperiment implements Constants {
 
@@ -87,6 +88,16 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
         NaiveBayes.class.name
     ]);
 
+    def dimFeatureSelection = Dimension.createBundle("featureSelection", [
+        labelTransformationMethod: "BinaryRelevanceAttributeEvaluator",
+        attributeEvaluator: [
+            InfoGainAttributeEval.class.name
+        ],
+        numLabelsToKeep: 100,
+        applySelection: true
+    ]);
+
+
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
@@ -137,6 +148,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
                 dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
+                dimFeatureSelection,
                 dimFeatureSets,
                 dimPipelineParameters
             ],
@@ -166,6 +178,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
                 dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
+                dimFeatureSelection,
                 dimFeatureSets,
                 dimPipelineParameters
             ],
