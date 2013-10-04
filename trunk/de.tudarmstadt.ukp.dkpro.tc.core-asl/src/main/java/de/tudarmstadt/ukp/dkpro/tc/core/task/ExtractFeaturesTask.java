@@ -33,9 +33,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 /**
  * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file)
  * on disk.
- *
+ * 
  * @author zesch
- *
+ * 
  */
 public class ExtractFeaturesTask
     extends UimaTaskBase
@@ -57,7 +57,7 @@ public class ExtractFeaturesTask
     @Discriminator
     private Collection<String> files_validation;
     @Discriminator
-    private boolean isRegressionExperiment = false;
+    private boolean isRegressionExperiment;
     @Discriminator
     private String dataWriter;
 
@@ -178,11 +178,11 @@ public class ExtractFeaturesTask
 
         parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
                 outputDir.getAbsolutePath(), ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS,
-                dataWriter,
-                ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
-                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources
-                // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
+                dataWriter, ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT,
+                isRegressionExperiment, ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID,
+                addInstanceId, ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
+                extractorResources
+        // InstanceExtractor.PARAM_PAIR_FEATURE_EXTRACTORS, pairFeatureSet)
                 ));
 
         return createEngineDescription(ExtractFeaturesConnector.class, parameters.toArray());
