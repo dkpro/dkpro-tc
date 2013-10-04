@@ -75,7 +75,7 @@ It takes care of
   * writing results (which reports to use)
 
 Parameters which should be tested for different values and combinations will be defined as [http://code.google.com/p/dkpro-lab/ discriminators]. These parameters are usually prefixed with _dim_ and will be injected into the `ParameterSpace`.
-A full list of all discriminators in DKPro-TC can be found [here].
+A full list of all discriminators in DKPro-TC can be found [Discriminators here].
 
 The input data and reader(s) are defined as `DimensionBundle`.
 
