@@ -25,10 +25,10 @@ de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl
 de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl
 }}}
 
-All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ and the _sentimentpolarity_ experiment are binary classification tasks. 
-The _regression_ demo shows how to use DKPro-TC for regression experiments.
+All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ and the _sentimentpolarity_ experiment are binary, single-label classification tasks. 
+The _regression_ demo shows how to use DKPro-TC for regression experiments. If you don't know where to start, go with the twentynewsgroups demo first, as it has the most extensive documentation and configuration classes.
 
-==Binary Classification with DKPro-TC: twentynewsgroups demo ==
+==Binary Classification with DKPro-TC: twentynewsgroups demo==
 
 It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
 
@@ -61,8 +61,8 @@ These are some of the files you should find in this project:
 
 There are two ways to run the experiment:
 
-`TwentyNewsgroupsGroovyExperiment` (Groovy configuration re-using pre-configured Train/Test and CV setup)
-`TwentyNewsgroupsJavaExperiment` (Pure Java configuration, *unsuited for on-the-fly changes*)
+`TwentyNewsgroupsGroovyExperiment` (Groovy configuration)
+`TwentyNewsgroupsJavaExperiment` (Java configuration)
 
 ===TwentyNewsgroupsGroovyExperiment===
 
@@ -75,6 +75,7 @@ It takes care of
   * writing results (which reports to use)
 
 Parameters which should be tested for different values and combinations will be defined as [http://code.google.com/p/dkpro-lab/ discriminators]. These parameters are usually prefixed with _dim_ and will be injected into the `ParameterSpace`.
+A full list of all discriminators in DKPro-TC can be found [here].
 
 The input data and reader(s) are defined as `DimensionBundle`.
 
@@ -154,7 +155,3 @@ Once you got this example running as it is, you can start adapting various param
   * using different data sets - which are completely up to you
   * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
   * using different classifiers - please refer to the WEKA-JavaDoc for further information on that. Currently, we only support WEKA for classification.
-
-==Multi-labelClassification with DKPro-TC: reuters demo ==
-
-tbd.
