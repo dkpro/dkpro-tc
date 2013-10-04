@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
 
-import weka.attributeSelection.ASEvaluation;
-import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -30,10 +29,11 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Builds the classifier from the training data and performs classification on the test data.
- *
+ * 
  * @author zesch
  * @author Artem Vovk
- *
+ * @author daxenberger
+ * 
  */
 public class TestTask
     extends ExecutableTaskBase
@@ -46,6 +46,12 @@ public class TestTask
 
     @Discriminator
     private List<String> attributeEvaluator;
+
+    @Discriminator
+    private String labelTransformationMethod;
+
+    @Discriminator
+    private int numLabelsToKeep;
 
     @Discriminator
     private boolean applySelection;
@@ -66,6 +72,7 @@ public class TestTask
     public static final String PREDICTIONS_KEY = "predictions.arff";
     public static final String TRAINING_DATA_KEY = "training-data.arff.gz";
     public static final String EVALUATION_DATA_KEY = "evaluation.bin";
+    public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";
 
     public static boolean MULTILABEL;
 
@@ -86,14 +93,6 @@ public class TestTask
 
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
-
-        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
-            AttributeSelection selector = attributeSelection(trainData, aContext);
-            if(applySelection){
-                trainData = selector.reduceDimensionality(trainData);
-                testData = selector.reduceDimensionality(testData);
-            }
-        }
 
         // do not balance in regression experiments
         if (!isRegressionExperiment) {
@@ -133,6 +132,44 @@ public class TestTask
         else {
             filteredTrainData = new Instances(trainData);
             filteredTestData = new Instances(testData);
+        }
+
+        // FEATURE SELECTION
+        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
+            AttributeSelection selector = TaskUtils.singleLabelAttributeSelection(
+                    filteredTrainData, featureSearcher, attributeEvaluator);
+            // Write the results of attribute selection
+            FileUtils.writeStringToFile(
+                    new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
+                            .getAbsolutePath() + "/" + FEATURE_SELECTION_DATA_KEY),
+                    selector.toResultsString());
+            if (applySelection) {
+                filteredTrainData = selector.reduceDimensionality(filteredTrainData);
+                filteredTestData = selector.reduceDimensionality(filteredTestData);
+            }
+        }
+        if (multiLabel && attributeEvaluator != null && labelTransformationMethod != null
+                && numLabelsToKeep != 0) {
+            try {
+                // file to hold the results of attribute selection
+                File fsResultsFile = new File(aContext.getStorageLocation(OUTPUT_KEY,
+                        AccessMode.READWRITE).getAbsolutePath()
+                        + "/" + FEATURE_SELECTION_DATA_KEY);
+                // filter for reducing dimension of attributes
+                Remove removeFilter = TaskUtils.multiLabelAttributeSelection(filteredTrainData,
+                        labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
+                        fsResultsFile);
+                if (removeFilter != null && applySelection) {
+                    filteredTrainData = TaskUtils.applyAttributeSelectionFilter(filteredTrainData,
+                            removeFilter);
+                    filteredTestData = TaskUtils.applyAttributeSelectionFilter(filteredTestData,
+                            removeFilter);
+                }
+            }
+            catch (Exception e) {
+                LogFactory.getLog(getClass())
+                        .warn("Could not apply multi-label feature selection.");
+            }
         }
 
         // file to hold prediction results
@@ -211,39 +248,5 @@ public class TestTask
         // Write out the predictions
         DataSink.write(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
                 .getAbsolutePath() + "/" + PREDICTIONS_KEY, testData);
-    }
-
-    /**
-     *
-     * @param trainData
-     *            data to use for attribute selection
-     * @param aContext
-     *            context of the task
-     * @return data after attribute selection (if applySelection was false it returns reference to
-     *         the origignal data)
-     */
-    private AttributeSelection attributeSelection(Instances trainData, TaskContext aContext)
-        throws Exception
-    {
-        AttributeSelection selector = new AttributeSelection();
-
-        // Get feature searcher
-        ASSearch search = ASSearch.forName(featureSearcher.get(0),
-                featureSearcher.subList(1, featureSearcher.size()).toArray(new String[0]));
-        // Get attribute evaluator
-        ASEvaluation evaluation = ASEvaluation.forName(attributeEvaluator.get(0),
-                attributeEvaluator.subList(1, attributeEvaluator.size()).toArray(new String[0]));
-
-        selector.setSearch(search);
-        selector.setEvaluator(evaluation);
-        selector.SelectAttributes(trainData);
-
-        // Write the results of attribute selection
-        FileUtils.writeStringToFile(
-                new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
-                        .getAbsolutePath() + "/" + "attributeEvaluationResults.txt"),
-                selector.toResultsString());
-
-        return selector;
     }
 }
