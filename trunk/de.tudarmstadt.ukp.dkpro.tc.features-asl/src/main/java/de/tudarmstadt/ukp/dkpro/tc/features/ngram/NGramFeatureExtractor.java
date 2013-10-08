@@ -23,9 +23,9 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NGramFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements MetaDependent, ClassificationUnitFeatureExtractor
@@ -79,9 +79,7 @@ public class NGramFeatureExtractor
         return metaCollectorClasses;
     }
 
-    @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
-        throws TextClassificationException
+    protected List<Feature> extractFromAnnotation(JCas jcas, Annotation annotation)
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
@@ -93,13 +91,13 @@ public class NGramFeatureExtractor
                 InputStream is = stopUrl.openStream();
                 Set<String> stopwords = new HashSet<String>();
                 stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
-                
-                if (classificationUnit == null) {
+
+                if (annotation == null) {
                     documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN,
                             maxN, stopwords);
                 }
                 else {
-                    documentNgrams = NGramUtils.getAnnotationNgrams(jcas, classificationUnit,
+                    documentNgrams = NGramUtils.getAnnotationNgrams(jcas, annotation,
                             lowerCaseNGrams, minN, maxN, stopwords);
                 }
             }
@@ -108,12 +106,12 @@ public class NGramFeatureExtractor
             }
         }
         else {
-            if (classificationUnit == null) {
+            if (annotation == null) {
                 documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN, maxN);
             }
             else {
-                documentNgrams = NGramUtils.getAnnotationNgrams(jcas, classificationUnit,
-                        lowerCaseNGrams, minN, maxN);
+                documentNgrams = NGramUtils.getAnnotationNgrams(jcas, annotation, lowerCaseNGrams,
+                        minN, maxN);
             }
         }
         for (String topNgram : topKSet) {
@@ -133,7 +131,14 @@ public class NGramFeatureExtractor
     }
 
     @Override
-    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+        throws TextClassificationException
+    {
+        return this.extractFromAnnotation(jcas, classificationUnit);
+    }
+
+    @Override
+    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
     {
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
