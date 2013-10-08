@@ -247,11 +247,10 @@ public class TaskUtils
             if (labelTransformationMethod.equals("LabelPowersetAttributeEvaluator")) {
                 attributeSelectionFilter = new LabelPowersetAttributeEvaluator(eval, mulanInstances);
             }
-            if (labelTransformationMethod.equals("BinaryRelevanceAttributeEvaluator")) {
+            else if (labelTransformationMethod.equals("BinaryRelevanceAttributeEvaluator")) {
                 attributeSelectionFilter = new BinaryRelevanceAttributeEvaluator(eval,
                         mulanInstances, "max", "none", "rank");
             }
-
             else {
                 throw new TextClassificationException(
                         "This Label Transformation Method is not supported.");
