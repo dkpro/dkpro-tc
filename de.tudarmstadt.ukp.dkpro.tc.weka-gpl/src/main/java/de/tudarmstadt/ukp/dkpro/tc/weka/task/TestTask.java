@@ -136,16 +136,22 @@ public class TestTask
 
         // FEATURE SELECTION
         if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
-            AttributeSelection selector = TaskUtils.singleLabelAttributeSelection(
-                    filteredTrainData, featureSearcher, attributeEvaluator);
-            // Write the results of attribute selection
-            FileUtils.writeStringToFile(
-                    new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
-                            .getAbsolutePath() + "/" + FEATURE_SELECTION_DATA_KEY),
-                    selector.toResultsString());
-            if (applySelection) {
-                filteredTrainData = selector.reduceDimensionality(filteredTrainData);
-                filteredTestData = selector.reduceDimensionality(filteredTestData);
+            try {
+                AttributeSelection selector = TaskUtils.singleLabelAttributeSelection(
+                        filteredTrainData, featureSearcher, attributeEvaluator);
+                // Write the results of attribute selection
+                FileUtils.writeStringToFile(
+                        new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
+                                .getAbsolutePath() + "/" + FEATURE_SELECTION_DATA_KEY),
+                        selector.toResultsString());
+                if (applySelection) {
+                    filteredTrainData = selector.reduceDimensionality(filteredTrainData);
+                    filteredTestData = selector.reduceDimensionality(filteredTestData);
+                }
+            }
+            catch (Exception e) {
+                LogFactory.getLog(getClass())
+                        .warn("Could not apply feature selection.", e);
             }
         }
         if (multiLabel && attributeEvaluator != null && labelTransformationMethod != null
@@ -168,7 +174,7 @@ public class TestTask
             }
             catch (Exception e) {
                 LogFactory.getLog(getClass())
-                        .warn("Could not apply multi-label feature selection.");
+                        .warn("Could not apply multi-label feature selection.", e);
             }
         }
 
