@@ -19,6 +19,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
  * Crossvalidation setup
@@ -162,6 +163,9 @@ public class BatchTaskCrossValidation
         testTask.setType(testTask.getType() + "-" + experimentName);
         if (innerReport != null) {
             testTask.addReport(innerReport);
+        }
+        if (addInstanceId) {
+            testTask.addReport(OutcomeIDReport.class);
         }
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.INPUT_KEY_TRAIN);
