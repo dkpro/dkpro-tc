@@ -25,7 +25,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import dkpro.similarity.uima.resource.lexical.string.GreedyStringTilingMeasureResource;
+import dkpro.similarity.algorithms.lexical.uima.string.GreedyStringTilingMeasureResource;
 
 public class SimilarityPairFeatureTest
 {
@@ -33,7 +33,9 @@ public class SimilarityPairFeatureTest
     private static final String VIEW1 = "view1";
     private static final String VIEW2 = "view2";
 
-    public static class Annotator extends JCasAnnotator_ImplBase {
+    public static class Annotator
+        extends JCasAnnotator_ImplBase
+    {
         final static String MODEL_KEY = "PairFeatureExtractorResource";
         @ExternalResource(key = MODEL_KEY)
         private PairFeatureExtractor model;
@@ -63,33 +65,34 @@ public class SimilarityPairFeatureTest
     }
 
     @Test
-    public void configureAggregatedExample() throws Exception {
-        ExternalResourceDescription gstResource = ExternalResourceFactory.createExternalResourceDescription(
-                GreedyStringTilingMeasureResource.class,
-                GreedyStringTilingMeasureResource.PARAM_MIN_MATCH_LENGTH, "3"
-        );
+    public void configureAggregatedExample()
+        throws Exception
+    {
+        ExternalResourceDescription gstResource = ExternalResourceFactory
+                .createExternalResourceDescription(GreedyStringTilingMeasureResource.class,
+                        GreedyStringTilingMeasureResource.PARAM_MIN_MATCH_LENGTH, "3");
 
         AnalysisEngineDescription desc = createEngineDescription(
-                      Annotator.class,
-                      Annotator.MODEL_KEY, createExternalResourceDescription(
-                              SimilarityPairFeatureExtractor.class,
-                              SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
-                              SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource
-                      )
-       );
+                Annotator.class,
+                Annotator.MODEL_KEY,
+                createExternalResourceDescription(SimilarityPairFeatureExtractor.class,
+                        SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH,
+                        Token.class.getName(),
+                        SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource));
 
-      AnalysisEngine engine = createEngine(desc);
-      JCas jcas = engine.newJCas();
-      TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class, Sentence.class);
+        AnalysisEngine engine = createEngine(desc);
+        JCas jcas = engine.newJCas();
+        TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class,
+                Sentence.class);
 
-      JCas view1 = jcas.createView(VIEW1);
-      view1.setDocumentLanguage("en");
-      tb.buildTokens(view1, "This is a test .");
+        JCas view1 = jcas.createView(VIEW1);
+        view1.setDocumentLanguage("en");
+        tb.buildTokens(view1, "This is a test .");
 
-      JCas view2 = jcas.createView(VIEW2);
-      view2.setDocumentLanguage("en");
-      tb.buildTokens(view2, "Test is this .");
+        JCas view2 = jcas.createView(VIEW2);
+        view2.setDocumentLanguage("en");
+        tb.buildTokens(view2, "Test is this .");
 
-      engine.process(jcas);
+        engine.process(jcas);
     }
 }
