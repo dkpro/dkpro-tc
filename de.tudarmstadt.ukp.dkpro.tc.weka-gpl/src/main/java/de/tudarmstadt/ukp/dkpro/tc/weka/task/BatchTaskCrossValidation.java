@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
@@ -123,7 +124,9 @@ public class BatchTaskCrossValidation
                     i++;
                 }
                 Arrays.sort(fileNames);
-
+                if (numFolds == Constants.LEAVE_ONE_OUT) {
+                    numFolds = fileNames.length;
+                }
                 // don't change any names!!
                 FoldDimensionBundle<String> foldDim = new FoldDimensionBundle<String>("files",
                         Dimension.create("", fileNames), numFolds);
