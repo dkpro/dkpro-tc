@@ -25,6 +25,8 @@ public interface Constants
     public static final String CLASS_ATTRIBUTE_PREFIX = "__";
     public static final String CLASS_ATTRIBUTE_NAME = "outcome";
 
+    public static final int LEAVE_ONE_OUT = -1;
+    
     /*
      * Discriminators
      */
