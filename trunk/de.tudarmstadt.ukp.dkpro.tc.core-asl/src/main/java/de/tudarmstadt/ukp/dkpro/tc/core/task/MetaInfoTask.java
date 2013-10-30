@@ -29,11 +29,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
- * Iterates over all documents and stores required collection-level meta data,
- * e.g. which n-grams appear in the documents.
- *
+ * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
+ * appear in the documents.
+ * 
  * @author zesch
- *
+ * 
  */
 public class MetaInfoTask
     extends UimaTaskBase
@@ -67,15 +67,15 @@ public class MetaInfoTask
         if (filesRoot == null || files_training == null) {
             File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
             return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_SOURCE_LOCATION, file,
-                    BinaryCasReader.PARAM_PATTERNS, BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
+                    BinaryCasReader.PARAM_SOURCE_LOCATION, file, BinaryCasReader.PARAM_PATTERNS,
+                    BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
             Collection<String> patterns = new ArrayList<String>();
             for (String f : files_training) {
 
-                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/*" + f);
+                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/" + f);
             }
             return createReaderDescription(BinaryCasReader.class,
                     BinaryCasReader.PARAM_SOURCE_LOCATION, filesRoot,
@@ -146,12 +146,13 @@ public class MetaInfoTask
         AggregateBuilder builder = new AggregateBuilder();
 
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            // check whether we are dealing with pair classification and if so, add PART_ONE and PART_TWO views
-            if(isPairClassification){
+            // check whether we are dealing with pair classification and if so, add PART_ONE and
+            // PART_TWO views
+            if (isPairClassification) {
                 builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
-                        CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_ONE);
+                        CAS.NAME_DEFAULT_SOFA, AbstractPairReader.PART_ONE);
                 builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
-                        CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_TWO);
+                        CAS.NAME_DEFAULT_SOFA, AbstractPairReader.PART_TWO);
             }
             else {
                 builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()));
