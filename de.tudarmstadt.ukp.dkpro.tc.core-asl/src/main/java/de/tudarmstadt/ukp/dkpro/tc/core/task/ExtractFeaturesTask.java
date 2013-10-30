@@ -206,7 +206,7 @@ public class ExtractFeaturesTask
             Collection<String> patterns = new ArrayList<String>();
             Collection<String> files = isTesting ? files_validation : files_training;
             for (String f : files) {
-                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/*" + f);
+                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/" + f);
             }
 
             return createReaderDescription(BinaryCasReader.class,
