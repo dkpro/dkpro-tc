@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math.stat.descriptive.summary.Sum;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
@@ -30,6 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
  * Collects the final evaluation results in a cross validation setting.
  * 
  * @author zesch
+ * @author daxenberger
  * 
  */
 public class BatchCrossValidationReport
@@ -39,6 +41,8 @@ public class BatchCrossValidationReport
 
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             "files_validation", "files_training" });
+    private static final List<String> nonAveragedResultsMeasures = Arrays.asList(new String[] {
+            "correct", "incorrect", "N", "L" });
 
     @Override
     public void execute()
@@ -88,6 +92,7 @@ public class BatchCrossValidationReport
 
                     }
                     Mean mean = new Mean();
+                    Sum sum = new Sum();
                     StandardDeviation std = new StandardDeviation();
 
                     double[] dVals = new double[vals.length];
@@ -104,10 +109,15 @@ public class BatchCrossValidationReport
                     }
 
                     if (dVals != null) {
-                        resultMap.put(
-                                header,
-                                String.valueOf(mean.evaluate(dVals) + "\u00B1"
-                                        + String.valueOf(std.evaluate(dVals))));
+                        if (nonAveragedResultsMeasures.contains(header)) {
+                            resultMap.put(header, String.valueOf(sum.evaluate(dVals)));
+                        }
+                        else {
+                            resultMap.put(
+                                    header,
+                                    String.valueOf(mean.evaluate(dVals) + "\u00B1"
+                                            + String.valueOf(std.evaluate(dVals))));
+                        }
                     }
                     else {
                         if (sVals.size() > 1) {
