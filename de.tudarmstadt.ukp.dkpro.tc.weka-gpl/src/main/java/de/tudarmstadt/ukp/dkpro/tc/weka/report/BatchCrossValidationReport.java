@@ -2,6 +2,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,17 +24,21 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
  * 
  * @author zesch
- *
+ * 
  */
 public class BatchCrossValidationReport
     extends BatchReportBase
     implements Constants
 {
+
+    private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
+            "files_validation", "files_training" });
 
     @Override
     public void execute()
@@ -62,8 +67,7 @@ public class BatchCrossValidationReport
                 for (String line : FileUtils.readLines(eval)) {
                     String[] tokenizedLine = StrTokenizer.getCSVInstance(line).getTokenArray();
                     if (evalMatrix == null) {
-                        evalMatrix = new String[FileUtils.readLines(eval)
-                                .size()][tokenizedLine.length];
+                        evalMatrix = new String[FileUtils.readLines(eval).size()][tokenizedLine.length];
                     }
                     evalMatrix[i] = tokenizedLine;
                     i++;
@@ -100,8 +104,10 @@ public class BatchCrossValidationReport
                     }
 
                     if (dVals != null) {
-                        resultMap.put(header, String.valueOf(mean.evaluate(dVals) + "\u00B1"
-                                + String.valueOf(std.evaluate(dVals))));
+                        resultMap.put(
+                                header,
+                                String.valueOf(mean.evaluate(dVals) + "\u00B1"
+                                        + String.valueOf(std.evaluate(dVals))));
                     }
                     else {
                         if (sVals.size() > 1) {
@@ -126,14 +132,22 @@ public class BatchCrossValidationReport
                 key2resultValues.put(key, results);
 
                 Map<String, String> values = new HashMap<String, String>();
-                values.putAll(discriminatorsMap);
+                Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
+
+                for (String disc : discriminatorsMap.keySet()) {
+                    if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
+                        cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+                    }
+                }
+                values.putAll(cleanedDiscriminatorsMap);
                 values.putAll(resultMap);
 
                 table.addRow(subcontext.getLabel(), values);
             }
         }
 
-        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext()
+                .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());

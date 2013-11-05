@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import mulan.evaluation.measure.MicroPrecision;
 import mulan.evaluation.measure.MicroRecall;
@@ -265,5 +266,18 @@ public class ReportUtils
             chart.getXYPlot().getDomainAxis().setRange(0.0, 1.0);
             ChartUtil.writeChartAsSVG(aStream, chart, 400, 400);
         }
+    }
+
+    public static boolean containsExcludePattern(String string, List<String> patterns)
+    {
+
+        Pattern matchPattern;
+        for (String pattern : patterns) {
+            matchPattern = Pattern.compile(pattern);
+            if (matchPattern.matcher(string).find()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
