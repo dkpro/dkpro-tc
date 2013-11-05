@@ -1,6 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +18,21 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 
 /**
  * Collects the final evaluation results in a train/test setting.
  * 
  * @author zesch
- *
+ * 
  */
 public class BatchTrainTestReport
     extends BatchReportBase
     implements Constants
 {
+
+    private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
+            "files_validation", "files_training" });
 
     @Override
     public void execute()
@@ -54,19 +59,26 @@ public class BatchTrainTestReport
                 }
                 else {
                     results = key2resultValues.get(key);
-
                 }
                 key2resultValues.put(key, results);
 
                 Map<String, String> values = new HashMap<String, String>();
-                values.putAll(discriminatorsMap);
+                Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
+
+                for (String disc : discriminatorsMap.keySet()) {
+                    if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
+                        cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+                    }
+                }
+                values.putAll(cleanedDiscriminatorsMap);
                 values.putAll(resultMap);
 
                 table.addRow(subcontext.getLabel(), values);
             }
         }
 
-        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext()
+                .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
@@ -83,4 +95,5 @@ public class BatchTrainTestReport
         }
         return StringUtils.join(values, "_");
     }
+
 }
