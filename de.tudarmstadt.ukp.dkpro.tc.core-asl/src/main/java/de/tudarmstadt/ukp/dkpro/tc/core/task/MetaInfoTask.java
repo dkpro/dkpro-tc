@@ -42,6 +42,8 @@ public class MetaInfoTask
     public static final String META_KEY = "meta";
     public static final String INPUT_KEY = "input";
 
+    private List<String> operativeViews;
+
     @Discriminator
     protected List<String> featureSet;
 
@@ -154,10 +156,21 @@ public class MetaInfoTask
                 builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
                         CAS.NAME_DEFAULT_SOFA, AbstractPairReader.PART_TWO);
             }
+            else if (operativeViews != null) {
+                for (String viewName : operativeViews) {
+                    builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
+                            CAS.NAME_DEFAULT_SOFA, viewName);
+                }
+            }
             else {
                 builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()));
             }
         }
         return builder.createAggregateDescription();
+    }
+
+    public void setOperativeViews(List<String> operativeViews)
+    {
+        this.operativeViews = operativeViews;
     }
 }

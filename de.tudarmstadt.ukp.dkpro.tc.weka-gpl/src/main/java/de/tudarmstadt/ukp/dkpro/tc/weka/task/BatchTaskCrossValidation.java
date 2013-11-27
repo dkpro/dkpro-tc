@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -35,6 +36,7 @@ public class BatchTaskCrossValidation
 
     private String experimentName;
     private AnalysisEngineDescription aggregate;
+    private List<String> operativeViews;
     private int numFolds = 10;
     private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
@@ -65,8 +67,8 @@ public class BatchTaskCrossValidation
      * @param aNumFolds
      *            the number of folds for crossvalidation (default 10)
      */
-    public BatchTaskCrossValidation(String aExperimentName,
-            AnalysisEngineDescription aAggregate, int aNumFolds)
+    public BatchTaskCrossValidation(String aExperimentName, AnalysisEngineDescription aAggregate,
+            int aNumFolds)
     {
         setExperimentName(aExperimentName);
         setAggregate(aAggregate);
@@ -102,6 +104,7 @@ public class BatchTaskCrossValidation
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
         preprocessTask.setAggregate(aggregate);
+        preprocessTask.setOperativeViews(operativeViews);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
         preprocessTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
@@ -114,8 +117,7 @@ public class BatchTaskCrossValidation
             {
                 File xmiPathRoot = aContext.getStorageLocation(PreprocessTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
-                Collection<File> files = FileUtils.listFiles(xmiPathRoot,
-                        new String[] { "bin" },
+                Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
                         true);
                 String[] fileNames = new String[files.size()];
                 int i = 0;
@@ -143,6 +145,7 @@ public class BatchTaskCrossValidation
 
         // collecting meta features only on the training data (numFolds times)
         metaTask = new MetaInfoTask();
+        metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + experimentName);
 
         // extracting features from training data (numFolds times)
@@ -211,6 +214,11 @@ public class BatchTaskCrossValidation
     public void setAggregate(AnalysisEngineDescription aggregate)
     {
         this.aggregate = aggregate;
+    }
+
+    public void setOperativeViews(List<String> operativeViews)
+    {
+        this.operativeViews = operativeViews;
     }
 
     public void setNumFolds(int numFolds)
