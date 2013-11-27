@@ -1,5 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
+import java.util.List;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -24,6 +26,7 @@ public class BatchTaskTrainTest
 
     private String experimentName;
     private AnalysisEngineDescription aggregate;
+    private List<String> operativeViews;
     private Class<? extends Report> innerReport;
 
     private ValidityCheckTask checkTask;
@@ -95,6 +98,7 @@ public class BatchTaskTrainTest
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
         preprocessTaskTrain.setAggregate(aggregate);
+        preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
         preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
@@ -102,12 +106,16 @@ public class BatchTaskTrainTest
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
         preprocessTaskTest.setAggregate(aggregate);
+        preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
+        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
+        metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
+
         metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
                 MetaInfoTask.INPUT_KEY);
 
@@ -156,6 +164,11 @@ public class BatchTaskTrainTest
     public void setAggregate(AnalysisEngineDescription aggregate)
     {
         this.aggregate = aggregate;
+    }
+
+    public void setOperativeViews(List<String> operativeViews)
+    {
+        this.operativeViews = operativeViews;
     }
 
     /**

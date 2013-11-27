@@ -23,9 +23,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
 /**
  * Performs the preprocessing steps, that were configured by the user, on the documents.
- *
+ * 
  * @author zesch
- *
+ * 
  */
 public class PreprocessTask
     extends UimaTaskBase
@@ -34,6 +34,7 @@ public class PreprocessTask
     public static String OUTPUT_KEY_TEST = "preprocessorOutputTest";
 
     private boolean isTesting = false;
+    private List<String> operativeViews;
 
     @Discriminator
     protected Class<? extends CollectionReader> readerTrain;
@@ -92,15 +93,24 @@ public class PreprocessTask
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
                 aContext.getStorageLocation(output, AccessMode.READWRITE).getPath());
 
-        // check whether we are dealing with pair classification and if so, add PART_ONE and PART_TWO views
-        if(this.isPairClassification){
+        // check whether we are dealing with pair classification and if so, add PART_ONE and
+        // PART_TWO views
+        if (this.isPairClassification) {
             AggregateBuilder builder = new AggregateBuilder();
-            builder.add(createEngineDescription(aggregate),
-                    CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_ONE);
-            builder.add(createEngineDescription(aggregate),
-                    CAS.NAME_DEFAULT_SOFA,AbstractPairReader.PART_TWO);
+            builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA,
+                    AbstractPairReader.PART_ONE);
+            builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA,
+                    AbstractPairReader.PART_TWO);
             aggregate = builder.createAggregateDescription();
         }
+        else if (operativeViews != null) {
+            AggregateBuilder builder = new AggregateBuilder();
+            for (String viewName : operativeViews) {
+                builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA, viewName);
+            }
+            aggregate = builder.createAggregateDescription();
+        }
+
         if (this.isUnitClassification) {
             AnalysisEngineDescription casMultiplier = createEngineDescription(ClassificationUnitCasMultiplier.class);
             return createEngineDescription(aggregate, casMultiplier, xmiWriter);
@@ -108,5 +118,10 @@ public class PreprocessTask
         else {
             return createEngineDescription(aggregate, xmiWriter);
         }
+    }
+
+    public void setOperativeViews(List<String> operativeViews)
+    {
+        this.operativeViews = operativeViews;
     }
 }
