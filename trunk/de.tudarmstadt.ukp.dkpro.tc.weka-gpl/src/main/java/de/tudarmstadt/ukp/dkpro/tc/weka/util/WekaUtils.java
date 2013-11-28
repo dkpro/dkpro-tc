@@ -168,13 +168,14 @@ public class WekaUtils
         if (instanceList.getUniqueOutcomes().isEmpty()) {
             throw new IllegalArgumentException("List of instance outcomes is empty.");
         }
-        
+
         Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
-        Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes(), isRegressionExperiment);
+        Attribute outcomeAttribute = createOutcomeAttribute(instanceList.getUniqueOutcomes(),
+                isRegressionExperiment);
         if (attributeStore.containsAttributeName(classAttributeName)) {
             System.err
                     .println("A feature with name \"outcome\" was found. Renaming outcome attribute");
@@ -201,45 +202,7 @@ public class WekaUtils
         for (int i = 0; i < instanceList.size(); i++) {
             Instance instance = instanceList.getInstance(i);
 
-            double[] featureValues = new double[attributeStore.size()];
-
-            for (Feature feature : instance.getFeatures()) {
-                Attribute attribute = attributeStore.getAttribute(feature.getName());
-                Object featureValue = feature.getValue();
-
-                double attributeValue;
-                if (featureValue instanceof Number) {
-                    attributeValue = ((Number) feature.getValue()).doubleValue();
-                }
-                else if (featureValue instanceof Boolean) {
-                    attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
-                }
-                else { // this branch is unsafe - the code is copied from SparseInstance (can it be
-                       // done safer?)
-                    Object stringValue = feature.getValue();
-                    if (!attribute.isNominal() && !attribute.isString()) {
-                        throw new IllegalArgumentException("Attribute neither nominal nor string!");
-                    }
-                    int valIndex = attribute.indexOfValue(stringValue.toString());
-                    if (valIndex == -1) {
-                        if (attribute.isNominal()) {
-                            throw new IllegalArgumentException(
-                                    "Value not defined for given nominal attribute!");
-                        }
-                        else {
-                            attribute.addStringValue(stringValue.toString());
-                            valIndex = attribute.indexOfValue(stringValue.toString());
-                        }
-                    }
-                    attributeValue = valIndex;
-                }
-
-                int offset = attributeStore.getAttributeOffset(attribute.name());
-
-                if (offset != -1) {
-                    featureValues[offset] = attributeValue;
-                }
-            }
+            double[] featureValues = getFeatureValues(attributeStore, instance);
 
             weka.core.Instance wekaInstance;
 
@@ -251,7 +214,7 @@ public class WekaUtils
             }
 
             wekaInstance.setDataset(wekaInstances);
-            
+
             String outcome = instanceList.getOutcome(i);
             if (isRegressionExperiment) {
                 wekaInstance.setClassValue(Double.parseDouble(outcome));
@@ -287,8 +250,7 @@ public class WekaUtils
 
         // for Meka-internal use
         Instances wekaInstances = new Instances(relationName + ": -C " + outcomeAttributes.size()
-                + " ",
-                attributeStore.getAttributes(), instanceList.size());
+                + " ", attributeStore.getAttributes(), instanceList.size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
 
         if (!outputFile.exists()) {
@@ -306,7 +268,7 @@ public class WekaUtils
         for (int i = 0; i < instanceList.size(); i++) {
             Instance instance = instanceList.getInstance(i);
 
-            double[] featureValues = new double[attributeStore.size()];
+            double[] featureValues = getFeatureValues(attributeStore, instance);
 
             // set class label values
             List<String> instanceOutcome = instance.getOutcomes();
@@ -316,8 +278,149 @@ public class WekaUtils
                         .contains(labelname.split(classAttributePrefix)[1]) ? 1.0d : 0.0d;
             }
 
-            // set feature values
-            for (Feature feature : instance.getFeatures()) {
+            weka.core.Instance wekaInstance;
+
+            if (useDenseInstances) {
+                wekaInstance = new DenseInstance(1.0, featureValues);
+            }
+            else {
+                wekaInstance = new SparseInstance(1.0, featureValues);
+            }
+
+            wekaInstance.setDataset(wekaInstances);
+
+            preprocessingFilter.input(wekaInstance);
+            saver.writeIncremental(preprocessingFilter.output());
+        }
+
+        // finishes the incremental saving process
+        saver.writeIncremental(null);
+    }
+
+    /**
+     * Converts a TC instance object into a Meka instance object, compatible with the given
+     * attribute set and class labels.
+     * 
+     * @param instance
+     *            tc instance object
+     * @param attributes
+     *            the attribute set which will be used to create the header information of the
+     *            resulting instance, class attributes must be at the beginning
+     * @param allClassLabels
+     *            names of all classes
+     * @return a Meka instance object, without any class values assigned
+     * @throws Exception
+     */
+    public static weka.core.Instance tcInstanceToMekaInstance(Instance instance,
+            List<Attribute> attributes, List<String> allClassLabels)
+        throws Exception
+    {
+        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+
+        AttributeStore attributeStore = new AttributeStore();
+        List<Attribute> outcomeAttributes = createOutcomeAttributes(allClassLabels);
+
+        // in Meka, class label attributes have to go on top
+        for (Attribute attribute : outcomeAttributes) {
+            attributeStore.addAttributeAtBegin(attribute.name(), attribute);
+        }
+
+        for (int i = outcomeAttributes.size(); i < attributes.size(); i++) {
+            attributeStore.addAttribute(attributes.get(i).name(), attributes.get(i));
+        }
+
+        // for Meka-internal use
+        Instances wekaInstances = new Instances(relationName + ": -C " + outcomeAttributes.size()
+                + " ", attributeStore.getAttributes(), instance.getFeatures().size());
+        wekaInstances.setClassIndex(outcomeAttributes.size());
+        // System.out.println(instances);
+        preprocessingFilter.setInputFormat(wekaInstances);
+
+        double[] featureValues = getFeatureValues(attributeStore, instance);
+
+        SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
+        sparseInstance.setDataset(wekaInstances);
+        preprocessingFilter.input(sparseInstance);
+        return preprocessingFilter.output();
+    }
+
+    private static Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
+    {
+        if (isRegresion) {
+            return new Attribute(classAttributeName);
+        }
+        else {
+            // make the order of the attributes predictable
+            Collections.sort(outcomeValues);
+            return new Attribute(classAttributeName, outcomeValues);
+        }
+    }
+
+    private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
+    {
+        // make the order of the attributes predictable
+        Collections.sort(outcomeValues);
+        List<Attribute> atts = new ArrayList<Attribute>();
+
+        for (String outcome : outcomeValues) {
+            atts.add(new Attribute(classAttributePrefix + outcome, Arrays.asList(new String[] {
+                    "0", "1" })));
+        }
+        return atts;
+    }
+
+    /**
+     * Converts a TC instance object into a Weka instance object, compatible with the given
+     * attribute set and class labels.
+     * 
+     * @param instance
+     *            tc instance object
+     * @param attributes
+     *            the attribute set which will be used to create the header information of the
+     *            resulting instance, class attribute must be at the end
+     * @param allClasses
+     *            class label names
+     * @param isRegressionExperiment
+     * @return a Weka instance object, class value is set to missing
+     * @throws Exception
+     */
+    public static weka.core.Instance tcInstanceToWekaInstance(Instance instance,
+            List<Attribute> attributes, List<String> allClasses, boolean isRegressionExperiment)
+        throws Exception
+    {
+        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+        AttributeStore attributeStore = new AttributeStore();
+
+        for (int i = 0; i < attributes.size() - 1; i++) {
+            attributeStore.addAttribute(attributes.get(i).name(), attributes.get(i));
+        }
+
+        // add outcome attribute
+        Attribute outcomeAttribute = createOutcomeAttribute(allClasses, isRegressionExperiment);
+        attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
+
+        Instances wekaInstances = new Instances(relationName, attributeStore.getAttributes(),
+                instance.getFeatures().size());
+        wekaInstances.setClass(outcomeAttribute);
+
+        preprocessingFilter.setInputFormat(wekaInstances);
+
+        double[] featureValues = getFeatureValues(attributeStore, instance);
+
+        SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
+        sparseInstance.setDataset(wekaInstances);
+        sparseInstance.setClassMissing();
+        preprocessingFilter.input(sparseInstance);
+        return preprocessingFilter.output();
+    }
+
+    private static double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
+    {
+        double[] featureValues = new double[attributeStore.getAttributes().size()];
+
+        for (Feature feature : instance.getFeatures()) {
+
+            try {
                 Attribute attribute = attributeStore.getAttribute(feature.getName());
                 Object featureValue = feature.getValue();
 
@@ -353,47 +456,10 @@ public class WekaUtils
                     featureValues[offset] = attributeValue;
                 }
             }
-            weka.core.Instance wekaInstance;
-
-            if (useDenseInstances) {
-                wekaInstance = new DenseInstance(1.0, featureValues);
+            catch (NullPointerException e) {
+                // ignore unseen attributes
             }
-            else {
-                wekaInstance = new SparseInstance(1.0, featureValues);
-            }
-
-            wekaInstance.setDataset(wekaInstances);
-
-            preprocessingFilter.input(wekaInstance);
-            saver.writeIncremental(preprocessingFilter.output());
         }
-
-        // finishes the incremental saving process
-        saver.writeIncremental(null);
-    }
-
-    private static Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
-    {
-        if (isRegresion) {
-            return new Attribute(classAttributeName);
-        }
-        else {
-            // make the order of the attributes predictable
-            Collections.sort(outcomeValues);
-            return new Attribute(classAttributeName, outcomeValues);
-        }
-    }
-
-    private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
-    {
-        // make the order of the attributes predictable
-        Collections.sort(outcomeValues);
-        List<Attribute> atts = new ArrayList<Attribute>();
-
-        for (String outcome : outcomeValues) {
-            atts.add(new Attribute(classAttributePrefix + outcome, Arrays
-                    .asList(new String[] { "0", "1" })));
-        }
-        return atts;
+        return featureValues;
     }
 }
