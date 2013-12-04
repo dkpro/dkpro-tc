@@ -31,16 +31,16 @@ public class DependencyFeatureExtractor
     implements DocumentFeatureExtractor, MetaDependent
 {
 
-    public static final String PARAM_DEP_FILE = "DepFile";
-    @ConfigurationParameter(name = PARAM_DEP_FILE, mandatory = true)
-    private String depFile;
+    public static final String PARAM_DEP_FD_FILE = "depFdFile";
+    @ConfigurationParameter(name = PARAM_DEP_FD_FILE, mandatory = true)
+    private String depFdFile;
 
-    public static final String PARAM_DEP_FREQ_THRESHOLD = "DepFreqThreshold";
+    public static final String PARAM_DEP_FREQ_THRESHOLD = "depFreqThreshold";
     @ConfigurationParameter(name = PARAM_DEP_FREQ_THRESHOLD, mandatory = false, defaultValue = "2")
     private int depFreqThreshold;
 
-    public static final String PARAM_LOWER_CASE = "LowerCaseDeps";
-    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    public static final String PARAM_LOWER_CASE_DEPS = "lowerCaseDeps";
+    @ConfigurationParameter(name = PARAM_LOWER_CASE_DEPS, mandatory = false, defaultValue = "true")
     private boolean lowerCaseDeps;
 
     protected Set<String> depSet;
@@ -99,7 +99,7 @@ public class DependencyFeatureExtractor
         Set<String> depSet = new HashSet<String>();
         try {
             trainingDepsFD = new FrequencyDistribution<String>();
-            trainingDepsFD.load(new File(depFile));
+            trainingDepsFD.load(new File(depFdFile));
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);
@@ -116,7 +116,7 @@ public class DependencyFeatureExtractor
 
         return depSet;
     }
-    
+
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {

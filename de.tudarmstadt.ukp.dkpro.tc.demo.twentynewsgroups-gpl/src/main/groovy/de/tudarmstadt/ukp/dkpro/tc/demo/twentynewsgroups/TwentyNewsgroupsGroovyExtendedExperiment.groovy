@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  *
  * In TwentyNewsgroupsGroovyExperiment, this is done automatically in the BatchTaskCV and BatchTaskTrainTest,
  * which is more convenient, but less flexible.
- * 
+ *
  * Currently only supports train-test setup.
  *
  * @author Oliver Ferschke
@@ -78,7 +78,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        "TopK",
+        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
         "500",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
@@ -86,7 +86,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
         3
     ],
     [
-        "TopK",
+        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
         "1000",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,

@@ -15,6 +15,7 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
@@ -31,27 +32,27 @@ public class POSNGramFeatureExtractor
     implements DocumentFeatureExtractor, MetaDependent
 {
 
-    public static final String PARAM_POS_NGRAM_FD_FILE = "POSNGramFDFile";
+    public static final String PARAM_POS_NGRAM_FD_FILE = "posNgramFdFile";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_FD_FILE, mandatory = true)
-    private String fdFile;
+    private String posNgramFdFile;
 
-    public static final String PARAM_POS_NGRAM_MIN_N = "POSNGramMinSize";
+    public static final String PARAM_POS_NGRAM_MIN_N = "posNgramMinN";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_MIN_N, mandatory = false, defaultValue = "1")
-    private int minN;
+    private int posNgramMinN;
 
-    public static final String PARAM_POS_NGRAM_MAX_N = "POSNGramMaxSize";
+    public static final String PARAM_POS_NGRAM_MAX_N = "posNgramMaxN";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_MAX_N, mandatory = false, defaultValue = "3")
-    private int maxN;
+    private int posNgramMaxN;
 
-    public static final String PARAM_FREQ_THRESHOLD = "FreqThreshold";
-    public static final String PARAM_USE_TOP_K = "TopK";
+    public static final String PARAM_POS_NGRAM_USE_TOP_K = "posNgramUseTopK";
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_USE_TOP_K, mandatory = false)
+    private final int posNgramUseTopK = 500;
 
-    @ConfigurationParameter(name = PARAM_USE_TOP_K, mandatory = false)
-    private int topK = 500;
-    @ConfigurationParameter(name = PARAM_FREQ_THRESHOLD, mandatory = false)
-    private float freqThreshold = 0.01f;
+    public static final String PARAM_POS_NGRAM_FREQ_THRESHOLD = "posNgramFreqThreshold";
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_FREQ_THRESHOLD, mandatory = false)
+    private final float posNgramFreqThreshold = 0.01f;
 
-    private boolean useFreqThreshold = false;
+    private final boolean useFreqThreshold = false;
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
@@ -62,7 +63,7 @@ public class POSNGramFeatureExtractor
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentPOSNgrams;
-        documentPOSNgrams = NGramUtils.getDocumentPOSNgrams(jcas, minN, maxN);
+        documentPOSNgrams = NGramUtils.getDocumentPOSNgrams(jcas, posNgramMinN, posNgramMaxN);
 
         for (String topNgram : topKSet) {
             if (documentPOSNgrams.getKeys().contains(topNgram)) {
@@ -83,7 +84,7 @@ public class POSNGramFeatureExtractor
             return false;
         }
 
-        topKSet = getTopNgrams(fdFile);
+        topKSet = getTopNgrams(posNgramFdFile);
 
         prefix = "POS_";
 
@@ -112,7 +113,7 @@ public class POSNGramFeatureExtractor
             for (String key : trainingFD.getKeys()) {
                 double freq = trainingFD.getCount(key) / total;
                 max = Math.max(max, freq);
-                if (freq >= freqThreshold) {
+                if (freq >= posNgramFreqThreshold) {
                     topNGrams.add(key);
                 }
             }
@@ -131,7 +132,7 @@ public class POSNGramFeatureExtractor
 
             int i = 0;
             for (String key : sorted_map.keySet()) {
-                if (i > topK) {
+                if (i >= posNgramUseTopK) {
                     break;
                 }
                 topNGrams.add(key);
@@ -139,7 +140,7 @@ public class POSNGramFeatureExtractor
             }
         }
 
-        System.out.println("+++ TAKING " + topNGrams.size() + " POS NGRAMS");
+        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " POS NGRAMS");
 
         return topNGrams;
     }

@@ -23,59 +23,64 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 public class NGramMetaCollector
     extends FreqDistBasedMetaCollector
 {
-	public static final String NGRAM_FD_KEY = "ngrams.ser";
+    public static final String NGRAM_FD_KEY = "ngrams.ser";
 
-	@ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, mandatory = true)
-	private File ngramFdFile;
+    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, mandatory = true)
+    private File ngramFdFile;
 
-	@ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	private int minN;
+    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-	@ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	private int maxN;
+    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
 
-	@ConfigurationParameter(name = NGramFeatureExtractor.PARAM_STOPWORDS_FILE, mandatory = false)
-	private String stopFile;
+    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
+    private String ngramStopwordsFile;
 
-	@Override
-	public void initialize(UimaContext context)
-			throws ResourceInitializationException
-			{
-		super.initialize(context);
-		fdFile = ngramFdFile;
-			}
+    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false)
+    private final boolean ngramLowerCase = true;
 
-	@Override
-	public void process(JCas jcas)
-			throws AnalysisEngineProcessException
-			{
-		FrequencyDistribution<String> documentNGrams = null;
-		if (stopFile != null && !stopFile.isEmpty()) {
-			try {
-                URL stopUrl = ResourceUtils.resolveLocation(stopFile, null);
+    @Override
+    public void initialize(UimaContext context)
+        throws ResourceInitializationException
+    {
+        super.initialize(context);
+        fdFile = ngramFdFile;
+    }
+
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+        FrequencyDistribution<String> documentNGrams = null;
+        if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
+            try {
+                URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
                 InputStream is = stopUrl.openStream();
                 Set<String> stopwords = new HashSet<String>();
                 stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
-				documentNGrams = NGramUtils.getDocumentNgrams(jcas, lowerCase, minN, maxN, stopwords);
-				
-			}
-			catch (Exception e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-		}                
-		else {
-			documentNGrams = NGramUtils.getDocumentNgrams(jcas, lowerCase, minN, maxN);
-		}
+                documentNGrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN,
+                        ngramMaxN, stopwords);
 
-		for (String ngram : documentNGrams.getKeys()) {
-			fd.addSample(ngram, documentNGrams.getCount(ngram));
-		}
-	}
+            }
+            catch (Exception e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+        else {
+            documentNGrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN,
+                    ngramMaxN);
+        }
+
+        for (String ngram : documentNGrams.getKeys()) {
+            fd.addSample(ngram, documentNGrams.getCount(ngram));
+        }
+    }
 
     @Override
     public Map<String, String> getParameterKeyPairs()
     {
-        Map<String,String> mapping = new HashMap<String,String>();
+        Map<String, String> mapping = new HashMap<String, String>();
         mapping.put(NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
         return mapping;
     }

@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -15,12 +14,8 @@ public abstract class FreqDistBasedMetaCollector
     extends MetaCollector
 {
 
-    public static final String PARAM_LOWER_CASE = "lowerCase";
-    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = true, defaultValue="true")
-    protected boolean lowerCase;
-    
     protected FrequencyDistribution<String> fd;
-    
+
     protected File fdFile;
 
     @Override
@@ -28,7 +23,7 @@ public abstract class FreqDistBasedMetaCollector
         throws ResourceInitializationException
     {
         super.initialize(context);
-                
+
         fd = new FrequencyDistribution<String>();
     }
 
@@ -37,7 +32,7 @@ public abstract class FreqDistBasedMetaCollector
         throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
-        
+
         try {
             fd.save(fdFile);
         }

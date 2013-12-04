@@ -21,12 +21,12 @@ public class POSNGramMetaCollector
 
     @ConfigurationParameter(name = POSNGramFeatureExtractor.PARAM_POS_NGRAM_FD_FILE, mandatory = true)
     private File posNgramFdFile;
-    
-    @ConfigurationParameter(name = POSNGramFeatureExtractor.PARAM_POS_NGRAM_MIN_N, mandatory = true, defaultValue="1")
-    private int minN;
-    
-    @ConfigurationParameter(name = POSNGramFeatureExtractor.PARAM_POS_NGRAM_MAX_N, mandatory = true, defaultValue="3")
-    private int maxN;
+
+    @ConfigurationParameter(name = POSNGramFeatureExtractor.PARAM_POS_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int posNgramMinN;
+
+    @ConfigurationParameter(name = POSNGramFeatureExtractor.PARAM_POS_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int posNgramMaxN;
 
     @Override
     public void initialize(UimaContext context)
@@ -35,21 +35,22 @@ public class POSNGramMetaCollector
         super.initialize(context);
         fdFile = posNgramFdFile;
     }
-    
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
-    {			
-        FrequencyDistribution<String> documentPOSNGrams = NGramUtils.getDocumentPOSNgrams(jcas, minN, maxN); 
+    {
+        FrequencyDistribution<String> documentPOSNGrams = NGramUtils.getDocumentPOSNgrams(jcas,
+                posNgramMinN, posNgramMaxN);
         for (String ngram : documentPOSNGrams.getKeys()) {
             fd.addSample(ngram, documentPOSNGrams.getCount(ngram));
         }
     }
-    
+
     @Override
     public Map<String, String> getParameterKeyPairs()
     {
-        Map<String,String> mapping = new HashMap<String,String>();
+        Map<String, String> mapping = new HashMap<String, String>();
         mapping.put(POSNGramFeatureExtractor.PARAM_POS_NGRAM_FD_FILE, POS_NGRAM_FD_KEY);
         return mapping;
     }

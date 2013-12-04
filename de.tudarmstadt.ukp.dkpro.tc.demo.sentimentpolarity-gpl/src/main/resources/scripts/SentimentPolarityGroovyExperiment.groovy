@@ -88,7 +88,7 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        "TopK",
+        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
         "500",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
@@ -96,7 +96,7 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
         3
     ],
     [
-        "TopK",
+        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
         "5000",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
