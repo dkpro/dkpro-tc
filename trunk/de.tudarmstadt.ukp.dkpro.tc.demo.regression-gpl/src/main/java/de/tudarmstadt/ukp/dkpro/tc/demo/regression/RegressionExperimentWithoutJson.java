@@ -54,6 +54,7 @@ public class RegressionExperimentWithoutJson
                 Arrays.asList(new String[] { NrOfTokensFeatureExtractor.class.getName(),
                         GreedyStringTilingFeatureExtractor.class.getName() }));
 
+        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readerTrain",
                 dimReaderTrain), Dimension.create(Constants.DIM_MULTI_LABEL, false),
         // this dimensions are important

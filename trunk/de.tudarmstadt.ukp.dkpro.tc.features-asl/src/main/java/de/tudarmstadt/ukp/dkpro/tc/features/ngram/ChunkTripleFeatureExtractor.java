@@ -21,25 +21,25 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TripleMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
-public class TripleFeatureExtractor
+public class ChunkTripleFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor, MetaDependent
 {
 
-    public static final String PARAM_TRIPLE_FD_FILE = "TripleFdFile";
-    @ConfigurationParameter(name = PARAM_TRIPLE_FD_FILE, mandatory = true)
-    private String fdFile;
+    public static final String PARAM_CHUNK_TRIPLE_FD_FILE = "chunkTripleFdFile";
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
+    private String chunkTripleFdFile;
 
-    public static final String PARAM_THRESHOLD = "TripleThreshold";
-    @ConfigurationParameter(name = PARAM_THRESHOLD, mandatory = false, defaultValue = "2")
-    private int threshold;
+    public static final String PARAM_CHUNK_TRIPLE_THRESHOLD = "chunkTripleThreshold";
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_THRESHOLD, mandatory = false, defaultValue = "2")
+    private int chunkTripleThreshold;
 
-    public static final String PARAM_LOWER_CASE = "LowerCaseTriples";
-    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = false, defaultValue = "true")
-    private boolean lowerCaseTriples;
+    public static final String PARAM_CHUNK_TRIPLE_LOWER_CASE = "chunkTripleLowerCase";
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")
+    private boolean chunkTripleLowerCase;
 
     protected Set<String> tripleSet;
 
@@ -55,7 +55,7 @@ public class TripleFeatureExtractor
         // }
         List<Feature> features = new ArrayList<Feature>();
 
-        Set<String> triples = TripleMetaCollector.getTriples(jcas, lowerCaseTriples);
+        Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
         for (String featureTriple : tripleSet) {
             if (triples.contains(featureTriple)) {
                 features.add(new Feature("lexicalTriple_" + featureTriple, 1));
@@ -89,7 +89,7 @@ public class TripleFeatureExtractor
 
         try {
             trainingFD = new FrequencyDistribution<String>();
-            trainingFD.load(new File(fdFile));
+            trainingFD.load(new File(chunkTripleFdFile));
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);
@@ -99,7 +99,7 @@ public class TripleFeatureExtractor
         }
 
         for (String key : trainingFD.getKeys()) {
-            if (trainingFD.getCount(key) > threshold) {
+            if (trainingFD.getCount(key) > chunkTripleThreshold) {
                 tripleSet.add(key);
             }
         }
@@ -111,7 +111,7 @@ public class TripleFeatureExtractor
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(TripleMetaCollector.class);
+        metaCollectorClasses.add(ChunkTripleMetaCollector.class);
 
         return metaCollectorClasses;
     }

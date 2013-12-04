@@ -1,6 +1,5 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +18,13 @@ public class DependencyMetaCollector
     extends FreqDistBasedMetaCollector
 {
     public static final String DEP_FD_KEY = "dep.ser";
-    
-    @ConfigurationParameter(name = DependencyFeatureExtractor.PARAM_DEP_FILE, mandatory = true)
+
+    @ConfigurationParameter(name = DependencyFeatureExtractor.PARAM_DEP_FD_FILE, mandatory = true)
     private File depFdFile;
-    
+
+    @ConfigurationParameter(name = DependencyFeatureExtractor.PARAM_LOWER_CASE_DEPS, mandatory = false, defaultValue = "true")
+    private boolean lowerCaseDeps;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -30,7 +32,7 @@ public class DependencyMetaCollector
         super.initialize(context);
         fdFile = depFdFile;
     }
-    
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
@@ -40,25 +42,27 @@ public class DependencyMetaCollector
             String governor = dep.getGovernor().getCoveredText();
             String dependent = dep.getDependent().getCoveredText();
 
-            String dependencyString = getDependencyString(governor, dependent, type, lowerCase);
+            String dependencyString = getDependencyString(governor, dependent, type, lowerCaseDeps);
             fd.inc(dependencyString);
         }
     }
 
-    public static String getDependencyString(String governor, String dependent, String type, boolean lowerCase) {
+    public static String getDependencyString(String governor, String dependent, String type,
+            boolean lowerCase)
+    {
         if (lowerCase) {
             governor = governor.toLowerCase();
             dependent = dependent.toLowerCase();
         }
-        
+
         return governor + "-" + type + "-" + dependent;
     }
-    
+
     @Override
     public Map<String, String> getParameterKeyPairs()
     {
-        Map<String,String> mapping = new HashMap<String,String>();
-        mapping.put(DependencyFeatureExtractor.PARAM_DEP_FILE, DEP_FD_KEY);
+        Map<String, String> mapping = new HashMap<String, String>();
+        mapping.put(DependencyFeatureExtractor.PARAM_DEP_FD_FILE, DEP_FD_KEY);
         return mapping;
     }
 }

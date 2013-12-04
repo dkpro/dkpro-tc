@@ -29,8 +29,8 @@ public class TopicWordsFeatureExtractor
 {
     // takes as parameter list of names of word-list-files in resources, outputs one attribute per
     // list
-    public static final String PARAM_TOPIC_FILE = "TopicFile";
-    @ConfigurationParameter(name = PARAM_TOPIC_FILE, mandatory = true)
+    public static final String PARAM_TOPIC_FILE_PATH = "topicFilePath";
+    @ConfigurationParameter(name = PARAM_TOPIC_FILE_PATH, mandatory = true)
     private String topicFilePath;
 
     private String prefix;
@@ -59,7 +59,7 @@ public class TopicWordsFeatureExtractor
     }
 
     private List<Feature> countWordHits(String wordListName, List<String> tokens)
-            throws TextClassificationException
+        throws TextClassificationException
     {
 
         // word lists are stored in resources folder relative to feature extractor

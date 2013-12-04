@@ -109,7 +109,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        "TopK",
+        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
         "500",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
@@ -117,7 +117,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
         3
     ],
     [
-        "TopK",
+        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
         "1000",
         NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,

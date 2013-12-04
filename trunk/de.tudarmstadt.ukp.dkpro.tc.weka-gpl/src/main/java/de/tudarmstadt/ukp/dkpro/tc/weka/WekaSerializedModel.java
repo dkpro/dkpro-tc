@@ -26,7 +26,7 @@ public class WekaSerializedModel
     implements Serializable
 {
 
-    public static final String PARAM_WEKA_SERIALIZED_MODEL_PATH = "WekaSerializedModelPath";
+    public static final String PARAM_WEKA_SERIALIZED_MODEL_PATH = "wekaSerializedModelPath";
     @ConfigurationParameter(name = PARAM_WEKA_SERIALIZED_MODEL_PATH, mandatory = true)
     private String wekaSerializedModelPath;
 

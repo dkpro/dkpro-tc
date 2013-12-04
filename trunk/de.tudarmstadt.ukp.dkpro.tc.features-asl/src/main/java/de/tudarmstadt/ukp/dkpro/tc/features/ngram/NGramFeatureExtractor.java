@@ -20,6 +20,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
@@ -38,34 +39,39 @@ public class NGramFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements MetaDependent, ClassificationUnitFeatureExtractor
 {
-
-    public static final String PARAM_NGRAM_MIN_N = "NGramMinSize";
-    public static final String PARAM_NGRAM_MAX_N = "NGramMaxSize";
-    public static final String PARAM_NGRAM_FD_FILE = "NGramFDFile";
-    public static final String PARAM_STOPWORDS_FILE = "StopwordsFile";
-    public static final String PARAM_FREQ_THRESHOLD = "FreqThreshold";
-    public static final String PARAM_USE_TOP_K = "TopK";
-    public static final String PARAM_LOWER_CASE = "LowerCaseNGrams";
-    public static final String PARAM_MIN_TOKEN_LENGTH_THRESHOLD = "MinTokenLengthThreshold";
-
+    public static final String PARAM_NGRAM_MIN_N = "ngramMinN";
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_N, mandatory = false)
-    private int minN = 1;
-    @ConfigurationParameter(name = PARAM_NGRAM_MAX_N, mandatory = false)
-    private int maxN = 3;
-    @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
-    private String fdFile;
-    @ConfigurationParameter(name = PARAM_USE_TOP_K, mandatory = false)
-    private int topK = 500;
-    @ConfigurationParameter(name = PARAM_STOPWORDS_FILE, mandatory = false)
-    private String stopFile;
-    @ConfigurationParameter(name = PARAM_FREQ_THRESHOLD, mandatory = false)
-    private float freqThreshold = 0.01f;
-    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = false)
-    private boolean lowerCaseNGrams = true;
-    @ConfigurationParameter(name = PARAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = false)
-    private int minTokenLengthThreshold = 1;
+    private final int ngramMinN = 1;
 
-    private boolean useFreqThreshold = false;
+    public static final String PARAM_NGRAM_MAX_N = "ngramMaxN";
+    @ConfigurationParameter(name = PARAM_NGRAM_MAX_N, mandatory = false)
+    private final int ngramMaxN = 3;
+
+    public static final String PARAM_NGRAM_FD_FILE = "ngramFdFile";
+    @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
+    private String ngramFdFile;
+
+    public static final String PARAM_NGRAM_USE_TOP_K = "ngramUseTopK";
+    @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = false)
+    private final int ngramUseTopK = 500;
+
+    public static final String PARAM_NGRAM_STOPWORDS_FILE = "ngramStopwordsFile";
+    @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
+    private String ngramStopwordsFile;
+
+    public static final String PARAM_NGRAM_FREQ_THRESHOLD = "ngramFreqThreshold";
+    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = false)
+    private final float ngramFreqThreshold = 0.01f;
+
+    public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
+    @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = false)
+    private final boolean ngramLowerCase = true;
+
+    public static final String PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD = "ngramMinTokenLengthThreshold";
+    @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = false)
+    private final int ngramMinTokenLengthThreshold = 1;
+
+    private final boolean useFreqThreshold = false;
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
@@ -84,34 +90,35 @@ public class NGramFeatureExtractor
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
         // try to check if stopword list is defined, if so, use it
-        if (stopFile != null && !stopFile.isEmpty()) {
+        if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
             try {
                 // each line of the file contains one stopword
-                URL stopUrl = ResourceUtils.resolveLocation(stopFile, null);
+                URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
                 InputStream is = stopUrl.openStream();
                 Set<String> stopwords = new HashSet<String>();
                 stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
 
                 if (annotation == null) {
-                    documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN,
-                            maxN, stopwords);
+                    documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN,
+                            ngramMaxN, stopwords);
                 }
                 else {
                     documentNgrams = NGramUtils.getAnnotationNgrams(jcas, annotation,
-                            lowerCaseNGrams, minN, maxN, stopwords);
+                            ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
                 }
             }
             catch (Exception e) {
-                System.out.println("Problems with file at " + stopFile);
+                System.out.println("Problems with file at " + ngramStopwordsFile);
             }
         }
         else {
             if (annotation == null) {
-                documentNgrams = NGramUtils.getDocumentNgrams(jcas, lowerCaseNGrams, minN, maxN);
+                documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN,
+                        ngramMaxN);
             }
             else {
-                documentNgrams = NGramUtils.getAnnotationNgrams(jcas, annotation, lowerCaseNGrams,
-                        minN, maxN);
+                documentNgrams = NGramUtils.getAnnotationNgrams(jcas, annotation, ngramLowerCase,
+                        ngramMinN, ngramMaxN);
             }
         }
         for (String topNgram : topKSet) {
@@ -155,7 +162,7 @@ public class NGramFeatureExtractor
     private Set<String> getTopNgrams()
         throws ResourceInitializationException
     {
-        return getTopNgrams(fdFile);
+        return getTopNgrams(ngramFdFile);
     }
 
     protected Set<String> getTopNgrams(String s)
@@ -180,7 +187,7 @@ public class NGramFeatureExtractor
             for (String key : trainingFD.getKeys()) {
                 double freq = trainingFD.getCount(key) / total;
                 max = Math.max(max, freq);
-                if (freq >= freqThreshold) {
+                if (freq >= ngramFreqThreshold) {
                     topNGrams.add(key);
                 }
             }
@@ -201,18 +208,18 @@ public class NGramFeatureExtractor
 
             int i = 0;
             for (String key : sorted_map.keySet()) {
-                if (i > topK) {
+                if (i >= ngramUseTopK) {
                     break;
                 }
 
-                if (key.length() >= minTokenLengthThreshold) {
+                if (key.length() >= ngramMinTokenLengthThreshold) {
                     topNGrams.add(key);
                     i++;
                 }
             }
         }
 
-        System.out.println("+++ TAKING " + topNGrams.size() + " NGRAMS");
+        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " NGRAMS");
 
         return topNGrams;
     }

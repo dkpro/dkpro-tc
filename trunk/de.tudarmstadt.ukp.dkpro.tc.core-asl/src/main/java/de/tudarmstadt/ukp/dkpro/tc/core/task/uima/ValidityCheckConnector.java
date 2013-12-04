@@ -23,35 +23,35 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 /**
  * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on
  * the CAS.
- *
+ * 
  * @author zesch
- *
+ * 
  */
 public class ValidityCheckConnector
     extends JCasAnnotator_ImplBase
 {
 
-    public static final String PARAM_IS_REGRESSION = "valCheckerIsRegression";
+    public static final String PARAM_IS_REGRESSION = "isRegression";
     @ConfigurationParameter(name = PARAM_IS_REGRESSION, mandatory = true)
     private boolean isRegression;
 
-    public static final String PARAM_IS_MULTILABEL = "valCheckerIsMultiLabel";
+    public static final String PARAM_IS_MULTILABEL = "isMultiLabel";
     @ConfigurationParameter(name = PARAM_IS_MULTILABEL, mandatory = true)
     private boolean isMultiLabel;
 
-    public static final String PARAM_IS_UNIT_CLASSIFICATION = "valCheckerIsUnitClassification";
+    public static final String PARAM_IS_UNIT_CLASSIFICATION = "isUnitClassification";
     @ConfigurationParameter(name = PARAM_IS_UNIT_CLASSIFICATION, mandatory = true)
     private boolean isUnitClassification;
 
-    public static final String PARAM_DATA_WRITER = "valCheckerDataWriter";
+    public static final String PARAM_DATA_WRITER = "dataWriter";
     @ConfigurationParameter(name = PARAM_DATA_WRITER, mandatory = true)
     private String dataWriter;
 
-    public static final String PARAM_BIPARTITION_THRESHOLD = "valCheckerBipartionThreshold";
+    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
     @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = false)
     private String bipartitionThreshold;
 
-    public static final String PARAM_IS_PAIR_CLASSIFICATION = "valCheckerIsPairClassification";
+    public static final String PARAM_IS_PAIR_CLASSIFICATION = "isPairClassification";
     @ConfigurationParameter(name = PARAM_IS_PAIR_CLASSIFICATION, mandatory = true)
     private boolean isPairClassification;
 
@@ -87,8 +87,7 @@ public class ValidityCheckConnector
                 throw new AnalysisEngineProcessException(
                         new TextClassificationException(
                                 "No TextClassificationOutcome annotation found. "
-                                        +
-                                        "The reader must make sure that the expected outcome of the classification is annotated accordingly."));
+                                        + "The reader must make sure that the expected outcome of the classification is annotated accordingly."));
             }
 
             // iff multi-label classification is active, no single-label data writer may be used
@@ -98,7 +97,7 @@ public class ValidityCheckConnector
                             new TextClassificationException(
                                     "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
                 }
-                if(bipartitionThreshold == null){
+                if (bipartitionThreshold == null) {
                     throw new AnalysisEngineProcessException(
                             new TextClassificationException(
                                     "Your experiment is configured to be multi-label. Please set a bipartition threshold."));
@@ -125,8 +124,8 @@ public class ValidityCheckConnector
                 }
                 else {
                     for (TextClassificationUnit classificationUnit : classificationUnits) {
-                        if (JCasUtil.selectCovered(jcas,
-                                TextClassificationOutcome.class, classificationUnit).size() == 0) {
+                        if (JCasUtil.selectCovered(jcas, TextClassificationOutcome.class,
+                                classificationUnit).size() == 0) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(
                                             "I did not find an outcome annotation for "
@@ -138,16 +137,18 @@ public class ValidityCheckConnector
             }
 
             // iff
-            if(isPairClassification){
+            if (isPairClassification) {
                 try {
                     jcas.getView(AbstractPairReader.PART_ONE);
                     jcas.getView(AbstractPairReader.PART_TWO);
                 }
                 catch (CASException e) {
-                    throw new AnalysisEngineProcessException(
-                            new TextClassificationException(
-                                    "Your experiment is configured to be pair classification, but I could not find the two views "
-                                            + AbstractPairReader.PART_ONE + " and " + AbstractPairReader.PART_TWO + ". Please use a reader that inhereits from " + AbstractPairReader.class.getName()));
+                    throw new AnalysisEngineProcessException(new TextClassificationException(
+                            "Your experiment is configured to be pair classification, but I could not find the two views "
+                                    + AbstractPairReader.PART_ONE + " and "
+                                    + AbstractPairReader.PART_TWO
+                                    + ". Please use a reader that inhereits from "
+                                    + AbstractPairReader.class.getName()));
                 }
             }
         }

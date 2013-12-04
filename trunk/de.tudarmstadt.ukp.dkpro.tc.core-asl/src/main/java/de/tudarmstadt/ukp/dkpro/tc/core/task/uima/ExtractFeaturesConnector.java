@@ -32,9 +32,9 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
  * extractors on each CAS.
- *
+ * 
  * @author zesch
- *
+ * 
  */
 public class ExtractFeaturesConnector
     extends JCasAnnotator_ImplBase
@@ -60,11 +60,6 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_IS_REGRESSION_EXPERIMENT, mandatory = true, defaultValue = "false")
     private boolean isRegressionExperiment;
 
-    // public static final String PARAM_PAIR_FEATURE_EXTRACTORS =
-    // "pairFeatureExtractors";
-    // @ExternalResource(key = PARAM_PAIR_FEATURE_EXTRACTORS, mandatory = false)
-    // protected PairFeatureExtractorResource_ImplBase[] pairFeatureExtractors;
-
     protected InstanceList instanceList;
 
     @Override
@@ -79,11 +74,6 @@ public class ExtractFeaturesConnector
             context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
             throw new ResourceInitializationException();
         }
-
-        // if (pairFeatureExtractors != null) {
-        // context.getLogger().log(Level.INFO,
-        // "Using pair feature extractors.");
-        // }
     }
 
     @Override
@@ -101,7 +91,8 @@ public class ExtractFeaturesConnector
                 else if (featExt instanceof DocumentFeatureExtractor) {
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
-                // FIXME what to do when a feature extractor is both PairFE and ClassificationUnitFE?
+                // FIXME what to do when a feature extractor is both PairFE and
+                // ClassificationUnitFE?
                 else if (featExt instanceof ClassificationUnitFeatureExtractor) {
                     TextClassificationUnit classificationUnit = null;
                     Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
@@ -126,22 +117,6 @@ public class ExtractFeaturesConnector
                 throw new AnalysisEngineProcessException(e);
             }
         }
-
-        // if (pairFeatureExtractors != null) {
-        // for (PairFeatureExtractor featExt : pairFeatureExtractors) {
-        // try {
-        // JCas view1 = jcas.getView(Constants.PART_ONE);
-        // JCas view2 = jcas.getView(Constants.PART_TWO);
-        // instance.addFeatures(featExt.extract(view1, view2));
-        // }
-        // catch (CASException e) {
-        // throw new AnalysisEngineProcessException(e);
-        // }
-        // catch (TextClassificationException e) {
-        // throw new AnalysisEngineProcessException(e);
-        // }
-        // }
-        // }
 
         if (addInstanceId) {
             try {
