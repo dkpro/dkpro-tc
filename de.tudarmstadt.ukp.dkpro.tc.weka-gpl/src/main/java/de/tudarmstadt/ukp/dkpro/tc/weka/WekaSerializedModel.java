@@ -1,18 +1,19 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.fit.component.Resource_ImplBase;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
+import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.SharedResourceObject;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * A serializable model of Weka and Meka classifiers along with all necessary meta information to
@@ -22,13 +23,8 @@ import weka.core.Attribute;
  * 
  */
 public class WekaSerializedModel
-    extends Resource_ImplBase
-    implements Serializable
+    implements SharedResourceObject, Serializable
 {
-
-    public static final String PARAM_WEKA_SERIALIZED_MODEL_PATH = "wekaSerializedModelPath";
-    @ConfigurationParameter(name = PARAM_WEKA_SERIALIZED_MODEL_PATH, mandatory = true)
-    private String wekaSerializedModelPath;
 
     private List<Attribute> attributes;
     private Classifier trainedClassifier;
@@ -36,18 +32,57 @@ public class WekaSerializedModel
     private List<String> editFeatureExtractors;
     private List<String> allClassLabels;
     private List<Object> pipelineParameters;
+    private Map<String, FrequencyDistribution<String>> metaFiles;
+
     private static final long serialVersionUID = -6293683995416413736L;
 
+    public WekaSerializedModel()
+    {
+        // default constructor
+    }
+
+    /**
+     * Creates a serializable Weka/Meka model with all necessary meta data to reuse it as external
+     * resource in tasks which use this model to classify unseen data.
+     * 
+     * @param attributes
+     *            list of attributes used to train the classifier
+     * @param trainedClassifier
+     *            trained classifier model
+     * @param bipartitionThreshold
+     *            bipartition threshold (only in multi-label experiments)
+     * @param editFeatureExtractors
+     *            names of all feature extractors which have been used to create the classifier
+     *            model
+     * @param allLabels
+     *            list of all class label names
+     * @param pipelineParameters
+     *            key - value pairs of pipeline parameters using for feature extraction
+     * @param metaFiles
+     *            key - frequency distribution pairs with all meta files
+     */
+    public WekaSerializedModel(List<Attribute> attributes, Classifier trainedClassifier,
+            String bipartitionThreshold, List<String> editFeatureExtractors,
+            List<String> allLabels, List<Object> pipelineParameters,
+            Map<String, FrequencyDistribution<String>> metaFiles)
+    {
+        this.attributes = attributes;
+        this.bipartitionThreshold = bipartitionThreshold;
+        this.editFeatureExtractors = editFeatureExtractors;
+        this.allClassLabels = allLabels;
+        this.pipelineParameters = pipelineParameters;
+        this.trainedClassifier = trainedClassifier;
+        this.metaFiles = metaFiles;
+    }
+
     @Override
-    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+    public void load(DataResource aData)
         throws ResourceInitializationException
     {
-        if (!super.initialize(aSpecifier, aAdditionalParams)) {
-            return false;
-        }
+        ConfigurationParameterInitializer.initialize(this, aData);
 
         try {
-            FileInputStream fileIn = new FileInputStream(wekaSerializedModelPath);
+            InputStream fileIn = aData.getInputStream();
             ObjectInputStream in = new ObjectInputStream(fileIn);
             WekaSerializedModel model = (WekaSerializedModel) in.readObject();
             in.close();
@@ -58,28 +93,11 @@ public class WekaSerializedModel
             this.allClassLabels = model.getAllClassLabels();
             this.pipelineParameters = model.getPipelineParameters();
             this.trainedClassifier = model.getTrainedClassifier();
+            this.metaFiles = model.getMetaFiles();
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-        return true;
-    }
-
-    public WekaSerializedModel()
-    {
-        // nothing to do here
-    }
-
-    public WekaSerializedModel(List<Attribute> attributes, Classifier trainedClassifier,
-            String bipartitionThreshold, List<String> editFeatureExtractors,
-            List<String> allLabels, List<Object> pipelineParameters)
-    {
-        this.attributes = attributes;
-        this.bipartitionThreshold = bipartitionThreshold;
-        this.editFeatureExtractors = editFeatureExtractors;
-        this.allClassLabels = allLabels;
-        this.pipelineParameters = pipelineParameters;
-        this.trainedClassifier = trainedClassifier;
     }
 
     public String getBipartitionThreshold()
@@ -112,4 +130,8 @@ public class WekaSerializedModel
         return trainedClassifier;
     }
 
+    public Map<String, FrequencyDistribution<String>> getMetaFiles()
+    {
+        return metaFiles;
+    }
 }
