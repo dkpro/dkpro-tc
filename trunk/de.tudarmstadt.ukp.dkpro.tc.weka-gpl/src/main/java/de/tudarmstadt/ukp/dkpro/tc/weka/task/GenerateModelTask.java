@@ -1,13 +1,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.uima.resource.ResourceInitializationException;
+import java.util.Map;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -15,10 +16,12 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaSerializedModel;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
@@ -94,40 +97,45 @@ public class GenerateModelTask
         }
 
         // train model
-        Classifier trainedClassifier;
-
-        try {
-            List<String> mlArgs = classificationArguments
-                    .subList(1, classificationArguments.size());
-            trainedClassifier = AbstractClassifier.forName(classificationArguments.get(0),
-                    new String[] {});
-            ((AbstractClassifier) trainedClassifier).setOptions(mlArgs.toArray(new String[0]));
-            trainedClassifier.buildClassifier(filteredTrainData);
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
+        List<String> mlArgs = classificationArguments.subList(1, classificationArguments.size());
+        Classifier trainedClassifier = AbstractClassifier.forName(classificationArguments.get(0),
+                new String[] {});
+        ((AbstractClassifier) trainedClassifier).setOptions(mlArgs.toArray(new String[0]));
+        trainedClassifier.buildClassifier(filteredTrainData);
 
         List<String> labels = new ArrayList<String>();
         for (int j = 0; j < trainData.classIndex(); j++) {
             labels.add(trainData.attribute(j).name().split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1]);
         }
 
+        // load meta files and add them to the model
+        List<Class<? extends MetaCollector>> metaCollectorClasses = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
+                .getMetaCollectorsFromFeatureExtractors(featureSet);
+        Map<String, FrequencyDistribution<String>> metaMap = new HashMap<String, FrequencyDistribution<String>>();
+
+        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+            Map<String, String> parameterKeys = metaCollectorClass.newInstance()
+                    .getParameterKeyPairs();
+            for (String key : parameterKeys.keySet()) {
+                File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
+                        parameterKeys.get(key));
+                FrequencyDistribution<String> freqDist = new FrequencyDistribution<String>();
+                freqDist.load(file);
+                metaMap.put(key, freqDist);
+            }
+        }
+
+        // setup model
         WekaSerializedModel model = new WekaSerializedModel(attributes, trainedClassifier,
-                threshold, featureSet, labels, pipelineParameters);
+                threshold, featureSet, labels, pipelineParameters, metaMap);
 
-        try {
-            FileOutputStream fileOut = new FileOutputStream(aContext.getStorageLocation(OUTPUT_KEY,
-                    AccessMode.READWRITE).getPath()
-                    + "/" + MODEL_KEY);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(model);
-            out.close();
-            fileOut.close();
-        }
-        catch (IOException e) {
-
-        }
-
+        // serialize model
+        FileOutputStream fileOut = new FileOutputStream(aContext.getStorageLocation(OUTPUT_KEY,
+                AccessMode.READWRITE).getPath()
+                + "/" + MODEL_KEY);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(model);
+        out.close();
+        fileOut.close();
     }
 }
