@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -67,21 +68,15 @@ public class MetaInfoTask
     {
         // TrainTest setup: input files are set as imports
         if (filesRoot == null || files_training == null) {
-            File file = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
-            return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_SOURCE_LOCATION, file, BinaryCasReader.PARAM_PATTERNS,
-                    BinaryCasReader.INCLUDE_PREFIX + "**/*.bin");
+            File root = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
+            Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
+            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+                    files);
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
-            Collection<String> patterns = new ArrayList<String>();
-            for (String f : files_training) {
-
-                patterns.add(BinaryCasReader.INCLUDE_PREFIX + "**/" + f);
-            }
-            return createReaderDescription(BinaryCasReader.class,
-                    BinaryCasReader.PARAM_SOURCE_LOCATION, filesRoot,
-                    BinaryCasReader.PARAM_PATTERNS, patterns);
+            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+                    files_training);
         }
     }
 
