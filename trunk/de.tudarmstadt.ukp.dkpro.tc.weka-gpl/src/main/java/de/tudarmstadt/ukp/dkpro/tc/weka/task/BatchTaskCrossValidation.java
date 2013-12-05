@@ -122,7 +122,8 @@ public class BatchTaskCrossValidation
                 String[] fileNames = new String[files.size()];
                 int i = 0;
                 for (File f : files) {
-                    fileNames[i] = f.getName();
+                    // adding file paths, not names
+                    fileNames[i] = f.getAbsolutePath();
                     i++;
                 }
                 Arrays.sort(fileNames);
