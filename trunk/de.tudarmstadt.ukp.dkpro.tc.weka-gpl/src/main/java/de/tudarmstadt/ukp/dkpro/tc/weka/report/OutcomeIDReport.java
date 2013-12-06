@@ -24,7 +24,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * Writes a instanceId / outcome pair for each classification instance.
  * 
  * @author zesch
- *
+ * 
  */
 public class OutcomeIDReport
     extends ReportBase
@@ -74,10 +74,13 @@ public class OutcomeIDReport
                         StringUtils.join(predictionOutcomes, ","));
             }
             else {
-                int classification = new Double(inst.value(predictions
+                int gold = new Double(inst.value(predictions
                         .attribute(Constants.CLASS_ATTRIBUTE_NAME
                                 + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
-                props.setProperty(inst.stringValue(attOffset), classValues[classification]);
+                Attribute gsAtt = predictions.attribute(TestTask.PREDICTION_CLASS_LABEL_NAME);
+                int prediction = new Double(inst.value(gsAtt)).intValue();
+                props.setProperty(inst.stringValue(attOffset), gsAtt.value(prediction) + " (is "
+                        + classValues[gold] + ")");
             }
         }
 
