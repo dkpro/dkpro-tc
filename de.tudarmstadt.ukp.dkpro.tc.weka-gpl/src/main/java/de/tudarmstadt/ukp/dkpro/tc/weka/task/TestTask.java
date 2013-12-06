@@ -1,6 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
 import java.io.File;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -11,9 +12,11 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.multilabel.Evaluation;
 import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Result;
+import weka.core.SelectedTag;
 import weka.core.SparseInstance;
 import weka.core.converters.ConverterUtils.DataSink;
 import weka.filters.Filter;
@@ -73,6 +76,7 @@ public class TestTask
     public static final String TRAINING_DATA_KEY = "training-data.arff.gz";
     public static final String EVALUATION_DATA_KEY = "evaluation.bin";
     public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";
+    public static final String PREDICTION_CLASS_LABEL_NAME = "prediction";
 
     public static boolean MULTILABEL;
 
@@ -150,8 +154,7 @@ public class TestTask
                 }
             }
             catch (Exception e) {
-                LogFactory.getLog(getClass())
-                        .warn("Could not apply feature selection.", e);
+                LogFactory.getLog(getClass()).warn("Could not apply feature selection.", e);
             }
         }
         if (multiLabel && attributeEvaluator != null && labelTransformationMethod != null
@@ -173,8 +176,8 @@ public class TestTask
                 }
             }
             catch (Exception e) {
-                LogFactory.getLog(getClass())
-                        .warn("Could not apply multi-label feature selection.", e);
+                LogFactory.getLog(getClass()).warn(
+                        "Could not apply multi-label feature selection.", e);
             }
         }
 
@@ -229,25 +232,27 @@ public class TestTask
             eval.evaluateModel(cl, filteredTestData);
             weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
 
-            Add filter = new Add();
+            Enumeration enumAtt = testData.classAttribute().enumerateValues();
+            StringBuffer classVals = new StringBuffer();
+            while (enumAtt.hasMoreElements()) {
+                if (classVals.length() > 0) {
+                    classVals.append(",");
+                }
+                classVals.append(enumAtt.nextElement());
+            }
 
-            filter.setAttributeIndex(new Integer(testData.classIndex() + 1).toString());
-            filter.setAttributeName("goldlabel");
+            // add an attribute with the predicted values at the end off the attributes
+            Add filter = new Add();
+            filter.setAttributeName(PREDICTION_CLASS_LABEL_NAME);
+            filter.setAttributeType(new SelectedTag(Attribute.NOMINAL, Add.TAGS_TYPE));
+            filter.setNominalLabels(classVals.toString());
             filter.setInputFormat(testData);
             testData = Filter.useFilter(testData, filter);
 
-            // fill values of gold standard classification with original values from test set
+            // fill predicted values for each instance
             for (int i = 0; i < testData.size(); i++) {
-
-                testData.instance(i).setValue(testData.classIndex() - 1,
-                        filteredTestData.instance(i).classValue());
-
-            }
-
-            for (int i = 0; i < filteredTestData.numInstances(); i++) {
                 double prediction = cl.classifyInstance(filteredTestData.instance(i));
-                Instance instance = testData.instance(i);
-                instance.setClassValue(prediction);
+                testData.instance(i).setValue(testData.classIndex() + 1, prediction);
             }
         }
 
