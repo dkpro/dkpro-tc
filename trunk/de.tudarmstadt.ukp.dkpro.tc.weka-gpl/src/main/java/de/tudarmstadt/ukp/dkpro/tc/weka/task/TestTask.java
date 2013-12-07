@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -232,20 +231,21 @@ public class TestTask
             eval.evaluateModel(cl, filteredTestData);
             weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
 
-            Enumeration enumAtt = testData.classAttribute().enumerateValues();
             StringBuffer classVals = new StringBuffer();
-            while (enumAtt.hasMoreElements()) {
+            for (int i = 0; i < testData.classAttribute().numValues(); i++) {
                 if (classVals.length() > 0) {
                     classVals.append(",");
                 }
-                classVals.append(enumAtt.nextElement());
+                classVals.append(testData.classAttribute().value(i));
             }
 
             // add an attribute with the predicted values at the end off the attributes
             Add filter = new Add();
             filter.setAttributeName(PREDICTION_CLASS_LABEL_NAME);
-            filter.setAttributeType(new SelectedTag(Attribute.NOMINAL, Add.TAGS_TYPE));
-            filter.setNominalLabels(classVals.toString());
+            if (classVals.length() > 0) {
+                filter.setAttributeType(new SelectedTag(Attribute.NOMINAL, Add.TAGS_TYPE));
+                filter.setNominalLabels(classVals.toString());
+            }
             filter.setInputFormat(testData);
             testData = Filter.useFilter(testData, filter);
 
