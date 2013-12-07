@@ -78,6 +78,7 @@ public class RegressionExperimentWithoutJson
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
                 getPreprocessing(), NUM_FOLDS);
+        batch.setAddInstanceId(true);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.setInnerReport(RegressionReport.class);

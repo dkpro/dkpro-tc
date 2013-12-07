@@ -28,6 +28,7 @@ public class BatchTaskTrainTest
     private AnalysisEngineDescription aggregate;
     private List<String> operativeViews;
     private Class<? extends Report> innerReport;
+    private boolean addInstanceId = false;
 
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTaskTrain;
@@ -123,6 +124,7 @@ public class BatchTaskTrainTest
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setAddInstanceId(true);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
+        featuresTrainTask.setAddInstanceId(addInstanceId);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
@@ -131,6 +133,7 @@ public class BatchTaskTrainTest
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setAddInstanceId(true);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
+        featuresTestTask.setAddInstanceId(addInstanceId);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
@@ -140,6 +143,9 @@ public class BatchTaskTrainTest
         testTask.setType(testTask.getType() + "-" + experimentName);
         if (innerReport != null) {
             testTask.addReport(innerReport);
+        }
+        if (addInstanceId) {
+            testTask.addReport(OutcomeIDReport.class);
         }
         testTask.addReport(OutcomeIDReport.class);
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
@@ -169,6 +175,11 @@ public class BatchTaskTrainTest
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;
+    }
+
+    public void setAddInstanceId(boolean addInstanceId)
+    {
+        this.addInstanceId = addInstanceId;
     }
 
     /**
