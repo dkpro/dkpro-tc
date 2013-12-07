@@ -204,7 +204,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
     public static void main(String[] args)
     {
         new ReutersTextClassificationGroovyExperiment().runTrainTest();
-        new ReutersTextClassificationGroovyExperiment().runCrossValidation();
+        //new ReutersTextClassificationGroovyExperiment().runCrossValidation();
     }
 
 }
