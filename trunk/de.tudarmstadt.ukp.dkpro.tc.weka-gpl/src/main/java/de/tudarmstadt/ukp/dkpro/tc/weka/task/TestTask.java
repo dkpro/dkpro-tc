@@ -76,6 +76,7 @@ public class TestTask
     public static final String EVALUATION_DATA_KEY = "evaluation.bin";
     public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";
     public static final String PREDICTION_CLASS_LABEL_NAME = "prediction";
+    public static final String GOLD_STANDARD_CLASS_LABEL_NAME = "goldstandard";
 
     public static boolean MULTILABEL;
 
@@ -211,7 +212,8 @@ public class TestTask
             for (int i = 0; i < numLabels; i++) {
                 filter.setAttributeIndex(new Integer(numLabels + i + 1).toString());
                 filter.setNominalLabels("0,1");
-                filter.setAttributeName(testData.attribute(i).name() + "_classification");
+                filter.setAttributeName(testData.attribute(i).name() + "_"
+                        + GOLD_STANDARD_CLASS_LABEL_NAME);
                 filter.setInputFormat(testData);
                 testData = Filter.useFilter(testData, filter);
             }
