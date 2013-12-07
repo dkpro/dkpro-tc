@@ -74,13 +74,31 @@ public class OutcomeIDReport
                         StringUtils.join(predictionOutcomes, ","));
             }
             else {
-                int gold = new Double(inst.value(predictions
-                        .attribute(Constants.CLASS_ATTRIBUTE_NAME
-                                + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
+                Double gold;
+
+                try {
+                    gold = new Double(inst.value(predictions
+                            .attribute(Constants.CLASS_ATTRIBUTE_NAME
+                                    + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
+                }
+                catch (NullPointerException e) {
+                    // if train and test data have not been balanced
+                    gold = new Double(inst.value(predictions
+                            .attribute(Constants.CLASS_ATTRIBUTE_NAME)));
+                }
                 Attribute gsAtt = predictions.attribute(TestTask.PREDICTION_CLASS_LABEL_NAME);
-                int prediction = new Double(inst.value(gsAtt)).intValue();
-                props.setProperty(inst.stringValue(attOffset), gsAtt.value(prediction) + " (is "
-                        + classValues[gold] + ")");
+                Double prediction = new Double(inst.value(gsAtt));
+                try {
+                    props.setProperty(
+                            inst.stringValue(attOffset),
+                            gsAtt.value(prediction.intValue()) + " (is "
+                                    + classValues[gold.intValue()] + ")");
+                }
+                catch (Exception e) {
+                    // if the outcome is numeric
+                    props.setProperty(inst.stringValue(attOffset), prediction + " (is " + gold
+                            + ")");
+                }
             }
         }
 
