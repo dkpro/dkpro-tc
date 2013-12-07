@@ -129,6 +129,7 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
                 dimFeatureSets,
                 dimPipelineParameters
             ],
+            addInstanceId: true,
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchCrossValidationReport],
             numFolds: numFolds];
@@ -157,6 +158,7 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
                 dimFeatureSets,
                 dimPipelineParameters
             ],
+            addInstanceId: true,
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchTrainTestReport,
