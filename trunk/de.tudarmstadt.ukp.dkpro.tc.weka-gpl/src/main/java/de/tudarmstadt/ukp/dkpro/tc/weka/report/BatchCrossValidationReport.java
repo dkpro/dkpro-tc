@@ -42,7 +42,7 @@ public class BatchCrossValidationReport
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             "files_validation", "files_training" });
     private static final List<String> nonAveragedResultsMeasures = Arrays.asList(new String[] {
-            "correct", "incorrect", "N", "L" });
+            ReportConstants.CORRECT, ReportConstants.INCORRECT, "N", "L" });
 
     @Override
     public void execute()
@@ -159,9 +159,18 @@ public class BatchCrossValidationReport
         getContext()
                 .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
+        
         table.setCompact(false);
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
+              
+        // output the location of the batch evaluation folder
+        // otherwise it might be hard for novice users to locate this
+        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        // TODO should we use a logger?
+        // TODO can we also do this without creating and deleting the dummy folder?
+        System.out.println("Storing detailed results in:\n" + dummyFolder.getParent());
+        dummyFolder.delete();
     }
 
     private String getKey(Map<String, String> discriminatorsMap)
