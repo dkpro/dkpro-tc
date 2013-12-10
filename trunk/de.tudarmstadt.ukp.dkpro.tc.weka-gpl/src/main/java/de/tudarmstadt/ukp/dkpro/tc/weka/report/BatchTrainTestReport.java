@@ -1,5 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -77,12 +78,23 @@ public class BatchTrainTestReport
             }
         }
 
+        ReportUtils.printPerformanceOverview(table);
+        
         getContext()
                 .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
+        
+        // output the location of the batch evaluation folder
+        // otherwise it might be hard for novice users to locate this
+        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        // TODO should we use a logger?
+        // TODO can we also do this without creating and deleting the dummy folder?
+        System.out.println("Storing detailed results in:\n" + dummyFolder.getParent());
+        System.out.println();
+        dummyFolder.delete();
     }
 
     private String getKey(Map<String, String> discriminatorsMap)

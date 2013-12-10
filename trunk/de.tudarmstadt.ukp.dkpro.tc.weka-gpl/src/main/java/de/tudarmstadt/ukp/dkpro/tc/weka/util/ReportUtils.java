@@ -1,13 +1,19 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.util;
 
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.CORRELATION;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_CORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_INCORRECT;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import mulan.evaluation.measure.MicroPrecision;
@@ -21,6 +27,7 @@ import org.jfree.data.xy.DefaultXYDataset;
 
 import weka.core.Result;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ChartUtil;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 
@@ -279,5 +286,34 @@ public class ReportUtils
             }
         }
         return false;
+    }
+    
+    /**
+     * Looks into the {@link FlexTable} and outputs general performance numbers if available
+     * @param table
+     */
+    public static void printPerformanceOverview(FlexTable<String> table) {
+        // output some general performance figures
+        // TODO this is a bit of a hack. Is there a better way?
+        Set<String> columnIds = new HashSet<String>(Arrays.asList(table.getColumnIds()));
+        if (columnIds.contains(PCT_CORRECT) && columnIds.contains(PCT_INCORRECT)) {
+            int i=0;
+            System.out.println("ID\t% CORRECT\t% INCORRECT");
+            for (String id : table.getRowIds()) {
+                String correct = table.getValueAsString(id, PCT_CORRECT);
+                String incorrect = table.getValueAsString(id, PCT_INCORRECT);
+                System.out.println(i + "\t" + correct + "\t" + incorrect);
+            }
+            System.out.println();
+        }
+        else if (columnIds.contains(CORRELATION)) {
+            int i=0;
+            System.out.println("ID\tCORRELATION");
+            for (String id : table.getRowIds()) {
+                String correlation = table.getValueAsString(id, CORRELATION);
+                System.out.println(i + "\t" + correlation);
+            }
+            System.out.println();
+        }
     }
 }
