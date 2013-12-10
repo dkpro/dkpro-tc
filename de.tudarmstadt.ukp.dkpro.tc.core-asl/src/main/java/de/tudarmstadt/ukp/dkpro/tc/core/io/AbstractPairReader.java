@@ -29,19 +29,64 @@ public abstract class AbstractPairReader
     public static String PART_ONE = "PART_ONE";
     public static String PART_TWO = "PART_TWO";
 
+    /**
+     * Generic corpus name.  Required.
+     * 
+     * Example: "Reuters-21578"
+     * 
+     * @return corpus
+     */
     protected abstract String getCollectionId();
 
     protected abstract String getLanguage();
 
-    protected abstract String getInitialViewText();
+    /**
+     * This is for text common to both texts of the text pair being classified.  
+     * Not required.
+     * 
+     * Example: The original text that the pair texts are extracted from.
+     * 
+     * @return commonText
+     * @throws IOException so user can read in text from a file
+     */
+    protected abstract String getInitialViewText() throws IOException;
 
+    /**
+     * This is for the ID of 
+     * {@link #getInitialViewText()}.
+     * Not required.
+     * 
+     * @return iD
+     */
     protected abstract String getInitialViewDocId();
 
+    /**
+     * This is for the title of 
+     * {@link #getInitialViewText()}.
+     * Not required.
+     * 
+     * @return title
+     */
     protected abstract String getInitialViewTitle();
-
+    
+    /**
+     * If the pair of texts come from one document, set this to the document's original pathname,
+     * without the final filename.  It is used if the CAS is written to file.  The {@link pathname} does not
+     * need to actually exist.
+     * 
+     * @return pathname
+     */
     protected abstract String getBaseUri();
 
-    protected abstract String getText(String part);
+    /**
+     * Sets the text for each of the two views (representing the pair of texts).  Required; intended to contain a 
+     * case/part or if/else statement depending on which of the two views is the argument {@link part}, when overridden.
+     * 
+     * @param part Either {@link #PART_ONE} or {@link #PART_TWO}
+     * @return text
+     * @throws IOException
+     */
+    protected abstract String getText(String part) throws IOException;
 
     @Override
     public void getNext(JCas jcas)
