@@ -1,5 +1,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.CORRELATION;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.MEAN_ABSOLUTE_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.RELATIVE_ABSOLUTE_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.ROOT_MEAN_SQUARED_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.ROOT_RELATIVE_SQUARED_ERROR;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
@@ -34,11 +40,11 @@ public class RegressionReport
                 .read(evaluationFile.getAbsolutePath());
         HashMap<String, Double> m = new HashMap<String, Double>();
 
-        m.put("correlation coefficient", eval.correlationCoefficient());
-        m.put("mean absolute error", eval.meanAbsoluteError());
-        m.put("root mean squared error", eval.rootMeanSquaredError());
-        m.put("root relative squared error", eval.rootRelativeSquaredError());
-        m.put("relative absolute error", eval.relativeAbsoluteError());
+        m.put(CORRELATION, eval.correlationCoefficient());
+        m.put(MEAN_ABSOLUTE_ERROR, eval.meanAbsoluteError());
+        m.put(RELATIVE_ABSOLUTE_ERROR, eval.relativeAbsoluteError());
+        m.put(ROOT_MEAN_SQUARED_ERROR, eval.rootMeanSquaredError());
+        m.put(ROOT_RELATIVE_SQUARED_ERROR, eval.rootRelativeSquaredError());
 
         for (String s : m.keySet()) {
             props.setProperty(s, m.get(s).toString());

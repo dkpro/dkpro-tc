@@ -1,5 +1,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.CORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.FMEASURE;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.INCORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_CORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_INCORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_UNCLASSIFIED;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PRECISION;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.RECALL;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -100,24 +109,24 @@ public class TrainTestReport
         else {
             weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                     .read(evaluationFile.getAbsolutePath());
-            results.put("correct", eval.correct());
-            results.put("incorrect", eval.incorrect());
-            results.put("pctCorrect", eval.pctCorrect());
-            results.put("pctIncorrect", eval.pctIncorrect());
-            results.put("pctUnclassified", eval.pctUnclassified());
+            results.put(CORRECT, eval.correct());
+            results.put(INCORRECT, eval.incorrect());
+            results.put(PCT_CORRECT, eval.pctCorrect());
+            results.put(PCT_INCORRECT, eval.pctIncorrect());
+            results.put(PCT_UNCLASSIFIED, eval.pctUnclassified());
 
             // class-wise recall, precision, f1
             for (String label : TaskUtils.getClassLabels(eval)) {
                 results.put(
-                        "recall_" + label,
+                        RECALL + "_" + label,
                         eval.recall(eval.getHeader().attribute(eval.getHeader().classIndex())
                                 .indexOfValue(label)));
                 results.put(
-                        "precision_" + label,
+                        PRECISION + "_" + label,
                         eval.precision(eval.getHeader().attribute(eval.getHeader().classIndex())
                                 .indexOfValue(label)));
                 results.put(
-                        "fmeasure_" + label,
+                        FMEASURE + "_" + label,
                         eval.fMeasure(eval.getHeader().attribute(eval.getHeader().classIndex())
                                 .indexOfValue(label)));
             }
