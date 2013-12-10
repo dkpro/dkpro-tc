@@ -155,6 +155,8 @@ public class BatchCrossValidationReport
                 table.addRow(subcontext.getLabel(), values);
             }
         }
+        
+        ReportUtils.printPerformanceOverview(table);
 
         getContext()
                 .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
@@ -170,6 +172,7 @@ public class BatchCrossValidationReport
         // TODO should we use a logger?
         // TODO can we also do this without creating and deleting the dummy folder?
         System.out.println("Storing detailed results in:\n" + dummyFolder.getParent());
+        System.out.println();
         dummyFolder.delete();
     }
 
