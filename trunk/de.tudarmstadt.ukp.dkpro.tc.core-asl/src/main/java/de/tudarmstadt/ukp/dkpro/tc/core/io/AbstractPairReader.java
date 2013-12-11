@@ -2,6 +2,7 @@ package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -13,13 +14,109 @@ import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
 
 /**
- * Abstract base class for readers used in pair-classification. Please remember that, additionally
- * to the information set in this class, you need to implement one {@link TCReaderSingleLabel} or
- * {@link TCReaderMultiLabel} and set one or more outcomes for each instance.
+ * Abstract base class for readers used in pair-classification. 
+ * We assume pair classification consists of two texts with one or more
+ * outcomes for the pair.  Optionally, additional text (such as text common
+ * to the pair of texts) can be included as a third text.  The pair of texts,
+ * optional third text, and outcomes(s) is the instance.
+ * <p>
+ * The <code>jcas</code> representing the instance contains two <code>views</code>.  
+ * Each text in the pair of texts is set to one of the <code>views</code>.  
+ * The optional additional text is set to the original <code>jcas</code> of 
+ * the instance.  Information about the instance, such as <code>title</code>
+ * and <code>instance id</code>, is set to the original <code>jcas</code>.
+ * <p>
+ * Basic Implementation:
+ * <p>
+ * If you have basic pairs of texts with one possible outcome each, 
+ * you can create your text pair reader in the following manner:
+ * <ul>
+ * <li> Create a class that extends this class and implements {@link TCReaderSingleLabel}.
+ * <pre>
+ * <code>
+ * import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+ * import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
+ * 
+ * public class MyReader extends AbstractPairReader implements TCReaderSingleLabel {
+ * </code>
+ * </pre>
+ * <li> Implement the method {@link #getCollectionId()} in your class, so it returns the generic corpus name.
+ * <pre>
+ * <code>
+ * protected String getCollectionId(){
+ * 	String collectionId = "MyCorpusName";
+ * 	return collectionId; 
+ * }
+ * 	</code>
+ * </pre>
+ * <li> Implement {@link #getLanguage()}, returning the language of your corpus.
+ * <li> Implement {@link #getInitialViewDocId()}, returning an ID for this instance, 
+ * such as "<code>345{@literal &nbsp;}12.csv</code>".  The id may refer to a filename, or other string in which certain 
+ * characters neec to be escaped or are not easily human-readable.
+ * <li> Implement {@link #getInitialViewTitle()}, returning a human-readable title 
+ * for this instance, such as "345part12".
+ * <li> Implement {@link #getBaseUri()} if your text pair originates from a single document
+ * in one location, to return the absolute location without the filename, 
+ * such as "/home/schmidt/MyCorpus/folder3/".  This will be used for recursive reading of 
+ * folders and writing the jcas while preserving directory structure.
+ * <li> Implement {@link #getText(String)}, conditionally returning either the first or the 
+ * second text of your text pair, depending on whether <code>String</code> equals "PART_ONE"
+ * or "PART_TWO".
+ * <pre>
+ * <code>
+ * protected String getText(String part) throws IOException{
+ * 	if(part.equals("PART_ONE")){
+ * 		return "Here is my text 1.";
+ * 	}else if(part.equals("PART_TWO")){
+ * 		return "Here is my text 2.";
+ * 	}
+ * 	return null;
+ * 	}
+ * </code>
+ * </pre>
+ * <li> Implement {@link de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel#TCReaderSingleLabel} to return the label for your instance.
+ * <pre>
+ * <code>
+ * {@literal @}Override
+ * public String getTextClassificationOutcome(JCas arg0){
+ * 	return "positiveInstance";
+ * }
+ * 	</code>
+ * 	</pre>
+ * <li> Implement {@link BaseCollectionReader#hasNext} to return whether or not there are 
+ * more documents to be read from your collection.  Also implement {@link BaseCollectionReader#getProgress}
+ * to return the counter of the current document and total number of documents in your collection.
+ * <pre>
+ * <code>
+ * private List<String> myCorpusFilenames;
+ * private int currentFile; // start at 0
+ * 
+ * {@literal @}Override
+ * public boolean hasNext(){
+ * 	if(currentFile < myCorpusFilenames.size() - 1){
+ * 		currentFile++;
+ * 		return true;
+ * 	}
+ * 	return false;
+ * }
+ * 
+ * {@literal @}Override
+ * public Progress[] getProgress(){
+ * 	return new Progress[] { new ProgressImpl(currentFile, myCorpusFilenames.size(),
+ * 			Progress.ENTITIES) }; //i.e., we're on number 6 out of 10 total
+ * }
+ * 	</code>
+ * 	</pre>
+ * 
+ * </ul>
+ * <p>
+ * If your text pairs have multiple outcomes each, you should implement {@link TCReaderMultiLabel} 
+ * instead of {@link TCReaderSingleLabel}.
  *
  * @author Nico Erbs
  * @author zesch
  * @author daxenberger
+ * @author jamison
  *
  */
 public abstract class AbstractPairReader
