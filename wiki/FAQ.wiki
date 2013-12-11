@@ -1,0 +1,6 @@
+#summary Frequently Asked Questions
+
+= Initial setup =
+
+*When I check out the TC project, I see maven compiler version errors in many folders such as demos.*
+  * Even when you don't want to use Groovy in your experiment but the pure java setup, you need to have Groovy plug-in installed in order to initially compile the demos. Alternatively you need to modify maven dependencies in the poms.
