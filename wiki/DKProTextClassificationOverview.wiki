@@ -8,6 +8,7 @@ Note: This project is still in incubator stage and subject to frequent change.
   * [Discriminators Getting Started: Mandatory and optional parameters to configure DKPro-TC experiments]
   * [JsonSetup Howto: Using JSON instead of Groovy to configure your experiments]
   * [ServerSetup Howto: Runnung DKPro-TC experiments on a server (using external configuration files)]
+  * [FAQ]
 
 = Basic System Architecture =
 
