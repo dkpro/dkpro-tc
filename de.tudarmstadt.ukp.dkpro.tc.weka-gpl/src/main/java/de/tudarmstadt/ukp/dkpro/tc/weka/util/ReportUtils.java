@@ -303,6 +303,7 @@ public class ReportUtils
                 String correct = table.getValueAsString(id, PCT_CORRECT);
                 String incorrect = table.getValueAsString(id, PCT_INCORRECT);
                 System.out.println(i + "\t" + correct + "\t" + incorrect);
+                i++;
             }
             System.out.println();
         }
@@ -312,6 +313,7 @@ public class ReportUtils
             for (String id : table.getRowIds()) {
                 String correlation = table.getValueAsString(id, CORRELATION);
                 System.out.println(i + "\t" + correlation);
+                i++;
             }
             System.out.println();
         }
