@@ -255,7 +255,7 @@ public class ReportUtils
     public static class PrecisionRecallDiagramRenderer
         implements StreamWriter
     {
-        private DefaultXYDataset dataset;
+        private final DefaultXYDataset dataset;
 
         public PrecisionRecallDiagramRenderer(DefaultXYDataset aDataset)
         {
@@ -287,35 +287,39 @@ public class ReportUtils
         }
         return false;
     }
-    
+
     /**
      * Looks into the {@link FlexTable} and outputs general performance numbers if available
+     * 
      * @param table
      */
-    public static void printPerformanceOverview(FlexTable<String> table) {
+    public static String getPerformanceOverview(FlexTable<String> table)
+    {
         // output some general performance figures
         // TODO this is a bit of a hack. Is there a better way?
         Set<String> columnIds = new HashSet<String>(Arrays.asList(table.getColumnIds()));
+        StringBuffer buffer = new StringBuffer("\n");
         if (columnIds.contains(PCT_CORRECT) && columnIds.contains(PCT_INCORRECT)) {
-            int i=0;
-            System.out.println("ID\t% CORRECT\t% INCORRECT");
+            int i = 0;
+            buffer.append("ID\t% CORRECT\t% INCORRECT\n");
             for (String id : table.getRowIds()) {
                 String correct = table.getValueAsString(id, PCT_CORRECT);
                 String incorrect = table.getValueAsString(id, PCT_INCORRECT);
-                System.out.println(i + "\t" + correct + "\t" + incorrect);
+                buffer.append(i + "\t" + correct + "\t" + incorrect + "\n");
                 i++;
             }
-            System.out.println();
+            buffer.append("\n");
         }
         else if (columnIds.contains(CORRELATION)) {
-            int i=0;
-            System.out.println("ID\tCORRELATION");
+            int i = 0;
+            buffer.append("ID\tCORRELATION\n");
             for (String id : table.getRowIds()) {
                 String correlation = table.getValueAsString(id, CORRELATION);
-                System.out.println(i + "\t" + correlation);
+                buffer.append(i + "\t" + correlation + "\n");
                 i++;
             }
-            System.out.println();
+            buffer.append("\n");
         }
+        return buffer.toString();
     }
 }
