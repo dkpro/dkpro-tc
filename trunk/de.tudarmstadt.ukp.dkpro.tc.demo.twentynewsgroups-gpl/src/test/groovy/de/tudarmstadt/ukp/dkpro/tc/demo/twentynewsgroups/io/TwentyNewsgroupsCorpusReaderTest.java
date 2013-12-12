@@ -21,18 +21,19 @@ public class TwentyNewsgroupsCorpusReaderTest
     {
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_PATH, "classpath:/data/",
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, "classpath:/data/",
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, new String[] {
-                    TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                new String[] { TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" });
 
-        int i=0;
+        int i = 0;
         for (JCas jcas : new JCasIterable(reader)) {
             DocumentMetaData md = DocumentMetaData.get(jcas);
             dumpMetaData(md);
             i++;
 
-            for (TextClassificationOutcome outcome : JCasUtil.select(jcas, TextClassificationOutcome.class)) {
+            for (TextClassificationOutcome outcome : JCasUtil.select(jcas,
+                    TextClassificationOutcome.class)) {
                 System.out.println(outcome);
             }
         }
@@ -41,9 +42,9 @@ public class TwentyNewsgroupsCorpusReaderTest
 
     private void dumpMetaData(final DocumentMetaData aMetaData)
     {
-        System.out.println("Collection ID: "+aMetaData.getCollectionId());
-        System.out.println("ID           : "+aMetaData.getDocumentId());
-        System.out.println("Base URI     : "+aMetaData.getDocumentBaseUri());
-        System.out.println("URI          : "+aMetaData.getDocumentUri());
+        System.out.println("Collection ID: " + aMetaData.getCollectionId());
+        System.out.println("ID           : " + aMetaData.getDocumentId());
+        System.out.println("Base URI     : " + aMetaData.getDocumentBaseUri());
+        System.out.println("URI          : " + aMetaData.getDocumentUri());
     }
 }
