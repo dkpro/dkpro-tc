@@ -91,7 +91,8 @@ public class PreprocessTask
         String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
         AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
-                aContext.getStorageLocation(output, AccessMode.READWRITE).getPath());
+                aContext.getStorageLocation(output, AccessMode.READWRITE).getPath(),
+                BinaryCasWriter.PARAM_FORMAT, "0");
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
