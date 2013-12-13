@@ -12,6 +12,7 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 /**
  * Abstract base class for readers used in pair-classification. 
@@ -74,15 +75,30 @@ import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
  * 	}
  * </code>
  * </pre>
- * <li> Implement {@link de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel#TCReaderSingleLabel} to return the label for your instance.
+ * <li> Implement {@link de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel#TCReaderSingleLabel TCReaderSingleLabel} to return the label for your instance.
  * <pre>
  * <code>
  * {@literal @}Override
- * public String getTextClassificationOutcome(JCas arg0){
+ * public String getTextClassificationOutcome(JCas jcas){
  * 	return "positiveInstance";
  * }
  * 	</code>
  * 	</pre>
+ * <li> Then implement {@link #getNext(JCas)} to attach the classification outcome to the jcas.
+ * <pre>
+ * <code>
+ * {@literal @}Override
+ * public void getNext(JCas jcas)
+ * 		throws IOException, CollectionException
+ * {
+ * 	super.getNext(jcas);
+ * 
+ * 	TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+ * 	outcome.setOutcome(getTextClassificationOutcome(jcas));
+ * 	outcome.addToIndexes();
+ * }
+ * </code>
+ * </pre>
  * <li> Implement {@link BaseCollectionReader#hasNext} to return whether or not there are 
  * more documents to be read from your collection.  Also implement {@link BaseCollectionReader#getProgress}
  * to return the counter of the current document and total number of documents in your collection.
