@@ -25,11 +25,10 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.ChunkTripleFeatureExtractor;
 public class ChunkTripleMetaCollector
     extends FreqDistBasedMetaCollector
 {
-    public static final String TRIPLE_FD_KEY = "triple.ser";
+    public static final String CHUNK_TRIPLE_FD_KEY = "chunkTriple.ser";
 
-    public static final String PARAM_TRIPLE_FD_FILE = "TripleFdFile";
-    @ConfigurationParameter(name = PARAM_TRIPLE_FD_FILE, mandatory = true)
-    private File tripleFdFile;
+    @ConfigurationParameter(name = ChunkTripleFeatureExtractor.PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
+    private File chunkTripleFdFile;
 
     @ConfigurationParameter(name = ChunkTripleFeatureExtractor.PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean chunkTripleLowerCase;
@@ -39,7 +38,7 @@ public class ChunkTripleMetaCollector
         throws ResourceInitializationException
     {
         super.initialize(context);
-        fdFile = tripleFdFile;
+        fdFile = chunkTripleFdFile;
     }
 
     @Override
@@ -113,7 +112,7 @@ public class ChunkTripleMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(ChunkTripleMetaCollector.PARAM_TRIPLE_FD_FILE, TRIPLE_FD_KEY);
+        mapping.put(ChunkTripleFeatureExtractor.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY);
         return mapping;
     }
 }
