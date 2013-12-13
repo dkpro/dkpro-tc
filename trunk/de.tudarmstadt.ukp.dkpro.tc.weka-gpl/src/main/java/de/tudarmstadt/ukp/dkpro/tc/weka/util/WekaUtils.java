@@ -9,9 +9,14 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
+import weka.core.Result;
+import weka.core.SelectedTag;
 import weka.core.SparseInstance;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.Saver;
@@ -22,8 +27,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
 import de.tudarmstadt.ukp.dkpro.tc.weka.filter.ReplaceMissingValuesWithZeroFilter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
 public class WekaUtils
@@ -461,5 +468,212 @@ public class WekaUtils
             }
         }
         return featureValues;
+    }
+
+    /**
+     * Evaluates a given single-label classifier on given train and test sets.
+     * 
+     * @param cl
+     *            single-label classifier, needs to be trained beforehand
+     * @param trainData
+     * @param testData
+     * @return
+     * @throws Exception
+     */
+    public static Evaluation getEvaluationSinglelabel(Classifier cl, Instances trainData,
+            Instances testData)
+        throws Exception
+    {
+        Evaluation eval = new Evaluation(trainData);
+        eval.evaluateModel(cl, testData);
+        return eval;
+    }
+
+    /**
+     * Evaluates a given multi-label classifier on given train and test sets.
+     * 
+     * @param cl
+     *            multi-label classifier, needs not be trained beforehand
+     * @param trainData
+     * @param testData
+     * @param threshold
+     *            Meka threshold option
+     * @return
+     * @throws Exception
+     */
+    public static Result getEvaluationMultilabel(Classifier cl, Instances trainData,
+            Instances testData, String threshold)
+        throws Exception
+    {
+        Result r = weka.classifiers.multilabel.Evaluation.evaluateModel((MultilabelClassifier) cl,
+                trainData, testData, threshold);
+        return r;
+    }
+
+    /**
+     * Generates an instances object containing the predictions of a given single-label classifier
+     * for a given test set
+     * 
+     * @param testData
+     *            test set
+     * @param cl
+     *            single-label classifier, needs to be trained beforehand, needs to be compatible
+     *            with the test set trained classifier
+     * @return instances object with additional attribute storing the predictions
+     * @throws Exception
+     */
+    public static Instances getPredictionInstancesSingleLabel(Instances testData, Classifier cl)
+        throws Exception
+    {
+
+        StringBuffer classVals = new StringBuffer();
+        for (int i = 0; i < testData.classAttribute().numValues(); i++) {
+            if (classVals.length() > 0) {
+                classVals.append(",");
+            }
+            classVals.append(testData.classAttribute().value(i));
+        }
+
+        // get predictions
+        List<Double> labelPredictionList = new ArrayList<Double>();
+        for (int i = 0; i < testData.size(); i++) {
+            labelPredictionList.add(cl.classifyInstance(testData.instance(i)));
+        }
+
+        // add an attribute with the predicted values at the end off the attributes
+        Add filter = new Add();
+        filter.setAttributeName(TestTask.PREDICTION_CLASS_LABEL_NAME);
+        if (classVals.length() > 0) {
+            filter.setAttributeType(new SelectedTag(Attribute.NOMINAL, Add.TAGS_TYPE));
+            filter.setNominalLabels(classVals.toString());
+        }
+        filter.setInputFormat(testData);
+        testData = Filter.useFilter(testData, filter);
+
+        // fill predicted values for each instance
+        for (int i = 0; i < labelPredictionList.size(); i++) {
+            testData.instance(i).setValue(testData.classIndex() + 1, labelPredictionList.get(i));
+        }
+        return testData;
+    }
+
+    /**
+     * Generates an instances object containing the predictions of a given multi-label classifier
+     * for a given test set
+     * 
+     * @param testData
+     *            test set
+     * @param cl
+     *            multi-label classifier, needs not to be trained beforehand, needs to be compatible
+     *            with the test set
+     * @param thresholdArray
+     *            an array of double, one for each label
+     * @return instances object with additional attribute storing the predictions
+     * @throws Exception
+     */
+    public static Instances getPredictionInstancesMultiLabel(Instances testData, Classifier cl,
+            double[] thresholdArray)
+        throws Exception
+    {
+        int numLabels = testData.classIndex();
+
+        // get predictions
+        List<double[]> labelPredictionList = new ArrayList<double[]>();
+        for (int i = 0; i < testData.numInstances(); i++) {
+            labelPredictionList.add(cl.distributionForInstance(testData.instance(i)));
+        }
+
+        // add attributes to store predictions in test data
+        Add filter = new Add();
+        for (int i = 0; i < numLabels; i++) {
+            filter.setAttributeIndex(new Integer(numLabels + i + 1).toString());
+            filter.setNominalLabels("0,1");
+            filter.setAttributeName(testData.attribute(i).name() + "_"
+                    + TestTask.PREDICTION_CLASS_LABEL_NAME);
+            filter.setInputFormat(testData);
+            testData = Filter.useFilter(testData, filter);
+        }
+
+        // fill predicted values for each instance
+        for (int i = 0; i < labelPredictionList.size(); i++) {
+            for (int j = 0; j < labelPredictionList.get(i).length; j++) {
+                testData.instance(i).setValue(j + numLabels,
+                        labelPredictionList.get(i)[j] >= thresholdArray[j] ? 1. : 0.);
+            }
+        }
+        return testData;
+    }
+
+    /**
+     * Removes the OutcomeId attribute, iff present
+     * 
+     * @param data
+     *            data set with or without OutcomeId attribute
+     * @return the data set without OutcomeId attribute
+     * @throws Exception
+     */
+    public static Instances removeOutcomeId(Instances data)
+        throws Exception
+    {
+
+        Instances filteredData;
+
+        if (data.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
+            int instanceIdOffset = data.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
+
+            Remove remove = new Remove();
+            remove.setAttributeIndices(Integer.toString(instanceIdOffset + 1));
+            remove.setInvertSelection(false);
+            remove.setInputFormat(data);
+            filteredData = Filter.useFilter(data, remove);
+        }
+        else {
+            filteredData = new Instances(data);
+        }
+        return filteredData;
+    }
+
+    /**
+     * Copies the OutcomeId attribute and its values from an existing data set, iff present. It will
+     * be indexed right before the class attribute
+     * 
+     * @param newData
+     *            data set without OutcomeId attribute
+     * @param oldData
+     *            data set with or without OutcomeId attribute
+     * @return a data set with or without OutcomeId attribute
+     * @throws Exception
+     */
+    public static Instances addOutcomeId(Instances newData, Instances oldData, boolean isMultilabel)
+        throws Exception
+    {
+        Instances filteredData;
+
+        if (oldData.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
+            int instanceIdOffset = oldData.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
+
+            Add add = new Add();
+            add.setAttributeName(AddIdFeatureExtractor.ID_FEATURE_NAME);
+            // for multi-label setups, id attribute goes to the end of the header, and vice verse
+            // for single-label
+            if (isMultilabel) {
+                add.setAttributeIndex("last");
+            }
+            else {
+                add.setAttributeIndex("first");
+            }
+            add.setAttributeType(new SelectedTag(Attribute.STRING, Add.TAGS_TYPE));
+            add.setInputFormat(newData);
+            filteredData = Filter.useFilter(newData, add);
+            int j = isMultilabel ? filteredData.numAttributes() - 1 : 0;
+            for (int i = 0; i < filteredData.numInstances(); i++) {
+                String outcomeId = oldData.instance(i).stringValue(instanceIdOffset);
+                filteredData.instance(i).setValue(j, outcomeId);
+            }
+        }
+        else {
+            filteredData = new Instances(newData);
+        }
+        return filteredData;
     }
 }
