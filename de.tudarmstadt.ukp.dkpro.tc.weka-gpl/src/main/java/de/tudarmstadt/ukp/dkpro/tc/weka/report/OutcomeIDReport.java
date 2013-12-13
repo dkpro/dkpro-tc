@@ -2,7 +2,6 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -35,43 +34,39 @@ public class OutcomeIDReport
     public void execute()
         throws Exception
     {
-
         File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
-
-        Properties props = new Properties();
-
         File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
-
         Instances predictions = TaskUtils.getInstances(arff, TestTask.MULTILABEL);
+        Properties props = generateProperties(predictions, TestTask.MULTILABEL);
+        getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
+    }
 
+    public static Properties generateProperties(Instances predictions, boolean isMultilabel)
+    {
+        Properties props = new Properties();
         String[] classValues = new String[predictions.numClasses()];
 
         for (int i = 0; i < predictions.numClasses(); i++) {
             classValues[i] = predictions.classAttribute().value(i);
         }
 
-        @SuppressWarnings("unchecked")
-        Enumeration<Attribute> enumeration = predictions.enumerateAttributes();
-        int attOffset = 0;
-        while (enumeration.hasMoreElements()) {
-            Attribute att = enumeration.nextElement();
-            if (att.name().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
-                break;
-            }
-
-            attOffset++;
-        }
+        int attOffset = predictions.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
 
         for (Instance inst : predictions) {
-            if (TestTask.MULTILABEL) {
+            if (isMultilabel) {
                 List<String> predictionOutcomes = new ArrayList<String>();
+                List<String> goldOutcomes = new ArrayList<String>();
                 for (int i = 0; i < predictions.classIndex(); i++) {
                     if (inst.value(predictions.attribute(i)) == 1.) {
+                        goldOutcomes.add(predictions.attribute(i).name());
+                    }
+                    if (inst.value(predictions.attribute(i + predictions.classIndex())) == 1.) {
                         predictionOutcomes.add(predictions.attribute(i).name());
                     }
                 }
-                props.setProperty(inst.stringValue(attOffset + 1),
-                        StringUtils.join(predictionOutcomes, ","));
+                String s = (StringUtils.join(predictionOutcomes, ",") + " (is "
+                        + StringUtils.join(goldOutcomes, ",") + ")");
+                props.setProperty(inst.stringValue(attOffset), s);
             }
             else {
                 Double gold;
@@ -101,25 +96,6 @@ public class OutcomeIDReport
                 }
             }
         }
-
-        getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
-
+        return props;
     }
-
-    // private Instances getInstances(File instancesFile)
-    // throws FileNotFoundException, IOException
-    // {
-    // Instances data = null;
-    // Reader reader = new BufferedReader(new FileReader(instancesFile));
-    //
-    // try {
-    // data = new Instances(reader);
-    // data.setClass(data.attribute("outcome"));
-    // }
-    // finally {
-    // reader.close();
-    // }
-    //
-    // return data;
-    // }
 }
