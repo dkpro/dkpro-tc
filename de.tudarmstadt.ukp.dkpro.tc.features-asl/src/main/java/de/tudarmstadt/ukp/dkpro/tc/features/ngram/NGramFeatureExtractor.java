@@ -41,11 +41,11 @@ public class NGramFeatureExtractor
 {
     public static final String PARAM_NGRAM_MIN_N = "ngramMinN";
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_N, mandatory = false)
-    private final int ngramMinN = 1;
+    private int ngramMinN = 1;
 
     public static final String PARAM_NGRAM_MAX_N = "ngramMaxN";
     @ConfigurationParameter(name = PARAM_NGRAM_MAX_N, mandatory = false)
-    private final int ngramMaxN = 3;
+    private int ngramMaxN = 3;
 
     public static final String PARAM_NGRAM_FD_FILE = "ngramFdFile";
     @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
@@ -53,7 +53,7 @@ public class NGramFeatureExtractor
 
     public static final String PARAM_NGRAM_USE_TOP_K = "ngramUseTopK";
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = false)
-    private final int ngramUseTopK = 500;
+    private int ngramUseTopK = 500;
 
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "ngramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
@@ -61,17 +61,17 @@ public class NGramFeatureExtractor
 
     public static final String PARAM_NGRAM_FREQ_THRESHOLD = "ngramFreqThreshold";
     @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = false)
-    private final float ngramFreqThreshold = 0.01f;
+    private float ngramFreqThreshold = 0.01f;
 
     public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
     @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = false)
-    private final boolean ngramLowerCase = true;
+    private boolean ngramLowerCase = true;
 
     public static final String PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD = "ngramMinTokenLengthThreshold";
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = false)
-    private final int ngramMinTokenLengthThreshold = 1;
+    private int ngramMinTokenLengthThreshold = 1;
 
-    private final boolean useFreqThreshold = false;
+    private boolean useFreqThreshold = false;
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;

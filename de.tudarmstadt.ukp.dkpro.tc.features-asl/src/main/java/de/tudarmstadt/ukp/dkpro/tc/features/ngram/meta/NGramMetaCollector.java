@@ -38,7 +38,7 @@ public class NGramMetaCollector
     private String ngramStopwordsFile;
 
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false)
-    private final boolean ngramLowerCase = true;
+    private boolean ngramLowerCase = true;
 
     @Override
     public void initialize(UimaContext context)

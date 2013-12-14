@@ -255,7 +255,7 @@ public class ReportUtils
     public static class PrecisionRecallDiagramRenderer
         implements StreamWriter
     {
-        private final DefaultXYDataset dataset;
+        private DefaultXYDataset dataset;
 
         public PrecisionRecallDiagramRenderer(DefaultXYDataset aDataset)
         {

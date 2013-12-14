@@ -46,13 +46,13 @@ public class POSNGramFeatureExtractor
 
     public static final String PARAM_POS_NGRAM_USE_TOP_K = "posNgramUseTopK";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_USE_TOP_K, mandatory = false)
-    private final int posNgramUseTopK = 500;
+    private int posNgramUseTopK = 500;
 
     public static final String PARAM_POS_NGRAM_FREQ_THRESHOLD = "posNgramFreqThreshold";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_FREQ_THRESHOLD, mandatory = false)
-    private final float posNgramFreqThreshold = 0.01f;
+    private float posNgramFreqThreshold = 0.01f;
 
-    private final boolean useFreqThreshold = false;
+    private boolean useFreqThreshold = false;
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
