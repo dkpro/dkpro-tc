@@ -22,27 +22,40 @@ import de.tudarmstadt.ukp.dkpro.tc.demo.regression.io.STSReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.RegressionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 public class RegressionExperimentWithoutJson
 {
     public static final String LANGUAGE_CODE = "en";
     public static int NUM_FOLDS = 2;
-    public static final String inputFile = "src/main/resources/sts2012/STS.input.MSRpar.txt";
-    public static final String goldFile = "src/main/resources/sts2012/STS.gs.MSRpar.txt";
+    public static final String inputFileTrain = "src/main/resources/sts2012/STS.input.MSRpar.txt";
+    public static final String goldFileTrain = "src/main/resources/sts2012/STS.gs.MSRpar.txt";
+
+    public static final String inputFileTest = "src/main/resources/sts2012/STS.input.MSRvid.txt";
+    public static final String goldFileTest = "src/main/resources/sts2012/STS.gs.MSRvid.txt";
 
     public static ParameterSpace setup()
     {
         // configure training data reader dimension
-        Map<String, Object> dimReaderTrain = new HashMap<String, Object>();
-        dimReaderTrain.put(Constants.DIM_READER_TRAIN, STSReader.class);
-        dimReaderTrain.put(
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+        dimReaders.put(Constants.DIM_READER_TRAIN, STSReader.class);
+        dimReaders.put(
                 Constants.DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { STSReader.PARAM_INPUT_FILE, inputFile,
-                        STSReader.PARAM_GOLD_FILE, goldFile }));
-
+                Arrays.asList(new Object[] {
+                        STSReader.PARAM_INPUT_FILE, inputFileTrain,
+                        STSReader.PARAM_GOLD_FILE, goldFileTrain }));
+        dimReaders.put(Constants.DIM_READER_TEST, STSReader.class);
+        dimReaders.put(
+                Constants.DIM_READER_TEST_PARAMS,
+                Arrays.asList(new Object[] {
+                        STSReader.PARAM_INPUT_FILE, inputFileTest,
+                        STSReader.PARAM_GOLD_FILE, goldFileTest }));
+        
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
@@ -55,11 +68,12 @@ public class RegressionExperimentWithoutJson
                         GreedyStringTilingFeatureExtractor.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readerTrain",
-                dimReaderTrain), Dimension.create(Constants.DIM_MULTI_LABEL, false),
-        // this dimensions are important
-                Dimension.create(Constants.DIM_IS_REGRESSION, true), Dimension.create(
-                        Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()), dimFeatureSets,
+        ParameterSpace pSpace = new ParameterSpace(
+                Dimension.createBundle("readerTrain", dimReaders),
+                Dimension.create(Constants.DIM_MULTI_LABEL, false),
+                Dimension.create(Constants.DIM_IS_REGRESSION, true),
+                Dimension.create(Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()),
+                dimFeatureSets,
                 dimClassificationArgs);
         return pSpace;
     }
@@ -70,14 +84,18 @@ public class RegressionExperimentWithoutJson
 
         RegressionExperimentWithoutJson experiment = new RegressionExperimentWithoutJson();
         experiment.runCrossValidation(setup());
+        experiment.runTrainTest(setup());
     }
 
     // ##### CV #####
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
-                getPreprocessing(), NUM_FOLDS);
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
+                "RegressionExampleCV",
+                getPreprocessing(),
+                NUM_FOLDS
+        );
         batch.setAddInstanceId(true);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -87,12 +105,33 @@ public class RegressionExperimentWithoutJson
         // Run
         Lab.getInstance().run(batch);
     }
+    
+    // ##### TRAIN-TEST #####
+    protected void runTrainTest(ParameterSpace pSpace)
+        throws Exception
+    {
+
+        BatchTaskTrainTest batch = new BatchTaskTrainTest(
+                "RegressionExampleTrainTest",
+                getPreprocessing()
+        );
+        batch.setInnerReport(RegressionReport.class);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(BatchOutcomeIDReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
 
     public static AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class));
+        return createEngineDescription(
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class)
+        );
     }
 }
