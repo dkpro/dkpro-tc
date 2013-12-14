@@ -54,7 +54,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
         readerTest: TwentyNewsgroupsCorpusReader.class,
         readerTestParams: [
             TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
+            corpusFilePathTest,
             TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
             languageCode,
             TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
