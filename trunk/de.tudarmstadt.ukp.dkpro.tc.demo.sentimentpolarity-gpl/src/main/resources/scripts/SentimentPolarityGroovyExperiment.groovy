@@ -58,7 +58,7 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
         readerTrain: MovieReviewCorpusReader.class,
         readerTrainParams: [
             MovieReviewCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTest,
+            corpusFilePathTrain,
             MovieReviewCorpusReader.PARAM_LANGUAGE,
             languageCode,
             MovieReviewCorpusReader.PARAM_PATTERNS,
