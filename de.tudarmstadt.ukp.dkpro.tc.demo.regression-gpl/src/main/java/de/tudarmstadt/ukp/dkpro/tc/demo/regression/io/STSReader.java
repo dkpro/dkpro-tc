@@ -22,7 +22,8 @@ import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class STSReader
-    extends AbstractPairReader implements TCReaderMultiLabel
+    extends AbstractPairReader
+    implements TCReaderMultiLabel
 {
 
     public static final String PARAM_INPUT_FILE = "InputFile";
@@ -55,7 +56,8 @@ public class STSReader
                 String parts[] = line.split("\t");
 
                 if (parts.length != 2) {
-                    throw new ResourceInitializationException(new Throwable("Wrong file format: " + line));
+                    throw new ResourceInitializationException(new Throwable("Wrong file format: "
+                            + line));
                 }
 
                 texts1.add(parts[0]);
@@ -73,7 +75,8 @@ public class STSReader
             }
 
             if (texts1.size() != golds.size()) {
-                throw new ResourceInitializationException(new Throwable("Size of text list does not match size of gold list."));
+                throw new ResourceInitializationException(new Throwable(
+                        "Size of text list does not match size of gold list."));
             }
         }
         catch (IOException e) {
@@ -100,13 +103,13 @@ public class STSReader
             outcome.addToIndexes();
         }
 
-        // as we are creating more than one CAS out of a single file, we need to have different document titles and URIs for each CAS
+        // as we are creating more than one CAS out of a single file, we need to have different
+        // document titles and URIs for each CAS
         // otherwise, serialized CASes will be overwritten
         DocumentMetaData dmd = DocumentMetaData.get(jcas);
         dmd.setDocumentTitle(dmd.getDocumentTitle() + "-" + fileOffset);
         dmd.setDocumentUri(dmd.getDocumentUri() + "-" + fileOffset);
         fileOffset++;
-
 
     }
 
@@ -137,7 +140,7 @@ public class STSReader
     @Override
     protected String getInitialViewDocId()
     {
-        return inputFile.getAbsolutePath() + "-" + fileOffset;
+        return inputFile.getName() + "-" + fileOffset;
     }
 
     @Override
