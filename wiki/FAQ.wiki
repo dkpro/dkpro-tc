@@ -7,3 +7,8 @@
 
 *What is DKPRO_HOME used for?*
   * It can be any writable folder anywhere in your system (if it does not exist, it gets created as soon as you run the experiment), where DKPro-TC stores outputs of the individual tasks (i.e. pre-processed data, extracted features...) and various task reports, but also the final output (i.e. classification result). Hence you will probably want to look into this folder whenever your experiment is finished.
+
+= Running Experiments =
+
+*I am running a DKPro-TC experiment under Windows and get an IOException*
+   * Please make sure, that you have set a DocumentId in the DocumentMetadata of your JCases while reading the input data. You should not use an absolute path name here. DKPro-TC will try to store the output of the PreprocessingTask in a subfolder named after the DocumentId, which causes troubles under Windows if the name contains a drive letter.
