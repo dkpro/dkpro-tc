@@ -120,7 +120,7 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             aggregate:	getPreprocessing(),
-            innerReport: TrainTestReport.class,
+            innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
                 dimMultiLabel,
@@ -148,7 +148,7 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             aggregate:	getPreprocessing(),
-            innerReport: TrainTestReport.class,
+            innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
                 dimMultiLabel,
