@@ -22,7 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtracto
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
