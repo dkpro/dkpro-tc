@@ -139,9 +139,19 @@ public class FeatureValuesReport
                 // iterate over attributes
                 for (int attrIndex = 0; attrIndex < predictionsNumAttributes; attrIndex++) {
                     Attribute att = predictions.attribute(attrIndex);
-                    int classification = new Double(inst.value(predictions
-                            .attribute(Constants.CLASS_ATTRIBUTE_NAME
-                                    + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
+
+                    int classification;
+                    try {
+                        classification = new Double(inst.value(predictions
+                                .attribute(Constants.CLASS_ATTRIBUTE_NAME
+                                        + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
+                    }
+                    catch (NullPointerException e) {
+                        // if train and test data have not been balanced
+                        classification = new Double(inst.value(predictions
+                                .attribute(Constants.CLASS_ATTRIBUTE_NAME))).intValue();
+                    }
+
                     // only numeric attributes involved in average calculation
                     if (att.isNumeric()) {
                         if (!attrNames.contains(att.name())) {
@@ -206,11 +216,13 @@ class PairKey<A, B>
         return new PairKey<A, B>(a, b);
     }
 
+    @Override
     public int hashCode()
     {
         return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
     }
 
+    @Override
     public boolean equals(Object o)
     {
         if (o == null || o.getClass() != this.getClass()) {
