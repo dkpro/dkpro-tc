@@ -22,7 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -152,7 +152,7 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
         TestTask testTask = [
             type:"TestTask.TwentyNewsgroups",
             reports: [
-                TrainTestReport,
+                ClassificationReport,
                 OutcomeIDReport]
         ];
 
