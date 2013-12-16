@@ -22,7 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.TrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter
@@ -141,7 +141,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             aggregate:	getPreprocessing(),
-            innerReport: TrainTestReport.class,
+            innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
                 dimMultiLabel,
@@ -171,7 +171,7 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             aggregate:	getPreprocessing(),
-            innerReport: TrainTestReport.class,
+            innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
                 dimMultiLabel,

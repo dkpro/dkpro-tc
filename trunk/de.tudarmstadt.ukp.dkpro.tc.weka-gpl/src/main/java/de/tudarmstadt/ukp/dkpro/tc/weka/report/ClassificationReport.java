@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
-public class TrainTestReport
+public class ClassificationReport
     extends ReportBase
 {
 
@@ -170,7 +170,7 @@ public class TrainTestReport
 
         // Write out properties
         getContext().storeBinary(TestTask.RESULTS_KEY, new PropertiesAdapter(props));
-        getContext().storeBinary(TrainTestReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
+        getContext().storeBinary(ClassificationReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
 
     }
 
