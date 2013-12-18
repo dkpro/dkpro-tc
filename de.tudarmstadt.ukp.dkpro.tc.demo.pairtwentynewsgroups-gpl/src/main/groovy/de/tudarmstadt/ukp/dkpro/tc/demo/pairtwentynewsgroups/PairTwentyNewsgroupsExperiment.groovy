@@ -3,21 +3,14 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-
-import java.io.File;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
-import org.apache.commons.io.FileUtils
-import org.apache.uima.collection.CollectionReaderDescription
-import org.apache.uima.fit.factory.AggregateBuilder;
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
@@ -25,15 +18,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -96,7 +85,7 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	def dimFeatureSets = Dimension.create(
 	DIM_FEATURE_SET,
 	[
-        SharedNEsFeatureExtractor.class.name,
+        SharedNEsFeaturoeExtractor.class.name,
         NGramPairFeatureExtractor.class.name
 	]
 	);
