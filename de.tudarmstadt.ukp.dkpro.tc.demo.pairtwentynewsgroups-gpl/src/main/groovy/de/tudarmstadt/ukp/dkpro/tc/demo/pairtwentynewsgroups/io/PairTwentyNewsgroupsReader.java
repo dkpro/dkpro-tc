@@ -58,8 +58,6 @@ public class PairTwentyNewsgroupsReader
     {
     	if (currentParsedFilePointer + 1 < listOfFiles.size()) {
 
-			doc1 = new File(listOfFiles.get(currentParsedFilePointer).get(0));
-			doc2 = new File(listOfFiles.get(currentParsedFilePointer).get(1));
     		
     		return true;
     	}
@@ -130,6 +128,9 @@ public class PairTwentyNewsgroupsReader
     public void getNext(JCas jcas)
         throws IOException, CollectionException
     {
+		doc1 = new File(listOfFiles.get(currentParsedFilePointer).get(0));
+		doc2 = new File(listOfFiles.get(currentParsedFilePointer).get(1));
+		
         super.getNext(jcas);
 
         TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
