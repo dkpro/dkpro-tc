@@ -56,12 +56,7 @@ public class PairTwentyNewsgroupsReader
     public boolean hasNext()
         throws IOException, CollectionException
     {
-    	if (currentParsedFilePointer + 1 < listOfFiles.size()) {
-
-    		
-    		return true;
-    	}
-    	return false;
+    	return currentParsedFilePointer < listOfFiles.size();
     }
     
     @Override
