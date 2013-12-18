@@ -85,6 +85,7 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.api-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl</module>
