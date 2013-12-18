@@ -19,6 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -85,7 +86,7 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	def dimFeatureSets = Dimension.create(
 	DIM_FEATURE_SET,
 	[
-        SharedNEsFeaturoeExtractor.class.name,
+        SharedNEsFeatureExtractor.class.name,
         NGramPairFeatureExtractor.class.name
 	]
 	);
