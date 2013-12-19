@@ -20,6 +20,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -80,35 +81,28 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
 	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-	[NaiveBayes.class.name],
+//	[NaiveBayes.class.name],
 	[SMO.class.name]);
 
 	def dimFeatureSets = Dimension.create(
 	DIM_FEATURE_SET,
 	[
-        SharedNEsFeatureExtractor.class.name,
-        NGramPairFeatureExtractor.class.name
+//        SharedNEsFeatureExtractor.class.name,
+        CombinedNGramPairFeatureExtractor.class.name
 	]
 	);
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
-    [
-        NGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-        "500",
-        NGramPairFeatureExtractor.PARAM_NGRAM_MIN_N,
-        1,
-        NGramPairFeatureExtractor.PARAM_NGRAM_MAX_N,
-        3
-    ],
-    [
-        NGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-        "1000",
-        NGramPairFeatureExtractor.PARAM_NGRAM_MIN_N,
-        1,
-        NGramPairFeatureExtractor.PARAM_NGRAM_MAX_N,
-        3
-    ]
+
+	    [
+	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+	        "500",
+	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N,
+	        1,
+	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N,
+	        1
+	    ]
     );
 
 	// === Experiments =========================================================
