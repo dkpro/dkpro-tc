@@ -8,6 +8,9 @@ import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_INCORR
 import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_UNCLASSIFIED;
 import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PRECISION;
 import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.RECALL;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.WGT_FMEASURE;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.WGT_PRECISION;
+import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.WGT_RECALL;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,8 +77,7 @@ public class ClassificationReport
             String[] classNames = new String[data.classIndex()];
 
             for (int i = 0; i < data.classIndex(); i++) {
-                classNames[i] = data.attribute(i).name()
-                        .split(Constants.CLASS_ATTRIBUTE_PREFIX)[1];
+                classNames[i] = data.attribute(i).name().split(Constants.CLASS_ATTRIBUTE_PREFIX)[1];
             }
 
             String threshold = r.getInfo("Threshold");
@@ -109,26 +111,28 @@ public class ClassificationReport
         else {
             weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                     .read(evaluationFile.getAbsolutePath());
+
             results.put(CORRECT, eval.correct());
             results.put(INCORRECT, eval.incorrect());
             results.put(PCT_CORRECT, eval.pctCorrect());
             results.put(PCT_INCORRECT, eval.pctIncorrect());
             results.put(PCT_UNCLASSIFIED, eval.pctUnclassified());
+            results.put(WGT_FMEASURE, eval.weightedFMeasure());
+            results.put(WGT_PRECISION, eval.weightedPrecision());
+            results.put(WGT_RECALL, eval.weightedRecall());
 
+            List<String> classLabels = TaskUtils.getClassLabels(eval);
             // class-wise recall, precision, f1
-            for (String label : TaskUtils.getClassLabels(eval)) {
-                results.put(
-                        RECALL + "_" + label,
-                        eval.recall(eval.getHeader().attribute(eval.getHeader().classIndex())
-                                .indexOfValue(label)));
-                results.put(
-                        PRECISION + "_" + label,
-                        eval.precision(eval.getHeader().attribute(eval.getHeader().classIndex())
-                                .indexOfValue(label)));
-                results.put(
-                        FMEASURE + "_" + label,
-                        eval.fMeasure(eval.getHeader().attribute(eval.getHeader().classIndex())
-                                .indexOfValue(label)));
+            for (String label : classLabels) {
+                double recall = eval.recall(eval.getHeader()
+                        .attribute(eval.getHeader().classIndex()).indexOfValue(label));
+                double precision = eval.precision(eval.getHeader()
+                        .attribute(eval.getHeader().classIndex()).indexOfValue(label));
+                double fmeasure = eval.fMeasure(eval.getHeader()
+                        .attribute(eval.getHeader().classIndex()).indexOfValue(label));
+                results.put(RECALL + "_" + label, recall);
+                results.put(PRECISION + "_" + label, precision);
+                results.put(FMEASURE + "_" + label, fmeasure);
             }
 
             // confusion matrix
