@@ -8,12 +8,15 @@ public class ReportConstants
     public static final String PCT_CORRECT = "pctCorrect";
     public static final String PCT_INCORRECT = "pctIncorrect";
     public static final String PCT_UNCLASSIFIED = "pctUnclassified";
-    
+
     // P/R/F
     public static final String PRECISION = "precision";
     public static final String RECALL = "recall";
     public static final String FMEASURE = "fmeasure";
-    
+    public static final String WGT_FMEASURE = "weightedFmeasure";
+    public static final String WGT_PRECISION = "weightedPrecision";
+    public static final String WGT_RECALL = "weightedRecall";
+
     // regression
     public static final String CORRELATION = "Pearson correlation";
     public static final String MEAN_ABSOLUTE_ERROR = "mean absolute error";
