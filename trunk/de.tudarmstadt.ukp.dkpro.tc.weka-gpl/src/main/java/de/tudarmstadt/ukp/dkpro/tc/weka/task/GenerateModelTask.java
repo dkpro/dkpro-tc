@@ -104,8 +104,16 @@ public class GenerateModelTask
         trainedClassifier.buildClassifier(filteredTrainData);
 
         List<String> labels = new ArrayList<String>();
-        for (int j = 0; j < trainData.classIndex(); j++) {
-            labels.add(trainData.attribute(j).name().split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1]);
+        
+        if(multiLabel){
+            for (int j = 0; j < trainData.classIndex(); j++) {
+                labels.add(trainData.attribute(j).name().split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1]);
+            }
+        }
+        else{
+            for (int i = 0; i < trainData.classAttribute().numValues(); i++) {
+                labels.add(trainData.classAttribute().value(i));
+            }
         }
 
         // load meta files and add them to the model
