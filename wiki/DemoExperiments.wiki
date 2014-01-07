@@ -19,13 +19,14 @@ DKPro TC comes with a collection of demo experiments which show various ways to 
 Currently, there are three basic example experiments:
 
 {{{
-de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl
 de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl
+de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl
 de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl
+de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups-gpl
 }}}
 
-All come with a set of data and can be run right away. The _reuters_ example is a multi-classification task, whereas the _twentynewsgroups_ experiment is a binary, single-label classification task. 
-The _regression_ demo shows how to use DKPro-TC for regression experiments. If you don't know where to start, go with the twentynewsgroups demo first, as it has the most extensive documentation and configuration classes.
+All come with a set of data and can be run right away. The _twentynewsgroups_ experiment is a binary, single-label classification task. The _reuters_ example is a multi-classification task.  The _regression_ demo shows how to use DKPro-TC for regression experiments. The _pairtwentynewsgroups_ demo is a text-pair classification task.
+If you don't know where to start, go with the twentynewsgroups demo first, as it has the most extensive documentation and configuration classes.
 
 ==Binary Classification with DKPro-TC: twentynewsgroups demo==
 
