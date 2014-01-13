@@ -42,7 +42,7 @@ public class BatchCrossValidationReport
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             "files_validation", "files_training" });
     private static final List<String> nonAveragedResultsMeasures = Arrays.asList(new String[] {
-            ReportConstants.CORRECT, ReportConstants.INCORRECT, "N", "L" });
+            ReportConstants.CORRECT, ReportConstants.INCORRECT, ReportConstants.NUMBER_EXAMPLES });
 
     @Override
     public void execute()
