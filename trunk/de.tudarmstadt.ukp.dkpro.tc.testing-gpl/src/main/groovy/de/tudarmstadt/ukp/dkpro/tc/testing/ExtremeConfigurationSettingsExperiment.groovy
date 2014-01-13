@@ -201,7 +201,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     }
 
     private AnalysisEngineDescription getPreprocessing()
-    throws ResourceInitializationException
+        throws ResourceInitializationException
     {
         return createEngineDescription(
         createEngineDescription(BreakIteratorSegmenter.class),
