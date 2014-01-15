@@ -24,6 +24,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" })
 public class DependencyFeatureExtractor
@@ -70,10 +71,10 @@ public class DependencyFeatureExtractor
 
         for (String topDep : depSet) {
             if (depStrings.contains(topDep)) {
-                features.add(new Feature(topDep, 1));
+                features.add(new SimpleFeature(topDep, 1));
             }
             else {
-                features.add(new Feature(topDep, 0));
+                features.add(new SimpleFeature(topDep, 0));
             }
         }
 

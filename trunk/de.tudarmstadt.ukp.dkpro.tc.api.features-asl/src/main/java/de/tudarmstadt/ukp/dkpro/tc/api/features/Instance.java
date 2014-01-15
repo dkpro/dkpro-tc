@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+
 /**
  * Internal representation of an instance.
  * 
@@ -26,6 +28,7 @@ public class Instance
     {
         super();
         this.features = features;
+        this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
     }
     
@@ -33,14 +36,14 @@ public class Instance
     {
         super();
         this.features = features;
-        this.outcomes.addAll(Arrays.asList(outcomes));
+        this.outcomes = Arrays.asList(outcomes);
     }
 
     public Instance(List<Feature> features, List<String> outcomes)
     {
         super();
         this.features = features;
-        this.outcomes.addAll(outcomes);
+        this.outcomes = outcomes;
     }
 
     public void addFeature(Feature feature)
@@ -99,7 +102,5 @@ public class Instance
         }
         sb.append(StringUtils.join(outcomes, "-"));
         return sb.toString();
-    }
-    
-    
+    }   
 }

@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -11,6 +10,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /*
  * Quick, very simplified approximation of usage of past tense
@@ -55,13 +55,13 @@ public class PastVsFutureFeatureExtractor
             futureRatio = (double) futureVerbs * 100 / verbs;
         }
         if ((pastRatio > 0) && (futureRatio > 0)) {
-            futureToPastRatio = (double) futureRatio / pastRatio;
+            futureToPastRatio = futureRatio / pastRatio;
         }
 
         List<Feature> featList = new ArrayList<Feature>();
-        featList.addAll(Arrays.asList(new Feature(FN_PAST_RATIO, pastRatio)));
-        featList.addAll(Arrays.asList(new Feature(FN_FUTURE_RATIO, futureRatio)));
-        featList.addAll(Arrays.asList(new Feature(FN_FUTURE_VS_PAST_RATIO, futureToPastRatio)));
+        featList.add(new SimpleFeature(FN_PAST_RATIO, pastRatio));
+        featList.add(new SimpleFeature(FN_FUTURE_RATIO, futureRatio));
+        featList.add(new SimpleFeature(FN_FUTURE_VS_PAST_RATIO, futureToPastRatio));
 
         return featList;
     }

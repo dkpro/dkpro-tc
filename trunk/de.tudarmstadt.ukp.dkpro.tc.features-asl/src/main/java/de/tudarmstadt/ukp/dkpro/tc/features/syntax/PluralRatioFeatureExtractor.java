@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -13,6 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class PluralRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -39,8 +39,8 @@ public class PluralRatioFeatureExtractor
         }
         List<Feature> featList = new ArrayList<Feature>();
         if ((singular + plural) > 0) {
-            featList.addAll(Arrays.asList(new Feature(FN_PLURAL_RATIO, (double) plural
-                    / (singular + plural))));
+            featList.add(new SimpleFeature(FN_PLURAL_RATIO, (double) plural
+                    / (singular + plural)));
         }
         return featList;
     }

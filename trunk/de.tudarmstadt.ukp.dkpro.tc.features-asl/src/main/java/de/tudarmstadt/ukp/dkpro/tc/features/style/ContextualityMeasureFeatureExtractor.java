@@ -3,7 +3,6 @@ package de.tudarmstadt.ukp.dkpro.tc.features.style;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -22,6 +21,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /*
  * Heylighen & Dewaele (2002): Variation in the contextuality of language
@@ -70,15 +70,15 @@ public class ContextualityMeasureFeatureExtractor
         // adverb - interjection + 100
         double contextualityMeasure = 0.5 * (noun + adj + prep + art - pro - verb - adv - interj + 100);
 
-        featList.addAll(Arrays.asList(new Feature("NounRate", noun)));
-        featList.addAll(Arrays.asList(new Feature("AdjectiveRate", adj)));
-        featList.addAll(Arrays.asList(new Feature("PrepositionRate", prep)));
-        featList.addAll(Arrays.asList(new Feature("ArticleRate", art)));
-        featList.addAll(Arrays.asList(new Feature("PronounRate", pro)));
-        featList.addAll(Arrays.asList(new Feature("VerbRate", verb)));
-        featList.addAll(Arrays.asList(new Feature("AdverbRate", adv)));
-        featList.addAll(Arrays.asList(new Feature("InterjectionRate", interj)));
-        featList.addAll(Arrays.asList(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure)));
+        featList.add(new SimpleFeature("NounRate", noun));
+        featList.add(new SimpleFeature("AdjectiveRate", adj));
+        featList.add(new SimpleFeature("PrepositionRate", prep));
+        featList.add(new SimpleFeature("ArticleRate", art));
+        featList.add(new SimpleFeature("PronounRate", pro));
+        featList.add(new SimpleFeature("VerbRate", verb));
+        featList.add(new SimpleFeature("AdverbRate", adv));
+        featList.add(new SimpleFeature("InterjectionRate", interj));
+        featList.add(new SimpleFeature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure));
 
         return featList;
     }

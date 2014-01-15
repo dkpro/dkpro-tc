@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtract
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
@@ -43,9 +44,9 @@ public class NrOfTokensFeatureExtractor
             numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
             numSentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit).size();
         }
-        featList.addAll(Arrays.asList(new Feature(FN_NR_OF_TOKENS, numTokens)));
+        featList.addAll(Arrays.<Feature>asList(new SimpleFeature(FN_NR_OF_TOKENS, numTokens)));
         if (numSentences > 0) {
-            featList.addAll(Arrays.asList(new Feature(FN_TOKENS_PER_SENTENCE, (double) numTokens
+            featList.addAll(Arrays.<Feature>asList(new SimpleFeature(FN_TOKENS_PER_SENTENCE, (double) numTokens
                     / numSentences)));
         }
         return featList;

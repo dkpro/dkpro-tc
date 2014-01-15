@@ -25,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class POSNGramFeatureExtractor
@@ -67,10 +68,10 @@ public class POSNGramFeatureExtractor
 
         for (String topNgram : topKSet) {
             if (documentPOSNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(prefix + "_" + topNgram, 1));
+                features.add(new SimpleFeature(prefix + "_" + topNgram, 1));
             }
             else {
-                features.add(new Feature(prefix + "_" + topNgram, 0));
+                features.add(new SimpleFeature(prefix + "_" + topNgram, 0));
             }
         }
         return features;

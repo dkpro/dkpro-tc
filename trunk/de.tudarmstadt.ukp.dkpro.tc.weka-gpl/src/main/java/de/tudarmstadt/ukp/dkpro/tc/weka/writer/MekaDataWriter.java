@@ -2,7 +2,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.writer;
 
 import java.io.File;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
@@ -18,12 +18,12 @@ public class MekaDataWriter
 {
     
     @Override
-    public void write(File outputDirectory, InstanceList instanceList, boolean useDenseInstances, boolean isRegressionExperiment)
+    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
             throws Exception
     {
         // TODO for multi-label isRegressionExperiment is currently ignored. I am not sure this makes sense in this setting at all. 
         
-        WekaUtils.instanceListToArffFileMultiLabel(new File(outputDirectory, ARFF_FILENAME), instanceList, useDenseInstances);
+        WekaUtils.instanceListToArffFileMultiLabel(new File(outputDirectory, ARFF_FILENAME), featureStore, useDenseInstances);
     }
 
 }

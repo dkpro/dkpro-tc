@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.content;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +12,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Counts the ratio of tokens containing numbers or 
@@ -47,7 +47,7 @@ public class NumberWordsFeatureExtractor
                 System.out.println(t + " matches Words With Numbers");
             }
         }
-        featList.addAll(Arrays.asList(new Feature(FEATURE_NAME, (double) pmatches / nrOfTokens)));
+        featList.add(new SimpleFeature(FEATURE_NAME, (double) pmatches / nrOfTokens));
 
         return featList;
     }

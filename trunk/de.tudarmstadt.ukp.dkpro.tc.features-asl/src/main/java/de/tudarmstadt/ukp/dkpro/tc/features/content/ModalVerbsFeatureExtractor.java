@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.content;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -11,6 +10,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Counts the ratio of individual English modal verbs to all verbs:
@@ -100,18 +100,18 @@ public class ModalVerbsFeatureExtractor
 
         List<Feature> featList = new ArrayList<Feature>();
         if (n > 0) {
-            featList.addAll(Arrays.asList(new Feature(FN_CAN, (double) can * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_COULD, (double) could * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_MIGHT, (double) might * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_MAY, (double) may * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_MUST, (double) must * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_SHOULD, (double) should * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_WILL, (double) will * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_WOULD, (double) would * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_SHALL, (double) shall * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_ALL, (double) modals * 100 / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_UNCERT, (double) (modals - will - must)
-                    * 100 / n)));
+            featList.add(new SimpleFeature(FN_CAN, (double) can * 100 / n));
+            featList.add(new SimpleFeature(FN_COULD, (double) could * 100 / n));
+            featList.add(new SimpleFeature(FN_MIGHT, (double) might * 100 / n));
+            featList.add(new SimpleFeature(FN_MAY, (double) may * 100 / n));
+            featList.add(new SimpleFeature(FN_MUST, (double) must * 100 / n));
+            featList.add(new SimpleFeature(FN_SHOULD, (double) should * 100 / n));
+            featList.add(new SimpleFeature(FN_WILL, (double) will * 100 / n));
+            featList.add(new SimpleFeature(FN_WOULD, (double) would * 100 / n));
+            featList.add(new SimpleFeature(FN_SHALL, (double) shall * 100 / n));
+            featList.add(new SimpleFeature(FN_ALL, (double) modals * 100 / n));
+            featList.add(new SimpleFeature(FN_UNCERT, (double) (modals - will - must)
+                    * 100 / n));
         }
 
         return featList;

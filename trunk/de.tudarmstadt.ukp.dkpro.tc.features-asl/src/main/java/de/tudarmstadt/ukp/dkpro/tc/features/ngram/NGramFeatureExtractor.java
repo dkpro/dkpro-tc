@@ -31,6 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
@@ -125,10 +126,10 @@ public class NGramFeatureExtractor
             if (documentNgrams.getKeys().contains(topNgram)) {
                 // features.add(new Feature(prefix + "_" + topNgram,
                 // documentNgrams.getCount(topNgram)));
-                features.add(new Feature(prefix + "_" + topNgram, 1));
+                features.add(new SimpleFeature(prefix + "_" + topNgram, 1));
             }
             else {
-                features.add(new Feature(prefix + "_" + topNgram, 0));
+                features.add(new SimpleFeature(prefix + "_" + topNgram, 0));
             }
         }
 

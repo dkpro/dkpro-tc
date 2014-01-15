@@ -11,6 +11,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Pair-wise feature extractor Computes the average character lenght of all noun chunks in a view
@@ -29,8 +30,8 @@ public class DiffNounChunkCharacterLength
         throws TextClassificationException
     {
 
-        return Arrays.asList(
-                new Feature("DiffNounPhraseCharacterLength",
+        return Arrays.<Feature>asList(
+                new SimpleFeature("DiffNounPhraseCharacterLength",
                         getAverageNounPhraseCharacterLength(view1)
                                 - getAverageNounPhraseCharacterLength(view2))
                 );

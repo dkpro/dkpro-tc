@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Pair-wise feature extractor Computes the type-token-ratio in a view and returns the difference of
@@ -30,8 +31,8 @@ public class TypeTokenPairFeatureExtractor
     public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.asList(
-                new Feature("DiffTypeTokenRatio",
+        return Arrays.<Feature>asList(
+                new SimpleFeature("DiffTypeTokenRatio",
 
                         getTypeTokenRatio(view1) / getTypeTokenRatio(view2))
                 );

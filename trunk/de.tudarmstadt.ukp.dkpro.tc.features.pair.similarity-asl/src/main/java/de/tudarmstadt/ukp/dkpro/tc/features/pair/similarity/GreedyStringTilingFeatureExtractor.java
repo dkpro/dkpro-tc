@@ -9,6 +9,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.algorithms.lexical.string.GreedyStringTiling;
 
@@ -28,7 +29,7 @@ public class GreedyStringTilingFeatureExtractor
             double similarity = measure.getSimilarity(view1.getDocumentText(),
                     view2.getDocumentText());
 
-            return Arrays.asList(new Feature("Similarity" + measure.getName(), similarity));
+            return Arrays.<Feature>asList(new SimpleFeature("Similarity" + measure.getName(), similarity));
         }
         catch (SimilarityException e) {
             throw new TextClassificationException(e);

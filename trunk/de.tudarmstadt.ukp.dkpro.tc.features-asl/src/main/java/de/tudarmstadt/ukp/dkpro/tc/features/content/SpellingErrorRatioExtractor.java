@@ -12,6 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Extracts the ratio of wrongly spelled tokens to all tokens.
@@ -37,6 +38,6 @@ public class SpellingErrorRatioExtractor
         if (nrOfTokens > 0) {
             ratio = (double) nrOfSpellingErrors / nrOfTokens;
         }
-        return Arrays.asList(new Feature("SpellingErrorRatio", ratio));
+        return Arrays.<Feature>asList(new SimpleFeature("SpellingErrorRatio", ratio));
     }
 }
