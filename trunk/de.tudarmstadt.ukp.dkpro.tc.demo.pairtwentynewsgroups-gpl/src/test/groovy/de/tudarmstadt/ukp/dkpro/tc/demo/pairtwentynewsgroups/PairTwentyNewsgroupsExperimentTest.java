@@ -3,11 +3,10 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.PairTwentyNewsgroupsExperiment;
 
 /** 
  * This test only checks to see if the experiment runs without exceptions.
@@ -15,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.PairTwentyNewsgroup
  * @author jamison
  *
  */
+@Ignore
 public class PairTwentyNewsgroupsExperimentTest
 {
     PairTwentyNewsgroupsExperiment groovyExperiment;
