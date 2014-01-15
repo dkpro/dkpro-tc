@@ -3,7 +3,6 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -14,7 +13,7 @@ import org.junit.rules.TestName;
  * @author jamison
  *
  */
-@Ignore
+
 public class PairTwentyNewsgroupsExperimentTest
 {
     PairTwentyNewsgroupsExperiment groovyExperiment;

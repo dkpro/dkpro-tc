@@ -87,8 +87,10 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	def dimFeatureSets = Dimension.create(
 	DIM_FEATURE_SET,
 	[
-//        SharedNEsFeatureExtractor.class.name,
-        CombinedNGramPairFeatureExtractor.class.name
+		// This feature is sensible and fast, but gives bad results on the demo data
+        SharedNEsFeatureExtractor.class.name,
+		// This feature is sensible but slow.
+//        CombinedNGramPairFeatureExtractor.class.name
 	]
 	);
 
