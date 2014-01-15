@@ -11,9 +11,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import weka.core.Attribute;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 public class WekaUtilTest
 {
@@ -24,24 +24,24 @@ public class WekaUtilTest
     {
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new SimpleFeature("feature1", 2));
+        i1.addFeature(new SimpleFeature("feature2", 2));
+        i1.addFeature(new SimpleFeature("feature3_{{", "a"));
         i1.setOutcomes("1");
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature2", 1));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new SimpleFeature("feature1", 1));
+        i2.addFeature(new SimpleFeature("feature2", 1));
+        i2.addFeature(new SimpleFeature("feature3_{{", "b"));
         i2.setOutcomes("2");
 
         Instance i3 = new Instance();
-        i3.addFeature(new Feature("feature1", 1));
-        i3.addFeature(new Feature("feature2", 1));
-        i3.addFeature(new Feature("feature3_{{", "b"));
+        i3.addFeature(new SimpleFeature("feature1", 1));
+        i3.addFeature(new SimpleFeature("feature2", 1));
+        i3.addFeature(new SimpleFeature("feature3_{{", "b"));
         i3.setOutcomes("2");
 
-        InstanceList iList = new InstanceList();
+        SimpleFeatureStore iList = new SimpleFeatureStore();
         iList.addInstance(i1);
         iList.addInstance(i2);
         iList.addInstance(i3);
@@ -62,24 +62,24 @@ public class WekaUtilTest
     {
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new SimpleFeature("feature1", 2));
+        i1.addFeature(new SimpleFeature("feature2", 2));
+        i1.addFeature(new SimpleFeature("feature3_{{", "a"));
         i1.setOutcomes("1", "2");
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature2", 1));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new SimpleFeature("feature1", 1));
+        i2.addFeature(new SimpleFeature("feature2", 1));
+        i2.addFeature(new SimpleFeature("feature3_{{", "b"));
         i2.setOutcomes("2", "3");
 
         Instance i3 = new Instance();
-        i3.addFeature(new Feature("feature1", 1));
-        i3.addFeature(new Feature("feature2", 1));
-        i3.addFeature(new Feature("feature3_{{", "b"));
+        i3.addFeature(new SimpleFeature("feature1", 1));
+        i3.addFeature(new SimpleFeature("feature2", 1));
+        i3.addFeature(new SimpleFeature("feature3_{{", "b"));
         i3.setOutcomes("2");
 
-        InstanceList iList = new InstanceList();
+        SimpleFeatureStore iList = new SimpleFeatureStore();
         iList.addInstance(i1);
         iList.addInstance(i2);
         iList.addInstance(i3);
@@ -101,14 +101,14 @@ public class WekaUtilTest
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new SimpleFeature("feature1", 2));
+        i1.addFeature(new SimpleFeature("feature2", 2));
+        i1.addFeature(new SimpleFeature("feature3_{{", "a"));
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature4", "val_1"));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new SimpleFeature("feature1", 1));
+        i2.addFeature(new SimpleFeature("feature4", "val_1"));
+        i2.addFeature(new SimpleFeature("feature3_{{", "b"));
 
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature5"));
@@ -138,14 +138,14 @@ public class WekaUtilTest
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new SimpleFeature("feature1", 2));
+        i1.addFeature(new SimpleFeature("feature2", 2));
+        i1.addFeature(new SimpleFeature("feature3_{{", "a"));
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature4", "val_1"));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new SimpleFeature("feature1", 1));
+        i2.addFeature(new SimpleFeature("feature4", "val_1"));
+        i2.addFeature(new SimpleFeature("feature3_{{", "b"));
 
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("outc_1", Arrays.asList(new String[] { "0", "1" })));
@@ -177,9 +177,9 @@ public class WekaUtilTest
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature4", "val_1"));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new SimpleFeature("feature1", 2));
+        i1.addFeature(new SimpleFeature("feature4", "val_1"));
+        i1.addFeature(new SimpleFeature("feature3_{{", "a"));
 
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature2"));

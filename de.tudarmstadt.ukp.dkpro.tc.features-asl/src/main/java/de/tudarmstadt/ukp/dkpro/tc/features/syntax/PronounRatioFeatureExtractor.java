@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -12,6 +11,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class PronounRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -63,12 +63,12 @@ public class PronounRatioFeatureExtractor
 
         List<Feature> featList = new ArrayList<Feature>();
         if (n > 0) {
-            featList.addAll(Arrays.asList(new Feature(FN_HE_RATIO, (double) heCount / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_SHE_RATIO, (double) sheCount / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_I_RATIO, (double) iCount / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_WE_RATIO, (double) weCount / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_THEY_RATIO, (double) theyCount / n)));
-            featList.addAll(Arrays.asList(new Feature(FN_US_RATIO, (double) usCount / n)));
+            featList.add(new SimpleFeature(FN_HE_RATIO, (double) heCount / n));
+            featList.add(new SimpleFeature(FN_SHE_RATIO, (double) sheCount / n));
+            featList.add(new SimpleFeature(FN_I_RATIO, (double) iCount / n));
+            featList.add(new SimpleFeature(FN_WE_RATIO, (double) weCount / n));
+            featList.add(new SimpleFeature(FN_THEY_RATIO, (double) theyCount / n));
+            featList.add(new SimpleFeature(FN_US_RATIO, (double) usCount / n));
         }
 
         return featList;

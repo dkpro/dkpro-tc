@@ -34,6 +34,10 @@
 	        <artifactId>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</artifactId>
 	    </dependency>
 	    <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</artifactId>
+        </dependency>
+	    <dependency>
 	        <groupId>junit</groupId>
 	        <artifactId>junit</artifactId>
 	        <scope>test</scope>

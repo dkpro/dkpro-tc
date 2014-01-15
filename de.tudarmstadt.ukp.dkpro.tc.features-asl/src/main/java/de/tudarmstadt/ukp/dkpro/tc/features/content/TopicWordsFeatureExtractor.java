@@ -19,6 +19,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Given a list of topic terms, extracts the ratio of topic terms to all terms.
@@ -80,7 +81,7 @@ public class TopicWordsFeatureExtractor
         }
         double numTokens = tokens.size();
         // name the feature same as wordlist
-        return Arrays.asList(new Feature(prefix + wordListName,
+        return Arrays.<Feature>asList(new SimpleFeature(prefix + wordListName,
                 numTokens > 0 ? (wordcount / numTokens) : 0));
     }
 

@@ -2,7 +2,7 @@ package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
 import java.io.File;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 
 /**
  * Interface for data writers that write instances in the representation format used by machine learning tools.
@@ -12,6 +12,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
  */
 public interface DataWriter
 {
-    public void write(File outputDirectory, InstanceList instanceList, boolean useDenseInstances, boolean isRegressionExperiment)
+    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception;
 }

@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.entityrecognition;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -15,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class NEFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -34,16 +34,16 @@ public class NEFeatureExtractor
         int numSentences = JCasUtil.select(view, Sentence.class).size();
 
         if (numSentences > 0) {
-            featList.addAll(Arrays.asList(new Feature("NrOfOrganizationEntities", numOrgaNE)));
-            featList.addAll(Arrays.asList(new Feature("NrOfPersonEntities", numPersonNE)));
-            featList.addAll(Arrays.asList(new Feature("NrOfLocationEntities", numLocNE)));
+            featList.add(new SimpleFeature("NrOfOrganizationEntities", numOrgaNE));
+            featList.add(new SimpleFeature("NrOfPersonEntities", numPersonNE));
+            featList.add(new SimpleFeature("NrOfLocationEntities", numLocNE));
 
-            featList.addAll(Arrays.asList(new Feature("NrOfOrganizationEntitiesPerSent", Math
-                    .round(((float) numOrgaNE / numSentences) * 100f) / 100f)));
-            featList.addAll(Arrays.asList(new Feature("NrOfPersonEntitiesPerSent", Math
-                    .round(((float) numPersonNE / numSentences) * 100f) / 100f)));
-            featList.addAll(Arrays.asList(new Feature("NrOfLocationEntitiesPerSent", Math
-                    .round(((float) numLocNE / numSentences) * 100f) / 100f)));
+            featList.add(new SimpleFeature("NrOfOrganizationEntitiesPerSent", Math
+                    .round(((float) numOrgaNE / numSentences) * 100f) / 100f));
+            featList.add(new SimpleFeature("NrOfPersonEntitiesPerSent", Math
+                    .round(((float) numPersonNE / numSentences) * 100f) / 100f));
+            featList.add(new SimpleFeature("NrOfLocationEntitiesPerSent", Math
+                    .round(((float) numLocNE / numSentences) * 100f) / 100f));
         }
 
         return featList;

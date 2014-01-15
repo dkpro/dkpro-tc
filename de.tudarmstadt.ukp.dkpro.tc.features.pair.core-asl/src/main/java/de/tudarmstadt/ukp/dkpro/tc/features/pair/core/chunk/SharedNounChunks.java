@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Pair-wise feature extractor. Computes how many noun chunks two views share.
@@ -38,13 +39,13 @@ public class SharedNounChunks
     {
 
         if (normalizeWithFirst) {
-            return Arrays.asList(
-                    new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2))
+            return Arrays.<Feature>asList(
+                    new SimpleFeature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2))
                     );
         }
         else {
-            return Arrays.asList(
-                    new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1))
+            return Arrays.<Feature>asList(
+                    new SimpleFeature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1))
                     );
         }
 

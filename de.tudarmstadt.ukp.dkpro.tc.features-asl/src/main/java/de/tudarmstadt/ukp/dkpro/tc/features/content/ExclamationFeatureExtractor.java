@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Counts the ratio of number of sentences ending with exclamation(s) compared to all sentences.
@@ -43,7 +44,7 @@ public class ExclamationFeatureExtractor
             matches++;
         }
 
-        return Arrays.asList(new Feature(FEATURE_NAME, sentences > 0 ? (matches / sentences) : 0));
+        return Arrays.<Feature>asList(new SimpleFeature(FEATURE_NAME, sentences > 0 ? (matches / sentences) : 0));
     }
 
 }

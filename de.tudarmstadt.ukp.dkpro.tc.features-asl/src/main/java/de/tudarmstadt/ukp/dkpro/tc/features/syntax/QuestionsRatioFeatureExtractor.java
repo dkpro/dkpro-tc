@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class QuestionsRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -43,6 +44,6 @@ public class QuestionsRatioFeatureExtractor
             questionRatio = (double) matches / nrOfSentences;
         }
 
-        return Arrays.asList(new Feature(FN_QUESTION_RATIO, questionRatio));
+        return Arrays.<Feature>asList(new SimpleFeature(FN_QUESTION_RATIO, questionRatio));
     }
 }

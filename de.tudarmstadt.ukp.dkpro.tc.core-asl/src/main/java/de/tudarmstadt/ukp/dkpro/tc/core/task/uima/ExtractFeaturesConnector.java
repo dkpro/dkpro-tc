@@ -18,14 +18,15 @@ import org.apache.uima.util.Level;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
@@ -60,7 +61,7 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_IS_REGRESSION_EXPERIMENT, mandatory = true, defaultValue = "false")
     private boolean isRegressionExperiment;
 
-    protected InstanceList instanceList;
+    protected FeatureStore featureStore;
 
     @Override
     public void initialize(UimaContext context)
@@ -68,7 +69,7 @@ public class ExtractFeaturesConnector
     {
         super.initialize(context);
 
-        instanceList = new InstanceList();
+        featureStore = new SimpleFeatureStore();
 
         if (featureExtractors.length == 0) {
             context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
@@ -144,7 +145,7 @@ public class ExtractFeaturesConnector
 
         // set and write label(s)
         instance.setOutcomes(stringOutcomes);
-        this.instanceList.addInstance(instance);
+        this.featureStore.addInstance(instance);
     }
 
     @Override
@@ -156,7 +157,7 @@ public class ExtractFeaturesConnector
         // addInstanceId requires dense instances, thus reuse boolean
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, instanceList, addInstanceId, isRegressionExperiment);
+            writer.write(outputDirectory, featureStore, addInstanceId, isRegressionExperiment);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

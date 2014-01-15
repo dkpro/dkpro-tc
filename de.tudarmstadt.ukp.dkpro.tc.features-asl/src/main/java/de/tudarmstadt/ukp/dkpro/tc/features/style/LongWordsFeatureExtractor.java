@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -11,6 +10,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /*
  * Calculates the proportions of tokens that are longer than 5 characters
@@ -52,8 +52,8 @@ public class LongWordsFeatureExtractor
         }
 
         List<Feature> featList = new ArrayList<Feature>();
-        featList.addAll(Arrays.asList(new Feature(FN_LW_RATIO, longTokenRatio)));
-        featList.addAll(Arrays.asList(new Feature(FN_SW_RATIO, shortTokenRatio)));
+        featList.add(new SimpleFeature(FN_LW_RATIO, longTokenRatio));
+        featList.add(new SimpleFeature(FN_SW_RATIO, shortTokenRatio));
 
         return featList;
     }

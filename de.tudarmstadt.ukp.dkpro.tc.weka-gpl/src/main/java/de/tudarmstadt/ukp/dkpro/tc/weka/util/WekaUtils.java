@@ -24,8 +24,8 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.InstanceList;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
@@ -160,13 +160,13 @@ public class WekaUtils
         return list;
     }
 
-    public static void instanceListToArffFile(File outputFile, InstanceList instanceList)
+    public static void instanceListToArffFile(File outputFile, FeatureStore instanceList)
         throws Exception
     {
         instanceListToArffFile(outputFile, instanceList, false, false);
     }
 
-    public static void instanceListToArffFile(File outputFile, InstanceList instanceList,
+    public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception
     {
@@ -238,17 +238,17 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
-    public static void instanceListToArffFileMultiLabel(File outputFile, InstanceList instanceList,
+    public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
             boolean useDenseInstances)
         throws Exception
     {
 
         Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
-        AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
+        AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(featureStore);
 
         List<Attribute> outcomeAttributes = createOutcomeAttributes(new ArrayList<String>(
-                instanceList.getUniqueOutcomes()));
+                featureStore.getUniqueOutcomes()));
 
         // in Meka, class label attributes have to go on top
         for (Attribute attribute : outcomeAttributes) {
@@ -257,7 +257,7 @@ public class WekaUtils
 
         // for Meka-internal use
         Instances wekaInstances = new Instances(relationName + ": -C " + outcomeAttributes.size()
-                + " ", attributeStore.getAttributes(), instanceList.size());
+                + " ", attributeStore.getAttributes(), featureStore.size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
 
         if (!outputFile.exists()) {
@@ -272,8 +272,8 @@ public class WekaUtils
         saver.setCompressOutput(true);
         saver.setInstances(wekaInstances);
 
-        for (int i = 0; i < instanceList.size(); i++) {
-            Instance instance = instanceList.getInstance(i);
+        for (int i = 0; i < featureStore.size(); i++) {
+            Instance instance = featureStore.getInstance(i);
 
             double[] featureValues = getFeatureValues(attributeStore, instance);
 
@@ -442,7 +442,7 @@ public class WekaUtils
                        // done safer?)
                     Object stringValue = feature.getValue();
                     if (!attribute.isNominal() && !attribute.isString()) {
-                        throw new IllegalArgumentException("Attribute neither nominal nor string!");
+                        throw new IllegalArgumentException("Attribute neither nominal nor string: " + stringValue);
                     }
                     int valIndex = attribute.indexOfValue(stringValue.toString());
                     if (valIndex == -1) {

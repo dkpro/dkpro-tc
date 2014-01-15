@@ -22,6 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
 public class ChunkTripleFeatureExtractor
@@ -58,10 +59,10 @@ public class ChunkTripleFeatureExtractor
         Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
         for (String featureTriple : tripleSet) {
             if (triples.contains(featureTriple)) {
-                features.add(new Feature("lexicalTriple_" + featureTriple, 1));
+                features.add(new SimpleFeature("lexicalTriple_" + featureTriple, 1));
             }
             else {
-                features.add(new Feature("lexicalTriple_" + featureTriple, 0));
+                features.add(new SimpleFeature("lexicalTriple_" + featureTriple, 0));
             }
         }
 

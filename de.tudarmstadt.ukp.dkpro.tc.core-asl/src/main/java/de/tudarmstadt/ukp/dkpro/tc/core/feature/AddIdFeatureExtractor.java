@@ -10,6 +10,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Adds the documentId to the features.
@@ -32,6 +33,6 @@ public class AddIdFeatureExtractor
     {
         String docId = DocumentMetaData.get(jcas).getDocumentId();
 
-        return Arrays.asList(new Feature(ID_FEATURE_NAME, docId));
+        return Arrays.<Feature>asList(new SimpleFeature(ID_FEATURE_NAME, docId));
     }
 }
