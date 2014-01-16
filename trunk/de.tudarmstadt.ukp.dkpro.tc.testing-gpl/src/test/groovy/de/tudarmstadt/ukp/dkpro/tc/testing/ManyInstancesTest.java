@@ -1,10 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.testing;
 
-import org.junit.Test;
+import org.junit.Ignore;
 
 public class ManyInstancesTest
 {
-    @Test
+    @Ignore
     public void testManyInstances()
         throws Exception
     {
