@@ -12,7 +12,7 @@ public interface ReportConstants
     // P/R/F
     public static final String PRECISION = "Unweighted Precision";
     public static final String RECALL = "Unweighted Recall";
-    public static final String FMEASURE = "FUnweighted F-Measure";
+    public static final String FMEASURE = "Unweighted F-Measure";
     public static final String WGT_PRECISION = "Weighted Precision";
     public static final String WGT_RECALL = "Weighted Recall";
     public static final String WGT_FMEASURE = "Weighted F-Measure";
