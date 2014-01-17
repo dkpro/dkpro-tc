@@ -16,7 +16,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor;
 
 public class QuestionRatioFeatureExtractorTest
@@ -37,11 +37,11 @@ public class QuestionRatioFeatureExtractorTest
         engine.process(jcas);
 
         QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
-        for (IFeature feature : features) {
+        for (Feature feature : features) {
             assertFeature(FN_QUESTION_RATIO, 0.5, feature);
         }
     }

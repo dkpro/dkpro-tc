@@ -9,7 +9,6 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /*
@@ -30,7 +29,7 @@ public class PastVsFutureFeatureExtractor
     public static final String FN_FUTURE_VS_PAST_RATIO = "FutureVsPastVerbRatio";
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
     {
         double pastRatio = 0.0;
         double futureRatio = 0.0;
@@ -58,7 +57,7 @@ public class PastVsFutureFeatureExtractor
             futureToPastRatio = futureRatio / pastRatio;
         }
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         featList.add(new Feature(FN_PAST_RATIO, pastRatio));
         featList.add(new Feature(FN_FUTURE_RATIO, futureRatio));
         featList.add(new Feature(FN_FUTURE_VS_PAST_RATIO, futureToPastRatio));

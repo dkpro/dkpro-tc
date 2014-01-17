@@ -10,7 +10,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
@@ -40,7 +39,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String FN_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
     {
 
         int able = 0;
@@ -94,7 +93,7 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         if (n > 0) {
             featList.add(new Feature(FN_ENDING1, (double) able * 100 / n));
             featList.add(new Feature(FN_ENDING2, (double) al * 100 / n));

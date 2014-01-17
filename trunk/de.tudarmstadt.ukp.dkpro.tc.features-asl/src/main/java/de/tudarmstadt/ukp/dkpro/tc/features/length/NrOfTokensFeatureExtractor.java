@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -12,7 +11,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
@@ -28,10 +26,10 @@ public class NrOfTokensFeatureExtractor
     public static final String FN_TOKENS_PER_SENTENCE = "NrofTokensPerSentence";
 
     @Override
-    public List<IFeature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
 
         int numTokens;
         int numSentences;
@@ -44,10 +42,10 @@ public class NrOfTokensFeatureExtractor
             numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
             numSentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit).size();
         }
-        featList.addAll(Arrays.<IFeature>asList(new Feature(FN_NR_OF_TOKENS, numTokens)));
+        featList.add(new Feature(FN_NR_OF_TOKENS, numTokens));
         if (numSentences > 0) {
-            featList.addAll(Arrays.<IFeature>asList(new Feature(FN_TOKENS_PER_SENTENCE, (double) numTokens
-                    / numSentences)));
+            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, (double) numTokens
+                    / numSentences));
         }
         return featList;
     }

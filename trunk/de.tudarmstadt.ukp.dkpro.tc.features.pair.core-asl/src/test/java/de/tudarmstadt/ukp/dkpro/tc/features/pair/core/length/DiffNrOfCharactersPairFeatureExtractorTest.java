@@ -16,7 +16,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureTestBase;
 
@@ -40,11 +40,11 @@ public class DiffNrOfCharactersPairFeatureExtractorTest extends PairFeatureTestB
 		engine.process(jcas2);
 		
 		DiffNrOfCharactersPairFeatureExtractor extractor = new DiffNrOfCharactersPairFeatureExtractor();
-		List<IFeature> features = extractor.extract(jcas1, jcas2);
+		List<Feature> features = extractor.extract(jcas1, jcas2);
 
 		assertEquals(1, features.size());
 
-		for (IFeature feature : features) {
+		for (Feature feature : features) {
 		    assertFeature("DiffNrOfCharacters", 16, feature);
 		}
 

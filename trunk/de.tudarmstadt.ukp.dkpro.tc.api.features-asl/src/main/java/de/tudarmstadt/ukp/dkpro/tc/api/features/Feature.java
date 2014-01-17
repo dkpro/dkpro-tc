@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
  * @author Steven Bethard
  */
 public class Feature
-    implements IFeature, Serializable
+    implements Serializable
 {
 
     private static final long serialVersionUID = -3215288856677656204L;
@@ -70,7 +70,6 @@ public class Feature
         return new Feature(createName(namePrefix, feature.name), feature.value);
     }
 
-    @Override
     public Object getValue()
     {
         return value;
@@ -81,7 +80,6 @@ public class Feature
         this.value = value;
     }
 
-    @Override
     public String getName()
     {
         return name;

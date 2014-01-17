@@ -15,7 +15,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class ExclamationFeatureExtractorTest
 {
@@ -35,11 +35,11 @@ public class ExclamationFeatureExtractorTest
         engine.process(jcas);
 
         ExclamationFeatureExtractor extractor = new ExclamationFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
-        for (IFeature feature : features) {
+        for (Feature feature : features) {
             assertFeature(ExclamationFeatureExtractor.FEATURE_NAME, 0.5, feature);
         }
     }

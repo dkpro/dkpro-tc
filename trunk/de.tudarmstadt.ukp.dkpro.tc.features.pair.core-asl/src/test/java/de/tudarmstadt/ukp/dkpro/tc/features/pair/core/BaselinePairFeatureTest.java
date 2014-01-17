@@ -13,7 +13,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 
 public class BaselinePairFeatureTest
@@ -31,11 +31,11 @@ public class BaselinePairFeatureTest
         AnalysisEngine engine = createPrimitive(desc);
 
         PairFeatureExtractor extractor = new AlwaysZeroPairFeatureExtractor();
-        List<IFeature> features = runExtractor(engine, extractor);
+        List<Feature> features = runExtractor(engine, extractor);
 
         assertEquals(1, features.size());
 
-        for (IFeature feature : features) {
+        for (Feature feature : features) {
             assertFeature("BaselineFeature", 0, feature);
         }
     }

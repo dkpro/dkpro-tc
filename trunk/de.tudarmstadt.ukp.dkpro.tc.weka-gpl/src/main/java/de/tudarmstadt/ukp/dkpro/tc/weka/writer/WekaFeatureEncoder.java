@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import weka.core.Attribute;
 import weka.core.Utils;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -48,7 +48,7 @@ public class WekaFeatureEncoder
         AttributeStore attributeStore = new AttributeStore();
 
         for (Instance instance : instanceList.getInstances()) {
-            for (IFeature feature : instance.getFeatures()) {
+            for (Feature feature : instance.getFeatures()) {
                 if (!attributeStore.containsAttributeName(feature.getName())) {
                     Attribute attribute = featureToAttribute(feature);
                     attributeStore.addAttribute(feature.getName(), attribute);
@@ -59,7 +59,7 @@ public class WekaFeatureEncoder
         return attributeStore;
     }
 
-    public static Attribute featureToAttribute(IFeature feature)
+    public static Attribute featureToAttribute(Feature feature)
     {
         String name = Utils.quote(feature.getName());
         Object value = feature.getValue();

@@ -26,7 +26,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
@@ -86,9 +85,9 @@ public class NGramFeatureExtractor
         return metaCollectorClasses;
     }
 
-    protected List<IFeature> extractFromAnnotation(JCas jcas, Annotation annotation)
+    protected List<Feature> extractFromAnnotation(JCas jcas, Annotation annotation)
     {
-        List<IFeature> features = new ArrayList<IFeature>();
+        List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
         // try to check if stopword list is defined, if so, use it
         if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
@@ -139,7 +138,7 @@ public class NGramFeatureExtractor
     }
 
     @Override
-    public List<IFeature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
         return this.extractFromAnnotation(jcas, classificationUnit);

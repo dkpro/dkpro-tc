@@ -22,7 +22,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
@@ -43,10 +42,10 @@ public class POSRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
 
         double total = JCasUtil.select(jcas, POS.class).size();
         double adj = select(jcas, ADJ.class).size() / total;

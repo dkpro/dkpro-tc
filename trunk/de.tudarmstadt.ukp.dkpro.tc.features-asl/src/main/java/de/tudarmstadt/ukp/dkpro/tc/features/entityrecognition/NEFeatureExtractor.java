@@ -12,7 +12,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Person;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
@@ -22,11 +21,11 @@ public class NEFeatureExtractor
 {
 
     @Override
-    public List<IFeature> extract(JCas view)
+    public List<Feature> extract(JCas view)
         throws TextClassificationException
     {
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
 
         int numOrgaNE = JCasUtil.select(view, Organization.class).size();
         int numPersonNE = JCasUtil.select(view, Person.class).size();

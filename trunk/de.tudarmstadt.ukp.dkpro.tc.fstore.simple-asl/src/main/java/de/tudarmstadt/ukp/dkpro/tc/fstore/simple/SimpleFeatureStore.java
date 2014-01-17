@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
@@ -34,13 +33,13 @@ public class SimpleFeatureStore
     {
         if (featureNames == null) {
             featureNames = new ArrayList<String>();
-            for (IFeature feature : instance.getFeatures()) {
+            for (Feature feature : instance.getFeatures()) {
                 featureNames.add(feature.getName());
             }
         }
         
         List<Object> values = new ArrayList<Object>();
-        for (IFeature feature : instance.getFeatures()) {
+        for (Feature feature : instance.getFeatures()) {
             values.add(feature.getValue());
         }
         this.instanceList.add(values);
@@ -49,7 +48,7 @@ public class SimpleFeatureStore
     
     @Override
     public Instance getInstance(int i) {
-        List<IFeature> features = new ArrayList<IFeature>();
+        List<Feature> features = new ArrayList<Feature>();
         
         int offset = 0;
         for (Object value : instanceList.get(i)) {

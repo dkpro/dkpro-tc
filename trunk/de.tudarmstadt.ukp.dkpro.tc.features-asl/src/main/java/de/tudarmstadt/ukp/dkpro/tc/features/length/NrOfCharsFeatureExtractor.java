@@ -11,7 +11,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
@@ -28,14 +27,14 @@ public class NrOfCharsFeatureExtractor
     public static final String FN_NR_OF_CHARS_PER_TOKEN = "NrofCharsPerToken";
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         int nrOfChars = jcas.getDocumentText().length();
         int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
         int nrOfTokens = JCasUtil.select(jcas, Token.class).size();
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         featList.add(new Feature(FN_NR_OF_CHARS, nrOfChars));
 
         double charPerSentence = 0.0;

@@ -10,7 +10,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
@@ -22,7 +21,7 @@ public class SuperlativeRatioFeatureExtractor
     public static final String FN_SUPERLATIVE_RATIO_ADV = "SuperlativeRatioAdv";
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         double adjRatio = 0;
@@ -53,7 +52,7 @@ public class SuperlativeRatioFeatureExtractor
             advRatio = (double) superlativeAdv / adverbs;
         }
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         featList.add(new Feature(FN_SUPERLATIVE_RATIO_ADJ, adjRatio));
         featList.add(new Feature(FN_SUPERLATIVE_RATIO_ADV, advRatio));
 

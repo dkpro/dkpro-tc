@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class ModalVerbsFeatureExtractorTest
 {
@@ -40,11 +40,11 @@ public class ModalVerbsFeatureExtractorTest
         engine.process(jcas);
 
         ModalVerbsFeatureExtractor extractor = new ModalVerbsFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(11, features.size());
 
-        Iterator<IFeature> iter = features.iterator();
+        Iterator<Feature> iter = features.iterator();
         assertFeature(ModalVerbsFeatureExtractor.FN_CAN, 10.0, iter.next());
         assertFeature(ModalVerbsFeatureExtractor.FN_COULD, 10.0, iter.next());
         assertFeature(ModalVerbsFeatureExtractor.FN_MIGHT, 10.0, iter.next());

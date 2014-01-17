@@ -17,7 +17,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
@@ -37,7 +36,7 @@ public class TopicWordsFeatureExtractor
     private String prefix;
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
         // TODO: not adapted for focus annotations
         throws TextClassificationException
     {
@@ -45,7 +44,7 @@ public class TopicWordsFeatureExtractor
             System.out.println("Path to word list must be set!");
         }
         List<String> topics = null;
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
         try {
             topics = FileUtils.readLines(new File(topicFilePath));
@@ -59,7 +58,7 @@ public class TopicWordsFeatureExtractor
         return featList;
     }
 
-    private List<IFeature> countWordHits(String wordListName, List<String> tokens)
+    private List<Feature> countWordHits(String wordListName, List<String> tokens)
         throws TextClassificationException
     {
 
@@ -81,7 +80,7 @@ public class TopicWordsFeatureExtractor
         }
         double numTokens = tokens.size();
         // name the feature same as wordlist
-        return Arrays.<IFeature>asList(new Feature(prefix + wordListName,
+        return Arrays.asList(new Feature(prefix + wordListName,
                 numTokens > 0 ? (wordcount / numTokens) : 0));
     }
 

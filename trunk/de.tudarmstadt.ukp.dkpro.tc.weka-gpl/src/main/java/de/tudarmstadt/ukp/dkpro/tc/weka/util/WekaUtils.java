@@ -23,7 +23,7 @@ import weka.core.converters.Saver;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -425,7 +425,7 @@ public class WekaUtils
     {
         double[] featureValues = new double[attributeStore.getAttributes().size()];
 
-        for (IFeature feature : instance.getFeatures()) {
+        for (Feature feature : instance.getFeatures()) {
 
             try {
                 Attribute attribute = attributeStore.getAttribute(feature.getName());
