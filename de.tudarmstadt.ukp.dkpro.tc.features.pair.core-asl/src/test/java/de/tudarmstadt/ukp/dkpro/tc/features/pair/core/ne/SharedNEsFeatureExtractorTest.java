@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class SharedNEsFeatureExtractorTest {
 	
@@ -51,11 +51,11 @@ public class SharedNEsFeatureExtractorTest {
 		ne1.addToIndexes();
 		
         SharedNEsFeatureExtractor extractor = new SharedNEsFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas1, jcas2);
+        List<Feature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
         
-        for (IFeature feature : features) {
+        for (Feature feature : features) {
             assertFeature("SharedNEs", false, feature);
         }
         
@@ -66,7 +66,7 @@ public class SharedNEsFeatureExtractorTest {
 
         assertEquals(1, features.size());
         
-        for (IFeature feature : features) {
+        for (Feature feature : features) {
             assertFeature("SharedNEs", true, feature);
         }
     }

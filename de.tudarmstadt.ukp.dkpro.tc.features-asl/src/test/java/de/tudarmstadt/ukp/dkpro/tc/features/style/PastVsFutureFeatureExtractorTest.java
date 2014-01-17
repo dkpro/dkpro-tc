@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.PastVsFutureFeatureExtractor;
 
 public class PastVsFutureFeatureExtractorTest
@@ -42,10 +42,10 @@ public class PastVsFutureFeatureExtractorTest
         engine.process(jcas);
 
         PastVsFutureFeatureExtractor extractor = new PastVsFutureFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(3, features.size());
-        Iterator<IFeature> iter = features.iterator();
+        Iterator<Feature> iter = features.iterator();
         assertFeature(PastVsFutureFeatureExtractor.FN_PAST_RATIO, 25.0, iter.next());
         assertFeature(PastVsFutureFeatureExtractor.FN_FUTURE_RATIO, 75.0, iter.next());
         assertFeature(PastVsFutureFeatureExtractor.FN_FUTURE_VS_PAST_RATIO, 3.0, iter.next());

@@ -11,7 +11,6 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
@@ -28,11 +27,11 @@ public class NumberWordsFeatureExtractor
     public static final String FEATURE_NAME = "WordsWithNumbers";
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
     // TODO: not adapted for focus annotations
     {
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
         int nrOfTokens = tokens.size();
 

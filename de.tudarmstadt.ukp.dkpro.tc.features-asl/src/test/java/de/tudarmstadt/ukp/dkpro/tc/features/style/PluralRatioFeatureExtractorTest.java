@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.PluralRatioFeatureExtractor;
 
 public class PluralRatioFeatureExtractorTest
@@ -42,11 +42,11 @@ public class PluralRatioFeatureExtractorTest
         engine.process(jcas);
 
         PluralRatioFeatureExtractor extractor = new PluralRatioFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
-        for (IFeature feature : features) {
+        for (Feature feature : features) {
             assertFeature(FN_PLURAL_RATIO, 0.75, feature);
         }
     }

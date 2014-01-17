@@ -9,7 +9,6 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
@@ -39,7 +38,7 @@ public class ModalVerbsFeatureExtractor
     public static final String FN_UNCERT = "ModalVerbsUncertain";
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
 
     {
 
@@ -98,7 +97,7 @@ public class ModalVerbsFeatureExtractor
 
         }
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         if (n > 0) {
             featList.add(new Feature(FN_CAN, (double) can * 100 / n));
             featList.add(new Feature(FN_COULD, (double) could * 100 / n));

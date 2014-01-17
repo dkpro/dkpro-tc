@@ -7,14 +7,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class PairFeatureTestBase
 {
 
-    public List<IFeature> runExtractor(AnalysisEngine engine, PairFeatureExtractor extractor)
+    public List<Feature> runExtractor(AnalysisEngine engine, PairFeatureExtractor extractor)
         throws ResourceInitializationException, TextClassificationException,
         AnalysisEngineProcessException
     {

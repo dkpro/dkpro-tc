@@ -17,7 +17,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
@@ -47,14 +46,14 @@ public class ChunkTripleFeatureExtractor
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         // if(focusAnnotation!=null){
         // throw new TextClassificationException(new
         // UnsupportedOperationException("FocusAnnotation not yet supported!"));
         // }
-        List<IFeature> features = new ArrayList<IFeature>();
+        List<Feature> features = new ArrayList<Feature>();
 
         Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
         for (String featureTriple : tripleSet) {

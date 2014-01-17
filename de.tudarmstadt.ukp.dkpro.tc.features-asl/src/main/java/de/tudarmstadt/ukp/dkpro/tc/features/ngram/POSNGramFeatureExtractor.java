@@ -20,7 +20,6 @@ import org.apache.uima.util.Level;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
@@ -59,10 +58,10 @@ public class POSNGramFeatureExtractor
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<IFeature> features = new ArrayList<IFeature>();
+        List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentPOSNgrams;
         documentPOSNgrams = NGramUtils.getDocumentPOSNgrams(jcas, posNgramMinN, posNgramMaxN);
 

@@ -16,7 +16,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class LongWordsFeatureExtractorTest
 {
@@ -36,10 +36,10 @@ public class LongWordsFeatureExtractorTest
         engine.process(jcas);
 
         LongWordsFeatureExtractor extractor = new LongWordsFeatureExtractor();
-        List<IFeature> features = extractor.extract(jcas);
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(2, features.size());
-        Iterator<IFeature> iter = features.iterator();
+        Iterator<Feature> iter = features.iterator();
         assertFeature(LongWordsFeatureExtractor.FN_LW_RATIO, 0.2, iter.next());
         assertFeature(LongWordsFeatureExtractor.FN_SW_RATIO, 0.4, iter.next());
     }

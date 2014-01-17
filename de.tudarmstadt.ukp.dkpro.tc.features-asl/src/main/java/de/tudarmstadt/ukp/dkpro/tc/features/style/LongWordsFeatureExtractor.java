@@ -9,7 +9,6 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /*
@@ -27,7 +26,7 @@ public class LongWordsFeatureExtractor
     public static final String FN_SW_RATIO = "ShortTokenRatio"; // under 3 chars
 
     @Override
-    public List<IFeature> extract(JCas jcas)
+    public List<Feature> extract(JCas jcas)
     {
 
         double longTokenRatio = 0.0;
@@ -51,7 +50,7 @@ public class LongWordsFeatureExtractor
             shortTokenRatio = (double) shortTokenCount / n;
         }
 
-        List<IFeature> featList = new ArrayList<IFeature>();
+        List<Feature> featList = new ArrayList<Feature>();
         featList.add(new Feature(FN_LW_RATIO, longTokenRatio));
         featList.add(new Feature(FN_SW_RATIO, shortTokenRatio));
 

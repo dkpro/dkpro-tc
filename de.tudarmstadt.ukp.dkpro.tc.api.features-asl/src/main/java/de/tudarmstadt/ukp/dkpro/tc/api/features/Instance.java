@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
-
 /**
  * Internal representation of an instance.
  * 
@@ -16,15 +14,15 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
  */
 public class Instance
 {
-    private List<IFeature> features;
+    private List<Feature> features;
     private List<String> outcomes;
     
     public Instance() {
-        this.features = new ArrayList<IFeature>();
+        this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
     }
     
-    public Instance(List<IFeature> features, String outcome)
+    public Instance(List<Feature> features, String outcome)
     {
         super();
         this.features = features;
@@ -32,26 +30,26 @@ public class Instance
         this.outcomes.add(outcome);
     }
     
-    public Instance(List<IFeature> features, String ... outcomes)
+    public Instance(List<Feature> features, String ... outcomes)
     {
         super();
         this.features = features;
         this.outcomes = Arrays.asList(outcomes);
     }
 
-    public Instance(List<IFeature> features, List<String> outcomes)
+    public Instance(List<Feature> features, List<String> outcomes)
     {
         super();
         this.features = features;
         this.outcomes = outcomes;
     }
 
-    public void addFeature(IFeature feature)
+    public void addFeature(Feature feature)
     {
         this.features.add(feature);
     }
     
-    public void addFeatures(List<IFeature> features)
+    public void addFeatures(List<Feature> features)
     {
         this.features.addAll(features);
     }
@@ -82,12 +80,12 @@ public class Instance
         this.outcomes.addAll(Arrays.asList(outcomes));
     }
 
-    public List<IFeature> getFeatures()
+    public List<Feature> getFeatures()
     {
         return this.features;
     }
 
-    public void setFeatures(List<IFeature> features)
+    public void setFeatures(List<Feature> features)
     {
         this.features = features;
     }
@@ -96,7 +94,7 @@ public class Instance
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        for (IFeature feature : getFeatures()) {
+        for (Feature feature : getFeatures()) {
             sb.append(feature);
             sb.append("\n");
         }
