@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class AdjectiveEndingFeatureExtractorTest
 {
@@ -40,11 +40,11 @@ public class AdjectiveEndingFeatureExtractorTest
         engine.process(jcas);
 
         AdjectiveEndingFeatureExtractor extractor = new AdjectiveEndingFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(9, features.size());
 
-        Iterator<Feature> iter = features.iterator();
+        Iterator<IFeature> iter = features.iterator();
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING1, 10.0, iter.next());
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING2, 10.0, iter.next());
         assertFeature(AdjectiveEndingFeatureExtractor.FN_ENDING3, 10.0, iter.next());

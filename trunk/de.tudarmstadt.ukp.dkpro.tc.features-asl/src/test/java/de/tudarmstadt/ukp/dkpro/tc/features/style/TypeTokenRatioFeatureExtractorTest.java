@@ -16,7 +16,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class TypeTokenRatioFeatureExtractorTest
 {
@@ -36,11 +36,11 @@ public class TypeTokenRatioFeatureExtractorTest
         engine.process(jcas);
 
         TypeTokenRatioFeatureExtractor extractor = new TypeTokenRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature(FN_TTR, 0.6, feature);
         }
     }

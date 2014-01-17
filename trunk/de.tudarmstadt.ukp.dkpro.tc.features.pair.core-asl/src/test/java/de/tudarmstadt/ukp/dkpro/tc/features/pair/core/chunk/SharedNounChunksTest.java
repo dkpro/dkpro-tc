@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class SharedNounChunksTest {
 
@@ -54,11 +54,11 @@ public class SharedNounChunksTest {
 		chunk2.addToIndexes();
 		
 		SharedNounChunks extractor = new SharedNounChunks(true);
-        List<Feature> features = extractor.extract(jcas1, jcas2);
+        List<IFeature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
         
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature("SharedNounChunkView1", 1.0, feature, 0.0001);
         }
         
@@ -69,7 +69,7 @@ public class SharedNounChunksTest {
 
         assertEquals(1, features.size());
         
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature("SharedNounChunkView1", 0.5, feature, 0.0001);
         }
 
@@ -85,11 +85,11 @@ public class SharedNounChunksTest {
 		chunk2.addToIndexes();
 		
 		SharedNounChunks extractor = new SharedNounChunks(false);
-        List<Feature> features = extractor.extract(jcas1, jcas2);
+        List<IFeature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
         
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature("SharedNounChunkView2", 1.0, feature, 0.0001);
         }
         
@@ -100,7 +100,7 @@ public class SharedNounChunksTest {
 
         assertEquals(1, features.size());
         
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature("SharedNounChunkView2", 1, feature, 0.0001);
         }
 

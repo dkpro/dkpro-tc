@@ -19,7 +19,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.SpellingErrorPOSRatioFeatureExtractor;
 
 public class SpellingErrorPOSRatioFeatureExtractorTest
@@ -48,7 +48,7 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
         engine.process(jcas);
 
         SpellingErrorPOSRatioFeatureExtractor extractor = new SpellingErrorPOSRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(11, features.size());
 
@@ -59,7 +59,7 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
         // }
         // }
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             if (feature.getName().equals(FN_ART_ERROR_RATIO)) {
                 assertFeature(FN_ART_ERROR_RATIO, 0.1111, feature, 0.0001);
             }

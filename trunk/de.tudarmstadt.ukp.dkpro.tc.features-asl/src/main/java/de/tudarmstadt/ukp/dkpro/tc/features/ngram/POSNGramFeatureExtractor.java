@@ -20,12 +20,12 @@ import org.apache.uima.util.Level;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class POSNGramFeatureExtractor
@@ -59,19 +59,19 @@ public class POSNGramFeatureExtractor
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> features = new ArrayList<Feature>();
+        List<IFeature> features = new ArrayList<IFeature>();
         FrequencyDistribution<String> documentPOSNgrams;
         documentPOSNgrams = NGramUtils.getDocumentPOSNgrams(jcas, posNgramMinN, posNgramMaxN);
 
         for (String topNgram : topKSet) {
             if (documentPOSNgrams.getKeys().contains(topNgram)) {
-                features.add(new SimpleFeature(prefix + "_" + topNgram, 1));
+                features.add(new Feature(prefix + "_" + topNgram, 1));
             }
             else {
-                features.add(new SimpleFeature(prefix + "_" + topNgram, 0));
+                features.add(new Feature(prefix + "_" + topNgram, 0));
             }
         }
         return features;

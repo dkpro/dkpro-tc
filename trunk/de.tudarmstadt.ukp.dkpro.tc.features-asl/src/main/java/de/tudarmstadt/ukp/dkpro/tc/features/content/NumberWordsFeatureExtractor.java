@@ -11,8 +11,8 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Counts the ratio of tokens containing numbers or 
@@ -28,11 +28,11 @@ public class NumberWordsFeatureExtractor
     public static final String FEATURE_NAME = "WordsWithNumbers";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
     // TODO: not adapted for focus annotations
     {
 
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
         int nrOfTokens = tokens.size();
 
@@ -47,7 +47,7 @@ public class NumberWordsFeatureExtractor
                 System.out.println(t + " matches Words With Numbers");
             }
         }
-        featList.add(new SimpleFeature(FEATURE_NAME, (double) pmatches / nrOfTokens));
+        featList.add(new Feature(FEATURE_NAME, (double) pmatches / nrOfTokens));
 
         return featList;
     }

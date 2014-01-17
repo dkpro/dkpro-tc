@@ -15,7 +15,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class NumberWordsFeatureExtractorTest
 {
@@ -35,11 +35,11 @@ public class NumberWordsFeatureExtractorTest
         engine.process(jcas);
 
         NumberWordsFeatureExtractor extractor = new NumberWordsFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature(NumberWordsFeatureExtractor.FEATURE_NAME, 0.44, feature, 0.01);
         }
     }

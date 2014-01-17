@@ -12,9 +12,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Person;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class NEFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -22,11 +22,11 @@ public class NEFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view)
+    public List<IFeature> extract(JCas view)
         throws TextClassificationException
     {
 
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
 
         int numOrgaNE = JCasUtil.select(view, Organization.class).size();
         int numPersonNE = JCasUtil.select(view, Person.class).size();
@@ -34,15 +34,15 @@ public class NEFeatureExtractor
         int numSentences = JCasUtil.select(view, Sentence.class).size();
 
         if (numSentences > 0) {
-            featList.add(new SimpleFeature("NrOfOrganizationEntities", numOrgaNE));
-            featList.add(new SimpleFeature("NrOfPersonEntities", numPersonNE));
-            featList.add(new SimpleFeature("NrOfLocationEntities", numLocNE));
+            featList.add(new Feature("NrOfOrganizationEntities", numOrgaNE));
+            featList.add(new Feature("NrOfPersonEntities", numPersonNE));
+            featList.add(new Feature("NrOfLocationEntities", numLocNE));
 
-            featList.add(new SimpleFeature("NrOfOrganizationEntitiesPerSent", Math
+            featList.add(new Feature("NrOfOrganizationEntitiesPerSent", Math
                     .round(((float) numOrgaNE / numSentences) * 100f) / 100f));
-            featList.add(new SimpleFeature("NrOfPersonEntitiesPerSent", Math
+            featList.add(new Feature("NrOfPersonEntitiesPerSent", Math
                     .round(((float) numPersonNE / numSentences) * 100f) / 100f));
-            featList.add(new SimpleFeature("NrOfLocationEntitiesPerSent", Math
+            featList.add(new Feature("NrOfLocationEntitiesPerSent", Math
                     .round(((float) numLocNE / numSentences) * 100f) / 100f));
         }
 

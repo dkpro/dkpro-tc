@@ -19,9 +19,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /*
  * Heylighen & Dewaele (2002): Variation in the contextuality of language
@@ -43,10 +43,10 @@ public class ContextualityMeasureFeatureExtractor
     public static final String CONTEXTUALITY_MEASURE_FN = "ContextualityMeasure";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
 
         double total = JCasUtil.select(jcas, POS.class).size();
         double noun = select(jcas, N.class).size() / total;
@@ -70,15 +70,15 @@ public class ContextualityMeasureFeatureExtractor
         // adverb - interjection + 100
         double contextualityMeasure = 0.5 * (noun + adj + prep + art - pro - verb - adv - interj + 100);
 
-        featList.add(new SimpleFeature("NounRate", noun));
-        featList.add(new SimpleFeature("AdjectiveRate", adj));
-        featList.add(new SimpleFeature("PrepositionRate", prep));
-        featList.add(new SimpleFeature("ArticleRate", art));
-        featList.add(new SimpleFeature("PronounRate", pro));
-        featList.add(new SimpleFeature("VerbRate", verb));
-        featList.add(new SimpleFeature("AdverbRate", adv));
-        featList.add(new SimpleFeature("InterjectionRate", interj));
-        featList.add(new SimpleFeature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure));
+        featList.add(new Feature("NounRate", noun));
+        featList.add(new Feature("AdjectiveRate", adj));
+        featList.add(new Feature("PrepositionRate", prep));
+        featList.add(new Feature("ArticleRate", art));
+        featList.add(new Feature("PronounRate", pro));
+        featList.add(new Feature("VerbRate", verb));
+        featList.add(new Feature("AdverbRate", adv));
+        featList.add(new Feature("InterjectionRate", interj));
+        featList.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure));
 
         return featList;
     }

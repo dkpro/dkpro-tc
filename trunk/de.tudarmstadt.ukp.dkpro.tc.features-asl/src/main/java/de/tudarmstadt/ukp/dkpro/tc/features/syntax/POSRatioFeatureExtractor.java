@@ -22,9 +22,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class POSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -43,10 +43,10 @@ public class POSRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
 
         double total = JCasUtil.select(jcas, POS.class).size();
         double adj = select(jcas, ADJ.class).size() / total;
@@ -61,17 +61,17 @@ public class POSRatioFeatureExtractor
         double punc = select(jcas, PUNC.class).size() / total;
         double verb = select(jcas, V.class).size() / total;
 
-        featList.add(new SimpleFeature(FN_ADJ_RATIO, adj));
-        featList.add(new SimpleFeature(FN_ADV_RATIO, adv));
-        featList.add(new SimpleFeature(FN_ART_RATIO, art));
-        featList.add(new SimpleFeature(FN_CARD_RATIO, card));
-        featList.add(new SimpleFeature(FN_CONJ_RATIO, conj));
-        featList.add(new SimpleFeature(FN_N_RATIO, noun));
-        featList.add(new SimpleFeature(FN_O_RATIO, other));
-        featList.add(new SimpleFeature(FN_PR_RATIO, prep));
-        featList.add(new SimpleFeature(FN_PP_RATIO, pron));
-        featList.add(new SimpleFeature(FN_PUNC_RATIO, punc));
-        featList.add(new SimpleFeature(FN_V_RATIO, verb));
+        featList.add(new Feature(FN_ADJ_RATIO, adj));
+        featList.add(new Feature(FN_ADV_RATIO, adv));
+        featList.add(new Feature(FN_ART_RATIO, art));
+        featList.add(new Feature(FN_CARD_RATIO, card));
+        featList.add(new Feature(FN_CONJ_RATIO, conj));
+        featList.add(new Feature(FN_N_RATIO, noun));
+        featList.add(new Feature(FN_O_RATIO, other));
+        featList.add(new Feature(FN_PR_RATIO, prep));
+        featList.add(new Feature(FN_PP_RATIO, pron));
+        featList.add(new Feature(FN_PUNC_RATIO, punc));
+        featList.add(new Feature(FN_V_RATIO, verb));
 
         return featList;
     }

@@ -9,8 +9,8 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /*
  * Calculates the proportions of tokens that are longer than 5 characters
@@ -27,7 +27,7 @@ public class LongWordsFeatureExtractor
     public static final String FN_SW_RATIO = "ShortTokenRatio"; // under 3 chars
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
     {
 
         double longTokenRatio = 0.0;
@@ -51,9 +51,9 @@ public class LongWordsFeatureExtractor
             shortTokenRatio = (double) shortTokenCount / n;
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new SimpleFeature(FN_LW_RATIO, longTokenRatio));
-        featList.add(new SimpleFeature(FN_SW_RATIO, shortTokenRatio));
+        List<IFeature> featList = new ArrayList<IFeature>();
+        featList.add(new Feature(FN_LW_RATIO, longTokenRatio));
+        featList.add(new Feature(FN_SW_RATIO, shortTokenRatio));
 
         return featList;
     }

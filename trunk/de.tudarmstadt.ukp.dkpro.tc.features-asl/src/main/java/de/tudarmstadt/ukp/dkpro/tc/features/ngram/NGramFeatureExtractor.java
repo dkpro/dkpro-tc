@@ -26,12 +26,12 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
@@ -86,9 +86,9 @@ public class NGramFeatureExtractor
         return metaCollectorClasses;
     }
 
-    protected List<Feature> extractFromAnnotation(JCas jcas, Annotation annotation)
+    protected List<IFeature> extractFromAnnotation(JCas jcas, Annotation annotation)
     {
-        List<Feature> features = new ArrayList<Feature>();
+        List<IFeature> features = new ArrayList<IFeature>();
         FrequencyDistribution<String> documentNgrams = null;
         // try to check if stopword list is defined, if so, use it
         if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
@@ -126,10 +126,10 @@ public class NGramFeatureExtractor
             if (documentNgrams.getKeys().contains(topNgram)) {
                 // features.add(new Feature(prefix + "_" + topNgram,
                 // documentNgrams.getCount(topNgram)));
-                features.add(new SimpleFeature(prefix + "_" + topNgram, 1));
+                features.add(new Feature(prefix + "_" + topNgram, 1));
             }
             else {
-                features.add(new SimpleFeature(prefix + "_" + topNgram, 0));
+                features.add(new Feature(prefix + "_" + topNgram, 0));
             }
         }
 
@@ -139,7 +139,7 @@ public class NGramFeatureExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public List<IFeature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
         return this.extractFromAnnotation(jcas, classificationUnit);

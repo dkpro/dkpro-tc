@@ -16,7 +16,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class NrOfCharsFeatureExtractorTest
 {
@@ -35,11 +35,11 @@ public class NrOfCharsFeatureExtractorTest
         engine.process(jcas);
 
         NrOfCharsFeatureExtractor extractor = new NrOfCharsFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(3, features.size());
 
-        Iterator<Feature> iter = features.iterator();
+        Iterator<IFeature> iter = features.iterator();
         assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS, 31, iter.next());
         assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, iter.next());
         assertFeature(NrOfCharsFeatureExtractor.FN_NR_OF_CHARS_PER_TOKEN, 3.1, iter.next());

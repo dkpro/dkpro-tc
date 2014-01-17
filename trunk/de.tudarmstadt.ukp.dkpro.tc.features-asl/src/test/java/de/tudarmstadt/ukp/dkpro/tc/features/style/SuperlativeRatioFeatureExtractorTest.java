@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor;
 
 public class SuperlativeRatioFeatureExtractorTest
@@ -43,11 +43,11 @@ public class SuperlativeRatioFeatureExtractorTest
         engine.process(jcas);
 
         SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(2, features.size());
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADJ)) {
                 assertFeature(FN_SUPERLATIVE_RATIO_ADJ, 0.75, feature);
             }

@@ -16,7 +16,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class TokenRatioFeatureExtractorTest
 {
@@ -37,11 +37,11 @@ public class TokenRatioFeatureExtractorTest
 
         String token = "tester";
         TokenRatioFeatureExtractor extractor = new TokenRatioFeatureExtractor(token);
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature(FN_TOKEN_RATIO + "_" + token, 0.2, feature);
         }
     }
