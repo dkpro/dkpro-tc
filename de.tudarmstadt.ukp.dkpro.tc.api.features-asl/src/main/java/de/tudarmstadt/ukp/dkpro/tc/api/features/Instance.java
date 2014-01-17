@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 /**
  * Internal representation of an instance.
@@ -16,15 +16,15 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
  */
 public class Instance
 {
-    private List<Feature> features;
+    private List<IFeature> features;
     private List<String> outcomes;
     
     public Instance() {
-        this.features = new ArrayList<Feature>();
+        this.features = new ArrayList<IFeature>();
         this.outcomes = new ArrayList<String>();
     }
     
-    public Instance(List<Feature> features, String outcome)
+    public Instance(List<IFeature> features, String outcome)
     {
         super();
         this.features = features;
@@ -32,26 +32,26 @@ public class Instance
         this.outcomes.add(outcome);
     }
     
-    public Instance(List<Feature> features, String ... outcomes)
+    public Instance(List<IFeature> features, String ... outcomes)
     {
         super();
         this.features = features;
         this.outcomes = Arrays.asList(outcomes);
     }
 
-    public Instance(List<Feature> features, List<String> outcomes)
+    public Instance(List<IFeature> features, List<String> outcomes)
     {
         super();
         this.features = features;
         this.outcomes = outcomes;
     }
 
-    public void addFeature(Feature feature)
+    public void addFeature(IFeature feature)
     {
         this.features.add(feature);
     }
     
-    public void addFeatures(List<Feature> features)
+    public void addFeatures(List<IFeature> features)
     {
         this.features.addAll(features);
     }
@@ -82,12 +82,12 @@ public class Instance
         this.outcomes.addAll(Arrays.asList(outcomes));
     }
 
-    public List<Feature> getFeatures()
+    public List<IFeature> getFeatures()
     {
         return this.features;
     }
 
-    public void setFeatures(List<Feature> features)
+    public void setFeatures(List<IFeature> features)
     {
         this.features = features;
     }
@@ -96,7 +96,7 @@ public class Instance
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        for (Feature feature : getFeatures()) {
+        for (IFeature feature : getFeatures()) {
             sb.append(feature);
             sb.append("\n");
         }

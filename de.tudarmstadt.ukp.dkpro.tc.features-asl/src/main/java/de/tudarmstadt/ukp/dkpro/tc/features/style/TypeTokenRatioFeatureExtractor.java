@@ -10,9 +10,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class TypeTokenRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -21,7 +21,7 @@ public class TypeTokenRatioFeatureExtractor
     public static final String FN_TTR = "TypeTokenRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
 
@@ -35,8 +35,8 @@ public class TypeTokenRatioFeatureExtractor
             ttr = (double) fd.getB() / fd.getN();
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new SimpleFeature(FN_TTR, ttr));
+        List<IFeature> featList = new ArrayList<IFeature>();
+        featList.add(new Feature(FN_TTR, ttr));
 
         return featList;
     }

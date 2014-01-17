@@ -13,10 +13,10 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 import dkpro.similarity.algorithms.api.JCasTextSimilarityMeasure;
 import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.uima.resource.TextSimilarityResourceBase;
@@ -34,7 +34,7 @@ public class SimilarityPairFeatureExtractor
     private TextSimilarityResourceBase textSimilarityResource;
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public List<IFeature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
         try {
@@ -69,8 +69,8 @@ public class SimilarityPairFeatureExtractor
                 similarity = textSimilarityResource.getSimilarity(f1, f2);
             }
 
-            return Arrays.<Feature>asList(
-                    new SimpleFeature("Similarity" + textSimilarityResource.getName(), similarity)
+            return Arrays.<IFeature>asList(
+                    new Feature("Similarity" + textSimilarityResource.getName(), similarity)
                     );
         }
         catch (FeaturePathException e) {

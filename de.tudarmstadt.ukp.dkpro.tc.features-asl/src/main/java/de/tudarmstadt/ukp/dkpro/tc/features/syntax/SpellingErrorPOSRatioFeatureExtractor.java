@@ -21,9 +21,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Computes for each coarse grained POS tag the ratio of being affected by a spelling error. For
@@ -50,10 +50,10 @@ public class SpellingErrorPOSRatioFeatureExtractor
     public static final String FN_V_ERROR_RATIO = "VerbErrorRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
 
         int nrOfSpellingAnomalies = 0;
         int adjErrors = 0;
@@ -108,27 +108,27 @@ public class SpellingErrorPOSRatioFeatureExtractor
             nrOfSpellingAnomalies++;
         }
 
-        featList.add(new SimpleFeature(FN_ADJ_ERROR_RATIO, (double) adjErrors
+        featList.add(new Feature(FN_ADJ_ERROR_RATIO, (double) adjErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_ADV_ERROR_RATIO, (double) advErrors
+        featList.add(new Feature(FN_ADV_ERROR_RATIO, (double) advErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_ART_ERROR_RATIO, (double) artErrors
+        featList.add(new Feature(FN_ART_ERROR_RATIO, (double) artErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_CARD_ERROR_RATIO, (double) cardErrors
+        featList.add(new Feature(FN_CARD_ERROR_RATIO, (double) cardErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_CONJ_ERROR_RATIO, (double) conjErrors
+        featList.add(new Feature(FN_CONJ_ERROR_RATIO, (double) conjErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_N_ERROR_RATIO, (double) nounErrors
+        featList.add(new Feature(FN_N_ERROR_RATIO, (double) nounErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_O_ERROR_RATIO, (double) otherErrors
+        featList.add(new Feature(FN_O_ERROR_RATIO, (double) otherErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_PR_ERROR_RATIO, (double) pronErrors
+        featList.add(new Feature(FN_PR_ERROR_RATIO, (double) pronErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_PP_ERROR_RATIO, (double) prepErrors
+        featList.add(new Feature(FN_PP_ERROR_RATIO, (double) prepErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_PUNC_ERROR_RATIO, (double) puncErrors
+        featList.add(new Feature(FN_PUNC_ERROR_RATIO, (double) puncErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new SimpleFeature(FN_V_ERROR_RATIO, (double) verbErrors
+        featList.add(new Feature(FN_V_ERROR_RATIO, (double) verbErrors
                 / nrOfSpellingAnomalies));
 
         return featList;

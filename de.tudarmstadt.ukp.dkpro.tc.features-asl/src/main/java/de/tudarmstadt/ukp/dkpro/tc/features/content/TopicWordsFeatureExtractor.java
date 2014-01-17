@@ -17,9 +17,9 @@ import org.apache.uima.resource.ResourceSpecifier;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Given a list of topic terms, extracts the ratio of topic terms to all terms.
@@ -37,7 +37,7 @@ public class TopicWordsFeatureExtractor
     private String prefix;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         // TODO: not adapted for focus annotations
         throws TextClassificationException
     {
@@ -45,7 +45,7 @@ public class TopicWordsFeatureExtractor
             System.out.println("Path to word list must be set!");
         }
         List<String> topics = null;
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
         try {
             topics = FileUtils.readLines(new File(topicFilePath));
@@ -59,7 +59,7 @@ public class TopicWordsFeatureExtractor
         return featList;
     }
 
-    private List<Feature> countWordHits(String wordListName, List<String> tokens)
+    private List<IFeature> countWordHits(String wordListName, List<String> tokens)
         throws TextClassificationException
     {
 
@@ -81,7 +81,7 @@ public class TopicWordsFeatureExtractor
         }
         double numTokens = tokens.size();
         // name the feature same as wordlist
-        return Arrays.<Feature>asList(new SimpleFeature(prefix + wordListName,
+        return Arrays.<IFeature>asList(new Feature(prefix + wordListName,
                 numTokens > 0 ? (wordcount / numTokens) : 0));
     }
 

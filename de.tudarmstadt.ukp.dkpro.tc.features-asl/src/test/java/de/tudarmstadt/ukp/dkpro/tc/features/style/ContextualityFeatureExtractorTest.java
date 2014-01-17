@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 /*
  * Heylighen & Dewaele (2002): Variation in the contextuality of language
@@ -50,11 +50,11 @@ public class ContextualityFeatureExtractorTest
         engine.process(jcas);
 
         ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(9, features.size());
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             if (feature.getName().equals(CONTEXTUALITY_MEASURE_FN)) {
                 assertFeature(CONTEXTUALITY_MEASURE_FN, 50.2, feature);
             }

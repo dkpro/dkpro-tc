@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import dkpro.similarity.algorithms.lexical.uima.string.GreedyStringTilingMeasureResource;
@@ -46,7 +46,7 @@ public class SimilarityPairFeatureTest
         {
             System.out.println(model.getClass().getName());
 
-            List<Feature> features;
+            List<IFeature> features;
             try {
                 features = model.extract(aJCas.getView(VIEW1), aJCas.getView(VIEW2));
             }
@@ -58,7 +58,7 @@ public class SimilarityPairFeatureTest
             }
             Assert.assertEquals(1, features.size());
 
-            Iterator<Feature> iter = features.iterator();
+            Iterator<IFeature> iter = features.iterator();
             System.out.println(iter.next());
 
         }

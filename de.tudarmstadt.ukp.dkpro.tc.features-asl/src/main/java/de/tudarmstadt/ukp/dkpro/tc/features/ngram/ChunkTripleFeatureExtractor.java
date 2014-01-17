@@ -17,12 +17,12 @@ import org.apache.uima.resource.ResourceSpecifier;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
 public class ChunkTripleFeatureExtractor
@@ -47,22 +47,22 @@ public class ChunkTripleFeatureExtractor
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
         // if(focusAnnotation!=null){
         // throw new TextClassificationException(new
         // UnsupportedOperationException("FocusAnnotation not yet supported!"));
         // }
-        List<Feature> features = new ArrayList<Feature>();
+        List<IFeature> features = new ArrayList<IFeature>();
 
         Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
         for (String featureTriple : tripleSet) {
             if (triples.contains(featureTriple)) {
-                features.add(new SimpleFeature("lexicalTriple_" + featureTriple, 1));
+                features.add(new Feature("lexicalTriple_" + featureTriple, 1));
             }
             else {
-                features.add(new SimpleFeature("lexicalTriple_" + featureTriple, 0));
+                features.add(new Feature("lexicalTriple_" + featureTriple, 0));
             }
         }
 

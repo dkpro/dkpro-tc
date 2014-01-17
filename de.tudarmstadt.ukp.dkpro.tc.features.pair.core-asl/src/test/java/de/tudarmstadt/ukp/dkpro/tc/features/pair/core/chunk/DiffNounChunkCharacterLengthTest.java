@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 
 public class DiffNounChunkCharacterLengthTest {
 	
@@ -57,11 +57,11 @@ public class DiffNounChunkCharacterLengthTest {
 		chunk2.addToIndexes();
 		
         DiffNounChunkCharacterLength extractor = new DiffNounChunkCharacterLength();
-        List<Feature> features = extractor.extract(jcas1, jcas2);
+        List<IFeature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
         
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature("DiffNounPhraseCharacterLength", 0.0, feature, 0.0001);
         }
     }
@@ -77,11 +77,11 @@ public class DiffNounChunkCharacterLengthTest {
 		chunk2.addToIndexes();
 		
         DiffNounChunkCharacterLength extractor = new DiffNounChunkCharacterLength();
-        List<Feature> features = extractor.extract(jcas1, jcas2);
+        List<IFeature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
         
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             assertFeature("DiffNounPhraseCharacterLength", -3.0, feature, 0.0001);
         }
     }

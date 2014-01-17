@@ -16,7 +16,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.PairFeatureTestBase;
 
@@ -40,11 +40,11 @@ public class DiffNrOfSentencesPairFeatureExtractorTest extends PairFeatureTestBa
 		engine.process(jcas2);
 		
 		DiffNrOfSentencesPairFeatureExtractor extractor = new DiffNrOfSentencesPairFeatureExtractor();
-		List<Feature> features = extractor.extract(jcas1, jcas2);
+		List<IFeature> features = extractor.extract(jcas1, jcas2);
 
 		assertEquals(1, features.size());
 
-		for (Feature feature : features) {
+		for (IFeature feature : features) {
 		    assertFeature("DiffNrOfSentences", 1, feature);
 		}
 

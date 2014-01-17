@@ -10,10 +10,10 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Pair-wise feature extractor. Computes how many noun chunks two views share.
@@ -34,18 +34,18 @@ public class SharedNounChunks
     }
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public List<IFeature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
 
         if (normalizeWithFirst) {
-            return Arrays.<Feature>asList(
-                    new SimpleFeature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2))
+            return Arrays.<IFeature>asList(
+                    new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2))
                     );
         }
         else {
-            return Arrays.<Feature>asList(
-                    new SimpleFeature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1))
+            return Arrays.<IFeature>asList(
+                    new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1))
                     );
         }
 

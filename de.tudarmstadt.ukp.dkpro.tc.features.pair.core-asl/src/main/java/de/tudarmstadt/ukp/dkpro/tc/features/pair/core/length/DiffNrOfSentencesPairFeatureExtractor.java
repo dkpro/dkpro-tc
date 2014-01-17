@@ -8,10 +8,10 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Pair-wise feature extractor Computes the number of sentences in a view and returns the difference
@@ -26,11 +26,11 @@ public class DiffNrOfSentencesPairFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public List<IFeature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.<Feature>asList(
-                new SimpleFeature("DiffNrOfSentences",
+        return Arrays.<IFeature>asList(
+                new Feature("DiffNrOfSentences",
                         JCasUtil.select(view1, Sentence.class).size() -
                                 JCasUtil.select(view2, Sentence.class).size())
                 );

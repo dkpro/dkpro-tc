@@ -8,9 +8,9 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Adds the documentId to the features.
@@ -28,11 +28,11 @@ public class AddIdFeatureExtractor
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
         String docId = DocumentMetaData.get(jcas).getDocumentId();
 
-        return Arrays.<Feature>asList(new SimpleFeature(ID_FEATURE_NAME, docId));
+        return Arrays.<IFeature>asList(new Feature(ID_FEATURE_NAME, docId));
     }
 }

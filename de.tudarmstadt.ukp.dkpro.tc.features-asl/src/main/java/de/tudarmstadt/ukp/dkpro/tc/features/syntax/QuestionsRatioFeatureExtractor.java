@@ -11,9 +11,9 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 public class QuestionsRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
@@ -23,7 +23,7 @@ public class QuestionsRatioFeatureExtractor
     public static final String FN_QUESTION_RATIO = "QuestionRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
         throws TextClassificationException
     {
 
@@ -44,6 +44,6 @@ public class QuestionsRatioFeatureExtractor
             questionRatio = (double) matches / nrOfSentences;
         }
 
-        return Arrays.<Feature>asList(new SimpleFeature(FN_QUESTION_RATIO, questionRatio));
+        return Arrays.<IFeature>asList(new Feature(FN_QUESTION_RATIO, questionRatio));
     }
 }

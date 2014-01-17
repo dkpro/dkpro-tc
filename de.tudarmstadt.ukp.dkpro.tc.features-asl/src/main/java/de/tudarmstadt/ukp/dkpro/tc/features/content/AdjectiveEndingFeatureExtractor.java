@@ -10,8 +10,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Gender-Preferential Text Mining of E-mail Discourse
@@ -40,7 +40,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String FN_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public List<IFeature> extract(JCas jcas)
     {
 
         int able = 0;
@@ -94,19 +94,19 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
+        List<IFeature> featList = new ArrayList<IFeature>();
         if (n > 0) {
-            featList.add(new SimpleFeature(FN_ENDING1, (double) able * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING2, (double) al * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING3, (double) ful * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING4, (double) ible * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING5, (double) less * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING6, (double) ous * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING7, (double) ive * 100 / n));
-            featList.add(new SimpleFeature(FN_ENDING8, (double) ic * 100 / n));
+            featList.add(new Feature(FN_ENDING1, (double) able * 100 / n));
+            featList.add(new Feature(FN_ENDING2, (double) al * 100 / n));
+            featList.add(new Feature(FN_ENDING3, (double) ful * 100 / n));
+            featList.add(new Feature(FN_ENDING4, (double) ible * 100 / n));
+            featList.add(new Feature(FN_ENDING5, (double) less * 100 / n));
+            featList.add(new Feature(FN_ENDING6, (double) ous * 100 / n));
+            featList.add(new Feature(FN_ENDING7, (double) ive * 100 / n));
+            featList.add(new Feature(FN_ENDING8, (double) ic * 100 / n));
         }
         if (m > 0) {
-            featList.add(new SimpleFeature(FN_ENDING9, (double) ly * 100 / m));
+            featList.add(new Feature(FN_ENDING9, (double) ly * 100 / m));
         }
 
         return featList;

@@ -6,10 +6,10 @@ import java.util.List;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeature;
 
 /**
  * Pair-wise feature extractor
@@ -25,18 +25,18 @@ public class CombinedNGramPairFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public List<IFeature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        List<Feature> features = new ArrayList<Feature>();
+        List<IFeature> features = new ArrayList<IFeature>();
         
         prefix = new String("");
         
-        List<Feature> view1Ngrams = super.extract(view1, null);
-        List<Feature> view2Ngrams = super.extract(view2, null);
+        List<IFeature> view1Ngrams = super.extract(view1, null);
+        List<IFeature> view2Ngrams = super.extract(view2, null);
         
-        for(Feature ngram1: view1Ngrams){
-        	for(Feature ngram2: view2Ngrams){
+        for(IFeature ngram1: view1Ngrams){
+        	for(IFeature ngram2: view2Ngrams){
         		String featureName = "comboNg"+ngram1.getName()+ngram2.getName();
         		Object featureValue = 0;
         		if(ngram1.getValue().toString().equals("1") && ngram2.getValue().toString().equals("1")){
@@ -44,7 +44,7 @@ public class CombinedNGramPairFeatureExtractor
         		}
         		
         		System.out.println("New pair ngram: " + featureName + "  featureValue: " + featureValue);
-        		features.add(new SimpleFeature(featureName, featureValue));
+        		features.add(new Feature(featureName, featureValue));
         	}
         }
         return features;

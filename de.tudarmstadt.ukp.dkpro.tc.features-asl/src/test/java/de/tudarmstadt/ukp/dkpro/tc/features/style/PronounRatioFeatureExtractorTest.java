@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.IFeature;
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.PronounRatioFeatureExtractor;
 
 public class PronounRatioFeatureExtractorTest
@@ -43,11 +43,11 @@ public class PronounRatioFeatureExtractorTest
         engine.process(jcas);
 
         PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<IFeature> features = extractor.extract(jcas);
 
         Assert.assertEquals(6, features.size());
 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             if (feature.getName().equals(FN_HE_RATIO)) {
                 assertFeature(FN_HE_RATIO, 0.5, feature);
             }
