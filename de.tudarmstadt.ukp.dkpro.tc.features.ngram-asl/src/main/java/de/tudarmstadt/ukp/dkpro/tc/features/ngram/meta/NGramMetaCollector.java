@@ -41,6 +41,7 @@ public class NGramMetaCollector
     private boolean ngramLowerCase = true;
 
     private  Set<String> stopwords;
+    
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
