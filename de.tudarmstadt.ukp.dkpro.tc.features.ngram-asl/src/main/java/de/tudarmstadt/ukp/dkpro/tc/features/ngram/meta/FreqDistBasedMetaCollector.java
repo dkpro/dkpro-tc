@@ -16,8 +16,6 @@ public abstract class FreqDistBasedMetaCollector
 
     protected FrequencyDistribution<String> fd;
 
-    protected File fdFile;
-
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -27,6 +25,11 @@ public abstract class FreqDistBasedMetaCollector
         fd = new FrequencyDistribution<String>();
     }
 
+    /**
+     * @return The path where the lucene index should be stored for this meta collector.
+     */
+    protected abstract File getFreqDistFile();
+    
     @Override
     public void collectionProcessComplete()
         throws AnalysisEngineProcessException
@@ -34,7 +37,7 @@ public abstract class FreqDistBasedMetaCollector
         super.collectionProcessComplete();
 
         try {
-            fd.save(fdFile);
+            fd.save(getFreqDistFile());
         }
         catch (IOException e) {
             throw new AnalysisEngineProcessException(e);

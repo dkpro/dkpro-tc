@@ -4,11 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
@@ -29,14 +27,6 @@ public class POSNGramMetaCollector
     private int posNgramMaxN;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-        fdFile = posNgramFdFile;
-    }
-
-    @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
@@ -53,5 +43,11 @@ public class POSNGramMetaCollector
         Map<String, String> mapping = new HashMap<String, String>();
         mapping.put(POSNGramFeatureExtractor.PARAM_POS_NGRAM_FD_FILE, POS_NGRAM_FD_KEY);
         return mapping;
+    }
+
+    @Override
+    protected File getFreqDistFile()
+    {
+        return posNgramFdFile;
     }
 }
