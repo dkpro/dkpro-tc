@@ -9,11 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
@@ -39,14 +37,6 @@ public class NGramMetaCollector
 
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false)
     private boolean ngramLowerCase = true;
-
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-        fdFile = ngramFdFile;
-    }
 
     @Override
     public void process(JCas jcas)
@@ -83,5 +73,11 @@ public class NGramMetaCollector
         Map<String, String> mapping = new HashMap<String, String>();
         mapping.put(NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
         return mapping;
+    }
+
+    @Override
+    protected File getFreqDistFile()
+    {
+        return ngramFdFile;
     }
 }
