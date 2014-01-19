@@ -97,6 +97,7 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</module>
 	</modules>
 	<dependencies>
 		<dependency>
