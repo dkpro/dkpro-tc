@@ -88,7 +88,7 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	DIM_FEATURE_SET,
 	[
 		// This feature is sensible and fast, but gives bad results on the demo data
-        SharedNEsFeatureExtractor.class.name,
+        SharedNEsFeatureExtractor.class.name, 
 		// This feature is sensible but slow.
 //        CombinedNGramPairFeatureExtractor.class.name
 	]
