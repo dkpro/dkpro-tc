@@ -24,7 +24,7 @@ public abstract class LuceneBasedMetaCollector
     extends MetaCollector
 {
     
-    private final static String LUCENE_DIR = "lucence";
+    public final static String LUCENE_DIR = "lucence";
     
     @ConfigurationParameter(name = LuceneNGramFeatureExtractor.PARAM_LUCENE_DIR, mandatory = true)
     private File luceneDir;
