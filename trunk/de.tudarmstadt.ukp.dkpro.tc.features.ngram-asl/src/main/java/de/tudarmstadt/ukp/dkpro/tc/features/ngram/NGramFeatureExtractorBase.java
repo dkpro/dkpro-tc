@@ -33,32 +33,32 @@ public abstract class NGramFeatureExtractorBase
     implements MetaDependent, ClassificationUnitFeatureExtractor
 {
     public static final String PARAM_NGRAM_MIN_N = "ngramMinN";
-    @ConfigurationParameter(name = PARAM_NGRAM_MIN_N, mandatory = false)
-    protected int ngramMinN = 1;
+    @ConfigurationParameter(name = PARAM_NGRAM_MIN_N, mandatory = false, defaultValue = "1")
+    protected int ngramMinN;
 
     public static final String PARAM_NGRAM_MAX_N = "ngramMaxN";
-    @ConfigurationParameter(name = PARAM_NGRAM_MAX_N, mandatory = false)
-    protected int ngramMaxN = 3;
+    @ConfigurationParameter(name = PARAM_NGRAM_MAX_N, mandatory = false, defaultValue = "3")
+    protected int ngramMaxN;
 
     public static final String PARAM_NGRAM_USE_TOP_K = "ngramUseTopK";
-    @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = false)
-    protected int ngramUseTopK = 500;
+    @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = false, defaultValue = "500")
+    protected int ngramUseTopK;
 
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "ngramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
 
     public static final String PARAM_NGRAM_FREQ_THRESHOLD = "ngramFreqThreshold";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = false)
-    protected float ngramFreqThreshold = 0.01f;
+    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = false, defaultValue = "0.01")
+    protected float ngramFreqThreshold;
 
     public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
-    @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = false)
-    protected boolean ngramLowerCase = true;
+    @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    protected boolean ngramLowerCase;
 
     public static final String PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD = "ngramMinTokenLengthThreshold";
-    @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = false)
-    protected int ngramMinTokenLengthThreshold = 1;
+    @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = false, defaultValue = "1")
+    protected int ngramMinTokenLengthThreshold;
 
     protected Set<String> stopwords;
     protected Set<String> topKSet;
