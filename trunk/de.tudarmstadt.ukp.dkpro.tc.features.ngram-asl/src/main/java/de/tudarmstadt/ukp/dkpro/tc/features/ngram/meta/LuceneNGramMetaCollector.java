@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -65,21 +66,31 @@ public class LuceneNGramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+    	String location = LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD;
+    	makeLuceneIndex(jcas, indexWriter, location, ngramMinN, ngramMaxN);
+    }
+    
+    protected void makeLuceneIndex(JCas view, IndexWriter indexWriter, 
+    		String location, int ngramMinN, int ngramMaxN)
+            throws AnalysisEngineProcessException
+    {
+    	
         FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
-                jcas, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+        		view, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
 
         final Document doc = new Document();
         doc.add(new StringField("id",
-                DocumentMetaData.get(jcas).getDocumentTitle(),
+                DocumentMetaData.get(view).getDocumentTitle(),
                 Field.Store.YES)
         );
         for (String ngram : documentNGrams.getKeys()) {
-            doc.add(new StringField(LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram, Field.Store.YES));
+            doc.add(new StringField(location, ngram, Field.Store.YES));
         }
         try {
             indexWriter.addDocument(doc);
         } catch (IOException e) {
             throw new AnalysisEngineProcessException(e);
         }
+    	
     }
 }
