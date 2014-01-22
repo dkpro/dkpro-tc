@@ -42,7 +42,7 @@ public abstract class LuceneBasedMetaCollector
             throw new ResourceInitializationException(new IOException("Cannot create folder: " + luceneDir));
         }
         
-        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, null);
+        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
         try {
             indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
         } catch (IOException e) {
