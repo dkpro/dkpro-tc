@@ -12,10 +12,9 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
-import org.apache.lucene.misc.HighFreqTerms;
-import org.apache.lucene.misc.TermStats;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.PriorityQueue;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -52,7 +51,10 @@ public class LuceneNGramFeatureExtractor
     protected Set<String> getTopNgrams()
         throws ResourceInitializationException
     {       
+
         Set<String> topNGrams = new HashSet<String>();
+        
+        PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(ngramUseTopK);
 
         IndexReader reader;
         try {
@@ -66,28 +68,25 @@ public class LuceneNGramFeatureExtractor
                     while ((text = termsEnum.next()) != null) {
                         String term = text.utf8ToString();
                         long freq = termsEnum.totalTermFreq();
-
-                        if (freq > 1) {
-                            System.out.println(term + " - " + freq);
-                        }
-                        
-//                        TermStats termStat = HighFreqTerms.getTotalTermFreq(reader, termsEnum
-
+                        topN.insertWithOverflow(new TermFreqTuple(term, freq));
                     }
                 }
             }
-            
-            for (TermStats termStat : HighFreqTerms.getHighFreqTerms(reader, ngramUseTopK, LUCENE_NGRAM_FIELD)) {
-                topNGrams.add(termStat.termtext.utf8ToString());
-            }
-
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
+        }
+        
+        for (int i=0; i < topN.size(); i++) {
+            TermFreqTuple tuple = topN.pop();
+//            System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
+            topNGrams.add(tuple.getTerm());
         }
         
         getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " NGRAMS");
 
         return topNGrams;
     }
+    
+  
 }

@@ -19,7 +19,6 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -33,7 +32,6 @@ public class LuceneNGramMetaCollectorTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @Ignore
     @Test
     public void luceneNgramMetaCollectorTest()
         throws Exception
@@ -73,7 +71,7 @@ public class LuceneNGramMetaCollectorTest
                         System.out.println(termsEnum.docFreq());
                         
                         if (text.utf8ToString().equals("this")) {
-                            assertEquals(4, termsEnum.totalTermFreq());
+                            assertEquals(2, termsEnum.totalTermFreq());
                             assertEquals(2, termsEnum.docFreq());
                         }
                         

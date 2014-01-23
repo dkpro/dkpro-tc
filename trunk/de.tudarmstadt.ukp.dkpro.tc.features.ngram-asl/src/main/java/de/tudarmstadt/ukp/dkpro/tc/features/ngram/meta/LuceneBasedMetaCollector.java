@@ -43,6 +43,7 @@ public abstract class LuceneBasedMetaCollector
         }
         
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+        
         try {
             indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
         } catch (IOException e) {
