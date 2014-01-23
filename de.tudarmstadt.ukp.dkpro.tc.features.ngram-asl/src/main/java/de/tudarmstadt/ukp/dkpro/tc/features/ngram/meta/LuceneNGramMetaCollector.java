@@ -76,11 +76,12 @@ public class LuceneNGramMetaCollector
         ));
         
         for (String ngram : documentNGrams.getKeys()) {
-            doc.add(new StringField(
+            Field field = new LuceneField(
                     LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD,
                     ngram, 
                     Field.Store.YES
-            ));
+            );
+            doc.add(field);
         }
         
         try {

@@ -99,7 +99,7 @@ public class NGramFeatureExtractor
                 }
             }
         }
-
+        
         getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " NGRAMS");
 
         return topNGrams;
