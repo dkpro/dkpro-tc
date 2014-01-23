@@ -5,6 +5,7 @@ import java.io.File;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletUtils;
 
 /**
  * {@link DataWriter} for the Mallet machine learning tool.
@@ -20,7 +21,7 @@ public class MalletDataWriter
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
             throws Exception
     {
-        //TODO implement
+    	MalletUtils.instanceListToMalletFormatFile(outputDirectory, featureStore, useDenseInstances, isRegressionExperiment);
     }
 
 }
