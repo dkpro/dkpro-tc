@@ -18,11 +18,20 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
  */
 public class MalletUtils
 {
-	public static void writeFeatureNameToFile(String featureNames[], File outputFile) throws IOException {
+	
+	//TODO yet to decide when to call this method
+	public static void writeFeatureNamesToFile(FeatureStore instanceList, File outputFile) throws IOException {
 		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
-		bw.write("\n");
-		for (String featureName : featureNames) {
-			bw.write(featureName + " ");
+		HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
+		for(int i=0; i < instanceList.size(); i++) {
+			Instance instance = instanceList.getInstance(i);
+			for (Feature feature : instance.getFeatures()) {
+				String featureName = feature.getName();
+				if(!featureOffsetIndex.containsKey(featureName)) {
+					featureOffsetIndex.put(featureName, featureOffsetIndex.size());
+					bw.write(featureName + " ");
+				}
+			}
 		}
 		bw.write("Outcome");
 		bw.close();
@@ -30,11 +39,12 @@ public class MalletUtils
 	
 	public static void writeFeatureValuesToFile(double featureValues[], String outcome, File outputFile) throws IOException {
 		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile, true));
-		bw.append("\n");
+		bw.write("\n");
 		for (double featureValue : featureValues) {
-			bw.append(featureValue + " ");
+			bw.write(featureValue + " ");
 		}
-		bw.append(outcome);
+		bw.write(outcome);
+		bw.flush();
 		bw.close();
 	}
 	
@@ -63,6 +73,8 @@ public class MalletUtils
 		}
 		
 		HashMap<String, Integer> featureOffsetIndex = getFeatureOffsetIndex(instanceList);
+		
+		writeFeatureNamesToFile(instanceList, outputFile);
 		
 		for (int i = 0; i < instanceList.size(); i++) {
 			Instance instance = instanceList.getInstance(i);
