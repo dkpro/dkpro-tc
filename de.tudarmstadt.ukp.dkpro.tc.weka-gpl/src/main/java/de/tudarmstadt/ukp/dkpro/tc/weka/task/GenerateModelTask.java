@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -117,7 +118,7 @@ public class GenerateModelTask
         }
 
         // load meta files and add them to the model
-        List<Class<? extends MetaCollector>> metaCollectorClasses = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
+        Set<Class<? extends MetaCollector>> metaCollectorClasses = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
                 .getMetaCollectorsFromFeatureExtractors(featureSet);
         Map<String, FrequencyDistribution<String>> metaMap = new HashMap<String, FrequencyDistribution<String>>();
 

@@ -62,7 +62,7 @@ public class ExtractFeaturesTask
 
     private boolean isTesting = false;
     private boolean addInstanceId = false;
-    private List<Class<? extends MetaCollector>> metaCollectorClasses;
+    private Set<Class<? extends MetaCollector>> metaCollectorClasses;
     private Set<String> requiredTypes;
     protected String featureAnnotation;
 
