@@ -21,7 +21,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramPairFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor
@@ -96,11 +96,10 @@ class PairTwentyNewsgroupsExperiment implements Constants
 		// This feature is sensible but slow.
 //        CombinedNGramPairFeatureExtractor.class.name
 		//Experimental.
-		//LuceneNGramPairFeatureExtractor.class.name
+//		LuceneNGramPairFeatureExtractor.class.name
 	]
 	);
 
-//	File luceneDir = new File("/home/likewise-open/UKP/jamison/dkpro/Lucene/");
 	File tmpDir = new File("target/" + LuceneBasedMetaCollector.LUCENE_DIR);
 
     def dimPipelineParameters = Dimension.create(
