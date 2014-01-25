@@ -8,7 +8,7 @@ import org.apache.lucene.util.PriorityQueue;
 public class TermFreqQueue
     extends PriorityQueue<TermFreqTuple>
 {
-    TermFreqQueue(int size)
+    public TermFreqQueue(int size)
     {
         super(size);
     }
