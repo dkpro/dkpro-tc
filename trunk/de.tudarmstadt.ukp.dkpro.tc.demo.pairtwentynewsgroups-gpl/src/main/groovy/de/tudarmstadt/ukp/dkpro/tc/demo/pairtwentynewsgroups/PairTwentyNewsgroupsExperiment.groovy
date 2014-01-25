@@ -6,6 +6,8 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
+import java.io.File;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
 
@@ -19,6 +21,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramPairFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractor
@@ -91,19 +95,45 @@ class PairTwentyNewsgroupsExperiment implements Constants
         SharedNEsFeatureExtractor.class.name, 
 		// This feature is sensible but slow.
 //        CombinedNGramPairFeatureExtractor.class.name
+		//Experimental.
+		//LuceneNGramPairFeatureExtractor.class.name
 	]
 	);
+
+//	File luceneDir = new File("/home/likewise-open/UKP/jamison/dkpro/Lucene/");
+	File tmpDir = new File("target/" + LuceneBasedMetaCollector.LUCENE_DIR);
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
 
 	    [
-	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-	        "500",
-	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N,
-	        1,
-	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N,
-	        1
+//	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+//	        "500",
+//	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N,
+//	        1,
+//	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N,
+//	        1
+//			
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1,
+//			1,
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1,
+//			2,
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2,
+//			1,
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2,
+//			2,
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_COMBO,
+//			2,
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO,
+//			3,
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW1,
+//			"100",
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW2,
+//			"100",
+//			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_COMBO,
+//			"500",
+			LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR,
+			tmpDir
 	    ]
     );
 
