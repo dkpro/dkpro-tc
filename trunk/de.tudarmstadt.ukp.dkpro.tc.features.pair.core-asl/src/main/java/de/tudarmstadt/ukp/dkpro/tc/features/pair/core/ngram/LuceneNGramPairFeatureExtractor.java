@@ -32,7 +32,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramPairMetaCollector;
 
 public class LuceneNGramPairFeatureExtractor
 	extends NGramPairFeatureExtractorBase
