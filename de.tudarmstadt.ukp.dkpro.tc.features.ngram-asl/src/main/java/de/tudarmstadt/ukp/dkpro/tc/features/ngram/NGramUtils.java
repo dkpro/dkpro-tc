@@ -61,6 +61,33 @@ public class NGramUtils
 		return annoNgrams;
 	}
 
+    /**
+     * Get combinations of ngrams from a pair of documents.
+     * @param document1NGrams ngrams from document 1
+     * @param document2NGrams ngrams from document 2
+     * @param minN minimum size for a new combined ngram
+     * @param maxN max size for a new combined ngram
+     * @return
+     */
+	public static FrequencyDistribution<String> getCombinedNgrams(FrequencyDistribution<String> document1NGrams,
+			FrequencyDistribution<String> document2NGrams,int minN, int maxN)
+	{
+        FrequencyDistribution<String> documentComboNGrams = new FrequencyDistribution<String>();
+		for(String ngram1: document1NGrams.getKeys()){
+			int ngram1size = StringUtils.countMatches(ngram1, "_") + 1;
+			for(String ngram2: document2NGrams.getKeys()){
+		    	int ngram2size = StringUtils.countMatches(ngram2, "_") + 1;
+				if(ngram1size + ngram2size >=minN && 
+						ngram1size + ngram2size <=maxN
+						){
+					String comboNgram = ngram1 + "_" + ngram2;
+					documentComboNGrams.inc(comboNgram);
+				}
+			}
+		}
+		return documentComboNGrams;
+	}
+    
 	public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, boolean lowerCaseNGrams, int minN, int maxN) {
         Set<String> empty = Collections.emptySet();
         return getDocumentNgrams(jcas, lowerCaseNGrams, minN, maxN, empty);
