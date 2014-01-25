@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -54,7 +55,7 @@ public class MetaInfoTask
     @Discriminator
     protected boolean isPairClassification;
 
-    private List<Class<? extends MetaCollector>> metaCollectorClasses;
+    private Set<Class<? extends MetaCollector>> metaCollectorClasses;
 
     @Discriminator
     private File filesRoot;

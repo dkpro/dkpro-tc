@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -165,10 +164,10 @@ public class TaskUtils
     /**
      * Get a list of MetaCollector classes from a list of feature extractors.
      */
-    public static List<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(List<String> featureSet)
+    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(List<String> featureSet)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
         
         for (String element : featureSet) {
             FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class.forName(element).newInstance();
