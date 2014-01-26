@@ -21,7 +21,8 @@ public class MalletDataWriter
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
             throws Exception
     {
-    	MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/training-data.txt"), featureStore, useDenseInstances, isRegressionExperiment);
+    	//TODO add generic filename to Constants
+    	MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/" + "training-data.txt.gz"), featureStore, useDenseInstances, isRegressionExperiment);
     }
 
 }

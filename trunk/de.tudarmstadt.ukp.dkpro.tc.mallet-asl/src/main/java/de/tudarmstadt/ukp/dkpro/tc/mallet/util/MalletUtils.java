@@ -2,9 +2,12 @@ package de.tudarmstadt.ukp.dkpro.tc.mallet.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
+import java.util.zip.GZIPOutputStream;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -21,7 +24,7 @@ public class MalletUtils
 	
 	//TODO yet to decide when to call this method
 	public static void writeFeatureNamesToFile(FeatureStore instanceList, File outputFile) throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outputFile))));
 		HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
 		for(int i=0; i < instanceList.size(); i++) {
 			Instance instance = instanceList.getInstance(i);
@@ -38,7 +41,7 @@ public class MalletUtils
 	}
 	
 	public static void writeFeatureValuesToFile(double featureValues[], String outcome, File outputFile) throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile, true));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outputFile, true))));
 		bw.write("\n");
 		for (double featureValue : featureValues) {
 			bw.write(featureValue + " ");
