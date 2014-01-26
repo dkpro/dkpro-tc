@@ -1,15 +1,12 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne;
 
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -26,11 +23,8 @@ public class SharedNEsFeatureExtractorTest {
 	JCas jcas2;
 
 	@Before
-	public void setUp() throws ResourceInitializationException, AnalysisEngineProcessException{
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class)
-        );
-        AnalysisEngine engine = createPrimitive(desc);
+	public void setUp() throws ResourceInitializationException, AnalysisEngineProcessException {
+        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
         
         jcas1 = engine.newJCas();
         jcas1.setDocumentLanguage("en");

@@ -6,12 +6,9 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
-import java.io.File;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
 
-import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
@@ -22,10 +19,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
@@ -92,15 +85,13 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	DIM_FEATURE_SET,
 	[
 		// This feature is sensible and fast, but gives bad results on the demo data
-        SharedNEsFeatureExtractor.class.name, 
+//        SharedNEsFeatureExtractor.class.name, 
 		// This feature is sensible but slow.
 //        CombinedNGramPairFeatureExtractor.class.name
 		//Experimental.
-//		LuceneNGramPairFeatureExtractor.class.name
+		LuceneNGramPairFeatureExtractor.class.name
 	]
 	);
-
-	File tmpDir = new File("target/" + LuceneBasedMetaCollector.LUCENE_DIR);
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
@@ -130,9 +121,7 @@ class PairTwentyNewsgroupsExperiment implements Constants
 //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW2,
 //			"100",
 //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_COMBO,
-//			"500",
-			LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR,
-			tmpDir
+//			"500"
 	    ]
     );
 

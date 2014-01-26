@@ -144,7 +144,7 @@ public class MetaInfoTask
         AggregateBuilder builder = new AggregateBuilder();
 
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            // check whether we are dealing with pair classification and if so, add PART_ONE and
+            // check whether we are dealing with pair classification and if so, add collectors to PART_ONE and
             // PART_TWO views
             if (isPairClassification) {
                 builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),

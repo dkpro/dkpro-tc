@@ -1,6 +1,5 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,28 +14,20 @@ import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.PriorityQueue;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LuceneNGramFeatureExtractor
-    extends NGramFeatureExtractorBase
-    implements MetaDependent, ClassificationUnitFeatureExtractor
+    extends LuceneFeatureExtractorBase
 {
     
     public static final String LUCENE_NGRAM_FIELD = "ngram";
-
-    public static final String PARAM_LUCENE_DIR = "luceneDir";
-    @ConfigurationParameter(name = PARAM_LUCENE_DIR, mandatory = true)
-    private File luceneDir;
     
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
@@ -87,6 +78,4 @@ public class LuceneNGramFeatureExtractor
 
         return topNGrams;
     }
-    
-  
 }

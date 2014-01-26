@@ -39,7 +39,7 @@ public class LuceneNGramMetaCollector
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false)
     private boolean ngramLowerCase = true;
 
-    private  Set<String> stopwords;
+    private Set<String> stopwords;
     
     @Override
     public void initialize(UimaContext context)
