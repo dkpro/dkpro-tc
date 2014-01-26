@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
+package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +17,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LucenePairFeatureExtractorBase;
 
-public abstract class LuceneBasedMetaCollector
+public abstract class LuceneBasedPairMetaCollector
     extends MetaCollector
 {
     public final static String LUCENE_DIR = "lucence";
@@ -69,7 +69,7 @@ public abstract class LuceneBasedMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(LuceneNGramFeatureExtractor.PARAM_LUCENE_DIR, LUCENE_DIR);
+        mapping.put(LucenePairFeatureExtractorBase.PARAM_LUCENE_DIR, LUCENE_DIR);
         return mapping;
     }
 }

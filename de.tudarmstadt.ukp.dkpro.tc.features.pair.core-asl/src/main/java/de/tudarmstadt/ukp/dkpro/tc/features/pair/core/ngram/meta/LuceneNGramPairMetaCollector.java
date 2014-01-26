@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
 import java.io.IOException;
 import java.util.Set;
@@ -16,12 +16,12 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneField;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractorBase;
 
 public class LuceneNGramPairMetaCollector
-	extends LuceneNGramMetaCollector
+	extends LuceneBasedPairMetaCollector
 {
-	//repeat, to avoid making inherited fields non-private
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
@@ -48,10 +48,6 @@ public class LuceneNGramPairMetaCollector
 
     @ConfigurationParameter(name = NGramPairFeatureExtractorBase.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     private int ngramView2MaxN;
-    
-
-
-
     
     @Override
     public void process(JCas jcas)
@@ -111,7 +107,5 @@ public class LuceneNGramPairMetaCollector
         catch (IOException e) {
             throw new AnalysisEngineProcessException(e);
         }
-    }
-    
-    
+    }   
 }

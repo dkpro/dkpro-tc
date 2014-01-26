@@ -17,7 +17,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -81,26 +81,48 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
     DIM_FEATURE_SET,
     [
         NrOfTokensFeatureExtractor.class.name,
-        NGramFeatureExtractor.class.name
+        LuceneNGramFeatureExtractor.class.name
+//        NGramFeatureExtractor.class.name
+        
     ]
     );
+
+//    def dimPipelineParameters = Dimension.create(
+//    DIM_PIPELINE_PARAMS,
+//    [
+//        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+//        "50",
+//        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+//        1,
+//        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+//        3
+//    ],
+//    [
+//        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+//        "100",
+//        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+//        1,
+//        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+//        3
+//    ]
+//    );
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-        "500",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        LuceneNGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        "50",
+        LuceneNGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        LuceneNGramFeatureExtractor.PARAM_NGRAM_MAX_N,
         3
     ],
     [
-        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-        "1000",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        LuceneNGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        "100",
+        LuceneNGramFeatureExtractor.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        LuceneNGramFeatureExtractor.PARAM_NGRAM_MAX_N,
         3
     ]
     );

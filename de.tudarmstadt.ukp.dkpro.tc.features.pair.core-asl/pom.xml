@@ -45,8 +45,7 @@
     </dependency>
     <dependency>
     	<groupId>org.apache.lucene</groupId>
-    	<artifactId>lucene-core</artifactId>
-    	<version>4.4.0</version><!--$NO-MVN-MAN-VER$-->
+    	<artifactId>lucene-core</artifactId><!--$NO-MVN-MAN-VER$-->
     </dependency>
     <dependency>
     	<groupId>org.apache.lucene</groupId>
