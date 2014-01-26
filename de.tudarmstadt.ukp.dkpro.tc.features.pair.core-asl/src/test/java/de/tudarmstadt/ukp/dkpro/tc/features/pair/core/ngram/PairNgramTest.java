@@ -24,7 +24,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
@@ -49,16 +48,17 @@ public class PairNgramTest
 
     public static int NUM_FOLDS = 3;
 
-    public static final String locationPrefix = "de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups";
-    public static final String corpusFilePathTrain = locationPrefix + "src/main/resources/data/bydate-train";
-    public static final String corpusFilePathTest = locationPrefix + "src/main/resources/data/bydate-test";
+    public static final String corpusFilePathTrain = "src/main/resources/lists/pairslist.train";
+    public static final String corpusFilePathTest = "src/main/resources/lists/pairslist.test";
     
-    private static File tmpDir = new File("target/" + LuceneBasedMetaCollector.LUCENE_DIR);
+    private static File tmpDir; 
 
-    @Test
-    public static void test()
+    //@Test
+//    public void test()
+    public static void main(String[] args)
         throws Exception
     {
+        tmpDir = new File("target/" + LuceneBasedMetaCollector.LUCENE_DIR);
         ParameterSpace pSpace = getParameterSpace();
 
         PairNgramTest experiment = new PairNgramTest();
@@ -87,8 +87,9 @@ public class PairNgramTest
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }),
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+                Arrays.asList(new String[] { SMO.class.getName() })//,
+//                Arrays.asList(new String[] { NaiveBayes.class.getName() })
+                );
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
@@ -102,8 +103,8 @@ public class PairNgramTest
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(new String[] {
-                        SharedNEsFeatureExtractor.class.getName(),
-                        LuceneNGramPairFeatureExtractor.class.getName()
+                        SharedNEsFeatureExtractor.class.getName()//,
+//                        LuceneNGramPairFeatureExtractor.class.getName()
                 }));
 
         ParameterSpace pSpace = new ParameterSpace(
@@ -146,10 +147,10 @@ public class PairNgramTest
                     StanfordNamedEntityRecognizer.PARAM_VARIANT, "all.3class.distsim.crf")
         );
     }
-    @Rule
+//    @Rule
     public TestName name = new TestName();
 
-    @Before
+//    @Before
     public void printSeparator()
     {
         System.out.println("\n=== " + name.getMethodName() + " =====================");
