@@ -116,9 +116,9 @@ public class SimpleTagger
     	//krish
     	//ignoring first line
       String[] lines = sentence.split("\n");
-      String[][] tokens = new String[lines.length][];
+      String[][] tokens = new String[lines.length - 1][];
       for (int i = 1; i < lines.length; i++)
-        tokens[i] = lines[i].split(" ");
+        tokens[i - 1] = lines[i].split(" ");
       return tokens;
     }
 
