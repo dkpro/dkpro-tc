@@ -12,6 +12,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
@@ -56,8 +57,8 @@ public class LuceneNGramPairMetaCollector
     	JCas view1;
     	JCas view2;
     	try{
-			view1 = jcas.getView("PART_ONE");
-			view2 = jcas.getView("PART_TWO");
+			view1 = jcas.getView(AbstractPairReader.PART_ONE);
+			view2 = jcas.getView(AbstractPairReader.PART_TWO);
     	}
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
