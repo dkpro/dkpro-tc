@@ -24,6 +24,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 
@@ -40,6 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
  * @author Philipp Wetzler
  * @author Steven Bethard
  */
+//TODO replace with own Feature implementation?
 public class Feature
     implements Serializable
 {
@@ -64,10 +67,11 @@ public class Feature
         this.name = FeatureUtil.escapeFeatureName(name);
         this.value = value;
     }
-
-    public static Feature createFeature(String namePrefix, Feature feature)
-    {
-        return new Feature(createName(namePrefix, feature.name), feature.value);
+    
+    public List<Feature> asList() {
+        List<Feature> list = new ArrayList<Feature>();
+        list.add(this);
+        return list;
     }
 
     public Object getValue()
@@ -88,21 +92,6 @@ public class Feature
     public void setName(String name)
     {
         this.name = name;
-    }
-
-    public static String createName(String... names)
-    {
-        StringBuffer buffer = new StringBuffer();
-        for (String name : names) {
-            if (name != null) {
-                buffer.append(name);
-                buffer.append('_');
-            }
-        }
-        if (buffer.length() > 0) {
-            buffer.deleteCharAt(buffer.length() - 1);
-        }
-        return buffer.toString();
     }
 
     @Override
