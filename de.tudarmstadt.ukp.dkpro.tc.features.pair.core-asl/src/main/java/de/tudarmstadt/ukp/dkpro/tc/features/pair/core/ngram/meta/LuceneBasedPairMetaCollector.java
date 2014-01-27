@@ -42,7 +42,6 @@ public abstract class LuceneBasedPairMetaCollector
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
         
         try {
-            System.out.println(IndexWriter.isLocked(FSDirectory.open(luceneDir)));
             indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
