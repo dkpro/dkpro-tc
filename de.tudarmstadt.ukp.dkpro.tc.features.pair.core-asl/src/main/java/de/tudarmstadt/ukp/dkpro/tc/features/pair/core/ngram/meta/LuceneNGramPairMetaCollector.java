@@ -1,17 +1,24 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
@@ -50,6 +57,26 @@ public class LuceneNGramPairMetaCollector
     @ConfigurationParameter(name = NGramPairFeatureExtractorBase.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     private int ngramView2MaxN;
     
+    @Override
+    public void initialize(UimaContext context)
+        throws ResourceInitializationException
+    {
+        super.initialize(context);
+        
+        stopwords = new HashSet<String>();
+
+        if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
+            try {
+                URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
+                InputStream is = stopUrl.openStream();
+                stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
+            }
+            catch (Exception e) {
+                throw new ResourceInitializationException(e);
+            }
+        }
+    }
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
