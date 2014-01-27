@@ -6,12 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
@@ -70,7 +74,8 @@ public class TaskUtils {
 	public static void runTrain(File trainingFile, File modelFile) throws FileNotFoundException, IOException, ClassNotFoundException {
 		Reader trainingFileReader = null;
 		InstanceList trainingData = null;
-		trainingFileReader = new FileReader(trainingFile);
+		//trainingFileReader = new FileReader(trainingFile);
+		trainingFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(trainingFile)));
 		Pipe p = null;
 		CRF crf = null;
 		p = new SimpleTaggerSentence2FeatureVectorSequence();
@@ -111,7 +116,8 @@ public class TaskUtils {
 	public static void runTest(File testFile, File modelFile) throws FileNotFoundException, IOException, ClassNotFoundException {
 		Reader testFileReader = null;
 		InstanceList testData = null;
-		testFileReader = new FileReader(testFile);
+		//testFileReader = new FileReader(testFile);
+		testFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(testFile)));
 		Pipe p = null;
 		CRF crf = null;
 		TransducerEvaluator eval = null;
