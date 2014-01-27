@@ -1,6 +1,5 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -28,12 +27,12 @@ public class NrOfSentencesFeatureExtractor
     {
 
         if (classificationUnit == null) {
-            return Arrays.asList(new Feature(FN_NR_OF_SENTENCES, JCasUtil.select(jcas,
-                    Sentence.class).size()));
+            return new Feature(FN_NR_OF_SENTENCES, JCasUtil.select(jcas,
+                    Sentence.class).size()).asList();
         }
         else {
-            return Arrays.asList(new Feature(FN_NR_OF_SENTENCES, JCasUtil.selectCovered(jcas,
-                    Sentence.class, classificationUnit).size()));
+            return new Feature(FN_NR_OF_SENTENCES, JCasUtil.selectCovered(jcas,
+                    Sentence.class, classificationUnit).size()).asList();
         }
     }
 }

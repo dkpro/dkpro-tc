@@ -1,9 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
 import static de.tudarmstadt.ukp.dkpro.tc.features.util.FeatureTestUtil.assertFeature;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +9,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
@@ -24,10 +21,7 @@ public class NrOfTokensFeatureExtractorTest
     public void nrOfTokensFeatureExtractorTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class)
-        );
-        AnalysisEngine engine = createPrimitive(desc);
+        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
