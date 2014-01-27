@@ -26,7 +26,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
@@ -144,15 +143,7 @@ public class MetaInfoTask
         AggregateBuilder builder = new AggregateBuilder();
 
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            // check whether we are dealing with pair classification and if so, add collectors to PART_ONE and
-            // PART_TWO views
-            if (isPairClassification) {
-                builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
-                        CAS.NAME_DEFAULT_SOFA, AbstractPairReader.PART_ONE);
-                builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
-                        CAS.NAME_DEFAULT_SOFA, AbstractPairReader.PART_TWO);
-            }
-            else if (operativeViews != null) {
+            if (operativeViews != null) {
                 for (String viewName : operativeViews) {
                     builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
                             CAS.NAME_DEFAULT_SOFA, viewName);
