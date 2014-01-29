@@ -25,7 +25,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneField;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.NGramPairFeatureExtractorBase;
 
 public class LuceneNGramPairMetaCollector
 	extends LuceneBasedPairMetaCollector
@@ -45,16 +44,16 @@ public class LuceneNGramPairMetaCollector
     private  Set<String> stopwords;
     // end repeat
 	
-    @ConfigurationParameter(name = NGramPairFeatureExtractorBase.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
     private int ngramView1MinN;
 
-    @ConfigurationParameter(name = NGramPairFeatureExtractorBase.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
     private int ngramView1MaxN;
     
-    @ConfigurationParameter(name = NGramPairFeatureExtractorBase.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
     private int ngramView2MinN;
 
-    @ConfigurationParameter(name = NGramPairFeatureExtractorBase.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     private int ngramView2MaxN;
     
     @Override
