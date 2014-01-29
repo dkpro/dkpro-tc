@@ -67,8 +67,8 @@ public class POSRatioFeatureExtractor
         featList.add(new Feature(FN_CONJ_RATIO, conj));
         featList.add(new Feature(FN_N_RATIO, noun));
         featList.add(new Feature(FN_O_RATIO, other));
-        featList.add(new Feature(FN_PR_RATIO, prep));
-        featList.add(new Feature(FN_PP_RATIO, pron));
+        featList.add(new Feature(FN_PR_RATIO, pron));
+        featList.add(new Feature(FN_PP_RATIO, prep));
         featList.add(new Feature(FN_PUNC_RATIO, punc));
         featList.add(new Feature(FN_V_RATIO, verb));
 
