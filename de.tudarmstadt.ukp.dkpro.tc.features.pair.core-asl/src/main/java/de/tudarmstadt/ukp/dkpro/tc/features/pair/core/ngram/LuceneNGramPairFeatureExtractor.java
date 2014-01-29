@@ -10,6 +10,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Fields;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.PriorityQueue;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -20,6 +29,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 public class LuceneNGramPairFeatureExtractor
@@ -186,18 +197,56 @@ public class LuceneNGramPairFeatureExtractor
     protected Set<String> getTopNgrams()
         throws ResourceInitializationException
     {       
-        return LuceneNgramUtils.getTopNgrams(ngramUseTopKAll, luceneDir, LUCENE_NGRAM_FIELD);
+        return getTopNgrams(ngramUseTopKAll, LUCENE_NGRAM_FIELD);
     }
     
     protected Set<String> getTopNgramsView1()
         throws ResourceInitializationException
     {
-        return LuceneNgramUtils.getTopNgrams(ngramUseTopK1, luceneDir, LUCENE_NGRAM_FIELD1);
+        return getTopNgrams(ngramUseTopK1, LUCENE_NGRAM_FIELD1);
     }
 
     protected Set<String> getTopNgramsView2()
         throws ResourceInitializationException
     {
-        return LuceneNgramUtils.getTopNgrams(ngramUseTopK2, luceneDir, LUCENE_NGRAM_FIELD2);
+        return getTopNgrams(ngramUseTopK2, LUCENE_NGRAM_FIELD2);
+    }
+    
+    private Set<String> getTopNgrams(int topNgramThreshold, String fieldName)
+        throws ResourceInitializationException
+    {       
+
+        Set<String> topNGrams = new HashSet<String>();
+        
+        PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(topNgramThreshold);
+
+        IndexReader reader;
+        try {
+            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+            Fields fields = MultiFields.getFields(reader);
+            if (fields != null) {
+                Terms terms = fields.terms(fieldName);
+                if (terms != null) {
+                    TermsEnum termsEnum = terms.iterator(null);
+                    BytesRef text = null;
+                    while ((text = termsEnum.next()) != null) {
+                        String term = text.utf8ToString();
+                        long freq = termsEnum.totalTermFreq();
+                        topN.insertWithOverflow(new TermFreqTuple(term, freq));
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+        
+        for (int i=0; i < topN.size(); i++) {
+            TermFreqTuple tuple = topN.pop();
+//                System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
+            topNGrams.add(tuple.getTerm());
+        }
+        
+        return topNGrams;
     }
 }
