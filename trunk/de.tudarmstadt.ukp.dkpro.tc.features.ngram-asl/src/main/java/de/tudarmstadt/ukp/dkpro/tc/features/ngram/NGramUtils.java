@@ -137,7 +137,7 @@ public class NGramUtils
                 token = token.toLowerCase();
             }
             if (!stopwords.contains(token)) {
-                filteredNgram.add(token.toLowerCase());
+                filteredNgram.add(token);
             }
         }
         return filteredNgram;

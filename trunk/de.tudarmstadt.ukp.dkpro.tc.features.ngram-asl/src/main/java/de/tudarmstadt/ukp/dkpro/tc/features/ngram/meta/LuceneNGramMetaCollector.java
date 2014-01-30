@@ -36,8 +36,8 @@ public class LuceneNGramMetaCollector
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     private String ngramStopwordsFile;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false)
-    private boolean ngramLowerCase = true;
+    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    private boolean ngramLowerCase;
 
     private Set<String> stopwords;
     
@@ -53,7 +53,13 @@ public class LuceneNGramMetaCollector
             try {
                 URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
                 InputStream is = stopUrl.openStream();
-                stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
+                for(String stopword: IOUtils.readLines(is, "UTF-8")){
+                    if(ngramLowerCase){
+                        stopwords.add(stopword.toLowerCase());
+                    }else{
+                        stopwords.add(stopword);
+                    }
+                }
             }
             catch (Exception e) {
                 throw new ResourceInitializationException(e);
