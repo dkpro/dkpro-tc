@@ -89,7 +89,7 @@ public class ClassificationUnitCasMultiplier
         removeAnnotationsExceptGiven(copyJCas,
                 JCasUtil.selectCovered(copyJCas, TextClassificationUnit.class, classificationUnit));
         Collection<TextClassificationOutcome> outcomes = JCasUtil.selectCovered(copyJCas,
-                TextClassificationOutcome.class, classificationUnit);
+                TextClassificationOutcome.class, classificationUnit.getBegin(), classificationUnit.getEnd());
         // Remove TextClassificationOutcomes which are not covered by current
         // TextClassificationUnit.
         removeAnnotationsExceptGiven(copyJCas, outcomes);
