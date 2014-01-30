@@ -157,15 +157,13 @@ public class LuceneNGramPairFeatureExtractor
     @ConfigurationParameter(name = PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, mandatory = false, defaultValue = "false")
     protected boolean markViewBlindNgramsWithLocalView;
     /**
-     * List of words <b>not</b> to be included as ngrams.  Stopwords should be
-     * in the desired case (mixed, all lower, etc.) for the comparison.
+     * List of words <b>not</b> to be included as ngrams.  
      */
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "pairNgramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
     /**
-     * If true, ngrams will be lower-cased before comparison with stopwords.
-     * All ngrams are stored lowercase as features, regardless of this value.
+     * If true, ngrams and stopwords will be lower-cased.
      */
     public static final String PARAM_NGRAM_LOWER_CASE = "pairNgramLowerCase";
     @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
@@ -262,7 +260,13 @@ public class LuceneNGramPairFeatureExtractor
                     // each line of the file contains one stopword
                     URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
                     InputStream is = stopUrl.openStream();
-                    stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
+                    for(String stopword: IOUtils.readLines(is, "UTF-8")){
+                        if(ngramLowerCase){
+                            stopwords.add(stopword.toLowerCase());
+                        }else{
+                            stopwords.add(stopword);
+                        }
+                    }
             }
         }
         catch (IOException e) {

@@ -130,7 +130,13 @@ public abstract class NGramFeatureExtractorBase
                     // each line of the file contains one stopword
                     URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
                     InputStream is = stopUrl.openStream();
-                    stopwords.addAll(IOUtils.readLines(is, "UTF-8"));
+                    for(String stopword: IOUtils.readLines(is, "UTF-8")){
+                        if(ngramLowerCase){
+                            stopwords.add(stopword.toLowerCase());
+                        }else{
+                            stopwords.add(stopword);
+                        }
+                    }
             }
         }
         catch (IOException e) {
