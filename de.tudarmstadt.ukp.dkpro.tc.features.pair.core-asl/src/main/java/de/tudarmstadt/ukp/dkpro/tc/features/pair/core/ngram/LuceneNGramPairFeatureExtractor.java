@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  * for each document (view 1's, view 2's) can be set separately, or both documents can 
  * be treated together as one extended document.
  * <br />
- * Note that ngrams created by this class are each from a single document, i.e., not
+ * Note that ngram features created by this class are each from a single document, i.e., not
  * combinations of ngrams from the pair of documents.  To make combinations of ngrams
  * across both documents, please use {@link CombinedNGramPairFeatureExtractor}.
  * 
@@ -124,14 +124,14 @@ public class LuceneNGramPairFeatureExtractor
     protected float ngramFreqThresholdAll;
     /**
      * Each ngram from View 1 documents added to the document pair instance as a feature.  
-     * E.g. Feature: view1_Dear
+     * E.g. Feature: view1NG_Dear
      */
     public static final String PARAM_USE_VIEW1_NGRAMS_AS_FEATURES = "useView1NgramsAsFeatures";
     @ConfigurationParameter(name = PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, mandatory = false, defaultValue = "false")
     protected boolean useView1NgramsAsFeatures;
     /**
      * Each ngram from View 1 documents added to the document pair instance as a feature.  
-     * E.g. Feature: view2_Dear
+     * E.g. Feature: view2NG_Dear
      */
     public static final String PARAM_USE_VIEW2_NGRAMS_AS_FEATURES = "useView2NgramsAsFeatures";
     @ConfigurationParameter(name = PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, mandatory = false, defaultValue = "false")
@@ -139,11 +139,23 @@ public class LuceneNGramPairFeatureExtractor
     /**
      * All qualifying ngrams from anywhere in either document are used as features.  Feature 
      * does not specify which view the ngram came from.
-     * E.g. Feature: ngram_Dear
+     * E.g. Feature: allNG_Dear
      */
     public static final String PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES = "useViewBlindNgramsAsFeatures";
     @ConfigurationParameter(name = PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, mandatory = false, defaultValue = "false")
     protected boolean useViewBlindNgramsAsFeatures;
+    /**
+     * This option collects a FrequencyDistribution of ngrams across both documents of all pairs, 
+     * but when writing features, the view where a particular ngram is found is recorded with the ngram.
+     * For example, using a {@link #PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the ngrams in the 
+     * top 500 might happen to be from View 2's; and whenever an ngram from the 500 is seen in any 
+     * document, view 1 or 2, the document's view is recorded.<br />
+     * E.g., Feature: view2allNG_Dear<br />
+     * In order to use this option, {@link #PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES} must also be set to true.
+     */
+    public static final String PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW = "markViewBlindNgramsWithLocalView";
+    @ConfigurationParameter(name = PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, mandatory = false, defaultValue = "false")
+    protected boolean markViewBlindNgramsWithLocalView;
     /**
      * List of words <b>not</b> to be included as ngrams.  Stopwords should be
      * in the desired case (mixed, all lower, etc.) for the comparison.
@@ -213,9 +225,15 @@ public class LuceneNGramPairFeatureExtractor
     		prefix = "view2NG";
         	features = addToFeatureArray(view2Ngrams, topKSetView2, features);
         }
-        if(useViewBlindNgramsAsFeatures){
+        if(useViewBlindNgramsAsFeatures && !markViewBlindNgramsWithLocalView){
     		prefix = "allNG";
         	features = addToFeatureArray(allNgrams, topKSetAll, features);
+        }
+        if(useViewBlindNgramsAsFeatures && markViewBlindNgramsWithLocalView){
+            prefix = "view1allNG";
+            features = addToFeatureArray(view1Ngrams, topKSetAll, features);
+            prefix = "view2allNG";
+            features = addToFeatureArray(view2Ngrams, topKSetAll, features);
         }
 
         
