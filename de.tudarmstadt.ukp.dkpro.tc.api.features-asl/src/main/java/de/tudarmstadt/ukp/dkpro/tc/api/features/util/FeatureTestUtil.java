@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.util;
+package de.tudarmstadt.ukp.dkpro.tc.api.features.util;
 
 import junit.framework.Assert;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
