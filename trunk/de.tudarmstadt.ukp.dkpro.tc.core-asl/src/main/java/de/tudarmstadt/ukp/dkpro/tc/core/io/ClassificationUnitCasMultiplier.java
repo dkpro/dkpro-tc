@@ -84,15 +84,14 @@ public class ClassificationUnitCasMultiplier
         DocumentMetaData.get(copyJCas).setDocumentUri(
                 DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + counter);
 
-        // Remove other TextClassificationUnit annotations except current (since one CAS should have
+        // FIXME see issue 77.
+        Annotation dummy = new Annotation(copyJCas, classificationUnit.getBegin(), classificationUnit.getEnd());
+        // Remove all TextClassificationUnit annotations except current (since one CAS should have
         // only have one classification unit).
-        removeAnnotationsExceptGiven(copyJCas,
-                JCasUtil.selectCovered(copyJCas, TextClassificationUnit.class, classificationUnit));
-        Collection<TextClassificationOutcome> outcomes = JCasUtil.selectCovered(copyJCas,
-                TextClassificationOutcome.class, classificationUnit.getBegin(), classificationUnit.getEnd());
-        // Remove TextClassificationOutcomes which are not covered by current
-        // TextClassificationUnit.
-        removeAnnotationsExceptGiven(copyJCas, outcomes);
+        removeAnnotationsExceptGiven(copyJCas, JCasUtil.selectCovered(copyJCas, TextClassificationUnit.class, dummy));
+        // Remove TextClassificationOutcomes which are not covered by current TextClassificationUnit.
+        removeAnnotationsExceptGiven(copyJCas, JCasUtil.selectCovered(copyJCas, TextClassificationOutcome.class, dummy));
+
         getLogger().debug("Creating CAS " + counter + " from " + annotations.size());
 
         return copyJCas;
