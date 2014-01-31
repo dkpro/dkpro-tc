@@ -1,15 +1,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
@@ -25,11 +21,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
@@ -194,7 +189,12 @@ public class LuceneNGramPairFeatureExtractor
             return false;
         }
 
-        stopwords = getStopwords();
+        try {
+            stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
 
         topKSetAll = getTopNgrams();
         topKSetView1 = getTopNgramsView1();
@@ -251,30 +251,6 @@ public class LuceneNGramPairFeatureExtractor
 		return features;
 	}
     
-    private Set<String> getStopwords()
-            throws ResourceInitializationException
-    {
-        Set<String> stopwords = new HashSet<String>();
-        try {
-            if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
-                    // each line of the file contains one stopword
-                    URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
-                    InputStream is = stopUrl.openStream();
-                    for(String stopword: IOUtils.readLines(is, "UTF-8")){
-                        if(ngramLowerCase){
-                            stopwords.add(stopword.toLowerCase());
-                        }else{
-                            stopwords.add(stopword);
-                        }
-                    }
-            }
-        }
-        catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
-        return stopwords;
-    }
-	
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {       

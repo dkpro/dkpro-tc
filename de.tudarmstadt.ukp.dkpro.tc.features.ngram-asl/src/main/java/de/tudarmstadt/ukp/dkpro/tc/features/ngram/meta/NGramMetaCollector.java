@@ -1,14 +1,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -16,7 +13,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
@@ -48,23 +45,11 @@ public class NGramMetaCollector
     {
         super.initialize(context);
         
-        stopwords = new HashSet<String>();
-
-        if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
-            try {
-                URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
-                InputStream is = stopUrl.openStream();
-                for(String stopword: IOUtils.readLines(is, "UTF-8")){
-                    if(ngramLowerCase){
-                        stopwords.add(stopword.toLowerCase());
-                    }else{
-                        stopwords.add(stopword);
-                    }
-                }
-            }
-            catch (Exception e) {
-                throw new ResourceInitializationException(e);
-            }
+        try {
+            stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
         }
     }
     

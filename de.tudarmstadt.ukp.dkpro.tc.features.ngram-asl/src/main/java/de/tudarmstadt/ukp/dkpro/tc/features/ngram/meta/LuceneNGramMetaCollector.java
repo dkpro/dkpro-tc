@@ -1,12 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -18,7 +14,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
@@ -47,23 +43,11 @@ public class LuceneNGramMetaCollector
     {
         super.initialize(context);
         
-        stopwords = new HashSet<String>();
-
-        if (ngramStopwordsFile != null && !ngramStopwordsFile.isEmpty()) {
-            try {
-                URL stopUrl = ResourceUtils.resolveLocation(ngramStopwordsFile, null);
-                InputStream is = stopUrl.openStream();
-                for(String stopword: IOUtils.readLines(is, "UTF-8")){
-                    if(ngramLowerCase){
-                        stopwords.add(stopword.toLowerCase());
-                    }else{
-                        stopwords.add(stopword);
-                    }
-                }
-            }
-            catch (Exception e) {
-                throw new ResourceInitializationException(e);
-            }
+        try {
+            stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
         }
     }
 
