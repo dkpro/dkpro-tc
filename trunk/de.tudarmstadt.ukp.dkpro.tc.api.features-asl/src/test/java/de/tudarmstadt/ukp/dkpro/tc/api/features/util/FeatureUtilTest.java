@@ -12,13 +12,16 @@ public class FeatureUtilTest
 	private static String stopwordFileLoc  ="src/test/resources/data/MiniStopwordList.txt";
 	
 	@Test
-    public void FeatureUtilTest()
+    public void EscapeFeatureNameTest()
         throws Exception
     {
-		System.out.println(FeatureUtil.escapeFeatureName("mY&#@\\(_feature12"));
 		assertTrue(FeatureUtil.escapeFeatureName("mY&#@\\(_feature12").equals("mYu38u35u64u92u40_feature12"));
-		
-		
+    }
+	
+	@Test
+    public void StopwordsListTest()
+        throws Exception
+    {
 		Set<String> stopwords = FeatureUtil.getStopwords(stopwordFileLoc, false);
 		assertEquals(stopwords.size(), 5);
 		assertTrue(stopwords.contains("The"));
@@ -34,7 +37,5 @@ public class FeatureUtilTest
 		assertTrue(stopwords.contains("and"));
 		assertTrue(stopwords.contains("are"));
 		assertTrue(stopwords.contains("is"));
-		
-		
     }
 }
