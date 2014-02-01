@@ -37,22 +37,25 @@ public class POSNGramFeatureExtractor
     private String posNgramFdFile;
 
     public static final String PARAM_POS_NGRAM_MIN_N = "posNgramMinN";
-    @ConfigurationParameter(name = PARAM_POS_NGRAM_MIN_N, mandatory = false, defaultValue = "1")
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int posNgramMinN;
 
     public static final String PARAM_POS_NGRAM_MAX_N = "posNgramMaxN";
-    @ConfigurationParameter(name = PARAM_POS_NGRAM_MAX_N, mandatory = false, defaultValue = "3")
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int posNgramMaxN;
 
     public static final String PARAM_POS_NGRAM_USE_TOP_K = "posNgramUseTopK";
-    @ConfigurationParameter(name = PARAM_POS_NGRAM_USE_TOP_K, mandatory = false)
-    private int posNgramUseTopK = 500;
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
+    private int posNgramUseTopK;
 
     public static final String PARAM_POS_NGRAM_FREQ_THRESHOLD = "posNgramFreqThreshold";
-    @ConfigurationParameter(name = PARAM_POS_NGRAM_FREQ_THRESHOLD, mandatory = false)
-    private float posNgramFreqThreshold = 0.01f;
+    @ConfigurationParameter(name = PARAM_POS_NGRAM_FREQ_THRESHOLD, mandatory = true, defaultValue = "0.01f")
+    private float posNgramFreqThreshold;
 
-    private boolean useFreqThreshold = false;
+    public static final String PARAM_USE_CANONICAL_POS = "useCanonicalPos";
+    @ConfigurationParameter(name = PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
+    private boolean useCanonicalTags;
+
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
@@ -63,7 +66,7 @@ public class POSNGramFeatureExtractor
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentPOSNgrams;
-        documentPOSNgrams = NGramUtils.getDocumentPOSNgrams(jcas, posNgramMinN, posNgramMaxN);
+        documentPOSNgrams = NGramUtils.getDocumentPosNgrams(jcas, posNgramMinN, posNgramMaxN, useCanonicalTags);
 
         for (String topNgram : topKSet) {
             if (documentPOSNgrams.getKeys().contains(topNgram)) {
@@ -107,37 +110,25 @@ public class POSNGramFeatureExtractor
 
         Set<String> topNGrams = new HashSet<String>();
 
-        if (useFreqThreshold) {
-            double total = trainingFD.getN();
-            double max = 0;
-            for (String key : trainingFD.getKeys()) {
-                double freq = trainingFD.getCount(key) / total;
-                max = Math.max(max, freq);
-                if (freq >= posNgramFreqThreshold) {
-                    topNGrams.add(key);
-                }
-            }
+        
+
+        Map<String, Long> map = new HashMap<String, Long>();
+
+        for (String key : trainingFD.getKeys()) {
+            map.put(key, trainingFD.getCount(key));
         }
-        else {
 
-            Map<String, Long> map = new HashMap<String, Long>();
+        Map<String, Long> sorted_map = new TreeMap<String, Long>(
+                new NGramFeatureExtractor().new ValueComparator(map));
+        sorted_map.putAll(map);
 
-            for (String key : trainingFD.getKeys()) {
-                map.put(key, trainingFD.getCount(key));
+        int i = 0;
+        for (String key : sorted_map.keySet()) {
+            if (i >= posNgramUseTopK) {
+                break;
             }
-
-            Map<String, Long> sorted_map = new TreeMap<String, Long>(
-                    new NGramFeatureExtractor().new ValueComparator(map));
-            sorted_map.putAll(map);
-
-            int i = 0;
-            for (String key : sorted_map.keySet()) {
-                if (i >= posNgramUseTopK) {
-                    break;
-                }
-                topNGrams.add(key);
-                i++;
-            }
+            topNGrams.add(key);
+            i++;
         }
 
         getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " POS NGRAMS");

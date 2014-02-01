@@ -45,17 +45,15 @@
     </dependency>
     <dependency>
     	<groupId>org.apache.lucene</groupId>
-    	<artifactId>lucene-core</artifactId><!--$NO-MVN-MAN-VER$-->
+    	<artifactId>lucene-core</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.apache.lucene</groupId>
     	<artifactId>lucene-misc</artifactId>
-    	<version>4.4.0</version>
     </dependency>
     <dependency>
     	<groupId>org.apache.lucene</groupId>
     	<artifactId>lucene-analyzers-common</artifactId>
-    	<version>4.4.0</version>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>

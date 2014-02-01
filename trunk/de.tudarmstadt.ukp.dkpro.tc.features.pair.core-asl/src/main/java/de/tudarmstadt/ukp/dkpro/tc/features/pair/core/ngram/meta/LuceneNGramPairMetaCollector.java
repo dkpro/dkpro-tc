@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -19,7 +21,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneField;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
 public class LuceneNGramPairMetaCollector
@@ -37,7 +38,7 @@ public class LuceneNGramPairMetaCollector
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean ngramLowerCase;
 
-    private  Set<String> stopwords;
+    private Set<String> stopwords;
     // end repeat
 	
     @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
@@ -52,6 +53,8 @@ public class LuceneNGramPairMetaCollector
     @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     private int ngramView2MaxN;
     
+    private FieldType fieldType;
+    
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -64,6 +67,14 @@ public class LuceneNGramPairMetaCollector
         catch (IOException e) {
             throw new ResourceInitializationException(e);
         }
+        
+        fieldType = new FieldType();
+        fieldType.setIndexed(true);
+        fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+        fieldType.setStored(true);
+        fieldType.setOmitNorms(true);
+        fieldType.setTokenized(false);
+        fieldType.freeze();
     }
 
     @Override
@@ -94,26 +105,26 @@ public class LuceneNGramPairMetaCollector
         ));
         
         for (String ngram : documentNGrams.getKeys()) {
-            Field field = new LuceneField(
+            Field field = new Field(
                     LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD,
                     ngram, 
-                    Field.Store.YES
+                    fieldType
             );
             doc.add(field);
         }
         for (String ngram : view1NGrams.getKeys()) {
-            Field field = new LuceneField(
+            Field field = new Field(
                     LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD1,
                     ngram, 
-                    Field.Store.YES
+                    fieldType
             );
             doc.add(field);
         }
         for (String ngram : view2NGrams.getKeys()) {
-            Field field = new LuceneField(
+            Field field = new Field(
                     LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2,
                     ngram, 
-                    Field.Store.YES
+                    fieldType
             );
             doc.add(field);
         }
