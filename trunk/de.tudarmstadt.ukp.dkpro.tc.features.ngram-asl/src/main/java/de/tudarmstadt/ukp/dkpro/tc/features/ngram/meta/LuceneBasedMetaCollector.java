@@ -13,6 +13,7 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.uima.UimaContext;
@@ -36,7 +37,7 @@ public abstract class LuceneBasedMetaCollector
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_LUCENE_DIR, mandatory = true)
     private File luceneDir;
 
-    protected IndexWriter indexWriter;
+    protected static IndexWriter indexWriter = null;
     
     private String currentDocumentId;
     private Document currentDocument;
@@ -50,11 +51,13 @@ public abstract class LuceneBasedMetaCollector
         super.initialize(context);
 
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
-        
-        try {
-            indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-        } catch (IOException e) {
-            throw new ResourceInitializationException(e);
+         
+        if (indexWriter == null) {
+            try {
+                indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
+            } catch (IOException e) {
+                throw new ResourceInitializationException(e);
+            }  
         }
         
         currentDocumentId = null;
@@ -100,14 +103,20 @@ public abstract class LuceneBasedMetaCollector
     {
         super.collectionProcessComplete();
 
-        try {
-            indexWriter.commit();
-            indexWriter.close();
-        } catch (CorruptIndexException e) {
-            throw new AnalysisEngineProcessException(e);
-        } catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
+        if (indexWriter != null) {
+            try {
+                indexWriter.commit();
+                indexWriter.close();
+                indexWriter = null;
+            } catch (AlreadyClosedException e) {
+                // ignore, as multiple meta collectors write in the same index and will all try to close the index
+            } catch (CorruptIndexException e) {
+                throw new AnalysisEngineProcessException(e);
+            } catch (IOException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
         }
+        
     }
     
     @Override
