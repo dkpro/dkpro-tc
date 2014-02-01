@@ -212,7 +212,7 @@ public class LuceneNGramPairFeatureExtractor
         FrequencyDistribution<String> view2Ngrams = getViewNgrams(
         		AbstractPairReader.PART_TWO, jcas, classificationUnit);
         FrequencyDistribution<String> allNgrams = getViewNgrams(
-        		"", jcas, classificationUnit);
+                AbstractPairReader.INITIAL_VIEW, jcas, classificationUnit);
         
         List<Feature> features = new ArrayList<Feature>();
         if(useView1NgramsAsFeatures){
@@ -233,16 +233,15 @@ public class LuceneNGramPairFeatureExtractor
             prefix = "view2allNG";
             features = addToFeatureArray(view2Ngrams, topKSetAll, features);
         }
-
         
         return features;
     }
 
-	protected List<Feature> addToFeatureArray(FrequencyDistribution<String> view1Ngrams, FrequencyDistribution<String> topKSet,
+	protected List<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams, FrequencyDistribution<String> topKSet,
 			List<Feature> features)
 	{
 		for(String ngram: topKSet.getKeys()){
-			if(view1Ngrams.contains(ngram)){
+			if(viewNgrams.contains(ngram)){
 				features.add(new Feature(ComboUtils.combo(prefix, ngram), 1));
 			}else{
 				features.add(new Feature(ComboUtils.combo(prefix, ngram), 0));

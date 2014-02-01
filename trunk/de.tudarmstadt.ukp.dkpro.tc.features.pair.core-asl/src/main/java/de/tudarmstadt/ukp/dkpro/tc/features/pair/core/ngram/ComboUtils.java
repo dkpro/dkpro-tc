@@ -1,5 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
@@ -26,29 +28,36 @@ public class ComboUtils
     		int ngramMinN, int ngramMaxN, Set<String>stopwords)
     		throws TextClassificationException{
     	
-    	JCas view;
-    	if(name.equals(AbstractPairReader.PART_ONE) || name.equals(AbstractPairReader.PART_TWO)){
-	        try{
-	            view = jcas.getView(name); 
-	        }
-	        catch (Exception e) {
-	            throw new TextClassificationException(e);
-	        }
-    	}else{
-    		view = jcas;
+    	List<JCas> views = new ArrayList<JCas>();
+    	try{
+        	if(name.equals(AbstractPairReader.PART_ONE) || 
+        	        name.equals(AbstractPairReader.PART_TWO)){
+    	        views.add(jcas.getView(name)); 
+        	}else{
+                views.add(jcas.getView(AbstractPairReader.PART_ONE)); 
+                views.add(jcas.getView(AbstractPairReader.PART_TWO)); 
+        	}
+    	}catch (Exception e) {
+            throw new TextClassificationException(e);
     	}
+        FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
         
-        FrequencyDistribution<String> viewNgrams = null;
-                    
-        if (classificationUnit == null) {
-            viewNgrams = NGramUtils.getDocumentNgrams(view,
-                    ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
-        }
-        else {
-            viewNgrams = NGramUtils.getAnnotationNgrams(view, classificationUnit,
-                    ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+        for(JCas view: views){
+            FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
+            if (classificationUnit == null) {
+                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,
+                        ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+            }
+            else {
+                oneViewsNgrams = NGramUtils.getAnnotationNgrams(view, classificationUnit,
+                        ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+            }
+            // This is a hack because there's no method to combine 2 FD's
+            for(String key: oneViewsNgrams.getKeys()){
+                viewNgramsTotal.addSample(key, oneViewsNgrams.getCount(key));
+            }
         }
     	
-    	return viewNgrams;
+    	return viewNgramsTotal;
     }
 }
