@@ -18,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 public class LuceneSkipNgramMetaCollector
     extends LuceneBasedMetaCollector
 {    
-    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int minN;
 
     @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
