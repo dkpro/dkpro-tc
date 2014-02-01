@@ -20,7 +20,7 @@ public class LuceneSkipNgramFeatureExtractor
     public static final String LUCENE_SKIP_NGRAM_FIELD = "skipngram";
 
     public static final String PARAM_SKIP_NGRAM_MIN_N = "skipNgramMinN";
-    @ConfigurationParameter(name = PARAM_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = PARAM_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int skipMinN;
 
     public static final String PARAM_SKIP_NGRAM_MAX_N = "skipNgramMaxN";
