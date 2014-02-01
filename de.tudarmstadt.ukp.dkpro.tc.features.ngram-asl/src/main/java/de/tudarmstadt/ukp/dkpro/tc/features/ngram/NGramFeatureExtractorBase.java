@@ -77,29 +77,27 @@ public abstract class NGramFeatureExtractorBase
 
         topKSet = getTopNgrams();
 
-        prefix = "ngrams_";
+        prefix = getFeaturePrefix();
 
         return true;
     }
 
-    protected List<Feature> extractFromAnnotation(JCas jcas, Annotation annotation)
+    @Override
+    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+        throws TextClassificationException
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
                     
-        if (annotation == null) {
-            documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN,
-                    ngramMaxN, stopwords);
+        if (classificationUnit == null) {
+            documentNgrams = getDocumentNgrams(jcas);
         }
         else {
-            documentNgrams = NGramUtils.getAnnotationNgrams(jcas, annotation,
-                    ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+            documentNgrams = getAnnotationNgrams(jcas, classificationUnit);
         }
          
         for (String topNgram : topKSet) {
             if (documentNgrams.getKeys().contains(topNgram)) {
-                // features.add(new Feature(prefix + "_" + topNgram,
-                // documentNgrams.getCount(topNgram)));
                 features.add(new Feature(prefix + "_" + topNgram, 1));
             }
             else {
@@ -107,19 +105,15 @@ public abstract class NGramFeatureExtractorBase
             }
         }
 
-        // documentNgrams.clear();
-
         return features;
-    }
-
-    @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
-        throws TextClassificationException
-    {
-        return this.extractFromAnnotation(jcas, classificationUnit);
     }
 
     protected abstract Set<String> getTopNgrams()
         throws ResourceInitializationException;
     
+    protected abstract String getFeaturePrefix();
+    
+    protected abstract FrequencyDistribution<String> getDocumentNgrams(JCas jcas);
+    
+    protected abstract FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno);
 }

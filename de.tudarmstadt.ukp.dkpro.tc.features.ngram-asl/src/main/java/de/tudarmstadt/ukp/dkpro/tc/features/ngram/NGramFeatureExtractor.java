@@ -13,6 +13,8 @@ import java.util.TreeMap;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
@@ -127,5 +129,23 @@ public class NGramFeatureExtractor
                 return -1;
             }
         }
+    }
+
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return "ngram";
+    }
+
+    @Override
+    protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
+    {
+        return NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+    }
+
+    @Override
+    protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
+    {
+        return NGramUtils.getAnnotationNgrams(jcas, anno, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
     }
 }

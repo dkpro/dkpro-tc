@@ -36,8 +36,8 @@ public class LuceneNGramMetaCollectorTest
     public void luceneNgramMetaCollectorTest()
         throws Exception
     {
-        File tmpDir = new File("target/" + LuceneBasedMetaCollector.LUCENE_DIR);
-        
+        File tmpDir = folder.newFolder();
+
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TextReader.class, 
                 TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/data/",
@@ -65,20 +65,26 @@ public class LuceneNGramMetaCollectorTest
                 Terms terms = fields.terms(LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
+//                    Bits liveDocs = MultiFields.getLiveDocs(index);
+//                    DocsEnum docs = termsEnum.docs(liveDocs, null);
+//                    int docId;
+//                    while((docId = docs.nextDoc()) != DocsEnum.NO_MORE_DOCS) {
+//                        index.g
+//                    }
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
                         System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
                         System.out.println(termsEnum.docFreq());
                         
                         if (text.utf8ToString().equals("this")) {
-                            assertEquals(2, termsEnum.totalTermFreq());
                             assertEquals(2, termsEnum.docFreq());
+                            assertEquals(3, termsEnum.totalTermFreq());
                         }
                         
                         i++;
                     }
                 }
-            }    
+            }
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);

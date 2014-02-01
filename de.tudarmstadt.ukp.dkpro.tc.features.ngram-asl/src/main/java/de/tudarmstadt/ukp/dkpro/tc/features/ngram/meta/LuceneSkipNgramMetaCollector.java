@@ -11,24 +11,26 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneSkipNgramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
-public class LuceneNGramMetaCollector
+public class LuceneSkipNgramMetaCollector
     extends LuceneBasedMetaCollector
 {    
+    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int minN;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int ngramMinN;
+    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int maxN;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int ngramMaxN;
-
+    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_N, mandatory = true, defaultValue = "2")
+    private int skipN;
+    
     @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
-    private String ngramStopwordsFile;
+    private String stopwordsFile;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
     private boolean ngramLowerCase;
 
     private Set<String> stopwords;
@@ -40,7 +42,7 @@ public class LuceneNGramMetaCollector
         super.initialize(context);
         
         try {
-            stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
+            stopwords = FeatureUtil.getStopwords(stopwordsFile, ngramLowerCase);
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);
@@ -51,11 +53,11 @@ public class LuceneNGramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
-                jcas, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentSkipNgrams(
+                jcas, ngramLowerCase, minN, maxN, skipN, stopwords);
 
         for (String ngram : documentNGrams.getKeys()) {
-            addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
+            addField(jcas, LuceneSkipNgramFeatureExtractor.LUCENE_SKIP_NGRAM_FIELD, ngram); 
         }
        
         try {
