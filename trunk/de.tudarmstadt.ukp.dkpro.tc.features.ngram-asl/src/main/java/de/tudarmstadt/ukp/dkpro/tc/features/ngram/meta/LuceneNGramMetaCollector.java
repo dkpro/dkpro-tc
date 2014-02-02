@@ -55,7 +55,9 @@ public class LuceneNGramMetaCollector
                 jcas, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
 
         for (String ngram : documentNGrams.getKeys()) {
-            addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
+            for (int i=0;i<documentNGrams.getCount(ngram);i++){
+                addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
+            }
         }
        
         try {
