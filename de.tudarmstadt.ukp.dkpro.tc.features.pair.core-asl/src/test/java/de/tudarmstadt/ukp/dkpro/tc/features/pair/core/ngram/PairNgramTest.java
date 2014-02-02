@@ -188,6 +188,8 @@ public class PairNgramTest
     }
     /**
      * Tests the stopword list to make sure stopwords are not in ngrams.
+     * First part of test shows ngrams with stopwords are present, and 
+     * second part of test shows they have been removed.
      * 
      * @throws Exception
      */
@@ -200,11 +202,18 @@ public class PairNgramTest
       extractor.ngramMaxN2 = 3;
       extractor.useView2NgramsAsFeatures = true;
       extractor.ngramLowerCase = true;
+      List<Feature> features = extractor.extract(jcas, null);
+      
+      //without stopword removal
+      assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 1)));
+      assertTrue(features.contains(new Feature("view2NG_cats", 1)));
+      assertTrue(features.contains(new Feature("view2NG_birds", 1)));
+
       extractor.stopwords = new HashSet<String>();
       extractor.stopwords.add("cats");
-      List<Feature> features = extractor.extract(jcas, null);
-
-      assertEquals(features.size(), 7);
+      features = extractor.extract(jcas, null);
+      
+      //with stopword removal
       assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 0)));
       assertTrue(features.contains(new Feature("view2NG_cats", 0)));
       assertTrue(features.contains(new Feature("view2NG_birds", 1)));
