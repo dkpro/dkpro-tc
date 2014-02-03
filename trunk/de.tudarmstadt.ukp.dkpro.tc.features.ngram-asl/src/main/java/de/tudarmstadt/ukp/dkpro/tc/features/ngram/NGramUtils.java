@@ -170,18 +170,20 @@ public class NGramUtils
     public static List<String> filterNgram(List<String> tokenList, boolean lowerCase,
             Set<String> stopwords)
     {
+    	List<String> filteredList = new ArrayList<String>();
         boolean hasAStopword = false;
         boolean isOnlyStopwords = true;
         for (String ngram : tokenList) {
             if (lowerCase) {
                 ngram = ngram.toLowerCase();
             }
+            filteredList.add(ngram);
             
-            if (stopwords.contains(ngram)) {
+            if (!stopwords.contains(ngram)) {
+            	isOnlyStopwords = false;
+            }else{
             	hasAStopword = true;
             	break;
-            }else{
-            	isOnlyStopwords = false;
             }
         }
         // this filters ngrams with *any* stopword
@@ -192,7 +194,7 @@ public class NGramUtils
 //        if(isOnlyStopwords){
 //        	return new ArrayList<String>();
 //        }
-        return tokenList;
+        return filteredList;
     }
 
     public static FrequencyDistribution<String> getDocumentSkipNgrams(
