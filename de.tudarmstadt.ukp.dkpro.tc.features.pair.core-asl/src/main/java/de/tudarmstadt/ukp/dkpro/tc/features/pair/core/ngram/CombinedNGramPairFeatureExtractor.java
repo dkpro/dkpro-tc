@@ -104,9 +104,9 @@ public class CombinedNGramPairFeatureExtractor
         		AbstractPairReader.PART_ONE, jcas, classificationUnit);
         FrequencyDistribution<String> view2Ngrams = getViewNgrams(
         		AbstractPairReader.PART_TWO, jcas, classificationUnit);
-
+        
         FrequencyDistribution<String> documentComboNgrams = NGramUtils.getCombinedNgrams(view1Ngrams,
-                view2Ngrams, ngramMinNCombo, ngramMinNCombo);
+                view2Ngrams, ngramMinNCombo, ngramMaxNCombo);
          
         List<Feature> features = new ArrayList<Feature>();
         features = addToFeatureArray(documentComboNgrams, topKSetCombo, features);
