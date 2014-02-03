@@ -160,28 +160,39 @@ public class NGramUtils
 
 
     /**
-     * Ngrams will only be filtered out, if they exactly match an entry in the stopword list.
-     * No partial matches will be filtered.
+     * Ngrams will only be filtered out, if a token exactly matches an entry in the stopword list.
      * 
-     * @param ngramList The list of ngrams
+     * @param tokenList The list of tokens in a single ngram
      * @param lowerCase Whether to lowercase all ngrams
      * @param stopwords The set of stopwords used for filtering
-     * @return The list of ngrams filtered using the stopword list. 
+     * @return The list of tokens in a single ngram filtered using the stopword list. 
      */
-    public static List<String> filterNgram(List<String> ngramList, boolean lowerCase,
+    public static List<String> filterNgram(List<String> tokenList, boolean lowerCase,
             Set<String> stopwords)
     {
-        List<String> filteredNgram = new ArrayList<String>();
-        for (String ngram : ngramList) {
+        boolean hasAStopword = false;
+        boolean isOnlyStopwords = true;
+        for (String ngram : tokenList) {
             if (lowerCase) {
                 ngram = ngram.toLowerCase();
             }
             
-            if (!stopwords.contains(ngram)) {
-                filteredNgram.add(ngram);
+            if (stopwords.contains(ngram)) {
+            	hasAStopword = true;
+            	break;
+            }else{
+            	isOnlyStopwords = false;
             }
         }
-        return filteredNgram;
+        // this filters ngrams with *any* stopword
+        if(hasAStopword){
+        	return new ArrayList<String>();
+        }
+        // this filters ngrams composed entirely of stopwords
+//        if(isOnlyStopwords){
+//        	return new ArrayList<String>();
+//        }
+        return tokenList;
     }
 
     public static FrequencyDistribution<String> getDocumentSkipNgrams(
