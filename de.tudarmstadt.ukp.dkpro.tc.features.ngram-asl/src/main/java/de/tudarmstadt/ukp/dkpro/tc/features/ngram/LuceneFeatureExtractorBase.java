@@ -1,8 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
@@ -17,6 +15,8 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
 public abstract class LuceneFeatureExtractorBase
     extends NGramFeatureExtractorBase
 {
@@ -25,11 +25,11 @@ public abstract class LuceneFeatureExtractorBase
     protected File luceneDir;
     
     @Override
-    protected Set<String> getTopNgrams()
+    protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {       
 
-        Set<String> topNGrams = new HashSet<String>();
+    	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
         
         PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(ngramUseTopK);
 
@@ -57,10 +57,10 @@ public abstract class LuceneFeatureExtractorBase
         for (int i=0; i < topN.size(); i++) {
             TermFreqTuple tuple = topN.pop();
 //            System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
-            topNGrams.add(tuple.getTerm());
+            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
         
-        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " NGRAMS");
+        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.getKeys().size() + " NGRAMS");
 
         return topNGrams;
     }

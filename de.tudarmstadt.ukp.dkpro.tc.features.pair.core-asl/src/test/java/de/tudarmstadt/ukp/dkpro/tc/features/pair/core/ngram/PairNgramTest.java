@@ -26,6 +26,8 @@ public class PairNgramTest
 {
     LuceneNGramPairFeatureExtractor extractor;
     JCas jcas;
+    JCas view1;
+    JCas view2;
     
     private void initialize()
             throws Exception
@@ -40,8 +42,8 @@ public class PairNgramTest
         builder.add(seg, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
 
         jcas = engine.newJCas();
-        JCas view1 = jcas.createView(AbstractPairReader.PART_ONE);
-        JCas view2 = jcas.createView(AbstractPairReader.PART_TWO);
+        view1 = jcas.createView(AbstractPairReader.PART_ONE);
+        view2 = jcas.createView(AbstractPairReader.PART_TWO);
         view1.setDocumentLanguage("en");
         view2.setDocumentLanguage("en");
         view1.setDocumentText("Cats eat mice.");
@@ -228,7 +230,56 @@ public class PairNgramTest
       assertTrue(features.contains(new Feature("view2NG_birds", 1)));
 
   }
-  
+  @Test
+  public void CompareOldAndNewPairFETest()
+      throws Exception
+  {
+      initialize();
+      extractor.ngramMinN1 = 1;
+      extractor.ngramMaxN1 = 3;
+      extractor.ngramMinN2 = 1;
+      extractor.ngramMaxN2 = 3;
+      extractor.useView1NgramsAsFeatures = true;
+      extractor.useView2NgramsAsFeatures = true;
+      extractor.ngramLowerCase = true;
+      
+		List<Feature> newFeatures = extractor.extract(jcas, null);
+		FrequencyDistribution<String> view1features = new FrequencyDistribution<String>();
+		FrequencyDistribution<String> view2features = new FrequencyDistribution<String>();
+		
+		for(Feature f: newFeatures){
+			if(f.getName().startsWith("view1NG_")){
+				view1features.addSample(f.getName().replace("view1NG_", ""), 1);
+			}else{
+				view2features.addSample(f.getName().replace("view2NG_", ""), 1);
+			}
+		}
+		
+		
+		NGramPairFeatureExtractor oldExtractor = new NGramPairFeatureExtractor();
+//		oldExtractor.ngramMinN = 1;
+//		oldExtractor.ngramMaxN = 3;
+
+		oldExtractor.stopwords = FeatureUtil.getStopwords(null, false);
+		oldExtractor.topKSet = makeSomeNgrams();
+		List<Feature> oldFeatures = oldExtractor.extract(view1, view2);
+		
+		for(Feature f: oldFeatures){
+			if(f.getName().startsWith("ngrams_PART_ONE__")){
+				view1features.addSample(f.getName().replace("ngrams_PART_ONE__", ""), 1);
+			}else{
+				view2features.addSample(f.getName().replace("ngrams_PART_TWO__", ""), 1);
+			}
+		}
+		assertEquals(view1features.getKeys().size(), 7);
+		for(String sample: view1features.getKeys()){
+			assertTrue(view1features.getCount(sample) == 2);
+		}
+		assertEquals(view2features.getKeys().size(), 7);
+		for(String sample: view2features.getKeys()){
+			assertTrue(view1features.getCount(sample) == 2);
+		}
+  }
   /**
    * Makes a FD of "filtered ngrams from whole corpus." Not really filtered
    * by params in this test suite.  Each of these will always be a final feature;
