@@ -26,14 +26,19 @@ public class NGramUtils
     public static String NGRAM_GLUE = "_";
     
     public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation focusAnnotation,
-            boolean lowerCaseNGrams, int minN, int maxN)
+            boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
     {
         Set<String> empty = Collections.emptySet();
-        return getAnnotationNgrams(jcas, focusAnnotation, lowerCaseNGrams, minN, maxN, empty);
+        return getAnnotationNgrams(jcas, focusAnnotation, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
     }
 
-    public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas,
-            Annotation focusAnnotation, boolean lowerCaseNGrams, int minN, int maxN,
+    public static FrequencyDistribution<String> getAnnotationNgrams(
+            JCas jcas,
+            Annotation focusAnnotation,
+            boolean lowerCaseNGrams,
+            boolean filterPartialMatches,
+            int minN,
+            int maxN,
             Set<String> stopwords)
     {
         FrequencyDistribution<String> annoNgrams = new FrequencyDistribution<String>();
@@ -45,24 +50,27 @@ public class NGramUtils
                 for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(
                         Token.class, s)), minN, maxN)) {
 
-                    ngram = filterNgram(ngram, lowerCaseNGrams, stopwords);
-
-                    // filter might have reduced size to zero => don't add in this case
-                    if (ngram.size() > 0) {
-                        annoNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+                    if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
+                        String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
+                        if (lowerCaseNGrams) {
+                            ngramString = ngramString.toLowerCase();
+                        }
+                        annoNgrams.inc(ngramString);
                     }
                 }
             }
         }
+        // FIXME the focus annotation branch doesn't make much sense
         else {
             for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
                     focusAnnotation)), minN, maxN)) {
 
-                ngram = filterNgram(ngram, lowerCaseNGrams, stopwords);
-
-                // filter might have reduced size to zero => don't add in this case
-                if (ngram.size() > 0) {
-                    annoNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+                if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
+                    String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
+                    if (lowerCaseNGrams) {
+                        ngramString = ngramString.toLowerCase();
+                    }
+                    annoNgrams.inc(ngramString);
                 }
             }
         }
@@ -101,14 +109,19 @@ public class NGramUtils
     }
 
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
-            boolean lowerCaseNGrams, int minN, int maxN)
+            boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
     {
         Set<String> empty = Collections.emptySet();
-        return getDocumentNgrams(jcas, lowerCaseNGrams, minN, maxN, empty);
+        return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
     }
 
-    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
-            boolean lowerCaseNGrams, int minN, int maxN, Set<String> stopwords)
+    public static FrequencyDistribution<String> getDocumentNgrams(
+            JCas jcas,
+            boolean lowerCaseNGrams,
+            boolean filterPartialMatches,
+            int minN,
+            int maxN,
+            Set<String> stopwords)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
@@ -116,11 +129,12 @@ public class NGramUtils
             for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
                     s)), minN, maxN)) {
 
-                ngram = filterNgram(ngram, lowerCaseNGrams, stopwords);
-
-                // filter might have reduced size to zero => don't add in this case
-                if (ngram.size() > 0) {
-                    documentNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+                if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
+                    String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
+                    if (lowerCaseNGrams) {
+                        ngramString = ngramString.toLowerCase();
+                    }
+                    documentNgrams.inc(ngramString);
                 }
             }
         }
@@ -160,46 +174,36 @@ public class NGramUtils
 
 
     /**
-     * Ngrams will only be filtered out, if a token exactly matches an entry in the stopword list.
+     * An ngram (represented by the list of tokens) does not pass the stopword filter:
+     * a) filterPartialMatches=true - if it contains any stopwords
+     * b) filterPartialMatches=false - if it entirely consists of stopwords
      * 
      * @param tokenList The list of tokens in a single ngram
-     * @param lowerCase Whether to lowercase all ngrams
      * @param stopwords The set of stopwords used for filtering
-     * @return The list of tokens in a single ngram filtered using the stopword list. 
+     * @param filterPartialMatches Whether ngrams where only parts are stopwords should also be filtered. For example, "United States of America" would be filtered, as it contains the stopword "of".
+     * @return Whether the ngram (represented by the list of tokens) passes the stopword filter or not. 
      */
-    public static List<String> filterNgram(List<String> tokenList, boolean lowerCase,
-            Set<String> stopwords)
+    public static boolean passesNgramFilter(List<String> tokenList, Set<String> stopwords, boolean filterPartialMatches)
     {
     	List<String> filteredList = new ArrayList<String>();
-        boolean hasAStopword = false;
-        boolean isOnlyStopwords = true;
         for (String ngram : tokenList) {
-            if (lowerCase) {
-                ngram = ngram.toLowerCase();
-            }
-            filteredList.add(ngram);
-            
             if (!stopwords.contains(ngram)) {
-            	isOnlyStopwords = false;
-            }else{
-            	hasAStopword = true;
-            	break;
+                filteredList.add(ngram);
             }
         }
-        // this filters ngrams with *any* stopword
-        if(hasAStopword){
-        	return new ArrayList<String>();
+        
+        if (filterPartialMatches) {
+            return filteredList.size() == tokenList.size();
         }
-        // this filters ngrams composed entirely of stopwords
-//        if(isOnlyStopwords){
-//        	return new ArrayList<String>();
-//        }
-        return filteredList;
+        else {
+            return filteredList.size() != 0;
+        }
     }
 
     public static FrequencyDistribution<String> getDocumentSkipNgrams(
             JCas jcas,
             boolean lowerCaseNGrams,
+            boolean filterPartialMatches,
             int minN,
             int maxN,
             int skipN,
@@ -210,11 +214,12 @@ public class NGramUtils
             for (List<String> ngram : new SkipNgramStringListIterable(
                     toText(selectCovered(Token.class, s)), minN, maxN, skipN))
             {
-                ngram = filterNgram(ngram, lowerCaseNGrams, stopwords);
-
-                // filter might have reduced size to zero => don't add in this case
-                if (ngram.size() > 0) {
-                    documentNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+                if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
+                    String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
+                    if (lowerCaseNGrams) {
+                        ngramString = ngramString.toLowerCase();
+                    }
+                    documentNgrams.inc(ngramString);
                 }
             }
         }

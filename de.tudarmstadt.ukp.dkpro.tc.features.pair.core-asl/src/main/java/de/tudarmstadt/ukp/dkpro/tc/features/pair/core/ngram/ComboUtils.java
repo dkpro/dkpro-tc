@@ -25,6 +25,7 @@ public class ComboUtils
     
     public static FrequencyDistribution<String> getViewNgrams(JCas jcas, String name, 
     		TextClassificationUnit classificationUnit, boolean ngramLowerCase, 
+    		boolean filterPartialStopwords,
     		int ngramMinN, int ngramMaxN, Set<String>stopwords)
     		throws TextClassificationException{
     	
@@ -46,11 +47,11 @@ public class ComboUtils
             FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
             if (classificationUnit == null) {
                 oneViewsNgrams = NGramUtils.getDocumentNgrams(view,
-                        ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
             }
             else {
                 oneViewsNgrams = NGramUtils.getAnnotationNgrams(view, classificationUnit,
-                        ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
             }
             // This is a hack because there's no method to combine 2 FD's
             for(String key: oneViewsNgrams.getKeys()){

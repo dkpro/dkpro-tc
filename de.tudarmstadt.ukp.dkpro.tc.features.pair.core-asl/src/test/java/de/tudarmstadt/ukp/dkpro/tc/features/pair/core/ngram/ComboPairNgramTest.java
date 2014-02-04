@@ -1,11 +1,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -29,10 +28,10 @@ public class ComboPairNgramTest
     private void initialize()
             throws Exception
     {
-        AnalysisEngineDescription seg = createPrimitiveDescription(
+        AnalysisEngineDescription seg = createEngineDescription(
                 BreakIteratorSegmenter.class
-                );
-        AnalysisEngine engine = createPrimitive(seg);
+        );
+        AnalysisEngine engine = createEngine(seg);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(seg, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_ONE);

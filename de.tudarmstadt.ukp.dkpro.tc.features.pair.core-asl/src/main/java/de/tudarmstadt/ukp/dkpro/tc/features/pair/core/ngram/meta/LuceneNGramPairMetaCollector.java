@@ -19,23 +19,25 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
 public class LuceneNGramPairMetaCollector
 	extends LuceneBasedPairMetaCollector
 {
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_ALL, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_ALL, mandatory = true, defaultValue = "3")
     private int ngramMaxN;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     private String ngramStopwordsFile;
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
+    private boolean filterPartialStopwordMatches;
+
+    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean ngramLowerCase;
 
     private Set<String> stopwords;
@@ -91,11 +93,11 @@ public class LuceneNGramPairMetaCollector
             throw new AnalysisEngineProcessException(e);
         }
         FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
-                jcas, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+                jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
         FrequencyDistribution<String> view1NGrams = NGramUtils.getDocumentNgrams(
-                view1, ngramLowerCase, ngramView1MinN, ngramView1MaxN, stopwords);
+                view1, ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, ngramView1MaxN, stopwords);
         FrequencyDistribution<String> view2NGrams = NGramUtils.getDocumentNgrams(
-                view2, ngramLowerCase, ngramView2MinN, ngramView2MaxN, stopwords);
+                view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN, stopwords);
 
         Document doc = new Document();
         doc.add(new StringField(
