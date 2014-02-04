@@ -43,12 +43,12 @@ public class LuceneNGramFeatureExtractor
     @Override
     protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
     {
-        return NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+        return NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     }
 
     @Override
     protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
     {
-        return NGramUtils.getAnnotationNgrams(jcas, anno, ngramLowerCase, ngramMinN, ngramMaxN, stopwords);
+        return NGramUtils.getAnnotationNgrams(jcas, anno, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     }
 }

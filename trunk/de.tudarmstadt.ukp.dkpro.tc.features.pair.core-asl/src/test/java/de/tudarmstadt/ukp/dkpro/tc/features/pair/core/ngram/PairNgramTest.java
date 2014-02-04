@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
@@ -213,11 +214,21 @@ public class PairNgramTest
       extractor.stopwords.add("cats");
       features = extractor.extract(jcas, null);
       
-      //with stopword removal
+      //with stopword removal (filter partial matches)
+      assertFalse(features.contains(new Feature("view2NG_birds_chase_cats", 0)));
+      assertTrue(features.contains(new Feature("view2NG_cats", 0)));
+      assertTrue(features.contains(new Feature("view2NG_birds", 1)));
+      
+      extractor.filterPartialStopwordMatches = true;
+      features = extractor.extract(jcas, null);
+      
+      //with stopword removal (don't filter partial matches)
       assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 0)));
       assertTrue(features.contains(new Feature("view2NG_cats", 0)));
       assertTrue(features.contains(new Feature("view2NG_birds", 1)));
+
   }
+  
   /**
    * Makes a FD of "filtered ngrams from whole corpus." Not really filtered
    * by params in this test suite.  Each of these will always be a final feature;

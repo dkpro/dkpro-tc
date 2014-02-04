@@ -157,6 +157,11 @@ public class LuceneNGramPairFeatureExtractor
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "pairNgramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
+    
+    public static final String PARAM_FILTER_PARTIAL_STOPWORD_MATCHES = "filterPartialStopwordMatches";
+    @ConfigurationParameter(name = PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
+    protected boolean filterPartialStopwordMatches;
+
     /**
      * If true, ngrams and stopwords will be lower-cased.
      */
@@ -310,11 +315,11 @@ public class LuceneNGramPairFeatureExtractor
     		TextClassificationUnit classificationUnit)
     		throws TextClassificationException{
     	if(name.equals(AbstractPairReader.PART_ONE)){
-    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, ngramMinN1, ngramMaxN1, stopwords);
+    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
     	}else if(name.equals(AbstractPairReader.PART_TWO)){
-    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, ngramMinN2, ngramMaxN2, stopwords);
+    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
     	}else{
-    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, ngramMinN2, ngramMaxN2, stopwords);
+    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
     	}
     	
     }

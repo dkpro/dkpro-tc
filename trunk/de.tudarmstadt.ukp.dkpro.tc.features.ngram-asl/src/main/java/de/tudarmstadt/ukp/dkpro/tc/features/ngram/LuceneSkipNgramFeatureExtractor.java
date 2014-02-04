@@ -59,7 +59,7 @@ public class LuceneSkipNgramFeatureExtractor
     @Override
     protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
     {
-        return NGramUtils.getDocumentSkipNgrams(jcas, skipToLowerCase, skipMinN, skipMaxN, skipN, stopwords);
+        return NGramUtils.getDocumentSkipNgrams(jcas, skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipN, stopwords);
     }
 
     // FIXME didn't implement, as I think this should be removed anyway
