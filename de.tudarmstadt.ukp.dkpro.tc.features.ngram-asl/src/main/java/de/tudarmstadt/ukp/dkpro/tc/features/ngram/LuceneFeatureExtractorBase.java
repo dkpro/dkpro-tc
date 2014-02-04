@@ -60,7 +60,7 @@ public abstract class LuceneFeatureExtractorBase
             topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
         
-        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.getKeys().size() + " NGRAMS");
+        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.getB() + " NGRAMS");
 
         return topNGrams;
     }
