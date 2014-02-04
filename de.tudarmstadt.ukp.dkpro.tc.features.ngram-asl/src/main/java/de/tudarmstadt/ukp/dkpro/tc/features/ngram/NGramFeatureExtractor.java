@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -48,7 +46,7 @@ public class NGramFeatureExtractor
     }
 
     @Override
-    protected Set<String> getTopNgrams()
+    protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {
         try {
@@ -62,7 +60,7 @@ public class NGramFeatureExtractor
             throw new ResourceInitializationException(e);
         }
 
-        Set<String> topNGrams = new HashSet<String>();
+        FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
 
         if (useFreqThreshold) {
             double total = trainingFD.getN();
@@ -71,14 +69,14 @@ public class NGramFeatureExtractor
                 double freq = trainingFD.getCount(key) / total;
                 max = Math.max(max, freq);
                 if (freq >= ngramFreqThreshold) {
-                    topNGrams.add(key);
+                    topNGrams.addSample(key, trainingFD.getCount(key));
                 }
             }
         }
         else {
 
-            // FIXME - maybe something better should directly go into FrequencyDistribution
-            // FIXME - this is a really bad hack
+            // FIXME - this is a really bad hack, but currently no better FD method to return 
+        	// topK samples each of size n or greater.
 
             Map<String, Long> map = new HashMap<String, Long>();
 
@@ -96,13 +94,13 @@ public class NGramFeatureExtractor
                 }
 
                 if (key.length() >= ngramMinTokenLengthThreshold) {
-                    topNGrams.add(key);
+                	topNGrams.addSample(key, trainingFD.getCount(key));
                     i++;
                 }
             }
         }
         
-        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.size() + " NGRAMS");
+        getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.getKeys().size() + " NGRAMS");
 
         return topNGrams;
     }

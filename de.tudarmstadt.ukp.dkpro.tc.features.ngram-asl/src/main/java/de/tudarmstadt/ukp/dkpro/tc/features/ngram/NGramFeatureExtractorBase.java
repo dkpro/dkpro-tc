@@ -55,13 +55,16 @@ public abstract class NGramFeatureExtractorBase
     public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
     @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
     protected boolean ngramLowerCase;
-
+    /**
+     * This is currently the number of characters in the ngram, i.e., ngram.length(), 
+     * including a token-separating character between each token.
+     */
     public static final String PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD = "ngramMinTokenLengthThreshold";
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = true, defaultValue = "1")
     protected int ngramMinTokenLengthThreshold;
 
-    protected Set<String> stopwords;
-    protected Set<String> topKSet;
+    public Set<String> stopwords;
+    public FrequencyDistribution<String> topKSet;
     protected String prefix;
 
     @Override
@@ -100,7 +103,7 @@ public abstract class NGramFeatureExtractorBase
             documentNgrams = getAnnotationNgrams(jcas, classificationUnit);
         }
          
-        for (String topNgram : topKSet) {
+        for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(prefix + "_" + topNgram, 1));
             }
@@ -112,7 +115,7 @@ public abstract class NGramFeatureExtractorBase
         return features;
     }
 
-    protected abstract Set<String> getTopNgrams()
+    protected abstract FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException;
     
     protected abstract String getFeaturePrefix();
