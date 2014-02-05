@@ -92,7 +92,11 @@ public class NGramUtils
      */
     public static FrequencyDistribution<String> getCombinedNgrams(
             FrequencyDistribution<String> document1NGrams,
-            FrequencyDistribution<String> document2NGrams, int minN, int maxN)
+            FrequencyDistribution<String> document2NGrams, 
+            int minN, 
+            int maxN, 
+            boolean ngramUseSymmetricalCombos
+            )
     {
         FrequencyDistribution<String> documentComboNGrams = new FrequencyDistribution<String>();
         for (String ngram1 : document1NGrams.getKeys()) {
@@ -100,8 +104,12 @@ public class NGramUtils
             for (String ngram2 : document2NGrams.getKeys()) {
                 int ngram2size = StringUtils.countMatches(ngram2, NGRAM_GLUE) + 1;
                 if (ngram1size + ngram2size >= minN && ngram1size + ngram2size <= maxN) {
-                    String comboNgram = ngram1 + "_" + ngram2;
+                    String comboNgram = ngram1 + NGRAM_GLUE + ngram2;
                     documentComboNGrams.inc(comboNgram);
+                    if(ngramUseSymmetricalCombos){
+                    	comboNgram = ngram2 + NGRAM_GLUE + ngram1;
+                    	documentComboNGrams.inc(comboNgram);
+                    }
                 }
             }
         }

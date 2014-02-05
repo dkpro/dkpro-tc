@@ -77,8 +77,15 @@ public class CombinedNGramPairFeatureExtractor
     public static final String PARAM_NGRAM_FREQ_THRESHOLD_COMBO = "ngramFreqThresholdCombo";
     @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD_COMBO, mandatory = false, defaultValue = "0.01")
     protected float ngramFreqThresholdCombo;
-
-
+    /**
+     * If true, both orderings of ngram combinations will be used.<br />
+     * Example: If ngram 'cat' comes from Document 1, and ngram 'dog' comes from Document 2,
+     * then when this param = true, the features comboNG_cat_dog AND comboNG_dog_cat are produced.
+     */
+    public static final String PARAM_NGRAM_SYMMETRY_COMBO = "ngramUseSymmetircalCombos";
+    @ConfigurationParameter(name = PARAM_NGRAM_SYMMETRY_COMBO, mandatory = false, defaultValue = "false")
+    protected boolean ngramUseSymmetricalCombos;
+    
     protected FrequencyDistribution<String> topKSetCombo;
 
     @Override
@@ -106,7 +113,7 @@ public class CombinedNGramPairFeatureExtractor
         		AbstractPairReader.PART_TWO, jcas, classificationUnit);
         
         FrequencyDistribution<String> documentComboNgrams = NGramUtils.getCombinedNgrams(view1Ngrams,
-                view2Ngrams, ngramMinNCombo, ngramMaxNCombo);
+                view2Ngrams, ngramMinNCombo, ngramMaxNCombo, ngramUseSymmetricalCombos);
          
         List<Feature> features = new ArrayList<Feature>();
         features = addToFeatureArray(documentComboNgrams, topKSetCombo, features);
@@ -141,6 +148,9 @@ public class CombinedNGramPairFeatureExtractor
 	                                int combinedSize = ngram1.split("_").length + ngram2.split("_").length;
 	                                if(combinedSize <= ngramMaxNCombo && combinedSize >= ngramMaxNCombo){
 	                                    topN.insertWithOverflow(new TermFreqTuple(combo(ngram1, ngram2), 1));
+	                                    if(ngramUseSymmetricalCombos){
+		                                    topN.insertWithOverflow(new TermFreqTuple(combo(ngram2, ngram1), 1));
+	                                    }
 	                                }
 	                            }
 	                        }

@@ -95,7 +95,7 @@ public class ComboPairNgramTest
         extractor.ngramLowerCase = true;
 		List<Feature> features = extractor.extract(jcas, null);
 		
-		assertEquals(features.size(), 6);
+		assertEquals(features.size(), 7);
 		assertTrue(features.contains(new Feature("comboNG_birds_chase_cats", 0)));
 		assertTrue(features.contains(new Feature("comboNG_cats_eat_birds", 1)));
         assertTrue(features.contains(new Feature("comboNG_birds_chase_birds", 0)));
@@ -131,6 +131,25 @@ public class ComboPairNgramTest
 		assertTrue(features.contains(new Feature("comboNG_cats_eat_birds", 0)));
         assertTrue(features.contains(new Feature("comboNG_cats_cats", 1)));
     }
+    @Test
+    public void SymmetryTest() throws Exception{
+    	//without symmetry
+        initialize();
+        extractor.ngramUseSymmetricalCombos = false;
+        List<Feature> features = extractor.extract(jcas, null);
+
+		assertTrue(features.contains(new Feature("comboNG_birds_cats", 0)));
+        assertTrue(features.contains(new Feature("comboNG_cats_birds", 1)));
+        
+
+    	//with symmetry
+        initialize();
+        extractor.ngramUseSymmetricalCombos = true;
+        features = extractor.extract(jcas, null);
+
+		assertTrue(features.contains(new Feature("comboNG_birds_cats", 1)));
+        assertTrue(features.contains(new Feature("comboNG_cats_birds", 1)));
+    }
   /**
    * Makes a FD of "filtered ngrams from whole corpus." Not really filtered
    * by params in this test suite.  Each of these will always be a final feature;
@@ -155,6 +174,7 @@ public class ComboPairNgramTest
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         fd.addSample("cats_cats", 1);
         fd.addSample("cats_birds", 1);
+        fd.addSample("birds_cats", 1);
         fd.addSample("cats_chase_cats", 1);
         fd.addSample("cats_eat_birds", 1);
         fd.addSample("birds_chase_cats", 1);
