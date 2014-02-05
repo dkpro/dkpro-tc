@@ -90,9 +90,6 @@ public class ComboPairNgramTest
         throws Exception
     {
         initialize();
-        extractor.ngramMinNCombo = 1;
-        extractor.ngramMaxNCombo = 3;
-        extractor.ngramLowerCase = true;
 		List<Feature> features = extractor.extract(jcas, null);
 		
 		assertEquals(features.size(), 7);
@@ -102,7 +99,8 @@ public class ComboPairNgramTest
         assertTrue(features.contains(new Feature("comboNG_cats_cats", 1)));
     }
     /**
-     * Tests non-default minN and maxN size values
+     * Tests non-default {@link CombinedNGramPairFeatureExtractor#ngramMinNCombo} and 
+     * {@link CombinedNGramPairFeatureExtractor#ngramMaxNCombo} values.
      * 
      * @throws Exception
      */
@@ -114,7 +112,6 @@ public class ComboPairNgramTest
         initialize();
         extractor.ngramMinNCombo = 3;
         extractor.ngramMaxNCombo = 3;
-        extractor.ngramLowerCase = true;
         List<Feature> features = extractor.extract(jcas, null);
 
 		assertTrue(features.contains(new Feature("comboNG_cats_eat_birds", 1)));
@@ -125,12 +122,15 @@ public class ComboPairNgramTest
         initialize();
         extractor.ngramMinNCombo = 2;
         extractor.ngramMaxNCombo = 2;
-        extractor.ngramLowerCase = true;
         features = extractor.extract(jcas, null);
 
 		assertTrue(features.contains(new Feature("comboNG_cats_eat_birds", 0)));
         assertTrue(features.contains(new Feature("comboNG_cats_cats", 1)));
     }
+    /**
+     * Tests the parameter {@link CombinedNGramPairFeatureExtractor#ngramUseSymmetricalCombos}.
+     * @throws Exception
+     */
     @Test
     public void SymmetryTest() throws Exception{
     	//without symmetry
@@ -170,6 +170,14 @@ public class ComboPairNgramTest
         fd.addSample("Birds_chase_cats", 2);
         return fd;
     }
+    /**
+     * Makes a FD of "filtered combo ngrams from whole corpus." Not really filtered
+   * by params in this test suite.  Each of these will always be a final feature;
+   * but have values according to whether they also occur in a set of ngrams
+   * for the view/jcas in question, which <b>has</b> been filtered by params
+   * in this test suite.
+     * @return combo ngrams to represent a set of combo ngrams from the whole corpus
+     */
 	private static FrequencyDistribution<String> makeSomeComboNgrams(){
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         fd.addSample("cats_cats", 1);
