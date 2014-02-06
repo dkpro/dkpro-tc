@@ -1,0 +1,25 @@
+DKPro-TC 0.5.0 Release
+
+== Highlights ==
+Re-Implementation of crossvalidation setup to do a better job
+Major reduction of the memory footprint during feature extraction (issue 75)
+Several new modules (de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl, de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl, de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups-gpl)
+
+== Enhancements ==
+Feature Selection with Weka is now possible (issue 49)
+A show case for pair classification has been added (issue 61), along with several improvements and bugfixes for the pair mode (issue 76, 81)
+A show case for running DKPro-TC experiments on a server has been added (issue 52), see http://code.google.com/p/dkpro-tc/wiki/ServerSetup
+A skip ngram feature extractor has been added (issue 74)
+Added Lucene-based ngram extractor (related issues: 85)
+Added several parameters to make behaviour of ngram stopword filtering configurable (issues 82, 86, 87)
+
+== Fixed Issues ==
+Issue 27 (CrossValidation setup is now properly separating training and test data)
+Issue 30 (ConfigurationParameters are now used according to best practice)
+Issue 66 (BatchTasks are more verbose)
+Issue 71 (TrainTestReport was renamed to ClassificationReport)
+Issue 67 (Evaluation measure names in reports are now constants)
+Issue 64 and 65 (Fixed problems in the instantiation/readers of Meta- and ExtractFeaturesTask)
+Issue 54: Fixed regular expression resulting in document multiplication in the MetaTask (crossvalidation setup)
+Issue 70: Fixed DocumentID setup in the Regression demo (70) 
+Several minor issues (53, 78, 72)
