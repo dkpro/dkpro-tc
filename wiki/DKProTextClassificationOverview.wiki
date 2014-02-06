@@ -11,7 +11,7 @@ Note: This project is still in incubator stage and subject to frequent change.
   * [FAQ]
 
 == Developer Resources ==
-  * [CommitMessagesBestPractices Commit Messages: Best Practices]
+  * [CommitMessagesBestPractices Commit Messages: Recommended Practices]
 
 = Basic System Architecture =
 
