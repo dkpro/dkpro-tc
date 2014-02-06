@@ -65,11 +65,5 @@
   		<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-ner-en-all.3class.distsim.crf</artifactId>
   		<version>20130620.1</version>
   	</dependency>
-  	<dependency>
-  		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-  		<artifactId>de.tudarmstadt.ukp.dkpro.core-gpl</artifactId>
-  		<version>1.5.0</version>
-  		<type>pom</type>
-  	</dependency>
   </dependencies>
 </project>
