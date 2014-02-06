@@ -7,6 +7,11 @@
   </parent>
   <artifactId>de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl</artifactId>
   <dependencies>
+  	    <dependency>
+	        <groupId>net.sf.json-lib</groupId>
+	        <artifactId>json-lib</artifactId>
+	        <classifier>jdk15</classifier>
+	    </dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
@@ -20,15 +25,10 @@
   		<artifactId>
   			de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent
   		</artifactId>
-  		<version>20120616.0</version>
   	</dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
   		<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.json</groupId>
-  		<artifactId>json</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -55,4 +55,15 @@
   		</artifactId>
   	</dependency>
   </dependencies>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  			<artifactId>
+  				de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent
+  			</artifactId>
+  			<version>20120616.0</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
