@@ -1,0 +1,79 @@
+#summary How to use a Commit message to update an Issue.
+
+= Recommended Practices for Commit Messages =
+
+The following recommendations come from [http://code.google.com/p/support/wiki/IssueTracker#Integration_with_version_control Google Code]:
+
+It is helpful if code revisions are linked with the Issue that they address.  You can easily create this link by the format of your Commit message.
+
+A Google Code commit message can contain up to three parts: 
+   # the commit notes: a summary of the revision
+   # (Newline, then) the Issue ID and any changes to the issue (update, fix/close, change of labels, etc.)
+   # a message to be posted to the Issue
+
+
+
+== Sample Commit Messages ==
+
+
+_Commit Message #1_ 
+{{{
+Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+
+Update issue 99998
+The performance and internationalization aspects of this issue have
+been handled.  The remaining part of the issue has a clear work-around
+and only affects a small number of users, so it is less important to fix.
+}}}
+
+_Commit Message #2_
+{{{
+Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+
+New issue
+Summary: Update and translate end-user docs on validation
+Owner: johnsmith@gmail.com
+Labels: Component-Documentation
+Now that we accept input in more languages, we should translate the on-line
+help for that part of the application.
+}}}
+
+_Commit Message #3_ (Will open and close an issue all at once)
+
+{{{
+Bug in ngram feature extractor throws exception if stopword file is empty.
+
+New issue
+Summary: Empty stopword file throws exception
+Owner: johnsmith@gmail.com
+Status: Fixed
+Labels: Priority-Medium
+When stopword file is empty, an exception was thrown.  Instead, now, it creates an empty list.
+}}}
+
+== Shortcuts to close an Issue ==
+
+For just closing an issue (i.e., not otherwise modifying it), a "fixes" phrase can be used anywhere in the commit notes:
+
+_Commit Message #4_
+{{{
+Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+
+Fixes issue 99998
+Fixes issue 99999
+}}}
+
+_Commit Message #5_
+{{{
+Fixes issue 998.  Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+}}}
+
+_Commit Message #6_
+{{{
+(Fixes issue 998)  Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+}}}
