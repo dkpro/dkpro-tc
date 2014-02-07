@@ -20,10 +20,11 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
 public class LuceneNGramPairMetaCollector
-	extends LuceneBasedPairMetaCollector
+	extends LuceneBasedMetaCollector
 {
     @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_ALL, mandatory = true, defaultValue = "1")
     private int ngramMinN;
@@ -69,14 +70,6 @@ public class LuceneNGramPairMetaCollector
         catch (IOException e) {
             throw new ResourceInitializationException(e);
         }
-        
-        fieldType = new FieldType();
-        fieldType.setIndexed(true);
-        fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
-        fieldType.setStored(true);
-        fieldType.setOmitNorms(true);
-        fieldType.setTokenized(false);
-        fieldType.freeze();
     }
 
     @Override
@@ -106,33 +99,25 @@ public class LuceneNGramPairMetaCollector
                 Field.Store.YES
         ));
         
+
         for (String ngram : documentNGrams.getKeys()) {
-            Field field = new Field(
-                    LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD,
-                    ngram, 
-                    fieldType
-            );
-            doc.add(field);
+            for (int i=0;i<documentNGrams.getCount(ngram);i++){
+                addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
+            }
         }
         for (String ngram : view1NGrams.getKeys()) {
-            Field field = new Field(
-                    LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD1,
-                    ngram, 
-                    fieldType
-            );
-            doc.add(field);
+            for (int i=0;i<documentNGrams.getCount(ngram);i++){
+                addField(jcas, LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD1, ngram); 
+            }
         }
         for (String ngram : view2NGrams.getKeys()) {
-            Field field = new Field(
-                    LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2,
-                    ngram, 
-                    fieldType
-            );
-            doc.add(field);
+            for (int i=0;i<documentNGrams.getCount(ngram);i++){
+                addField(jcas, LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2, ngram); 
+            }
         }
         
         try {
-            indexWriter.addDocument(doc);
+        	writeToIndex();
         }
         catch (IOException e) {
             throw new AnalysisEngineProcessException(e);
