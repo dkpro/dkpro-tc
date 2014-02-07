@@ -19,6 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups.io.PairTwentyNewsgroupsReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
@@ -85,11 +86,11 @@ class PairTwentyNewsgroupsExperiment implements Constants
 	DIM_FEATURE_SET,
 	[
 		// This feature is sensible and fast, but gives bad results on the demo data
-//        SharedNEsFeatureExtractor.class.name, 
+        SharedNEsFeatureExtractor.class.name, 
 		// This feature is sensible but slow.
 //        CombinedNGramPairFeatureExtractor.class.name
 		//Experimental.
-		LuceneNGramPairFeatureExtractor.class.name
+//		LuceneNGramPairFeatureExtractor.class.name
 	]
 	);
 

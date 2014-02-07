@@ -87,7 +87,7 @@ public class PairTwentyNewsgroupsReader
     @Override
     protected String getInitialViewDocId()
     {
-        return doc1.getParent() + "/" + doc1.getName() + "_" + doc2.getParent() + "/"
+        return doc1.getParentFile().getName() + "/" + doc1.getName() + "_" + doc2.getParentFile().getName() + "/"
                 + doc2.getName();
     }
 
