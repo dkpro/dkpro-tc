@@ -31,7 +31,7 @@ public abstract class LuceneFeatureExtractorBase
 
     	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
         
-        PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(ngramUseTopK);
+        PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(getTopN());
 
         IndexReader reader;
         try {
@@ -70,4 +70,8 @@ public abstract class LuceneFeatureExtractorBase
      */
     protected abstract String getFieldName();
     
+    /**
+     * @return How many of the most frequent ngrams should be returned.
+     */
+    protected abstract int getTopN();
 }

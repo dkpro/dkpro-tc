@@ -68,4 +68,10 @@ public class LucenePOSNGramFeatureExtractor
     {
         return NGramUtils.getAnnotationPosNgrams(jcas, anno, posNgramMinN, posNgramMaxN, useCanonicalTags);
     }
+
+    @Override
+    protected int getTopN()
+    {
+        return posNgramUseTopK;
+    }
 }
