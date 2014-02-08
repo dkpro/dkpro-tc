@@ -27,6 +27,10 @@ public class LuceneSkipNgramFeatureExtractor
     @ConfigurationParameter(name = PARAM_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int skipMaxN;
 
+    public static final String PARAM_SKIP_NGRAM_USE_TOP_K = "skipNgramUseTopK";
+    @ConfigurationParameter(name = PARAM_SKIP_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
+    private int skipNgramUseTopK;
+
     public static final String PARAM_SKIP_N = "skipN";
     @ConfigurationParameter(name = PARAM_SKIP_N, mandatory = true, defaultValue = "2")
     private int skipN;
@@ -67,5 +71,11 @@ public class LuceneSkipNgramFeatureExtractor
     protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
     {
         return null;
+    }
+
+    @Override
+    protected int getTopN()
+    {
+        return skipNgramUseTopK;
     }
 }

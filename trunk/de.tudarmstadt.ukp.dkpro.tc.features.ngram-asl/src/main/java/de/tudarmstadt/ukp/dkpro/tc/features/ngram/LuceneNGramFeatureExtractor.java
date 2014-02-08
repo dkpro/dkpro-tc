@@ -51,4 +51,10 @@ public class LuceneNGramFeatureExtractor
     {
         return NGramUtils.getAnnotationNgrams(jcas, anno, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     }
+
+    @Override
+    protected int getTopN()
+    {
+        return ngramUseTopK;
+    }
 }
