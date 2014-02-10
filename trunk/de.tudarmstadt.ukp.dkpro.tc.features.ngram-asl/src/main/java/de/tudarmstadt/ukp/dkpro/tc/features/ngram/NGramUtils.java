@@ -133,7 +133,6 @@ public class NGramUtils
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
-            // TODO parameterize type
             for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
                     s)), minN, maxN)) {
 

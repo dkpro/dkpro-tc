@@ -135,6 +135,9 @@ public class NGramFeatureExtractor
         return "ngram";
     }
 
+    // FIXME this is duplicated in LuceneNGramFeatureExtractor currently
+    // I did not resolve this, as we might get rid of this version anyway
+    // if we keep it, maybe there should be a TokenNGramFeatureExtractor base class that both inherit from
     @Override
     protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
     {
