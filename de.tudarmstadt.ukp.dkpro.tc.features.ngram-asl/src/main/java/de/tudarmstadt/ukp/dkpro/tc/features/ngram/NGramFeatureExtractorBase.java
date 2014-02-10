@@ -63,8 +63,8 @@ public abstract class NGramFeatureExtractorBase
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = true, defaultValue = "1")
     protected int ngramMinTokenLengthThreshold;
 
-    public Set<String> stopwords;
-    public FrequencyDistribution<String> topKSet;
+    protected Set<String> stopwords;
+    protected FrequencyDistribution<String> topKSet;
     protected String prefix;
 
     @Override
@@ -120,7 +120,9 @@ public abstract class NGramFeatureExtractorBase
     
     protected abstract String getFeaturePrefix();
     
-    protected abstract FrequencyDistribution<String> getDocumentNgrams(JCas jcas);
+    protected abstract FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
+        throws TextClassificationException;
     
-    protected abstract FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno);
+    protected abstract FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
+        throws TextClassificationException;
 }
