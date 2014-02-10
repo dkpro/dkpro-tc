@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -19,6 +15,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.PriorityQueue;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -142,9 +142,9 @@ public class CombinedNGramPairFeatureExtractor
 	                String[] ngramArray1 = d.getValues(LUCENE_NGRAM_FIELD1);
 	                String[] ngramArray2 = d.getValues(LUCENE_NGRAM_FIELD2);
 	                for(String ngram1: ngramArray1){
-	                    if (topKSetView1.contains(ngram1) && topKSetAll.contains(ngram1)){
+	                    if (topKSetView1.contains(ngram1) && topKSet.contains(ngram1)){
 	                        for(String ngram2: ngramArray2){
-	                            if (topKSetView2.contains(ngram2) && topKSetAll.contains(ngram2)){
+	                            if (topKSetView2.contains(ngram2) && topKSet.contains(ngram2)){
 	                                int combinedSize = ngram1.split("_").length + ngram2.split("_").length;
 	                                if(combinedSize <= ngramMaxNCombo && combinedSize >= ngramMaxNCombo){
 	                                    topN.insertWithOverflow(new TermFreqTuple(combo(ngram1, ngram2), 1));
