@@ -16,9 +16,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 public class LuceneNGramFeatureExtractor
     extends LuceneFeatureExtractorBase
 {
-    
-    public static final String LUCENE_NGRAM_FIELD = "ngram";
-    
+
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {

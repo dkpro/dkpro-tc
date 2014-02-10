@@ -24,6 +24,8 @@ public abstract class LuceneFeatureExtractorBase
     @ConfigurationParameter(name = PARAM_LUCENE_DIR, mandatory = true)
     protected File luceneDir;
     
+    public static final String LUCENE_NGRAM_FIELD = "ngram";
+
     @Override
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
