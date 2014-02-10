@@ -81,24 +81,6 @@ public class LuceneNGramPairFeatureExtractor
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K_VIEW2, mandatory = true, defaultValue = "500")
     protected int ngramUseTopK2;
     /**
-     * All ngrams from View 1's with a frequency above this value will be used.
-     */
-    public static final String PARAM_NGRAM_FREQ_THRESHOLD_VIEW1 = "pairNgramFreqThreshold1";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD_VIEW1, mandatory = true, defaultValue = "0.01")
-    protected float ngramFreqThreshold1;
-    /**
-     * All ngrams from View 2's with a frequency above this value will be used.
-     */
-    public static final String PARAM_NGRAM_FREQ_THRESHOLD_VIEW2 = "pairNgramFreqThreshold2";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD_VIEW2, mandatory = true, defaultValue = "0.01")
-    protected float ngramFreqThreshold2;
-    /**
-     * All ngrams originating from any view with a frequency above this value will be used.
-     */
-    public static final String PARAM_NGRAM_FREQ_THRESHOLD_ALL = "pairNgramFreqThresholdAll";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD_ALL, mandatory = true, defaultValue = "0.01")
-    protected float ngramFreqThresholdAll;
-    /**
      * Each ngram from View 1 documents added to the document pair instance as a feature.  
      * E.g. Feature: view1NG_Dear
      */
