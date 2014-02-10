@@ -1,16 +1,12 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
@@ -26,10 +22,8 @@ public class NGramFeatureExtractorTest
     JCas jcas;
     
     private void initialize() throws Exception{
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class)
-        );
-        AnalysisEngine engine = createPrimitive(desc);
+
+        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
 
         jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
