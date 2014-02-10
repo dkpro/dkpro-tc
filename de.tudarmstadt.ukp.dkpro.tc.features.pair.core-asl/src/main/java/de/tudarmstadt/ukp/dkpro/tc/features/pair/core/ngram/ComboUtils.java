@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 public class ComboUtils
 {
@@ -24,7 +24,7 @@ public class ComboUtils
     }
     
     public static FrequencyDistribution<String> getViewNgrams(JCas jcas, String name, 
-    		TextClassificationUnit classificationUnit, boolean ngramLowerCase, 
+    		Annotation classificationUnit, boolean ngramLowerCase, 
     		boolean filterPartialStopwords,
     		int ngramMinN, int ngramMaxN, Set<String>stopwords)
     		throws TextClassificationException{
