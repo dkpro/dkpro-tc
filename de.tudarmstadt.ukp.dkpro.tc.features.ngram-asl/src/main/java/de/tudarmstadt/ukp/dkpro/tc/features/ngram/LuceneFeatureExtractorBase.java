@@ -64,7 +64,7 @@ public abstract class LuceneFeatureExtractorBase
 
         return topNGrams;
     }
-    
+        
     /**
      * @return The field name that this lucene-based ngram FE uses for storing the ngrams
      */
