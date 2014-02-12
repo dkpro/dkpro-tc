@@ -93,19 +93,16 @@ public class LuceneNGramPairMetaCollector
 
 
         for (String ngram : documentNGrams.getKeys()) {
-        	System.out.println("field: " + LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD + "   ngram: " + ngram);
             for (int i=0;i<documentNGrams.getCount(ngram);i++){
                 addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
             }
         }
         for (String ngram : view1NGrams.getKeys()) {
-        	System.out.println("field: " + LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD + "   ngram: " + ngram);
             for (int i=0;i<view1NGrams.getCount(ngram);i++){
                 addField(jcas, LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD1, ngram); 
             }
         }
         for (String ngram : view2NGrams.getKeys()) {
-        	System.out.println("field: " + LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD + "   ngram: " + ngram);
             for (int i=0;i<view2NGrams.getCount(ngram);i++){
                 addField(jcas, LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2, ngram); 
             }
