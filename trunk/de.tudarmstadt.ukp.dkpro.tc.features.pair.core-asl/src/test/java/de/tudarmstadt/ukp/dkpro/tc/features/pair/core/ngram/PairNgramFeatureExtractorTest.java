@@ -34,7 +34,7 @@ public class PairNgramFeatureExtractorTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void giveMeBetterName()
+    public void pairNgramFullPipelineTest()
             throws Exception
     {
         File lucenePath = folder.newFolder();
@@ -43,6 +43,9 @@ public class PairNgramFeatureExtractorTest
         Object[] parameters = new Object[] {
                 LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1, 1,
                 LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2, 1,
+                LuceneNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, "true",
+                LuceneNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, "true",
+                LuceneNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, "true",
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, lucenePath
         };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
@@ -88,7 +91,7 @@ public class PairNgramFeatureExtractorTest
         BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file)), "UTF-8"));
         String inputLine;
         while ((inputLine = reader.readLine()) != null) {
-            sb.append(inputLine);
+            sb.append(inputLine + "\n");
         }
         reader.close();
         return sb.toString();
