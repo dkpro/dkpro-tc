@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -23,12 +24,19 @@ import net.sf.json.JSONSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -197,5 +205,46 @@ public class TaskUtils
         }
         
         return requiredTypes;
+    }
+    
+    public static AnalysisEngineDescription getFeatureExtractorConnector(
+            List<Object> parameters,
+            String outputPath,
+            String dataWriter,
+            boolean isRegressionExperiment,
+            boolean addInstanceId,
+            String ... featureExtractorClassNames) throws ResourceInitializationException
+    {
+        // convert parameters to string as external resources only take string parameters
+        List<Object> convertedParameters = new ArrayList<Object>();
+        if (parameters != null) {
+            for (Object parameter : parameters) {
+                convertedParameters.add(parameter.toString());
+            }
+        }        
+        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
+        for (String featureExtractor : featureExtractorClassNames) {
+            try {
+                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
+                        Class.forName(featureExtractor).asSubclass(Resource.class),
+                        convertedParameters.toArray()));
+            }
+            catch (ClassNotFoundException e) {
+                throw new ResourceInitializationException(e);
+            }
+        }
+
+        // add the rest of the necessary parameters with the correct types
+        parameters.addAll(Arrays.asList(
+                ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
+                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
+                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
+                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources)
+        );
+        
+        return AnalysisEngineFactory.createEngineDescription(
+                ExtractFeaturesConnector.class, parameters.toArray()
+        );
     }
 }
