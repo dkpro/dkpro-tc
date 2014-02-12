@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
@@ -21,11 +22,13 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
@@ -42,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  *
  */
 public class LuceneNGramPairFeatureExtractor
-	extends LucenePairFeatureExtractorBase
+	extends LuceneFeatureExtractorBase
 {
     /**
      * Minimum size n of ngrams from View 1's.
@@ -128,6 +131,15 @@ public class LuceneNGramPairFeatureExtractor
 
     protected FrequencyDistribution<String> topKSetView1;
     protected FrequencyDistribution<String> topKSetView2;
+    
+    @Override
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    {
+        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        metaCollectorClasses.add(LuceneNGramPairMetaCollector.class);
+
+        return metaCollectorClasses;
+    }
 
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
@@ -290,5 +302,17 @@ public class LuceneNGramPairFeatureExtractor
         throws TextClassificationException
     {
         return ComboUtils.getViewNgrams(jcas, AbstractPairReader.INITIAL_VIEW, anno, ngramLowerCase, filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
+    }
+    protected void setStopwords(Set<String> newStopwords){
+    	stopwords = newStopwords;
+    }
+    protected void setFilterPartialStopwordMatches(boolean filtering){
+    	filterPartialStopwordMatches = filtering;
+    }
+    protected void setLowerCase(boolean isLower){
+    	ngramLowerCase = isLower;
+    }
+    protected void makeTopKSet(FrequencyDistribution<String> topK){
+    	topKSet = topK;
     }
 }
