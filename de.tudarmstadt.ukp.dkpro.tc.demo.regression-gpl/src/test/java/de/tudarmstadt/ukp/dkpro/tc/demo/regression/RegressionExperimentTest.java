@@ -19,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 public class RegressionExperimentTest
 {
     ParameterSpace pSpace;
-    RegressionExperimentWithoutJson experimentWithoutJson;
+    RegressionExperiment experimentWithoutJson;
 
     @Before
     public void setup()
@@ -29,8 +29,8 @@ public class RegressionExperimentTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        experimentWithoutJson = new RegressionExperimentWithoutJson();
-        pSpace = RegressionExperimentWithoutJson.setup();
+        experimentWithoutJson = new RegressionExperiment();
+        pSpace = RegressionExperiment.setup();
     }
 
     @Test

@@ -139,7 +139,9 @@ public class ExtractFeaturesTask
 
         // the following file location is specific to the FE task, so it cannot be added to the global parameter space
         List<Object> parametersCopy = new ArrayList<Object>();
-        parametersCopy.addAll(pipelineParameters);
+        if (pipelineParameters != null) {
+            parametersCopy.addAll(pipelineParameters);
+        }
 
         for (String key : parameterKeyPairs.keySet()) {
             File file = new File(aContext.getStorageLocation(
