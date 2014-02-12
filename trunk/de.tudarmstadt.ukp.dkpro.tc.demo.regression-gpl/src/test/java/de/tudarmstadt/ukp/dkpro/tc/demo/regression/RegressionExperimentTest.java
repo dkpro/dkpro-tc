@@ -19,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 public class RegressionExperimentTest
 {
     ParameterSpace pSpace;
-    RegressionExperiment experimentWithoutJson;
+    RegressionExperiment experiment;
 
     @Before
     public void setup()
@@ -29,15 +29,15 @@ public class RegressionExperimentTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        experimentWithoutJson = new RegressionExperiment();
+        experiment = new RegressionExperiment();
         pSpace = RegressionExperiment.setup();
     }
 
     @Test
-    public void testJavaWithoutJsonCrossValidation()
+    public void testJavaCrossValidation()
         throws Exception
     {
-        experimentWithoutJson.runCrossValidation(pSpace);
+        experiment.runCrossValidation(pSpace);
     }
 
     @Rule
