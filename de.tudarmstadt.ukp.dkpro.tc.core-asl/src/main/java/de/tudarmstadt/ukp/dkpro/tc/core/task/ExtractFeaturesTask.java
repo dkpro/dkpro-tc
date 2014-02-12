@@ -1,7 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
@@ -17,9 +16,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -28,7 +24,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
@@ -142,41 +137,26 @@ public class ExtractFeaturesTask
             }
         }
 
-        List<Object> parameters = new ArrayList<Object>();
-        // adding pipeline parameters, if any
-        if (pipelineParameters != null) {
-            // convert parameters to string as external resources only take string parameters
-            for (Object parameter : pipelineParameters) {
-                parameters.add(parameter.toString());
-            }
-        }
+        // the following file location is specific to the FE task, so it cannot be added to the global parameter space
+        List<Object> parametersCopy = new ArrayList<Object>();
+        parametersCopy.addAll(pipelineParameters);
 
         for (String key : parameterKeyPairs.keySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
-                    parameterKeyPairs.get(key));
-            parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
+            File file = new File(aContext.getStorageLocation(
+                    META_KEY, AccessMode.READONLY), parameterKeyPairs.get(key));
+            parametersCopy.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
 
-        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
-        for (String featureExtractor : featureSet) {
-            try {
-                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
-                        Class.forName(featureExtractor).asSubclass(Resource.class),
-                        parameters.toArray()));
-            }
-            catch (ClassNotFoundException e) {
-                throw new ResourceInitializationException(e);
-            }
-        }
-
-        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
-                outputDir.getAbsolutePath(), ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS,
-                dataWriter, ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT,
-                isRegressionExperiment, ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID,
-                addInstanceId, ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
-                extractorResources));
-        return createEngineDescription(ExtractFeaturesConnector.class, parameters.toArray());
-
+        AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
+                parametersCopy,
+                outputDir.getAbsolutePath(),
+                dataWriter,
+                isRegressionExperiment,
+                addInstanceId,
+                featureSet.toArray(new String[0])
+        );
+        
+        return connector;
     }
 
     @Override
