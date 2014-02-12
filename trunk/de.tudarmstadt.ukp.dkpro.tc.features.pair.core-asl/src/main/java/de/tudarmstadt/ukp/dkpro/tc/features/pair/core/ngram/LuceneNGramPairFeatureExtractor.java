@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
@@ -262,12 +263,25 @@ public class LuceneNGramPairFeatureExtractor
     protected FrequencyDistribution<String> getViewNgrams(String name, JCas jcas, 
     		TextClassificationUnit classificationUnit)
     		throws TextClassificationException{
+    	
+    	JCas view1 = null;
+    	JCas view2 = null;
+    	try{
+    		view1 = jcas.getView(AbstractPairReader.PART_ONE);
+    		view2 = jcas.getView(AbstractPairReader.PART_TWO);
+    	}catch (Exception e){
+    		throw new TextClassificationException(e);
+    	}
+    	
     	if(name.equals(AbstractPairReader.PART_ONE)){
-    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
+    		return NGramUtils.getDocumentNgrams(
+                    view1, ngramLowerCase, filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
     	}else if(name.equals(AbstractPairReader.PART_TWO)){
-    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
+    		return NGramUtils.getDocumentNgrams(
+                    view2, ngramLowerCase, filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
     	}else{
-    		return ComboUtils.getViewNgrams(jcas, name, classificationUnit, ngramLowerCase, filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
+    		return NGramUtils.getDocumentNgrams(
+                    jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     	}
     	
     }
@@ -290,18 +304,19 @@ public class LuceneNGramPairFeatureExtractor
         return "allNG";
     }
     
+    //TODO This shouldn't be inherited here.
     @Override
     protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
         throws TextClassificationException
     {
-        return ComboUtils.getViewNgrams(jcas, AbstractPairReader.INITIAL_VIEW, null, ngramLowerCase, filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
+        return null;
     }
-
+    //TODO This shouldn't be inherited here.
     @Override
     protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
         throws TextClassificationException
     {
-        return ComboUtils.getViewNgrams(jcas, AbstractPairReader.INITIAL_VIEW, anno, ngramLowerCase, filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
+        return null;
     }
     protected void setStopwords(Set<String> newStopwords){
     	stopwords = newStopwords;

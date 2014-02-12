@@ -23,42 +23,4 @@ public class ComboUtils
     	return prefix + JOINT + comboNgram;
     }
     
-    public static FrequencyDistribution<String> getViewNgrams(JCas jcas, String name, 
-    		Annotation classificationUnit, boolean ngramLowerCase, 
-    		boolean filterPartialStopwords,
-    		int ngramMinN, int ngramMaxN, Set<String>stopwords)
-    		throws TextClassificationException{
-    	
-    	List<JCas> views = new ArrayList<JCas>();
-    	try{
-        	if(name.equals(AbstractPairReader.PART_ONE) || 
-        	        name.equals(AbstractPairReader.PART_TWO)){
-    	        views.add(jcas.getView(name)); 
-        	}else{
-                views.add(jcas.getView(AbstractPairReader.PART_ONE)); 
-                views.add(jcas.getView(AbstractPairReader.PART_TWO)); 
-        	}
-    	}catch (Exception e) {
-            throw new TextClassificationException(e);
-    	}
-        FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
-        
-        for(JCas view: views){
-            FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
-            if (classificationUnit == null) {
-                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,
-                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
-            }
-            else {
-                oneViewsNgrams = NGramUtils.getAnnotationNgrams(view, classificationUnit,
-                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
-            }
-            // This is a hack because there's no method to combine 2 FD's
-            for(String key: oneViewsNgrams.getKeys()){
-                viewNgramsTotal.addSample(key, oneViewsNgrams.getCount(key));
-            }
-        }
-    	
-    	return viewNgramsTotal;
-    }
 }
