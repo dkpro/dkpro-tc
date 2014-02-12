@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
-public class RegressionExperimentWithoutJson
+public class RegressionExperiment
 {
     public static final String LANGUAGE_CODE = "en";
     public static int NUM_FOLDS = 2;
@@ -82,7 +82,7 @@ public class RegressionExperimentWithoutJson
         throws Exception
     {
 
-        RegressionExperimentWithoutJson experiment = new RegressionExperimentWithoutJson();
+        RegressionExperiment experiment = new RegressionExperiment();
         experiment.runCrossValidation(setup());
         experiment.runTrainTest(setup());
     }
