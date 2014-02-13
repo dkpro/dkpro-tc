@@ -14,18 +14,18 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.PriorityQueue;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+
+import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
@@ -127,7 +127,7 @@ public class CombinedNGramPairFeatureExtractor
     {
     	FrequencyDistribution<String> topNGramsCombo = new FrequencyDistribution<String>();
       
-    	PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(ngramUseTopKCombo);
+        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(ngramUseTopKCombo).create();
     	try{
 	          IndexReader reader = DirectoryReader.open(FSDirectory.open(luceneDir));
 	          
@@ -147,9 +147,9 @@ public class CombinedNGramPairFeatureExtractor
 	                            if (topKSetView2.contains(ngram2) && topKSet.contains(ngram2)){
 	                                int combinedSize = ngram1.split("_").length + ngram2.split("_").length;
 	                                if(combinedSize <= ngramMaxNCombo && combinedSize >= ngramMaxNCombo){
-	                                    topN.insertWithOverflow(new TermFreqTuple(combo(ngram1, ngram2), 1));
+	                                    topN.add(new TermFreqTuple(combo(ngram1, ngram2), 1));
 	                                    if(ngramUseSymmetricalCombos){
-		                                    topN.insertWithOverflow(new TermFreqTuple(combo(ngram2, ngram1), 1));
+		                                    topN.add(new TermFreqTuple(combo(ngram2, ngram1), 1));
 	                                    }
 	                                }
 	                            }
@@ -162,8 +162,9 @@ public class CombinedNGramPairFeatureExtractor
     		throw new ResourceInitializationException();
     	}
 
-    	for (int i=0; i < topN.size(); i++) {
-    		TermFreqTuple tuple = topN.pop();
+    	int size = topN.size();
+    	for (int i=0; i < size; i++) {
+    		TermFreqTuple tuple = topN.poll();
 //          System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
     		topNGramsCombo.addSample(tuple.getTerm(), tuple.getFreq());
     	}

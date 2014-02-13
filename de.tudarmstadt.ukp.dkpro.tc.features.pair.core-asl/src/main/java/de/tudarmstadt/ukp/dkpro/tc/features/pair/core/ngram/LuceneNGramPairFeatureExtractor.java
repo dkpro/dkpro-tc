@@ -13,12 +13,13 @@ import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.PriorityQueue;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+
+import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -27,7 +28,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqQueue;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
@@ -228,7 +228,7 @@ public class LuceneNGramPairFeatureExtractor
 
     	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
         
-        PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(topNgramThreshold);
+        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(topNgramThreshold).create();
 
         IndexReader reader;
         try {
@@ -242,7 +242,7 @@ public class LuceneNGramPairFeatureExtractor
                     while ((text = termsEnum.next()) != null) {
                         String term = text.utf8ToString();
                         long freq = termsEnum.totalTermFreq();
-                        topN.insertWithOverflow(new TermFreqTuple(term, freq));
+                        topN.add(new TermFreqTuple(term, freq));
                     }
                 }
             }
@@ -251,8 +251,9 @@ public class LuceneNGramPairFeatureExtractor
             throw new ResourceInitializationException(e);
         }
         
-        for (int i=0; i < topN.size(); i++) {
-            TermFreqTuple tuple = topN.pop();
+        int size = topN.size();
+        for (int i=0; i < size; i++) {
+            TermFreqTuple tuple = topN.poll();
 //            	System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
             topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
