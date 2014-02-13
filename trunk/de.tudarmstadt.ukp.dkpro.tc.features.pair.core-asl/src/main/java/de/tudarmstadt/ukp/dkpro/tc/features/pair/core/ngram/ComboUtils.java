@@ -23,4 +23,32 @@ public class ComboUtils
     	return prefix + JOINT + comboNgram;
     }
     
+    public static FrequencyDistribution<String> getMultipleViewNgrams(List<JCas> jcases,
+    		Annotation classificationUnit, boolean ngramLowerCase, 
+    		boolean filterPartialStopwords,
+    		int ngramMinN, int ngramMaxN, Set<String>stopwords){
+//    		throws TextClassificationException{
+    	
+        FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
+        
+        for(JCas view: jcases){
+            FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
+            if (classificationUnit == null) {
+                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,
+                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
+            }
+            else {
+                oneViewsNgrams = NGramUtils.getAnnotationNgrams(view, classificationUnit,
+                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
+            }
+            // This is a hack because there's no method to combine 2 FD's
+            for(String key: oneViewsNgrams.getKeys()){
+                viewNgramsTotal.addSample(key, oneViewsNgrams.getCount(key));
+            }
+        }
+    	
+    	return viewNgramsTotal;
+    	
+    }
+    
 }
