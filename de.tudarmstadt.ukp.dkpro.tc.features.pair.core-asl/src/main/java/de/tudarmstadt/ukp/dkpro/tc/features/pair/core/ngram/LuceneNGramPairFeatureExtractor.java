@@ -89,14 +89,14 @@ public class LuceneNGramPairFeatureExtractor
      * E.g. Feature: view1NG_Dear
      */
     public static final String PARAM_USE_VIEW1_NGRAMS_AS_FEATURES = "useView1NgramsAsFeatures";
-    @ConfigurationParameter(name = PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, mandatory = true)
     protected boolean useView1NgramsAsFeatures;
     /**
      * Each ngram from View 1 documents added to the document pair instance as a feature.  
      * E.g. Feature: view2NG_Dear
      */
     public static final String PARAM_USE_VIEW2_NGRAMS_AS_FEATURES = "useView2NgramsAsFeatures";
-    @ConfigurationParameter(name = PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, mandatory = true)
     protected boolean useView2NgramsAsFeatures;
     /**
      * All qualifying ngrams from anywhere in either document are used as features.  Feature 
@@ -104,7 +104,7 @@ public class LuceneNGramPairFeatureExtractor
      * E.g. Feature: allNG_Dear
      */
     public static final String PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES = "useViewBlindNgramsAsFeatures";
-    @ConfigurationParameter(name = PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, mandatory = true)
     protected boolean useViewBlindNgramsAsFeatures;
     /**
      * This option collects a FrequencyDistribution of ngrams across both documents of all pairs, 
@@ -253,7 +253,7 @@ public class LuceneNGramPairFeatureExtractor
         
         for (int i=0; i < topN.size(); i++) {
             TermFreqTuple tuple = topN.pop();
-//                System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
+//            	System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
             topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
         
@@ -280,8 +280,11 @@ public class LuceneNGramPairFeatureExtractor
     		return NGramUtils.getDocumentNgrams(
                     view2, ngramLowerCase, filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
     	}else{
-    		return NGramUtils.getDocumentNgrams(
-                    jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+    		List<JCas> jcases = new ArrayList<JCas>();
+    		jcases.add(view1);
+    		jcases.add(view2);
+    		return ComboUtils.getMultipleViewNgrams(
+                    jcases, null, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     	}
     	
     }
