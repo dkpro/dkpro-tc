@@ -30,23 +30,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.TestPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 
-public class PairNgramFETestBase
+public abstract class PairNgramFETestBase
 {
-	protected int ngramMinN;
-	protected int ngramMinN1;
-	protected int ngramMinN2;
-	protected int ngramMaxN;
-	protected int ngramMaxN1;
-	protected int ngramMaxN2;
-	protected int ngramUseTopK;
-	protected int ngramUseTopK1;
-	protected int ngramUseTopK2;
-	protected boolean useViewBlindNgramsAsFeatures;
-	protected boolean useView1NgramsAsFeatures;
-	protected boolean useView2NgramsAsFeatures;
-	protected boolean markViewBlindNgramsWithLocalView;
-	protected int ngramMinTokenLengthThreshold;
-	
 	protected List<List<String>> instanceList;
 	protected List<List<String>> outcomeList;
 	protected List<String> featureNames;
@@ -63,7 +48,7 @@ public class PairNgramFETestBase
     	
     }
 
-    public void runPipeline()
+    protected void runPipeline()
             throws Exception
     {
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
