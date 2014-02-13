@@ -109,4 +109,9 @@ public class SimpleFeatureStore
     {
         return new InstancesIterable(this);
     }
+
+    public List<String> getFeatureNames()
+    {
+        return featureNames;
+    }   
 }
