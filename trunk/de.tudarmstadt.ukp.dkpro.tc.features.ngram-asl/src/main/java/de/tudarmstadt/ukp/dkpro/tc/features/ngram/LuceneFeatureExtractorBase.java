@@ -10,10 +10,11 @@ import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.PriorityQueue;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
+
+import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
@@ -33,7 +34,7 @@ public abstract class LuceneFeatureExtractorBase
 
     	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
         
-        PriorityQueue<TermFreqTuple> topN = new TermFreqQueue(getTopN());
+        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN()).create();
 
         IndexReader reader;
         try {
@@ -47,7 +48,7 @@ public abstract class LuceneFeatureExtractorBase
                     while ((text = termsEnum.next()) != null) {
                         String term = text.utf8ToString();
                         long freq = termsEnum.totalTermFreq();
-                        topN.insertWithOverflow(new TermFreqTuple(term, freq));
+                        topN.add(new TermFreqTuple(term, freq));
                     }
                 }
             }
@@ -56,9 +57,9 @@ public abstract class LuceneFeatureExtractorBase
             throw new ResourceInitializationException(e);
         }
         
-        for (int i=0; i < topN.size(); i++) {
-            TermFreqTuple tuple = topN.pop();
-//            System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
+        int size = topN.size();
+        for (int i=0; i < size; i++) {
+            TermFreqTuple tuple = topN.poll();
             topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
         
