@@ -65,5 +65,10 @@
     		de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl
     	</artifactId>
     </dependency>
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>16.0.1</version>
+    </dependency>
   </dependencies>
 </project>
