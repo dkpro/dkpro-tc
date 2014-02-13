@@ -1,6 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 public class TermFreqTuple
+    implements Comparable<TermFreqTuple>
 {
     private String term;
     private long freq;
@@ -27,5 +28,25 @@ public class TermFreqTuple
     public void setFreq(long freq)
     {
         this.freq = freq;
-    }  
+    }
+
+    @Override
+    public String toString()
+    {
+        return term + " - " + freq;
+    }
+
+    @Override
+    public int compareTo(TermFreqTuple arg0)
+    {
+        if (this.freq < arg0.freq) {
+            return 1;
+        }
+        else if (this.freq > arg0.freq) {
+            return -1;    
+        }
+        else {
+            return 0;
+        }
+    }   
 }
