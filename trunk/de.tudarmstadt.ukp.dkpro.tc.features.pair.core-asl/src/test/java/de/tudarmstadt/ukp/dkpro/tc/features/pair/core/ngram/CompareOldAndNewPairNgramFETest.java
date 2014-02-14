@@ -26,7 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil; 		
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 
-public class PairNgramTest
+public class CompareOldAndNewPairNgramFETest
 {
     LuceneNGramPairFeatureExtractor extractor;
     JCas jcas;
@@ -72,170 +72,12 @@ public class PairNgramTest
         extractor.ngramUseTopK2 = 500;
 //        extractor.ngramUseTopK = 500;
         extractor.setLowerCase(true);
-        extractor.ngramMinTokenLengthThreshold = 1;
         extractor.setStopwords(FeatureUtil.getStopwords(null, false));
         extractor.makeTopKSet(makeSomeNgrams());
         extractor.topKSetView1 = makeSomeNgrams();
         extractor.topKSetView2 = makeSomeNgrams();
     }
-    /**
-     * Tests if just View1 ngrams are being extracted as features.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void View1TypicalUseTest()
-        throws Exception
-    {
-        initialize();
-        extractor.ngramMinN1 = 1;
-        extractor.ngramMaxN1 = 3;
-        extractor.useView1NgramsAsFeatures = true;
-        extractor.setLowerCase(true);
 
-		List<Feature> features = extractor.extract(jcas, null);
-		assertEquals(features.size(), 7);
-		assertTrue(features.contains(new Feature("view1NG_birds_chase_cats", 0)));
-        assertTrue(features.contains(new Feature("view1NG_cats_eat_mice", 1)));
-        assertTrue(features.contains(new Feature("view1NG_cats", 1)));
-    }
-    /**
-     * Tests if just View2 ngrams are being extracted as features
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void View2TypicalUseTest()
-        throws Exception
-    {
-        initialize();
-        extractor.ngramMinN2 = 1;
-        extractor.ngramMaxN2 = 3;
-        extractor.useView2NgramsAsFeatures = true;
-        extractor.setLowerCase(true);
-        List<Feature> features = extractor.extract(jcas, null);
-        
-        assertEquals(features.size(), 7);
-        assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 1)));
-        assertTrue(features.contains(new Feature("view2NG_cats", 1)));
-    }
-    /**
-     * Tests if both View1 and View2 ngrams are being extracted as features.
-     * 
-     * @throws Exception
-     */
-//    @Test
-//    public void ViewBlindTypicalUseTest()
-//        throws Exception
-//    {
-//        initialize();
-//        extractor.setngramMinN(1);
-//        extractor.setngramMinN(3);
-//        extractor.useViewBlindNgramsAsFeatures = true;
-//        extractor.setLowerCase(true);
-//
-//        List<Feature> features = extractor.extract(jcas, null);
-//        
-//        for(Feature f: features){
-//        	System.out.println(f.getName() + "   " + f.getValue());
-//        }
-//        
-//        assertEquals(features.size(), 7);
-//        assertTrue(features.contains(new Feature("allNG_birds_chase_cats", 1)));
-//        assertTrue(features.contains(new Feature("allNG_cats_eat_mice", 1)));
-//        assertTrue(features.contains(new Feature("allNG_cats", 1)));
-//    }
-    /**
-     * Tests ngramLowerCase
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void AlphaCaseTest()
-        throws Exception
-    {
-        initialize();
-        extractor.ngramMinN2 = 1;
-        extractor.ngramMaxN2 = 3;
-        extractor.useView2NgramsAsFeatures = true;
-        extractor.setLowerCase(false);
-        List<Feature> features = extractor.extract(jcas, null);
-        
-        assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 0)));
-        assertTrue(features.contains(new Feature("view2NG_Birds_chase_cats", 1)));
-
-        initialize();
-        extractor.ngramMinN2 = 1;
-        extractor.ngramMaxN2 = 3;
-        extractor.useView2NgramsAsFeatures = true;
-        extractor.setLowerCase(true);
-        features = extractor.extract(jcas, null);
-        
-        assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 1)));
-        assertTrue(features.contains(new Feature("view2NG_Birds_chase_cats", 0)));
-    }
-    /**
-     * Tests non-default minN and maxN size values
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void MinMaxSizeTest()
-        throws Exception
-    {
-        initialize();
-        extractor.ngramMinN1 = 2;
-        extractor.ngramMaxN1 = 2;
-        extractor.useView1NgramsAsFeatures = true;
-        extractor.setLowerCase(true);
-        List<Feature> features = extractor.extract(jcas, null);
-
-        assertTrue(features.contains(new Feature("view1NG_cats_eat_mice", 0)));
-        assertTrue(features.contains(new Feature("view1NG_cats_eat", 1)));
-        assertTrue(features.contains(new Feature("view1NG_cats", 0)));
-    }
-    /**
-     * Tests the stopword list to make sure stopwords are not in ngrams.
-     * First part of test shows ngrams with stopwords are present, and 
-     * second part of test shows they have been removed.
-     * 
-     * @throws Exception
-     */
-  @Test
-  public void LeaveOutStopwordsTest()
-      throws Exception
-  {
-      initialize();
-      extractor.ngramMinN2 = 1;
-      extractor.ngramMaxN2 = 3;
-      extractor.useView2NgramsAsFeatures = true;
-      extractor.setLowerCase(true);
-      List<Feature> features = extractor.extract(jcas, null);
-      
-      //without stopword removal
-      assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 1)));
-      assertTrue(features.contains(new Feature("view2NG_cats", 1)));
-      assertTrue(features.contains(new Feature("view2NG_birds", 1)));
-
-      Set<String> stopwords = new HashSet<String>();
-      stopwords.add("cats");
-    	extractor.setStopwords(stopwords);
-      features = extractor.extract(jcas, null);
-      
-      //with stopword removal (filter partial matches)
-      assertFalse(features.contains(new Feature("view2NG_birds_chase_cats", 0)));
-      assertTrue(features.contains(new Feature("view2NG_cats", 0)));
-      assertTrue(features.contains(new Feature("view2NG_birds", 1)));
-      
-      extractor.setFilterPartialStopwordMatches(true);
-      features = extractor.extract(jcas, null);
-      
-      //with stopword removal (don't filter partial matches)
-      assertTrue(features.contains(new Feature("view2NG_birds_chase_cats", 0)));
-      assertTrue(features.contains(new Feature("view2NG_cats", 0)));
-      assertTrue(features.contains(new Feature("view2NG_birds", 1)));
-
-  }
   @Test
   public void CompareOldAndNewPairFETest()
       throws Exception

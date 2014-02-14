@@ -43,7 +43,6 @@ public abstract class PairNgramFETestBase
     	folder = new TemporaryFolder();
         lucenePath = folder.newFolder();
         outputPath = folder.newFolder();
-    	
     }
 
     protected void runPipeline()
@@ -89,16 +88,16 @@ public abstract class PairNgramFETestBase
 
         String arff = FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)).replace("{", "").replace("}", "");
 
-        System.out.println(arff);
+//        System.out.println(arff);
         
-        makeInstanceList(arff);
-        makeOutcomesList(arff);
-        makeFeatureNamesList(arff);
+        instanceList = makeInstanceList(arff);
+        outcomeList = makeOutcomesList(arff);
+        featureNames = makeFeatureNamesList(arff);
         
     }
-	private void makeInstanceList(String arff)
+	protected static List<List<String>> makeInstanceList(String arff)
 	{
-		instanceList = new ArrayList<List<String>>();
+		List<List<String>> instanceList = new ArrayList<List<String>>();
         String instancesString = arff.split("],")[0].replace("\"instanceList\":[", "");
         for(String instanceString: instancesString.split("]")){
         	if(instanceString.length() > 0){
@@ -109,10 +108,11 @@ public abstract class PairNgramFETestBase
         		instanceList.add(newInstance);
         	}
         }
+        return instanceList;
 	}
-	private void makeOutcomesList(String arff)
+	protected static List<List<String>> makeOutcomesList(String arff)
 	{
-		outcomeList = new ArrayList<List<String>>();
+		List<List<String>> outcomeList = new ArrayList<List<String>>();
         String outcomesString = arff.split("],")[1].replace("\"outcomeList\":[", "");
         for(String outcomeString: outcomesString.split("]")){
         	if(outcomeString.length() > 0){
@@ -123,14 +123,16 @@ public abstract class PairNgramFETestBase
         		outcomeList.add(newOutcome);
         	}
         }
+        return outcomeList;
 	}
-	private void makeFeatureNamesList(String arff)
+	protected static List<String> makeFeatureNamesList(String arff)
 	{
-		featureNames = new ArrayList<String>();
+		List<String> featureNames = new ArrayList<String>();
         String featuresString = arff.split("],")[2].replace("\"featureNames\":[", "").replace("]", "");
         for(String featureName: featuresString.split(",")){
         	featureNames.add(featureName.replace("\"", ""));
         }
+        return featureNames;
 	}
 	
 }
