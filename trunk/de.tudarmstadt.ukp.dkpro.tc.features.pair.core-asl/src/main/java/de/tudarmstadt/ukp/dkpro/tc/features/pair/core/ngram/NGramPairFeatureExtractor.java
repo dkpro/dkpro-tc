@@ -30,9 +30,9 @@ public class NGramPairFeatureExtractor
     {
         List<Feature> features = new ArrayList<Feature>();
 
-        prefix = new String("ngrams_" + view1.getViewName() + "_");
+        prefix = "ngrams_" + view1.getViewName() + "_";
         features.addAll(super.extract(view1, null));
-        prefix = new String("ngrams_" + view2.getViewName() + "_");
+        prefix = "ngrams_" + view2.getViewName() + "_";
         features.addAll(super.extract(view2, null));
         return features;
     }

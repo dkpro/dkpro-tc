@@ -57,8 +57,6 @@ public class LuceneNGramPairMetaCollector
     private boolean ngramLowerCase;
 	
 
-    
-    private FieldType fieldType;
     private Set<String> stopwords;
     
     @Override
