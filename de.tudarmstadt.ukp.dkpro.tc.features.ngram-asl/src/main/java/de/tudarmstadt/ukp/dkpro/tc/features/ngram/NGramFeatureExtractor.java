@@ -92,11 +92,8 @@ public class NGramFeatureExtractor
                 if (i >= ngramUseTopK) {
                     break;
                 }
-
-                if (key.length() >= ngramMinTokenLengthThreshold) {
-                	topNGrams.addSample(key, trainingFD.getCount(key));
-                    i++;
-                }
+            	topNGrams.addSample(key, trainingFD.getCount(key));
+                i++;
             }
         }
         

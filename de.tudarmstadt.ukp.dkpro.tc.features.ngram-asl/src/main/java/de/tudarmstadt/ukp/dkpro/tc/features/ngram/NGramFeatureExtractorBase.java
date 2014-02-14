@@ -55,13 +55,6 @@ public abstract class NGramFeatureExtractorBase
     public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
     @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
     protected boolean ngramLowerCase;
-    /**
-     * This is currently the number of characters in the ngram, i.e., ngram.length(), 
-     * including a token-separating character between each token.
-     */
-    public static final String PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD = "ngramMinTokenLengthThreshold";
-    @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = true, defaultValue = "1")
-    protected int ngramMinTokenLengthThreshold;
 
     protected Set<String> stopwords;
     protected FrequencyDistribution<String> topKSet;
