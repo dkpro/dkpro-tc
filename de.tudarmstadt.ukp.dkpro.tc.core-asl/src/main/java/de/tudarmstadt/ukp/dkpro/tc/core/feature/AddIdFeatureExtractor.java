@@ -31,6 +31,9 @@ public class AddIdFeatureExtractor
         throws TextClassificationException
     {
         String docId = DocumentMetaData.get(jcas).getDocumentId();
+        if (docId == null) {
+            throw new TextClassificationException("DocumentId cannot be empty");
+        }
 
         return Arrays.asList(new Feature(ID_FEATURE_NAME, docId));
     }
