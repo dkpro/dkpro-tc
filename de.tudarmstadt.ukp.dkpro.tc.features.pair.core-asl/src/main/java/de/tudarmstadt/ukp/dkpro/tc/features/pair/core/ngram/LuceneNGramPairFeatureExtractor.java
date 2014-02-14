@@ -118,13 +118,6 @@ public class LuceneNGramPairFeatureExtractor
     public static final String PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW = "markViewBlindNgramsWithLocalView";
     @ConfigurationParameter(name = PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, mandatory = false, defaultValue = "false")
     protected boolean markViewBlindNgramsWithLocalView;
-
-    /**
-     * Minimum token length for a token to be included as an ngram.
-     */
-    public static final String PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD = "pairNgramMinTokenLengthThreshold";
-    @ConfigurationParameter(name = PARAM_NGRAM_MIN_TOKEN_LENGTH_THRESHOLD, mandatory = true, defaultValue = "1")
-    protected int ngramMinTokenLengthThreshold;
     
     // These are only public so the MetaCollector can see them
     public static final String LUCENE_NGRAM_FIELD1 = "ngram1";
@@ -229,7 +222,6 @@ public class LuceneNGramPairFeatureExtractor
     	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
         
         MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(topNgramThreshold).create();
-
         IndexReader reader;
         try {
             reader = DirectoryReader.open(FSDirectory.open(luceneDir));
