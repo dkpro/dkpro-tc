@@ -49,12 +49,13 @@ public class NGramUtils
             for (Sentence s : selectCovered(jcas, Sentence.class, focusAnnotation)) {
                 for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(
                         Token.class, s)), minN, maxN)) {
+                	
+                	if(lowerCaseNGrams){
+                		ngram = lower(ngram);
+                	}
 
                     if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                         String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
-                        if (lowerCaseNGrams) {
-                            ngramString = ngramString.toLowerCase();
-                        }
                         annoNgrams.inc(ngramString);
                     }
                 }
@@ -64,12 +65,13 @@ public class NGramUtils
         else {
             for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
                     focusAnnotation)), minN, maxN)) {
+            	
+            	if(lowerCaseNGrams){
+            		ngram = lower(ngram);
+            	}
 
                 if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                     String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
-                    if (lowerCaseNGrams) {
-                        ngramString = ngramString.toLowerCase();
-                    }
                     annoNgrams.inc(ngramString);
                 }
             }
@@ -136,11 +138,12 @@ public class NGramUtils
             for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
                     s)), minN, maxN)) {
 
+            	if(lowerCaseNGrams){
+            		ngram = lower(ngram);
+            	}
+
                 if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                     String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
-                    if (lowerCaseNGrams) {
-                        ngramString = ngramString.toLowerCase();
-                    }
                     documentNgrams.inc(ngramString);
                 }
             }
@@ -221,15 +224,24 @@ public class NGramUtils
             for (List<String> ngram : new SkipNgramStringListIterable(
                     toText(selectCovered(Token.class, s)), minN, maxN, skipN))
             {
+            	if(lowerCaseNGrams){
+            		ngram = lower(ngram);
+            	}
+
                 if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                     String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
-                    if (lowerCaseNGrams) {
-                        ngramString = ngramString.toLowerCase();
-                    }
                     documentNgrams.inc(ngramString);
                 }
             }
         }
         return documentNgrams;
+    }
+    
+    public static List<String> lower(List<String> ngram){
+    	List<String> newNgram = new ArrayList<String>();
+    	for(String token: ngram){
+    		newNgram.add(token.toLowerCase());
+    	}
+    	return newNgram;
     }
 }
