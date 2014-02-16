@@ -216,13 +216,12 @@ public class NGramUtils
             boolean filterPartialMatches,
             int minN,
             int maxN,
-            int skipN,
             Set<String> stopwords)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
             for (List<String> ngram : new SkipNgramStringListIterable(
-                    toText(selectCovered(Token.class, s)), minN, maxN, skipN))
+                    toText(selectCovered(Token.class, s)), minN, maxN))
             {
             	if(lowerCaseNGrams){
             		ngram = lower(ngram);
