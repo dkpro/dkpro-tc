@@ -23,9 +23,6 @@ public class LuceneSkipNgramMetaCollector
 
     @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int maxN;
-
-    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractor.PARAM_SKIP_N, mandatory = true, defaultValue = "2")
-    private int skipN;
     
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     private String stopwordsFile;
@@ -57,7 +54,7 @@ public class LuceneSkipNgramMetaCollector
         throws AnalysisEngineProcessException
     {
         FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentSkipNgrams(
-                jcas, ngramLowerCase, filterPartialStopwordMatches, minN, maxN, skipN, stopwords);
+                jcas, ngramLowerCase, filterPartialStopwordMatches, minN, maxN, stopwords);
 
         for (String ngram : documentNGrams.getKeys()) {
             addField(jcas, LuceneSkipNgramFeatureExtractor.LUCENE_SKIP_NGRAM_FIELD, ngram); 
