@@ -27,6 +27,10 @@ public class LuceneSkipNgramFeatureExtractor
     @ConfigurationParameter(name = PARAM_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int skipMaxN;
 
+    public static final String PARAM_SKIP_SIZE = "skipSize";
+    @ConfigurationParameter(name = PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    private int skipSize;
+
     public static final String PARAM_SKIP_NGRAM_USE_TOP_K = "skipNgramUseTopK";
     @ConfigurationParameter(name = PARAM_SKIP_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     private int skipNgramUseTopK;
@@ -59,7 +63,7 @@ public class LuceneSkipNgramFeatureExtractor
     @Override
     protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
     {
-        return NGramUtils.getDocumentSkipNgrams(jcas, skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, stopwords);
+        return NGramUtils.getDocumentSkipNgrams(jcas, skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipSize, stopwords);
     }
 
     // FIXME didn't implement, as I think this should be removed anyway
