@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -86,6 +87,15 @@ public class CombinedNGramPairFeatureExtractor
     @ConfigurationParameter(name = PARAM_NGRAM_SYMMETRY_COMBO, mandatory = false, defaultValue = "false")
     protected boolean ngramUseSymmetricalCombos;
     
+    /**
+     * When a combo ngram occurs in a pair of documents, it is either marked with value 1 (binary)
+     * or with value (doc1freq * doc2freq) (non-binary).  Note this only applies to feature values;
+     * frequency selection of features is based on frequency across documents, not within documents.
+     */
+    public static final String PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO = "ngramBinaryFeatureValuesCombos";
+    @ConfigurationParameter(name = PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, mandatory = false, defaultValue = "true")
+    protected boolean ngramBinaryFeatureValuesCombos;
+    
     protected FrequencyDistribution<String> topKSetCombo;
 
     @Override
@@ -98,7 +108,7 @@ public class CombinedNGramPairFeatureExtractor
 
         topKSetCombo = getTopNgramsCombo();
         
-        prefix = "comboNG";
+        
 
         return true;
     }
@@ -113,9 +123,10 @@ public class CombinedNGramPairFeatureExtractor
         		AbstractPairReader.PART_TWO, jcas, classificationUnit);
         
         FrequencyDistribution<String> documentComboNgrams = NGramUtils.getCombinedNgrams(view1Ngrams,
-                view2Ngrams, ngramMinNCombo, ngramMaxNCombo, ngramUseSymmetricalCombos);
+                view2Ngrams, ngramMinNCombo, ngramMaxNCombo, ngramUseSymmetricalCombos, ngramBinaryFeatureValuesCombos);
          
         List<Feature> features = new ArrayList<Feature>();
+        prefix = "comboNG";
         features = addToFeatureArray(documentComboNgrams, topKSetCombo, features);
         
         return features;
@@ -139,17 +150,17 @@ public class CombinedNGramPairFeatureExtractor
 	          for (ScoreDoc hit : hits) {
 	                int docId = hit.doc;
 	                Document d = is.doc(docId);
-	                String[] ngramArray1 = d.getValues(LUCENE_NGRAM_FIELD1);
-	                String[] ngramArray2 = d.getValues(LUCENE_NGRAM_FIELD2);
-	                for(String ngram1: ngramArray1){
+	                FrequencyDistribution<String> ngramArray1 = toFD(d.getValues(LUCENE_NGRAM_FIELD1));
+	                FrequencyDistribution<String> ngramArray2 = toFD(d.getValues(LUCENE_NGRAM_FIELD2));
+	                for(String ngram1: ngramArray1.getKeys()){
 	                    if (topKSetView1.contains(ngram1) && topKSet.contains(ngram1)){
-	                        for(String ngram2: ngramArray2){
+	                        for(String ngram2: ngramArray2.getKeys()){
 	                            if (topKSetView2.contains(ngram2) && topKSet.contains(ngram2)){
 	                                int combinedSize = ngram1.split("_").length + ngram2.split("_").length;
 	                                if(combinedSize <= ngramMaxNCombo && combinedSize >= ngramMaxNCombo){
-	                                    topN.add(new TermFreqTuple(combo(ngram1, ngram2), 1));
+	                                    topN.add(new TermFreqTuple(ngram1 + ComboUtils.JOINT + ngram2, 1));
 	                                    if(ngramUseSymmetricalCombos){
-		                                    topN.add(new TermFreqTuple(combo(ngram2, ngram1), 1));
+		                                    topN.add(new TermFreqTuple(ngram2 + ComboUtils.JOINT + ngram1, 1));
 	                                    }
 	                                }
 	                            }
@@ -170,6 +181,14 @@ public class CombinedNGramPairFeatureExtractor
     	}
       
     	return topNGramsCombo;
+    }
+    
+    private static FrequencyDistribution<String> toFD(String[] ngramArray){
+    	FrequencyDistribution<String> ngramFD = new FrequencyDistribution<String>();
+    	for(String ngram: ngramArray){
+    		ngramFD.inc(ngram);
+    	}
+    	return ngramFD;
     }
     
     private String combo(String ngram1, String ngram2){

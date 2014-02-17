@@ -11,7 +11,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
 public class ComboUtils
 {
-	private static final String JOINT = "_";
+	public static final String JOINT = "_";
 	
     public static String combo(String prefix, String ngram1, String ngram2){
         return prefix + JOINT + ngram1 + JOINT + ngram2;
