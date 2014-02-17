@@ -2,8 +2,10 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
@@ -25,25 +27,25 @@ import org.paukov.combinatorics.ICombinatoricsVector;
  */
 public class SkipNgramStringListIterable implements Iterable<List<String>>
 {
-	List<List<String>> nGramList;
+	Set<List<String>> nGramSet;
 
-	public SkipNgramStringListIterable(Iterable<String> tokens, int minN, int maxN)
+	public SkipNgramStringListIterable(Iterable<String> tokens, int minN, int maxN, int skipN)
 	{
-		this.nGramList = createSkipNgramList(tokens, minN, maxN);
+		this.nGramSet = createSkipNgramSet(tokens, minN, maxN, skipN);
 	}
 	
-    public SkipNgramStringListIterable(String[] tokens, int minN, int maxN)
+    public SkipNgramStringListIterable(String[] tokens, int minN, int maxN, int skipN)
     {
-        this.nGramList = createSkipNgramList(Arrays.asList(tokens), minN, maxN);
+        this.nGramSet = createSkipNgramSet(Arrays.asList(tokens), minN, maxN, skipN);
     }
 
 	@Override
 	public Iterator<List<String>> iterator()
 	{
-		return nGramList.iterator();
+		return nGramSet.iterator();
 	}
 
-	private List<List<String>> createSkipNgramList(Iterable<String> tokens, int minN, int maxN)
+	private Set<List<String>> createSkipNgramSet(Iterable<String> tokens, int minN, int maxN, int skipN)
 	{
         if (minN > maxN) {
             throw new IllegalArgumentException("minN needs to be smaller or equal than maxN.");
@@ -52,8 +54,12 @@ public class SkipNgramStringListIterable implements Iterable<List<String>>
         if (minN < 2) {
             throw new IllegalArgumentException("minN needs to be greater than 1. Not much to skip in unigrams :)");
         }
+        
+        if (skipN < 1) {
+            throw new IllegalArgumentException("skipN needs to be greater than 0. Would be identical to normal grams.");
+        }
 
-		List<List<String>> nGrams = new ArrayList<List<String>>();
+		Set<List<String>> nGrams = new HashSet<List<String>>();
 
 		// fill token list
 		List<String> tokenList = new ArrayList<String>();
@@ -67,7 +73,7 @@ public class SkipNgramStringListIterable implements Iterable<List<String>>
 			if (tokenList.size() < k) {
 				break;
 			}
-		    nGrams.addAll(getSkipNgrams(tokenList, k));
+		    nGrams.addAll(getSkipNgrams(tokenList, k, skipN));
 		}
 
 		return nGrams;
@@ -109,16 +115,27 @@ public class SkipNgramStringListIterable implements Iterable<List<String>>
 //        return nGrams;
 //    }
     
-    private List<List<String>> getSkipNgrams(List<String> tokenList, int n) {
-        List<List<String>> nGrams = new ArrayList<List<String>>();
+    private Set<List<String>> getSkipNgrams(List<String> tokenList, int n, int skipN) {
+        Set<List<String>> nGrams = new HashSet<List<String>>();
         
-        // generate all permutations
-        ICombinatoricsVector<String> initialSet = Factory.createVector(tokenList);
-        Generator<String> gen = Factory.createSubSetGenerator(initialSet);
-        for (ICombinatoricsVector<String> subSet : gen) {
-           if (subSet.getSize() == n) {
-               nGrams.add(subSet.getVector());
-           }
+        // iterate over each position in the tokenlist where skip ngrams can be generated 
+        int size = tokenList.size();
+        for (int start = 0; start < size - n; start++) {
+            int end = start + n + skipN;
+            
+            if (end > size) {
+                end = size;
+            }
+            List<String> sublist = tokenList.subList(start, end);
+            
+            // generate all permutations between start & end
+            ICombinatoricsVector<String> initialSet = Factory.createVector(sublist);
+            Generator<String> gen = Factory.createSubSetGenerator(initialSet);
+            for (ICombinatoricsVector<String> subSet : gen) {
+               if (subSet.getSize() == n) {
+                   nGrams.add(subSet.getVector());
+               }
+            }
         }
         
         return nGrams;
