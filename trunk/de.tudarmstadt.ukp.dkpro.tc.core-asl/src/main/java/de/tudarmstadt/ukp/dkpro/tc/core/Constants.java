@@ -54,7 +54,7 @@ public interface Constants
     /*
      * Mainly for reports
      */
-    public static final String EVAL_FILE_NAME = "evalulation_results";
+    public static final String EVAL_FILE_NAME = "evaluation_results";
     public static final String SUFFIX_EXCEL = ".xls";
     public static final String SUFFIX_CSV = ".csv";
 
