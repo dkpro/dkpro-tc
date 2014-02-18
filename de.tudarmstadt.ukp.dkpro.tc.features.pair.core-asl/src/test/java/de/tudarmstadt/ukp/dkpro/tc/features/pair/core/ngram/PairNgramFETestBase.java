@@ -14,6 +14,7 @@ import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.gson.Gson;
@@ -38,6 +39,8 @@ public abstract class PairNgramFETestBase
     protected File lucenePath;
     protected File outputPath;
     protected Object[] parameters;
+    protected AnalysisEngineDescription metaCollector;
+    protected AnalysisEngineDescription featExtractorConnector;
     
     protected void initialize() throws Exception{
     	folder = new TemporaryFolder();
@@ -56,24 +59,14 @@ public abstract class PairNgramFETestBase
         );
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
-        
+
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_ONE);
         builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
-        
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramPairMetaCollector.class,
-                parameterList.toArray()
-        );
 
-        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList,
-                outputPath.getAbsolutePath(),
-                JsonDataWriter.class.getName(),
-                false,
-                false,
-                LuceneNGramPairFeatureExtractor.class.getName()
-        );
+        getMetaCollector(parameterList);
+
+        getFeatureExtractorCollector(parameterList);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), metaCollector);
@@ -95,6 +88,18 @@ public abstract class PairNgramFETestBase
         featureNames = makeFeatureNamesList(arff);
         
     }
+	protected abstract void getFeatureExtractorCollector(List<Object> parameterList)
+		throws ResourceInitializationException;
+
+    //can be overwritten
+	protected void getMetaCollector(List<Object> parameterList)
+		throws ResourceInitializationException
+	{
+		metaCollector = AnalysisEngineFactory.createEngineDescription(
+                LuceneNGramPairMetaCollector.class,
+                parameterList.toArray()
+        );
+	}
 	protected static List<List<String>> makeInstanceList(String arff)
 	{
 		List<List<String>> instanceList = new ArrayList<List<String>>();

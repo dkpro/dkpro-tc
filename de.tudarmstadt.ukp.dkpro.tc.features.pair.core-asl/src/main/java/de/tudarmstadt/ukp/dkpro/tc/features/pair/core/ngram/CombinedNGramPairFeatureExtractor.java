@@ -73,28 +73,15 @@ public class CombinedNGramPairFeatureExtractor
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K_COMBO, mandatory = false, defaultValue = "500")
     protected int ngramUseTopKCombo;    
     /**
-     * All combinations with a frequency above this value will be used.
-     */
-    public static final String PARAM_NGRAM_FREQ_THRESHOLD_COMBO = "ngramFreqThresholdCombo";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD_COMBO, mandatory = false, defaultValue = "0.01")
-    protected float ngramFreqThresholdCombo;
-    /**
      * If true, both orderings of ngram combinations will be used.<br />
      * Example: If ngram 'cat' comes from Document 1, and ngram 'dog' comes from Document 2,
      * then when this param = true, the features comboNG_cat_dog AND comboNG_dog_cat are produced.
      */
-    public static final String PARAM_NGRAM_SYMMETRY_COMBO = "ngramUseSymmetircalCombos";
+    public static final String PARAM_NGRAM_SYMMETRY_COMBO = "ngramUseSymmetricalCombos";
     @ConfigurationParameter(name = PARAM_NGRAM_SYMMETRY_COMBO, mandatory = false, defaultValue = "false")
     protected boolean ngramUseSymmetricalCombos;
     
-    /**
-     * When a combo ngram occurs in a pair of documents, it is either marked with value 1 (binary)
-     * or with value (doc1freq * doc2freq) (non-binary).  Note this only applies to feature values;
-     * frequency selection of features is based on frequency across documents, not within documents.
-     */
-    public static final String PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO = "ngramBinaryFeatureValuesCombos";
-    @ConfigurationParameter(name = PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, mandatory = false, defaultValue = "true")
-    protected boolean ngramBinaryFeatureValuesCombos;
+
     
     protected FrequencyDistribution<String> topKSetCombo;
 
@@ -105,11 +92,7 @@ public class CombinedNGramPairFeatureExtractor
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-
         topKSetCombo = getTopNgramsCombo();
-        
-        
-
         return true;
     }
     
@@ -122,9 +105,9 @@ public class CombinedNGramPairFeatureExtractor
         FrequencyDistribution<String> view2Ngrams = getViewNgrams(
         		AbstractPairReader.PART_TWO, jcas, classificationUnit);
         
-        FrequencyDistribution<String> documentComboNgrams = NGramUtils.getCombinedNgrams(view1Ngrams,
-                view2Ngrams, ngramMinNCombo, ngramMaxNCombo, ngramUseSymmetricalCombos, ngramBinaryFeatureValuesCombos);
-         
+        FrequencyDistribution<String> documentComboNgrams = ComboUtils.getCombinedNgrams(view1Ngrams,
+                view2Ngrams, ngramMinNCombo, ngramMaxNCombo, ngramUseSymmetricalCombos);
+        
         List<Feature> features = new ArrayList<Feature>();
         prefix = "comboNG";
         features = addToFeatureArray(documentComboNgrams, topKSetCombo, features);
@@ -157,11 +140,9 @@ public class CombinedNGramPairFeatureExtractor
 	                        for(String ngram2: ngramArray2.getKeys()){
 	                            if (topKSetView2.contains(ngram2) && topKSet.contains(ngram2)){
 	                                int combinedSize = ngram1.split("_").length + ngram2.split("_").length;
-	                                if(combinedSize <= ngramMaxNCombo && combinedSize >= ngramMaxNCombo){
+	                                if(combinedSize <= ngramMaxNCombo && combinedSize >= ngramMinNCombo){
+	                                	// keep value 1, for doc freq and not total term freq
 	                                    topN.add(new TermFreqTuple(ngram1 + ComboUtils.JOINT + ngram2, 1));
-	                                    if(ngramUseSymmetricalCombos){
-		                                    topN.add(new TermFreqTuple(ngram2 + ComboUtils.JOINT + ngram1, 1));
-	                                    }
 	                                }
 	                            }
 	                        }
@@ -179,7 +160,6 @@ public class CombinedNGramPairFeatureExtractor
 //          System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
     		topNGramsCombo.addSample(tuple.getTerm(), tuple.getFreq());
     	}
-      
     	return topNGramsCombo;
     }
     
@@ -191,7 +171,4 @@ public class CombinedNGramPairFeatureExtractor
     	return ngramFD;
     }
     
-    private String combo(String ngram1, String ngram2){
-        return ComboUtils.combo(prefix, ngram1, ngram2);
-    }
 }
