@@ -118,6 +118,15 @@ public class LuceneNGramPairFeatureExtractor
     public static final String PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW = "markViewBlindNgramsWithLocalView";
     @ConfigurationParameter(name = PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, mandatory = false, defaultValue = "false")
     protected boolean markViewBlindNgramsWithLocalView;
+    /**
+     * Whether features should be marked with binary (occurs, doesn't occur in this document pair)
+     * values, versus the document count of the feature.  In combo ngrams this is (doc1freq * doc2freq).
+     * Note this only applies to feature values;
+     * frequency selection of features is based on frequency across documents, not within documents.
+     */
+    public static final String PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO = "ngramBinaryFeatureValuesCombos";
+    @ConfigurationParameter(name = PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, mandatory = false, defaultValue = "true")
+    protected boolean ngramBinaryFeatureValuesCombos;
     
     // These are only public so the MetaCollector can see them
     public static final String LUCENE_NGRAM_FIELD1 = "ngram1";
@@ -187,10 +196,14 @@ public class LuceneNGramPairFeatureExtractor
 			List<Feature> features)
 	{
 		for(String ngram: topKSet.getKeys()){
+			long value = 1;
+			if(!ngramBinaryFeatureValuesCombos){
+				value = viewNgrams.getCount(ngram);
+			}
 			if(viewNgrams.contains(ngram)){
-				features.add(new Feature(ComboUtils.combo(prefix, ngram), 1));
+				features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, value));
 			}else{
-				features.add(new Feature(ComboUtils.combo(prefix, ngram), 0));
+				features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, 0));
 			}
 		}
 		return features;

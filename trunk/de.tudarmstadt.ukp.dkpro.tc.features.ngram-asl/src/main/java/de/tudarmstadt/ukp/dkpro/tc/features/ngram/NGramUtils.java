@@ -22,7 +22,9 @@ import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 
 public class NGramUtils
 {
-
+	/**
+	 * This is the character for joining strings for pair ngrams.
+	 */
     public static String NGRAM_GLUE = "_";
     
     public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation focusAnnotation,
@@ -79,49 +81,6 @@ public class NGramUtils
         return annoNgrams;
     }
 
-    /**
-     * Get combinations of ngrams from a pair of documents.
-     * 
-     * @param document1NGrams
-     *            ngrams from document 1
-     * @param document2NGrams
-     *            ngrams from document 2
-     * @param minN
-     *            minimum size for a new combined ngram
-     * @param maxN
-     *            max size for a new combined ngram
-     * @return
-     */
-    public static FrequencyDistribution<String> getCombinedNgrams(
-            FrequencyDistribution<String> document1NGrams,
-            FrequencyDistribution<String> document2NGrams, 
-            int minN, 
-            int maxN, 
-            boolean ngramUseSymmetricalCombos,
-            boolean ngramBinaryFeatureValuesCombos
-            )
-    {
-        FrequencyDistribution<String> documentComboNGrams = new FrequencyDistribution<String>();
-        for (String ngram1 : document1NGrams.getKeys()) {
-            int ngram1size = StringUtils.countMatches(ngram1, NGRAM_GLUE) + 1;
-            for (String ngram2 : document2NGrams.getKeys()) {
-                int ngram2size = StringUtils.countMatches(ngram2, NGRAM_GLUE) + 1;
-                if (ngram1size + ngram2size >= minN && ngram1size + ngram2size <= maxN) {
-                	long value = 1;
-                	if(!ngramBinaryFeatureValuesCombos){
-                		value = document1NGrams.getCount(ngram1) * document2NGrams.getCount(ngram2);
-                	}
-                    String comboNgram = ngram1 + NGRAM_GLUE + ngram2;
-                    documentComboNGrams.addSample(comboNgram, value);
-                    if(ngramUseSymmetricalCombos){
-                    	comboNgram = ngram2 + NGRAM_GLUE + ngram1;
-                    	documentComboNGrams.addSample(comboNgram, value);
-                    }
-                }
-            }
-        }
-        return documentComboNGrams;
-    }
 
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)

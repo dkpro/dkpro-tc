@@ -16,6 +16,7 @@ import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -249,4 +250,16 @@ public class PairNgramPipelineTest
         	assertEquals(1, Integer.parseInt(value));
         }
 	}
+	protected void getFeatureExtractorCollector(List<Object> parameterList)
+			throws ResourceInitializationException
+		{
+			featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+	                parameterList,
+	                outputPath.getAbsolutePath(),
+	                JsonDataWriter.class.getName(),
+	                false,
+	                false,
+	                LuceneNGramPairFeatureExtractor.class.getName()
+	        );
+		}
 }
