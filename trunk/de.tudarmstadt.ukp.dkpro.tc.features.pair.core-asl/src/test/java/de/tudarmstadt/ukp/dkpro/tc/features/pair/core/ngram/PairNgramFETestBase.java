@@ -47,6 +47,9 @@ public abstract class PairNgramFETestBase
         lucenePath = folder.newFolder();
         outputPath = folder.newFolder();
     }
+    protected String setTestPairsLocation(){
+    	return "src/test/resources/data/textpairs.txt";
+    }
 
     protected void runPipeline()
             throws Exception
@@ -55,7 +58,7 @@ public abstract class PairNgramFETestBase
                
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestPairReader.class, 
-                TestPairReader.PARAM_INPUT_FILE, "src/test/resources/data/textpairs.txt"
+                TestPairReader.PARAM_INPUT_FILE, setTestPairsLocation()
         );
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
