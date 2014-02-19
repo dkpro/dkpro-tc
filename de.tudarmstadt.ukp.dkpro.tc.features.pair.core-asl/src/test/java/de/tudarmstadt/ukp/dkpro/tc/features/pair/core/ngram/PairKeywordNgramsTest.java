@@ -1,0 +1,80 @@
+package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.junit.Test;
+
+import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.PairNgramFETestBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
+
+public class PairKeywordNgramsTest
+	extends PairNgramFETestBase
+{
+	@Test
+	public void testView1Features() throws Exception{
+		PairKeywordNgramsTest test = new PairKeywordNgramsTest();
+		test.initialize();
+        test.parameters = new Object[] {
+        		KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 1,
+        		KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 1,
+        		KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 1,
+        		KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 1,
+        		KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N, 1,
+        		KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N, 1,
+        		KeywordNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
+        		KeywordNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
+        		KeywordNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,true,
+        		KeywordNGramFeatureExtractor.PARAM_NGRAM_KEYWORDS_FILE, "src/test/resources/data/keywordlist.txt",
+        		KeywordNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath
+        };
+        test.runPipeline();
+        assertEquals(test.featureNames.size(), 14);
+        assertTrue(test.featureNames.contains("keyNG1_peach"));
+        assertTrue(test.featureNames.contains("keyNG2_SB"));
+        assertTrue(test.featureNames.contains("keyNG_nectarine"));
+        assertTrue(!test.featureNames.contains("keyNG2_cherry"));
+        for(String value: test.instanceList.get(0)){
+        	assertEquals(1, Integer.parseInt(value));
+        }
+        for(String f: test.featureNames){
+        	System.out.println("feature: " + f);
+        }
+	}
+	
+	@Override
+    protected String setTestPairsLocation(){
+    	return "src/test/resources/data/keywordNgramsData.txt";
+    }
+	
+	protected void getFeatureExtractorCollector(List<Object> parameterList)
+			throws ResourceInitializationException
+		{
+			featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+	                parameterList,
+	                outputPath.getAbsolutePath(),
+	                JsonDataWriter.class.getName(),
+	                false,
+	                false,
+	                KeywordNGramPairFeatureExtractor.class.getName()
+	        );
+		}
+    //can be overwritten
+	protected void getMetaCollector(List<Object> parameterList)
+		throws ResourceInitializationException
+	{
+		metaCollector = AnalysisEngineFactory.createEngineDescription(
+                KeywordNGramPairMetaCollector.class,
+                parameterList.toArray()
+        );
+	}
+
+}
