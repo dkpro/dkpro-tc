@@ -78,42 +78,6 @@ public class SkipNgramStringListIterable implements Iterable<List<String>>
 
 		return nGrams;
 	}
-
-//	private List<List<String>> getSkipNgrams(List<String> tokenList, int n, int skipN)
-//	{
-//		List<List<String>> nGrams = new ArrayList<List<String>>();
-//
-//		int size = tokenList.size();
-//        for (int s = 1; s <= skipN; s++) {
-//            for (int i = 0; i < (size - n - s); i++) {
-//                List<String> skipNgram = new ArrayList<String>();
-//                skipNgram.add(tokenList.get(i));
-//                skipNgram.addAll(tokenList.subList(i + s + 1, i + s + n));
-//                
-//                nGrams.add(skipNgram);
-//            }
-//        }
-//
-//		return nGrams;
-//	}
-	
-//    private List<List<String>> getSkipNgrams(List<String> tokenList, int n, int skipN)
-//    {
-//        List<List<String>> nGrams = new ArrayList<List<String>>();
-//
-//        // iterate over each position in the tokenlist where skip ngrams can be generated 
-//        int size = tokenList.size();
-//        for (int start = 0; start < size - n; start++) {
-//            // iterate over all possible end offsets
-//            for (int end = start + skipN + 1; end < size; end++) {
-//                System.out.println(start + " - " + end);
-//                // generate all possible skip ngrams between start and end offsets
-//                nGrams.addAll(generateSkipNgrams(tokenList.subList(start, end), n, skipN));
-//            }
-//        }
-//
-//        return nGrams;
-//    }
     
     private Set<List<String>> getSkipNgrams(List<String> tokenList, int n, int skipN) {
         Set<List<String>> nGrams = new HashSet<List<String>>();
