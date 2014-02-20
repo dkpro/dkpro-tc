@@ -34,7 +34,7 @@ public class NGramMetaCollectorTest
                 TextReader.class, 
                 TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/data/",
                 TextReader.PARAM_LANGUAGE, "en",
-                TextReader.PARAM_PATTERNS, "*.txt"
+                TextReader.PARAM_PATTERNS, "text*.txt"
         );
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
