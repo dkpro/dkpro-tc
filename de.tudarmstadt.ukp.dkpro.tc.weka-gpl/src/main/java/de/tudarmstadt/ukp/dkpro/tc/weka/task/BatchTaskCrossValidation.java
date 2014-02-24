@@ -34,10 +34,10 @@ public class BatchTaskCrossValidation
     extends BatchTask
 {
 
-    private String experimentName;
+    protected String experimentName;
     private AnalysisEngineDescription aggregate;
     private List<String> operativeViews;
-    private int numFolds = 10;
+    protected int numFolds = 10;
     private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
 
@@ -205,6 +205,10 @@ public class BatchTaskCrossValidation
     {
         init();
         super.execute(aContext);
+    }
+    
+    protected FoldDimensionBundle<String> getFoldDim(String[] fileNames) {
+    	return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
     }
 
     public void setExperimentName(String experimentName)
