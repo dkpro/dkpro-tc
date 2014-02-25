@@ -3,9 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.demo.regression.io;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
@@ -18,12 +16,12 @@ import org.apache.uima.util.ProgressImpl;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
+import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class STSReader
     extends AbstractPairReader
-    implements TCReaderMultiLabel
+    implements TCReaderSingleLabel
 {
 
     public static final String PARAM_INPUT_FILE = "InputFile";
@@ -97,11 +95,9 @@ public class STSReader
     {
         super.getNext(jcas);
 
-        for (String outcomeValue : getTextClassificationOutcomes(jcas)) {
-            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-            outcome.setOutcome(outcomeValue);
-            outcome.addToIndexes();
-        }
+        TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+        outcome.setOutcome(getTextClassificationOutcome(jcas));
+        outcome.addToIndexes();
 
         // as we are creating more than one CAS out of a single file, we need to have different
         // document titles and URIs for each CAS
@@ -168,10 +164,8 @@ public class STSReader
     }
 
     @Override
-    public Set<String> getTextClassificationOutcomes(JCas jcas)
+    public String getTextClassificationOutcome(JCas jcas)
     {
-        Set<String> outcomes = new HashSet<String>();
-        outcomes.add(golds.get(fileOffset).toString());
-        return outcomes;
+        return golds.get(fileOffset).toString();
     }
 }
