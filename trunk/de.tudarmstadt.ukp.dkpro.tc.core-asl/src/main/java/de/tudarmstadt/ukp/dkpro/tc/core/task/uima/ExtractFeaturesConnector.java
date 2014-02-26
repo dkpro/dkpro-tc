@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
@@ -15,20 +14,18 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
@@ -45,10 +42,6 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
     private File outputDirectory;
 
-    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
-    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true)
-    protected boolean addInstanceId;
-
     public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -57,9 +50,17 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
-    public static final String PARAM_IS_REGRESSION_EXPERIMENT = "isRegressionExperiment";
-    @ConfigurationParameter(name = PARAM_IS_REGRESSION_EXPERIMENT, mandatory = true, defaultValue = "false")
-    private boolean isRegressionExperiment;
+    public static final String PARAM_LEARNING_MODE = "learningMode";
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
+
+    public static final String PARAM_FEATURE_MODE = "featureMode";
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
+
+    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
+    private boolean addInstanceId;
 
     protected FeatureStore featureStore;
 
@@ -81,54 +82,17 @@ public class ExtractFeaturesConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        Instance instance = new Instance();
-        for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-            try {
-                if (featExt instanceof PairFeatureExtractor) {
-                    JCas view1 = jcas.getView(Constants.PART_ONE);
-                    JCas view2 = jcas.getView(Constants.PART_TWO);
-                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
-                }
-                else if (featExt instanceof DocumentFeatureExtractor) {
-                    instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
-                }
-                // FIXME what to do when a feature extractor is both PairFE and
-                // ClassificationUnitFE?
-                else if (featExt instanceof ClassificationUnitFeatureExtractor) {
-                    TextClassificationUnit classificationUnit = null;
-                    Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
-                            TextClassificationUnit.class);
-                    if (classificationUnits.size() == 1) {
-                        classificationUnit = classificationUnits.iterator().next();
-                    }
-                    else if (classificationUnits.size() > 1) {
-                        throw new AnalysisEngineProcessException(
-                                "There are more than one TextClassificationUnit anotations in the JCas.",
-                                null);
-                    }
-                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, classificationUnit));
-                }
-
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (CASException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
+        Instance instance = TaskUtils.extractFeatures(jcas, featureExtractors, featureMode);
 
         if (addInstanceId) {
+            DocumentFeatureExtractor extractor = new AddIdFeatureExtractor();
             try {
-                DocumentFeatureExtractor extractor = new AddIdFeatureExtractor();
                 instance.addFeatures(extractor.extract(jcas));
             }
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
             }
         }
-
         Collection<TextClassificationOutcome> outcome = JCasUtil.select(jcas,
                 TextClassificationOutcome.class);
 
@@ -157,7 +121,7 @@ public class ExtractFeaturesConnector
         // addInstanceId requires dense instances, thus reuse boolean
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, featureStore, addInstanceId, isRegressionExperiment);
+            writer.write(outputDirectory, featureStore, true, learningMode);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

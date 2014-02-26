@@ -51,49 +51,32 @@ public class ExtractFeaturesTask
     @Discriminator
     private Collection<String> files_validation;
     @Discriminator
-    private boolean isRegressionExperiment;
+    private String learningMode;
+    @Discriminator
+    private String featureMode;
     @Discriminator
     private String dataWriter;
 
     private boolean isTesting = false;
-    private boolean addInstanceId = false;
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
     private Set<String> requiredTypes;
-    protected String featureAnnotation;
 
-    public String getFeatureAnnotation()
-    {
-        return this.featureAnnotation;
-    }
+    // protected String featureAnnotation;
 
-    public void setFeatureAnnotation(String featureAnnotation)
-    {
-        this.featureAnnotation = featureAnnotation;
-    }
+    // TODO do we need this?
+    // public String getFeatureAnnotation()
+    // {
+    // return this.featureAnnotation;
+    // }
+    //
+    // public void setFeatureAnnotation(String featureAnnotation)
+    // {
+    // this.featureAnnotation = featureAnnotation;
+    // }
 
     public String getDataWriter()
     {
         return dataWriter;
-    }
-
-    public boolean isRegressionExperiment()
-    {
-        return isRegressionExperiment;
-    }
-
-    public void setRegressionExperiment(boolean isRegressionExperiment)
-    {
-        this.isRegressionExperiment = isRegressionExperiment;
-    }
-
-    public boolean getAddInstanceId()
-    {
-        return addInstanceId;
-    }
-
-    public void setAddInstanceId(boolean aAddInstanceId)
-    {
-        addInstanceId = aAddInstanceId;
     }
 
     public void setTesting(boolean isTesting)
@@ -137,27 +120,23 @@ public class ExtractFeaturesTask
             }
         }
 
-        // the following file location is specific to the FE task, so it cannot be added to the global parameter space
+        // the following file location is specific to the FE task, so it cannot be added to the
+        // global parameter space
         List<Object> parametersCopy = new ArrayList<Object>();
         if (pipelineParameters != null) {
             parametersCopy.addAll(pipelineParameters);
         }
 
         for (String key : parameterKeyPairs.keySet()) {
-            File file = new File(aContext.getStorageLocation(
-                    META_KEY, AccessMode.READONLY), parameterKeyPairs.get(key));
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
+                    parameterKeyPairs.get(key));
             parametersCopy.addAll(Arrays.asList(key, file.getAbsolutePath()));
         }
 
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                parametersCopy,
-                outputDir.getAbsolutePath(),
-                dataWriter,
-                isRegressionExperiment,
-                addInstanceId,
-                featureSet.toArray(new String[0])
-        );
-        
+                parametersCopy, outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
+                true, featureSet.toArray(new String[0]));
+
         return connector;
     }
 

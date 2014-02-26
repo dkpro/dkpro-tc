@@ -4,9 +4,9 @@ import org.apache.uima.cas.CAS;
 
 /**
  * Basic constants that are used throughout the project
- *
+ * 
  * @author zesch
- *
+ * 
  */
 public interface Constants
 {
@@ -26,7 +26,7 @@ public interface Constants
     public static final String CLASS_ATTRIBUTE_NAME = "outcome";
 
     public static final int LEAVE_ONE_OUT = -1;
-    
+
     /*
      * Discriminators
      */
@@ -42,14 +42,32 @@ public interface Constants
 
     public static final String DIM_CLASSIFICATION_ARGS = "classificationArguments";
 
-    public static final String DIM_IS_REGRESSION = "isRegressionExperiment";
-    public static final String DIM_IS_PAIR_CLASSIFICATION = "isPairClassification";
-    public static final String DIM_MULTI_LABEL = "multiLabel";
     public static final String DIM_BIPARTITION_THRESHOLD = "threshold";
-    public static final String DIM_LOWER_CASE = "lowerCase";
-    public static final String DIM_IS_UNIT_CLASSIFICATION = "isUnitClassification";
+
+    // public static final String DIM_IS_REGRESSION = "isRegressionExperiment";
+    // public static final String DIM_IS_PAIR_CLASSIFICATION = "isPairClassification";
+    // public static final String DIM_MULTI_LABEL = "multiLabel";
+
+    // public static final String DIM_LOWER_CASE = "lowerCase";
+    // public static final String DIM_IS_UNIT_CLASSIFICATION = "isUnitClassification";
 
     public static final String DIM_DATA_WRITER = "dataWriter";
+
+    /*
+     * Learning modes
+     */
+    public static final String DIM_LEARNING_MODE = "learningMode";
+    public static final String LM_SINGLE_LABEL = "singleLabel";
+    public static final String LM_MULTI_LABEL = "multilabel";
+    public static final String LM_REGRESSION = "regression";
+
+    /*
+     * feature modes
+     */
+    public static final String DIM_FEATURE_MODE = "featureMode";
+    public static final String FM_DOCUMENT = "document";
+    public static final String FM_UNIT = "unit";
+    public static final String FM_PAIR = "pair";
 
     /*
      * Mainly for reports

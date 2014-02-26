@@ -13,6 +13,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
@@ -31,38 +35,35 @@ public class ValidityCheckConnector
     extends JCasAnnotator_ImplBase
 {
 
-    public static final String PARAM_IS_REGRESSION = "isRegression";
-    @ConfigurationParameter(name = PARAM_IS_REGRESSION, mandatory = true)
-    private boolean isRegression;
-
-    public static final String PARAM_IS_MULTILABEL = "isMultiLabel";
-    @ConfigurationParameter(name = PARAM_IS_MULTILABEL, mandatory = true)
-    private boolean isMultiLabel;
-
-    public static final String PARAM_IS_UNIT_CLASSIFICATION = "isUnitClassification";
-    @ConfigurationParameter(name = PARAM_IS_UNIT_CLASSIFICATION, mandatory = true)
-    private boolean isUnitClassification;
-
     public static final String PARAM_DATA_WRITER = "dataWriter";
     @ConfigurationParameter(name = PARAM_DATA_WRITER, mandatory = true)
     private String dataWriter;
+
+    public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
+    @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected String[] featureExtractors;
 
     public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
     @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = false)
     private String bipartitionThreshold;
 
-    public static final String PARAM_IS_PAIR_CLASSIFICATION = "isPairClassification";
-    @ConfigurationParameter(name = PARAM_IS_PAIR_CLASSIFICATION, mandatory = true)
-    private boolean isPairClassification;
+    public static final String PARAM_LEARNING_MODE = "learningMode";
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
+
+    public static final String PARAM_FEATURE_MODE = "featureMode";
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
 
     private boolean firstCall;
+    private int featureModeI;
+    private int learningModeI;
 
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-
         firstCall = true;
     }
 
@@ -74,6 +75,35 @@ public class ValidityCheckConnector
         // make sure this class is only called once per pipeline
         if (firstCall) {
             firstCall = false;
+
+            if (DocumentMetaData.get(jcas).getDocumentId() == null) {
+                throw new AnalysisEngineProcessException(new TextClassificationException(
+                        "Please set a Document ID for all of your input files."));
+            }
+
+            if (featureModeI == 0) {
+                if (featureMode.equals(Constants.FM_DOCUMENT))
+                    featureModeI = 1;
+                else if (featureMode.equals(Constants.FM_UNIT))
+                    featureModeI = 2;
+                else if (featureMode.equals(Constants.FM_PAIR))
+                    featureModeI = 3;
+                else
+                    throw new AnalysisEngineProcessException(new TextClassificationException(
+                            "Please set a valid feature mode"));
+            }
+
+            if (learningModeI == 0) {
+                if (learningMode.equals(Constants.LM_SINGLE_LABEL))
+                    learningModeI = 1;
+                else if (learningMode.equals(Constants.LM_MULTI_LABEL))
+                    learningModeI = 2;
+                else if (learningMode.equals(Constants.LM_REGRESSION))
+                    learningModeI = 3;
+                else
+                    throw new AnalysisEngineProcessException(new TextClassificationException(
+                            "Please set a valid learning mode"));
+            }
 
             getLogger().log(Level.INFO, "--- checking validity of experiment setup ---");
 
@@ -91,7 +121,7 @@ public class ValidityCheckConnector
             }
 
             // iff multi-label classification is active, no single-label data writer may be used
-            if (isMultiLabel) {
+            if (learningModeI == 2) {
                 if (dataWriter.equals(Constants.WEKA_DATA_WRITER_NAME)) {
                     throw new AnalysisEngineProcessException(
                             new TextClassificationException(
@@ -106,7 +136,7 @@ public class ValidityCheckConnector
 
             // iff single-label is configured, there may not be more than one outcome annotation per
             // CAS, except this is the unit classification
-            if (!isMultiLabel && !isUnitClassification && outcomes.size() > 2) {
+            if (learningModeI != 2 && featureModeI != 2 && outcomes.size() > 2) {
                 throw new AnalysisEngineProcessException(
                         new TextClassificationException(
                                 "Your experiment is configured to be single-label, but I found more than one outcome annotation for "
@@ -116,7 +146,7 @@ public class ValidityCheckConnector
 
             // iff unit classification is active, there must be classificationUnit annotations, each
             // labeled with an outcome annotation
-            if (isUnitClassification) {
+            if (featureModeI == 2) {
                 if (classificationUnits.size() == 0) {
                     throw new AnalysisEngineProcessException(
                             new TextClassificationException(
@@ -136,8 +166,8 @@ public class ValidityCheckConnector
                 }
             }
 
-            // iff
-            if (isPairClassification) {
+            // iff pair classification is set, 2 views need to be present
+            if (featureModeI == 3) {
                 try {
                     jcas.getView(AbstractPairReader.PART_ONE);
                     jcas.getView(AbstractPairReader.PART_TWO);
@@ -150,6 +180,61 @@ public class ValidityCheckConnector
                                     + ". Please use a reader that inhereits from "
                                     + AbstractPairReader.class.getName()));
                 }
+            }
+            // verify feature extractors are valid within the specified mode
+            try {
+                switch (featureModeI) {
+
+                case 1:
+                    for (String featExt : featureExtractors) {
+                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
+                                .forName(featExt).newInstance();
+                        if (!(featExtC instanceof DocumentFeatureExtractor)) {
+                            throw new AnalysisEngineProcessException(
+                                    new TextClassificationException(featExt.getClass()
+                                            .getSimpleName()
+                                            + " is not a valid Document Feature Extractor."));
+                        }
+                    }
+                    break;
+                case 2:
+                    for (String featExt : featureExtractors) {
+                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
+                                .forName(featExt).newInstance();
+                        if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
+                            throw new AnalysisEngineProcessException(
+                                    new TextClassificationException(featExt.getClass()
+                                            .getSimpleName()
+                                            + " is not a valid Unit Feature Extractor."));
+                        }
+                    }
+                    break;
+                case 3:
+                    for (String featExt : featureExtractors) {
+                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
+                                .forName(featExt).newInstance();
+                        if (!(featExtC instanceof PairFeatureExtractor)) {
+                            throw new AnalysisEngineProcessException(
+                                    new TextClassificationException(featExt.getClass()
+                                            .getSimpleName()
+                                            + " is not a valid Pair Feature Extractor."));
+                        }
+                    }
+                    break;
+                default:
+                    throw new AnalysisEngineProcessException("Please set a valid learning mode",
+                            null);
+
+                }
+            }
+            catch (ClassNotFoundException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+            catch (InstantiationException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+            catch (IllegalAccessException e) {
+                throw new AnalysisEngineProcessException(e);
             }
         }
     }
