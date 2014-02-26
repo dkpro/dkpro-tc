@@ -21,7 +21,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
  * Crossvalidation setup
@@ -38,7 +37,6 @@ public class BatchTaskCrossValidation
     private AnalysisEngineDescription aggregate;
     private List<String> operativeViews;
     protected int numFolds = 10;
-    private boolean addInstanceId = false;
     private Class<? extends Report> innerReport;
 
     private ValidityCheckTask checkTask;
@@ -151,7 +149,6 @@ public class BatchTaskCrossValidation
 
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
-        extractFeaturesTrainTask.setAddInstanceId(addInstanceId);
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
                 + experimentName);
@@ -159,7 +156,6 @@ public class BatchTaskCrossValidation
 
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
-        extractFeaturesTestTask.setAddInstanceId(addInstanceId);
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
@@ -171,9 +167,7 @@ public class BatchTaskCrossValidation
         if (innerReport != null) {
             testTask.addReport(innerReport);
         }
-        if (addInstanceId) {
-            testTask.addReport(OutcomeIDReport.class);
-        }
+
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.INPUT_KEY_TRAIN);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
@@ -206,9 +200,10 @@ public class BatchTaskCrossValidation
         init();
         super.execute(aContext);
     }
-    
-    protected FoldDimensionBundle<String> getFoldDim(String[] fileNames) {
-    	return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
+
+    protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
+    {
+        return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
     }
 
     public void setExperimentName(String experimentName)
@@ -229,11 +224,6 @@ public class BatchTaskCrossValidation
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
-    }
-
-    public void setAddInstanceId(boolean addInstanceId)
-    {
-        this.addInstanceId = addInstanceId;
     }
 
     /**

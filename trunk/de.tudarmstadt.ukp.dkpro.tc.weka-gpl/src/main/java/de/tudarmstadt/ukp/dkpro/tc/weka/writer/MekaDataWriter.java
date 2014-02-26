@@ -11,19 +11,18 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * {@link DataWriter} for the Meka machine learning tool.
  * 
  * @author Johannes Daxenberger
- *
+ * 
  */
 public class MekaDataWriter
     implements DataWriter, Constants
 {
-    
-    @Override
-    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
-            throws Exception
-    {
-        // TODO for multi-label isRegressionExperiment is currently ignored. I am not sure this makes sense in this setting at all. 
-        
-        WekaUtils.instanceListToArffFileMultiLabel(new File(outputDirectory, ARFF_FILENAME), featureStore, useDenseInstances);
-    }
 
+    @Override
+    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
+            String learningMode)
+        throws Exception
+    {
+        WekaUtils.instanceListToArffFileMultiLabel(new File(outputDirectory, ARFF_FILENAME),
+                featureStore, useDenseInstances);
+    }
 }
