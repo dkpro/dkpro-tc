@@ -9,20 +9,21 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletUtils;
 
 /**
  * {@link DataWriter} for the Mallet machine learning tool.
- *
+ * 
  * @author Oliver Ferschke
- *
+ * 
  */
 public class MalletDataWriter
     implements DataWriter, Constants
 {
 
     @Override
-    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
-            throws Exception
+    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
+            String learningMode)
+        throws Exception
     {
-    	//TODO add generic filename to Constants
-    	MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/" + "training-data.txt.gz"), featureStore, useDenseInstances, isRegressionExperiment);
+        // TODO add generic filename to Constants
+        MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/"
+                + "training-data.txt.gz"), featureStore, useDenseInstances);
     }
-
 }
