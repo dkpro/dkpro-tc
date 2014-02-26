@@ -10,6 +10,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.SkipNgramStringListIterable;
+
 public class SkipNgramStringListIterableTest
 {
 

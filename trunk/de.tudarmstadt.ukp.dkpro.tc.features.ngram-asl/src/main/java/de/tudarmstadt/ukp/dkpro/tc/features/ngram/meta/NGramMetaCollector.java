@@ -16,7 +16,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
 public class NGramMetaCollector
     extends FreqDistBasedMetaCollector

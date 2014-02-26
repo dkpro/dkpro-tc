@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
@@ -16,7 +16,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
 public class KeywordNGramUtils
 {

@@ -17,16 +17,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NGramFeatureExtractor
     extends NGramFeatureExtractorBase
-    implements MetaDependent, ClassificationUnitFeatureExtractor
 {
     public static final String PARAM_NGRAM_FD_FILE = "ngramFdFile";
     @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
@@ -35,7 +33,7 @@ public class NGramFeatureExtractor
     // FIXME as this is no parameter, the other branch cannot be accessed
     private boolean useFreqThreshold = false;
     private FrequencyDistribution<String> trainingFD;
-  
+
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
@@ -75,8 +73,8 @@ public class NGramFeatureExtractor
         }
         else {
 
-            // FIXME - this is a really bad hack, but currently no better FD method to return 
-        	// topK samples each of size n or greater.
+            // FIXME - this is a really bad hack, but currently no better FD method to return
+            // topK samples each of size n or greater.
 
             Map<String, Long> map = new HashMap<String, Long>();
 
@@ -92,31 +90,31 @@ public class NGramFeatureExtractor
                 if (i >= ngramUseTopK) {
                     break;
                 }
-            	topNGrams.addSample(key, trainingFD.getCount(key));
+                topNGrams.addSample(key, trainingFD.getCount(key));
                 i++;
             }
         }
-        
+
         getLogger().log(Level.INFO, "+++ TAKING " + topNGrams.getKeys().size() + " NGRAMS");
 
         return topNGrams;
     }
-    
+
     class ValueComparator
         implements Comparator<String>
     {
-    
+
         Map<String, Long> base;
-    
+
         public ValueComparator(Map<String, Long> base)
         {
             this.base = base;
         }
-    
+
         @Override
         public int compare(String a, String b)
         {
-    
+
             if (base.get(a) < base.get(b)) {
                 return 1;
             }
@@ -134,16 +132,19 @@ public class NGramFeatureExtractor
 
     // FIXME this is duplicated in LuceneNGramFeatureExtractor currently
     // I did not resolve this, as we might get rid of this version anyway
-    // if we keep it, maybe there should be a TokenNGramFeatureExtractor base class that both inherit from
+    // if we keep it, maybe there should be a TokenNGramFeatureExtractor base class that both
+    // inherit from
     @Override
     protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
     {
-        return NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+        return NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, filterPartialStopwordMatches,
+                ngramMinN, ngramMaxN, stopwords);
     }
 
     @Override
     protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
     {
-        return NGramUtils.getAnnotationNgrams(jcas, anno, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+        return NGramUtils.getAnnotationNgrams(jcas, anno, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     }
 }

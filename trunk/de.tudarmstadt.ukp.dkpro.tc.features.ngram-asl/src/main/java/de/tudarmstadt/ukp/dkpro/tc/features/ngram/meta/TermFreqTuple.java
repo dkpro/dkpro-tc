@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 public class TermFreqTuple
     implements Comparable<TermFreqTuple>

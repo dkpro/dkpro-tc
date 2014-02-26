@@ -19,9 +19,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
