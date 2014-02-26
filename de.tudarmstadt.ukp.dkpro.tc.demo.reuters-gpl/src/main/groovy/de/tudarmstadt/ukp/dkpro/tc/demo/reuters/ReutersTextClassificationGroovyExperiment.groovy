@@ -75,7 +75,8 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
         ]
     ]);
 
-    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, true);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
     def dimThreshold = Dimension.create(DIM_BIPARTITION_THRESHOLD, threshold);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, MekaDataWriter.class.name);
 
@@ -144,7 +145,8 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimFeatureMode,
+                dimLearningMode,
                 dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
@@ -174,7 +176,8 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimLearningMode,
+                dimFeatureMode,
                 dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,

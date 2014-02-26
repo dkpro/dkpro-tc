@@ -19,7 +19,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.demo.regression.io.STSReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
@@ -46,34 +45,29 @@ public class RegressionExperiment
         dimReaders.put(Constants.DIM_READER_TRAIN, STSReader.class);
         dimReaders.put(
                 Constants.DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] {
-                        STSReader.PARAM_INPUT_FILE, inputFileTrain,
+                Arrays.asList(new Object[] { STSReader.PARAM_INPUT_FILE, inputFileTrain,
                         STSReader.PARAM_GOLD_FILE, goldFileTrain }));
         dimReaders.put(Constants.DIM_READER_TEST, STSReader.class);
         dimReaders.put(
                 Constants.DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] {
-                        STSReader.PARAM_INPUT_FILE, inputFileTest,
+                Arrays.asList(new Object[] { STSReader.PARAM_INPUT_FILE, inputFileTest,
                         STSReader.PARAM_GOLD_FILE, goldFileTest }));
-        
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMOreg.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                Constants.DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensFeatureExtractor.class.getName(),
-                        GreedyStringTilingFeatureExtractor.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+                Arrays.asList(new String[] { GreedyStringTilingFeatureExtractor.class.getName() }));
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle("readerTrain", dimReaders),
-                Dimension.create(Constants.DIM_MULTI_LABEL, false),
-                Dimension.create(Constants.DIM_IS_REGRESSION, true),
-                Dimension.create(Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()),
-                dimFeatureSets,
+                Dimension.createBundle("readerTrain", dimReaders), Dimension.create(
+                        Constants.DIM_FEATURE_MODE, Constants.FM_PAIR), Dimension.create(
+                        Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION), Dimension.create(
+                        Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()), dimFeatureSets,
                 dimClassificationArgs);
         return pSpace;
     }
@@ -91,12 +85,8 @@ public class RegressionExperiment
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
-                "RegressionExampleCV",
-                getPreprocessing(),
-                NUM_FOLDS
-        );
-        batch.setAddInstanceId(true);
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
+                getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.setInnerReport(RegressionReport.class);
@@ -105,16 +95,14 @@ public class RegressionExperiment
         // Run
         Lab.getInstance().run(batch);
     }
-    
+
     // ##### TRAIN-TEST #####
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
 
-        BatchTaskTrainTest batch = new BatchTaskTrainTest(
-                "RegressionExampleTrainTest",
-                getPreprocessing()
-        );
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("RegressionExampleTrainTest",
+                getPreprocessing());
         batch.setInnerReport(RegressionReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -129,9 +117,7 @@ public class RegressionExperiment
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class)
-        );
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class));
     }
 }

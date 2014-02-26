@@ -44,7 +44,8 @@ public class ManyInstancesExperiment implements Constants {
             corpusFilePathTrain]
     ]);
 
-    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     //UIMA parameters for FE configuration
@@ -61,13 +62,12 @@ public class ManyInstancesExperiment implements Constants {
     );
 
     def dimClassificationArgs = Dimension.create(
-        DIM_CLASSIFICATION_ARGS,
-        [NaiveBayes.class.name]
-    );
+    DIM_CLASSIFICATION_ARGS,
+    [NaiveBayes.class.name]);
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [  
+    [
         NrOfTokensFeatureExtractor.class.name,
         NGramFeatureExtractor.class.name
     ]);
@@ -84,7 +84,8 @@ public class ManyInstancesExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimFeatureMode,
+                dimLearningMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -98,15 +99,15 @@ public class ManyInstancesExperiment implements Constants {
     }
 
     private AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    throws ResourceInitializationException
     {
         return createEngineDescription(
         createEngineDescription(BreakIteratorSegmenter.class)
-//        ,
-//        createEngineDescription(OpenNlpPosTagger.class)
+        //        ,
+        //        createEngineDescription(OpenNlpPosTagger.class)
         );
     }
-    
+
     public static void main(String[] args)
     {
         new ManyInstancesExperiment().run();

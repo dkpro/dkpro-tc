@@ -21,8 +21,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -71,7 +71,8 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
         ]
     ]);
 
-    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     //UIMA parameters for FE configuration
@@ -138,13 +139,11 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
         ];
 
         ExtractFeaturesTask featuresTrainTask = [
-            addInstanceId: true,
             type: "FeatureExtraction-TwentyNewsgroups-Train",
             isTesting: false
         ];
 
         ExtractFeaturesTask featuresTestTask = [
-            addInstanceId: true,
             type: "FeatureExtraction-TwentyNewsgroups-Test",
             isTesting: true
         ];
@@ -176,7 +175,8 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimLearningMode,
+                dimFeatureMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,

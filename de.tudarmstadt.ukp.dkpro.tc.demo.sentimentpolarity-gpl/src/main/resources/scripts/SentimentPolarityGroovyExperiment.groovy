@@ -66,7 +66,8 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
         ]
     ]);
 
-    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
@@ -123,7 +124,8 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimLearningMode,
+                dimFeatureMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -151,7 +153,8 @@ public class SentimentPolarityGroovyExperiment implements GroovyExperiment, Cons
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimLearningMode,
+                dimFeatureMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
