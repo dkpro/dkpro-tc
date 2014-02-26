@@ -66,54 +66,44 @@ public class TwentyNewsgroupsJavaExperiment
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] {
-                        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
-        ));
+                Arrays.asList(new Object[] { TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                        corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+                        LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
         dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] {
-                        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }
-        ));
+                Arrays.asList(new Object[] { TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                        corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+                        LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                DIM_CLASSIFICATION_ARGS,
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }),
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K, "500",
+                Arrays.asList(new Object[] { NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K, "500",
                         NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3 }),
-                Arrays.asList(new Object[] {
-                        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K, "1000",
+                Arrays.asList(new Object[] { NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K, "1000",
                         NGramFeatureExtractor.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractor.PARAM_NGRAM_MAX_N, 3 }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(new String[] {
-                        NrOfTokensFeatureExtractor.class.getName(),
-                        NGramFeatureExtractor.class.getName()
-                }));
+                Arrays.asList(new String[] { NrOfTokensFeatureExtractor.class.getName(),
+                        NGramFeatureExtractor.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle("readers", dimReaders),
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
-                Dimension.create(DIM_MULTI_LABEL, false),
-                dimPipelineParameters,
-                dimFeatureSets,
-                dimClassificationArgs
-        );
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
+                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
+                dimClassificationArgs);
 
         return pSpace;
     }
@@ -157,10 +147,7 @@ public class TwentyNewsgroupsJavaExperiment
 
         return createEngineDescription(
                 createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(
-                        OpenNlpPosTagger.class,
-                        OpenNlpPosTagger.PARAM_LANGUAGE, LANGUAGE_CODE
-                )
-        );
+                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+                        LANGUAGE_CODE));
     }
 }

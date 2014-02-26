@@ -70,7 +70,8 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
         ]
     ]);
 
-    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
@@ -82,30 +83,30 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
     [
         NrOfTokensFeatureExtractor.class.name,
         LuceneNGramFeatureExtractor.class.name
-//        NGramFeatureExtractor.class.name
-        
+        //        NGramFeatureExtractor.class.name
+
     ]
     );
 
-//    def dimPipelineParameters = Dimension.create(
-//    DIM_PIPELINE_PARAMS,
-//    [
-//        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-//        "50",
-//        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
-//        1,
-//        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
-//        3
-//    ],
-//    [
-//        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-//        "100",
-//        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
-//        1,
-//        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
-//        3
-//    ]
-//    );
+    //    def dimPipelineParameters = Dimension.create(
+    //    DIM_PIPELINE_PARAMS,
+    //    [
+    //        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+    //        "50",
+    //        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+    //        1,
+    //        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+    //        3
+    //    ],
+    //    [
+    //        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+    //        "100",
+    //        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+    //        1,
+    //        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+    //        3
+    //    ]
+    //    );
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
@@ -145,13 +146,13 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimLearningMode,
+                dimFeatureMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
             ],
-            addInstanceId: true,
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchCrossValidationReport],
             numFolds: numFolds];
@@ -174,7 +175,8 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimLearningMode,
+                dimFeatureMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,

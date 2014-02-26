@@ -65,7 +65,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
     ]);
 
-    def dimMultiLabel = Dimension.create(DIM_MULTI_LABEL, false);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
     def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     //UIMA parameters for FE configuration
@@ -119,7 +120,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimFeatureMode,
+                dimLearningMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -138,7 +140,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimFeatureMode,
+                dimLearningMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
@@ -164,7 +167,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimFeatureMode,
+                dimLearningMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
@@ -183,7 +187,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
-                dimMultiLabel,
+                dimFeatureMode,
+                dimLearningMode,
                 dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
@@ -200,7 +205,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     }
 
     private AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    throws ResourceInitializationException
     {
         return createEngineDescription(
         createEngineDescription(BreakIteratorSegmenter.class),
