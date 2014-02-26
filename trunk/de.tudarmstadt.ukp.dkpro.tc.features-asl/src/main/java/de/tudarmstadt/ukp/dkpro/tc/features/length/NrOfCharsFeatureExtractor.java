@@ -16,7 +16,7 @@ import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 //TODO: adapt for specified focus annotation
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NrOfCharsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
