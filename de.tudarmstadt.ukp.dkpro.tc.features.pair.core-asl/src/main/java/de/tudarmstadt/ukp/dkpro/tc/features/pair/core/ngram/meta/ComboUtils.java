@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
 import java.util.List;
 import java.util.Set;
@@ -8,7 +8,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 
 public class ComboUtils
 {

@@ -20,9 +20,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.ComboUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
 public class LuceneNGramPairMetaCollector

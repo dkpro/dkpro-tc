@@ -15,11 +15,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.ComboUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.KeywordNGramPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 

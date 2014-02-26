@@ -30,11 +30,8 @@ public class SharedNEsFeatureExtractor
     public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.asList(
-                new Feature("SharedNEs",
-                        !Collections.disjoint(getNEs(view1),
-                                getNEs(view2))
-                ));
+        return Arrays.asList(new Feature("SharedNEs", !Collections.disjoint(getNEs(view1),
+                getNEs(view2))));
 
     }
 
