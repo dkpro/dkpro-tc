@@ -18,6 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -51,10 +52,10 @@ public class TestTask
     private boolean applySelection;
 
     @Discriminator
-    private boolean multiLabel;
+    private String featureMode;
 
     @Discriminator
-    private boolean isRegressionExperiment;
+    private String learningMode;
 
     @Discriminator
     String threshold;
@@ -76,7 +77,7 @@ public class TestTask
     public void execute(TaskContext aContext)
         throws Exception
     {
-
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
         MULTILABEL = multiLabel;
 
         File arffFileTrain = new File(aContext.getStorageLocation(INPUT_KEY_TRAIN,
@@ -90,7 +91,7 @@ public class TestTask
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
 
         // do not balance in regression experiments
-        if (!isRegressionExperiment) {
+        if (!learningMode.equals(Constants.LM_REGRESSION)) {
             testData = WekaUtils.makeOutcomeClassesCompatible(trainData, testData, multiLabel);
         }
 

@@ -121,7 +121,6 @@ public class BatchTaskTrainTest
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
-        featuresTrainTask.setAddInstanceId(true);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
@@ -129,7 +128,6 @@ public class BatchTaskTrainTest
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
-        featuresTestTask.setAddInstanceId(true);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
