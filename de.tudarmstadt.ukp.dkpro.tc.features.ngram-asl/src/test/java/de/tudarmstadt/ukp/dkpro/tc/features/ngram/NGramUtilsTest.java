@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
+
 public class NGramUtilsTest
 {
 

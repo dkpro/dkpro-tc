@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.util.ArrayList;
 import java.util.Arrays;

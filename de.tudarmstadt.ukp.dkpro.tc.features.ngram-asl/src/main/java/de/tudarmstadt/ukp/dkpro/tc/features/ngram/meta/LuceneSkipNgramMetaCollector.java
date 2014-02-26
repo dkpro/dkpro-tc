@@ -13,7 +13,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneSkipNgramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramUtils;
 
 public class LuceneSkipNgramMetaCollector
     extends LuceneBasedMetaCollector

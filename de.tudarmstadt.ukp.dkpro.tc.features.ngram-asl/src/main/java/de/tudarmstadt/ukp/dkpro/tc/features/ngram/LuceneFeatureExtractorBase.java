@@ -17,6 +17,7 @@ import org.apache.uima.util.Level;
 import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TermFreqTuple;
 
 public abstract class LuceneFeatureExtractorBase
     extends NGramFeatureExtractorBase

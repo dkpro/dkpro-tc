@@ -15,6 +15,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
@@ -26,7 +27,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public abstract class NGramFeatureExtractorBase
     extends FeatureExtractorResource_ImplBase
-    implements MetaDependent, ClassificationUnitFeatureExtractor
+    implements MetaDependent, DocumentFeatureExtractor, ClassificationUnitFeatureExtractor
 {
     public static final String PARAM_NGRAM_MIN_N = "ngramMinN";
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
@@ -45,7 +46,7 @@ public abstract class NGramFeatureExtractorBase
     protected String ngramStopwordsFile;
 
     public static final String PARAM_FILTER_PARTIAL_STOPWORD_MATCHES = "filterPartialStopwordMatches";
-    @ConfigurationParameter(name = PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
+    @ConfigurationParameter(name = PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue = "false")
     protected boolean filterPartialStopwordMatches;
 
     public static final String PARAM_NGRAM_FREQ_THRESHOLD = "ngramFreqThreshold";
@@ -67,7 +68,7 @@ public abstract class NGramFeatureExtractorBase
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        
+
         try {
             stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
         }
@@ -88,14 +89,14 @@ public abstract class NGramFeatureExtractorBase
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
-                    
+
         if (classificationUnit == null) {
             documentNgrams = getDocumentNgrams(jcas);
         }
         else {
             documentNgrams = getAnnotationNgrams(jcas, classificationUnit);
         }
-         
+
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(prefix + "_" + topNgram, 1));
@@ -108,14 +109,21 @@ public abstract class NGramFeatureExtractorBase
         return features;
     }
 
+    @Override
+    public List<Feature> extract(JCas jcas)
+        throws TextClassificationException
+    {
+        return extract(jcas, null);
+    }
+
     protected abstract FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException;
-    
+
     protected abstract String getFeaturePrefix();
-    
+
     protected abstract FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
         throws TextClassificationException;
-    
+
     protected abstract FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
         throws TextClassificationException;
 }
