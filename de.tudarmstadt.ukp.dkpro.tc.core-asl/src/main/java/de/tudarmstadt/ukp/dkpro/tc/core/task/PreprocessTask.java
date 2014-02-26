@@ -18,6 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
@@ -49,10 +50,7 @@ public class PreprocessTask
     protected List<Object> readerTestParams;
 
     @Discriminator
-    private boolean isUnitClassification;
-
-    @Discriminator
-    protected boolean isPairClassification;
+    private String featureMode;
 
     public void setTesting(boolean isTesting)
     {
@@ -96,7 +94,7 @@ public class PreprocessTask
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
-        if (this.isPairClassification) {
+        if (featureMode.equals(Constants.FM_PAIR)) {
             AggregateBuilder builder = new AggregateBuilder();
             builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA,
                     AbstractPairReader.PART_ONE);
@@ -111,14 +109,12 @@ public class PreprocessTask
             }
             aggregate = builder.createAggregateDescription();
         }
-
-        if (this.isUnitClassification) {
+        // in unit mode, add cas multiplier
+        else if (featureMode.equals(Constants.FM_UNIT)) {
             AnalysisEngineDescription casMultiplier = createEngineDescription(ClassificationUnitCasMultiplier.class);
             return createEngineDescription(aggregate, casMultiplier, xmiWriter);
         }
-        else {
-            return createEngineDescription(aggregate, xmiWriter);
-        }
+        return createEngineDescription(aggregate, xmiWriter);
     }
 
     public void setOperativeViews(List<String> operativeViews)

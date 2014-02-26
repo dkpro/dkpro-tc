@@ -51,9 +51,6 @@ public class MetaInfoTask
     @Discriminator
     protected List<Object> pipelineParameters;
 
-    @Discriminator
-    protected boolean isPairClassification;
-
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
 
     @Discriminator

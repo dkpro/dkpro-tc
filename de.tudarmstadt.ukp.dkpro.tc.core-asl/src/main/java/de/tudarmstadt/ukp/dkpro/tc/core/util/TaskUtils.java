@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,18 +26,29 @@ import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -168,52 +180,52 @@ public class TaskUtils
     // }
     // return extractors;
     // }
-    
+
     /**
      * Get a list of MetaCollector classes from a list of feature extractors.
      */
-    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(List<String> featureSet)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
+            List<String> featureSet)
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
-        
+
         for (String element : featureSet) {
-            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class.forName(element).newInstance();
+            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
+                    .forName(element).newInstance();
             if (featureExtractor instanceof MetaDependent) {
                 MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
                 metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
             }
         }
-        
+
         return metaCollectorClasses;
     }
-    
+
     /**
      * Get a list of required type names.
      */
     public static Set<String> getRequiredTypesFromFeatureExtractors(List<String> featureSet)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<String> requiredTypes = new HashSet<String>();
-        
+
         for (String element : featureSet) {
-            TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(element), TypeCapability.class);
+            TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(element),
+                    TypeCapability.class);
 
             if (annotation != null) {
                 requiredTypes.addAll(Arrays.asList(annotation.inputs()));
             }
         }
-        
+
         return requiredTypes;
     }
-    
-    public static AnalysisEngineDescription getFeatureExtractorConnector(
-            List<Object> parameters,
-            String outputPath,
-            String dataWriter,
-            boolean isRegressionExperiment,
-            boolean addInstanceId,
-            String ... featureExtractorClassNames) throws ResourceInitializationException
+
+    public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
+            String outputPath, String dataWriter, String learningMode, String featureMode,
+            boolean addInstanceId, String... featureExtractorClassNames)
+        throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
         List<Object> convertedParameters = new ArrayList<Object>();
@@ -221,7 +233,7 @@ public class TaskUtils
             for (Object parameter : parameters) {
                 convertedParameters.add(parameter.toString());
             }
-        }        
+        }
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
         for (String featureExtractor : featureExtractorClassNames) {
             try {
@@ -235,16 +247,65 @@ public class TaskUtils
         }
 
         // add the rest of the necessary parameters with the correct types
-        parameters.addAll(Arrays.asList(
-                ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
-                ExtractFeaturesConnector.PARAM_IS_REGRESSION_EXPERIMENT, isRegressionExperiment,
-                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources)
-        );
-        
-        return AnalysisEngineFactory.createEngineDescription(
-                ExtractFeaturesConnector.class, parameters.toArray()
-        );
+        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
+                outputPath, ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
+                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
+                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId));
+
+        return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
+                parameters.toArray());
+    }
+
+    /**
+     * @param jcas
+     * @param featureExtractors
+     * @param featureMode
+     * @return
+     * @throws AnalysisEngineProcessException
+     */
+    public static Instance extractFeatures(JCas jcas,
+            FeatureExtractorResource_ImplBase[] featureExtractors, String featureMode)
+        throws AnalysisEngineProcessException
+    {
+        Instance instance = new Instance();
+        for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
+            try {
+                if (featExt instanceof DocumentFeatureExtractor
+                        && featureMode.equals(Constants.FM_DOCUMENT)) {
+                    instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
+                }
+                else if (featExt instanceof PairFeatureExtractor
+                        && featureMode.equals(Constants.FM_PAIR)) {
+                    JCas view1 = jcas.getView(Constants.PART_ONE);
+                    JCas view2 = jcas.getView(Constants.PART_TWO);
+                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
+                }
+                else if (featExt instanceof ClassificationUnitFeatureExtractor
+                        && featureMode.equals(Constants.FM_UNIT)) {
+                    TextClassificationUnit classificationUnit = null;
+                    Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
+                            TextClassificationUnit.class);
+                    if (classificationUnits.size() == 1) {
+                        classificationUnit = classificationUnits.iterator().next();
+                    }
+                    else if (classificationUnits.size() > 1) {
+                        throw new AnalysisEngineProcessException(
+                                "There are more than one TextClassificationUnit anotations in the JCas.",
+                                null);
+                    }
+                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
+                            jcas, classificationUnit));
+                }
+            }
+            catch (TextClassificationException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+            catch (CASException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+        return instance;
     }
 }

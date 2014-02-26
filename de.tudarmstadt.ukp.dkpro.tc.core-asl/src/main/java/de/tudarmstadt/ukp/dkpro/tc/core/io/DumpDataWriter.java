@@ -10,21 +10,22 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
- * Dumps the feature store to a human readable file and also to the console.
- * Mainly used for testing purposes.
+ * Dumps the feature store to a human readable file and also to the console. Mainly used for testing
+ * purposes.
  * 
  * @author zesch
- *
+ * 
  */
 public class DumpDataWriter
     implements DataWriter, Constants
 {
-        
+
     public static final String DUMP_FILE_NAME = "fs.ser";
-    
+
     @Override
-    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances, boolean isRegressionExperiment)
-            throws Exception
+    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
+            String learningMode)
+        throws Exception
     {
         StringBuilder sb = new StringBuilder();
         sb.append(featureStore.getNumberOfInstances());

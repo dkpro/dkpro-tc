@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
+package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
-public class TestReader
+public class TestReaderRegression
     extends TextReader
     implements TCReaderSingleLabel
 {
@@ -21,7 +21,7 @@ public class TestReader
         throws IOException, CollectionException
     {
         super.getNext(aCAS);
-        
+
         JCas jcas;
         try {
             jcas = aCAS.getJCas();
@@ -39,6 +39,6 @@ public class TestReader
     public String getTextClassificationOutcome(JCas jcas)
         throws CollectionException
     {
-        return "test";
+        return new Double(0.45).toString();
     }
 }

@@ -18,14 +18,15 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
  * Checks that everything has been configured properly and throws more meaningful exception
  * otherwise than would have been thrown downstream. This should be the first task in the TC
  * pipeline.
- *
+ * 
  * @author zesch
- *
+ * 
  */
 public class ValidityCheckTask
     extends UimaTaskBase
@@ -39,17 +40,15 @@ public class ValidityCheckTask
     @Discriminator
     protected List<Object> pipelineParameters;
     @Discriminator
-    private boolean isRegressionExperiment;
+    private String learningMode;
     @Discriminator
-    private boolean multiLabel;
+    private String featureMode;
     @Discriminator
     private String threshold;
     @Discriminator
     private String dataWriter;
     @Discriminator
-    private boolean isPairClassification;
-    @Discriminator
-    private boolean isUnitClassification;
+    protected List<String> featureSet;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -71,27 +70,30 @@ public class ValidityCheckTask
                     null);
         }
 
+        if (featureSet == null) {
+            throw new ResourceInitializationException(new TextClassificationException(
+                    "No feature extractors have been added to the experiment."));
+        }
+
         // make a dummy folder so that the lab can create an import on it
-        File file = new File(aContext.getStorageLocation(DUMMY_KEY, AccessMode.READWRITE)
-                .getPath());
+        File file = new File(aContext.getStorageLocation(DUMMY_KEY, AccessMode.READWRITE).getPath());
         file.mkdir();
 
         List<Object> parameters = new ArrayList<Object>();
         if (pipelineParameters != null) {
             parameters.addAll(pipelineParameters);
         }
-        parameters.add(ValidityCheckConnector.PARAM_IS_REGRESSION);
-        parameters.add(isRegressionExperiment);
-        parameters.add(ValidityCheckConnector.PARAM_IS_MULTILABEL);
-        parameters.add(multiLabel);
+
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
+        parameters.add(learningMode);
         parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER);
         parameters.add(dataWriter);
-        parameters.add(ValidityCheckConnector.PARAM_IS_UNIT_CLASSIFICATION);
-        parameters.add(isUnitClassification);
-        parameters.add(ValidityCheckConnector.PARAM_IS_PAIR_CLASSIFICATION);
-        parameters.add(isPairClassification);
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
+        parameters.add(featureMode);
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);
         parameters.add(threshold);
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_EXTRACTORS);
+        parameters.add(featureSet);
 
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }
