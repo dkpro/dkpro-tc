@@ -17,8 +17,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.reuters.io.ReutersCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -102,27 +103,27 @@ public class ReutersTextClassificationGroovyExperiment implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensFeatureExtractor.class.name,
-        NGramFeatureExtractor.class.name
+        NrOfTokensDFE.class.name,
+        FrequencyDistributionNGramDFE.class.name
     ]
     );
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
         "500",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
         3
     ],
     [
-        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
         "1000",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
         3
     ]
     );
