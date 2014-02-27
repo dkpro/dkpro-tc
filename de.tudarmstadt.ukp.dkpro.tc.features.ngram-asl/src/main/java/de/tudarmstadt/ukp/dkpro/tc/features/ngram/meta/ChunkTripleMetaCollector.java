@@ -18,17 +18,17 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.NC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.ChunkTripleFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.ChunkTripleDFE;
 
 public class ChunkTripleMetaCollector
     extends FreqDistBasedMetaCollector
 {
     public static final String CHUNK_TRIPLE_FD_KEY = "chunkTriple.ser";
 
-    @ConfigurationParameter(name = ChunkTripleFeatureExtractor.PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
+    @ConfigurationParameter(name = ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
     private File chunkTripleFdFile;
 
-    @ConfigurationParameter(name = ChunkTripleFeatureExtractor.PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = ChunkTripleDFE.PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean chunkTripleLowerCase;
 
     @Override
@@ -102,7 +102,7 @@ public class ChunkTripleMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(ChunkTripleFeatureExtractor.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY);
+        mapping.put(ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY);
         return mapping;
     }
 

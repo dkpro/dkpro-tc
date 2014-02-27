@@ -10,42 +10,40 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
 
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" })
-public class DependencyFeatureExtractor
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
+public class ChunkTripleDFE
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor, MetaDependent
 {
 
-    public static final String PARAM_DEP_FD_FILE = "depFdFile";
-    @ConfigurationParameter(name = PARAM_DEP_FD_FILE, mandatory = true)
-    private String depFdFile;
+    public static final String PARAM_CHUNK_TRIPLE_FD_FILE = "chunkTripleFdFile";
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
+    private String chunkTripleFdFile;
 
-    public static final String PARAM_DEP_FREQ_THRESHOLD = "depFreqThreshold";
-    @ConfigurationParameter(name = PARAM_DEP_FREQ_THRESHOLD, mandatory = false, defaultValue = "2")
-    private int depFreqThreshold;
+    public static final String PARAM_CHUNK_TRIPLE_THRESHOLD = "chunkTripleThreshold";
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_THRESHOLD, mandatory = false, defaultValue = "2")
+    private int chunkTripleThreshold;
 
-    public static final String PARAM_LOWER_CASE_DEPS = "lowerCaseDeps";
-    @ConfigurationParameter(name = PARAM_LOWER_CASE_DEPS, mandatory = false, defaultValue = "true")
-    private boolean lowerCaseDeps;
+    public static final String PARAM_CHUNK_TRIPLE_LOWER_CASE = "chunkTripleLowerCase";
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")
+    private boolean chunkTripleLowerCase;
 
-    protected Set<String> depSet;
+    protected Set<String> tripleSet;
 
-    private FrequencyDistribution<String> trainingDepsFD;
+    private FrequencyDistribution<String> trainingFD;
 
     @Override
     public List<Feature> extract(JCas jcas)
@@ -55,25 +53,15 @@ public class DependencyFeatureExtractor
         // throw new TextClassificationException(new
         // UnsupportedOperationException("FocusAnnotation not yet supported!"));
         // }
-
         List<Feature> features = new ArrayList<Feature>();
 
-        Set<String> depStrings = new HashSet<String>();
-        for (Dependency dep : JCasUtil.select(jcas, Dependency.class)) {
-            String type = dep.getDependencyType();
-            String governor = dep.getGovernor().getCoveredText();
-            String dependent = dep.getDependent().getCoveredText();
-
-            depStrings.add(DependencyMetaCollector.getDependencyString(governor, dependent, type,
-                    lowerCaseDeps));
-        }
-
-        for (String topDep : depSet) {
-            if (depStrings.contains(topDep)) {
-                features.add(new Feature(topDep, 1));
+        Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
+        for (String featureTriple : tripleSet) {
+            if (triples.contains(featureTriple)) {
+                features.add(new Feature("lexicalTriple_" + featureTriple, 1));
             }
             else {
-                features.add(new Feature(topDep, 0));
+                features.add(new Feature("lexicalTriple_" + featureTriple, 0));
             }
         }
 
@@ -88,18 +76,20 @@ public class DependencyFeatureExtractor
             return false;
         }
 
-        depSet = getTopDeps();
+        tripleSet = loadTriples();
 
         return true;
     }
 
-    private Set<String> getTopDeps()
+    private Set<String> loadTriples()
         throws ResourceInitializationException
     {
-        Set<String> depSet = new HashSet<String>();
+
+        Set<String> tripleSet = new HashSet<String>();
+
         try {
-            trainingDepsFD = new FrequencyDistribution<String>();
-            trainingDepsFD.load(new File(depFdFile));
+            trainingFD = new FrequencyDistribution<String>();
+            trainingFD.load(new File(chunkTripleFdFile));
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);
@@ -108,20 +98,20 @@ public class DependencyFeatureExtractor
             throw new ResourceInitializationException(e);
         }
 
-        for (String key : trainingDepsFD.getKeys()) {
-            if (trainingDepsFD.getCount(key) > depFreqThreshold) {
-                depSet.add(key);
+        for (String key : trainingFD.getKeys()) {
+            if (trainingFD.getCount(key) > chunkTripleThreshold) {
+                tripleSet.add(key);
             }
         }
 
-        return depSet;
+        return tripleSet;
     }
 
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(DependencyMetaCollector.class);
+        metaCollectorClasses.add(ChunkTripleMetaCollector.class);
 
         return metaCollectorClasses;
     }

@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import java.io.File;
 
@@ -17,7 +17,8 @@ import org.apache.uima.util.Level;
 import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 
 public abstract class LuceneFeatureExtractorBase
     extends NGramFeatureExtractorBase

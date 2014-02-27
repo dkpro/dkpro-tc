@@ -6,50 +6,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
- * This class extracts lists of specified keywords from a text.  <br />
- * The lists
- * are similar to ngrams, except that instead of using all tokens, only
- * the specified keywords are elligible to appear in a list.  These 
- * "keyword ngrams" may be useful for tasks such as sentence ordering 
- * (Barzilay and Lapata 2008).  The concept is similar to strings of entity
- * mentions in Centering Theory, except since the user defines the 
- * permissible tokens, finite lists are preferred.  Keyword ngrams are 
- * extracted from an entire document, not just a single sentence.<br />
+ * This class extracts lists of specified keywords from a text. <br />
+ * The lists are similar to ngrams, except that instead of using all tokens, only the specified
+ * keywords are elligible to appear in a list. These "keyword ngrams" may be useful for tasks such
+ * as sentence ordering (Barzilay and Lapata 2008). The concept is similar to strings of entity
+ * mentions in Centering Theory, except since the user defines the permissible tokens, finite lists
+ * are preferred. Keyword ngrams are extracted from an entire document, not just a single sentence.<br />
  * <br />
  * Example: keyword ngrams of discourse markers:<br />
- * Text: Although apples are red, I prefer blueberries.  Furthermore, bananas are green, if only when unripe.<br />
+ * Text: Although apples are red, I prefer blueberries. Furthermore, bananas are green, if only when
+ * unripe.<br />
  * Keyword ngrams: <br />
  * although_furthermore, <br />
  * furthermore_if_only, <br />
  * although_furthermore_if_only, etc.<br />
  * <br />
- * Parameters are available to include sentence boundary markers, sentence text location, commas, etc.
+ * Parameters are available to include sentence boundary markers, sentence text location, commas,
+ * etc.
  * 
  * @author jamison
- *
+ * 
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class KeywordNGramFeatureExtractor
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+public class KeywordNGramFeatureExtractorBase
     extends LuceneFeatureExtractorBase
 {
     public static final String KEYWORD_NGRAM_FIELD = "keywordngram";
@@ -61,7 +52,7 @@ public class KeywordNGramFeatureExtractor
     public static final String PARAM_KEYWORD_NGRAM_MAX_N = "keywordNgramMaxN";
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     protected int keywordMaxN;
-    
+
     public static final String PARAM_NGRAM_KEYWORDS_FILE = "keywordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
     protected String keywordsFile;
@@ -69,11 +60,11 @@ public class KeywordNGramFeatureExtractor
     public static final String PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY = "markSentenceBoundary";
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
     protected boolean markSentenceBoundary;
-    
+
     public static final String PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION = "markSentenceLocation";
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
     protected boolean markSentenceLocation;
-    
+
     public static final String PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS = "includeCommas";
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
     protected boolean includeCommas;
@@ -83,7 +74,7 @@ public class KeywordNGramFeatureExtractor
     protected int keywordNgramUseTopK;
 
     protected Set<String> keywords;
-    
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -91,7 +82,7 @@ public class KeywordNGramFeatureExtractor
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        
+
         try {
             keywords = FeatureUtil.getStopwords(keywordsFile, true);
         }
@@ -100,42 +91,28 @@ public class KeywordNGramFeatureExtractor
         }
         return true;
     }
-  
+
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
-    List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-    metaCollectorClasses.add(KeywordNGramMetaCollector.class);
-    
+        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        metaCollectorClasses.add(KeywordNGramMetaCollector.class);
+
         return metaCollectorClasses;
     }
-    
+
     @Override
     protected String getFieldName()
     {
         return KEYWORD_NGRAM_FIELD;
     }
-    
+
     @Override
     protected String getFeaturePrefix()
     {
         return "keyNG";
     }
-    
-    @Override
-    protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
-    {
-        return KeywordNGramUtils.getDocumentKeywordNgrams(
-                jcas, keywordMinN, keywordMaxN, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-    }
-    
-    // FIXME didn't implement, as I think this should be removed anyway
-    @Override
-    protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
-    {
-        return null;
-    }
-    
+
     @Override
     protected int getTopN()
     {

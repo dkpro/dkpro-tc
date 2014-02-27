@@ -45,8 +45,8 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K, 3,
-                LuceneNGramFeatureExtractor.PARAM_LUCENE_DIR, luceneFolder };
+        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 3,
+                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -62,7 +62,7 @@ public class LuceneNGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false,
-                LuceneNGramFeatureExtractor.class.getName());
+                LuceneNGramDFE.class.getName());
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);

@@ -25,7 +25,7 @@ import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 
 public class LuceneNGramMetaCollectorTest
 {
@@ -49,7 +49,7 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
-                LuceneNGramFeatureExtractor.PARAM_LUCENE_DIR, tmpDir
+                LuceneNGramDFE.PARAM_LUCENE_DIR, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
@@ -62,7 +62,7 @@ public class LuceneNGramMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD);
+                Terms terms = fields.terms(LuceneNGramDFE.LUCENE_NGRAM_FIELD);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
 //                    Bits liveDocs = MultiFields.getLiveDocs(index);

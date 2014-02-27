@@ -1,21 +1,17 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
-public class LucenePOSNGramFeatureExtractor
+public class LucenePOSNGramFeatureExtractorBase
     extends LuceneFeatureExtractorBase
     implements MetaDependent
 {
@@ -51,23 +47,11 @@ public class LucenePOSNGramFeatureExtractor
     {
         return LUCENE_POS_NGRAM_FIELD;
     }
-    
+
     @Override
     protected String getFeaturePrefix()
     {
         return "posngram";
-    }
-
-    @Override
-    protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
-    {
-        return NGramUtils.getDocumentPosNgrams(jcas, posNgramMinN, posNgramMaxN, useCanonicalTags);
-    }
-
-    @Override
-    protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
-    {
-        return NGramUtils.getAnnotationPosNgrams(jcas, anno, posNgramMinN, posNgramMaxN, useCanonicalTags);
     }
 
     @Override

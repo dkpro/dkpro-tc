@@ -11,8 +11,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class LuceneNGramMetaCollector
     extends LuceneBasedMetaCollector
@@ -58,7 +59,7 @@ public class LuceneNGramMetaCollector
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i=0;i<documentNGrams.getCount(ngram);i++){
-                addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
+                addField(jcas, LuceneNGramDFE.LUCENE_NGRAM_FIELD, ngram); 
             }
         }
        
