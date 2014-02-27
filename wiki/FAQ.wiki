@@ -5,6 +5,9 @@
 *After checking out one of the DKPro-TC demo projects, I see maven compiler version errors.*
   * Even when you don't want to use Groovy in your experiment but the pure Java setup, you need to have the [http://code.google.com/p/dkpro-tc/wiki/GroovySetup Groovy plug-in installed] in order to initially compile the demos. Alternatively, you can delete the groovy profile from the DKPro-TC top-level POM. 
 
+*After checking out one or more of the DKPro-TC projects, I see a classpath errors.*
+  * DKpro-TC 0.6.0 and later versions need to be compiled with Java 7. Make sure that you have installed a JDK running Java 7. 
+
 *What is DKPRO_HOME used for?*
   * It can be any writable folder anywhere in your system (if it does not exist, it gets created as soon as you run the experiment), where DKPro-TC stores outputs of the individual tasks (i.e. pre-processed data, extracted features...) and various task reports, but also the final output (i.e. classification result). Hence you will probably want to look into this folder whenever your experiment is finished.
 
