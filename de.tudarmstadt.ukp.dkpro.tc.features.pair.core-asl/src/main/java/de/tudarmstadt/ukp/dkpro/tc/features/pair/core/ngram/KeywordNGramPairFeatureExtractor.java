@@ -16,7 +16,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
@@ -24,21 +23,20 @@ import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPairMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * Pair keyword ngram feature extractor for
- * {@link de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractor
+ * {@link de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractorBase
  * KeywordNGramFeatureExtractor} Can be used to extract ngrams from one or both documents in the
  * pair, and parameters for each document (view 1's, view 2's) can be set separately, or both
  * documents can be treated together as one extended document. <br />
@@ -50,27 +48,28 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  */
 public class KeywordNGramPairFeatureExtractor
     extends LuceneFeatureExtractorBase
+    implements PairFeatureExtractor
 {
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int ngramMaxN;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
     protected String keywordsFile;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
     private boolean markSentenceBoundary;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
     private boolean markSentenceLocation;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
     private boolean includeCommas;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
+    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     private int keywordNgramUseTopK;
 
     private Set<String> keywords;
@@ -191,15 +190,12 @@ public class KeywordNGramPairFeatureExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = getViewNgrams(AbstractPairReader.PART_ONE,
-                jcas, classificationUnit);
-        FrequencyDistribution<String> view2Ngrams = getViewNgrams(AbstractPairReader.PART_TWO,
-                jcas, classificationUnit);
-        FrequencyDistribution<String> allNgrams = getViewNgrams(AbstractPairReader.INITIAL_VIEW,
-                jcas, classificationUnit);
+        FrequencyDistribution<String> view1Ngrams = getViewNgrams(view1);
+        FrequencyDistribution<String> view2Ngrams = getViewNgrams(view2);
+        FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
 
         List<Feature> features = new ArrayList<Feature>();
         if (useView1NgramsAsFeatures) {
@@ -246,7 +242,7 @@ public class KeywordNGramPairFeatureExtractor
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {
-        return getTopNgrams(ngramUseTopK, KeywordNGramFeatureExtractor.KEYWORD_NGRAM_FIELD);
+        return getTopNgrams(ngramUseTopK, KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD);
     }
 
     protected FrequencyDistribution<String> getTopNgramsView1()
@@ -300,43 +296,25 @@ public class KeywordNGramPairFeatureExtractor
         return topNGrams;
     }
 
-    protected FrequencyDistribution<String> getViewNgrams(String name, JCas jcas,
-            TextClassificationUnit classificationUnit)
-        throws TextClassificationException
+    protected FrequencyDistribution<String> getViewNgrams(JCas jcas)
     {
+        return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, ngramMinN1, ngramMaxN1,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+    }
 
-        JCas view1 = null;
-        JCas view2 = null;
-        try {
-            view1 = jcas.getView(AbstractPairReader.PART_ONE);
-            view2 = jcas.getView(AbstractPairReader.PART_TWO);
-        }
-        catch (Exception e) {
-            throw new TextClassificationException(e);
-        }
-
-        if (name.equals(AbstractPairReader.PART_ONE)) {
-            return KeywordNGramUtils.getDocumentKeywordNgrams(view1, ngramMinN1, ngramMaxN1,
-                    markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        }
-        else if (name.equals(AbstractPairReader.PART_TWO)) {
-            return KeywordNGramUtils.getDocumentKeywordNgrams(view2, ngramMinN2, ngramMaxN2,
-                    markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        }
-        else {
-            List<JCas> jcases = new ArrayList<JCas>();
-            jcases.add(view1);
-            jcases.add(view2);
-            return KeywordNGramUtils.getMultipleViewKeywordNgrams(jcases, ngramMinN, ngramMaxN,
-                    markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        }
-
+    protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2)
+    {
+        List<JCas> jcases = new ArrayList<JCas>();
+        jcases.add(view1);
+        jcases.add(view2);
+        return KeywordNGramUtils.getMultipleViewKeywordNgrams(jcases, ngramMinN, ngramMaxN,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
 
     @Override
     protected String getFieldName()
     {
-        return KeywordNGramFeatureExtractor.KEYWORD_NGRAM_FIELD;
+        return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
     }
 
     @Override
@@ -351,21 +329,6 @@ public class KeywordNGramPairFeatureExtractor
         return "allNG";
     }
 
-    // TODO This shouldn't be inherited here.
-    @Override
-    protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
-        throws TextClassificationException
-    {
-        return null;
-    }
-
-    // TODO This shouldn't be inherited here.
-    @Override
-    protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
-        throws TextClassificationException
-    {
-        return null;
-    }
     // protected void setStopwords(Set<String> newStopwords){
     // stopwords = newStopwords;
     // }

@@ -8,7 +8,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class ComboUtils
 {

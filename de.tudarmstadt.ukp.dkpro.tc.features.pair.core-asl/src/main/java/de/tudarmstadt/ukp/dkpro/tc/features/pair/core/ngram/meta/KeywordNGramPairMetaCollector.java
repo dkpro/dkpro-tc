@@ -14,11 +14,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.KeywordNGramPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
@@ -32,7 +32,7 @@ private int ngramMinN1;
 @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
 private int ngramMinN2;
 
-@ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+@ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
 private int ngramMinN;
 
 @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
@@ -41,19 +41,19 @@ private int ngramMaxN1;
 @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
 private int ngramMaxN2;
 
-@ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+@ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
 private int ngramMaxN;
 
-@ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
+@ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
 protected String keywordsFile;
 
-@ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
+@ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
 private boolean markSentenceBoundary;
 
-@ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
+@ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
 private boolean markSentenceLocation;
 
-@ConfigurationParameter(name = KeywordNGramFeatureExtractor.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
+@ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
 private boolean includeCommas;
 
 private Set<String> keywords;
@@ -98,7 +98,7 @@ public void process(JCas jcas)
 
     for (String ngram : documentNGrams.getKeys()) {
         for (int i=0;i<documentNGrams.getCount(ngram);i++){
-            addField(jcas, KeywordNGramFeatureExtractor.KEYWORD_NGRAM_FIELD, ngram); 
+            addField(jcas, KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD, ngram); 
         }
     }
     for (String ngram : view1NGrams.getKeys()) {
