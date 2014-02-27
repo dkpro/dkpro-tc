@@ -25,15 +25,15 @@ public class NrOfSentencesFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test! Does it thes sentences? Oh yes, it does!");
+        jcas.setDocumentText("This is a test! Does it test sentences? Oh yes, it does!");
         engine.process(jcas);
 
-        NrOfSentencesFeatureExtractor extractor = new NrOfSentencesFeatureExtractor();
+        NrOfSentencesDFE extractor = new NrOfSentencesDFE();
         List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfSentencesFeatureExtractor.FN_NR_OF_SENTENCES, 3, iter.next());
+        assertFeature(NrOfSentencesUFE.FN_NR_OF_SENTENCES, 3, iter.next());
     }
 }
