@@ -26,7 +26,7 @@ import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
 public class LucenePairNGramMetaCollectorTest
@@ -66,7 +66,7 @@ public class LucenePairNGramMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD);
+                Terms terms = fields.terms(LuceneNGramDFE.LUCENE_NGRAM_FIELD);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
 

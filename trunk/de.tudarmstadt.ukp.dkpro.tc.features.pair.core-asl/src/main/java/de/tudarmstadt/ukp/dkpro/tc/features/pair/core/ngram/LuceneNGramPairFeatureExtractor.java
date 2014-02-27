@@ -15,7 +15,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
@@ -23,15 +22,14 @@ import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * Pair ngram feature extractor for document pair classification. Can be used to extract ngrams from
@@ -46,6 +44,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  */
 public class LuceneNGramPairFeatureExtractor
     extends LuceneFeatureExtractorBase
+    implements PairFeatureExtractor
 {
     /**
      * Minimum size n of ngrams from View 1's.
@@ -158,15 +157,12 @@ public class LuceneNGramPairFeatureExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = getViewNgrams(AbstractPairReader.PART_ONE,
-                jcas, classificationUnit);
-        FrequencyDistribution<String> view2Ngrams = getViewNgrams(AbstractPairReader.PART_TWO,
-                jcas, classificationUnit);
-        FrequencyDistribution<String> allNgrams = getViewNgrams(AbstractPairReader.INITIAL_VIEW,
-                jcas, classificationUnit);
+        FrequencyDistribution<String> view1Ngrams = getViewNgrams(view1);
+        FrequencyDistribution<String> view2Ngrams = getViewNgrams(view2);
+        FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
 
         List<Feature> features = new ArrayList<Feature>();
         if (useView1NgramsAsFeatures) {
@@ -267,37 +263,19 @@ public class LuceneNGramPairFeatureExtractor
         return topNGrams;
     }
 
-    protected FrequencyDistribution<String> getViewNgrams(String name, JCas jcas,
-            TextClassificationUnit classificationUnit)
-        throws TextClassificationException
+    protected FrequencyDistribution<String> getViewNgrams(JCas view)
     {
+        return NGramUtils.getDocumentNgrams(view, ngramLowerCase, filterPartialStopwordMatches,
+                ngramMinN1, ngramMaxN1, stopwords);
+    }
 
-        JCas view1 = null;
-        JCas view2 = null;
-        try {
-            view1 = jcas.getView(AbstractPairReader.PART_ONE);
-            view2 = jcas.getView(AbstractPairReader.PART_TWO);
-        }
-        catch (Exception e) {
-            throw new TextClassificationException(e);
-        }
-
-        if (name.equals(AbstractPairReader.PART_ONE)) {
-            return NGramUtils.getDocumentNgrams(view1, ngramLowerCase,
-                    filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords);
-        }
-        else if (name.equals(AbstractPairReader.PART_TWO)) {
-            return NGramUtils.getDocumentNgrams(view2, ngramLowerCase,
-                    filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords);
-        }
-        else {
-            List<JCas> jcases = new ArrayList<JCas>();
-            jcases.add(view1);
-            jcases.add(view2);
-            return ComboUtils.getMultipleViewNgrams(jcases, null, ngramLowerCase,
-                    filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
-        }
-
+    protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2)
+    {
+        List<JCas> jcases = new ArrayList<JCas>();
+        jcases.add(view1);
+        jcases.add(view2);
+        return ComboUtils.getMultipleViewNgrams(jcases, null, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
     }
 
     @Override
@@ -316,22 +294,6 @@ public class LuceneNGramPairFeatureExtractor
     protected String getFeaturePrefix()
     {
         return "allNG";
-    }
-
-    // TODO This shouldn't be inherited here.
-    @Override
-    protected FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
-        throws TextClassificationException
-    {
-        return null;
-    }
-
-    // TODO This shouldn't be inherited here.
-    @Override
-    protected FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
-        throws TextClassificationException
-    {
-        return null;
     }
 
     protected void setStopwords(Set<String> newStopwords)

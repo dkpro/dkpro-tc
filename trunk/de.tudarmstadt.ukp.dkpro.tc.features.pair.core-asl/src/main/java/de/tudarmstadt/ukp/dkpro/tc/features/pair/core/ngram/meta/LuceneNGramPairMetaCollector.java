@@ -19,9 +19,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
 public class LuceneNGramPairMetaCollector
@@ -98,7 +98,7 @@ public class LuceneNGramPairMetaCollector
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i=0;i<documentNGrams.getCount(ngram);i++){
-                addField(jcas, LuceneNGramFeatureExtractor.LUCENE_NGRAM_FIELD, ngram); 
+                addField(jcas, LuceneNGramDFE.LUCENE_NGRAM_FIELD, ngram); 
             }
         }
         for (String ngram : view1NGrams.getKeys()) {

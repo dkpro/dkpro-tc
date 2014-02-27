@@ -23,11 +23,10 @@ import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * Combination pair ngram feature extractor. Creates features that are combinations of ngrams from
@@ -48,6 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
  */
 public class CombinedNGramPairFeatureExtractor
     extends LuceneNGramPairFeatureExtractor
+    implements PairFeatureExtractor
 {
     /**
      * Minimum token length of the combination. If neither ngram is empty, this value must be at
@@ -91,13 +91,11 @@ public class CombinedNGramPairFeatureExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = getViewNgrams(AbstractPairReader.PART_ONE,
-                jcas, classificationUnit);
-        FrequencyDistribution<String> view2Ngrams = getViewNgrams(AbstractPairReader.PART_TWO,
-                jcas, classificationUnit);
+        FrequencyDistribution<String> view1Ngrams = getViewNgrams(view1);
+        FrequencyDistribution<String> view2Ngrams = getViewNgrams(view2);
 
         FrequencyDistribution<String> documentComboNgrams = ComboUtils
                 .getCombinedNgrams(view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
