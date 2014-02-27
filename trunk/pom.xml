@@ -90,14 +90,16 @@
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity-gpl</module>
+        <module>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</module>
+        <module>de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features-asl</module>
+        <module>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
         <module>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</module>
+        <module>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</module>
+        <module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -138,6 +140,20 @@
           		</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
+            <dependency>
+                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <artifactId>
+                    de.tudarmstadt.ukp.dkpro.tc.examples-gpl
+                </artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <artifactId>
+                    de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
+                </artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+            </dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>
