@@ -95,6 +95,11 @@ public class BatchTaskCrossValidation
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and aggregate.");
         }
+        
+        if (numFolds < 2) {
+            throw new IllegalStateException(
+                    "Number of folds is not configured correctly. Number of folds needs to be at least 2.");            
+        }
 
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
