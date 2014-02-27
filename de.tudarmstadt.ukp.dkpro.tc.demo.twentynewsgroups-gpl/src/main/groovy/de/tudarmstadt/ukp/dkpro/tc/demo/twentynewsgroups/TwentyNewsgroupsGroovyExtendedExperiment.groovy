@@ -17,8 +17,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
@@ -79,19 +79,19 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
         "500",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
         3
     ],
     [
-        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
         "1000",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
         3
     ]);
 
@@ -104,8 +104,8 @@ public class TwentyNewsgroupsGroovyExtendedExperiment implements Constants{
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensFeatureExtractor.class.name,
-        NGramFeatureExtractor.class.name
+        NrOfTokensDFE.class.name,
+        FrequencyDistributionNGramFeatureExtractorBase.class.name
     ]
     );
 

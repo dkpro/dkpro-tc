@@ -14,8 +14,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -75,9 +75,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     [
         "TopK",
         "500",
-        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
         1,
-        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
     );
@@ -100,8 +100,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     DIM_FEATURE_SET,
     [
         [
-            NrOfTokensFeatureExtractor.class.name,
-            NGramFeatureExtractor.class.name
+            NrOfTokensDFE.class.name,
+            FrequencyDistributionNGramDFE.class.name
         ].toArray()
     ] as Object[]
     );

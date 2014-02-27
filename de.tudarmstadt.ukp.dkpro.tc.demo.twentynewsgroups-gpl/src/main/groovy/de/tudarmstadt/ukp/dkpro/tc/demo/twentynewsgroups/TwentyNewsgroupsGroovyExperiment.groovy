@@ -16,8 +16,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -81,8 +81,8 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensFeatureExtractor.class.name,
-        LuceneNGramFeatureExtractor.class.name
+        NrOfTokensDFE.class.name,
+        LuceneNGramDFE.class.name
         //        NGramFeatureExtractor.class.name
 
     ]
@@ -111,19 +111,19 @@ public class TwentyNewsgroupsGroovyExperiment implements Constants {
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        LuceneNGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
         "50",
-        LuceneNGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ],
     [
-        LuceneNGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
         "100",
-        LuceneNGramFeatureExtractor.PARAM_NGRAM_MIN_N,
+        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramFeatureExtractor.PARAM_NGRAM_MAX_N,
+        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
     );
