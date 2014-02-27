@@ -17,28 +17,31 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 
 public class KeywordNGramFeatureExtractorTest
 {
-    KeywordNGramFeatureExtractor keywordExtractor;
+    KeywordNGramDFE keywordExtractor;
     JCas jcas;
-    
-    private void initialize() throws Exception{
+
+    private void initialize()
+        throws Exception
+    {
 
         AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
 
         jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("Cherry trees are hardier than apricot, "
-        		+ "peach, and nectarine trees.  "
-        		+ "Crabapple trees are the toughest.");
-        engine.process(jcas); 
-        
-        keywordExtractor = new KeywordNGramFeatureExtractor();
+                + "peach, and nectarine trees.  " + "Crabapple trees are the toughest.");
+        engine.process(jcas);
+
+        keywordExtractor = new KeywordNGramDFE();
 
         keywordExtractor.prefix = "keyNG";
 
         keywordExtractor.stopwords = FeatureUtil.getStopwords(null, false);
-        keywordExtractor.keywords = FeatureUtil.getStopwords("src/test/resources/data/keywordlist.txt", true);
+        keywordExtractor.keywords = FeatureUtil.getStopwords(
+                "src/test/resources/data/keywordlist.txt", true);
         keywordExtractor.topKSet = makeSomeNgrams();
     }
+
     @Test
     public void extractKeywordsTest()
         throws Exception
@@ -46,35 +49,36 @@ public class KeywordNGramFeatureExtractorTest
         initialize();
         keywordExtractor.keywordMinN = 1;
         keywordExtractor.keywordMaxN = 3;
-        
-        List<Feature> luceneFeatures = keywordExtractor.extract(jcas, null);
-          
-        for(Feature f: luceneFeatures){
-        	if(f.getName().equals("keyNG_cherry")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_guava")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_cherry_apricot")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_peach_CA")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_peach_nectarine_SB")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_nectarine_SBBEG")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else{
-        		throw new Exception();
-        	}
-//        	System.out.println(f.getName() + "  " + f.getValue());
+
+        List<Feature> luceneFeatures = keywordExtractor.extract(jcas);
+
+        for (Feature f : luceneFeatures) {
+            if (f.getName().equals("keyNG_cherry")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_guava")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_cherry_apricot")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_peach_CA")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_peach_nectarine_SB")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_nectarine_SBBEG")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else {
+                throw new Exception();
+            }
+            // System.out.println(f.getName() + "  " + f.getValue());
         }
-        
+
     }
+
     @Test
     public void commasTest()
         throws Exception
@@ -83,36 +87,36 @@ public class KeywordNGramFeatureExtractorTest
         keywordExtractor.keywordMinN = 1;
         keywordExtractor.keywordMaxN = 3;
         keywordExtractor.includeCommas = true;
-        
-        List<Feature> luceneFeatures = keywordExtractor.extract(jcas, null);
-        
-        for(Feature f: luceneFeatures){
-        	if(f.getName().equals("keyNG_cherry")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_guava")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_cherry_apricot")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_peach_CA")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_peach_nectarine_SB")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_nectarine_SBBEG")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else{
-        		throw new Exception();
-        	}
-//        	System.out.println(f.getName() + "  " + f.getValue());
+
+        List<Feature> luceneFeatures = keywordExtractor.extract(jcas);
+
+        for (Feature f : luceneFeatures) {
+            if (f.getName().equals("keyNG_cherry")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_guava")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_cherry_apricot")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_peach_CA")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_peach_nectarine_SB")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_nectarine_SBBEG")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else {
+                throw new Exception();
+            }
+            // System.out.println(f.getName() + "  " + f.getValue());
         }
-        
 
     }
+
     @Test
     public void sentenceLocationTest()
         throws Exception
@@ -121,35 +125,36 @@ public class KeywordNGramFeatureExtractorTest
         keywordExtractor.keywordMinN = 1;
         keywordExtractor.keywordMaxN = 3;
         keywordExtractor.markSentenceLocation = true;
-        
-        List<Feature> luceneFeatures = keywordExtractor.extract(jcas, null);
-        
-        for(Feature f: luceneFeatures){
-        	if(f.getName().equals("keyNG_cherry")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_guava")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_cherry_apricot")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else if(f.getName().equals("keyNG_peach_CA")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_peach_nectarine_SB")){
-        		assertEquals(f.getValue(), 0);
-        	}
-        	else if(f.getName().equals("keyNG_nectarine_SBBEG")){
-        		assertEquals(f.getValue(), 1);
-        	}
-        	else{
-        		throw new Exception();
-        	}
-//        	System.out.println(f.getName() + "  " + f.getValue());
+
+        List<Feature> luceneFeatures = keywordExtractor.extract(jcas);
+
+        for (Feature f : luceneFeatures) {
+            if (f.getName().equals("keyNG_cherry")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_guava")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_cherry_apricot")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_peach_CA")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_peach_nectarine_SB")) {
+                assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_nectarine_SBBEG")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else {
+                throw new Exception();
+            }
+            // System.out.println(f.getName() + "  " + f.getValue());
         }
-        
+
     }
+
     @Test
     public void getKeywordsFromFileTest()
         throws Exception
@@ -157,14 +162,15 @@ public class KeywordNGramFeatureExtractorTest
         initialize();
         keywordExtractor.keywordMinN = 1;
         keywordExtractor.keywordMaxN = 3;
-        
-        List<Feature> luceneFeatures = keywordExtractor.extract(jcas, null);
-        
+
+        List<Feature> luceneFeatures = keywordExtractor.extract(jcas);
+
         assertTrue(keywordExtractor.keywords.contains("peach"));
-        
+
     }
-	
-    private static FrequencyDistribution<String> makeSomeNgrams(){
+
+    private static FrequencyDistribution<String> makeSomeNgrams()
+    {
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         fd.addSample("cherry", 2);
         fd.addSample("guava", 4);

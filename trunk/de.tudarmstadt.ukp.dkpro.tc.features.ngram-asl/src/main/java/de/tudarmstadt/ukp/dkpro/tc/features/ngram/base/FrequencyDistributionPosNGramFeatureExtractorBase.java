@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,25 +12,20 @@ import java.util.TreeMap;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
-public class POSNGramFeatureExtractor
+public class FrequencyDistributionPosNGramFeatureExtractorBase
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor, MetaDependent
+    implements MetaDependent
 {
 
     public static final String PARAM_POS_NGRAM_FD_FILE = "posNgramFdFile";
@@ -60,25 +55,6 @@ public class POSNGramFeatureExtractor
     protected Set<String> topKSet;
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
-
-    @Override
-    public List<Feature> extract(JCas jcas)
-        throws TextClassificationException
-    {
-        List<Feature> features = new ArrayList<Feature>();
-        FrequencyDistribution<String> documentPOSNgrams;
-        documentPOSNgrams = NGramUtils.getDocumentPosNgrams(jcas, posNgramMinN, posNgramMaxN, useCanonicalTags);
-
-        for (String topNgram : topKSet) {
-            if (documentPOSNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(prefix + "_" + topNgram, 1));
-            }
-            else {
-                features.add(new Feature(prefix + "_" + topNgram, 0));
-            }
-        }
-        return features;
-    }
 
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
@@ -111,8 +87,6 @@ public class POSNGramFeatureExtractor
 
         Set<String> topNGrams = new HashSet<String>();
 
-        
-
         Map<String, Long> map = new HashMap<String, Long>();
 
         for (String key : trainingFD.getKeys()) {
@@ -120,7 +94,7 @@ public class POSNGramFeatureExtractor
         }
 
         Map<String, Long> sorted_map = new TreeMap<String, Long>(
-                new NGramFeatureExtractor().new ValueComparator(map));
+                new FrequencyDistributionNGramFeatureExtractorBase().new ValueComparator(map));
         sorted_map.putAll(map);
 
         int i = 0;

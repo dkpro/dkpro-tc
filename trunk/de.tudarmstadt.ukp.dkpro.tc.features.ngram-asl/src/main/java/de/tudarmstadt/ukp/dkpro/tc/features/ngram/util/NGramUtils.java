@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
+package de.tudarmstadt.ukp.dkpro.tc.features.ngram.util;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;

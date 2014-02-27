@@ -1,33 +1,24 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public abstract class NGramFeatureExtractorBase
     extends FeatureExtractorResource_ImplBase
-    implements MetaDependent, DocumentFeatureExtractor, ClassificationUnitFeatureExtractor
+    implements MetaDependent
 {
     public static final String PARAM_NGRAM_MIN_N = "ngramMinN";
     @ConfigurationParameter(name = PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
@@ -61,6 +52,21 @@ public abstract class NGramFeatureExtractorBase
     protected FrequencyDistribution<String> topKSet;
     protected String prefix;
 
+    /**
+     * @return Name of the field
+     */
+    protected abstract String getFieldName();
+
+    /**
+     * @return Prefix which will be used to name to feature
+     */
+    protected abstract String getFeaturePrefix();
+
+    /**
+     * @return How many of the most frequent ngrams should be returned.
+     */
+    protected abstract int getTopN();
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -83,47 +89,6 @@ public abstract class NGramFeatureExtractorBase
         return true;
     }
 
-    @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
-        throws TextClassificationException
-    {
-        List<Feature> features = new ArrayList<Feature>();
-        FrequencyDistribution<String> documentNgrams = null;
-
-        if (classificationUnit == null) {
-            documentNgrams = getDocumentNgrams(jcas);
-        }
-        else {
-            documentNgrams = getAnnotationNgrams(jcas, classificationUnit);
-        }
-
-        for (String topNgram : topKSet.getKeys()) {
-            if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(prefix + "_" + topNgram, 1));
-            }
-            else {
-                features.add(new Feature(prefix + "_" + topNgram, 0));
-            }
-        }
-
-        return features;
-    }
-
-    @Override
-    public List<Feature> extract(JCas jcas)
-        throws TextClassificationException
-    {
-        return extract(jcas, null);
-    }
-
     protected abstract FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException;
-
-    protected abstract String getFeaturePrefix();
-
-    protected abstract FrequencyDistribution<String> getDocumentNgrams(JCas jcas)
-        throws TextClassificationException;
-
-    protected abstract FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation anno)
-        throws TextClassificationException;
 }

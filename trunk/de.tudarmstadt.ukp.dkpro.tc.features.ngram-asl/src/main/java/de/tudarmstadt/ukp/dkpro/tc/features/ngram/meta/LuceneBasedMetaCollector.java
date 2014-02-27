@@ -24,8 +24,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 
 public abstract class LuceneBasedMetaCollector
     extends MetaCollector
@@ -123,7 +123,7 @@ public abstract class LuceneBasedMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(LuceneNGramFeatureExtractor.PARAM_LUCENE_DIR, LUCENE_DIR);
+        mapping.put(LuceneNGramDFE.PARAM_LUCENE_DIR, LUCENE_DIR);
         return mapping;
     }
     

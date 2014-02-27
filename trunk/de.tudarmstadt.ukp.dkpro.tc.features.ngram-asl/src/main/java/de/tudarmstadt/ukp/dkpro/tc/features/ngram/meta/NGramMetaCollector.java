@@ -14,15 +14,16 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class NGramMetaCollector
     extends FreqDistBasedMetaCollector
 {
     public static final String NGRAM_FD_KEY = "ngrams.ser";
 
-    @ConfigurationParameter(name = NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, mandatory = true)
+    @ConfigurationParameter(name = FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, mandatory = true)
     private File ngramFdFile;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
@@ -72,7 +73,7 @@ public class NGramMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
+        mapping.put(FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
         return mapping;
     }
 

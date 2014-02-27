@@ -17,7 +17,7 @@ import org.junit.rules.TemporaryFolder;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.NGramFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 
 public class NGramMetaCollectorTest
 {
@@ -41,7 +41,7 @@ public class NGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 NGramMetaCollector.class,
-                NGramFeatureExtractor.PARAM_NGRAM_FD_FILE, tmpFdFile
+                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, tmpFdFile
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
