@@ -27,14 +27,14 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
-        
-        NrOfTokensFeatureExtractor extractor = new NrOfTokensFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas, null);
+
+        NrOfTokensDFE extractor = new NrOfTokensDFE();
+        List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(2, features.size());
-        
+
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensFeatureExtractor.FN_NR_OF_TOKENS, 5, iter.next());
-        assertFeature(NrOfTokensFeatureExtractor.FN_TOKENS_PER_SENTENCE, 5.0, iter.next());
+        assertFeature(NrOfTokensDFE.FN_NR_OF_TOKENS, 5, iter.next());
+        assertFeature(NrOfTokensDFE.FN_TOKENS_PER_SENTENCE, 5.0, iter.next());
     }
 }
