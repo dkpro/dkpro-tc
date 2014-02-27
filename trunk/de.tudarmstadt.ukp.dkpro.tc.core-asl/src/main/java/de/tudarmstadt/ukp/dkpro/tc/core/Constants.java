@@ -58,7 +58,7 @@ public interface Constants
      */
     public static final String DIM_LEARNING_MODE = "learningMode";
     public static final String LM_SINGLE_LABEL = "singleLabel";
-    public static final String LM_MULTI_LABEL = "multilabel";
+    public static final String LM_MULTI_LABEL = "multiLabel";
     public static final String LM_REGRESSION = "regression";
 
     /*
