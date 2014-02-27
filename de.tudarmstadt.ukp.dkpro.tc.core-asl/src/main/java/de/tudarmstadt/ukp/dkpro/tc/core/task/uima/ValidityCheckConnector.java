@@ -184,16 +184,20 @@ public class ValidityCheckConnector
             // verify feature extractors are valid within the specified mode
             try {
                 switch (featureModeI) {
-
                 case 1:
                     for (String featExt : featureExtractors) {
                         FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
                                 .forName(featExt).newInstance();
                         if (!(featExtC instanceof DocumentFeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt.getClass()
-                                            .getSimpleName()
+                                    new TextClassificationException(featExt
                                             + " is not a valid Document Feature Extractor."));
+                        }
+                        if (featExtC instanceof DocumentFeatureExtractor
+                                && (featExtC instanceof ClassificationUnitFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
+                            throw new AnalysisEngineProcessException(
+                                    new TextClassificationException(featExt
+                                            + ": Feature Extractors need to define a unique type."));
                         }
                     }
                     break;
@@ -203,9 +207,14 @@ public class ValidityCheckConnector
                                 .forName(featExt).newInstance();
                         if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt.getClass()
-                                            .getSimpleName()
+                                    new TextClassificationException(featExt
                                             + " is not a valid Unit Feature Extractor."));
+                        }
+                        if (featExtC instanceof ClassificationUnitFeatureExtractor
+                                && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
+                            throw new AnalysisEngineProcessException(
+                                    new TextClassificationException(featExt
+                                            + ": Feature Extractors need to define a unique type."));
                         }
                     }
                     break;
@@ -215,9 +224,14 @@ public class ValidityCheckConnector
                                 .forName(featExt).newInstance();
                         if (!(featExtC instanceof PairFeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt.getClass()
-                                            .getSimpleName()
+                                    new TextClassificationException(featExt
                                             + " is not a valid Pair Feature Extractor."));
+                        }
+                        if (featExtC instanceof PairFeatureExtractor
+                                && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof ClassificationUnitFeatureExtractor)) {
+                            throw new AnalysisEngineProcessException(
+                                    new TextClassificationException(featExt
+                                            + ": Feature Extractors need to define a unique type."));
                         }
                     }
                     break;
