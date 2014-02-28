@@ -1,11 +1,12 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.style;
+package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
+import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADJ;
+import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADV;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -18,12 +19,12 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.features.syntax.PastVsFutureFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor;
 
-public class PastVsFutureFeatureExtractorTest
+public class SuperlativeRatioFeatureExtractorTest
 {
     @Test
-    public void pastVsFutureFeatureExtractorTest()
+    public void posContextFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createAggregateDescription(
@@ -38,17 +39,21 @@ public class PastVsFutureFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("They tested. We test. She tests. You will test.");
+        jcas.setDocumentText("This is a normal test. This is the best, biggest, and greatest test ever.");
         engine.process(jcas);
 
-        PastVsFutureFeatureExtractor extractor = new PastVsFutureFeatureExtractor();
+        SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
         List<Feature> features = extractor.extract(jcas);
 
-        Assert.assertEquals(3, features.size());
-        Iterator<Feature> iter = features.iterator();
-        assertFeature(PastVsFutureFeatureExtractor.FN_PAST_RATIO, 25.0, iter.next());
-        assertFeature(PastVsFutureFeatureExtractor.FN_FUTURE_RATIO, 75.0, iter.next());
-        assertFeature(PastVsFutureFeatureExtractor.FN_FUTURE_VS_PAST_RATIO, 3.0, iter.next());
+        Assert.assertEquals(2, features.size());
 
+        for (Feature feature : features) {
+            if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADJ)) {
+                assertFeature(FN_SUPERLATIVE_RATIO_ADJ, 0.75, feature);
+            }
+            else if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADV)) {
+                assertFeature(FN_SUPERLATIVE_RATIO_ADV, 0.0, feature);
+            }
+        }
     }
 }

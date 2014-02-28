@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.content;
+package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
@@ -18,6 +18,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.features.style.ModalVerbsFeatureExtractor;
 
 public class ModalVerbsFeatureExtractorTest
 {
