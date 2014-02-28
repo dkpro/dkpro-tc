@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.examples;
+package de.tudarmstadt.ukp.dkpro.tc.examples.regression.pair;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
@@ -28,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
-public class RegressionExperiment
+public class SemanticTextSimilarityDemo
 {
     public static final String LANGUAGE_CODE = "en";
     public static int NUM_FOLDS = 2;
@@ -76,7 +76,7 @@ public class RegressionExperiment
         throws Exception
     {
 
-        RegressionExperiment experiment = new RegressionExperiment();
+        SemanticTextSimilarityDemo experiment = new SemanticTextSimilarityDemo();
         experiment.runCrossValidation(setup());
         experiment.runTrainTest(setup());
     }

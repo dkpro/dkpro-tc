@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.examples;
+package de.tudarmstadt.ukp.dkpro.tc.examples.regression.pair;
 
 import java.io.File;
 
@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.tc.examples.regression.pair.SemanticTextSimilarityDemo;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
@@ -16,10 +17,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
  * @author Oliver Ferschke
  * 
  */
-public class TwentyNewsgroupsDemoTest
+public class RegressionExperimentTest
 {
-    TwentyNewsgroupsDemo javaExperiment;
     ParameterSpace pSpace;
+    SemanticTextSimilarityDemo experiment;
 
     @Before
     public void setup()
@@ -29,24 +30,15 @@ public class TwentyNewsgroupsDemoTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        javaExperiment = new TwentyNewsgroupsDemo();
-        pSpace = TwentyNewsgroupsDemo.getParameterSpace();
+        experiment = new SemanticTextSimilarityDemo();
+        pSpace = SemanticTextSimilarityDemo.setup();
     }
 
     @Test
     public void testJavaCrossValidation()
         throws Exception
     {
-        // Java setup with automatic task wiring
-        javaExperiment.runCrossValidation(pSpace);
-    }
-
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
-    {
-        // Java setup with automatic task wiring
-        javaExperiment.runTrainTest(pSpace);
+        experiment.runCrossValidation(pSpace);
     }
 
     @Rule

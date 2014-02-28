@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
