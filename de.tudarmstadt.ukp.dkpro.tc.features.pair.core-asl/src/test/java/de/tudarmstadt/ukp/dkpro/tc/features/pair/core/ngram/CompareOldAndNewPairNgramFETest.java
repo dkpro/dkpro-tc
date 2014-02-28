@@ -70,7 +70,6 @@ public class CompareOldAndNewPairNgramFETest
     }
 
     @Test
-    @Ignore
     public void CompareOldAndNewPairFETest()
         throws Exception
     {
@@ -106,11 +105,11 @@ public class CompareOldAndNewPairNgramFETest
         List<Feature> oldFeatures = oldExtractor.extract(view1, view2);
 
         for (Feature f : oldFeatures) {
-            if (f.getName().startsWith("ngrams_PART_ONE__")) {
-                view1features.addSample(f.getName().replace("ngrams_PART_ONE__", ""), 1);
+            if (f.getName().startsWith("ngrams_PART_ONE_")) {
+                view1features.addSample(f.getName().replace("ngrams_PART_ONE_", ""), 1);
             }
             else {
-                view2features.addSample(f.getName().replace("ngrams_PART_TWO__", ""), 1);
+                view2features.addSample(f.getName().replace("ngrams_PART_TWO_", ""), 1);
             }
         }
         assertEquals(view1features.getKeys().size(), 7);
