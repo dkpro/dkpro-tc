@@ -1,11 +1,10 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.style;
+package de.tudarmstadt.ukp.dkpro.tc.features.spelling;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
-import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.SpellingErrorPOSRatioFeatureExtractor.FN_ART_ERROR_RATIO;
-import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.SpellingErrorPOSRatioFeatureExtractor.FN_N_ERROR_RATIO;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static de.tudarmstadt.ukp.dkpro.tc.features.spelling.SpellingErrorPOSRatioFeatureExtractor.FN_ART_ERROR_RATIO;
+import static de.tudarmstadt.ukp.dkpro.tc.features.spelling.SpellingErrorPOSRatioFeatureExtractor.FN_N_ERROR_RATIO;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.features.syntax.SpellingErrorPOSRatioFeatureExtractor;
 
 public class SpellingErrorPOSRatioFeatureExtractorTest
 {
@@ -28,19 +26,13 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
     public void posContextFeatureExtractorTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class),
-                createPrimitiveDescription(
-                        OpenNlpPosTagger.class,
-                        OpenNlpPosTagger.PARAM_LANGUAGE, "en"
-                ),
-                createPrimitiveDescription(
-                        SpellChecker.class,
-                        SpellChecker.PARAM_MODEL_LOCATION,
-                        "src/test/resources/dictionary/en_US_dict.txt"
-                )
-                );
-        AnalysisEngine engine = createPrimitive(desc);
+        AnalysisEngineDescription desc = createEngineDescription(
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+                        "en"),
+                createEngineDescription(SpellChecker.class, SpellChecker.PARAM_MODEL_LOCATION,
+                        "src/test/resources/dictionary/en_US_dict.txt"));
+        AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");

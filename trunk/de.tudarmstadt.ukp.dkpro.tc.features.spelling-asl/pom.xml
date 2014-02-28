@@ -5,22 +5,28 @@
     <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.features-asl</artifactId>
+  <artifactId>de.tudarmstadt.ukp.dkpro.tc.features.spelling-asl</artifactId>
   <dependencies>
-    <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-        <artifactId>
-            de.tudarmstadt.ukp.dkpro.core.frequency-asl
-        </artifactId>
-    </dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  		<artifactId>
+  			de.tudarmstadt.ukp.dkpro.core.jazzy-asl
+  		</artifactId>
+  	</dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>
   			de.tudarmstadt.ukp.dkpro.tc.api.features-asl
+  		</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  		<artifactId>
+  			de.tudarmstadt.ukp.dkpro.core.opennlp-asl
   		</artifactId>
   	</dependency>
   	<dependency>

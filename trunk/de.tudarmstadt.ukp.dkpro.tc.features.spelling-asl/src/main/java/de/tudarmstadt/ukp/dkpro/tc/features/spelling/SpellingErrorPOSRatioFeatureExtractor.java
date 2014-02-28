@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
+package de.tudarmstadt.ukp.dkpro.tc.features.spelling;
 
 import java.util.ArrayList;
 import java.util.List;
