@@ -160,8 +160,10 @@ public class LuceneNGramPairFeatureExtractor
     public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = getViewNgrams(view1);
-        FrequencyDistribution<String> view2Ngrams = getViewNgrams(view2);
+        FrequencyDistribution<String> view1Ngrams = NGramUtils.getDocumentNgrams(view1, ngramLowerCase, filterPartialStopwordMatches,
+                ngramMinN1, ngramMaxN1, stopwords);
+        FrequencyDistribution<String> view2Ngrams = NGramUtils.getDocumentNgrams(view2, ngramLowerCase, filterPartialStopwordMatches,
+                ngramMinN2, ngramMaxN2, stopwords);
         FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
 
         List<Feature> features = new ArrayList<Feature>();
@@ -263,11 +265,6 @@ public class LuceneNGramPairFeatureExtractor
         return topNGrams;
     }
 
-    protected FrequencyDistribution<String> getViewNgrams(JCas view)
-    {
-        return NGramUtils.getDocumentNgrams(view, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN1, ngramMaxN1, stopwords);
-    }
 
     protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2)
     {
