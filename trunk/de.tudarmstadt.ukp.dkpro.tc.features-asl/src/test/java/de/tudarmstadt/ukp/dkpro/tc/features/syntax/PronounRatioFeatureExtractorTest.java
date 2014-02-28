@@ -1,8 +1,8 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.style;
+package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
-import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADJ;
-import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADV;
+import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.PronounRatioFeatureExtractor.FN_HE_RATIO;
+import static de.tudarmstadt.ukp.dkpro.tc.features.syntax.PronounRatioFeatureExtractor.FN_WE_RATIO;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
@@ -19,9 +19,9 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.syntax.PronounRatioFeatureExtractor;
 
-public class SuperlativeRatioFeatureExtractorTest
+public class PronounRatioFeatureExtractorTest
 {
     @Test
     public void posContextFeatureExtractorTest()
@@ -39,20 +39,20 @@ public class SuperlativeRatioFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a normal test. This is the best, biggest, and greatest test ever.");
+        jcas.setDocumentText("He is no tester. I am a tester.");
         engine.process(jcas);
 
-        SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
+        PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
         List<Feature> features = extractor.extract(jcas);
 
-        Assert.assertEquals(2, features.size());
+        Assert.assertEquals(6, features.size());
 
         for (Feature feature : features) {
-            if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADJ)) {
-                assertFeature(FN_SUPERLATIVE_RATIO_ADJ, 0.75, feature);
+            if (feature.getName().equals(FN_HE_RATIO)) {
+                assertFeature(FN_HE_RATIO, 0.5, feature);
             }
-            else if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADV)) {
-                assertFeature(FN_SUPERLATIVE_RATIO_ADV, 0.0, feature);
+            else if (feature.getName().equals(FN_WE_RATIO)) {
+                assertFeature(FN_WE_RATIO, 0.0, feature);
             }
         }
     }

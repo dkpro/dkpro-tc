@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.content;
+package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
 import java.util.Arrays;
 import java.util.List;
