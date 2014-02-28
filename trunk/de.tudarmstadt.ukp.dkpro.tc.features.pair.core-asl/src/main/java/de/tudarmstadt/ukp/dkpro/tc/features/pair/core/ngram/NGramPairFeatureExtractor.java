@@ -24,6 +24,8 @@ public class NGramPairFeatureExtractor
     extends FrequencyDistributionNGramDFE
     implements PairFeatureExtractor
 {
+	
+	String viewPrefix;
 
     @Override
     public List<Feature> extract(JCas view1, JCas view2)
@@ -31,9 +33,9 @@ public class NGramPairFeatureExtractor
     {
         List<Feature> features = new ArrayList<Feature>();
 
-        prefix = "ngrams_" + view1.getViewName() + "_";
+        viewPrefix = "ngrams_" + view1.getViewName();
         features.addAll(super.extract(view1));
-        prefix = "ngrams_" + view2.getViewName() + "_";
+        viewPrefix = "ngrams_" + view2.getViewName();
         features.addAll(super.extract(view2));
         return features;
     }
@@ -46,5 +48,11 @@ public class NGramPairFeatureExtractor
     protected void makeTopKSet(FrequencyDistribution<String> topK)
     {
         topKSet = topK;
+    }
+    
+    @Override
+    protected String getFeaturePrefix()
+    {
+    	return viewPrefix;
     }
 }

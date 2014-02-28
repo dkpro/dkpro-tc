@@ -20,7 +20,6 @@ public class PairKeywordNgramsTest
     extends PairNgramFETestBase
 {
     @Test
-    @Ignore
     public void testSize1Features()
         throws Exception
     {
@@ -54,7 +53,6 @@ public class PairKeywordNgramsTest
     }
 
     @Test
-    @Ignore
     public void testSize3Features()
         throws Exception
     {
@@ -97,7 +95,7 @@ public class PairKeywordNgramsTest
     {
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false,
                 KeywordNGramPairFeatureExtractor.class.getName());
     }
 

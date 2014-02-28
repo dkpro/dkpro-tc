@@ -36,8 +36,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPai
 
 /**
  * Pair keyword ngram feature extractor for
- * {@link de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractorBase
- * KeywordNGramFeatureExtractor} Can be used to extract ngrams from one or both documents in the
+ * {@link de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramDFE
+ * KeywordNGramDFE} Can be used to extract ngrams from one or both documents in the
  * pair, and parameters for each document (view 1's, view 2's) can be set separately, or both
  * documents can be treated together as one extended document. <br />
  * Note that ngram features created by this class are each from a single document, i.e., not
@@ -193,10 +193,12 @@ public class KeywordNGramPairFeatureExtractor
     public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = getViewNgrams(view1);
-        FrequencyDistribution<String> view2Ngrams = getViewNgrams(view2);
+        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, ngramMinN1, ngramMaxN1,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, ngramMinN2, ngramMaxN2,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
         FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
-
+        
         List<Feature> features = new ArrayList<Feature>();
         if (useView1NgramsAsFeatures) {
             prefix = "keyNG1";
@@ -294,12 +296,6 @@ public class KeywordNGramPairFeatureExtractor
         }
 
         return topNGrams;
-    }
-
-    protected FrequencyDistribution<String> getViewNgrams(JCas jcas)
-    {
-        return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, ngramMinN1, ngramMaxN1,
-                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
 
     protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2)
