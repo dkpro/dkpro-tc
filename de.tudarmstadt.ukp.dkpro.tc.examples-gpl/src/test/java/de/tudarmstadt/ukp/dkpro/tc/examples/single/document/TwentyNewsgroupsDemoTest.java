@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples;
+package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
 import java.io.File;
 
@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.tc.examples.single.document.TwentyNewsgroupsDemo;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
@@ -16,9 +17,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
  * @author Oliver Ferschke
  * 
  */
-public class ReutersDemoTest
+public class TwentyNewsgroupsDemoTest
 {
-    ReutersDemo experiment;
+    TwentyNewsgroupsDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -29,21 +30,24 @@ public class ReutersDemoTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        experiment = new ReutersDemo();
+        javaExperiment = new TwentyNewsgroupsDemo();
+        pSpace = TwentyNewsgroupsDemo.getParameterSpace();
     }
 
     @Test
-    public void testGroovyCrossValidation()
+    public void testJavaCrossValidation()
         throws Exception
     {
-        experiment.runCrossValidation();
+        // Java setup with automatic task wiring
+        javaExperiment.runCrossValidation(pSpace);
     }
 
     @Test
-    public void testGroovyTrainTest()
+    public void testJavaTrainTest()
         throws Exception
     {
-        experiment.runTrainTest();
+        // Java setup with automatic task wiring
+        javaExperiment.runTrainTest(pSpace);
     }
 
     @Rule

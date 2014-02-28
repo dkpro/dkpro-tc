@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
 
 import java.io.File;
 

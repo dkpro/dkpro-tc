@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.pair;
 
 import java.io.File;
 
@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+
+import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.pair.PairTwentyNewsgroupsDemo;
 
 /** 
  * This test only checks to see if the experiment runs without exceptions.

@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.examples;
+package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 

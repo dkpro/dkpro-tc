@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
 
 import java.io.File;
 
@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+
+import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwentyNewsgroupsDemo;
+import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwentyNewsgroupsDemoExtended;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
