@@ -53,7 +53,7 @@ public class LuceneNGramMetaCollectorTest
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
-            System.out.println(jcas.getDocumentText().length());
+//            System.out.println(jcas.getDocumentText().length());
         }
         
         int i = 0;
@@ -73,8 +73,8 @@ public class LuceneNGramMetaCollectorTest
 //                    }
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
-                        System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
-                        System.out.println(termsEnum.docFreq());
+//                        System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
+//                        System.out.println(termsEnum.docFreq());
                         
                         if (text.utf8ToString().equals("this")) {
                             assertEquals(2, termsEnum.docFreq());

@@ -83,8 +83,8 @@ public class LuceneNGramFeatureExtractorTest
         assertTrue(featureNames.contains("ngram_5"));
         assertTrue(featureNames.contains("ngram_5_5"));
 
-        System.out.println(FileUtils.readFileToString(new File(outputPath,
-                JsonDataWriter.JSON_FILE_NAME)));
+//        System.out.println(FileUtils.readFileToString(new File(outputPath,
+//                JsonDataWriter.JSON_FILE_NAME)));
 
     }
 }
