@@ -47,9 +47,6 @@ public class PairKeywordNgramsTest
         for (String value : test.instanceList.get(0)) {
             assertEquals(1, Integer.parseInt(value));
         }
-        for (String f : test.featureNames) {
-            System.out.println("feature: " + f);
-        }
     }
 
     @Test
@@ -78,9 +75,6 @@ public class PairKeywordNgramsTest
         assertTrue(test.featureNames.contains("keyNG_SB_crabapple_SB"));
         for (String value : test.instanceList.get(0)) {
             assertEquals(1, Integer.parseInt(value));
-        }
-        for (String f : test.featureNames) {
-            System.out.println("feature: " + f);
         }
     }
 
