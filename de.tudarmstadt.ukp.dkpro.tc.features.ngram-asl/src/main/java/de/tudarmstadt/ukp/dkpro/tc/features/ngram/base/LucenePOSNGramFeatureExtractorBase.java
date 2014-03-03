@@ -19,19 +19,19 @@ public class LucenePOSNGramFeatureExtractorBase
 
     public static final String PARAM_POS_NGRAM_MIN_N = "posNgramMinN";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int posNgramMinN;
+	protected int posNgramMinN;
 
     public static final String PARAM_POS_NGRAM_MAX_N = "posNgramMaxN";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int posNgramMaxN;
+	protected int posNgramMaxN;
 
     public static final String PARAM_POS_NGRAM_USE_TOP_K = "posNgramUseTopK";
     @ConfigurationParameter(name = PARAM_POS_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
-    private int posNgramUseTopK;
+    protected int posNgramUseTopK;
 
     public static final String PARAM_USE_CANONICAL_POS = "useCanonicalPos";
     @ConfigurationParameter(name = PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
-    private boolean useCanonicalTags;
+    protected boolean useCanonicalTags;
 
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
