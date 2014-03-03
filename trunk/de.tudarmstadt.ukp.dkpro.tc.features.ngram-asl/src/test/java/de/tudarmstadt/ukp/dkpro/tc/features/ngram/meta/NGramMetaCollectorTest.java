@@ -45,12 +45,12 @@ public class NGramMetaCollectorTest
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
-            System.out.println(jcas.getDocumentText().length());
+//            System.out.println(jcas.getDocumentText().length());
         }
         
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         fd.load(tmpFdFile);
-        System.out.println(fd);
+//        System.out.println(fd);
         
         assertEquals(35, fd.getB());
         assertEquals(51, fd.getN());

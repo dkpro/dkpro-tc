@@ -22,7 +22,7 @@ public class SkipNgramStringListIterableTest
         
         int i=0;
         for (List<String> ngram : new SkipNgramStringListIterable(tokens, 2, 2, 2)) {
-            System.out.println(ngram);
+//            System.out.println(ngram);
             i++;
         }
         assertEquals(15, i);
@@ -49,7 +49,7 @@ public class SkipNgramStringListIterableTest
         for (List<String> ngram : new SkipNgramStringListIterable(tokens, 3, 3, 2)) {
             String joined = StringUtils.join(ngram, " ");
             assertTrue(joined, ngrams.contains(joined));
-            System.out.println(ngram);
+//            System.out.println(ngram);
             i++;
         }
         assertEquals(ngrams.size(), i);
@@ -63,7 +63,7 @@ public class SkipNgramStringListIterableTest
 
         int i=0;
         for (List<String> ngram : new SkipNgramStringListIterable(tokens, 2, 3, 2)) {
-            System.out.println(ngram);
+//            System.out.println(ngram);
             i++;
         }
         assertEquals(19, i);
