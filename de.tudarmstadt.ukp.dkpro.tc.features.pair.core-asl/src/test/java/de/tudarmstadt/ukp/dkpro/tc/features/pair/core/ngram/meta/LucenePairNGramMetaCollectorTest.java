@@ -56,9 +56,9 @@ public class LucenePairNGramMetaCollectorTest
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, tmpDir
         );
 
-        for (JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
-            System.out.println(jcas.getDocumentText().length());
-        }
+//        for (JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
+//            System.out.println(jcas.getDocumentText().length());
+//        }
         
         int i = 0;
         IndexReader index;
@@ -72,8 +72,8 @@ public class LucenePairNGramMetaCollectorTest
 
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
-                        System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
-                        System.out.println(termsEnum.docFreq());
+//                        System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
+//                        System.out.println(termsEnum.docFreq());
                         
                         if (text.utf8ToString().equals("this")) {
                             assertEquals(2, termsEnum.docFreq());
