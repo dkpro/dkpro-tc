@@ -56,9 +56,10 @@ public class LucenePairNGramMetaCollectorTest
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, tmpDir
         );
 
-//        for (JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
+        //test fails if for-loop removed
+        for (JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
 //            System.out.println(jcas.getDocumentText().length());
-//        }
+        }
         
         int i = 0;
         IndexReader index;
