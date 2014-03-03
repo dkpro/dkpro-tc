@@ -21,6 +21,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
  * Crossvalidation setup
@@ -95,10 +96,10 @@ public class BatchTaskCrossValidation
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and aggregate.");
         }
-        
+
         if (numFolds < 2) {
             throw new IllegalStateException(
-                    "Number of folds is not configured correctly. Number of folds needs to be at least 2.");            
+                    "Number of folds is not configured correctly. Number of folds needs to be at least 2.");
         }
 
         // check the validity of the experiment setup first
@@ -169,6 +170,7 @@ public class BatchTaskCrossValidation
         // classification (numFolds times)
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
+        testTask.addReport(OutcomeIDReport.class);
         if (innerReport != null) {
             testTask.addReport(innerReport);
         }
