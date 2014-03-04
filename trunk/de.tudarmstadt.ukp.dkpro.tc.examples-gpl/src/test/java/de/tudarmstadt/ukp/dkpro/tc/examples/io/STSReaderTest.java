@@ -8,8 +8,6 @@ import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-
 public class STSReaderTest
 {
 
@@ -25,9 +23,10 @@ public class STSReaderTest
 
         int i=0;
         for (JCas jcas : new JCasIterable(reader)) {
-            
-            System.out.println(jcas.getView(AbstractPairReader.PART_ONE).getDocumentText());
-            System.out.println(jcas.getView(AbstractPairReader.PART_TWO).getDocumentText());
+
+// FIXME should test not write to console
+//            System.out.println(jcas.getView(AbstractPairReader.PART_ONE).getDocumentText());
+//            System.out.println(jcas.getView(AbstractPairReader.PART_TWO).getDocumentText());
             i++;
         }
         assertEquals(10, i);
