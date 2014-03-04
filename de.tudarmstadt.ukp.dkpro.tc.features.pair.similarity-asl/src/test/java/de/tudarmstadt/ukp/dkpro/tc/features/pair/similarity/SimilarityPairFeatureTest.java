@@ -18,7 +18,10 @@ import org.apache.uima.fit.testing.factory.TokenBuilder;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -29,7 +32,6 @@ import dkpro.similarity.algorithms.lexical.uima.string.GreedyStringTilingMeasure
 
 public class SimilarityPairFeatureTest
 {
-
     private static final String VIEW1 = "view1";
     private static final String VIEW2 = "view2";
 
@@ -94,5 +96,14 @@ public class SimilarityPairFeatureTest
         tb.buildTokens(view2, "Test is this .");
 
         engine.process(jcas);
+    }
+
+    @Rule
+    public TestName name = new TestName();
+
+    @Before
+    public void printSeparator()
+    {
+        System.out.println("\n=== " + name.getMethodName() + " =====================");
     }
 }

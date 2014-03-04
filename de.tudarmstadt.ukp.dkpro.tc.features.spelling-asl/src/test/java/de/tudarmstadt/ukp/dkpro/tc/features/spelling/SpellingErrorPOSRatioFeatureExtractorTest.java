@@ -13,7 +13,10 @@ import junit.framework.Assert;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -59,5 +62,14 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
                 assertFeature(FN_N_ERROR_RATIO, 0.3333, feature, 0.0001);
             }
         }
+    }
+
+    @Rule
+    public TestName name = new TestName();
+
+    @Before
+    public void printSeparator()
+    {
+        System.out.println("\n=== " + name.getMethodName() + " =====================");
     }
 }

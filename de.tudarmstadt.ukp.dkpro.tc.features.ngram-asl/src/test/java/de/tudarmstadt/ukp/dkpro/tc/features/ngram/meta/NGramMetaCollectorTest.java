@@ -10,6 +10,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -24,6 +25,12 @@ public class NGramMetaCollectorTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
+    @Before
+    public void setupLogging()
+    {
+        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+    }
+    
     @Test
     public void ngramMetaCollectorTest()
         throws Exception
