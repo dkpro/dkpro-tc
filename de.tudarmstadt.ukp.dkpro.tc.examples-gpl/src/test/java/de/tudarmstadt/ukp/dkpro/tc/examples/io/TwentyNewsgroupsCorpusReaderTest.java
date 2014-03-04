@@ -5,12 +5,10 @@ import static org.junit.Assert.assertEquals;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class TwentyNewsgroupsCorpusReaderTest
 {
@@ -32,10 +30,11 @@ public class TwentyNewsgroupsCorpusReaderTest
             dumpMetaData(md);
             i++;
 
-            for (TextClassificationOutcome outcome : JCasUtil.select(jcas,
-                    TextClassificationOutcome.class)) {
-                System.out.println(outcome);
-            }
+// FIXME should test not write to console
+//            for (TextClassificationOutcome outcome : JCasUtil.select(jcas,
+//                    TextClassificationOutcome.class)) {
+//                System.out.println(outcome);
+//            }
         }
         assertEquals(12, i);
     }
