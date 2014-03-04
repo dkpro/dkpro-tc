@@ -23,6 +23,12 @@ public class TwentyNewsgroupsDemoTest
     ParameterSpace pSpace;
 
     @Before
+    public void setupLogging()
+    {
+        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+    }
+    
+    @Before
     public void setup()
         throws Exception
     {
