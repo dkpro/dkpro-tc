@@ -61,18 +61,18 @@ public class KeywordNGramPairFeatureExtractor
     protected String keywordsFile;
 
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
-    private boolean markSentenceBoundary;
+	protected boolean markSentenceBoundary;
 
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
-    private boolean markSentenceLocation;
+	protected boolean markSentenceLocation;
 
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
-    private boolean includeCommas;
+	protected boolean includeCommas;
 
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     private int keywordNgramUseTopK;
 
-    private Set<String> keywords;
+    protected Set<String> keywords;
     /**
      * Minimum size n of ngrams from View 1's.
      */
