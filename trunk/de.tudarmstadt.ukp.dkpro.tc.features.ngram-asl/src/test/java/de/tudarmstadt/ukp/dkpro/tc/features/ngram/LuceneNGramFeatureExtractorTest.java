@@ -16,6 +16,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -33,10 +34,15 @@ import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 public class LuceneNGramFeatureExtractorTest
 {
-
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
+    @Before
+    public void setupLogging()
+    {
+        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+    }
+    
     @Test
     public void luceneNGramFeatureExtractorTest()
         throws Exception
