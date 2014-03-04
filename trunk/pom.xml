@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>DKPro Text Classification Framework</name>
 	<parent>
@@ -54,16 +55,16 @@
 			</releases>
 		</repository>
 	</repositories>
-        <distributionManagement>
-                <repository>
-                        <id>ukp-oss</id>
-                        <url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-releases-local</url>
-                </repository>
-                <snapshotRepository>
-                        <id>ukp-oss</id>
-                        <url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local</url>
-                </snapshotRepository>
-        </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>ukp-oss</id>
+			<url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-releases-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>ukp-oss</id>
+			<url>dav:https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<developers>
 		<developer>
 			<id>oliver.ferschke</id>
@@ -82,22 +83,21 @@
 		</developer>
 	</developers>
 	<modules>
+		<!-- Please keep in alphabetical order -->
 		<module>de.tudarmstadt.ukp.dkpro.tc.api-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
-        <module>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</module>
-        <module>de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features-asl</module>
-        <module>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
-        <module>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</module>
-        <module>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</module>
-        <module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.features.spelling-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</module>
+		<module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
 		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
-		<module>
-			de.tudarmstadt.ukp.dkpro.tc.features.spelling-asl
-		</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -107,6 +107,84 @@
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
+			<!-- Modules: Please keep the following dependencies in alphabetical order -->
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.api-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<!-- demo.* projects omitted -->
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.spelling-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.api.fstore.simple-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
+			<!-- Other dependencies -->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.core-asl</artifactId>
@@ -131,90 +209,7 @@
 				<artifactId>meka</artifactId>
 				<version>1.3</version>
 			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.api-asl
-          		</artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.examples-gpl
-                </artifactId>
-                <version>0.6.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
-                </artifactId>
-                <version>0.6.0-SNAPSHOT</version>
-            </dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-          			de.tudarmstadt.ukp.dkpro.tc.features-asl
-          		</artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl
-                </artifactId>
-                <version>0.6.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl
-                </artifactId>
-                <version>0.6.0-SNAPSHOT</version>
-            </dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
-                </artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
-                </artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.api.features-asl
-                </artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.api.fstore.simple-asl
-                </artifactId>
-                <version>0.5.0-SNAPSHOT</version>
-            </dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.weka-gpl
-                </artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>
-                    de.tudarmstadt.ukp.dkpro.tc.core-asl
-                </artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
+
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>
@@ -260,51 +255,49 @@
 				<version>4.4.0</version>
 			</dependency>
 			<dependency>
-		        <groupId>org.apache.lucene</groupId>
-		        <artifactId>lucene-misc</artifactId>
-		        <version>4.4.0</version>
-		    </dependency>
-		    <dependency>
-		        <groupId>org.apache.lucene</groupId>
-		        <artifactId>lucene-analyzers-common</artifactId>
-		        <version>4.4.0</version>
-		    </dependency>
-		    <dependency>
-		    	<groupId>org.apache.commons</groupId>
-		    	<artifactId>commons-math3</artifactId>
-		    	<version>3.2</version>
-		    </dependency>
-		    <dependency>
-		    	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-		    	<artifactId>
-		    		de.tudarmstadt.ukp.dkpro.core-gpl
-		    	</artifactId>
-		    	<version>1.5.0</version>
-		    	<type>pom</type>
-		    	<scope>import</scope>
-		    </dependency>
-		    <dependency>
-		    	<groupId>net.sf.json-lib</groupId>
-		    	<artifactId>json-lib</artifactId>
-		    	<version>2.4</version>
-		    	<classifier>jdk15</classifier>
-		    </dependency>
-		    <dependency>
-		        <groupId>com.google.code.gson</groupId>
-		        <artifactId>gson</artifactId>
-		        <version>2.2.4</version>
-		    </dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-misc</artifactId>
+				<version>4.4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-analyzers-common</artifactId>
+				<version>4.4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-math3</artifactId>
+				<version>3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core-gpl</artifactId>
+				<version>1.5.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.json-lib</groupId>
+				<artifactId>json-lib</artifactId>
+				<version>2.4</version>
+				<classifier>jdk15</classifier>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.2.4</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-       <build>
-                <extensions>
-                        <extension>
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-webdav</artifactId>
-                                <version>1.0-beta-2</version>
-                        </extension>
-                </extensions>
-        </build>
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+	</build>
 	<profiles>
 		<profile>
 			<id>groovy</id>
@@ -372,7 +365,7 @@
 							</execution>
 						</executions>
 					</plugin>
-				</plugins>				
+				</plugins>
 			</build>
 		</profile>
 	</profiles>
