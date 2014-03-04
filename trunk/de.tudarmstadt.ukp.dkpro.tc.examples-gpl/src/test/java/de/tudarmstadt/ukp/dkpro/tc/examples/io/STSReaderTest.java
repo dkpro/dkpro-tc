@@ -6,11 +6,19 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 public class STSReaderTest
 {
-
+    @Before
+    public void setupLogging()
+    {
+        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+    }
+    
     @Test
     public void stsReaderTest()
             throws Exception
@@ -30,5 +38,14 @@ public class STSReaderTest
             i++;
         }
         assertEquals(10, i);
+    }
+
+    @Rule
+    public TestName name = new TestName();
+
+    @Before
+    public void printSeparator()
+    {
+        System.out.println("\n=== " + name.getMethodName() + " =====================");
     }
 }
