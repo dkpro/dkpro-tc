@@ -165,14 +165,23 @@ public abstract class AbstractPairReader
 
     /**
      * This is for the ID of 
-     * {@link #getInitialViewText()}.
+     * {@link #getInitialViewText()}.<p />
+     * 
+     * The docID, combined with the {@link #getBaseUri() BaseURI} should be unique for each instance.<p />
+     * 
+     * Note: If each of your data instances doesn't have its own source file,
+     * then we recommend just using some instance-unique name here, <b>without</b>
+     * any directories or special characters!  Otherwise, DKPro Lab may lose some
+     * of your data without loudly notifying you.<p />
+     * To check for lost data, look in "Evaluation[...]" file and add up the experiment's
+     * "Correctly Classified Examples" and "Incorrectly Classified Examples".
      * 
      * @return iD
      */
     protected abstract String getInitialViewDocId();
 
     /**
-     * This is for the title of 
+     * This is a human-readable title of 
      * {@link #getInitialViewText()}.
      * 
      * @return title
@@ -182,7 +191,15 @@ public abstract class AbstractPairReader
     /**
      * If the pair of texts come from one document, set this to the document's original pathname,
      * without the final filename.  It is used if the CAS is written to file.  The {@link pathname} does not
-     * need to actually exist.
+     * need to actually exist.<p />
+     * 
+     * The docID, combined with the {@link #getBaseUri() BaseURI} should be unique for each instance.<p />
+     * 
+     * Note: If each of your data instances doesn't have its own source file,
+     * then we recommend using an empty string here, or a very simple directory name.
+     * Otherwise, DKPro Lab may lose some of your data without loudly notifying you.<p />
+     * To check for lost data, look in "Evaluation[...]" file and add up the experiment's
+     * "Correctly Classified Examples" and "Incorrectly Classified Examples".
      * 
      * @return pathname
      */
