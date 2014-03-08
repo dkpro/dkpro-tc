@@ -70,7 +70,7 @@ public class KeywordNGramPairFeatureExtractor
 	protected boolean includeCommas;
 
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
-    private int keywordNgramUseTopK;
+    protected int keywordNgramUseTopK;
 
     protected Set<String> keywords;
     /**
