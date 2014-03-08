@@ -3,3 +3,4 @@ peach
 nectarine
 crabapple
 apricot
+cherry trees

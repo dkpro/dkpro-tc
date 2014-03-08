@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 
 public class KeywordNGramFeatureExtractorTest
 {
@@ -40,6 +41,8 @@ public class KeywordNGramFeatureExtractorTest
         keywordExtractor.keywords = FeatureUtil.getStopwords(
                 "src/test/resources/data/keywordlist.txt", true);
         keywordExtractor.topKSet = makeSomeNgrams();
+        
+        
     }
 
     @Test
@@ -59,7 +62,7 @@ public class KeywordNGramFeatureExtractorTest
             else if (f.getName().equals("keyNG_guava")) {
                 assertEquals(f.getValue(), 0);
             }
-            else if (f.getName().equals("keyNG_cherry_apricot")) {
+            else if (f.getName().equals("keyNG_apricot_peach")) {
                 assertEquals(f.getValue(), 1);
             }
             else if (f.getName().equals("keyNG_peach_CA")) {
@@ -71,10 +74,13 @@ public class KeywordNGramFeatureExtractorTest
             else if (f.getName().equals("keyNG_nectarine_SBBEG")) {
                 assertEquals(f.getValue(), 0);
             }
+            else if (f.getName().equals("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees")) {
+                assertEquals(f.getValue(), 1);
+            }
             else {
                 throw new Exception();
             }
-            // System.out.println(f.getName() + "  " + f.getValue());
+//             System.out.println(f.getName() + "  " + f.getValue());
         }
 
     }
@@ -97,8 +103,8 @@ public class KeywordNGramFeatureExtractorTest
             else if (f.getName().equals("keyNG_guava")) {
                 assertEquals(f.getValue(), 0);
             }
-            else if (f.getName().equals("keyNG_cherry_apricot")) {
-                assertEquals(f.getValue(), 1);
+            else if (f.getName().equals("keyNG_apricot_peach")) {
+                assertEquals(f.getValue(), 0);
             }
             else if (f.getName().equals("keyNG_peach_CA")) {
                 assertEquals(f.getValue(), 1);
@@ -108,6 +114,9 @@ public class KeywordNGramFeatureExtractorTest
             }
             else if (f.getName().equals("keyNG_nectarine_SBBEG")) {
                 assertEquals(f.getValue(), 0);
+            }
+            else if (f.getName().equals("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees")) {
+                assertEquals(f.getValue(), 1);
             }
             else {
                 throw new Exception();
@@ -135,7 +144,7 @@ public class KeywordNGramFeatureExtractorTest
             else if (f.getName().equals("keyNG_guava")) {
                 assertEquals(f.getValue(), 0);
             }
-            else if (f.getName().equals("keyNG_cherry_apricot")) {
+            else if (f.getName().equals("keyNG_apricot_peach")) {
                 assertEquals(f.getValue(), 1);
             }
             else if (f.getName().equals("keyNG_peach_CA")) {
@@ -145,6 +154,9 @@ public class KeywordNGramFeatureExtractorTest
                 assertEquals(f.getValue(), 0);
             }
             else if (f.getName().equals("keyNG_nectarine_SBBEG")) {
+                assertEquals(f.getValue(), 1);
+            }
+            else if (f.getName().equals("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees")) {
                 assertEquals(f.getValue(), 1);
             }
             else {
@@ -174,10 +186,11 @@ public class KeywordNGramFeatureExtractorTest
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         fd.addSample("cherry", 2);
         fd.addSample("guava", 4);
-        fd.addSample("cherry_apricot", 5);
+        fd.addSample("apricot_peach", 5);
         fd.addSample("peach_CA", 1);
         fd.addSample("peach_nectarine_SB", 1);
         fd.addSample("nectarine_SBBEG", 1);
+        fd.addSample("cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees", 1);
         return fd;
     }
 
