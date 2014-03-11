@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -82,10 +83,9 @@ class PairTwentyNewsgroupsDemo implements Constants {
     [
         // This feature is sensible and fast, but gives bad results on the demo data
         SharedNEsFeatureExtractor.class.name,
-        // This feature is sensible but slow.
-        //        CombinedNGramPairFeatureExtractor.class.name
-        //Experimental.
-        //		LuceneNGramPairFeatureExtractor.class.name
+        // Please review LuceneNGramPairFeatureExtractor's javadoc to understand 
+		// the parameters before using LuceneNGramPairFeatureExtractor.
+//      LuceneNGramPairFeatureExtractor.class.name
     ]
     );
 
@@ -93,31 +93,26 @@ class PairTwentyNewsgroupsDemo implements Constants {
     DIM_PIPELINE_PARAMS,
 
     [
-        //	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-        //	        "500",
-        //	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N,
-        //	        1,
-        //	        CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N,
-        //	        1
-        //
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1,
-        //			1,
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1,
-        //			2,
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2,
-        //			1,
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2,
-        //			2,
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_COMBO,
-        //			2,
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO,
-        //			3,
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW1,
-        //			"100",
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW2,
-        //			"100",
-        //			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_COMBO,
-        //			"500"
+//        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1,
+//        			1,
+//        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1,
+//        			2,
+//        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2,
+//        			1,
+//        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2,
+//        			2,
+//        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW1,
+//        			"100",
+//        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW2,
+//        			"100",
+//					LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
+//					"500",
+//					LuceneNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES,
+//					"false",
+//					LuceneNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES,
+//					"true",
+//					LuceneNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES,
+//					"true"
     ]
     );
 
