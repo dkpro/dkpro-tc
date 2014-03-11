@@ -25,5 +25,9 @@
   			de.tudarmstadt.ukp.dkpro.tc.api.features-asl
   		</artifactId>
   	</dependency>
+   	<dependency>
+   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+   		<artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+   	</dependency>
   </dependencies>
 </project>

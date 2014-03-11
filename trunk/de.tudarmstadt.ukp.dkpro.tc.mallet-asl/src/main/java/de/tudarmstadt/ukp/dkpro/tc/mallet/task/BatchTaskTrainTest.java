@@ -11,6 +11,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.OutcomeIDReport;
 
 /**
  * Train-Test setup
@@ -94,31 +95,34 @@ public class BatchTaskTrainTest
         checkTask = new ValidityCheckTask();
 
         // preprocessing on training data
-        preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setAggregate(aggregate);
-        preprocessTaskTrain.setOperativeViews(operativeViews);
-        preprocessTaskTrain.setTesting(false);
-        preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
-        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
-
-        // preprocessing on test data
-        preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setAggregate(aggregate);
-        preprocessTaskTest.setOperativeViews(operativeViews);
-        preprocessTaskTest.setTesting(true);
-        preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
-        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+//        preprocessTaskTrain = new PreprocessTask();
+//        preprocessTaskTrain.setAggregate(aggregate);
+//        preprocessTaskTrain.setOperativeViews(operativeViews);
+//        preprocessTaskTrain.setTesting(false);
+//        preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
+//        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+//
+//        // preprocessing on test data
+//        preprocessTaskTest = new PreprocessTask();
+//        preprocessTaskTest.setAggregate(aggregate);
+//        preprocessTaskTest.setOperativeViews(operativeViews);
+//        preprocessTaskTest.setTesting(true);
+//        preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
+//        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
-                MetaInfoTask.INPUT_KEY);
+        //metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+        //        MetaInfoTask.INPUT_KEY);
 
+        metaTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+        
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
+        featuresTrainTask.setAddInstanceId(true);
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
@@ -126,18 +130,19 @@ public class BatchTaskTrainTest
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
+        featuresTestTask.setAddInstanceId(true);
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
-
+        
         // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        // if (innerReport != null) {
-        // testTask.addReport(innerReport);
-        // }
-        // testTask.addReport(OutcomeIDReport.class);
+        if (innerReport != null) {
+            testTask.addReport(innerReport);
+        }
+        testTask.addReport(OutcomeIDReport.class);
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.INPUT_KEY_TRAIN);
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
