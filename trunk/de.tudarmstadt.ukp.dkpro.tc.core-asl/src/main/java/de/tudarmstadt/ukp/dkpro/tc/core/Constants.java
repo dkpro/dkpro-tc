@@ -75,6 +75,10 @@ public interface Constants
     public static final String EVAL_FILE_NAME = "evaluation_results";
     public static final String SUFFIX_EXCEL = ".xls";
     public static final String SUFFIX_CSV = ".csv";
+    public static final String CONFUSIONMATRIX_KEY = "confusionMatrix.csv";
+    public static final String PR_CURVE_KEY = "PR_curve.svg";
+    public static final String CM_ACTUAL = "(act.)";
+    public static final String CM_PREDICTED = "(pred.)";
 
     /*
      * Weka
