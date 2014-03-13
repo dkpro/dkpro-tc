@@ -19,9 +19,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.OutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletFoldDimensionBundle;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchTrainTestReport;
 
 /**
  * Mallet Cross-validation setup
@@ -131,8 +131,8 @@ public class BatchTaskCrossValidation
                     numFolds = fileNames.length;
                 }
                 // don't change any names!!
-                MalletFoldDimensionBundle<String> foldDim = new MalletFoldDimensionBundle<String>("files",
-                        Dimension.create("", fileNames), numFolds);
+                MalletFoldDimensionBundle<String> foldDim = new MalletFoldDimensionBundle<String>(
+                        "files", Dimension.create("", fileNames), numFolds);
                 Dimension<File> filesRootDim = Dimension.create("filesRoot", xmiPathRoot);
 
                 ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
@@ -151,7 +151,6 @@ public class BatchTaskCrossValidation
 
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
-        extractFeaturesTrainTask.setAddInstanceId(addInstanceId);
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
                 + experimentName);
@@ -159,7 +158,6 @@ public class BatchTaskCrossValidation
 
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
-        extractFeaturesTestTask.setAddInstanceId(addInstanceId);
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
