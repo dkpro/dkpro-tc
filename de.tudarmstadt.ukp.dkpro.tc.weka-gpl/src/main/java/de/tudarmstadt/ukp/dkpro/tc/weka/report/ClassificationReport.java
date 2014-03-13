@@ -39,13 +39,9 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
 public class ClassificationReport
     extends ReportBase
+    implements Constants
 {
 
-    private static final String CONFUSIONMATRIX_KEY = "confusionMatrix.csv";
-    private static final String PR_CURVE_KEY = "PR_curve.svg";
-    private static final String CM_ACTUAL = "(act.)";
-    private static final String CM_PREDICTED = "(pred.)";
-    
     List<String> actualLabelsList = new ArrayList<String>();
     List<String> predictedLabelsList = new ArrayList<String>();
     // in ML mode, holds a map for building the Label Power Set over all label actuals/predictions
@@ -162,8 +158,7 @@ public class ClassificationReport
         }
 
         for (String s : results.keySet()) {
-            getContext().getLoggingService().message(getContextLabel(),
-                    s + " - " + results.get(s));
+            getContext().getLoggingService().message(getContextLabel(), s + " - " + results.get(s));
             props.setProperty(s, results.get(s).toString());
         }
 
