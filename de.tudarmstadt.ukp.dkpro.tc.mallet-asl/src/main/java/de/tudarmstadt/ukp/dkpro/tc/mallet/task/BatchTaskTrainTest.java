@@ -95,28 +95,28 @@ public class BatchTaskTrainTest
         checkTask = new ValidityCheckTask();
 
         // preprocessing on training data
-        // preprocessTaskTrain = new PreprocessTask();
-        // preprocessTaskTrain.setAggregate(aggregate);
-        // preprocessTaskTrain.setOperativeViews(operativeViews);
-        // preprocessTaskTrain.setTesting(false);
-        // preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
-        // preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
-        //
-        // // preprocessing on test data
-        // preprocessTaskTest = new PreprocessTask();
-        // preprocessTaskTest.setAggregate(aggregate);
-        // preprocessTaskTest.setOperativeViews(operativeViews);
-        // preprocessTaskTest.setTesting(true);
-        // preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
-        // preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+         preprocessTaskTrain = new PreprocessTask();
+         preprocessTaskTrain.setAggregate(aggregate);
+         preprocessTaskTrain.setOperativeViews(operativeViews);
+         preprocessTaskTrain.setTesting(false);
+         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
+         preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+        
+         // preprocessing on test data
+         preprocessTaskTest = new PreprocessTask();
+         preprocessTaskTest.setAggregate(aggregate);
+         preprocessTaskTest.setOperativeViews(operativeViews);
+         preprocessTaskTest.setTesting(true);
+         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
+         preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        // metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
-        // MetaInfoTask.INPUT_KEY);
+         metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+         MetaInfoTask.INPUT_KEY);
 
         metaTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
