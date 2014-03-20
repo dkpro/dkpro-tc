@@ -234,6 +234,10 @@ public class TaskUtils
                 convertedParameters.add(parameter.toString());
             }
         }
+        else {
+            parameters = new ArrayList<Object>();
+        }
+        
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
         for (String featureExtractor : featureExtractorClassNames) {
             try {
