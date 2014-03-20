@@ -43,6 +43,8 @@ public class BatchCrossValidationReport
             "files_validation", "files_training" });
     private static final List<String> nonAveragedResultsMeasures = Arrays.asList(new String[] {
             ReportConstants.CORRECT, ReportConstants.INCORRECT, ReportConstants.NUMBER_EXAMPLES });
+    
+    protected FlexTable<String> table;
 
     @Override
     public void execute()
@@ -50,7 +52,7 @@ public class BatchCrossValidationReport
     {
         StorageService store = getContext().getStorageService();
 
-        FlexTable<String> table = FlexTable.forClass(String.class);
+        table = FlexTable.forClass(String.class);
 
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
 
@@ -115,8 +117,8 @@ public class BatchCrossValidationReport
                         else {
                             resultMap.put(
                                     header,
-                                    String.valueOf(mean.evaluate(dVals) + "\u00B1"
-                                            + String.valueOf(std.evaluate(dVals))));
+                                    String.valueOf(roundMetric(mean.evaluate(dVals)) + "\u00B1"
+                                            + String.valueOf(roundStdDev(std.evaluate(dVals)))));
                         }
                     }
                     else {
@@ -185,5 +187,25 @@ public class BatchCrossValidationReport
             values.add(discriminatorsMap.get(discriminator));
         }
         return StringUtils.join(values, "_");
+    }
+    
+    /**
+     * This is an optional method to extend, to change the significant figures of eval metrics.
+     * 
+     * @param d value to round
+     * @return rounded d
+     */
+    protected double roundMetric(double d){
+    	return d;
+    }
+    
+    /**
+     * This is an optional method to extend, to change the significant figures of standard deviation calculations.
+     * 
+     * @param d stddev to round
+     * @return rounded stddev
+     */
+    protected double roundStdDev(double d){
+    	return d;
     }
 }
