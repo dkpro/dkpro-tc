@@ -82,7 +82,7 @@ public class ExtractFeaturesConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        Instance instance = TaskUtils.extractFeatures(jcas, featureExtractors, featureMode);
+        Instance instance = TaskUtils.extractFeatures(jcas, featureMode, featureExtractors);
 
         if (addInstanceId) {
             DocumentFeatureExtractor extractor = new AddIdFeatureExtractor();

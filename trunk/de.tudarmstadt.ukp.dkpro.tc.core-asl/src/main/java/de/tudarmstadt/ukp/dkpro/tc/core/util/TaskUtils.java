@@ -269,8 +269,7 @@ public class TaskUtils
      * @return
      * @throws AnalysisEngineProcessException
      */
-    public static Instance extractFeatures(JCas jcas,
-            FeatureExtractorResource_ImplBase[] featureExtractors, String featureMode)
+    public static Instance extractFeatures(JCas jcas, String featureMode, FeatureExtractorResource_ImplBase ... featureExtractors)
         throws AnalysisEngineProcessException
     {
         Instance instance = new Instance();
