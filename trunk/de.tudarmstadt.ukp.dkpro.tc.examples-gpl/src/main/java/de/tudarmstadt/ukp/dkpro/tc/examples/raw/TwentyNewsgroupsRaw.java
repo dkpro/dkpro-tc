@@ -1,17 +1,15 @@
 package de.tudarmstadt.ukp.dkpro.tc.examples.raw;
 
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfSentencesDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
@@ -27,44 +25,30 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  */
 public class TwentyNewsgroupsRaw
 {
-     
     public static void main(String[] args)
         throws Exception
     {
-        String LANGUAGE_CODE = "en";
+        String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train/*/*.txt";
 
-        String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-
-        CollectionReaderDescription trainReader = CollectionReaderFactory.createReaderDescription(
+        runPipeline(
+            // Reader
+            createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, "*/*.txt"
-        );
-        
-        AnalysisEngineDescription preprocessing = AnalysisEngineFactory.createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class)
-        );
-        
-        String[] featureExtractors = new String[] {
-                NrOfTokensDFE.class.getName(),
-                NrOfSentencesDFE.class.getName()
-        };
-
-        String outputPath = "target/tn_raw_output";
-        boolean addInstanceId = true;
-        
-        AnalysisEngineDescription featureExtraction = TaskUtils.getFeatureExtractorConnector(
-                null,
-                outputPath,
-                WekaDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL,
-                Constants.FM_DOCUMENT,
-                addInstanceId,
-                featureExtractors
-        );
-        
-        SimplePipeline.runPipeline(trainReader, preprocessing, featureExtraction);
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en"),
+            // Preprocessing
+            createEngineDescription(BreakIteratorSegmenter.class),
+            createEngineDescription(OpenNlpPosTagger.class),
+            // Feature extraction
+            createEngineDescription(
+                ExtractFeaturesConnector.class,
+                ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, "target/tn_raw_output", 
+                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
+                ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
+                ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
+                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
+                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
+                        createExternalResourceDescription(NrOfTokensDFE.class),
+                        createExternalResourceDescription(NrOfSentencesDFE.class))));
     }
 }
