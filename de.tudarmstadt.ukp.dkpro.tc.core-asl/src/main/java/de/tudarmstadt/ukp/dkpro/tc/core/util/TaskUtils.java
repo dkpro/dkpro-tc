@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,30 +25,18 @@ import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
-import org.apache.uima.fit.util.JCasUtil;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -261,59 +248,5 @@ public class TaskUtils
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
                 parameters.toArray());
-    }
-
-    /**
-     * @param jcas
-     * @param featureExtractors
-     * @param featureMode
-     * @return
-     * @throws AnalysisEngineProcessException
-     */
-    public static Instance extractFeatures(JCas jcas, String featureMode,
-            FeatureExtractorResource_ImplBase... featureExtractors)
-        throws AnalysisEngineProcessException
-    {
-        Instance instance = new Instance();
-        for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-            try {
-                if (featExt instanceof DocumentFeatureExtractor
-                        && featureMode.equals(Constants.FM_DOCUMENT))
-                {
-                    instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
-                }
-                else if (featExt instanceof PairFeatureExtractor
-                        && featureMode.equals(Constants.FM_PAIR))
-                {
-                    JCas view1 = jcas.getView(Constants.PART_ONE);
-                    JCas view2 = jcas.getView(Constants.PART_TWO);
-                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
-                }
-                else if (featExt instanceof ClassificationUnitFeatureExtractor
-                        && featureMode.equals(Constants.FM_UNIT))
-                {
-                    TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
-                            TextClassificationFocus.class);
-                    Collection<TextClassificationUnit> classificationUnits = JCasUtil
-                            .selectCovered(jcas, TextClassificationUnit.class, focus);
-
-                    if (classificationUnits.size() != 1) {
-                        throw new AnalysisEngineProcessException(
-                                "There are more than one TextClassificationUnit anotations in the JCas.",
-                                null);
-                    }
-
-                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, classificationUnits.iterator().next()));
-                }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (CASException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-        return instance;
     }
 }
