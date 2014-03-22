@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
@@ -88,8 +89,9 @@ public class ClassificationUnitCasMultiplierTest
         int i = 0;
         while (it.hasNext()) {
             JCas a = it.next();
-            Collection<TextClassificationOutcome> c = JCasUtil.select(a,
-                    TextClassificationOutcome.class);
+            TextClassificationFocus focus = JCasUtil.selectSingle(a, TextClassificationFocus.class);
+            Collection<TextClassificationOutcome> c = JCasUtil.selectCovered(a,
+                    TextClassificationOutcome.class, focus);
             assertEquals("The CAS should have only one TextClassificationOutcome annotation",
                     c.size(), 1);
             TextClassificationOutcome out = c.iterator().next();
