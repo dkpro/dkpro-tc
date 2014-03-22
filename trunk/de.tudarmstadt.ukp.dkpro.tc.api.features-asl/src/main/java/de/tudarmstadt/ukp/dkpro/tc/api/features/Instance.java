@@ -16,10 +16,12 @@ public class Instance
 {
     private List<Feature> features;
     private List<String> outcomes;
+    private int sequenceId;
     
     public Instance() {
         this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
+        this.sequenceId = 0;
     }
     
     public Instance(List<Feature> features, String outcome)
@@ -28,6 +30,7 @@ public class Instance
         this.features = features;
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
+        this.sequenceId = 0;
     }
     
     public Instance(List<Feature> features, String ... outcomes)
@@ -35,6 +38,7 @@ public class Instance
         super();
         this.features = features;
         this.outcomes = Arrays.asList(outcomes);
+        this.sequenceId = 0;
     }
 
     public Instance(List<Feature> features, List<String> outcomes)
@@ -42,6 +46,7 @@ public class Instance
         super();
         this.features = features;
         this.outcomes = outcomes;
+        this.sequenceId = 0;
     }
 
     public void addFeature(Feature feature)
@@ -90,15 +95,27 @@ public class Instance
         this.features = features;
     }
 
+    public int getSequenceId()
+    {
+        return sequenceId;
+    }
+
+    public void setSequenceId(int sequenceId)
+    {
+        this.sequenceId = sequenceId;
+    }   
+    
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(sequenceId);
+        sb.append("\n");
         for (Feature feature : getFeatures()) {
             sb.append(feature);
             sb.append("\n");
         }
         sb.append(StringUtils.join(outcomes, "-"));
         return sb.toString();
-    }   
+    }
 }
