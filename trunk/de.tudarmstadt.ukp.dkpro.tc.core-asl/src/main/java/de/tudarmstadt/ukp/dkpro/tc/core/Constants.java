@@ -60,6 +60,8 @@ public interface Constants
     public static final String LM_SINGLE_LABEL = "singleLabel";
     public static final String LM_MULTI_LABEL = "multiLabel";
     public static final String LM_REGRESSION = "regression";
+    public static final String LM_SEQUENCE = "sequence";
+
 
     /*
      * feature modes
