@@ -48,6 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
@@ -269,37 +270,41 @@ public class TaskUtils
      * @return
      * @throws AnalysisEngineProcessException
      */
-    public static Instance extractFeatures(JCas jcas, String featureMode, FeatureExtractorResource_ImplBase ... featureExtractors)
+    public static Instance extractFeatures(JCas jcas, String featureMode,
+            FeatureExtractorResource_ImplBase... featureExtractors)
         throws AnalysisEngineProcessException
     {
         Instance instance = new Instance();
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
             try {
                 if (featExt instanceof DocumentFeatureExtractor
-                        && featureMode.equals(Constants.FM_DOCUMENT)) {
+                        && featureMode.equals(Constants.FM_DOCUMENT))
+                {
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
                 else if (featExt instanceof PairFeatureExtractor
-                        && featureMode.equals(Constants.FM_PAIR)) {
+                        && featureMode.equals(Constants.FM_PAIR))
+                {
                     JCas view1 = jcas.getView(Constants.PART_ONE);
                     JCas view2 = jcas.getView(Constants.PART_TWO);
                     instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
                 else if (featExt instanceof ClassificationUnitFeatureExtractor
-                        && featureMode.equals(Constants.FM_UNIT)) {
-                    TextClassificationUnit classificationUnit = null;
-                    Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
-                            TextClassificationUnit.class);
-                    if (classificationUnits.size() == 1) {
-                        classificationUnit = classificationUnits.iterator().next();
-                    }
-                    else if (classificationUnits.size() > 1) {
+                        && featureMode.equals(Constants.FM_UNIT))
+                {
+                    TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
+                            TextClassificationFocus.class);
+                    Collection<TextClassificationUnit> classificationUnits = JCasUtil
+                            .selectCovered(jcas, TextClassificationUnit.class, focus);
+
+                    if (classificationUnits.size() != 1) {
                         throw new AnalysisEngineProcessException(
                                 "There are more than one TextClassificationUnit anotations in the JCas.",
                                 null);
                     }
+
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, classificationUnit));
+                            jcas, classificationUnits.iterator().next()));
                 }
             }
             catch (TextClassificationException e) {
