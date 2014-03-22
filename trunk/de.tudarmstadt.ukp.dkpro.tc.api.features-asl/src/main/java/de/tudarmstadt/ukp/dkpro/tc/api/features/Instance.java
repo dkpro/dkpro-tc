@@ -17,11 +17,13 @@ public class Instance
     private List<Feature> features;
     private List<String> outcomes;
     private int sequenceId;
+    private int sequencePosition;
     
     public Instance() {
         this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
         this.sequenceId = 0;
+        this.sequencePosition = 0;
     }
     
     public Instance(List<Feature> features, String outcome)
@@ -31,6 +33,7 @@ public class Instance
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.sequenceId = 0;
+        this.sequencePosition = 0;
     }
     
     public Instance(List<Feature> features, String ... outcomes)
@@ -39,6 +42,7 @@ public class Instance
         this.features = features;
         this.outcomes = Arrays.asList(outcomes);
         this.sequenceId = 0;
+        this.sequencePosition = 0;
     }
 
     public Instance(List<Feature> features, List<String> outcomes)
@@ -47,6 +51,7 @@ public class Instance
         this.features = features;
         this.outcomes = outcomes;
         this.sequenceId = 0;
+        this.sequencePosition = 0;
     }
 
     public void addFeature(Feature feature)
@@ -105,11 +110,21 @@ public class Instance
         this.sequenceId = sequenceId;
     }   
     
+    public int getSequencePosition()
+    {
+        return sequencePosition;
+    }
+
+    public void setSequencePosition(int sequencePosition)
+    {
+        this.sequencePosition = sequencePosition;
+    }
+    
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(sequenceId);
+        sb.append(sequenceId); sb.append(" - "); sb.append(sequencePosition);
         sb.append("\n");
         for (Feature feature : getFeatures()) {
             sb.append(feature);
