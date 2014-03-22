@@ -59,20 +59,10 @@ public class ExtractFeaturesTask
 
     private boolean isTesting = false;
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
+    // TODO this is already prepared, but not used
+    // collects annotation types required by FEs (source code annotations need to be inserted in each FE)
+    // could be used to automatically configure preprocessing
     private Set<String> requiredTypes;
-
-    // protected String featureAnnotation;
-
-    // TODO do we need this?
-    // public String getFeatureAnnotation()
-    // {
-    // return this.featureAnnotation;
-    // }
-    //
-    // public void setFeatureAnnotation(String featureAnnotation)
-    // {
-    // this.featureAnnotation = featureAnnotation;
-    // }
 
     public String getDataWriter()
     {
