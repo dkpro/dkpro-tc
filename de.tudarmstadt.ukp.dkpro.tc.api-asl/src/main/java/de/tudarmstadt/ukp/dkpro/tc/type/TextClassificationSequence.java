@@ -1,11 +1,12 @@
 
 
-/* First created by JCasGen Wed Aug 28 16:30:21 CEST 2013 */
+/* First created by JCasGen Sat Mar 22 12:19:05 CET 2014 */
 package de.tudarmstadt.ukp.dkpro.tc.type;
 
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
+
 import org.apache.uima.jcas.tcas.Annotation;
 
 
@@ -13,12 +14,12 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Updated by JCasGen Sat Mar 22 12:19:05 CET 2014
  * XML source: /home/zesch/workspace_new/de.tudarmstadt.ukp.dkpro.tc/de.tudarmstadt.ukp.dkpro.tc.api-asl/src/main/resources/desc/type/TextClassification.xml
  * @generated */
-public class TextClassificationUnit extends Annotation {
+public class TextClassificationSequence extends Annotation {
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(TextClassificationUnit.class);
+  public final static int typeIndexID = JCasRegistry.register(TextClassificationSequence.class);
   /** @generated
    * @ordered 
    */
@@ -30,23 +31,23 @@ public class TextClassificationUnit extends Annotation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected TextClassificationUnit() {/* intentionally empty block */}
+  protected TextClassificationSequence() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated */
-  public TextClassificationUnit(int addr, TOP_Type type) {
+  public TextClassificationSequence(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
   
   /** @generated */
-  public TextClassificationUnit(JCas jcas) {
+  public TextClassificationSequence(JCas jcas) {
     super(jcas);
     readObject();   
   } 
 
   /** @generated */  
-  public TextClassificationUnit(JCas jcas, int begin, int end) {
+  public TextClassificationSequence(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);

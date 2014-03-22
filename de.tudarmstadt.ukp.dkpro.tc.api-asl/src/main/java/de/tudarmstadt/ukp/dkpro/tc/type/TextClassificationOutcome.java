@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Jan 22 14:15:47 CET 2013
- * XML source: /home/oferschke/workspaces/workspace/de.tudarmstadt.ukp.dkpro.tc/de.tudarmstadt.ukp.dkpro.tc.api-asl/src/main/resources/desc/type/TextClassification.xml
+ * Updated by JCasGen Sat Mar 22 12:19:05 CET 2014
+ * XML source: /home/zesch/workspace_new/de.tudarmstadt.ukp.dkpro.tc/de.tudarmstadt.ukp.dkpro.tc.api-asl/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationOutcome extends Annotation {
   /** @generated

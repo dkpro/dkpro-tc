@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue Jan 22 14:15:47 CET 2013
+ * Updated by JCasGen Sat Mar 22 12:19:05 CET 2014
  * @generated */
 public class TextClassificationOutcome_Type extends Annotation_Type {
   /** @generated */
