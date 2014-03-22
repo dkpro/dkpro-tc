@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
 
 /**
@@ -89,36 +89,36 @@ public class MalletUtils
         return featureOffsetIndex;
     }
 
-    public static String getInstanceSequenceId(Instance instance)
-    {
-        String instanceSequenceId;
-        String featureValue;
-        List<Feature> featList = instance.getFeatures();
-        for (Feature feature : featList) {
-            if (feature.getName().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
-                featureValue = feature.getValue().toString();
-                instanceSequenceId = featureValue.substring(0, featureValue.indexOf('_'));
-                return instanceSequenceId;
-            }
-        }
-        return null;
-    }
+//    public static String getInstanceSequenceId(Instance instance)
+//    {
+//        String instanceSequenceId;
+//        String featureValue;
+//        List<Feature> featList = instance.getFeatures();
+//        for (Feature feature : featList) {
+//            if (feature.getName().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
+//                featureValue = feature.getValue().toString();
+//                instanceSequenceId = featureValue.substring(0, featureValue.indexOf('_'));
+//                return instanceSequenceId;
+//            }
+//        }
+//        return null;
+//    }
 
-    public static int getInstancePosition(Instance instance)
-    {
-        int instancePosition;
-        String featureValue;
-        List<Feature> featList = instance.getFeatures();
-        for (Feature feature : featList) {
-            if (feature.getName().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
-                featureValue = feature.getValue().toString();
-                instancePosition = Integer.parseInt(featureValue.substring(
-                        featureValue.lastIndexOf('_') + 1, featureValue.length()));
-                return instancePosition;
-            }
-        }
-        return -1;
-    }
+//    public static int getInstancePosition(Instance instance)
+//    {
+//        int instancePosition;
+//        String featureValue;
+//        List<Feature> featList = instance.getFeatures();
+//        for (Feature feature : featList) {
+//            if (feature.getName().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
+//                featureValue = feature.getValue().toString();
+//                instancePosition = Integer.parseInt(featureValue.substring(
+//                        featureValue.lastIndexOf('_') + 1, featureValue.length()));
+//                return instancePosition;
+//            }
+//        }
+//        return -1;
+//    }
 
     public static void instanceListToMalletFormatFile(File outputFile, FeatureStore instanceList,
             boolean useDenseInstances)
@@ -129,49 +129,52 @@ public class MalletUtils
             throw new IllegalArgumentException("List of instance outcomes is empty.");
         }
 
-        HashMap<String, Integer> featureOffsetIndex = getFeatureOffsetIndex(instanceList);
+        Map<String, Integer> featureOffsetIndex = getFeatureOffsetIndex(instanceList);
 
         writeFeatureNamesToFile(instanceList, outputFile);
 
-        ArrayList<Instance> instanceArrayList = new ArrayList<Instance>();
+        List<Instance> instanceArrayList = new ArrayList<Instance>();
 
         for (int i = 0; i < instanceList.size(); i++) {
             instanceArrayList.add(instanceList.getInstance(i));
         }
 
-        // group based on instance sequence (file name) and sort based on instance position in file
+        // group based on instance sequence and sort based on instance position in file
         Collections.sort(instanceArrayList, new Comparator<Instance>()
         {
+            @Override
             public int compare(Instance o1, Instance o2)
             {
-                String instanceSequenceId1 = getInstanceSequenceId(o1);
-                String instanceSequenceId2 = getInstanceSequenceId(o2);
-                int instancePosition1 = getInstancePosition(o1);
-                int instancePosition2 = getInstancePosition(o2);
+                int instanceSequenceId1 = o1.getSequenceId();
+                int instanceSequenceId2 = o2.getSequenceId();
+                int instancePosition1 = o1.getSequencePosition();
+                int instancePosition2 = o2.getSequencePosition();
 
-                if (instanceSequenceId1.equals(instanceSequenceId2)) {
-                    if (instancePosition1 == instancePosition2)
+                if (instanceSequenceId1 == instanceSequenceId2) {
+                    if (instancePosition1 == instancePosition2) {
                         return 0;
+                    }
                     return instancePosition1 < instancePosition2 ? -1 : 1;
                 }
-                return 0; // order of sequences doesn't matter
+                
+                return 0;
+                // order of sequences doesn't matter
                 // order of instances within a sequence does
             }
         });
 
-        String previousInstanceSequenceId = null;
-        ArrayList<Instance> normalizedInstanceArrayList = instanceArrayList;
-        // ArrayList<Instance> normalizedInstanceArrayList =
-        // normalizeNumericFeatureValues(instanceArrayList);
+//        List<Instance> normalizedInstanceArrayList = instanceArrayList;
+//        ArrayList<Instance> normalizedInstanceArrayList =
+//        normalizeNumericFeatureValues(instanceArrayList);
 
-        for (int i = 0; i < normalizedInstanceArrayList.size(); i++) {
-            Instance instance = normalizedInstanceArrayList.get(i);
-            if (previousInstanceSequenceId != null) {
-                String currentInstanceSequenceId = getInstanceSequenceId(instance);
-                if (!currentInstanceSequenceId.equals(previousInstanceSequenceId)) {
-                    writeNewLineToFile(outputFile);
-                }
+        int currentSequenceId = 1;
+        for (int i = 0; i < instanceArrayList.size(); i++) {
+            Instance instance = instanceArrayList.get(i);
+            if (currentSequenceId != instance.getSequenceId()) {
+                writeNewLineToFile(outputFile);
+                currentSequenceId = instance.getSequenceId();
             }
+            
             String outcome = instance.getOutcome();
             String featureValues[] = new String[featureOffsetIndex.size()];
             for (Feature feature : instance.getFeatures()) {
@@ -195,68 +198,71 @@ public class MalletUtils
                 }
             }
             writeFeatureValuesToFile(featureValues, outcome, outputFile);
-            previousInstanceSequenceId = getInstanceSequenceId(instance);
         }
     }
 
-    public static ArrayList<Instance> normalizeNumericFeatureValues(
-            ArrayList<Instance> instanceArrayList)
-    {
-        ArrayList<Instance> normalizedInstanceArrayList = new ArrayList<Instance>();
-        double[] maxNumericFeatureValues = null;
-        double[] minNumericFeatureValues = null;
-        int featureIndex = 0;
-        for (int i = 0; i < instanceArrayList.size(); i++) {
-            Instance instance = instanceArrayList.get(i);
-            featureIndex = 0;
-            if (maxNumericFeatureValues == null || minNumericFeatureValues != null) {
-                maxNumericFeatureValues = new double[instance.getFeatures().size()];
-                minNumericFeatureValues = new double[instance.getFeatures().size()];
-            }
-            for (Feature feature : instance.getFeatures()) {
-                Object value = feature.getValue();
-                double doubleFeatureValue = 0.0;
-                if (value instanceof Number) {
-                    doubleFeatureValue = ((Number) value).doubleValue();
-                    if (doubleFeatureValue > maxNumericFeatureValues[featureIndex])
-                        maxNumericFeatureValues[featureIndex] = doubleFeatureValue;
-                    if (doubleFeatureValue < minNumericFeatureValues[featureIndex])
-                        minNumericFeatureValues[featureIndex] = doubleFeatureValue;
-                    featureIndex++;
-                }
-            }
-        }
-        for (int i = 0; i < instanceArrayList.size(); i++) {
-            Instance instance = instanceArrayList.get(i);
-            Instance normalizedInstance = instance;
-            List<Feature> normalizedFeatures = new ArrayList<Feature>();
-            double normalizedDoubleFeatureValues[] = new double[instance.getFeatures().size()];
-            featureIndex = 0;
-            for (Feature feature : instance.getFeatures()) {
-                Object value = feature.getValue();
-                double doubleFeatureValue = 0.0;
-                if (value instanceof Number) {
-                    // normalize and add
-                    doubleFeatureValue = ((Number) value).doubleValue();
-                    if ((maxNumericFeatureValues[featureIndex] - minNumericFeatureValues[featureIndex]) != 0)
-                        normalizedDoubleFeatureValues[featureIndex] = (doubleFeatureValue - minNumericFeatureValues[featureIndex])
-                                / (maxNumericFeatureValues[featureIndex] - minNumericFeatureValues[featureIndex]);
-                    else
-                        normalizedDoubleFeatureValues[featureIndex] = 0;
-                    Feature normalizedFeature = new Feature(
-                            normalizedDoubleFeatureValues[featureIndex]);
-                    normalizedFeature.setName(feature.getName());
-                    normalizedFeatures.add(normalizedFeature);
-                    featureIndex++;
-                }
-                else {
-                    // add without any modification
-                    normalizedFeatures.add(feature);
-                }
-            }
-            normalizedInstance.setFeatures(normalizedFeatures);
-            normalizedInstanceArrayList.add(normalizedInstance);
-        }
-        return normalizedInstanceArrayList;
-    }
+//    public static ArrayList<Instance> normalizeNumericFeatureValues(
+//            ArrayList<Instance> instanceArrayList)
+//    {
+//        ArrayList<Instance> normalizedInstanceArrayList = new ArrayList<Instance>();
+//        double[] maxNumericFeatureValues = null;
+//        double[] minNumericFeatureValues = null;
+//        int featureIndex = 0;
+//        for (int i = 0; i < instanceArrayList.size(); i++) {
+//            Instance instance = instanceArrayList.get(i);
+//            featureIndex = 0;
+//            if (maxNumericFeatureValues == null || minNumericFeatureValues != null) {
+//                maxNumericFeatureValues = new double[instance.getFeatures().size()];
+//                minNumericFeatureValues = new double[instance.getFeatures().size()];
+//            }
+//            for (Feature feature : instance.getFeatures()) {
+//                Object value = feature.getValue();
+//                double doubleFeatureValue = 0.0;
+//                if (value instanceof Number) {
+//                    doubleFeatureValue = ((Number) value).doubleValue();
+//                    if (doubleFeatureValue > maxNumericFeatureValues[featureIndex]) {
+//                        maxNumericFeatureValues[featureIndex] = doubleFeatureValue;
+//                    }
+//                    if (doubleFeatureValue < minNumericFeatureValues[featureIndex]) {
+//                        minNumericFeatureValues[featureIndex] = doubleFeatureValue;
+//                    }
+//                    featureIndex++;
+//                }
+//            }
+//        }
+//        for (int i = 0; i < instanceArrayList.size(); i++) {
+//            Instance instance = instanceArrayList.get(i);
+//            Instance normalizedInstance = instance;
+//            List<Feature> normalizedFeatures = new ArrayList<Feature>();
+//            double normalizedDoubleFeatureValues[] = new double[instance.getFeatures().size()];
+//            featureIndex = 0;
+//            for (Feature feature : instance.getFeatures()) {
+//                Object value = feature.getValue();
+//                double doubleFeatureValue = 0.0;
+//                if (value instanceof Number) {
+//                    // normalize and add
+//                    doubleFeatureValue = ((Number) value).doubleValue();
+//                    if ((maxNumericFeatureValues[featureIndex] - minNumericFeatureValues[featureIndex]) != 0) {
+//                        normalizedDoubleFeatureValues[featureIndex] = (doubleFeatureValue - minNumericFeatureValues[featureIndex])
+//                                / (maxNumericFeatureValues[featureIndex] - minNumericFeatureValues[featureIndex]);
+//                    }
+//                    else {
+//                        normalizedDoubleFeatureValues[featureIndex] = 0;
+//                    }
+//                    Feature normalizedFeature = new Feature(
+//                            normalizedDoubleFeatureValues[featureIndex]);
+//                    normalizedFeature.setName(feature.getName());
+//                    normalizedFeatures.add(normalizedFeature);
+//                    featureIndex++;
+//                }
+//                else {
+//                    // add without any modification
+//                    normalizedFeatures.add(feature);
+//                }
+//            }
+//            normalizedInstance.setFeatures(normalizedFeatures);
+//            normalizedInstanceArrayList.add(normalizedInstance);
+//        }
+//        return normalizedInstanceArrayList;
+//    }
 }

@@ -89,4 +89,8 @@ public interface Constants
     public static final String MEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter";
     public static final String WEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter";
 
+    /*
+     * Mallet
+     */
+    public static final String MALLET_FILE = "training-data.txt.gz";
 }

@@ -20,11 +20,15 @@ public class SimpleFeatureStore
 {
     private List<List<Object>> instanceList;
     private List<List<String>> outcomeList;
+    private List<Integer> sequenceIds;
+    private List<Integer> sequencePositions;
     private List<String> featureNames;
 
     public SimpleFeatureStore() {
         this.instanceList = new ArrayList<List<Object>>();
         this.outcomeList = new ArrayList<List<String>>();
+        this.sequenceIds = new ArrayList<Integer>();
+        this.sequencePositions = new ArrayList<Integer>();
         this.featureNames = null;
     }
     
@@ -44,6 +48,9 @@ public class SimpleFeatureStore
         }
         this.instanceList.add(values);
         this.outcomeList.add(instance.getOutcomes());
+        this.sequenceIds.add(instance.getSequenceId());
+        this.sequencePositions.add(instance.getSequencePosition());
+
     }
     
     @Override
@@ -56,7 +63,10 @@ public class SimpleFeatureStore
             features.add(feature);
             offset++;
         }
-        return new Instance(features, outcomeList.get(i));
+        Instance instance = new Instance(features, outcomeList.get(i));
+        instance.setSequenceId(sequenceIds.get(i));
+        instance.setSequencePosition(sequencePositions.get(i));
+        return instance;
     }
     
     @Override
@@ -110,6 +120,7 @@ public class SimpleFeatureStore
         return new InstancesIterable(this);
     }
 
+    @Override
     public List<String> getFeatureNames()
     {
         return featureNames;

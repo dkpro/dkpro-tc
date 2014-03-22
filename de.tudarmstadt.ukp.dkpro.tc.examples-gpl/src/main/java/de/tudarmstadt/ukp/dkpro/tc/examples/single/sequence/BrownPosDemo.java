@@ -21,20 +21,14 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
- * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
- * 
- * Defining the parameters directly in this class makes on-the-fly changes more difficult when the
- * experiment is run on a server.
- * 
- * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
- * can be changed and then executed without pre-compilation.
+ * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
 public class BrownPosDemo
     implements Constants
@@ -48,13 +42,13 @@ public class BrownPosDemo
     public static void main(String[] args)
         throws Exception
     {
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace(Constants.LM_SEQUENCE);
 
         BrownPosDemo experiment = new BrownPosDemo();
         experiment.runCrossValidation(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace(String learningMode)
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -91,8 +85,8 @@ public class BrownPosDemo
         );
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
-                Dimension.create(DIM_LEARNING_MODE, LM_SEQUENCE), Dimension.create(
+                Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
+                Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
 
