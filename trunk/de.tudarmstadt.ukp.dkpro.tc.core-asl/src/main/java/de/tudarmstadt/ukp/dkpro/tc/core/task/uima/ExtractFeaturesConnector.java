@@ -228,6 +228,8 @@ public class ExtractFeaturesConnector
         catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
         }
+        
+        int sequencePosition = 0;
         for (TextClassificationUnit unit : units) {
             Instance instance = new Instance();
           
@@ -257,6 +259,8 @@ public class ExtractFeaturesConnector
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(unit));
             instance.setSequenceId(sequenceId);
+            instance.setSequencePosition(sequencePosition);
+            sequencePosition++;
             
             instances.add(instance);
         }

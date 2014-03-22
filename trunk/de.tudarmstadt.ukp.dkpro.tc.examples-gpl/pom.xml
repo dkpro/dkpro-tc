@@ -53,5 +53,9 @@
             de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
         </artifactId>
     </dependency>
+    <dependency>
+    	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
+    </dependency>
   </dependencies>
 </project>

@@ -10,12 +10,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
 
-/*
+// FIXME - instanceID should contains sequenceID - so we can easily make sure that sequences are completed moved into folds
+/**
  * Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in the same fold
- * (Works specific to 
+ * 
  * @author perumal
  */
-
 public class MalletFoldDimensionBundle<T> extends DimensionBundle<Collection<T>> implements DynamicDimension
 {
 	private Dimension<T> foldedDimension;

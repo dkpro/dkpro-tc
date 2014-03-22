@@ -22,9 +22,7 @@ public class MalletDataWriter
             String learningMode)
         throws Exception
     {
-
-        // TODO add generic filename to Constants
         MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/"
-                + "training-data.txt.gz"), featureStore, useDenseInstances);
+                + Constants.MALLET_FILE), featureStore, useDenseInstances);
     }
 }
