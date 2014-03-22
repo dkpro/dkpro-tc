@@ -159,9 +159,12 @@ public class ExtractFeaturesConnector
                     instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
             }
-            catch (TextClassificationException | CASException e) {
+            catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
-            }   
+            }
+            catch (CASException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
         }
         else if (featureMode.equals(Constants.FM_UNIT))
         {
