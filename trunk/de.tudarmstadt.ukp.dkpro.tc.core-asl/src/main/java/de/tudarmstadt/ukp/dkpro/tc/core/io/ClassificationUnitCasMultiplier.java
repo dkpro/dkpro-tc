@@ -16,6 +16,7 @@ import org.apache.uima.util.CasCopier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus;
+import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
@@ -38,8 +39,8 @@ public class ClassificationUnitCasMultiplier
     private final static String UNIT_ID_PREFIX = "_unit_";
 
     // For each TextClassificationUnit stored in this collection one corresponding JCas is created.
-    private Collection<TextClassificationUnit> annotations;
-    private Iterator<TextClassificationUnit> iterator;
+    private Collection<? extends AnnotationFS> annotations;
+    private Iterator<? extends AnnotationFS> iterator;
 
     private JCas jCas;
 
@@ -53,7 +54,7 @@ public class ClassificationUnitCasMultiplier
         this.counter = 0;
         
         if (useSequences) {
-            // TODO
+            this.annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
         }
         else {
             this.annotations = JCasUtil.select(aJCas, TextClassificationUnit.class);

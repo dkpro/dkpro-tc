@@ -52,6 +52,9 @@ public class PreprocessTask
     @Discriminator
     private String featureMode;
 
+    @Discriminator
+    private String learningMode;
+    
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;
@@ -111,7 +114,16 @@ public class PreprocessTask
         }
         // in unit mode, add cas multiplier
         else if (featureMode.equals(Constants.FM_UNIT)) {
-            AnalysisEngineDescription casMultiplier = createEngineDescription(ClassificationUnitCasMultiplier.class);
+            boolean useSequences = false;
+            if (learningMode.equals(Constants.LM_SEQUENCE)) {
+                useSequences = true;
+            }
+            
+            AnalysisEngineDescription casMultiplier = createEngineDescription(
+                    ClassificationUnitCasMultiplier.class,
+                    ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences
+            );
+            
             return createEngineDescription(aggregate, casMultiplier, xmiWriter);
         }
         return createEngineDescription(aggregate, xmiWriter);
