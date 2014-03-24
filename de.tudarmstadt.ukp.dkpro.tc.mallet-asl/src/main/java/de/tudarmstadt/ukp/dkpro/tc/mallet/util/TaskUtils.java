@@ -162,7 +162,7 @@ public class TaskUtils {
 
 	public static TransducerEvaluator runTrainTest(File trainFile, File testFile, File modelFile,
 			double var, int iterations, String defaultLabel,
-			boolean fullyConnected, int[] orders, String tagger, boolean denseFeatureValues) throws FileNotFoundException, ClassNotFoundException, IOException {
+			boolean fullyConnected, int[] orders, String tagger, boolean denseFeatureValues) throws FileNotFoundException, ClassNotFoundException, IOException, TextClassificationException {
 		TransducerEvaluator eval = null;
 		if (tagger.equals("CRF")) {
 			runTrainCRF(trainFile,modelFile, var, iterations, defaultLabel, fullyConnected, orders, denseFeatureValues);
@@ -170,202 +170,96 @@ public class TaskUtils {
 			printEvaluationMeasures();
 		}
 		else if (tagger.equals("HMM")){
-			runTrainHMM(trainFile,modelFile, defaultLabel, iterations, denseFeatureValues);
-			eval = runTestHMM(testFile, modelFile);
+			throw new TextClassificationException("'HMM' is not currently supported.");
+			//runTrainHMM(trainFile,modelFile, defaultLabel, iterations, denseFeatureValues);
+			//eval = runTestHMM(testFile, modelFile);
 		}
 		else {
-			new TextClassificationException("Unsupported tagger name for sequence tagging. Supported taggers are 'CRF' and 'HMM'.");
+			throw new TextClassificationException("Unsupported tagger name for sequence tagging. Supported taggers are 'CRF' and 'HMM'.");
 		}
 		return eval;
 	}
 
-	public static void runTrainHMM(File trainingFile, File modelFile, String defaultLabel, int iterations, boolean denseFeatureValues) throws FileNotFoundException, IOException {
-		Reader trainingFileReader = null;
-		InstanceList trainingData = null;
-		//trainingFileReader = new FileReader(trainingFile);
-		trainingFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(trainingFile)));
-		Pipe p = null;
-		p = new ConversionToFeatureVectorSequence(denseFeatureValues); //uses first line of file to identify DKProInstanceID feature and discard
-		p.getTargetAlphabet().lookupIndex(defaultLabel);
-		p.setTargetProcessing(true);
-		trainingData = new InstanceList(p);
-		trainingData.addThruPipe(new LineGroupIterator(trainingFileReader,
-				Pattern.compile("^\\s*$"), true)); //if you want to skip the line containing feature names, add "|^[A-Za-z]+.*$"
-		//		logger.info
-		//		("Number of features in training data: "+p.getDataAlphabet().size());
+	//FIXME HMM is not currently supported (uncomment and use a different vector sequence compatible to HMM utilities
+	//in Mallet) @author krishperumal11
 
-		//		logger.info ("Number of predicates: "+p.getDataAlphabet().size());
+//	public static void runTrainHMM(File trainingFile, File modelFile, String defaultLabel, int iterations, boolean denseFeatureValues) throws FileNotFoundException, IOException {
+//		Reader trainingFileReader = null;
+//		InstanceList trainingData = null;
+//		//trainingFileReader = new FileReader(trainingFile);
+//		trainingFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(trainingFile)));
+//		Pipe p = null;
+//		p = new ConversionToFeatureVectorSequence(denseFeatureValues); //uses first line of file to identify DKProInstanceID feature and discard
+//		p.getTargetAlphabet().lookupIndex(defaultLabel);
+//		p.setTargetProcessing(true);
+//		trainingData = new InstanceList(p);
+//		trainingData.addThruPipe(new LineGroupIterator(trainingFileReader,
+//				Pattern.compile("^\\s*$"), true)); //if you want to skip the line containing feature names, add "|^[A-Za-z]+.*$"
+//		//		logger.info
+//		//		("Number of features in training data: "+p.getDataAlphabet().size());
+//
+//		//		logger.info ("Number of predicates: "+p.getDataAlphabet().size());
+//
+//		if (p.isTargetProcessing())
+//		{
+//			Alphabet targets = p.getTargetAlphabet();
+//			StringBuffer buf = new StringBuffer("Labels:");
+//			for (int i = 0; i < targets.size(); i++)
+//				buf.append(" ").append(targets.lookupObject(i).toString());
+//			//			logger.info(buf.toString());
+//		}
+//
+//		HMM hmm = null;
+//		hmm = trainHMM(trainingData, hmm, iterations);
+//		ObjectOutputStream s =
+//				new ObjectOutputStream(new FileOutputStream(modelFile));
+//		s.writeObject(hmm);
+//		s.close();
+//	}
+//
+//	public static HMM trainHMM(InstanceList training, HMM hmm, int numIterations) throws IOException {
+//		if (hmm == null) {
+//			hmm = new HMM(training.getPipe(), null);
+//			hmm.addStatesForLabelsConnectedAsIn(training);
+//			//hmm.addStatesForBiLabelsConnectedAsIn(trainingInstances);
+//
+//			HMMTrainerByLikelihood trainer =
+//					new HMMTrainerByLikelihood(hmm);
+//
+//			trainer.train(training, numIterations);
+//
+//			//trainingEvaluator.evaluate(trainer);
+//		}
+//		return hmm;
+//	}
+//
+//	public static TransducerEvaluator runTestHMM(File testFile, File modelFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+//		ArrayList<Pipe> pipes = new ArrayList<Pipe>();
+//
+//		pipes.add(new SimpleTaggerSentence2TokenSequence());
+//		pipes.add(new TokenSequence2FeatureSequence());
+//
+//		Pipe pipe = new SerialPipes(pipes);
+//
+//		InstanceList testData = new InstanceList(pipe);
+//
+//		testData.addThruPipe(new LineGroupIterator(new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(testFile)))), Pattern.compile("^\\s*$"), true));
+//
+//		TransducerEvaluator eval =
+//				new PerClassEvaluator(testData, "testing");
+//
+//		ObjectInputStream s =
+//				new ObjectInputStream(new FileInputStream(modelFile));
+//		HMM hmm = (HMM) s.readObject();
+//
+//		test(new NoopTransducerTrainer(hmm), eval, testData);
+//		labels = ((PerClassEvaluator) eval).getLabelNames();
+//		precisionValues = ((PerClassEvaluator) eval).getPrecisionValues();
+//		recallValues = ((PerClassEvaluator) eval).getRecallValues();
+//		f1Values = ((PerClassEvaluator) eval).getF1Values();
+//		return eval;
+//	}
 
-		if (p.isTargetProcessing())
-		{
-			Alphabet targets = p.getTargetAlphabet();
-			StringBuffer buf = new StringBuffer("Labels:");
-			for (int i = 0; i < targets.size(); i++)
-				buf.append(" ").append(targets.lookupObject(i).toString());
-			//			logger.info(buf.toString());
-		}
-
-		HMM hmm = null;
-		hmm = trainHMM(trainingData, hmm, iterations);
-		ObjectOutputStream s =
-				new ObjectOutputStream(new FileOutputStream(modelFile));
-		s.writeObject(hmm);
-		s.close();
-	}
-
-	public static HMM trainHMM(InstanceList training, HMM hmm, int numIterations) throws IOException {
-		if (hmm == null) {
-			hmm = new HMM(training.getPipe(), null);
-			hmm.addStatesForLabelsConnectedAsIn(training);
-			//hmm.addStatesForBiLabelsConnectedAsIn(trainingInstances);
-
-			HMMTrainerByLikelihood trainer =
-					new HMMTrainerByLikelihood(hmm);
-
-			trainer.train(training, numIterations);
-
-			//trainingEvaluator.evaluate(trainer);
-		}
-		return hmm;
-	}
-
-	public static TransducerEvaluator runTestHMM(File testFile, File modelFile) throws FileNotFoundException, IOException, ClassNotFoundException {
-		ArrayList<Pipe> pipes = new ArrayList<Pipe>();
-
-		pipes.add(new SimpleTaggerSentence2TokenSequence());
-		pipes.add(new TokenSequence2FeatureSequence());
-
-		Pipe pipe = new SerialPipes(pipes);
-
-		InstanceList testData = new InstanceList(pipe);
-
-		testData.addThruPipe(new LineGroupIterator(new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(testFile)))), Pattern.compile("^\\s*$"), true));
-
-		TransducerEvaluator eval =
-				new PerClassEvaluator(testData, "testing");
-
-		ObjectInputStream s =
-				new ObjectInputStream(new FileInputStream(modelFile));
-		HMM hmm = (HMM) s.readObject();
-
-		test(new NoopTransducerTrainer(hmm), eval, testData);
-		labels = ((PerClassEvaluator) eval).getLabelNames();
-		precisionValues = ((PerClassEvaluator) eval).getPrecisionValues();
-		recallValues = ((PerClassEvaluator) eval).getRecallValues();
-		f1Values = ((PerClassEvaluator) eval).getF1Values();
-		return eval;
-	}
-
-
-	//	public static void runCrossValidation(File file, File modelFile, int numFolds) throws FileNotFoundException, IOException, ClassNotFoundException {
-	//		Reader fileReader = null;
-	//		InstanceList data = null;
-	//		fileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(file)));
-	//		Pipe p = null;
-	//		CRF crf = null;
-	//		TransducerEvaluator eval = null;
-	//		p = new ConversionToFeatureVectorSequence();
-	//		p.getTargetAlphabet().lookupIndex(defaultLabel);
-	//		p.setTargetProcessing(true);
-	//		data = new InstanceList(p);
-	//		data.addThruPipe(new LineGroupIterator(fileReader,
-	//				Pattern.compile("^\\s*$"), true));
-	//		//		logger.info
-	//		//		("Number of features in training data: "+p.getDataAlphabet().size());
-	//
-	//		//		logger.info ("Number of predicates: "+p.getDataAlphabet().size());
-	//
-	//		InstanceList.CrossValidationIterator cvIter = data.crossValidationIterator(numFolds);
-	//		double[] sumPrecision = null;
-	//		double[] sumRecall = null;
-	//		double[] sumF1 = null;
-	//		int fold = 1;
-	//		int i;
-	//		while (cvIter.hasNext()) {
-	//			InstanceList[] trainTestSplits = cvIter.nextSplit();
-	//			InstanceList trainSplit = trainTestSplits[0];
-	//			InstanceList testSplit = trainTestSplits[1];
-	//			Iterator<Instance> it = trainSplit.iterator();
-	//			while(it.hasNext()) {
-	//				Instance inst = it.next();
-	//				System.out.println("train:"+inst.getName());
-	//			}
-	//			it = testSplit.iterator();
-	//			while(it.hasNext()) {
-	//				Instance inst = it.next();
-	//				System.out.println("test:"+inst.getName());
-	//			}
-	//			if (p.isTargetProcessing())
-	//			{
-	//				Alphabet targets = p.getTargetAlphabet();
-	//				StringBuffer buf = new StringBuffer("Labels:");
-	//				for (i = 0; i < targets.size(); i++)
-	//					buf.append(" ").append(targets.lookupObject(i).toString());
-	//				//			logger.info(buf.toString());
-	//			}
-	//			crf = train(trainSplit, crf);
-	//			ObjectOutputStream s = new ObjectOutputStream(new FileOutputStream(modelFile));
-	//			s.writeObject(crf);
-	//			s.close();
-	//			ObjectInputStream s_in =
-	//					new ObjectInputStream(new FileInputStream(modelFile));
-	//			crf = (CRF) s_in.readObject();
-	//			s_in.close();
-	//			p = crf.getInputPipe();
-	//			p.setTargetProcessing(true);
-	//			eval = new PerClassEvaluator(new InstanceList[] {testSplit}, new String[] {"Testing Fold-" + fold++});
-	//			if (p.isTargetProcessing())
-	//			{
-	//				Alphabet targets = p.getTargetAlphabet();
-	//				StringBuffer buf = new StringBuffer("Labels:");
-	//				for (i = 0; i < targets.size(); i++)
-	//					buf.append(" ").append(targets.lookupObject(i).toString());
-	//				//			logger.info(buf.toString());
-	//			}
-	//			test(new NoopTransducerTrainer(crf), eval, testSplit);
-	//			labels = ((PerClassEvaluator) eval).getLabelNames();
-	//			if(sumPrecision == null || sumRecall == null || sumF1 == null) {
-	//				sumPrecision = new double[labels.size()];
-	//				sumRecall = new double[labels.size()];
-	//				sumF1 = new double[labels.size()];
-	//			}
-	//			precisionValues = ((PerClassEvaluator) eval).getPrecisionValues();
-	//			recallValues = ((PerClassEvaluator) eval).getRecallValues();
-	//			f1Values = ((PerClassEvaluator) eval).getF1Values();
-	//			Iterator<Double> precisionIt = precisionValues.iterator();
-	//			i=0;
-	//			while(precisionIt.hasNext()) {
-	//				sumPrecision[i] += precisionIt.next().doubleValue();
-	//				i++;
-	//			}
-	//			Iterator<Double> recallIt = recallValues.iterator();
-	//			i=0;
-	//			while(recallIt.hasNext()) {
-	//				sumRecall[i] += recallIt.next().doubleValue();
-	//				i++;
-	//			}
-	//			Iterator<Double> f1It = f1Values.iterator();
-	//			i=0;
-	//			while(f1It.hasNext()) {
-	//				sumF1[i] += f1It.next().doubleValue();
-	//				i++;
-	//			}
-	//		}
-	//		//calculate cross-validation average measures
-	//		precisionValues = new ArrayList<Double>();
-	//		for(i=0; i<labels.size(); i++) {
-	//			precisionValues.add(sumPrecision[i]/numFolds);
-	//		}
-	//		recallValues = new ArrayList<Double>();
-	//		for(i=0; i<labels.size(); i++) {
-	//			recallValues.add(sumRecall[i]/numFolds);
-	//		}
-	//		f1Values = new ArrayList<Double>();
-	//		for(i=0; i<labels.size(); i++) {
-	//			f1Values.add(sumF1[i]/numFolds);
-	//		}
-	//		printEvaluationMeasures();
-	//	}
 
 	public static void printEvaluationMeasures() {
 		double values[][] = new double[labels.size()][3];
