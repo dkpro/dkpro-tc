@@ -12,15 +12,16 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.util.TaskUtils;
 
 /**
  * Builds the classifier from the training data and performs classification on the test data.
+ * Currently, this task also generates various results in the form of reports. These need to be moved.
  * 
- * @author Krish Perumal
+ * @author krishperumal11
  * 
  */
 public class TestTask
     extends ExecutableTaskBase
 {
 	@Discriminator
-	private String tagger = "CRF"; //HMM
+	private String tagger = "CRF"; //added to configure other taggers like HMM, although these are not supported
 	
     @Discriminator
     private double gaussianPriorVariance = 10.0; //Gaussian Prior Variance
@@ -32,7 +33,7 @@ public class TestTask
 	private String defaultLabel = "O";
     
     @Discriminator
-    private int[] orders = new int[]{0, 1, 2};
+    private int[] orders = new int[]{0, 1, 2, 3, 4};
     
     @Discriminator
     private boolean denseFeatureValues = true;
@@ -77,6 +78,8 @@ public class TestTask
         
         TransducerEvaluator eval = TaskUtils.runTrainTest(fileTrain, fileTest, fileModel, gaussianPriorVariance, iterations, defaultLabel,
     			false, orders, tagger, denseFeatureValues);
+        
+        //TODO move to reports (@author krishperumal11)
         
         File filePredictions = new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + PREDICTIONS_KEY);
