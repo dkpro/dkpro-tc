@@ -1,0 +1,108 @@
+package de.tudarmstadt.ukp.dkpro.tc.mallet.report;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
+
+import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
+import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
+
+/**
+ * Collects the final evaluation results in a train/test setting.
+ * 
+ * @author zesch
+ * 
+ */
+public class BatchTrainTestReport
+    extends BatchReportBase
+    implements Constants
+{
+
+    private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
+            "files_validation", "files_training" });
+
+    @Override
+    public void execute()
+        throws Exception
+    {
+        StorageService store = getContext().getStorageService();
+
+        FlexTable<String> table = FlexTable.forClass(String.class);
+
+        Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
+        
+        for (TaskContextMetadata subcontext : getSubtasks()) {
+            if (subcontext.getType().startsWith(TestTask.class.getName())) {
+                Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
+                        Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+                Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
+                        TestTask.RESULTS_KEY, new PropertiesAdapter()).getMap();
+
+                String key = getKey(discriminatorsMap);
+
+                List<Double> results;
+                if (key2resultValues.get(key) == null) {
+                    results = new ArrayList<Double>();
+                }
+                else {
+                    results = key2resultValues.get(key);
+                }
+                key2resultValues.put(key, results);
+
+                Map<String, String> values = new HashMap<String, String>();
+                Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
+
+                for (String disc : discriminatorsMap.keySet()) {
+                    if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
+                        cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+                    }
+                }
+                values.putAll(cleanedDiscriminatorsMap);
+                values.putAll(resultMap);
+
+                table.addRow(subcontext.getLabel(), values);
+            }
+        }
+
+        getContext()
+                .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
+        table.setCompact(false);
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
+
+        // output the location of the batch evaluation folder
+        // otherwise it might be hard for novice users to locate this
+        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        // TODO can we also do this without creating and deleting the dummy folder?
+        getContext().getLoggingService().message(getContextLabel(),
+                "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
+        dummyFolder.delete();
+    }
+
+    private String getKey(Map<String, String> discriminatorsMap)
+    {
+        Set<String> sortedDiscriminators = new TreeSet<String>(discriminatorsMap.keySet());
+
+        List<String> values = new ArrayList<String>();
+        for (String discriminator : sortedDiscriminators) {
+            values.add(discriminatorsMap.get(discriminator));
+        }
+        return StringUtils.join(values, "_");
+    }
+
+}
