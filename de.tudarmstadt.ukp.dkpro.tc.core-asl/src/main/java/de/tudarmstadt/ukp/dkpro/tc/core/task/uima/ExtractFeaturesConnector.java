@@ -140,6 +140,8 @@ public class ExtractFeaturesConnector
                         throw new TextClassificationException("Using non-document FE in document mode: " + featExt.getResourceName());
                     }
                     
+                    instance.setOutcomes(getOutcomes(null));
+                    
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
             }
@@ -156,6 +158,9 @@ public class ExtractFeaturesConnector
                     }
                     JCas view1 = jcas.getView(Constants.PART_ONE);
                     JCas view2 = jcas.getView(Constants.PART_TWO);
+                    
+                    instance.setOutcomes(getOutcomes(null));
+                    
                     instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
             }
@@ -184,8 +189,12 @@ public class ExtractFeaturesConnector
                                 null);
                     }
 
+                    TextClassificationUnit unit = classificationUnits.iterator().next();
+                   
+                    instance.setOutcomes(getOutcomes(unit));
+                    
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, classificationUnits.iterator().next()));
+                            jcas, unit));
                 }
             }
             catch (TextClassificationException e) {
@@ -203,9 +212,6 @@ public class ExtractFeaturesConnector
                 throw new AnalysisEngineProcessException(e);
             }
         }
-
-        // set and write outcome label(s)
-        instance.setOutcomes(getOutcomes(null));
         
         return instance;
     }
