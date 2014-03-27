@@ -35,17 +35,17 @@ public class BatchTaskCrossValidation
 {
 
     protected String experimentName;
-    private AnalysisEngineDescription aggregate;
-    private List<String> operativeViews;
+    protected AnalysisEngineDescription aggregate;
+    protected List<String> operativeViews;
     protected int numFolds = 10;
-    private Class<? extends Report> innerReport;
+    protected Class<? extends Report> innerReport;
 
-    private ValidityCheckTask checkTask;
-    private PreprocessTask preprocessTask;
-    private MetaInfoTask metaTask;
-    private ExtractFeaturesTask extractFeaturesTrainTask;
-    private ExtractFeaturesTask extractFeaturesTestTask;
-    private TestTask testTask;
+    protected ValidityCheckTask checkTask;
+    protected PreprocessTask preprocessTask;
+    protected MetaInfoTask metaTask;
+    protected ExtractFeaturesTask extractFeaturesTrainTask;
+    protected ExtractFeaturesTask extractFeaturesTestTask;
+    protected TestTask testTask;
 
     public BatchTaskCrossValidation()
     {/* needed for Groovy */
@@ -87,7 +87,7 @@ public class BatchTaskCrossValidation
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private void init()
+    protected void init()
         throws IllegalStateException, InstantiationException, IllegalAccessException,
         ClassNotFoundException
     {
