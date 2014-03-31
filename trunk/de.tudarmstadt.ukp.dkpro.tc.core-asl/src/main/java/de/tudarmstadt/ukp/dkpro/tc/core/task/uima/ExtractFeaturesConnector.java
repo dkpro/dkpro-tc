@@ -98,7 +98,7 @@ public class ExtractFeaturesConnector
         this.jcas = jcas;
         
         List<Instance> instances = new ArrayList<Instance>();
-        if (learningMode.equals(Constants.LM_SEQUENCE)) {
+        if (featureMode.equals(Constants.FM_SEQUENCE)) {
             instances = getMultipleInstances();
             sequenceId++;
         }

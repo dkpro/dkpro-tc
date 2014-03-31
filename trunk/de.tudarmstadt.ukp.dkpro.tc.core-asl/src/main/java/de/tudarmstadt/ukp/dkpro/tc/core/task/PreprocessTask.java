@@ -51,9 +51,6 @@ public class PreprocessTask
 
     @Discriminator
     private String featureMode;
-
-    @Discriminator
-    private String learningMode;
     
     public void setTesting(boolean isTesting)
     {
@@ -112,10 +109,10 @@ public class PreprocessTask
             }
             aggregate = builder.createAggregateDescription();
         }
-        // in unit mode, add cas multiplier
+        // in unit or sequence mode, add cas multiplier
         else if (featureMode.equals(Constants.FM_UNIT)) {
             boolean useSequences = false;
-            if (learningMode.equals(Constants.LM_SEQUENCE)) {
+            if (featureMode.equals(Constants.FM_SEQUENCE)) {
                 useSequences = true;
             }
             

@@ -60,8 +60,6 @@ public interface Constants
     public static final String LM_SINGLE_LABEL = "singleLabel";
     public static final String LM_MULTI_LABEL = "multiLabel";
     public static final String LM_REGRESSION = "regression";
-    public static final String LM_SEQUENCE = "sequence";
-
 
     /*
      * feature modes
@@ -69,6 +67,7 @@ public interface Constants
     public static final String DIM_FEATURE_MODE = "featureMode";
     public static final String FM_DOCUMENT = "document";
     public static final String FM_UNIT = "unit";
+    public static final String FM_SEQUENCE = "sequence";
     public static final String FM_PAIR = "pair";
 
     /*
