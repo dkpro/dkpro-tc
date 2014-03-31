@@ -35,8 +35,6 @@ public class KeywordNGramFeatureExtractorTest
 
         keywordExtractor = new KeywordNGramDFE();
 
-        keywordExtractor.prefix = "keyNG";
-
         keywordExtractor.stopwords = FeatureUtil.getStopwords(null, false);
         keywordExtractor.keywords = FeatureUtil.getStopwords(
                 "src/test/resources/data/keywordlist.txt", true);
