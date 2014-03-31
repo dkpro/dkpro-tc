@@ -138,6 +138,19 @@ public class NGramUtils
         return posNgrams;
     }
     
+    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas, boolean lowerCaseNgrams, int minN, int maxN)
+    {
+        FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
+        for (String charNgram : new CharacterNGramStringIterable(jcas.getDocumentText(), minN, maxN)) {
+            if (lowerCaseNgrams) {
+                charNgram = charNgram.toLowerCase();
+            }
+            charNgrams.inc(charNgram);         
+        }
+        
+        return charNgrams;
+    }
+    
     public static FrequencyDistribution<String> getAnnotationPosNgrams(JCas jcas, Annotation anno, int minN, int maxN, boolean useCanonical) {
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         
