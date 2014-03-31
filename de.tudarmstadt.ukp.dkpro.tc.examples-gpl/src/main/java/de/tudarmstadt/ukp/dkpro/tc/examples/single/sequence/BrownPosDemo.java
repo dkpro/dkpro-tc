@@ -42,13 +42,13 @@ public class BrownPosDemo
     public static void main(String[] args)
         throws Exception
     {
-        ParameterSpace pSpace = getParameterSpace(Constants.LM_SEQUENCE);
+        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
 
         BrownPosDemo experiment = new BrownPosDemo();
         experiment.runCrossValidation(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace(String learningMode)
+    public static ParameterSpace getParameterSpace(String featureMode, String learningMode)
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -87,7 +87,7 @@ public class BrownPosDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
-                        DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
+                        DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
 
         return pSpace;

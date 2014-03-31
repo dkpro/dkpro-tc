@@ -18,7 +18,7 @@ public class BrownUnitPosDemo
     public static void main(String[] args)
         throws Exception
     {
-        ParameterSpace pSpace = getParameterSpace(Constants.LM_SINGLE_LABEL);
+        ParameterSpace pSpace = getParameterSpace(Constants.FM_UNIT, Constants.LM_SINGLE_LABEL);
 
         BrownUnitPosDemo experiment = new BrownUnitPosDemo();
         experiment.runCrossValidation(pSpace);
