@@ -1,9 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -24,11 +23,8 @@ public class BaselinePairFeatureTest
     public void extractTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class)
-
-                );
-        AnalysisEngine engine = createPrimitive(desc);
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngine engine = createEngine(desc);
 
         PairFeatureExtractor extractor = new AlwaysZeroPairFeatureExtractor();
         List<Feature> features = runExtractor(engine, extractor);
