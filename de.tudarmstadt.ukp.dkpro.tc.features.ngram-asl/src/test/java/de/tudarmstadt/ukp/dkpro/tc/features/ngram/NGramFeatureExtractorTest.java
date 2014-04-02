@@ -1,119 +1,141 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.jcas.JCas;
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import com.google.gson.Gson;
+
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 public class NGramFeatureExtractorTest
 {
-    LuceneNGramDFE luceneExtractor;
-    FrequencyDistributionNGramDFE nGramExtractor;
-    JCas jcas;
 
-    private void initialize()
+    FeatureStore fsLucene;
+    FeatureStore fsFrequenceDist;
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
+    // @Before
+    // public void setupLogging()
+    // {
+    // System.setProperty("org.apache.uima.logger.class",
+    // "org.apache.uima.util.impl.Log4jLogger_impl");
+    // }
+
+    private void initialize(int ngramNMin, int ngramNMax)
         throws Exception
     {
 
-        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
+        File luceneFolder = folder.newFolder();
+        File outputPathLucene = folder.newFolder();
+        File frequencyDistFile = folder.newFile();
+        File outputPathFrequencyDist = folder.newFolder();
 
-        jcas = engine.newJCas();
-        jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Cats eats mice. Birds chase cats.");
-        engine.process(jcas); // or engine.process(jcas)
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/ngrams/text3.txt");
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
 
-        luceneExtractor = new LuceneNGramDFE();
-        nGramExtractor = new FrequencyDistributionNGramDFE();
+        ArrayList<Object> parametersLucene = new ArrayList<Object>(Arrays.asList(new Object[] {
+                LuceneNGramDFE.PARAM_NGRAM_MIN_N, ngramNMin, LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+                ngramNMax, LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder }));
 
-        luceneExtractor.prefix = "ngram";
-        nGramExtractor.prefix = "ngram";
+        ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
+                Arrays.asList(new Object[] { FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
+                        ngramNMin, FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N, ngramNMax,
+                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FD_FILE, frequencyDistFile }));
 
-        luceneExtractor.stopwords = FeatureUtil.getStopwords(null, false);
-        nGramExtractor.stopwords = FeatureUtil.getStopwords(null, false);
-        luceneExtractor.topKSet = makeSomeNgrams();
-        nGramExtractor.topKSet = makeSomeNgrams();
+        AnalysisEngineDescription metaCollectorLucene = AnalysisEngineFactory
+                .createEngineDescription(LuceneNGramMetaCollector.class, parametersLucene.toArray());
+
+        AnalysisEngineDescription metaCollectorFrequencyDist = AnalysisEngineFactory
+                .createEngineDescription(NGramMetaCollector.class,
+                        parametersFrequencyDist.toArray());
+
+        AnalysisEngineDescription featExtractorConnectorLucene = TaskUtils
+                .getFeatureExtractorConnector(parametersLucene, outputPathLucene.getAbsolutePath(),
+                        JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
+                        Constants.FM_DOCUMENT, false, LuceneNGramDFE.class.getName());
+
+        AnalysisEngineDescription featExtractorConnectorFrequencyDist = TaskUtils
+                .getFeatureExtractorConnector(parametersFrequencyDist,
+                        outputPathFrequencyDist.getAbsolutePath(), JsonDataWriter.class.getName(),
+                        Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false,
+                        FrequencyDistributionNGramDFE.class.getName());
+
+        // run meta collectors
+        SimplePipeline.runPipeline(reader, segmenter, metaCollectorLucene);
+        SimplePipeline.runPipeline(reader, segmenter, metaCollectorFrequencyDist);
+
+        // run FE(s)
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorLucene);
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorFrequencyDist);
+
+        Gson gson = new Gson();
+        fsLucene = gson.fromJson(FileUtils.readFileToString(new File(outputPathLucene,
+                JsonDataWriter.JSON_FILE_NAME)), SimpleFeatureStore.class);
+        fsFrequenceDist = gson.fromJson(FileUtils.readFileToString(new File(
+                outputPathFrequencyDist, JsonDataWriter.JSON_FILE_NAME)), SimpleFeatureStore.class);
+
+        assertEquals(1, fsLucene.getNumberOfInstances());
+        assertEquals(1, fsFrequenceDist.getNumberOfInstances());
     }
 
     @Test
     public void CompareOldAndNewPairFETest()
         throws Exception
     {
-        initialize();
-        luceneExtractor.ngramMinN = 1;
-        luceneExtractor.ngramMaxN = 3;
-        luceneExtractor.ngramLowerCase = true;
+        initialize(1, 3);
+        List<String> luceneFeatures = fsLucene.getFeatureNames();
+        List<String> frequencyDistFeatures = fsFrequenceDist.getFeatureNames();
+        Collections.sort(luceneFeatures);
+        Collections.sort(frequencyDistFeatures);
 
-        List<Feature> luceneFeatures = luceneExtractor.extract(jcas);
+        assertEquals(luceneFeatures, frequencyDistFeatures);
 
-        FrequencyDistribution<String> features = new FrequencyDistribution<String>();
-
-        for (Feature f : luceneFeatures) {
-            features.addSample(f.getName(), 1);
-        }
-
-        nGramExtractor.ngramMinN = 1;
-        nGramExtractor.ngramMaxN = 3;
-        nGramExtractor.ngramLowerCase = true;
-
-        List<Feature> ngramFeatures = nGramExtractor.extract(jcas);
-
-        for (Feature f : ngramFeatures) {
-            features.addSample(f.getName(), 1);
-        }
-        assertEquals(features.getKeys().size(), 7);
-        for (String sample : features.getKeys()) {
-            assertTrue(features.getCount(sample) == 2);
-        }
     }
 
     @Test
     public void nonDefaultMinNMaxNTest()
         throws Exception
     {
-        initialize();
-        luceneExtractor.ngramMinN = 1;
-        luceneExtractor.ngramMaxN = 1;
-        luceneExtractor.ngramLowerCase = true;
+        initialize(1, 1);
 
-        List<Feature> luceneFeatures = luceneExtractor.extract(jcas);
+        assertTrue(fsLucene.getFeatureNames().contains("ngram_cats"));
+        assertFalse(fsLucene.getFeatureNames().contains("ngram_cats_eat"));
+        assertFalse(fsLucene.getFeatureNames().contains("ngram_birds_chase_cats"));
 
-        assertTrue(luceneFeatures.contains(new Feature("ngram_cats", 1)));
-        assertTrue(luceneFeatures.contains(new Feature("ngram_cats_eat", 0)));
-        assertTrue(luceneFeatures.contains(new Feature("ngram_birds_chase_cats", 0)));
+        initialize(3, 3);
 
-        initialize();
-        luceneExtractor.ngramMinN = 3;
-        luceneExtractor.ngramMaxN = 3;
-        luceneExtractor.ngramLowerCase = true;
-
-        luceneFeatures = luceneExtractor.extract(jcas);
-
-        assertTrue(luceneFeatures.contains(new Feature("ngram_cats", 0)));
-        assertTrue(luceneFeatures.contains(new Feature("ngram_cats_eat", 0)));
-        assertTrue(luceneFeatures.contains(new Feature("ngram_birds_chase_cats", 1)));
+        assertFalse(fsLucene.getFeatureNames().contains("ngram_cats"));
+        assertFalse(fsLucene.getFeatureNames().contains("ngram_cats_eat"));
+        assertTrue(fsLucene.getFeatureNames().contains("ngram_birds_chase_cats"));
     }
-
-    private static FrequencyDistribution<String> makeSomeNgrams()
-    {
-        FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
-        fd.addSample("cats", 2);
-        fd.addSample("birds", 1);
-        fd.addSample("dogs", 4);
-        fd.addSample("cats_eat", 5);
-        fd.addSample("cats_eat_mice", 1);
-        fd.addSample("birds_chase_cats", 2);
-        fd.addSample("Birds_chase_cats", 2);
-        return fd;
-    }
-
 }
