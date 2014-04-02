@@ -222,7 +222,7 @@ public class WekaUtils
 
             wekaInstance.setDataset(wekaInstances);
 
-            String outcome = instanceList.getOutcome(i);
+            String outcome = instanceList.getOutcomes(i).get(0);
             if (isRegressionExperiment) {
                 wekaInstance.setClassValue(Double.parseDouble(outcome));
             }

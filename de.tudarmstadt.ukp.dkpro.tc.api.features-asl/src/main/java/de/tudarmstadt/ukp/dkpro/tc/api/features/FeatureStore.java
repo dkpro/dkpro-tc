@@ -23,7 +23,7 @@ public interface FeatureStore
     
     public List<String> getUniqueOutcomes();
     
-    public String getOutcome(int i);
+    public List<String> getOutcomes(int i);
     
     public List<String> getFeatureNames();
 
