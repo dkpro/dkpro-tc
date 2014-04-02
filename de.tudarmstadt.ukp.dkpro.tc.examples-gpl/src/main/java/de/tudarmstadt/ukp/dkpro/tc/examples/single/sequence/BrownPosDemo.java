@@ -21,11 +21,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -35,7 +34,7 @@ public class BrownPosDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static int NUM_FOLDS = 3;
+    public static int NUM_FOLDS = 2;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
@@ -55,12 +54,10 @@ public class BrownPosDemo
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] {
-                    BrownCorpusReader.PARAM_LANGUAGE, "en",
-                    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                    BrownCorpusReader.PARAM_PATTERNS, new String[] {INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"}
-                })
-        );
+                Arrays.asList(new Object[] { BrownCorpusReader.PARAM_LANGUAGE, "en",
+                        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        BrownCorpusReader.PARAM_PATTERNS,
+                        new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" } }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
@@ -68,21 +65,13 @@ public class BrownPosDemo
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                        "something", "something" }),
-                Arrays.asList(new Object[] {
-                        "something2", "something2" })
-        );
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
+                Arrays.asList(new Object[] { "something", "something" }),
+                Arrays.asList(new Object[] { "something2", "something2" }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] {
-                        NrOfTokensUFE.class.getName()
-                })
-        );
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(new String[] { NrOfTokensUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
@@ -104,7 +93,7 @@ public class BrownPosDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+        // batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -113,8 +102,6 @@ public class BrownPosDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(
-                createEngineDescription(NoOpAnnotator.class)
-        );
+        return createEngineDescription(createEngineDescription(NoOpAnnotator.class));
     }
 }
