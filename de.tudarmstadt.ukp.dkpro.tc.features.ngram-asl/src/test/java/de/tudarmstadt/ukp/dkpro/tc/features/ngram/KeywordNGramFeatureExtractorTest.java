@@ -73,7 +73,7 @@ public class KeywordNGramFeatureExtractorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false,
                 KeywordNGramDFE.class.getName());
 
         // run meta collector

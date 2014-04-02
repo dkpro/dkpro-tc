@@ -56,11 +56,14 @@ public class ExtractFeaturesTask
     private String featureMode;
     @Discriminator
     private String dataWriter;
+    @Discriminator
+    private boolean developerMode;
 
     private boolean isTesting = false;
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
     // TODO this is already prepared, but not used
-    // collects annotation types required by FEs (source code annotations need to be inserted in each FE)
+    // collects annotation types required by FEs (source code annotations need to be inserted in
+    // each FE)
     // could be used to automatically configure preprocessing
     private Set<String> requiredTypes;
 
@@ -125,7 +128,7 @@ public class ExtractFeaturesTask
 
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 parametersCopy, outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
-                true, featureSet.toArray(new String[0]));
+                true, developerMode, featureSet.toArray(new String[0]));
 
         return connector;
     }
