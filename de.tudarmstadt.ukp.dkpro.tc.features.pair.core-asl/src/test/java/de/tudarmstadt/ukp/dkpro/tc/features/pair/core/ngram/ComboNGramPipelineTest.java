@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
@@ -32,9 +33,7 @@ public class ComboNGramPipelineTest
         assertTrue(test.featureNames.contains("comboNG_mice_birds"));
         assertTrue(test.featureNames.contains("comboNG_cats_eat_cats"));
         assertTrue(test.featureNames.contains("comboNG_cats_eat_birds_chase"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
+
         for (String f : test.featureNames) {
             int size = f.length() - f.replace("_", "").length();
             assertTrue(size >= 2);
@@ -58,9 +57,6 @@ public class ComboNGramPipelineTest
         assertTrue(test.featureNames.get(0).startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 16);
         assertTrue(test.featureNames.contains("comboNG_mice_birds"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     @Test
@@ -79,9 +75,6 @@ public class ComboNGramPipelineTest
         assertTrue(test.featureNames.get(0).startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 81);
         assertTrue(test.featureNames.contains("comboNG_cats_eat_mice_birds_chase_cats"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     // TODO: Write a symmetry test. Note that features will be the same. Needs different dataset.
@@ -104,7 +97,8 @@ public class ComboNGramPipelineTest
         int two = 0;
         int one = 0;
         int zero = 0;
-        for (String value : test.instanceList.get(0)) {
+        for (Feature feature : test.instanceList.get(0).getFeatures()) {
+            Integer value = ((Double) feature.getValue()).intValue();
             if (new Integer(value) == 2) {
                 two++;
             }

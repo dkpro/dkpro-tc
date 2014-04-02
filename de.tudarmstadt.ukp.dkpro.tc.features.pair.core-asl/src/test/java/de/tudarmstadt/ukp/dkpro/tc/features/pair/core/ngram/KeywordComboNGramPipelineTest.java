@@ -9,6 +9,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
@@ -40,9 +41,6 @@ public class KeywordComboNGramPipelineTest
 	    assertTrue(test.featureNames.contains("comboKNG_apricot_peach_apricot_peach"));
 	    assertTrue(!test.featureNames.contains("comboKNG_nectarine_trees"));
 	    
-	    for (String value : test.instanceList.get(0)) {
-	        assertEquals(1, Integer.parseInt(value));
-	    }
 	    for (String f : test.featureNames) {
 	        int size = f.length() - f.replace("_", "").length();
 	        assertTrue(size >= 2);
@@ -69,9 +67,6 @@ public class KeywordComboNGramPipelineTest
 	    assertEquals(test.featureNames.size(), 24);
 	    assertTrue(test.featureNames.contains("comboKNG_apricot_apricot"));
 	    assertTrue(!test.featureNames.contains("comboKNG_nectarine_trees"));
-	    for (String value : test.instanceList.get(0)) {
-	        assertEquals(1, Integer.parseInt(value));
-	    }
 	}
 	
 	@Test
@@ -93,9 +88,6 @@ public class KeywordComboNGramPipelineTest
 	    assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
 	    assertEquals(test.featureNames.size(), 10);
 	    assertTrue(test.featureNames.contains("comboKNG_apricot_peach_nectarine_apricot_peach_nectarine"));
-	    for (String value : test.instanceList.get(0)) {
-	        assertEquals(1, Integer.parseInt(value));
-	    }
 	}
 	
 	// TODO: Write a symmetry test. Note that features will be the same. Needs different dataset.
@@ -122,7 +114,8 @@ public class KeywordComboNGramPipelineTest
 	    int two = 0;
 	    int one = 0;
 	    int zero = 0;
-	    for (String value : test.instanceList.get(0)) {
+	    for (Feature feature : test.instanceList.get(0).getFeatures()) {
+            Integer value = ((Double) feature.getValue()).intValue();
 	        if (new Integer(value) == 4) {
 	            four++;
 	        }
@@ -152,6 +145,7 @@ public class KeywordComboNGramPipelineTest
         return "src/test/resources/data/keywordNgramsData.txt";
     }
 
+    @Override
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
@@ -161,6 +155,7 @@ public class KeywordComboNGramPipelineTest
                 KeywordComboNGramPairFeatureExtractor.class.getName());
     }
 
+    @Override
     protected void getMetaCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
