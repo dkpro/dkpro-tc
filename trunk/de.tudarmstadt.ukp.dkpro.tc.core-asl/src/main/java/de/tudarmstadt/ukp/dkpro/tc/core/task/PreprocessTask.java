@@ -51,7 +51,7 @@ public class PreprocessTask
 
     @Discriminator
     private String featureMode;
-    
+
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;
@@ -110,17 +110,13 @@ public class PreprocessTask
             aggregate = builder.createAggregateDescription();
         }
         // in unit or sequence mode, add cas multiplier
-        else if (featureMode.equals(Constants.FM_UNIT)) {
-            boolean useSequences = false;
-            if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                useSequences = true;
-            }
-            
+        else if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
+            boolean useSequences = featureMode.equals(Constants.FM_SEQUENCE);
+
             AnalysisEngineDescription casMultiplier = createEngineDescription(
                     ClassificationUnitCasMultiplier.class,
-                    ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences
-            );
-            
+                    ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences);
+
             return createEngineDescription(aggregate, casMultiplier, xmiWriter);
         }
         return createEngineDescription(aggregate, xmiWriter);
