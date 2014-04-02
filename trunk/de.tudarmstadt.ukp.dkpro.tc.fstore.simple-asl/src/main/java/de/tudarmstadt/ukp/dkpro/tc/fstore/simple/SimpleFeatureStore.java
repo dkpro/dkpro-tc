@@ -69,16 +69,7 @@ public class SimpleFeatureStore
         return instance;
     }
     
-    @Override
-    public String getOutcome(int i) {
-        if (this.outcomeList.get(i).size() > 0) {
-            return this.outcomeList.get(i).get(0);
-        }
-        else {
-            return null;
-        }
-    }
-    
+    @Override 
     public List<String> getOutcomes(int i) {
         return this.outcomeList.get(i);
     }
