@@ -49,6 +49,8 @@ public class ValidityCheckTask
     private String dataWriter;
     @Discriminator
     protected List<String> featureSet;
+    @Discriminator
+    protected boolean developerMode;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -94,6 +96,8 @@ public class ValidityCheckTask
         parameters.add(threshold);
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_EXTRACTORS);
         parameters.add(featureSet);
+        parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
+        parameters.add(developerMode);
 
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }

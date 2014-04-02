@@ -55,6 +55,10 @@ public class ValidityCheckConnector
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
     private String featureMode;
 
+    public static final String PARAM_DEVELOPER_MODE = "developerMode";
+    @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
+    private boolean developerMode;
+
     private boolean firstCall;
     private int featureModeI;
     private int learningModeI;
@@ -88,6 +92,9 @@ public class ValidityCheckConnector
                     featureModeI = 2;
                 else if (featureMode.equals(Constants.FM_PAIR))
                     featureModeI = 3;
+                else if (featureMode.equals(Constants.FM_SEQUENCE)) {
+                    featureModeI = 4;
+                }
                 else
                     throw new AnalysisEngineProcessException(new TextClassificationException(
                             "Please set a valid feature mode"));
@@ -135,8 +142,8 @@ public class ValidityCheckConnector
             }
 
             // iff single-label is configured, there may not be more than one outcome annotation per
-            // CAS, except this is the unit classification
-            if (learningModeI != 2 && featureModeI != 2 && outcomes.size() > 2) {
+            // CAS, except the experiment is unit or sequence classification
+            if (learningModeI != 2 && featureModeI != 2 && featureModeI != 4 && outcomes.size() > 2) {
                 throw new AnalysisEngineProcessException(
                         new TextClassificationException(
                                 "Your experiment is configured to be single-label, but I found more than one outcome annotation for "
@@ -144,9 +151,10 @@ public class ValidityCheckConnector
                                         + ". Please configure your project to be multi-label or make sure to have only one outcome per instance."));
             }
 
-            // iff unit classification is active, there must be classificationUnit annotations, each
+            // iff unit/sequence classification is active, there must be classificationUnit
+            // annotations, each
             // labeled with an outcome annotation
-            if (featureModeI == 2) {
+            if (featureModeI == 2 || featureModeI == 4) {
                 if (classificationUnits.size() == 0) {
                     throw new AnalysisEngineProcessException(
                             new TextClassificationException(
@@ -181,6 +189,15 @@ public class ValidityCheckConnector
                                     + AbstractPairReader.class.getName()));
                 }
             }
+
+            // iff sequence classification is enabled, we currently only support single-label
+            // classification
+            if (featureModeI == 4 && learningModeI != 1) {
+                throw new AnalysisEngineProcessException(
+                        new TextClassificationException(
+                                "In sequence mode, only single-label learning is possible. Please set the learning mode to single-label."));
+            }
+
             // verify feature extractors are valid within the specified mode
             try {
                 switch (featureModeI) {
@@ -202,21 +219,7 @@ public class ValidityCheckConnector
                     }
                     break;
                 case 2:
-                    for (String featExt : featureExtractors) {
-                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
-                                .forName(featExt).newInstance();
-                        if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
-                            throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt
-                                            + " is not a valid Unit Feature Extractor."));
-                        }
-                        if (featExtC instanceof ClassificationUnitFeatureExtractor
-                                && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
-                            throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt
-                                            + ": Feature Extractors need to define a unique type."));
-                        }
-                    }
+                    testUnitFE(featureExtractors, developerMode);
                     break;
                 case 3:
                     for (String featExt : featureExtractors) {
@@ -235,6 +238,9 @@ public class ValidityCheckConnector
                         }
                     }
                     break;
+                case 4:
+                    testUnitFE(featureExtractors, developerMode);
+                    break;
                 default:
                     throw new AnalysisEngineProcessException("Please set a valid learning mode",
                             null);
@@ -249,6 +255,30 @@ public class ValidityCheckConnector
             }
             catch (IllegalAccessException e) {
                 throw new AnalysisEngineProcessException(e);
+            }
+        }
+    }
+
+    private static void testUnitFE(String[] featureExtractors, boolean developerMode)
+        throws AnalysisEngineProcessException, InstantiationException, IllegalAccessException,
+        ClassNotFoundException
+    {
+        for (String featExt : featureExtractors) {
+            FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
+                    .forName(featExt).newInstance();
+            if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
+                if (developerMode && featExtC instanceof DocumentFeatureExtractor) {
+                    // we have the user carrying any consequences...
+                }
+                else {
+                    throw new AnalysisEngineProcessException(new TextClassificationException(
+                            featExt + " is not a valid Unit Feature Extractor."));
+                }
+            }
+            if (featExtC instanceof ClassificationUnitFeatureExtractor
+                    && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
+                throw new AnalysisEngineProcessException(new TextClassificationException(featExt
+                        + ": Feature Extractors need to define a unique type."));
             }
         }
     }
