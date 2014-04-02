@@ -20,6 +20,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -107,7 +108,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     DIM_FEATURE_SET,
     [
         NrOfTokensDFE.class.name,
-        FrequencyDistributionNGramFeatureExtractorBase.class.name
+        FrequencyDistributionNGramDFE.class.name
     ]
     );
 
@@ -203,11 +204,11 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     }
 
     private AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    throws ResourceInitializationException
     {
         return createEngineDescription(
-            createEngineDescription(BreakIteratorSegmenter),
-            createEngineDescription(OpenNlpPosTagger)
+        createEngineDescription(BreakIteratorSegmenter),
+        createEngineDescription(OpenNlpPosTagger)
         );
     }
 
