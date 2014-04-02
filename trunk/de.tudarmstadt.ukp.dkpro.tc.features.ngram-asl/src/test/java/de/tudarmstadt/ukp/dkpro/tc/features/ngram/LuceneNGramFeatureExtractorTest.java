@@ -40,9 +40,10 @@ public class LuceneNGramFeatureExtractorTest
     @Before
     public void setupLogging()
     {
-        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+        System.setProperty("org.apache.uima.logger.class",
+                "org.apache.uima.util.impl.Log4jLogger_impl");
     }
-    
+
     @Test
     public void luceneNGramFeatureExtractorTest()
         throws Exception
@@ -80,7 +81,7 @@ public class LuceneNGramFeatureExtractorTest
         FeatureStore fs = gson.fromJson(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
                 SimpleFeatureStore.class);
-        assertEquals(2, fs.getNumberOfInstances());
+        assertEquals(4, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
 
         Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
@@ -89,8 +90,8 @@ public class LuceneNGramFeatureExtractorTest
         assertTrue(featureNames.contains("ngram_5"));
         assertTrue(featureNames.contains("ngram_5_5"));
 
-//        System.out.println(FileUtils.readFileToString(new File(outputPath,
-//                JsonDataWriter.JSON_FILE_NAME)));
+        // System.out.println(FileUtils.readFileToString(new File(outputPath,
+        // JsonDataWriter.JSON_FILE_NAME)));
 
     }
 }
