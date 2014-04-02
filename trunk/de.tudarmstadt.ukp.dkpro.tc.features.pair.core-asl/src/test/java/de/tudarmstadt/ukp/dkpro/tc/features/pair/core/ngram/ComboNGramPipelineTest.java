@@ -120,7 +120,7 @@ public class ComboNGramPipelineTest
     {
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
                 CombinedNGramPairFeatureExtractor.class.getName());
     }
 }

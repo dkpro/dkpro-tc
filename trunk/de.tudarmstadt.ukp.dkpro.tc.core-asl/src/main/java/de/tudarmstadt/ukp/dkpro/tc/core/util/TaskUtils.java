@@ -212,7 +212,7 @@ public class TaskUtils
 
     public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
-            boolean addInstanceId, String... featureExtractorClassNames)
+            boolean addInstanceId, boolean developerMode, String... featureExtractorClassNames)
         throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
@@ -225,7 +225,7 @@ public class TaskUtils
         else {
             parameters = new ArrayList<Object>();
         }
-        
+
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
         for (String featureExtractor : featureExtractorClassNames) {
             try {
@@ -244,7 +244,8 @@ public class TaskUtils
                 ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
                 ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
-                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId));
+                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
+                ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode));
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
                 parameters.toArray());

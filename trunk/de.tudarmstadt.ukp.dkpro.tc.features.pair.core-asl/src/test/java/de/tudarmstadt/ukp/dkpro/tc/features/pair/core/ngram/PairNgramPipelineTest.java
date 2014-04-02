@@ -217,7 +217,7 @@ public class PairNgramPipelineTest
     {
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
                 LuceneNGramPairFeatureExtractor.class.getName());
     }
 }

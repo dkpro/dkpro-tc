@@ -69,10 +69,14 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
     private boolean addInstanceId;
 
+    public static final String PARAM_DEVELOPER_MODE = "developerMode";
+    @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
+    private boolean developerMode;
+
     protected FeatureStore featureStore;
-    
+
     private int sequenceId;
-    
+
     private JCas jcas;
 
     @Override
@@ -82,7 +86,7 @@ public class ExtractFeaturesConnector
         super.initialize(context);
 
         featureStore = new SimpleFeatureStore();
-        
+
         sequenceId = 1;
 
         if (featureExtractors.length == 0) {
@@ -96,7 +100,7 @@ public class ExtractFeaturesConnector
         throws AnalysisEngineProcessException
     {
         this.jcas = jcas;
-        
+
         List<Instance> instances = new ArrayList<Instance>();
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
             instances = getMultipleInstances();
@@ -105,7 +109,7 @@ public class ExtractFeaturesConnector
         else {
             instances.add(getSingleInstance());
         }
-        
+
         for (Instance instance : instances) {
             this.featureStore.addInstance(instance);
         }
@@ -126,41 +130,42 @@ public class ExtractFeaturesConnector
             throw new AnalysisEngineProcessException(e);
         }
     }
-    
+
     private Instance getSingleInstance()
-            throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         Instance instance = new Instance();
-        
-        if (featureMode.equals(Constants.FM_DOCUMENT))
-        {
+
+        if (featureMode.equals(Constants.FM_DOCUMENT)) {
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof DocumentFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-document FE in document mode: " + featExt.getResourceName());
+                        throw new TextClassificationException(
+                                "Using non-document FE in document mode: "
+                                        + featExt.getResourceName());
                     }
-                    
+
                     instance.setOutcomes(getOutcomes(null));
-                    
+
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
             }
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
-            }           
+            }
         }
-        else if (featureMode.equals(Constants.FM_PAIR))
-        {
+        else if (featureMode.equals(Constants.FM_PAIR)) {
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof PairFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-pair FE in pair mode: " + featExt.getResourceName());
+                        throw new TextClassificationException("Using non-pair FE in pair mode: "
+                                + featExt.getResourceName());
                     }
                     JCas view1 = jcas.getView(Constants.PART_ONE);
                     JCas view2 = jcas.getView(Constants.PART_TWO);
-                    
+
                     instance.setOutcomes(getOutcomes(null));
-                    
+
                     instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
             }
@@ -171,12 +176,17 @@ public class ExtractFeaturesConnector
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        else if (featureMode.equals(Constants.FM_UNIT))
-        {
+        else if (featureMode.equals(Constants.FM_UNIT)) {
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-unit FE in unit mode: " + featExt.getResourceName());
+                        if (featExt instanceof DocumentFeatureExtractor && developerMode) {
+                            // we're ok
+                        }
+                        else {
+                            throw new TextClassificationException(
+                                    "Using non-unit FE in unit mode: " + featExt.getResourceName());
+                        }
                     }
                     TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
                             TextClassificationFocus.class);
@@ -190,9 +200,9 @@ public class ExtractFeaturesConnector
                     }
 
                     TextClassificationUnit unit = classificationUnits.iterator().next();
-                   
+
                     instance.setOutcomes(getOutcomes(unit));
-                    
+
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, unit));
                 }
@@ -201,7 +211,7 @@ public class ExtractFeaturesConnector
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        
+
         if (addInstanceId) {
             // TODO does this FE need to be created again every time?
             DocumentFeatureExtractor extractor = new AddIdFeatureExtractor();
@@ -212,19 +222,19 @@ public class ExtractFeaturesConnector
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        
+
         return instance;
     }
-    
-    
+
     private List<Instance> getMultipleInstances()
-            throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         List<Instance> instances = new ArrayList<Instance>();
-        
+
         TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus);
-        
+        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas,
+                TextClassificationUnit.class, focus);
+
         List<Feature> instanceId;
         try {
             // TODO does this FE need to be created again every time?
@@ -234,25 +244,22 @@ public class ExtractFeaturesConnector
         catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
         }
-        
+
         int sequencePosition = 0;
         for (TextClassificationUnit unit : units) {
             Instance instance = new Instance();
-          
+
             if (addInstanceId) {
                 instance.addFeatures(instanceId);
             }
-            
+
             try {
-                if (!featureMode.equals(Constants.FM_UNIT))
-                {
-                    throw new TextClassificationException("Feature mode should be unit when sequence labelling learning mode is selected.");
-                }
-                
+
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-unit FE in unit mode: " + featExt.getResourceName());
-                    }                
+                        throw new TextClassificationException(
+                                "Using non-unit FE in sequence mode: " + featExt.getResourceName());
+                    }
 
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, unit));
@@ -261,21 +268,21 @@ public class ExtractFeaturesConnector
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
             }
-            
+
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(unit));
             instance.setSequenceId(sequenceId);
             instance.setSequencePosition(sequencePosition);
             sequencePosition++;
-            
+
             instances.add(instance);
         }
-        
-        return instances;      
+
+        return instances;
     }
-    
-    private List<String> getOutcomes(AnnotationFS unit) 
-            throws AnalysisEngineProcessException
+
+    private List<String> getOutcomes(AnnotationFS unit)
+        throws AnalysisEngineProcessException
     {
         Collection<TextClassificationOutcome> outcomes;
         if (unit == null) {
@@ -283,7 +290,7 @@ public class ExtractFeaturesConnector
         }
         else {
             outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, unit);
-        }      
+        }
 
         if (outcomes.size() == 0) {
             throw new AnalysisEngineProcessException(new TextClassificationException(
@@ -294,7 +301,7 @@ public class ExtractFeaturesConnector
         for (TextClassificationOutcome outcome : outcomes) {
             stringOutcomes.add(outcome.getOutcome());
         }
-        
+
         return stringOutcomes;
     }
 }
