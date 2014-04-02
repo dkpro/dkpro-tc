@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
@@ -36,9 +37,6 @@ public class PairNgramPipelineTest
         assertTrue(test.featureNames.get(0).startsWith("view1NG"));
         assertEquals(test.featureNames.size(), 4);
         assertTrue(test.featureNames.contains("view1NG_mice"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     /**
@@ -62,9 +60,6 @@ public class PairNgramPipelineTest
         assertTrue(test.featureNames.get(0).startsWith("view2NG"));
         assertEquals(test.featureNames.size(), 4);
         assertTrue(test.featureNames.contains("view2NG_birds"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     @Test
@@ -84,9 +79,6 @@ public class PairNgramPipelineTest
         assertEquals(test.featureNames.size(), 6);
         assertTrue(test.featureNames.contains("allNG_mice"));
         assertTrue(test.featureNames.contains("allNG_birds"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     @Test
@@ -110,8 +102,9 @@ public class PairNgramPipelineTest
         assertTrue(test.featureNames.contains("view2allNG_mice"));
         int pos = 0;
         int neg = 0;
-        for (String value : test.instanceList.get(0)) {
-            if (Integer.parseInt(value) == 1) {
+        for (Feature feature : test.instanceList.get(0).getFeatures()) {
+            Integer value = ((Double) feature.getValue()).intValue();
+            if (value == 1) {
                 pos++;
             }
             else {
@@ -145,9 +138,6 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 4);
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     /**
@@ -170,9 +160,6 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.contains("view1NG_Cats"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
 
         test = new PairNgramPipelineTest();
         test.initialize();
@@ -185,9 +172,6 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.contains("view1NG_cats"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     /**
@@ -211,9 +195,6 @@ public class PairNgramPipelineTest
         test.runPipeline();
         assertEquals(test.featureNames.size(), 6);
         assertTrue(test.featureNames.contains("allNG_cats"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
 
         test = new PairNgramPipelineTest();
         test.initialize();
@@ -228,11 +209,9 @@ public class PairNgramPipelineTest
         test.runPipeline();
         assertEquals(test.featureNames.size(), 5);
         assertTrue(!test.featureNames.contains("allNG_cats"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
+    @Override
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {

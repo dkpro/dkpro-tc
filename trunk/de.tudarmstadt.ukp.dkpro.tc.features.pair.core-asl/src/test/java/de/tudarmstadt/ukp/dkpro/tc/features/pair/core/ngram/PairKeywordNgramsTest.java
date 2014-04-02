@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -44,9 +43,6 @@ public class PairKeywordNgramsTest
         assertTrue(test.featureNames.contains("keyNG2_SB"));
         assertTrue(test.featureNames.contains("keyNG_nectarine"));
         assertTrue(!test.featureNames.contains("keyNG2_cherry"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     @Test
@@ -73,9 +69,6 @@ public class PairKeywordNgramsTest
         assertTrue(test.featureNames.contains("keyNG1_peach_nectarine_SB"));
         assertTrue(test.featureNames.contains("keyNG2_apricot_peach_nectarine"));
         assertTrue(test.featureNames.contains("keyNG_SB_crabapple_SB"));
-        for (String value : test.instanceList.get(0)) {
-            assertEquals(1, Integer.parseInt(value));
-        }
     }
 
     @Override
@@ -84,6 +77,7 @@ public class PairKeywordNgramsTest
         return "src/test/resources/data/keywordNgramsData.txt";
     }
 
+    @Override
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
@@ -94,6 +88,7 @@ public class PairKeywordNgramsTest
     }
 
     // can be overwritten
+    @Override
     protected void getMetaCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
