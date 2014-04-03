@@ -214,6 +214,38 @@ public class NGramUtils
         return documentNgrams;
     }
     
+    public static FrequencyDistribution<String> getCharacterSkipNgrams(
+            JCas jcas,
+            boolean lowerCaseNGrams,
+            int minN,
+            int maxN,
+            int skipN)
+    {
+        FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
+        for (Token t : select(jcas, Token.class)) {
+            String tokenText = t.getCoveredText();
+            String[] charsTemp = tokenText.split("");
+            String[] chars = new String[charsTemp.length + 1];
+            for (int i = 0; i < charsTemp.length; i++) {
+                chars[i] = charsTemp[i];
+            }
+            
+            chars[0] = "^";
+            chars[charsTemp.length] = "$";
+
+            for (List<String> ngram : new SkipNgramStringListIterable(chars, minN, maxN, skipN))
+            {
+                if(lowerCaseNGrams){
+                    ngram = lower(ngram);
+                }
+
+                String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
+                charNgrams.inc(ngramString);           
+            }
+        }
+        return charNgrams;
+    }
+    
     public static List<String> lower(List<String> ngram){
     	List<String> newNgram = new ArrayList<String>();
     	for(String token: ngram){
