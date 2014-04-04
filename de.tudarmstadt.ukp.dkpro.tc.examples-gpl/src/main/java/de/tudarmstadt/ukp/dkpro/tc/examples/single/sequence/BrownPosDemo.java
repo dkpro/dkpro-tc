@@ -12,8 +12,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -60,11 +58,6 @@ public class BrownPosDemo
                         new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" } }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }),
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
-
-        @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { "something", "something" }),
                 Arrays.asList(new Object[] { "something2", "something2" }));
@@ -73,11 +66,11 @@ public class BrownPosDemo
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensUFE.class.getName() }));
 
+        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
-                        DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs);
+                        DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets);
 
         return pSpace;
     }
