@@ -17,7 +17,7 @@ System.setProperty("DKPRO_HOME", "pathToYourDKproDirectory");
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
-Currently, there are three basic example experiments:
+Currently, there are four basic example experiments:
 
 {{{
 de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl
