@@ -1,6 +1,7 @@
 #summary Getting started with DKPro TC: Demo Experiments
 
 =Introduction=
+If you are using version 0.5.0 then change please to the following [DemoExperiments_0_5_0 demo experiments]
 
 In this introduction, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
