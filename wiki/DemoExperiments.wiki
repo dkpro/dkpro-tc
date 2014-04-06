@@ -1,7 +1,7 @@
 #summary Getting started with DKPro TC: Demo Experiments
 
 =Introduction=
-If you are using version 0.5.0 then change please to the following [DemoExperiments_0_5_0 demo experiments]
+If you are using version 0.5.0 then change please to the following [DemoExperiments_0_5_0 demo experiments].
 
 In this introduction, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
@@ -17,13 +17,26 @@ System.setProperty("DKPRO_HOME", "pathToYourDKproDirectory");
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
-Currently, there are four basic example experiments:
-
+Currently, there are two example projects which represent TC experiments in Java and Groovy:
 {{{
-de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl
-de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl
-de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl
-de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups-gpl
+de.tudarmstadt.ukp.dkpro.tc.examples-gpl
+de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
+}}}
+
+They are sorted into packages due to the feature mode, e.g. 
+{{{
+TwentyNewsgroupsDemo
+}}} 
+can be found in the package
+{{{
+de.tudarmstadt.ukp.dkpro.tc.examples.single.document
+}}}
+
+Also there are presented following basic example experiments:
+{{{
+ReutersDemo
+SemanticTextSimilarityDemo (regression demo)
+PairTwentyNewsgroupsDemo
 }}}
 
 All come with a set of data and can be run right away. The _twentynewsgroups_ experiment is a binary, single-label classification task. The _reuters_ example is a multi-classification task.  The _regression_ demo shows how to use DKPro-TC for regression experiments. The _pairtwentynewsgroups_ demo is a text-pair classification task.
@@ -42,8 +55,8 @@ These are some of the files you should find in this project:
    │                   └── twentynewsgroups
    │                          ├── io
    │                          │   └── TwentyNewsgroupsCorpusReader.java
-   │                          ├── TwentyNewsgroupsJavaExperiment.java
-   │                          └── TwentyNewsgroupsGroovyExperiment.groovy
+   │                          ├── TwentyNewsgroupsDemo.java
+   │                          └── TwentyNewsgroupsDemo.groovy
    │                          
    └─ main.resources
           └── data
@@ -61,8 +74,8 @@ These are some of the files you should find in this project:
 }}}
 
 There are two ways to run the experiment:
-   * `TwentyNewsgroupsGroovyExperiment` (Groovy configuration)
-   * `TwentyNewsgroupsJavaExperiment` (Java configuration)
+   * `TwentyNewsgroupsDemo.groovy` (Groovy configuration)
+   * `TwentyNewsgroupsDemo.java` (Java configuration)
 
 ===TwentyNewsgroupsGroovyExperiment===
 
@@ -80,12 +93,24 @@ A full list of all discriminators in DKPro-TC can be found [Discriminators here]
 The input data and reader(s) are defined as `DimensionBundle`.
 
 {{{
-def dimReaderTrain = Dimension.createBundle("readerTrain", [
+def dimReaders = Dimension.createBundle("readers", [
+   readerTest: TwentyNewsgroupsCorpusReader.class,
+   readerTestParams: [
+      TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+      corpusFilePathTest,
+      TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+      languageCode,
+      TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+      TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+   ],
    readerTrain: TwentyNewsgroupsCorpusReader.class,
    readerTrainParams: [
-      "sourceLocation", corpusFilePathTrain,
-      "language", languageCode,
-      "patterns", TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+      TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+      corpusFilePathTrain,
+      TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+      languageCode,
+      TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+      TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
    ]
 ]);
 }}}
@@ -165,7 +190,8 @@ This calls both the cross-validation and the train/test runs.
 
 In your `DKPRO_HOME` folder, you will find a set of directories storing intermediate and final evaluation results of your experiments: 
 The `Evaluation...` folders (usually one for the TrainTest setup and one for Crossvalidation, named according to the experiment name setup on the overall BatchTask) contain the final results for all runs of the pipeline.
-E.g., the `eval.xls` file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set).
+E.g., the `eval.xls` file contains information of the performance of the individual classifiers (especially useful if you want to compare several classifiers on the same data set). 
+After an experiment has run the path to the folder storing detailed results will be displayed on the console.
 
 Once you got this example running as it is, you can start adapting various parameters:
 
