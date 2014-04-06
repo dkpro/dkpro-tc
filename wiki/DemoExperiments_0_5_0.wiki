@@ -16,7 +16,7 @@ System.setProperty("DKPRO_HOME", "pathToYourDKproDirectory");
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
-Currently, there are three basic example experiments:
+Currently, there are four basic example experiments:
 
 {{{
 de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl
@@ -123,26 +123,6 @@ The classifiers as defined here:
 {{{
 def dimClassificationArgs = Dimension.create("classificationArguments"...
 }}}
-
-*Since version 0.6.0*, you additionally need to set a _feature mode_ and a _learning mode_:
-
-{{{
-def dimFeatureMode = Dimension.create("featureMode"...
-}}}
-
-{{{
-def dimLearningMode = Dimension.create("learningMode"...
-}}}
-
-The feature mode defines the type of feature extraction you want to apply to your data:
-   * document: features are extracted from the entire text of your document
-   * unit: features are extracted from a part (`unit`) of the document
-   * pair: features are extracted from a pair of documents
-
-The learning mode defines whether the experiment is a classification task (either single- or multilabel), or a regression task.
-
-
-Two basic train and test methods are implemented in this example: x-fold-cross-validation and training/testing on specified sets.
 
 ===runCrossValidation()===
 
