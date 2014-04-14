@@ -90,7 +90,7 @@ public class PreprocessTask
         AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
                 aContext.getStorageLocation(output, AccessMode.READWRITE).getPath(),
-                BinaryCasWriter.PARAM_FORMAT, "0");
+                BinaryCasWriter.PARAM_FORMAT, "6+");
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views

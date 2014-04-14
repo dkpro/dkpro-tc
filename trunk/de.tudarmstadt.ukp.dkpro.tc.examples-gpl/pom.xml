@@ -24,14 +24,12 @@
         <artifactId>
             de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-de-maxent
         </artifactId>
-        <version>20120616.0</version>
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
         <artifactId>
             de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent
         </artifactId>
-        <version>20120616.0</version>
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -69,4 +67,17 @@
     	</artifactId>
     </dependency>
   </dependencies>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  			<artifactId>
+  				de.tudarmstadt.ukp.dkpro.core.opennlp-asl
+  			</artifactId>
+  			<version>${dkpro.core.version}</version>
+  			<type>pom</type>
+  			<scope>import</scope>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
