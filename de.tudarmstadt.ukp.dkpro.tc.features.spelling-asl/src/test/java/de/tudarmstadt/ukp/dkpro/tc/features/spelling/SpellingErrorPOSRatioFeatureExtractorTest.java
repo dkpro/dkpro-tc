@@ -18,7 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
+import de.tudarmstadt.ukp.dkpro.core.jazzy.JazzyChecker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -33,7 +33,7 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         "en"),
-                createEngineDescription(SpellChecker.class, SpellChecker.PARAM_MODEL_LOCATION,
+                createEngineDescription(JazzyChecker.class, JazzyChecker.PARAM_MODEL_LOCATION,
                         "src/test/resources/dictionary/en_US_dict.txt"));
         AnalysisEngine engine = createEngine(desc);
 
