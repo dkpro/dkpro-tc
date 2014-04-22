@@ -15,7 +15,7 @@ public class ComboUtils
 	/**
 	 * This is the character for joining strings for combo ngrams.
 	 */
-	public static final String JOINT = "_";
+	public static final String JOINT = "_AND";
 	
     /**
      * Get combinations of ngrams from a pair of documents.

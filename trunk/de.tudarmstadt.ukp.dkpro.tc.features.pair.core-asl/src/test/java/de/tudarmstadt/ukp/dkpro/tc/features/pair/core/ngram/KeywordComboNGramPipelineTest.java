@@ -14,6 +14,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedKeywordNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPairMetaCollector;
 
 public class KeywordComboNGramPipelineTest
@@ -34,16 +36,18 @@ public class KeywordComboNGramPipelineTest
                 KeywordNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
-        assertEquals(test.featureNames.size(), 109);
-        assertTrue(test.featureNames.contains("comboKNG_apricot_apricot"));
-        assertTrue(test.featureNames.contains("comboKNG_apricot_peach_apricot"));
-        assertTrue(test.featureNames.contains("comboKNG_apricot_peach_apricot_peach"));
-        assertTrue(!test.featureNames.contains("comboKNG_nectarine_trees"));
+        assertEquals(test.featureNames.size(), 116); //this number changed historically when ComboUtils.JOINT changed.
+        assertTrue(test.featureNames.contains("comboKNG_apricot_ANDapricot"));
+        assertTrue(test.featureNames.contains("comboKNG_apricot_peach_ANDapricot"));
+        assertTrue(test.featureNames.contains("comboKNG_apricot_peach_ANDapricot_peach"));
+        assertTrue(!test.featureNames.contains("comboKNG_nectarine_ANDtrees"));
 
+        int i=0;
         for (String f : test.featureNames) {
             int size = f.length() - f.replace("_", "").length();
             assertTrue(size >= 2);
             assertTrue(size <= 4);
+            i++;
         }
     }
 
@@ -64,8 +68,8 @@ public class KeywordComboNGramPipelineTest
         test.runPipeline();
         assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 24);
-        assertTrue(test.featureNames.contains("comboKNG_apricot_apricot"));
-        assertTrue(!test.featureNames.contains("comboKNG_nectarine_trees"));
+        assertTrue(test.featureNames.contains("comboKNG_apricot_ANDapricot"));
+        assertTrue(!test.featureNames.contains("comboKNG_nectarine_ANDtrees"));
     }
 
     @Test
@@ -87,7 +91,7 @@ public class KeywordComboNGramPipelineTest
         assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 10);
         assertTrue(test.featureNames
-                .contains("comboKNG_apricot_peach_nectarine_apricot_peach_nectarine"));
+                .contains("comboKNG_apricot_peach_nectarine_ANDapricot_peach_nectarine"));
     }
 
     // TODO: Write a symmetry test. Note that features will be the same. Needs different dataset.
@@ -160,7 +164,7 @@ public class KeywordComboNGramPipelineTest
         throws ResourceInitializationException
     {
         metaCollector = AnalysisEngineFactory.createEngineDescription(
-                KeywordNGramPairMetaCollector.class, parameterList.toArray());
+                CombinedKeywordNGramPairMetaCollector.class, parameterList.toArray());
     }
 
 }

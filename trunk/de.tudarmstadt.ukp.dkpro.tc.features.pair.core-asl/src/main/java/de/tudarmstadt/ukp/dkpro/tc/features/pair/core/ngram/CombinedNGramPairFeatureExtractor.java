@@ -1,19 +1,20 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.document.Document;
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -24,10 +25,13 @@ import com.google.common.collect.MinMaxPriorityQueue;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedNGramPairMetaCollector;
 
 /**
  * Combination pair ngram feature extractor. Creates features that are combinations of ngrams from
@@ -78,6 +82,8 @@ public class CombinedNGramPairFeatureExtractor
     @ConfigurationParameter(name = PARAM_NGRAM_SYMMETRY_COMBO, mandatory = false, defaultValue = "false")
     protected boolean ngramUseSymmetricalCombos;
 
+    public static final String LUCENE_NGRAM_FIELDCOMBO = "ngramCombo";
+
     protected FrequencyDistribution<String> topKSetCombo;
 
     @Override
@@ -87,8 +93,17 @@ public class CombinedNGramPairFeatureExtractor
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        topKSetCombo = getTopNgramsCombo();
+        topKSetCombo = getTopNgramsCombo(ngramUseTopKCombo, LUCENE_NGRAM_FIELDCOMBO);
         return true;
+    }
+    
+    @Override
+    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    {
+        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+        metaCollectorClasses.add(CombinedNGramPairMetaCollector.class);
+
+        return metaCollectorClasses;
     }
 
     @Override
@@ -111,64 +126,55 @@ public class CombinedNGramPairFeatureExtractor
         return features;
     }
 
-    private FrequencyDistribution<String> getTopNgramsCombo()
-        throws ResourceInitializationException
-    {
-        FrequencyDistribution<String> topNGramsCombo = new FrequencyDistribution<String>();
+    private FrequencyDistribution<String> getTopNgramsCombo(int topNgramThreshold, String fieldName)
+            throws ResourceInitializationException
+        {
 
-        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
-                .maximumSize(ngramUseTopKCombo).create();
-        try {
-            IndexReader reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+            FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
 
-            IndexSearcher is = new IndexSearcher(reader);
-            Query query = new MatchAllDocsQuery();
-            TopDocs topDocs = is.search(query, reader.maxDoc());
-            ScoreDoc[] hits = topDocs.scoreDocs;
-
-            for (ScoreDoc hit : hits) {
-                int docId = hit.doc;
-                Document d = is.doc(docId);
-                FrequencyDistribution<String> ngramArray1 = toFD(d.getValues(LUCENE_NGRAM_FIELD1));
-                FrequencyDistribution<String> ngramArray2 = toFD(d.getValues(LUCENE_NGRAM_FIELD2));
-                for (String ngram1 : ngramArray1.getKeys()) {
-                    if (topKSetView1.contains(ngram1) && topKSet.contains(ngram1)) {
-                        for (String ngram2 : ngramArray2.getKeys()) {
-                            if (topKSetView2.contains(ngram2) && topKSet.contains(ngram2)) {
-                                int combinedSize = ngram1.split("_").length
-                                        + ngram2.split("_").length;
-                                if (combinedSize <= ngramMaxNCombo
-                                        && combinedSize >= ngramMinNCombo) {
-                                    // keep value 1, for doc freq and not total term freq
-                                    topN.add(new TermFreqTuple(ngram1 + ComboUtils.JOINT + ngram2,
-                                            1));
-                                }
+            MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
+                    .maximumSize(topNgramThreshold).create();
+            IndexReader reader;
+            try {
+                reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+                Fields fields = MultiFields.getFields(reader);
+                if (fields != null) {
+                    Terms terms = fields.terms(fieldName);
+                    if (terms != null) {
+                        TermsEnum termsEnum = terms.iterator(null);
+                        BytesRef text = null;
+                        while ((text = termsEnum.next()) != null) {
+                            String term = text.utf8ToString();
+                            long freq = termsEnum.totalTermFreq();
+                            //add conditions here, like ngram1 is in most freq ngrams1...
+                            String combo1 = term.split(ComboUtils.JOINT)[0];
+                            String combo2 = term.split(ComboUtils.JOINT)[1];
+                            int combinedSize = combo1.split("_").length
+                                  + combo2.split("_").length;
+                            if(topKSetView1.contains(combo1) 
+                            		&& topKSet.contains(combo1) 
+                            		&& topKSetView2.contains(combo2) 
+                            		&& topKSet.contains(combo2)
+                            		&& combinedSize <= ngramMaxNCombo
+                                    && combinedSize >= ngramMinNCombo){
+                            	//print out here for testing
+                            	topN.add(new TermFreqTuple(term, freq));
                             }
                         }
                     }
                 }
             }
-        }
-        catch (IOException e) {
-            throw new ResourceInitializationException();
-        }
+            catch (Exception e) {
+                throw new ResourceInitializationException(e);
+            }
 
-        int size = topN.size();
-        for (int i = 0; i < size; i++) {
-            TermFreqTuple tuple = topN.poll();
-            // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
-            topNGramsCombo.addSample(tuple.getTerm(), tuple.getFreq());
-        }
-        return topNGramsCombo;
-    }
+            int size = topN.size();
+            for (int i = 0; i < size; i++) {
+                TermFreqTuple tuple = topN.poll();
+                // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
+                topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
+            }
 
-    private static FrequencyDistribution<String> toFD(String[] ngramArray)
-    {
-        FrequencyDistribution<String> ngramFD = new FrequencyDistribution<String>();
-        for (String ngram : ngramArray) {
-            ngramFD.inc(ngram);
+            return topNGrams;
         }
-        return ngramFD;
-    }
-
 }

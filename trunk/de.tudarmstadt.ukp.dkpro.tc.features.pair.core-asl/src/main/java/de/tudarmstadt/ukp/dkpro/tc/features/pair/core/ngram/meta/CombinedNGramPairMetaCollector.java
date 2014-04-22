@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StringField;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -16,48 +12,55 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 
-public class LuceneNGramPairMetaCollector
+public class CombinedNGramPairMetaCollector
 	extends LuceneBasedMetaCollector
 {
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_COMBO, mandatory = true, defaultValue = "2")
+	protected int ngramMinNCombo;
+    
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, mandatory = true, defaultValue = "4")
+	protected int ngramMaxNCombo;
+    
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
 	protected int ngramView1MinN;
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
 	protected int ngramView2MinN;
     
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
 	protected int ngramMinN;
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
 	protected int ngramView1MaxN;
     
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
 	protected int ngramView2MaxN;
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
 	protected int ngramMaxN;
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
 	protected boolean filterPartialStopwordMatches;
 
-    @ConfigurationParameter(name = LuceneNGramPairFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
 	protected boolean ngramLowerCase;
 	
 
     protected Set<String> stopwords;
-    
+	
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -71,7 +74,7 @@ public class LuceneNGramPairMetaCollector
             throw new ResourceInitializationException(e);
         }
     }
-
+    
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
@@ -111,6 +114,18 @@ public class LuceneNGramPairMetaCollector
                 addField(jcas, LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2, ngram); 
             }
         }
+        for (String ngram1: view1NGrams.getKeys()){
+        	for (String ngram2: view2NGrams.getKeys()){
+//        		System.out.println("ComboMeta70 Got pair: " + ngram1 + ComboUtils.JOINT + ngram2);
+
+                int combinedSize = ngram1.split("_").length + ngram2.split("_").length;
+                if (combinedSize <= ngramMaxNCombo
+                        && combinedSize >= ngramMinNCombo) {
+                    // keep value 1, for doc freq and not total term freq
+                	addField(jcas, CombinedNGramPairFeatureExtractor.LUCENE_NGRAM_FIELDCOMBO, ngram1 + ComboUtils.JOINT + ngram2);
+                }
+        	}
+        }
         
         try {
         	writeToIndex();
@@ -119,4 +134,5 @@ public class LuceneNGramPairMetaCollector
             throw new AnalysisEngineProcessException(e);
         }
     }   
+
 }
