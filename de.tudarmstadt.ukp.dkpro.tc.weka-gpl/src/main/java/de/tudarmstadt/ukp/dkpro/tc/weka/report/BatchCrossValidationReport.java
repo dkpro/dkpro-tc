@@ -38,12 +38,12 @@ public class BatchCrossValidationReport
     extends BatchReportBase
     implements Constants
 {
-
+    private static final String foldAveraged = " (average over all folds)";
+    private static final String foldSum = " (sum over all folds)";
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             "files_validation", "files_training" });
     private static final List<String> nonAveragedResultsMeasures = Arrays.asList(new String[] {
             ReportConstants.CORRECT, ReportConstants.INCORRECT, ReportConstants.NUMBER_EXAMPLES });
-    
 
     @Override
     public void execute()
@@ -111,11 +111,11 @@ public class BatchCrossValidationReport
 
                     if (dVals != null) {
                         if (nonAveragedResultsMeasures.contains(header)) {
-                            resultMap.put(header, String.valueOf(sum.evaluate(dVals)));
+                            resultMap.put(header + foldSum, String.valueOf(sum.evaluate(dVals)));
                         }
                         else {
                             resultMap.put(
-                                    header,
+                                    header + foldAveraged,
                                     String.valueOf(mean.evaluate(dVals) + "\u00B1"
                                             + String.valueOf(std.evaluate(dVals))));
                         }
@@ -187,5 +187,5 @@ public class BatchCrossValidationReport
         }
         return StringUtils.join(values, "_");
     }
-    
+
 }
