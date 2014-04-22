@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
@@ -12,6 +13,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
 
 public class ComboNGramPipelineTest
     extends PairNgramFETestBase
@@ -30,9 +33,9 @@ public class ComboNGramPipelineTest
         test.runPipeline();
         assertTrue(test.featureNames.get(0).startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 65);
-        assertTrue(test.featureNames.contains("comboNG_mice_birds"));
-        assertTrue(test.featureNames.contains("comboNG_cats_eat_cats"));
-        assertTrue(test.featureNames.contains("comboNG_cats_eat_birds_chase"));
+        assertTrue(test.featureNames.contains("comboNG_mice_ANDbirds"));
+        assertTrue(test.featureNames.contains("comboNG_cats_eat_ANDcats"));
+        assertTrue(test.featureNames.contains("comboNG_cats_eat_ANDbirds_chase"));
 
         for (String f : test.featureNames) {
             int size = f.length() - f.replace("_", "").length();
@@ -56,7 +59,7 @@ public class ComboNGramPipelineTest
         test.runPipeline();
         assertTrue(test.featureNames.get(0).startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 16);
-        assertTrue(test.featureNames.contains("comboNG_mice_birds"));
+        assertTrue(test.featureNames.contains("comboNG_mice_ANDbirds"));
     }
 
     @Test
@@ -74,7 +77,7 @@ public class ComboNGramPipelineTest
         test.runPipeline();
         assertTrue(test.featureNames.get(0).startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 81);
-        assertTrue(test.featureNames.contains("comboNG_cats_eat_mice_birds_chase_cats"));
+        assertTrue(test.featureNames.contains("comboNG_cats_eat_mice_ANDbirds_chase_cats"));
     }
 
     // TODO: Write a symmetry test. Note that features will be the same. Needs different dataset.
@@ -123,4 +126,13 @@ public class ComboNGramPipelineTest
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
                 CombinedNGramPairFeatureExtractor.class.getName());
     }
+    @Override
+	protected void getMetaCollector(List<Object> parameterList)
+			throws ResourceInitializationException
+	{
+		metaCollector = AnalysisEngineFactory.createEngineDescription(
+				CombinedNGramPairMetaCollector.class,
+	            parameterList.toArray()
+	    );
+	}
 }
