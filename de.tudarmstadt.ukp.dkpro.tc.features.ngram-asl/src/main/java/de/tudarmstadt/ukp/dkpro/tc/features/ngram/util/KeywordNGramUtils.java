@@ -23,7 +23,7 @@ public class KeywordNGramUtils
     public static String SENTENCE_BOUNDARY = "SB";
     public static final String COMMA = "CA";
     public static final String GLUE = "_";
-    public static final String MIDNGRAMGLUE = "_A_";
+    public static final String MIDNGRAMGLUE = "_A";
     
     //all tokens should be already lowercased
     /**
@@ -88,7 +88,9 @@ public class KeywordNGramUtils
                     sentenceBoundary = sentenceBoundary + "MID";
                 }
             }
-            keywordList.add(sentenceBoundary);
+            if(markSentenceBoundary){
+            	keywordList.add(sentenceBoundary);
+            }
             sentenceNumber++;
         }
         for (List<String> ngram : new NGramStringListIterable(keywordList.toArray(new String[keywordList.size()]), minN, maxN)) {
