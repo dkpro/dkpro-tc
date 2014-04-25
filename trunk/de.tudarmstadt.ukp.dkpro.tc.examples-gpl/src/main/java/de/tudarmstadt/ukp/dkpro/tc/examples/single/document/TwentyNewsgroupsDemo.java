@@ -64,6 +64,7 @@ public class TwentyNewsgroupsDemo
     public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
+    	// train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
         dimReaders.put(
