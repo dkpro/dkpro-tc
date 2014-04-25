@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -113,10 +113,8 @@ public class NGramFeatureExtractorTest
         throws Exception
     {
         initialize(1, 3);
-        List<String> luceneFeatures = fsLucene.getFeatureNames();
-        List<String> frequencyDistFeatures = fsFrequenceDist.getFeatureNames();
-        Collections.sort(luceneFeatures);
-        Collections.sort(frequencyDistFeatures);
+        TreeSet<String> luceneFeatures = fsLucene.getFeatureNames();
+        TreeSet<String> frequencyDistFeatures = fsFrequenceDist.getFeatureNames();
 
         assertEquals(luceneFeatures, frequencyDistFeatures);
 

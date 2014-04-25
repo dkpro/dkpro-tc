@@ -1,13 +1,19 @@
 package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
  * Data structure that holds instances.
@@ -22,7 +28,7 @@ public class SimpleFeatureStore
     private List<List<String>> outcomeList;
     private List<Integer> sequenceIds;
     private List<Integer> sequencePositions;
-    private List<String> featureNames;
+    private TreeSet<String> featureNames;
 
     public SimpleFeatureStore() {
         this.instanceList = new ArrayList<List<Object>>();
@@ -33,36 +39,54 @@ public class SimpleFeatureStore
     }
     
     @Override
-    public void addInstance(Instance instance)
+    public void addInstance(Instance instance) 
+    		throws TextClassificationException
     {
         if (featureNames == null) {
-            featureNames = new ArrayList<String>();
+            featureNames = new TreeSet<String>();
             for (Feature feature : instance.getFeatures()) {
-                featureNames.add(feature.getName());
+            	String name = feature.getName();
+            	if (featureNames.contains(name)) {
+            		throw new TextClassificationException("Feature with name '" + name + "' is defined in multiple times.");
+            	}
+                featureNames.add(name);
             }
         }
         
-        List<Object> values = new ArrayList<Object>();
-        for (Feature feature : instance.getFeatures()) {
-            values.add(feature.getValue());
+        // create map of feature names and offset in set
+        Map<String,Integer> sortedFeatureNameMap = new HashMap<String,Integer>();
+        int offset = 0;
+        Iterator<String> iterator = featureNames.iterator();
+        while (iterator.hasNext()) {
+        	sortedFeatureNameMap.put(iterator.next(), offset);
+        	offset++;
         }
-        this.instanceList.add(values);
+        
+        Object[] values = new Object[featureNames.size()];
+        for (Feature feature : instance.getFeatures()) {
+            values[sortedFeatureNameMap.get(feature.getName())] = feature.getValue();
+        }
+        this.instanceList.add(Arrays.asList(values));
         this.outcomeList.add(instance.getOutcomes());
         this.sequenceIds.add(instance.getSequenceId());
         this.sequencePositions.add(instance.getSequencePosition());
-
     }
     
     @Override
     public Instance getInstance(int i) {
         List<Feature> features = new ArrayList<Feature>();
         
+        List<Object> values = instanceList.get(i);
+        
         int offset = 0;
-        for (Object value : instanceList.get(i)) {
-            Feature feature = new Feature(featureNames.get(offset), value);
+        Iterator<String> sortedNames = getFeatureNames().iterator();
+        while (sortedNames.hasNext()) {
+        	String name = sortedNames.next();
+        	Feature feature = new Feature(name, values.get(offset));
             features.add(feature);
-            offset++;
+            offset++;       
         }
+        
         Instance instance = new Instance(features, outcomeList.get(i));
         instance.setSequenceId(sequenceIds.get(i));
         instance.setSequencePosition(sequencePositions.get(i));
@@ -112,7 +136,7 @@ public class SimpleFeatureStore
     }
 
     @Override
-    public List<String> getFeatureNames()
+    public TreeSet<String> getFeatureNames()
     {
         return featureNames;
     }   

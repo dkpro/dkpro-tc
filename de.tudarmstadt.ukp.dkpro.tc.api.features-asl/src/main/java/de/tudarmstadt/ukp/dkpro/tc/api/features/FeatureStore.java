@@ -1,6 +1,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
 import java.util.List;
+import java.util.TreeSet;
+
+import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public interface FeatureStore
 {
@@ -17,7 +20,7 @@ public interface FeatureStore
     
     public Iterable<Instance> getInstances();
     
-    public void addInstance(Instance instance);
+    public void addInstance(Instance instance) throws TextClassificationException;
     
     public Instance getInstance(int i);
     
@@ -25,6 +28,6 @@ public interface FeatureStore
     
     public List<String> getOutcomes(int i);
     
-    public List<String> getFeatureNames();
+    public TreeSet<String> getFeatureNames();
 
 }
