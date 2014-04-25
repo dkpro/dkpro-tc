@@ -35,19 +35,17 @@ public class KeywordComboNGramPipelineTest
                 "src/test/resources/data/keywordlist.txt",
                 KeywordNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
+        assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 116); //this number changed historically when ComboUtils.JOINT changed.
         assertTrue(test.featureNames.contains("comboKNG_apricot_ANDapricot"));
         assertTrue(test.featureNames.contains("comboKNG_apricot_peach_ANDapricot"));
         assertTrue(test.featureNames.contains("comboKNG_apricot_peach_ANDapricot_peach"));
         assertTrue(!test.featureNames.contains("comboKNG_nectarine_ANDtrees"));
 
-        int i=0;
         for (String f : test.featureNames) {
             int size = f.length() - f.replace("_", "").length();
             assertTrue(size >= 2);
             assertTrue(size <= 4);
-            i++;
         }
     }
 
@@ -66,7 +64,7 @@ public class KeywordComboNGramPipelineTest
                 KeywordNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
                 KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
+        assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 24);
         assertTrue(test.featureNames.contains("comboKNG_apricot_ANDapricot"));
         assertTrue(!test.featureNames.contains("comboKNG_nectarine_ANDtrees"));
@@ -88,7 +86,7 @@ public class KeywordComboNGramPipelineTest
                 KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, 6,
                 KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("comboKNG"));
+        assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 10);
         assertTrue(test.featureNames
                 .contains("comboKNG_apricot_peach_nectarine_ANDapricot_peach_nectarine"));

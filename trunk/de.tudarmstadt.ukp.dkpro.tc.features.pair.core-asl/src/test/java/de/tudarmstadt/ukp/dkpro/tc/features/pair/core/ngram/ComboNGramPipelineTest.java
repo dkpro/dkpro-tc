@@ -31,7 +31,7 @@ public class ComboNGramPipelineTest
                 CombinedNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
                 CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath, };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("comboNG"));
+        assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 65);
         assertTrue(test.featureNames.contains("comboNG_mice_ANDbirds"));
         assertTrue(test.featureNames.contains("comboNG_cats_eat_ANDcats"));
@@ -57,7 +57,7 @@ public class ComboNGramPipelineTest
                 CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
                 CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("comboNG"));
+        assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 16);
         assertTrue(test.featureNames.contains("comboNG_mice_ANDbirds"));
     }
@@ -75,7 +75,7 @@ public class ComboNGramPipelineTest
                 CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
                 CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("comboNG"));
+        assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 81);
         assertTrue(test.featureNames.contains("comboNG_cats_eat_mice_ANDbirds_chase_cats"));
     }

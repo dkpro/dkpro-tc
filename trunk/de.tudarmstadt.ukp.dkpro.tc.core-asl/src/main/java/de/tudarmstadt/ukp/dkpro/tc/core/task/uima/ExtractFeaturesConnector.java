@@ -72,7 +72,9 @@ public class ExtractFeaturesConnector
     public static final String PARAM_DEVELOPER_MODE = "developerMode";
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
-
+    
+    private DocumentFeatureExtractor addIdExtractor;
+    
     protected FeatureStore featureStore;
 
     private int sequenceId;
@@ -84,6 +86,8 @@ public class ExtractFeaturesConnector
         throws ResourceInitializationException
     {
         super.initialize(context);
+
+        addIdExtractor = new AddIdFeatureExtractor();
 
         featureStore = new SimpleFeatureStore();
 
@@ -111,7 +115,11 @@ public class ExtractFeaturesConnector
         }
 
         for (Instance instance : instances) {
-            this.featureStore.addInstance(instance);
+            try {
+				this.featureStore.addInstance(instance);
+			} catch (TextClassificationException e) {
+				throw new AnalysisEngineProcessException(e);
+			}
         }
     }
 
@@ -213,10 +221,8 @@ public class ExtractFeaturesConnector
         }
 
         if (addInstanceId) {
-            // TODO does this FE need to be created again every time?
-            DocumentFeatureExtractor extractor = new AddIdFeatureExtractor();
             try {
-                instance.addFeatures(extractor.extract(jcas));
+                instance.addFeatures(addIdExtractor.extract(jcas));
             }
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
@@ -237,8 +243,6 @@ public class ExtractFeaturesConnector
 
         List<Feature> instanceId;
         try {
-            // TODO does this FE need to be created again every time?
-            DocumentFeatureExtractor addIdExtractor = new AddIdFeatureExtractor();
             instanceId = addIdExtractor.extract(jcas);
         }
         catch (TextClassificationException e) {

@@ -34,7 +34,7 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("view1NG"));
+        assertTrue(test.featureNames.first().startsWith("view1NG"));
         assertEquals(test.featureNames.size(), 4);
         assertTrue(test.featureNames.contains("view1NG_mice"));
     }
@@ -57,7 +57,7 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("view2NG"));
+        assertTrue(test.featureNames.first().startsWith("view2NG"));
         assertEquals(test.featureNames.size(), 4);
         assertTrue(test.featureNames.contains("view2NG_birds"));
     }
@@ -75,7 +75,7 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("allNG"));
+        assertTrue(test.featureNames.first().startsWith("allNG"));
         assertEquals(test.featureNames.size(), 6);
         assertTrue(test.featureNames.contains("allNG_mice"));
         assertTrue(test.featureNames.contains("allNG_birds"));
@@ -95,8 +95,8 @@ public class PairNgramPipelineTest
                 LuceneNGramPairFeatureExtractor.PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, true,
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
-        assertTrue(test.featureNames.get(0).startsWith("view1allNG")
-                || test.featureNames.get(0).startsWith("view2allNG"));
+        assertTrue(test.featureNames.first().startsWith("view1allNG")
+                || test.featureNames.first().startsWith("view2allNG"));
         assertEquals(test.featureNames.size(), 12);
         assertTrue(test.featureNames.contains("view1allNG_mice"));
         assertTrue(test.featureNames.contains("view2allNG_mice"));

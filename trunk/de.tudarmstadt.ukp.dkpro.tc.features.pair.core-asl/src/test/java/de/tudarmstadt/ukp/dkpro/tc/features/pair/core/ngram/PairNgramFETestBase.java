@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -33,7 +34,7 @@ public abstract class PairNgramFETestBase
 {
 	protected List<Instance> instanceList;
 	protected List<List<String>> outcomeList;
-	protected List<String> featureNames;
+	protected TreeSet<String> featureNames;
 	
     protected TemporaryFolder folder;
     protected File lucenePath;
