@@ -1,15 +1,21 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.uima.fit.factory.JCasBuilder;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class NGramUtilsTest
@@ -61,5 +67,24 @@ public class NGramUtilsTest
         assertTrue(NGramUtils.passesNgramFilter(
                 list2, stopwords, true));
         
+    }
+    
+    @Test
+    public void phoneticNgramsTest() throws Exception {
+    	String text = "This is a big house";
+    	JCas jcas = JCasFactory.createJCas();
+    	jcas.setDocumentLanguage("en");
+    	jcas.setDocumentText(text);
+        JCasBuilder cb = new JCasBuilder(jcas);
+        for (String token : text.split(" ")) {
+            cb.add(token, Token.class);
+        }
+        cb.add(0, Sentence.class);
+                
+        FrequencyDistribution<String> ngrams = NGramUtils.getDocumentPhoneticNgrams(jcas, 1, 3);
+
+        assertEquals(12, ngrams.getN());
+        assertTrue(ngrams.contains("I000"));
+        assertTrue(ngrams.contains("T200"));
     }
 }
