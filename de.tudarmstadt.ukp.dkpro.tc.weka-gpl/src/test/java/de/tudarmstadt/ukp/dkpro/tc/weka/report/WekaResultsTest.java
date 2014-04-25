@@ -77,8 +77,8 @@ public class WekaResultsTest
         throws Exception
     {
         SMOreg cl = new SMOreg();
-        Instances trainData = WekaUtils.removeOutcomeId(regressionTrainData);
-        Instances testData = WekaUtils.removeOutcomeId(regressionTestData);
+        Instances trainData = WekaUtils.removeOutcomeId(regressionTrainData, false);
+        Instances testData = WekaUtils.removeOutcomeId(regressionTestData, false);
         cl.buildClassifier(trainData);
         Evaluation eval = WekaUtils.getEvaluationSinglelabel(cl, trainData, testData);
         assertEquals(0.45, eval.correlationCoefficient(), 0.01);
@@ -91,8 +91,8 @@ public class WekaResultsTest
         SMO cl = new SMO();
         Instances testData = WekaUtils.makeOutcomeClassesCompatible(singleLabelTrainData,
                 singleLabelTestData, false);
-        Instances trainData = WekaUtils.removeOutcomeId(singleLabelTrainData);
-        testData = WekaUtils.removeOutcomeId(testData);
+        Instances trainData = WekaUtils.removeOutcomeId(singleLabelTrainData, false);
+        testData = WekaUtils.removeOutcomeId(testData, false);
         cl.buildClassifier(trainData);
         Evaluation eval = WekaUtils.getEvaluationSinglelabel(cl, trainData, testData);
         assertEquals(7.0, eval.correct(), 0.01);
@@ -106,8 +106,8 @@ public class WekaResultsTest
         cl.setOptions(new String[] { "-W", J48.class.getName() });
         Instances testData = WekaUtils.makeOutcomeClassesCompatible(multiLabelTrainData,
                 multiLabelTestData, true);
-        Instances trainData = WekaUtils.removeOutcomeId(multiLabelTrainData);
-        testData = WekaUtils.removeOutcomeId(testData);
+        Instances trainData = WekaUtils.removeOutcomeId(multiLabelTrainData, true);
+        testData = WekaUtils.removeOutcomeId(testData, true);
         cl.buildClassifier(trainData);
         Result eval = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, "0.2");
         assertEquals(16.0, eval.L, 0.01);

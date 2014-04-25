@@ -442,7 +442,8 @@ public class WekaUtils
                        // done safer?)
                     Object stringValue = feature.getValue();
                     if (!attribute.isNominal() && !attribute.isString()) {
-                        throw new IllegalArgumentException("Attribute neither nominal nor string: " + stringValue);
+                        throw new IllegalArgumentException("Attribute neither nominal nor string: "
+                                + stringValue);
                     }
                     int valIndex = attribute.indexOfValue(stringValue.toString());
                     if (valIndex == -1) {
@@ -612,11 +613,12 @@ public class WekaUtils
      * @return the data set without OutcomeId attribute
      * @throws Exception
      */
-    public static Instances removeOutcomeId(Instances data)
+    public static Instances removeOutcomeId(Instances data, boolean multilabel)
         throws Exception
     {
 
         Instances filteredData;
+        int classIndex = data.classIndex();
 
         if (data.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
             int instanceIdOffset = data.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
@@ -629,6 +631,10 @@ public class WekaUtils
         }
         else {
             filteredData = new Instances(data);
+        }
+        // make sure the class index gets retained in multi-label
+        if (multilabel) {
+            filteredData.setClassIndex(classIndex);
         }
         return filteredData;
     }

@@ -109,8 +109,8 @@ public class TestTask
         }
 
         Instances copyTestData = new Instances(testData);
-        trainData = WekaUtils.removeOutcomeId(trainData);
-        testData = WekaUtils.removeOutcomeId(testData);
+        trainData = WekaUtils.removeOutcomeId(trainData, multiLabel);
+        testData = WekaUtils.removeOutcomeId(testData, multiLabel);
 
         // FEATURE SELECTION
         if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
