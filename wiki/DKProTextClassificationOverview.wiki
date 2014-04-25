@@ -2,16 +2,22 @@
 
 Note: This project is still in incubator stage and subject to frequent change.
 
+== Before you start ==
   * [DeveloperSetup Developer Setup]
   * [GroovySetup Groovy Setup]
+  
+== Getting Started ==
   * [DemoExperiments Getting Started: Demo Experiments]
   * [Discriminators Getting Started: Mandatory and optional parameters to configure DKPro-TC experiments]
-  * [CVWithFoldControl Cross-Validation and Fold Control: Reducing Information Leak]
-  * [JsonSetup Howto: Using JSON instead of Groovy to configure your experiments]
-  * [ServerSetup Howto: Running DKPro-TC experiments on a server (using external configuration files)]
+  * [Readers Getting Started: Creating costum readers]
+  
+== FAQ ==  
   * [FAQ]
 
 == Developer Resources ==
+  * [CVWithFoldControl Cross-Validation and Fold Control: Reducing Information Leak]
+  * [JsonSetup Howto: Using JSON instead of Groovy to configure your experiments]
+  * [ServerSetup Howto: Running DKPro-TC experiments on a server (using external configuration files)]
   * [CommitMessagesBestPractices Commit Messages: Recommended Practices]
 
 = Basic System Architecture =
