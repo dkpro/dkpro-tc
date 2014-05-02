@@ -18,6 +18,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 
@@ -44,6 +45,7 @@ public class BatchTrainTestReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
+        Map<List<String>, Double> confMatrixMap = new HashMap<List<String>, Double>();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (subcontext.getType().startsWith(TestTask.class.getName())) {
@@ -51,6 +53,12 @@ public class BatchTrainTestReport
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
                         TestTask.RESULTS_KEY, new PropertiesAdapter()).getMap();
+
+                File confMatrix = store.getStorageFolder(subcontext.getId(), CONFUSIONMATRIX_KEY);
+
+                if (confMatrix.isFile()) {
+                    confMatrixMap = ReportUtils.updateAggregateMatrix(confMatrixMap, confMatrix);
+                }
 
                 String key = getKey(discriminatorsMap);
 
@@ -87,6 +95,13 @@ public class BatchTrainTestReport
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
 
+        // this report is reused in CV, and we only want to aggregate confusion matrices from folds
+        // in CV
+        if (getContext().getId().startsWith(BatchTaskCrossValidation.class.getSimpleName())) {
+            FlexTable<String> confMatrix = ReportUtils.createOverallConfusionMatrix(confMatrixMap);
+            getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
+        }
+
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
         File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
@@ -106,5 +121,4 @@ public class BatchTrainTestReport
         }
         return StringUtils.join(values, "_");
     }
-
 }
