@@ -17,7 +17,7 @@ import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 
 public class KeywordNGramUtils
 {
-    public static String SENTENCE_BOUNDARY = "SB";
+    public static final String SENTENCE_BOUNDARY = "SB";
     public static final String COMMA = "CA";
     public static final String GLUE = "_";
     public static final String MIDNGRAMGLUE = "_A";

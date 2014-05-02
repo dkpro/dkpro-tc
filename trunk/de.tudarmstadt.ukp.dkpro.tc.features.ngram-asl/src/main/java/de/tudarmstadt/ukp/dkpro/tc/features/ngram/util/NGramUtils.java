@@ -30,7 +30,7 @@ public class NGramUtils
 	/**
 	 * This is the character for joining strings for pair ngrams.
 	 */
-    public static String NGRAM_GLUE = "_";
+    public static final String NGRAM_GLUE = "_";
     
     public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation focusAnnotation,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
