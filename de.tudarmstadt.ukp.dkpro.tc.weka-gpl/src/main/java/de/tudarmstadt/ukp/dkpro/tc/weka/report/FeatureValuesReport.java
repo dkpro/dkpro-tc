@@ -41,9 +41,11 @@ public class FeatureValuesReport
         throws Exception
     {
         File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
+        boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
+                .equals(Constants.LM_MULTI_LABEL);
         Properties props = new Properties();
         File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
-        Instances predictions = TaskUtils.getInstances(arff, TestTask.MULTILABEL);
+        Instances predictions = TaskUtils.getInstances(arff, multiLabel);
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
                 + TestTask.EVALUATION_DATA_KEY);
         String[] classValues;
@@ -59,7 +61,7 @@ public class FeatureValuesReport
         int predictionsNumAttributes = predictions.numAttributes();
 
         // -----MULTI LABEL-----------
-        if (TestTask.MULTILABEL) {
+        if (multiLabel) {
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
             classValues = new String[predictions.classIndex()];
             for (int i = 0; i < predictions.classIndex(); i++) {
@@ -171,13 +173,13 @@ public class FeatureValuesReport
         // create table
         List<List<String>> finalTable = new ArrayList<List<String>>();
         String classValuesString = "";
-        for(String className: classValues){
-        	classValuesString = classValuesString + "," + className;
+        for (String className : classValues) {
+            classValuesString = classValuesString + "," + className;
         }
         props.setProperty("class_values,", classValuesString.substring(1));
         for (int classindex = 0; classindex < predictions.numClasses(); classindex++) {
-        	List<String> aLine = new ArrayList<String>();
-        	
+            List<String> aLine = new ArrayList<String>();
+
             for (int i = 0; i < predictionsNumAttributes; i++) {
                 pk = new PairKey<Integer, Integer>(i, classindex);
                 if (map.containsKey(pk)) {
@@ -192,27 +194,27 @@ public class FeatureValuesReport
                         count++;
                     }
                     String field = (new Double(sum / count)).toString();
-                    if (!field.isEmpty()){
-                    	aLine.add(field);
+                    if (!field.isEmpty()) {
+                        aLine.add(field);
                     }
                 }
             }
             if (aLine.size() > 0) {
-            	finalTable.add(aLine);
+                finalTable.add(aLine);
             }
-        
+
         }
-        //transposed for easier reading
-        for(int newRow = 0; newRow < finalTable.get(0).size(); newRow++){ //  like, 2000
-        	String newLine = "";
-        	for(int newColumn = 0; newColumn < finalTable.size(); newColumn++){ // like, 3
-        		newLine = newLine + "," + finalTable.get(newColumn).get(newRow);
-        	}
+        // transposed for easier reading
+        for (int newRow = 0; newRow < finalTable.get(0).size(); newRow++) { // like, 2000
+            String newLine = "";
+            for (int newColumn = 0; newColumn < finalTable.size(); newColumn++) { // like, 3
+                newLine = newLine + "," + finalTable.get(newColumn).get(newRow);
+            }
             if (!newLine.isEmpty()) {
                 props.setProperty(attrNames.get(newRow), newLine);
             }
         }
-        
+
         getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
     }
 

@@ -69,16 +69,14 @@ public class TestTask
     public static final String EVALUATION_DATA_KEY = "evaluation.bin";
     public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";
     public static final String PREDICTION_CLASS_LABEL_NAME = "prediction";
-    // public static final String GOLD_STANDARD_CLASS_LABEL_NAME = "goldstandard";
 
-    public static boolean MULTILABEL;
+    // public static final String GOLD_STANDARD_CLASS_LABEL_NAME = "goldstandard";
 
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-        MULTILABEL = multiLabel;
 
         File arffFileTrain = new File(aContext.getStorageLocation(INPUT_KEY_TRAIN,
                 AccessMode.READONLY).getPath()

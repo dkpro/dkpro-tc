@@ -48,13 +48,11 @@ public class CrossValidationTask
     public static final String TRAINING_DATA_KEY = "training-data.arff.gz";
     public static final String EVALUATION_DATA_KEY = "evaluation_fold#.txt";
     public static int FOLDS;
-    public static boolean MULTILABEL;
 
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
-        MULTILABEL = multiLabel;
 
         File arffFile = new File(aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY)
                 .getPath() + "/" + TRAINING_DATA_KEY);
