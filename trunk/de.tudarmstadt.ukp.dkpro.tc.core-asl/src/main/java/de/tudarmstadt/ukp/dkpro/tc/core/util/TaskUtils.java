@@ -89,7 +89,7 @@ public class TaskUtils
             underlyingStream = new CBZip2OutputStream(bufStr);
             // manually add bz2 prefix to make it compatible to normal bz2 tools
             // prefix has to be skipped when reading the stream with CBZip2
-            fos.write("BZ".getBytes());
+            fos.write("BZ".getBytes("UTF-8"));
         }
         else {
             underlyingStream = bufStr;
