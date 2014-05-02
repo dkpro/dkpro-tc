@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
@@ -36,11 +37,10 @@ public class AttributeStore
 
     private void shift(Map<String, Integer> nameOffsetMap)
     {
-        for (String name : nameOffsetMap.keySet()) {
-            int i = nameOffsetMap.get(name) + 1;
-            nameOffsetMap.put(name, i);
+        for (Entry<String, Integer> entry : nameOffsetMap.entrySet()) {
+            int i = entry.getValue() + 1;
+            nameOffsetMap.put(entry.getKey(), i);
         }
-
     }
 
     public void addAttribute(String name, Attribute attribute)
