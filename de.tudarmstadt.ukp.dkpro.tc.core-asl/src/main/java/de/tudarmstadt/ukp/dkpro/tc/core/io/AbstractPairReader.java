@@ -2,17 +2,16 @@ package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.collection.base_cpm.BaseCollectionReader;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 /**
  * Abstract base class for readers used in pair-classification. 
@@ -138,9 +137,9 @@ import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 public abstract class AbstractPairReader
     extends JCasCollectionReader_ImplBase
 {
-    public static String INITIAL_VIEW = CAS.NAME_DEFAULT_SOFA;
-    public static String PART_ONE = "PART_ONE";
-    public static String PART_TWO = "PART_TWO";
+    public static final String INITIAL_VIEW = CAS.NAME_DEFAULT_SOFA;
+    public static final String PART_ONE = "PART_ONE";
+    public static final String PART_TWO = "PART_TWO";
 
     /**
      * Generic corpus name.  
