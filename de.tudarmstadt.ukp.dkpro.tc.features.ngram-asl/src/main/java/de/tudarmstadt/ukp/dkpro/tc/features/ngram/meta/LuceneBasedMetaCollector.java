@@ -37,7 +37,8 @@ public abstract class LuceneBasedMetaCollector
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_LUCENE_DIR, mandatory = true)
     private File luceneDir;
 
-    protected IndexWriter indexWriter = null;
+    // this is a static singleton as different Lucene-based meta collectors will use the same writer
+    protected static IndexWriter indexWriter = null;
     
     private String currentDocumentId;
     private Document currentDocument;
@@ -109,7 +110,8 @@ public abstract class LuceneBasedMetaCollector
                 indexWriter.close();
                 indexWriter = null;
             } catch (AlreadyClosedException e) {
-                // ignore, as multiple meta collectors write in the same index and will all try to close the index
+                // ignore, as multiple meta collectors write in the same index 
+                // and will all try to close the index
             } catch (CorruptIndexException e) {
                 throw new AnalysisEngineProcessException(e);
             } catch (IOException e) {
