@@ -32,7 +32,7 @@ public class BrownPosDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static int NUM_FOLDS = 2;
+    public static final int NUM_FOLDS = 2;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 

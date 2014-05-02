@@ -31,7 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 public class SemanticTextSimilarityDemo
 {
     public static final String LANGUAGE_CODE = "en";
-    public static int NUM_FOLDS = 2;
+    public static final int NUM_FOLDS = 2;
     public static final String inputFileTrain = "src/main/resources/data/sts2012/STS.input.MSRpar.txt";
     public static final String goldFileTrain = "src/main/resources/data/sts2012/STS.gs.MSRpar.txt";
 

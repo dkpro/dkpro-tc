@@ -46,7 +46,7 @@ public class TwentyNewsgroupsDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static int NUM_FOLDS = 3;
+    public static final int NUM_FOLDS = 3;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
