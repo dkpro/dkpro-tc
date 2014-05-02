@@ -122,7 +122,7 @@ public class WekaUtils
                 }
                 // fill the real values:
                 for (int j = 0; j < numTestLabels; j++) {
-                    // part of train data
+                    // part of train data: forget labels which are not part of the train data
                     if (trainLabels.indexOf(instance.attribute(j).name()) != -1) {
                         // class label found in test data
                         int index = trainLabels.indexOf(instance.attribute(j).name());
