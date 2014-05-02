@@ -37,8 +37,11 @@ public class OutcomeIDReport
     {
         File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
         File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
-        Instances predictions = TaskUtils.getInstances(arff, TestTask.MULTILABEL);
-        Properties props = generateProperties(predictions, TestTask.MULTILABEL);
+
+        boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
+                .equals(Constants.LM_MULTI_LABEL);
+        Instances predictions = TaskUtils.getInstances(arff, multiLabel);
+        Properties props = generateProperties(predictions, multiLabel);
         getContext().storeBinary(ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
     }

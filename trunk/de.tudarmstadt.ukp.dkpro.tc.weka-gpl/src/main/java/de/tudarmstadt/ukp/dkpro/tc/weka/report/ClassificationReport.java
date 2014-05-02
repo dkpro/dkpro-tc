@@ -56,6 +56,8 @@ public class ClassificationReport
         throws Exception
     {
         File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
+        boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
+                .equals(Constants.LM_MULTI_LABEL);
 
         Properties props = new Properties();
         // table to hold CM results
@@ -67,7 +69,7 @@ public class ClassificationReport
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
                 + TestTask.EVALUATION_DATA_KEY);
 
-        if (TestTask.MULTILABEL) {
+        if (multiLabel) {
             // ============= multi-label setup ======================
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
 
@@ -145,7 +147,7 @@ public class ClassificationReport
         }
         // ================================================
 
-        if (TestTask.MULTILABEL) {
+        if (multiLabel) {
             // store ML confusion matrix
             confusionMatrix = createConfusionMatrix(tempM);
             // create PR curve diagram
