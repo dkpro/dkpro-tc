@@ -165,10 +165,10 @@ public class ClassificationReport
         for (int c = 0; c < confusionMatrix.length; c++) {
             LinkedHashMap<String, String> row = new LinkedHashMap<String, String>();
             for (int r = 0; r < confusionMatrix[0].length; r++) {
-                row.put(predictedLabelsList.get(r) + " " + CM_PREDICTED,
+                row.put(predictedLabelsList.get(r) + CM_PREDICTED,
                         String.valueOf(confusionMatrix[c][r]));
             }
-            cMTable.addRow(actualLabelsList.get(c) + " " + CM_ACTUAL, row);
+            cMTable.addRow(actualLabelsList.get(c) + CM_ACTUAL, row);
         }
 
         // Write out properties

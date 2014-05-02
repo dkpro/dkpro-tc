@@ -78,8 +78,8 @@ public interface Constants
     public static final String SUFFIX_CSV = ".csv";
     public static final String CONFUSIONMATRIX_KEY = "confusionMatrix.csv";
     public static final String PR_CURVE_KEY = "PR_curve.svg";
-    public static final String CM_ACTUAL = "(act.)";
-    public static final String CM_PREDICTED = "(pred.)";
+    public static final String CM_ACTUAL = " (act.)";
+    public static final String CM_PREDICTED = " (pred.)";
 
     /*
      * Weka
