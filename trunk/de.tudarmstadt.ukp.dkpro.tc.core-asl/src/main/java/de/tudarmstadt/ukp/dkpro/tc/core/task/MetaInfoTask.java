@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -131,10 +132,10 @@ public class MetaInfoTask
             file.mkdir();
         }
 
-        for (String key : parameterKeyPairs.keySet()) {
+        for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
             File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
-                    parameterKeyPairs.get(key));
-            parameters.addAll(Arrays.asList(key, file.getAbsolutePath()));
+                    entry.getValue());
+            parameters.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
 
         AggregateBuilder builder = new AggregateBuilder();
