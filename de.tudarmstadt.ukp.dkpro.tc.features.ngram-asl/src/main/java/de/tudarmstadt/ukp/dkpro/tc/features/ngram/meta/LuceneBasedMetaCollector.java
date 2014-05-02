@@ -37,7 +37,7 @@ public abstract class LuceneBasedMetaCollector
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_LUCENE_DIR, mandatory = true)
     private File luceneDir;
 
-    protected static IndexWriter indexWriter = null;
+    protected IndexWriter indexWriter = null;
     
     private String currentDocumentId;
     private Document currentDocument;
