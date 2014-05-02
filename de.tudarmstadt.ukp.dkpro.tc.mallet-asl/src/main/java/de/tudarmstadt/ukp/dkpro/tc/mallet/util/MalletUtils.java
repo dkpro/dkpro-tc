@@ -32,7 +32,7 @@ public class MalletUtils
         throws IOException
     {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(
-                new FileOutputStream(outputFile))));
+                new FileOutputStream(outputFile)), "UTF-8"));
         HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
         for (int i = 0; i < instanceList.size(); i++) {
             Instance instance = instanceList.getInstance(i);
@@ -53,7 +53,7 @@ public class MalletUtils
         throws IOException
     {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(
-                new FileOutputStream(outputFile, true))));
+                new FileOutputStream(outputFile, true)), "UTF-8"));
         bw.write("\n");
         for (String featureValue : featureValues) {
             bw.write(featureValue + " ");
@@ -67,7 +67,7 @@ public class MalletUtils
         throws IOException
     {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(
-                new FileOutputStream(outputFile, true))));
+                new FileOutputStream(outputFile, true)), "UTF-8"));
         bw.write("\n");
         bw.flush();
         bw.close();

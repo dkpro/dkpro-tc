@@ -4,8 +4,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.zip.GZIPInputStream;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
@@ -32,8 +33,8 @@ public class OutcomeIDReport
         File filePredictions = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
         File fileId2Outcome = new File(getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + ID_OUTCOME_KEY);
-        BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filePredictions))));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(fileId2Outcome));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filePredictions)), "UTF-8"));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileId2Outcome), "UTF-8"));
         String line = null;
         boolean header = false;
         int outcomeIndex = -1;

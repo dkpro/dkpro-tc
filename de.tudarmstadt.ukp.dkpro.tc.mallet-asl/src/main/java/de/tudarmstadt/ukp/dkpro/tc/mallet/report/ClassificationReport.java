@@ -2,7 +2,8 @@ package de.tudarmstadt.ukp.dkpro.tc.mallet.report;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ extends ReportBase
 
 		File evaluationFile = new File(storage.getAbsolutePath() + "/" + TestTask.EVALUATION_DATA_KEY);
 		
-		BufferedReader br = new BufferedReader(new FileReader(evaluationFile));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(evaluationFile), "UTF-8"));
 		String line = null;
 		boolean header = false;
 		while ((line = br.readLine()) != null) {
