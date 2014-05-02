@@ -56,10 +56,10 @@ public class OutcomeIDReportTest
         Properties props = OutcomeIDReport.generateProperties(singleLabelData, false);
 
         assertEquals(16, props.size());
-        assertEquals("comp.graphics (is alt.atheism)", props.getProperty("alt.atheism/53261.txt"));
-        assertEquals("comp.graphics (is comp.sys.ibm.pc.hardware)",
+        assertEquals("comp.graphics;alt.atheism", props.getProperty("alt.atheism/53261.txt"));
+        assertEquals("comp.graphics;comp.sys.ibm.pc.hardware",
                 props.getProperty("comp.sys.ibm.pc.hardware/60738.txt"));
-        assertEquals("comp.os.ms-windows.misc (is comp.os.ms-windows.misc)",
+        assertEquals("comp.os.ms-windows.misc;comp.os.ms-windows.misc",
                 props.getProperty("comp.os.ms-windows.misc/10006.txt"));
     }
 
@@ -69,9 +69,9 @@ public class OutcomeIDReportTest
         Properties props = OutcomeIDReport.generateProperties(multiLabelData, true);
 
         assertEquals(6, props.size());
-        assertEquals(" (is __grain)", props.getProperty("14828.txt"));
-        assertEquals("__wheat,__sorghum,__grain,__corn,__acq (is )", props.getProperty("14829.txt"));
-        assertEquals("__acq (is __grain,__corn)", props.getProperty("14832.txt"));
+        assertEquals(";__grain", props.getProperty("14828.txt"));
+        assertEquals("__wheat,__sorghum,__grain,__corn,__acq;", props.getProperty("14829.txt"));
+        assertEquals("__acq;__grain,__corn", props.getProperty("14832.txt"));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class OutcomeIDReportTest
         Properties props = OutcomeIDReport.generateProperties(regressionData, false);
 
         assertEquals(375, props.size());
-        assertEquals("3.44168 (is 3.75)", props.getProperty("STS.input.MSRpar.txt-1"));
-        assertEquals("2.640227 (is 1.75)", props.getProperty("STS.input.MSRpar.txt-100"));
-        assertEquals("4.41385 (is 5.0)", props.getProperty("STS.input.MSRpar.txt-133"));
+        assertEquals("3.44168;3.75", props.getProperty("STS.input.MSRpar.txt-1"));
+        assertEquals("2.640227;1.75", props.getProperty("STS.input.MSRpar.txt-100"));
+        assertEquals("4.41385;5.0", props.getProperty("STS.input.MSRpar.txt-133"));
     }
 }
