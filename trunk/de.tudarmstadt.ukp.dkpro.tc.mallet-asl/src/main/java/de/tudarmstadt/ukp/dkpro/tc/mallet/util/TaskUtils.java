@@ -24,16 +24,11 @@ import org.apache.commons.lang.StringUtils;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
-import cc.mallet.fst.HMM;
-import cc.mallet.fst.HMMTrainerByLikelihood;
 import cc.mallet.fst.NoopTransducerTrainer;
 import cc.mallet.fst.Transducer;
 import cc.mallet.fst.TransducerEvaluator;
 import cc.mallet.fst.TransducerTrainer;
 import cc.mallet.pipe.Pipe;
-import cc.mallet.pipe.SerialPipes;
-import cc.mallet.pipe.SimpleTaggerSentence2TokenSequence;
-import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
@@ -42,15 +37,10 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ReportConstants;
 
 public class TaskUtils {
 
-	public static ArrayList<Double> precisionValues;
-
-	public static ArrayList<Double> recallValues;
-
-	public static ArrayList<Double> f1Values;
-
-	public static ArrayList<String> labels;
-
-	public static ArrayList<String> predictions;
+	private static ArrayList<Double> precisionValues;
+	private static ArrayList<Double> recallValues;
+	private static ArrayList<Double> f1Values;
+	private static ArrayList<String> labels;
 
 	public static CRF trainCRF(InstanceList training, CRF crf, double gaussianPriorVariance, int iterations, String defaultLabel,
 			boolean fullyConnected, int[] orders) {
@@ -61,8 +51,9 @@ public class TaskUtils {
 					crf.addOrderNStates(training, orders, null,
 							defaultLabel, null, null,
 							fullyConnected);
-			for (int i = 0; i < crf.numStates(); i++)
-				crf.getState(i).setInitialWeight (Transducer.IMPOSSIBLE_WEIGHT);
+			for (int i = 0; i < crf.numStates(); i++) {
+                crf.getState(i).setInitialWeight (Transducer.IMPOSSIBLE_WEIGHT);
+            }
 			crf.getState(startName).setInitialWeight(0.0);
 		}
 		//		logger.info("Training on " + training.size() + " instances");
@@ -73,8 +64,9 @@ public class TaskUtils {
 		boolean converged;
 		for (int i = 1; i <= iterations; i++) {
 			converged = crft.train (training, 1);
-			if (converged)
-				break;
+			if (converged) {
+                break;
+            }
 		}
 		return crf;
 	}
@@ -104,8 +96,10 @@ public class TaskUtils {
 			Alphabet targets = p.getTargetAlphabet();
 			StringBuffer buf = new StringBuffer("Labels:");
 			for (int i = 0; i < targets.size(); i++)
-				buf.append(" ").append(targets.lookupObject(i).toString());
+             {
+                buf.append(" ").append(targets.lookupObject(i).toString());
 			//			logger.info(buf.toString());
+            }
 		}
 
 		crf = trainCRF(trainingData, crf, var, iterations, defaultLabel, fullyConnected, orders);
@@ -149,8 +143,10 @@ public class TaskUtils {
 			Alphabet targets = p.getTargetAlphabet();
 			StringBuffer buf = new StringBuffer("Labels:");
 			for (int i = 0; i < targets.size(); i++)
-				buf.append(" ").append(targets.lookupObject(i).toString());
+             {
+                buf.append(" ").append(targets.lookupObject(i).toString());
 			//			logger.info(buf.toString());
+            }
 		}
 		test(new NoopTransducerTrainer(crf), eval, testData);
 		labels = ((PerClassEvaluator) eval).getLabelNames();
@@ -383,8 +379,8 @@ public class TaskUtils {
 			}
 		}
 
-		for (int i = 0; i < confusionMatrixString.length; i++) {
-			bw.write(StringUtils.join(confusionMatrixString[i], ","));
+		for (String[] element : confusionMatrixString) {
+			bw.write(StringUtils.join(element, ","));
 			bw.write("\n");
 			bw.flush();
 		}
