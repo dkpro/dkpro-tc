@@ -2,16 +2,13 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.util;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
-import static org.apache.uima.fit.util.JCasUtil.toText;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -80,9 +77,9 @@ public class KeywordNGramUtils
             }
             String sentenceBoundary = SENTENCE_BOUNDARY;
             if(markSentenceLocation){
-                if((new Float(sentenceNumber) / totalSentences) < 0.25){
+                if(((double) sentenceNumber / totalSentences) < 0.25){
                     sentenceBoundary = sentenceBoundary + "BEG";
-                }else if((new Float(sentenceNumber) / totalSentences) > 0.75){
+                }else if(((double) sentenceNumber / totalSentences) > 0.75){
                     sentenceBoundary = sentenceBoundary + "END";
                 }else{
                     sentenceBoundary = sentenceBoundary + "MID";
