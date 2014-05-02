@@ -29,6 +29,7 @@ public class OutcomeIDReport
     extends ReportBase
 {
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";
+    public static final String SEPARATOR_CHAR = ";";
 
     @Override
     public void execute()
@@ -38,7 +39,8 @@ public class OutcomeIDReport
         File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
         Instances predictions = TaskUtils.getInstances(arff, TestTask.MULTILABEL);
         Properties props = generateProperties(predictions, TestTask.MULTILABEL);
-        getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
+        getContext().storeBinary(ID_OUTCOME_KEY,
+                new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
     }
 
     public static Properties generateProperties(Instances predictions, boolean isMultilabel)
@@ -51,7 +53,6 @@ public class OutcomeIDReport
         }
 
         int attOffset = predictions.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
-
         for (Instance inst : predictions) {
             if (isMultilabel) {
                 List<String> predictionOutcomes = new ArrayList<String>();
@@ -64,8 +65,8 @@ public class OutcomeIDReport
                         predictionOutcomes.add(predictions.attribute(i).name());
                     }
                 }
-                String s = (StringUtils.join(predictionOutcomes, ",") + " (is "
-                        + StringUtils.join(goldOutcomes, ",") + ")");
+                String s = (StringUtils.join(predictionOutcomes, ",") + SEPARATOR_CHAR + StringUtils
+                        .join(goldOutcomes, ","));
                 props.setProperty(inst.stringValue(attOffset), s);
             }
             else {
@@ -86,13 +87,13 @@ public class OutcomeIDReport
                 try {
                     props.setProperty(
                             inst.stringValue(attOffset),
-                            gsAtt.value(prediction.intValue()) + " (is "
-                                    + classValues[gold.intValue()] + ")");
+                            gsAtt.value(prediction.intValue()) + SEPARATOR_CHAR
+                                    + classValues[gold.intValue()]);
                 }
                 catch (Exception e) {
                     // if the outcome is numeric
-                    props.setProperty(inst.stringValue(attOffset), prediction + " (is " + gold
-                            + ")");
+                    props.setProperty(inst.stringValue(attOffset), prediction + SEPARATOR_CHAR
+                            + gold);
                 }
             }
         }
