@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -76,7 +75,7 @@ public class TaskUtils {
 		Reader trainingFileReader = null;
 		InstanceList trainingData = null;
 		//trainingFileReader = new FileReader(trainingFile);
-		trainingFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(trainingFile)));
+		trainingFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(trainingFile)), "UTF-8");
 		Pipe p = null;
 		CRF crf = null;
 		p = new ConversionToFeatureVectorSequence(denseFeatureValues); //uses first line of file to identify DKProInstanceID feature and discard
@@ -120,7 +119,7 @@ public class TaskUtils {
 		Reader testFileReader = null;
 		InstanceList testData = null;
 		//testFileReader = new FileReader(testFile);
-		testFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(testFile)));
+		testFileReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(testFile)), "UTF-8");
 		Pipe p = null;
 		CRF crf = null;
 		TransducerEvaluator eval = null;
@@ -286,8 +285,8 @@ public class TaskUtils {
 	public static void outputPredictions(TransducerEvaluator eval, File fileTest, File filePredictions,
 			String predictionClassLabelName) throws IOException {
 		ArrayList<String> predictedLabels = ((PerClassEvaluator) eval).getPredictedLabels();
-		BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(fileTest))));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(filePredictions))));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(fileTest)), "UTF-8"));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(filePredictions)), "UTF-8"));
 		String line;
 		boolean header = false;
 		int i = 0;
@@ -312,7 +311,7 @@ public class TaskUtils {
 	}
 
 	public static void outputEvaluation(TransducerEvaluator eval, File fileEvaluation) throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(fileEvaluation));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileEvaluation), "UTF-8"));
 
 		ArrayList<String> labelNames = ((PerClassEvaluator) eval).getLabelNames();
 
@@ -341,7 +340,7 @@ public class TaskUtils {
 	}
 
 	public static void outputConfusionMatrix(TransducerEvaluator eval, File fileConfusionMatrix) throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(fileConfusionMatrix));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileConfusionMatrix), "UTF-8"));
 
 		ArrayList<String> labelNames = ((PerClassEvaluator) eval).getLabelNames();
 		int numLabels = labelNames.size();
