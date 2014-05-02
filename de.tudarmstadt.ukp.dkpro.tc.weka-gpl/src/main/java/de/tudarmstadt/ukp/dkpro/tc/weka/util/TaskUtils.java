@@ -87,7 +87,7 @@ public class TaskUtils
             underlyingStream = bufStr;
         }
 
-        Reader reader = new InputStreamReader(underlyingStream);
+        Reader reader = new InputStreamReader(underlyingStream, "UTF-8");
         Instances trainData = new Instances(reader);
 
         if (multiLabel) {
