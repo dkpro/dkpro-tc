@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -120,10 +121,10 @@ public class ExtractFeaturesTask
             parametersCopy.addAll(pipelineParameters);
         }
 
-        for (String key : parameterKeyPairs.keySet()) {
+        for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
             File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
-                    parameterKeyPairs.get(key));
-            parametersCopy.addAll(Arrays.asList(key, file.getAbsolutePath()));
+                    entry.getValue());
+            parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
 
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
