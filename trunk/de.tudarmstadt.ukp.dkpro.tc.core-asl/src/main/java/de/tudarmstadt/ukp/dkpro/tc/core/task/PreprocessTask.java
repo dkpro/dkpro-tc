@@ -31,8 +31,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 public class PreprocessTask
     extends UimaTaskBase
 {
-    public static String OUTPUT_KEY_TRAIN = "preprocessorOutputTrain";
-    public static String OUTPUT_KEY_TEST = "preprocessorOutputTest";
+    public static final String OUTPUT_KEY_TRAIN = "preprocessorOutputTrain";
+    public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
 
     private boolean isTesting = false;
     private List<String> operativeViews;
