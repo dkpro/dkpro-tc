@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -151,14 +152,14 @@ public class ReportUtils
      */
     public static void addToResults(Map<String, Double> results, Map<String, List<Double>> cvResults)
     {
-        for (String s : results.keySet()) {
-            if (cvResults.get(s) != null) {
-                cvResults.get(s).add(results.get(s));
+        for (Entry<String, Double> entry : results.entrySet()) {
+            if (cvResults.get(entry.getKey()) != null) {
+                cvResults.get(entry.getKey()).add(entry.getValue());
             }
             else {
                 List<Double> d = new ArrayList<Double>();
-                d.add(results.get(s));
-                cvResults.put(s, d);
+                d.add(entry.getValue());
+                cvResults.put(entry.getKey(), d);
             }
         }
     }
