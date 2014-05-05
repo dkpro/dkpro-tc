@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY imgroot "images/" >
+]>
 <!--
 	Copyright 2013
 	Ubiquitous Knowledge Processing (UKP) Lab
@@ -22,4 +24,17 @@
   <title>Introduction</title>
   <para>DKPro TC is a UIMA-based text classification framework built on top of DKPro Core, DKPro Lab and the Weka Machine Learning Toolkit.
   It is intended to alleviate supervised machine learning experiments with any kind of textual data.</para>
+
+    <section>
+        <title>Systen Architecture</title>
+        <para/>
+        <figure>
+            <title>Basic system architecture of DKPro TC</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata width="20%" fileref="&imgroot;DKProTC_overview.png"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+    </section>
 </chapter>
