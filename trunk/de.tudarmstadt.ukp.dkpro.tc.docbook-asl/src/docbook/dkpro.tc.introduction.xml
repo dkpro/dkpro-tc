@@ -32,7 +32,7 @@
             <title>Basic system architecture of DKPro TC</title>
             <mediaobject>
                 <imageobject>
-                    <imagedata width="20%" fileref="&imgroot;DKProTC_overview.png"/>
+                    <imagedata width="100%" fileref="&imgroot;DKProTC_overview.png"/>
                 </imageobject>
             </mediaobject>
         </figure>
