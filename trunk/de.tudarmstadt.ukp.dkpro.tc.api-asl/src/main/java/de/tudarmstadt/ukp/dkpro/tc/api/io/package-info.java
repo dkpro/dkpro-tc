@@ -17,8 +17,8 @@
  ******************************************************************************/
 
 /**
- * UIMA connectors
+ * Reader definitions
  *
  * @since 0.1.0
  */
-package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
+package de.tudarmstadt.ukp.dkpro.tc.api.io;

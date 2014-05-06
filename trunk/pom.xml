@@ -315,7 +315,7 @@
                 <configuration>
                     <notimestamp>true</notimestamp>
                     <!-- Exclude UIMA types and internal API -->
-                    <excludePackageNames>*.type:*.internal.*</excludePackageNames>
+                    <excludePackageNames>*.type:*.internal.*:*.exception</excludePackageNames>
                     <groups>
                         <group>
                             <title>API definitions</title>

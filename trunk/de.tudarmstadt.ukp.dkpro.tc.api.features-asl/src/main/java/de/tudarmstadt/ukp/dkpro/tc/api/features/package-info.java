@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /**
- * Basic API definitions for features.
+ * Feature definitions
  *
  * @since 0.1.0
  */
