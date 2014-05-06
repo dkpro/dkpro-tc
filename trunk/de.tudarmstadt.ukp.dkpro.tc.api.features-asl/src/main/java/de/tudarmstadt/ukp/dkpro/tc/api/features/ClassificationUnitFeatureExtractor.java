@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.uima.jcas.JCas;
 
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**

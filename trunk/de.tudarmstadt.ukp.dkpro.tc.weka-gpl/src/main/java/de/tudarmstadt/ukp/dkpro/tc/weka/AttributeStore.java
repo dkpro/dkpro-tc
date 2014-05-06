@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import weka.core.Attribute;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
 /**
  * Data structure that stores a collection of Weka attributes.

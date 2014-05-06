@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 public class SimpleFeatureStoreTest {
 

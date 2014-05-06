@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.exception;
+package de.tudarmstadt.ukp.dkpro.tc.api.exception;
 
 /**
  * Exception thrown by DKPro TC components.
