@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /**
- * Lab tasks
+ * I/O core components.
+ * Data writers, base readers, CAS multipliers.
  *
  * @since 0.1.0
  */

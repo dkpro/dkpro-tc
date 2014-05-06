@@ -17,8 +17,8 @@
  ******************************************************************************/
 
 /**
- * UIMA connectors
+ * Special readers for testing
  *
  * @since 0.1.0
  */
-package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
+package de.tudarmstadt.ukp.dkpro.tc.testing.io;

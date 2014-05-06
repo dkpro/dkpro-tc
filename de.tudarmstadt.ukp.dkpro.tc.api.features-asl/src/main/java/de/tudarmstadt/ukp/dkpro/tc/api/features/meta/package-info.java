@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /**
- * Basic API definitions for meta collectors.
+ * Meta collector definitions
  *
  * @since 0.1.0
  */
