@@ -13,5 +13,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
  */
 public interface TCReaderSequence
 {
+    /**
+     * Returns the text classification outcome for each classification unit
+     * 
+     * @param jcas
+     * @return
+     * @throws CollectionException
+     */
     public String getTextClassificationOutcome(JCas jcas, TextClassificationUnit unit) throws CollectionException;
 }

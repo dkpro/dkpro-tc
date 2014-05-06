@@ -53,42 +53,63 @@ public class Feature
 
     protected Object value;
 
+    /**
+     * Empty constructor (needed for serialization)
+     */
     public Feature()
     {
     }
 
-    public Feature(Object value)
-    {
-        this.value = value;
-    }
-
+    /**
+     * Create a new feature
+     * 
+     * @param name
+     * @param value
+     */
     public Feature(String name, Object value)
     {
         this.name = FeatureUtil.escapeFeatureName(name);
         this.value = value;
     }
     
+    /**
+     * Convenience method for feature extractors that expect list of features
+     * 
+     * @return This feature as the first element of a list of features.
+     */
     public List<Feature> asList() {
         List<Feature> list = new ArrayList<Feature>();
         list.add(this);
         return list;
     }
 
+    /**
+     * @return
+     */
     public Object getValue()
     {
         return value;
     }
 
+    /**
+     * @param value
+     */
     public void setValue(Object value)
     {
         this.value = value;
     }
 
+    /**
+     * @return
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * @param name
+     */
     public void setName(String name)
     {
         this.name = name;

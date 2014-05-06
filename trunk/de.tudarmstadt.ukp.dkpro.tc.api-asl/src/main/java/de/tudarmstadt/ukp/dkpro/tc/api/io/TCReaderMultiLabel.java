@@ -13,5 +13,12 @@ import org.apache.uima.jcas.JCas;
  */
 public interface TCReaderMultiLabel
 {
+    /**
+     * Returns the set of text classification outcomes for the current multi-label instance
+     * 
+     * @param jcas
+     * @return
+     * @throws CollectionException
+     */
     public Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException;
 }

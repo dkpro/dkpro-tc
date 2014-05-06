@@ -12,5 +12,8 @@ import java.util.List;
  */
 public interface MetaDependent
 {
+    /**
+     * @return A list of meta collector classes that a "meta dependent" collector depdends on
+     */
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses();
 }

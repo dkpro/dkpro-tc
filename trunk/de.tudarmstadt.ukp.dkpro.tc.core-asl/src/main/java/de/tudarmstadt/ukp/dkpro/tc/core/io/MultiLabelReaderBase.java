@@ -11,6 +11,10 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
+/**
+ * Base class for multi label readers.
+ *
+ */
 public abstract class MultiLabelReaderBase
     extends TextReader
     implements TCReaderMultiLabel
