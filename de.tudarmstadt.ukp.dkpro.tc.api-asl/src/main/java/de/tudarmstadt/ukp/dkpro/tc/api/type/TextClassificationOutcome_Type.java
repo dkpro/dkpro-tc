@@ -1,6 +1,6 @@
 
-/* First created by JCasGen Tue Nov 06 11:09:24 CET 2012 */
-package de.tudarmstadt.ukp.dkpro.tc.type;
+/* First created by JCasGen Tue May 06 17:51:57 CEST 2014 */
+package de.tudarmstadt.ukp.dkpro.tc.api.type;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -14,10 +14,12 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Mar 22 12:19:05 CET 2014
+ * Updated by JCasGen Tue May 06 17:51:57 CEST 2014
  * @generated */
 public class TextClassificationOutcome_Type extends Annotation_Type {
-  /** @generated */
+  /** @generated 
+   * @return the generator for this type
+   */
   @Override
   protected FSGenerator getFSGenerator() {return fsGenerator;}
   /** @generated */
@@ -42,22 +44,28 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
  
   /** @generated */
   final Feature casFeat_outcome;
   /** @generated */
   final int     casFeatCode_outcome;
-  /** @generated */ 
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
   public String getOutcome(int addr) {
         if (featOkTst && casFeat_outcome == null)
-      jcas.throwFeatMissing("outcome", "de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+      jcas.throwFeatMissing("outcome", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     return ll_cas.ll_getStringValue(addr, casFeatCode_outcome);
   }
-  /** @generated */    
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
   public void setOutcome(int addr, String v) {
         if (featOkTst && casFeat_outcome == null)
-      jcas.throwFeatMissing("outcome", "de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+      jcas.throwFeatMissing("outcome", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     ll_cas.ll_setStringValue(addr, casFeatCode_outcome, v);}
     
   
@@ -66,16 +74,22 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
   final Feature casFeat_prediction;
   /** @generated */
   final int     casFeatCode_prediction;
-  /** @generated */ 
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
   public String getPrediction(int addr) {
         if (featOkTst && casFeat_prediction == null)
-      jcas.throwFeatMissing("prediction", "de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+      jcas.throwFeatMissing("prediction", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     return ll_cas.ll_getStringValue(addr, casFeatCode_prediction);
   }
-  /** @generated */    
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
   public void setPrediction(int addr, String v) {
         if (featOkTst && casFeat_prediction == null)
-      jcas.throwFeatMissing("prediction", "de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+      jcas.throwFeatMissing("prediction", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     ll_cas.ll_setStringValue(addr, casFeatCode_prediction, v);}
     
   
@@ -84,16 +98,22 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
   final Feature casFeat_confidence;
   /** @generated */
   final int     casFeatCode_confidence;
-  /** @generated */ 
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
   public double getConfidence(int addr) {
         if (featOkTst && casFeat_confidence == null)
-      jcas.throwFeatMissing("confidence", "de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+      jcas.throwFeatMissing("confidence", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     return ll_cas.ll_getDoubleValue(addr, casFeatCode_confidence);
   }
-  /** @generated */    
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
   public void setConfidence(int addr, double v) {
         if (featOkTst && casFeat_confidence == null)
-      jcas.throwFeatMissing("confidence", "de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome");
+      jcas.throwFeatMissing("confidence", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     ll_cas.ll_setDoubleValue(addr, casFeatCode_confidence, v);}
     
   
@@ -101,7 +121,10 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
 
 
   /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+	 * @generated
+	 * @param jcas JCas
+	 * @param casType Type 
+	 */
   public TextClassificationOutcome_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());

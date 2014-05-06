@@ -24,8 +24,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
 public class ReutersCorpusReader
     extends TextReader

@@ -22,4 +22,4 @@
  *
  * @since 0.1.0
  */
-package de.tudarmstadt.ukp.dkpro.tc;
+package de.tudarmstadt.ukp.dkpro.tc.api;

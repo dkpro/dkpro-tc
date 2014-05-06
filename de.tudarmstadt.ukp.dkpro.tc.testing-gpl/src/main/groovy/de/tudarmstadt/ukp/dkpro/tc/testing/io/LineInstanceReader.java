@@ -18,8 +18,8 @@ import org.apache.uima.util.ProgressImpl;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
 public class LineInstanceReader
     extends JCasCollectionReader_ImplBase

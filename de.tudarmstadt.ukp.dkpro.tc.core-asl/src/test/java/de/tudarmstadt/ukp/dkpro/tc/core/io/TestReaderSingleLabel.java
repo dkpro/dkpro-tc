@@ -8,8 +8,8 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
 public class TestReaderSingleLabel
     extends TextReader

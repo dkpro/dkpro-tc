@@ -10,8 +10,8 @@ import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 
 /**
  * Abstract base class for readers used in pair-classification. 
@@ -74,7 +74,7 @@ import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel;
  * 	}
  * </code>
  * </pre>
- * <li> Implement {@link de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSingleLabel#TCReaderSingleLabel TCReaderSingleLabel} to return the label for your instance.
+ * <li> Implement {@link de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel#TCReaderSingleLabel TCReaderSingleLabel} to return the label for your instance.
  * <pre>
  * <code>
  * {@literal @}Override

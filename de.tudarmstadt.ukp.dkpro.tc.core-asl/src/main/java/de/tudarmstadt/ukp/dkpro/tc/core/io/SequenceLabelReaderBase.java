@@ -9,10 +9,10 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSequence;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationSequence;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 public abstract class SequenceLabelReaderBase
     extends TextReader
