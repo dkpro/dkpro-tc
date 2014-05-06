@@ -20,6 +20,9 @@ public class DumpDataWriter
     implements DataWriter, Constants
 {
 
+    /**
+     * Public name of the dump file
+     */
     public static final String DUMP_FILE_NAME = "fs.ser";
 
     @Override

@@ -32,6 +32,10 @@ public class ClassificationUnitCasMultiplier
     extends JCasMultiplier_ImplBase
 {
 
+    /**
+     * If true, the multiplier create a new CAS for each sequence in the current CAS.
+     * Otherwise, it creates a new CAS for each text classification unit.
+     */
     public static final String PARAM_USE_SEQUENCES = "useSequences";
     @ConfigurationParameter(name = PARAM_USE_SEQUENCES, mandatory = true, defaultValue="false")
     private boolean useSequences;

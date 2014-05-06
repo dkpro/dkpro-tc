@@ -11,5 +11,12 @@ import org.apache.uima.jcas.JCas;
  */
 public interface TCReaderSingleLabel
 {
+    /**
+     * Returns the text classification outcome for the current single-label instance
+     * 
+     * @param jcas
+     * @return
+     * @throws CollectionException
+     */
     public String getTextClassificationOutcome(JCas jcas) throws CollectionException;
 }

@@ -13,6 +13,15 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
  */
 public interface DataWriter
 {
+    /**
+     * Write the contents of the feature store to the output directory.
+     * 
+     * @param outputDirectory
+     * @param featureStore
+     * @param useDenseInstances
+     * @param learningMode
+     * @throws Exception
+     */
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
             String learningMode)
         throws Exception;

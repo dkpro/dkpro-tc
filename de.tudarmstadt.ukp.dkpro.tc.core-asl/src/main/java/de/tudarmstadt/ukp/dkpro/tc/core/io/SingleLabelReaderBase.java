@@ -11,6 +11,9 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
+/**
+ * Base class for single-label readers
+ */
 public abstract class SingleLabelReaderBase
     extends TextReader
     implements TCReaderSingleLabel

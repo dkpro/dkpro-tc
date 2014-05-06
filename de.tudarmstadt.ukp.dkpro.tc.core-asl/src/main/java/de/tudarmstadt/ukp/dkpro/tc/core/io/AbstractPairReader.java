@@ -137,8 +137,19 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 public abstract class AbstractPairReader
     extends JCasCollectionReader_ImplBase
 {
+    /**
+     * Name of initial view
+     */
     public static final String INITIAL_VIEW = CAS.NAME_DEFAULT_SOFA;
+    
+    /**
+     * Name of view holding part one of the pair
+     */
     public static final String PART_ONE = "PART_ONE";
+    
+    /**
+     * Name of the view holding part two of the pair
+     */
     public static final String PART_TWO = "PART_TWO";
 
     /**

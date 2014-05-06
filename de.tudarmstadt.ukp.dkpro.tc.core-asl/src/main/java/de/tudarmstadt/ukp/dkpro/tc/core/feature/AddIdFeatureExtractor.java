@@ -24,6 +24,9 @@ public class AddIdFeatureExtractor
     implements DocumentFeatureExtractor
 {
 
+    /**
+     * Public name of this feature
+     */
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
 
     @Override

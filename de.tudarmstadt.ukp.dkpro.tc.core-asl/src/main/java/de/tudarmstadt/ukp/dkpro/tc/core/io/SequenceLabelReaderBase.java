@@ -14,6 +14,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
+/**
+ * Base class for sequence label readers.
+ */
 public abstract class SequenceLabelReaderBase
     extends TextReader
     implements TCReaderSequence

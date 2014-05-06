@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -144,7 +145,9 @@ public class ExtractFeaturesConnectorTest
                 SimpleFeatureStore.class);
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
-        assertEquals("0.45", fs.getUniqueOutcomes().get(0));
+        List<String> uniqueOutcomes = new ArrayList<>(fs.getUniqueOutcomes());
+        Collections.sort(uniqueOutcomes);
+        assertEquals("0.45", uniqueOutcomes.get(0));
 
         System.out.println(FileUtils.readFileToString(new File(outputPath,
                 JsonDataWriter.JSON_FILE_NAME)));

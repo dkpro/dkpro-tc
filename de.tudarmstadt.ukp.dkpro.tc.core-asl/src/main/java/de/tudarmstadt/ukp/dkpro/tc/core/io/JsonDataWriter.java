@@ -18,6 +18,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 public class JsonDataWriter
     implements DataWriter, Constants
 {
+    /**
+     * Public name of the JSON dump file
+     */
     public static final String JSON_FILE_NAME = "fs.json";
 
     private Gson gson = new Gson();

@@ -11,6 +11,9 @@ import org.apache.commons.lang.StringUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
+/**
+ * Utils for feature extractors
+ */
 public class FeatureUtil
 {
     /**
