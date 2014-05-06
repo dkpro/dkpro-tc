@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 
 /**
  * Data structure that holds instances.

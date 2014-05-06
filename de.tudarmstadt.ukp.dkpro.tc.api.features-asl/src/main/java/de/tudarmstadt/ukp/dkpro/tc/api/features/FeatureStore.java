@@ -3,7 +3,7 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features;
 import java.util.List;
 import java.util.TreeSet;
 
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
 public interface FeatureStore
 {

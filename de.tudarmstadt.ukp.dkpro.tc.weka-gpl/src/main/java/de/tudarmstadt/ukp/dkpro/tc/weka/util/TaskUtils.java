@@ -39,8 +39,8 @@ import weka.core.Result;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.MekaClassAttributes;
 import weka.filters.unsupervised.attribute.Remove;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 
 /**

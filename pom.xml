@@ -318,6 +318,22 @@
                     <excludePackageNames>*.type:*.internal.*</excludePackageNames>
                     <groups>
                         <group>
+                            <title>API definitions</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.api*</packages>
+                        </group>
+                        <group>
+                            <title>Core functionality</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.core*</packages>
+                        </group>
+                        <group>
+                            <title>Usage examples (Java)</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.examples*</packages>
+                        </group>
+                        <group>
+                            <title>Usage examples (Groovy)</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.groovyexamples*</packages>
+                        </group>
+                        <group>
                             <title>Basic feature extractors</title>
                             <packages>de.tudarmstadt.ukp.dkpro.tc.features*</packages>
                         </group>
