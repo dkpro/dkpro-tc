@@ -308,6 +308,39 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <notimestamp>true</notimestamp>
+                    <!-- Exclude UIMA types and internal API -->
+                    <excludePackageNames>*.type:*.internal.*</excludePackageNames>
+                    <groups>
+                        <group>
+                            <title>Basic feature extractors</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.features*</packages>
+                        </group>
+                        <group>
+                            <title>N-gram feature extractors</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.features.ngram*</packages>
+                        </group>
+                        <group>
+                            <title>Pair feature extractors</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.features.pair*</packages>
+                        </group>
+                        <group>
+                            <title>Support for MALLET machine learning framework</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.mallet*</packages>
+                        </group>
+                        <group>
+                            <title>Support for WEKA machine learning framework</title>
+                            <packages>de.tudarmstadt.ukp.dkpro.tc.weka*</packages>
+                        </group>
+                    </groups>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 	<profiles>
 		<profile>
