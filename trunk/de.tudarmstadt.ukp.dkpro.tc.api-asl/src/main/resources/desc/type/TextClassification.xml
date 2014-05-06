@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>TextClassification</name>
   <description/>
   <version>1.0</version>
   <vendor/>
   <types>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome</name>
+      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -27,17 +28,17 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit</name>
+      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus</name>
+      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationSequence</name>
+      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>

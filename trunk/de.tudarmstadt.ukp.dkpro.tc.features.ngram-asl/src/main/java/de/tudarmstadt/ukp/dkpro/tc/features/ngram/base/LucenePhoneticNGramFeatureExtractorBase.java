@@ -8,7 +8,6 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LucenePhoneticNGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.Token" })

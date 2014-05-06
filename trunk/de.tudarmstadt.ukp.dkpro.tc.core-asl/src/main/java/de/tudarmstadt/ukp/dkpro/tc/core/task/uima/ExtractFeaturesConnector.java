@@ -25,14 +25,14 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature

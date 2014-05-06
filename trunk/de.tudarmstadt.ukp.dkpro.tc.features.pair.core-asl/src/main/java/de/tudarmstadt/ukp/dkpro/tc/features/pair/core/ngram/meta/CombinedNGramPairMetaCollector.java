@@ -17,7 +17,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
 

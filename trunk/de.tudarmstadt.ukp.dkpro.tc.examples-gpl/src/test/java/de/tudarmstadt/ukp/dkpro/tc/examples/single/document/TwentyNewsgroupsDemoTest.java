@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.examples.single.document.TwentyNewsgroupsDemo;
 
 /**
  * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing

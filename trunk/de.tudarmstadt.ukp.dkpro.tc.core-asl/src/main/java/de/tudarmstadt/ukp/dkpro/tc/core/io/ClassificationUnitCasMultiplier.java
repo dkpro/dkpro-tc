@@ -15,9 +15,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCopier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationSequence;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} annotation in the original JCas.

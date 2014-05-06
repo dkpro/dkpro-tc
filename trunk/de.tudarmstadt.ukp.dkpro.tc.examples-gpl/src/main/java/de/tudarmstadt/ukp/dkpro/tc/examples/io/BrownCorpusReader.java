@@ -14,10 +14,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderSequence;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationSequence;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 public class BrownCorpusReader
     extends TeiReader

@@ -1,28 +1,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.testing;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.resource.ResourceInitializationException;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription
-import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.bayes.NaiveBayes
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.

@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * Common signature for feature extractors which extract their features from the entire document or

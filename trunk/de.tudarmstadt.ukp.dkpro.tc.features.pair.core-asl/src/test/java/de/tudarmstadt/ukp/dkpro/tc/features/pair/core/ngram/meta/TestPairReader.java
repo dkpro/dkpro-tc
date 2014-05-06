@@ -17,9 +17,9 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-import de.tudarmstadt.ukp.dkpro.tc.io.TCReaderMultiLabel;
-import de.tudarmstadt.ukp.dkpro.tc.type.TextClassificationOutcome;
 
 public class TestPairReader
     extends AbstractPairReader
