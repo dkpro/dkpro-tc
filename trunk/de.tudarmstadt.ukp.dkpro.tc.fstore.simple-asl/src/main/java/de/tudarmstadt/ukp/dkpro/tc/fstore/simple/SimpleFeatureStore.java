@@ -104,13 +104,13 @@ public class SimpleFeatureStore
     }
     
     @Override
-    public List<String> getUniqueOutcomes()
+    public Set<String> getUniqueOutcomes()
     {
         Set<String> uniqueOutcomes = new HashSet<String>();
         for (List<String> outcomes : outcomeList) {
             uniqueOutcomes.addAll(outcomes);
         }
-        return new ArrayList<String>(uniqueOutcomes);
+        return uniqueOutcomes;
     }
 
     public void setOutcomeList(List<List<String>> outcomeList)
