@@ -46,7 +46,7 @@ public interface FeatureStore
     /**
      * @return A set of unique classification outcomes from all stored instances
      */
-    public Set<String> getUniqueOutcomes();
+    public TreeSet<String> getUniqueOutcomes();
     
     /**
      * Always returns a list of outcomes, even for single label classification where only the first element of the list will be filled.

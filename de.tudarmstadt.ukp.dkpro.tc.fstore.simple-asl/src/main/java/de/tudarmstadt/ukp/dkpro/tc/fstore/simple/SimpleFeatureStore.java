@@ -107,9 +107,9 @@ public class SimpleFeatureStore
 //    }
     
     @Override
-    public Set<String> getUniqueOutcomes()
+    public TreeSet<String> getUniqueOutcomes()
     {
-        Set<String> uniqueOutcomes = new HashSet<String>();
+        TreeSet<String> uniqueOutcomes = new TreeSet<String>();
         for (List<String> outcomes : outcomeList) {
             uniqueOutcomes.addAll(outcomes);
         }

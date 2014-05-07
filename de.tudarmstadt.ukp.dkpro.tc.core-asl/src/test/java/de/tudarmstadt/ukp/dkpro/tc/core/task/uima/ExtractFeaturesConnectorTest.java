@@ -145,9 +145,7 @@ public class ExtractFeaturesConnectorTest
                 SimpleFeatureStore.class);
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
-        List<String> uniqueOutcomes = new ArrayList<>(fs.getUniqueOutcomes());
-        Collections.sort(uniqueOutcomes);
-        assertEquals("0.45", uniqueOutcomes.get(0));
+        assertEquals("0.45", fs.getUniqueOutcomes().first());
 
         System.out.println(FileUtils.readFileToString(new File(outputPath,
                 JsonDataWriter.JSON_FILE_NAME)));
