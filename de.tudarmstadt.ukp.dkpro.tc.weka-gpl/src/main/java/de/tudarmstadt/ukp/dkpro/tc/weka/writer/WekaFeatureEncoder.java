@@ -42,6 +42,11 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
 public class WekaFeatureEncoder
 {
 
+    /**
+     * @param instanceList
+     * @return A Weka attribute store given a TC feature store
+     * @throws TextClassificationException
+     */
     public static AttributeStore getAttributeStore(FeatureStore instanceList)
         throws TextClassificationException
     {
@@ -59,6 +64,10 @@ public class WekaFeatureEncoder
         return attributeStore;
     }
 
+    /**
+     * @param feature
+     * @return An Weka attribute given a TC feature
+     */
     public static Attribute featureToAttribute(Feature feature)
     {
         String name = Utils.quote(feature.getName());

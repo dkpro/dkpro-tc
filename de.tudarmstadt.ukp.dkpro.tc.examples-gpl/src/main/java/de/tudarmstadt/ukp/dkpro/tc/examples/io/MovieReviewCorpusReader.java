@@ -10,6 +10,11 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.SingleLabelReaderBase;
 
+/**
+ * Reads the Movie Review Corpus
+ * 
+ * TODO: do we actually have an example that uses this?
+ */
 public class MovieReviewCorpusReader
     extends SingleLabelReaderBase
 {

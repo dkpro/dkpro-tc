@@ -24,6 +24,9 @@ public class BatchRuntimeReport
     implements Constants
 {
 
+    /**
+     * Name of the output file where the report stores the runtime results
+     */
     public static final String RUNTIME_KEY = "RUNTIME.txt";
     
     @Override

@@ -12,21 +12,34 @@ public class TextClassificationException
 
     static final long serialVersionUID = 1L;
 
+    /**
+     * 
+     */
     public TextClassificationException()
     {
         super();
     }
 
+    /**
+     * @param txt
+     */
     public TextClassificationException(String txt)
     {
         super(txt);
     }
 
+    /**
+     * @param message
+     * @param cause
+     */
     public TextClassificationException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
+    /**
+     * @param cause
+     */
     public TextClassificationException(Throwable cause)
     {
         super(cause);

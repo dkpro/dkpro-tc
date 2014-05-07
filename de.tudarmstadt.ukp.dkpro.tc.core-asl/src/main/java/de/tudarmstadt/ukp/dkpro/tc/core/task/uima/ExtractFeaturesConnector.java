@@ -42,34 +42,35 @@ import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
  * 
  */
 public class ExtractFeaturesConnector
-    extends JCasAnnotator_ImplBase
+    extends ConnectorBase
 {
 
+    /**
+     * Directory in which the extracted features will be stored
+     */
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
     @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
     private File outputDirectory;
 
-    public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
-    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected FeatureExtractorResource_ImplBase[] featureExtractors;
-
-    public static final String PARAM_DATA_WRITER_CLASS = "dataWriterClass";
-    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
-    private String dataWriterClass;
-
-    public static final String PARAM_LEARNING_MODE = "learningMode";
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
-    private String learningMode;
-
-    public static final String PARAM_FEATURE_MODE = "featureMode";
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
-    private String featureMode;
-
+    /**
+     * Whether an ID should be added to each instance in the feature file
+     */
     public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
     @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
     private boolean addInstanceId;
 
-    public static final String PARAM_DEVELOPER_MODE = "developerMode";
+    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected FeatureExtractorResource_ImplBase[] featureExtractors;
+
+    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+    private String dataWriterClass;
+
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
+
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
+
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
     

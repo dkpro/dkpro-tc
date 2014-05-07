@@ -1,5 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
+/**
+ * Constants that are used in reports
+ */
 public interface ReportConstants
 {
     // accuracy

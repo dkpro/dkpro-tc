@@ -31,7 +31,13 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 public class PreprocessTask
     extends UimaTaskBase
 {
+    /**
+     * Public name of the folder under which the training data file will be stored within the task
+     */
     public static final String OUTPUT_KEY_TRAIN = "preprocessorOutputTrain";
+    /**
+     * Public name of the folder under which the test data file will be stored within the task
+     */
     public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
 
     private boolean isTesting = false;
@@ -52,6 +58,9 @@ public class PreprocessTask
     @Discriminator
     private String featureMode;
 
+    /**
+     * @param isTesting
+     */
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;
@@ -59,11 +68,17 @@ public class PreprocessTask
 
     private AnalysisEngineDescription aggregate;
 
+    /**
+     * @return
+     */
     public AnalysisEngineDescription getAggregate()
     {
         return aggregate;
     }
 
+    /**
+     * @param aAggregate
+     */
     public void setAggregate(AnalysisEngineDescription aAggregate)
     {
         aggregate = aAggregate;
@@ -122,6 +137,9 @@ public class PreprocessTask
         return createEngineDescription(aggregate, xmiWriter);
     }
 
+    /**
+     * @param operativeViews
+     */
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;

@@ -38,7 +38,13 @@ public class ExtractFeaturesTask
     extends UimaTaskBase
 {
 
+    /**
+     * Public name of the folder where the extracted features are stored within the task
+     */
     public static final String OUTPUT_KEY = "output";
+    /**
+     * Public name of the folder where the input documents are stored within the task
+     */
     public static final String INPUT_KEY = "input";
 
     @Discriminator
@@ -68,11 +74,17 @@ public class ExtractFeaturesTask
     // could be used to automatically configure preprocessing
     private Set<String> requiredTypes;
 
+    /**
+     * @return
+     */
     public String getDataWriter()
     {
         return dataWriter;
     }
 
+    /**
+     * @param isTesting
+     */
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;

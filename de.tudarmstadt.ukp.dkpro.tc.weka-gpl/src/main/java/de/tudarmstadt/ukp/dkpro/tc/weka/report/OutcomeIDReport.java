@@ -28,7 +28,13 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 public class OutcomeIDReport
     extends ReportBase
 {
+    /**
+     * Name of the file where the instanceID / outcome pairs ar stored
+     */
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";
+    /**
+     * Character that is used for separating fields in the output file
+     */
     public static final String SEPARATOR_CHAR = ";";
 
     @Override
@@ -46,7 +52,7 @@ public class OutcomeIDReport
                 new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
     }
 
-    public static Properties generateProperties(Instances predictions, boolean isMultilabel)
+    protected static Properties generateProperties(Instances predictions, boolean isMultilabel)
     {
         Properties props = new Properties();
         String[] classValues = new String[predictions.numClasses()];

@@ -37,6 +37,9 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
+/**
+ * Report that computes evaluation results given the classification results.
+ */
 public class ClassificationReport
     extends ReportBase
     implements Constants

@@ -34,14 +34,18 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
  * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
  * appear in the documents.
  * 
- * @author zesch
- * 
  */
 public class MetaInfoTask
     extends UimaTaskBase
 {
 
+    /**
+     * Public name of the task key
+     */
     public static final String META_KEY = "meta";
+    /**
+     * Public name of the folder where meta information will be stored within the task
+     */
     public static final String INPUT_KEY = "input";
 
     private List<String> operativeViews;
@@ -154,6 +158,9 @@ public class MetaInfoTask
         return builder.createAggregateDescription();
     }
 
+    /**
+     * @param operativeViews
+     */
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;

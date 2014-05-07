@@ -35,7 +35,7 @@ public class PairTwentyNewsgroupsReader
 	private File doc1; // to avoid repetition
 	private File doc2;
 	
-	public List<List<String>> listOfFiles;
+	private List<List<String>> listOfFiles;
 	protected int currentParsedFilePointer;
 	
     @Override
