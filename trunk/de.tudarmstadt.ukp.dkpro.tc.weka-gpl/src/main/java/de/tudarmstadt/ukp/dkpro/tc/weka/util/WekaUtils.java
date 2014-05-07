@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -182,7 +181,7 @@ public class WekaUtils
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
-    	List<String> outcomeList = new ArrayList<>(instanceList.getUniqueOutcomes());
+        List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
         Attribute outcomeAttribute = createOutcomeAttribute(outcomeList,
                 isRegressionExperiment);
         if (attributeStore.containsAttributeName(classAttributeName)) {
