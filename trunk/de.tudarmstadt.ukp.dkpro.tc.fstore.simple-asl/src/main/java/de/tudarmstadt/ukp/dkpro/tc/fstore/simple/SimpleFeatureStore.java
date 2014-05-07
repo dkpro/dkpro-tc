@@ -3,11 +3,10 @@ package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -107,9 +106,9 @@ public class SimpleFeatureStore
 //    }
     
     @Override
-    public TreeSet<String> getUniqueOutcomes()
+    public SortedSet<String> getUniqueOutcomes()
     {
-        TreeSet<String> uniqueOutcomes = new TreeSet<String>();
+        SortedSet<String> uniqueOutcomes = new TreeSet<String>();
         for (List<String> outcomes : outcomeList) {
             uniqueOutcomes.addAll(outcomes);
         }

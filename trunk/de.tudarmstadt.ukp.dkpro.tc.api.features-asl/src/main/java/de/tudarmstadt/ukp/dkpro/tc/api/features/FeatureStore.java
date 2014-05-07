@@ -1,7 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -46,7 +46,7 @@ public interface FeatureStore
     /**
      * @return A set of unique classification outcomes from all stored instances
      */
-    public TreeSet<String> getUniqueOutcomes();
+    public SortedSet<String> getUniqueOutcomes();
     
     /**
      * Always returns a list of outcomes, even for single label classification where only the first element of the list will be filled.
