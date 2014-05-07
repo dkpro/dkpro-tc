@@ -126,13 +126,13 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          */
 
         PreprocessTask preprocessTaskTrain = [
-            aggregate:getPreprocessing(),
+            preprocessingPipeline:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
             isTesting: false
         ];
 
         PreprocessTask preprocessTaskTest = [
-            aggregate:getPreprocessing(),
+            preprocessingPipeline:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
             isTesting: true
         ];
