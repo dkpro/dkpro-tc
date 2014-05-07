@@ -24,7 +24,7 @@ public class BatchTaskTrainTest
 {
 
     private String experimentName;
-    private AnalysisEngineDescription aggregate;
+    private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
     private Class<? extends Report> innerReport;
 
@@ -50,15 +50,16 @@ public class BatchTaskTrainTest
      *            collection reader for train data
      * @param aReaderTest
      *            collection reader for test data
-     * @param aAggregate
+     * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
      * @param aDataWriterClassName
      *            data writer class name
      */
-    public BatchTaskTrainTest(String aExperimentName, AnalysisEngineDescription aAggregate)
+    public BatchTaskTrainTest(String aExperimentName,
+            AnalysisEngineDescription preprocessingPipeline)
     {
         setExperimentName(aExperimentName);
-        setAggregate(aAggregate);
+        setPreprocessingPipeline(preprocessingPipeline);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
     }
@@ -84,39 +85,39 @@ public class BatchTaskTrainTest
      */
     private void init()
     {
-        if (experimentName == null || aggregate == null)
+        if (experimentName == null || preprocessingPipeline == null)
 
         {
             throw new IllegalStateException(
-                    "You must set Experiment Name, DataWriter and Aggregate.");
+                    "You must set Experiment Name, DataWriter and Preprocessing Aggregate.");
         }
 
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
 
         // preprocessing on training data
-         preprocessTaskTrain = new PreprocessTask();
-         preprocessTaskTrain.setAggregate(aggregate);
-         preprocessTaskTrain.setOperativeViews(operativeViews);
-         preprocessTaskTrain.setTesting(false);
-         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
-         preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
-        
-         // preprocessing on test data
-         preprocessTaskTest = new PreprocessTask();
-         preprocessTaskTest.setAggregate(aggregate);
-         preprocessTaskTest.setOperativeViews(operativeViews);
-         preprocessTaskTest.setTesting(true);
-         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
-         preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+        preprocessTaskTrain = new PreprocessTask();
+        preprocessTaskTrain.setPreprocessingPipeline(preprocessingPipeline);
+        preprocessTaskTrain.setOperativeViews(operativeViews);
+        preprocessTaskTrain.setTesting(false);
+        preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
+        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
+
+        // preprocessing on test data
+        preprocessTaskTest = new PreprocessTask();
+        preprocessTaskTest.setPreprocessingPipeline(preprocessingPipeline);
+        preprocessTaskTest.setOperativeViews(operativeViews);
+        preprocessTaskTest.setTesting(true);
+        preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
+        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-         metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
-         MetaInfoTask.INPUT_KEY);
+        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+                MetaInfoTask.INPUT_KEY);
 
         metaTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
@@ -160,9 +161,9 @@ public class BatchTaskTrainTest
         this.experimentName = experimentName;
     }
 
-    public void setAggregate(AnalysisEngineDescription aggregate)
+    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
-        this.aggregate = aggregate;
+        this.preprocessingPipeline = preprocessingPipeline;
     }
 
     public void setOperativeViews(List<String> operativeViews)

@@ -66,22 +66,22 @@ public class PreprocessTask
         this.isTesting = isTesting;
     }
 
-    private AnalysisEngineDescription aggregate;
+    private AnalysisEngineDescription preprocessingPipeline;
 
     /**
      * @return
      */
-    public AnalysisEngineDescription getAggregate()
+    public AnalysisEngineDescription getPreprocessingPipeline()
     {
-        return aggregate;
+        return preprocessingPipeline;
     }
 
     /**
      * @param aAggregate
      */
-    public void setAggregate(AnalysisEngineDescription aAggregate)
+    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
-        aggregate = aAggregate;
+        this.preprocessingPipeline = preprocessingPipeline;
     }
 
     @Override
@@ -111,18 +111,19 @@ public class PreprocessTask
         // PART_TWO views
         if (featureMode.equals(Constants.FM_PAIR)) {
             AggregateBuilder builder = new AggregateBuilder();
-            builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA,
+            builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
                     AbstractPairReader.PART_ONE);
-            builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA,
+            builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
                     AbstractPairReader.PART_TWO);
-            aggregate = builder.createAggregateDescription();
+            preprocessingPipeline = builder.createAggregateDescription();
         }
         else if (operativeViews != null) {
             AggregateBuilder builder = new AggregateBuilder();
             for (String viewName : operativeViews) {
-                builder.add(createEngineDescription(aggregate), CAS.NAME_DEFAULT_SOFA, viewName);
+                builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
+                        viewName);
             }
-            aggregate = builder.createAggregateDescription();
+            preprocessingPipeline = builder.createAggregateDescription();
         }
         // in unit or sequence mode, add cas multiplier
         else if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
@@ -132,9 +133,9 @@ public class PreprocessTask
                     ClassificationUnitCasMultiplier.class,
                     ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences);
 
-            return createEngineDescription(aggregate, casMultiplier, xmiWriter);
+            return createEngineDescription(preprocessingPipeline, casMultiplier, xmiWriter);
         }
-        return createEngineDescription(aggregate, xmiWriter);
+        return createEngineDescription(preprocessingPipeline, xmiWriter);
     }
 
     /**

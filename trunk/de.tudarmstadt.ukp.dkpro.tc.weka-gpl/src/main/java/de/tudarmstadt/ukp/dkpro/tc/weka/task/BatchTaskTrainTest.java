@@ -25,7 +25,7 @@ public class BatchTaskTrainTest
 {
 
     private String experimentName;
-    private AnalysisEngineDescription aggregate;
+    private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
     private Class<? extends Report> innerReport;
 
@@ -51,15 +51,16 @@ public class BatchTaskTrainTest
      *            collection reader for train data
      * @param aReaderTest
      *            collection reader for test data
-     * @param aAggregate
+     * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
      * @param aDataWriterClassName
      *            data writer class name
      */
-    public BatchTaskTrainTest(String aExperimentName, AnalysisEngineDescription aAggregate)
+    public BatchTaskTrainTest(String aExperimentName,
+            AnalysisEngineDescription preprocessingPipeline)
     {
         setExperimentName(aExperimentName);
-        setAggregate(aAggregate);
+        setPreprocessingPipeline(preprocessingPipeline);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
     }
@@ -85,7 +86,7 @@ public class BatchTaskTrainTest
      */
     private void init()
     {
-        if (experimentName == null || aggregate == null)
+        if (experimentName == null || preprocessingPipeline == null)
 
         {
             throw new IllegalStateException(
@@ -97,7 +98,7 @@ public class BatchTaskTrainTest
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setAggregate(aggregate);
+        preprocessTaskTrain.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
@@ -105,7 +106,7 @@ public class BatchTaskTrainTest
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setAggregate(aggregate);
+        preprocessTaskTest.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
@@ -159,9 +160,9 @@ public class BatchTaskTrainTest
         this.experimentName = experimentName;
     }
 
-    public void setAggregate(AnalysisEngineDescription aggregate)
+    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
-        this.aggregate = aggregate;
+        this.preprocessingPipeline = preprocessingPipeline;
     }
 
     public void setOperativeViews(List<String> operativeViews)

@@ -69,7 +69,7 @@ public class NumberOfFoldsSetting implements Constants {
         BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            aggregate: getPreprocessing(),
+            preprocessingPipeline: getPreprocessing(),
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,

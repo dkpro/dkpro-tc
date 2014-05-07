@@ -35,7 +35,7 @@ public class BatchTaskCrossValidation
 {
 
     protected String experimentName;
-    protected AnalysisEngineDescription aggregate;
+    protected AnalysisEngineDescription preprocessingPipeline;
     protected List<String> operativeViews;
     protected int numFolds = 10;
     protected Class<? extends Report> innerReport;
@@ -59,18 +59,19 @@ public class BatchTaskCrossValidation
      *            name of the experiment
      * @param aReader
      *            collection reader for input data
-     * @param aAggregate
+     * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
      * @param aDataWriterClassName
      *            data writer class name
      * @param aNumFolds
      *            the number of folds for crossvalidation (default 10)
      */
-    public BatchTaskCrossValidation(String aExperimentName, AnalysisEngineDescription aAggregate,
+    public BatchTaskCrossValidation(String aExperimentName,
+            AnalysisEngineDescription preprocessingPipeline,
             int aNumFolds)
     {
         setExperimentName(aExperimentName);
-        setAggregate(aAggregate);
+        setPreprocessingPipeline(preprocessingPipeline);
         setNumFolds(aNumFolds);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
@@ -92,7 +93,7 @@ public class BatchTaskCrossValidation
         ClassNotFoundException
     {
 
-        if (experimentName == null || aggregate == null) {
+        if (experimentName == null || preprocessingPipeline == null) {
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and aggregate.");
         }
@@ -107,7 +108,7 @@ public class BatchTaskCrossValidation
 
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
-        preprocessTask.setAggregate(aggregate);
+        preprocessTask.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTask.setOperativeViews(operativeViews);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
         preprocessTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
@@ -218,9 +219,9 @@ public class BatchTaskCrossValidation
         this.experimentName = experimentName;
     }
 
-    public void setAggregate(AnalysisEngineDescription aggregate)
+    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
-        this.aggregate = aggregate;
+        this.preprocessingPipeline = preprocessingPipeline;
     }
 
     public void setOperativeViews(List<String> operativeViews)

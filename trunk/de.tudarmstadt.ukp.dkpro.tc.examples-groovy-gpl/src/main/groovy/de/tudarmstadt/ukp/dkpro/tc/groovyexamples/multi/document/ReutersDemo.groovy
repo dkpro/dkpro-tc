@@ -142,7 +142,7 @@ public class ReutersDemo implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            aggregate:	getPreprocessing(),
+            preprocessingPipeline:	getPreprocessing(),
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
@@ -173,7 +173,7 @@ public class ReutersDemo implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            aggregate:	getPreprocessing(),
+            preprocessingPipeline:	getPreprocessing(),
             innerReport: ClassificationReport.class,
             parameterSpace : [
                 dimReaders,
