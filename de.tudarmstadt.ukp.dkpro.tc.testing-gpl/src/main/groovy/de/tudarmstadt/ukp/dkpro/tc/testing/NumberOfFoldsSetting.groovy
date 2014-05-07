@@ -5,6 +5,23 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+
+import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.resource.ResourceInitializationException
+
+import weka.classifiers.bayes.NaiveBayes
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
+import de.tudarmstadt.ukp.dkpro.lab.Lab
+import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
+import de.tudarmstadt.ukp.dkpro.tc.testing.io.LineInstanceReader
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.
@@ -70,10 +87,10 @@ public class NumberOfFoldsSetting implements Constants {
     }
 
     private AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    throws ResourceInitializationException
     {
         return createEngineDescription(
-            createEngineDescription(BreakIteratorSegmenter.class)
+        createEngineDescription(BreakIteratorSegmenter.class)
         );
     }
 
