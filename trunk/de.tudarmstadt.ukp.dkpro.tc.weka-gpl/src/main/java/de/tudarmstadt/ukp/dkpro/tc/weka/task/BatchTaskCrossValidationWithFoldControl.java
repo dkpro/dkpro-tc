@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -159,8 +160,10 @@ public class BatchTaskCrossValidationWithFoldControl
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.addReport(OutcomeIDReport.class);
-        if (innerReport != null) {
-            testTask.addReport(innerReport);
+        if (innerReports != null) {
+            for (Class<? extends Report> report : innerReports) {
+                testTask.addReport(report);
+            }
         }
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
@@ -179,7 +182,7 @@ public class BatchTaskCrossValidationWithFoldControl
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        if (innerReport != null) {
+        if (innerReports != null) {
             crossValidationTask.addReport(BatchTrainTestReport.class);
         }
 

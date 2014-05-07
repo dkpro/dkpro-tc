@@ -55,7 +55,7 @@ public class BrownUnitPosDemo
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV",
                 getPreprocessing(), NUM_FOLDS);
-        batch.setInnerReport(ClassificationReport.class);
+        batch.addInnerReport(ClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);

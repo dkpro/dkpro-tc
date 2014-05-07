@@ -1,6 +1,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.mallet.task;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +39,7 @@ public class BatchTaskCrossValidation
     private List<String> operativeViews;
     private int numFolds;
     private boolean addInstanceId = false;
-    private Class<? extends Report> innerReport;
+    private List<Class<? extends Report>> innerReports;
 
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTask;
@@ -167,8 +168,10 @@ public class BatchTaskCrossValidation
         // classification (numFolds times)
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        if (innerReport != null) {
-            testTask.addReport(innerReport);
+        if (innerReports != null) {
+            for (Class<? extends Report> report : innerReports) {
+                testTask.addReport(report);
+            }
         }
         if (addInstanceId) {
             testTask.addReport(OutcomeIDReport.class);
@@ -189,7 +192,7 @@ public class BatchTaskCrossValidation
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        if (innerReport != null) {
+        if (innerReports != null) {
             crossValidationTask.addReport(BatchTrainTestReport.class);
         }
 
@@ -232,13 +235,16 @@ public class BatchTaskCrossValidation
     }
 
     /**
-     * Sets the report for the inner test task
+     * Adds a report for the inner test task
      * 
      * @param innerReport
      *            classification report or regression report
      */
-    public void setInnerReport(Class<? extends Report> innerReport)
+    public void addInnerReport(Class<? extends Report> innerReport)
     {
-        this.innerReport = innerReport;
+        if (innerReports == null) {
+            innerReports = new ArrayList<Class<? extends Report>>();
+        }
+        this.innerReports.add(innerReport);
     }
 }

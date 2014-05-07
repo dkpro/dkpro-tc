@@ -70,7 +70,7 @@ public class NumberOfFoldsSetting implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReport: ClassificationReport.class,
+            innerReports: [ClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

@@ -31,8 +31,8 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 /**
  * A demo for pair classification with a regression outcome.
  * 
- * This uses the Semantic Text Similarity (STS) from the SemEval 2012 task.
- * It computes text similarity features between document pairs and <br>
+ * This uses the Semantic Text Similarity (STS) from the SemEval 2012 task. It computes text
+ * similarity features between document pairs and <br>
  * then learns a regression model that predicts similarity of unseen document pairs.
  */
 public class SemanticTextSimilarityDemo
@@ -96,7 +96,7 @@ public class SemanticTextSimilarityDemo
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.setInnerReport(RegressionReport.class);
+        batch.addInnerReport(RegressionReport.class);
         batch.addReport(BatchCrossValidationReport.class);
 
         // Run
@@ -110,7 +110,7 @@ public class SemanticTextSimilarityDemo
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("RegressionExampleTrainTest",
                 getPreprocessing());
-        batch.setInnerReport(RegressionReport.class);
+        batch.addInnerReport(RegressionReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);

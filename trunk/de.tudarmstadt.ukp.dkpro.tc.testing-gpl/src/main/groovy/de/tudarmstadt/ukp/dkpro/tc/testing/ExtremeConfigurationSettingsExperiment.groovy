@@ -116,7 +116,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReport: ClassificationReport.class,
+            innerReports: [ClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -136,7 +136,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReport: ClassificationReport.class,
+            innerReports: [ClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -163,7 +163,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReport: ClassificationReport.class,
+            innerReports: [ClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -183,7 +183,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReport: ClassificationReport.class,
+            innerReports: [ClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
