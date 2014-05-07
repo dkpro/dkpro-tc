@@ -121,8 +121,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReport: ClassificationReport.class,
-            parameterSpace : [
+            innerReports: [ClassificationReport.class],            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -150,8 +149,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReport: ClassificationReport.class,
-            parameterSpace : [
+            innerReports: [ClassificationReport.class],            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,

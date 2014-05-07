@@ -28,6 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.FeatureValuesReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
@@ -64,7 +65,7 @@ public class TwentyNewsgroupsDemo
     public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
-    	// train/test will use both, while cross-validation will only use the train part
+        // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
         dimReaders.put(
@@ -120,7 +121,10 @@ public class TwentyNewsgroupsDemo
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
                 getPreprocessing(), NUM_FOLDS);
-        batch.setInnerReport(ClassificationReport.class);
+        batch.addInnerReport(ClassificationReport.class);
+        // add a second report to TestTask which creates a report about average feature values for
+        // each outcome label
+        batch.addInnerReport(FeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
@@ -137,7 +141,10 @@ public class TwentyNewsgroupsDemo
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
                 getPreprocessing());
-        batch.setInnerReport(ClassificationReport.class);
+        batch.addInnerReport(ClassificationReport.class);
+        // add a second report to TestTask which creates a report about average feature values for
+        // each outcome label
+        batch.addInnerReport(FeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);

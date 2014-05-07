@@ -1,5 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -27,7 +28,7 @@ public class BatchTaskTrainTest
     private String experimentName;
     private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
-    private Class<? extends Report> innerReport;
+    private List<Class<? extends Report>> innerReports;
 
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTaskTrain;
@@ -137,8 +138,10 @@ public class BatchTaskTrainTest
         // test task operating on the models of the feature extraction train and test tasks
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        if (innerReport != null) {
-            testTask.addReport(innerReport);
+        if (innerReports != null) {
+            for (Class<? extends Report> report : innerReports) {
+                testTask.addReport(report);
+            }
         }
         testTask.addReport(OutcomeIDReport.class);
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
@@ -176,8 +179,11 @@ public class BatchTaskTrainTest
      * @param innerReport
      *            classification report or regression report
      */
-    public void setInnerReport(Class<? extends Report> innerReport)
+    public void addInnerReport(Class<? extends Report> innerReport)
     {
-        this.innerReport = innerReport;
+        if (innerReports == null) {
+            innerReports = new ArrayList<Class<? extends Report>>();
+        }
+        this.innerReports.add(innerReport);
     }
 }

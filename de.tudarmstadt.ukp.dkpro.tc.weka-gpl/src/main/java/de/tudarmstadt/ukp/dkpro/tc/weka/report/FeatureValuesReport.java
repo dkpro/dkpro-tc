@@ -34,7 +34,7 @@ public class FeatureValuesReport
     /**
      * Name of the file where the results of feature value analysis are stored
      */
-    public static final String FEATURE_VALUE_KEY = "featurevalues.csv";
+    public static final String FEATURE_VALUE_KEY = "featureValues.csv";
 
     // FIXME instead of iterating the data various time (takes long for large datasets), maybe a
     // matrix or map should be created while iterating only once
