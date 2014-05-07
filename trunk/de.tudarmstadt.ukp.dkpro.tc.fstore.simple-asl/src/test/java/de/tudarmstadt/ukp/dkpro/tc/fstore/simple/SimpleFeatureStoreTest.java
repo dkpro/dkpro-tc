@@ -29,7 +29,7 @@ public class SimpleFeatureStoreTest {
 		fs.addInstance(instance);
 		
 		assertEquals(2, fs.getNumberOfInstances());
-		assertEquals("outcome", fs.getUniqueOutcomes().iterator().next());
+		assertEquals("outcome", fs.getUniqueOutcomes().first());
 		assertEquals(f1, fs.getInstance(0).getFeatures().get(0));
 	}
 	
