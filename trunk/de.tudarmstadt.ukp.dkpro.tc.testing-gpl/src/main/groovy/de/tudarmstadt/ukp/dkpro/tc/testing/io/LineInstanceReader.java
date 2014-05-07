@@ -21,20 +21,33 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
+/**
+ * Single label reader that imports test files where each instance is on a new line.
+ * Outcome is set to dummy values.
+ */
 public class LineInstanceReader
     extends JCasCollectionReader_ImplBase
     implements TCReaderSingleLabel 
 {
         private static final String DEFAULT_LANGUAGE = "en";
 
+        /**
+         * Location of the input file
+         */
         public static final String PARAM_SOURCE_LOCATION = ComponentParameters.PARAM_SOURCE_LOCATION;
         @ConfigurationParameter(name=PARAM_SOURCE_LOCATION, mandatory=true)
         private String inputFileString;
 
+        /**
+         * Language of the input data
+         */
         public static final String PARAM_LANGUAGE = ComponentParameters.PARAM_LANGUAGE;
         @ConfigurationParameter(name=PARAM_LANGUAGE, mandatory=false, defaultValue=DEFAULT_LANGUAGE)
         private String language;
 
+        /**
+         * Encoding of the input file
+         */
         public static final String PARAM_ENCODING = ComponentParameters.PARAM_SOURCE_ENCODING;
         @ConfigurationParameter(name=PARAM_ENCODING, mandatory=false, defaultValue="UTF-8")
         private String encoding;

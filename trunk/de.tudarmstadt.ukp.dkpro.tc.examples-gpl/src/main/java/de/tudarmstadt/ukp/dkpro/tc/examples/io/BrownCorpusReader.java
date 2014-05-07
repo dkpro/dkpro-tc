@@ -19,11 +19,17 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
+/**
+ * Reads the Brown corpus and sets POS tags for each tokens as classification outcome.
+ */
 public class BrownCorpusReader
     extends TeiReader
     implements TCReaderSequence
 {
     
+    /**
+     * Whether coarse-grained or fine-grained POS tags should be used.
+     */
     public static final String PARAM_USE_COARSE_GRAINED = "useCoarseGrained";
     @ConfigurationParameter(name = PARAM_USE_COARSE_GRAINED, mandatory = true, defaultValue="false")
     protected boolean useCoarseGrained;

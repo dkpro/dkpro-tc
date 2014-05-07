@@ -31,6 +31,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
 public class ValidityCheckTask
     extends UimaTaskBase
 {
+    /**
+     * Public name of the task key
+     */
     public static final String DUMMY_KEY = "dummy";
 
     @Discriminator
@@ -88,7 +91,7 @@ public class ValidityCheckTask
 
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(learningMode);
-        parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER);
+        parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
         parameters.add(dataWriter);
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(featureMode);

@@ -33,13 +33,30 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.filter.ReplaceMissingValuesWithZeroFilte
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
+/**
+ * Utils for WEKA
+ */
 public class WekaUtils
+	implements Constants
 {
-    public static final String classAttributePrefix = "__";
-    public static final String classAttributeName = "outcome";
-    public static final String relationName = "dkpro-tc-generated";
+
+    /**
+     * Name of the relation == name of the arff file
+     */
+    public static final String RELATION_NAME = "dkpro-tc-generated";
+    /**
+     * TODO: ??
+     */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
 
+    /**
+     * TODO: ??
+     * @param trainData
+     * @param testData
+     * @param multilabel
+     * @return
+     * @throws Exception
+     */
     public static Instances makeOutcomeClassesCompatible(Instances trainData, Instances testData,
             boolean multilabel)
         throws Exception
@@ -160,12 +177,32 @@ public class WekaUtils
         return list;
     }
 
+    /**
+     * Converts a feature store to a list of instances.
+     * Single-label case.
+     * 
+     * @param outputFile
+     * @param instanceList
+     * @throws Exception
+     */
     public static void instanceListToArffFile(File outputFile, FeatureStore instanceList)
         throws Exception
     {
         instanceListToArffFile(outputFile, instanceList, false, false);
     }
 
+    /**
+     * Converts a feature store to a list of instances.
+     * Single-label case.
+     * 
+     * TODO: maybe rename to "featureStore2ArffFile"
+     * 
+     * @param outputFile
+     * @param instanceList
+     * @param useDenseInstances
+     * @param isRegressionExperiment
+     * @throws Exception
+     */
     public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception
@@ -181,17 +218,17 @@ public class WekaUtils
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
-        List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
+    	List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
         Attribute outcomeAttribute = createOutcomeAttribute(outcomeList,
                 isRegressionExperiment);
-        if (attributeStore.containsAttributeName(classAttributeName)) {
+        if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
             System.err
                     .println("A feature with name \"outcome\" was found. Renaming outcome attribute");
-            outcomeAttribute = outcomeAttribute.copy(classAttributePrefix + classAttributeName);
+            outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
         }
         attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
 
-        Instances wekaInstances = new Instances(relationName, attributeStore.getAttributes(),
+        Instances wekaInstances = new Instances(RELATION_NAME, attributeStore.getAttributes(),
                 instanceList.size());
         wekaInstances.setClass(outcomeAttribute);
 
@@ -239,6 +276,18 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
+    /**
+    /**
+     * Converts a feature store to a list of instances.
+     * Multi-label case.
+     * 
+     * TODO: maybe rename to "featureStore2ArffFile"
+     * 
+     * @param outputFile
+     * @param featureStore
+     * @param useDenseInstances
+     * @throws Exception
+     */
     public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
             boolean useDenseInstances)
         throws Exception
@@ -257,7 +306,7 @@ public class WekaUtils
         }
 
         // for Meka-internal use
-        Instances wekaInstances = new Instances(relationName + ": -C " + outcomeAttributes.size()
+        Instances wekaInstances = new Instances(RELATION_NAME + ": -C " + outcomeAttributes.size()
                 + " ", attributeStore.getAttributes(), featureStore.size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
 
@@ -283,7 +332,7 @@ public class WekaUtils
             for (Attribute label : outcomeAttributes) {
                 String labelname = label.name();
                 featureValues[attributeStore.getAttributeOffset(labelname)] = instanceOutcome
-                        .contains(labelname.split(classAttributePrefix)[1]) ? 1.0d : 0.0d;
+                        .contains(labelname.split(CLASS_ATTRIBUTE_PREFIX)[1]) ? 1.0d : 0.0d;
             }
 
             weka.core.Instance wekaInstance;
@@ -338,7 +387,7 @@ public class WekaUtils
         }
 
         // for Meka-internal use
-        Instances wekaInstances = new Instances(relationName + ": -C " + outcomeAttributes.size()
+        Instances wekaInstances = new Instances(RELATION_NAME + ": -C " + outcomeAttributes.size()
                 + " ", attributeStore.getAttributes(), instance.getFeatures().size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
         // System.out.println(instances);
@@ -355,12 +404,12 @@ public class WekaUtils
     private static Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
     {
         if (isRegresion) {
-            return new Attribute(classAttributeName);
+            return new Attribute(CLASS_ATTRIBUTE_NAME);
         }
         else {
             // make the order of the attributes predictable
             Collections.sort(outcomeValues);
-            return new Attribute(classAttributeName, outcomeValues);
+            return new Attribute(CLASS_ATTRIBUTE_NAME, outcomeValues);
         }
     }
 
@@ -371,7 +420,7 @@ public class WekaUtils
         List<Attribute> atts = new ArrayList<Attribute>();
 
         for (String outcome : outcomeValues) {
-            atts.add(new Attribute(classAttributePrefix + outcome, Arrays.asList(new String[] {
+            atts.add(new Attribute(CLASS_ATTRIBUTE_PREFIX + outcome, Arrays.asList(new String[] {
                     "0", "1" })));
         }
         return atts;
@@ -407,7 +456,7 @@ public class WekaUtils
         Attribute outcomeAttribute = createOutcomeAttribute(allClasses, isRegressionExperiment);
         attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
 
-        Instances wekaInstances = new Instances(relationName, attributeStore.getAttributes(),
+        Instances wekaInstances = new Instances(RELATION_NAME, attributeStore.getAttributes(),
                 instance.getFeatures().size());
         wekaInstances.setClass(outcomeAttribute);
 

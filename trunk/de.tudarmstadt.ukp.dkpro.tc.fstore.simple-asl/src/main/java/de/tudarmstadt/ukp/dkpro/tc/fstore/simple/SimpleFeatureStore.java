@@ -30,6 +30,9 @@ public class SimpleFeatureStore
     private List<Integer> sequencePositions;
     private TreeSet<String> featureNames;
 
+    /**
+     * Creates an empty feature store
+     */
     public SimpleFeatureStore() {
         this.instanceList = new ArrayList<List<Object>>();
         this.outcomeList = new ArrayList<List<String>>();
@@ -98,10 +101,10 @@ public class SimpleFeatureStore
         return this.outcomeList.get(i);
     }
     
-    public List<List<String>> getOutcomeLists()
-    {
-        return outcomeList;
-    }
+//    public List<List<String>> getOutcomeLists()
+//    {
+//        return outcomeList;
+//    }
     
     @Override
     public Set<String> getUniqueOutcomes()
@@ -113,10 +116,10 @@ public class SimpleFeatureStore
         return uniqueOutcomes;
     }
 
-    public void setOutcomeList(List<List<String>> outcomeList)
-    {
-        this.outcomeList = outcomeList;
-    }
+//    public void setOutcomeList(List<List<String>> outcomeList)
+//    {
+//        this.outcomeList = outcomeList;
+//    }
     
     @Override
     public int size() {

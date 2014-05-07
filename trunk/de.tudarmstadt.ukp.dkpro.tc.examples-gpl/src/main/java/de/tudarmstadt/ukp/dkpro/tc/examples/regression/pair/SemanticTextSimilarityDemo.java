@@ -28,6 +28,13 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
+/**
+ * A demo for pair classification with a regression outcome.
+ * 
+ * This uses the Semantic Text Similarity (STS) from the SemEval 2012 task.
+ * It computes text similarity features between document pairs and <br>
+ * then learns a regression model that predicts similarity of unseen document pairs.
+ */
 public class SemanticTextSimilarityDemo
 {
     public static final String LANGUAGE_CODE = "en";

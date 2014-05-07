@@ -31,7 +31,10 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 public class FeatureValuesReport
     extends ReportBase
 {
-    public static final String ID_OUTCOME_KEY = "featurevalues.csv";
+    /**
+     * Name of the file where the results of feature value analysis are stored
+     */
+    public static final String FEATURE_VALUE_KEY = "featurevalues.csv";
 
     // FIXME instead of iterating the data various time (takes long for large datasets), maybe a
     // matrix or map should be created while iterating only once
@@ -215,7 +218,7 @@ public class FeatureValuesReport
             }
         }
 
-        getContext().storeBinary(ID_OUTCOME_KEY, new PropertiesAdapter(props));
+        getContext().storeBinary(FEATURE_VALUE_KEY, new PropertiesAdapter(props));
     }
 
 }

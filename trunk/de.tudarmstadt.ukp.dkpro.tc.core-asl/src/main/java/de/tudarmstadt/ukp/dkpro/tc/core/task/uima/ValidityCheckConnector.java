@@ -32,30 +32,28 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
  * 
  */
 public class ValidityCheckConnector
-    extends JCasAnnotator_ImplBase
+    extends ConnectorBase
 {
 
-    public static final String PARAM_DATA_WRITER = "dataWriter";
-    @ConfigurationParameter(name = PARAM_DATA_WRITER, mandatory = true)
-    private String dataWriter;
-
-    public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
-    @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected String[] featureExtractors;
-
+    /**
+     * Bipartition threshold used in multi-label experiments
+     */
     public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
     @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = false)
     private String bipartitionThreshold;
 
-    public static final String PARAM_LEARNING_MODE = "learningMode";
+    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+    private String dataWriter;
+
+    @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected String[] featureExtractors;
+
     @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
     private String learningMode;
 
-    public static final String PARAM_FEATURE_MODE = "featureMode";
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
     private String featureMode;
 
-    public static final String PARAM_DEVELOPER_MODE = "developerMode";
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
 

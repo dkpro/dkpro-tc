@@ -8,9 +8,16 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 
+/**
+ * A test setup for native Weka access
+ */
 public class WekaArffTest
 {
 
+    /**
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args)
         throws Exception
     {

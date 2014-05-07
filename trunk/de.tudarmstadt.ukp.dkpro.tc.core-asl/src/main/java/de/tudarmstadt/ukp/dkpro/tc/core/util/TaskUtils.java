@@ -210,6 +210,18 @@ public class TaskUtils
         return requiredTypes;
     }
 
+    /**
+     * @param parameters
+     * @param outputPath
+     * @param dataWriter
+     * @param learningMode
+     * @param featureMode
+     * @param addInstanceId
+     * @param developerMode
+     * @param featureExtractorClassNames
+     * @return A fully configured feature extractor connector
+     * @throws ResourceInitializationException
+     */
     public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
             boolean addInstanceId, boolean developerMode, String... featureExtractorClassNames)

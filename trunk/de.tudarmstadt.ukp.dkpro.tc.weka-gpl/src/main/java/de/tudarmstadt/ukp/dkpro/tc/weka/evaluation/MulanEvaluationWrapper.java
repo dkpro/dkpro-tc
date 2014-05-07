@@ -39,6 +39,13 @@ import mulan.evaluation.measure.SubsetAccuracy;
 public class MulanEvaluationWrapper
 {
 
+    /**
+     * TODO: ??
+     * @param predictions
+     * @param actuals
+     * @param threshold
+     * @return
+     */
     public static List<Measure> getMulanEvals(ArrayList<double[]> predictions, boolean[][] actuals,
             double threshold)
     {
@@ -124,6 +131,11 @@ public class MulanEvaluationWrapper
         return measures;
     }
 
+    /**
+     * TODO: ??
+     * @param actuals
+     * @return
+     */
     public static boolean[][] getBooleanArrayFromList(ArrayList<int[]> actuals)
     {
         boolean[][] booleanA = new boolean[actuals.size()][actuals.get(0).length];
