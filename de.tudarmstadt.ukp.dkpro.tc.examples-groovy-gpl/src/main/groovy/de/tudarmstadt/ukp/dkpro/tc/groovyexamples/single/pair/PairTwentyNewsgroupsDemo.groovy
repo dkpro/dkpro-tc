@@ -57,14 +57,14 @@ class PairTwentyNewsgroupsDemo implements Constants {
         readerTestParams: [
             PairTwentyNewsgroupsReader.PARAM_LISTFILE,
             listFilePathTest,
-            PairTwentyNewsgroupsReader.PARAM_LANGUAGE2,
+            PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
             languageCode
         ],
         readerTrain: PairTwentyNewsgroupsReader.class,
         readerTrainParams: [
             PairTwentyNewsgroupsReader.PARAM_LISTFILE,
             listFilePathTrain,
-            PairTwentyNewsgroupsReader.PARAM_LANGUAGE2,
+            PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
             languageCode
         ]
     ]);
