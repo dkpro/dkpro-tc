@@ -172,11 +172,6 @@
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.api.fstore.simple-asl</artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
