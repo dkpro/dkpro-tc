@@ -34,7 +34,7 @@ public interface Constants
      */
 
     /**
-     * TODO: where and why is this used?
+     * TODO Issue 117 where and why is this used?
      */
     public static final String CLASS_ATTRIBUTE_PREFIX = "__";
     /**
@@ -174,11 +174,11 @@ public interface Constants
      */
     public static final String PR_CURVE_KEY = "PR_curve.svg";
     /**
-     * TODO: ?
+     * Name of the confusion matrix dimension showing the actual values
      */
     public static final String CM_ACTUAL = " (act.)";
     /**
-     * TODO: ?
+     * Name of the confusion matrix dimension showing the predicted values
      */
     public static final String CM_PREDICTED = " (pred.)";
 

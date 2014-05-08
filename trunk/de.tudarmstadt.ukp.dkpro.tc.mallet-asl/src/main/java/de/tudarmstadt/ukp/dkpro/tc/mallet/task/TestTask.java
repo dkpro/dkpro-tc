@@ -51,7 +51,7 @@ public class TestTask
     public static final String OUTPUT_KEY = "output";
     public static final String RESULTS_KEY = "results.prop";
     public static final String PREDICTIONS_KEY = "predictions.txt.gz";
-    public static final String TRAINING_DATA_KEY = "training-data.txt.gz"; //TODO add from Constants
+    public static final String TRAINING_DATA_KEY = "training-data.txt.gz"; //TODO Issue 127: add from Constants
     public static final String EVALUATION_DATA_KEY = "evaluation.csv";
     public static final String CONFUSION_MATRIX_KEY = "confusionMatrix.csv";
 //    public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";

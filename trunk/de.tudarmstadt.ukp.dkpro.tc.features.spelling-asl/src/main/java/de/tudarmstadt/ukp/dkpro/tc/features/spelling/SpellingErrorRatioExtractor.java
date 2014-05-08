@@ -24,7 +24,7 @@ public class SpellingErrorRatioExtractor
     implements DocumentFeatureExtractor
 {
 
-    // TODO could be generalized to AnnotationRatioFE
+    // TODO Issue 125: could be generalized to AnnotationRatioFE
     
     @Override
     public List<Feature> extract(JCas view)

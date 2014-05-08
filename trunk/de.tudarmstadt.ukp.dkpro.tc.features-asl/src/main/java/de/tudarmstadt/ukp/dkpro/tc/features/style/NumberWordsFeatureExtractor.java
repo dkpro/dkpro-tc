@@ -28,7 +28,6 @@ public class NumberWordsFeatureExtractor
 
     @Override
     public List<Feature> extract(JCas jcas)
-    // TODO: not adapted for focus annotations
     {
 
         List<Feature> featList = new ArrayList<Feature>();

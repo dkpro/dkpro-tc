@@ -57,7 +57,7 @@ public class ContextualityMeasureFeatureExtractor
 
         int interjCount = 0;
         for (POS tag : JCasUtil.select(jcas, O.class)) {
-            // FIXME this is tagset specific
+            // FIXME Issue 123: this is tagset specific
             if (tag.getPosValue().contains("UH")) {
                 interjCount++;
             }

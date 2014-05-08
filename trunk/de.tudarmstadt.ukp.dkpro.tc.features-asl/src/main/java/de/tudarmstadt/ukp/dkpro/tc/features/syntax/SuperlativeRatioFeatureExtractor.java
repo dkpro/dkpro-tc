@@ -32,7 +32,7 @@ public class SuperlativeRatioFeatureExtractor
         int adjectives = 0;
         for (ADJ tag : JCasUtil.select(jcas, ADJ.class)) {
             adjectives++;
-            // FIXME depends on tagset
+            // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("JJS")) {
                 superlativeAdj++;
             }
@@ -46,7 +46,7 @@ public class SuperlativeRatioFeatureExtractor
         int adverbs = 0;
         for (ADV tag : JCasUtil.select(jcas, ADV.class)) {
             adverbs++;
-            // FIXME depends on tagset
+            // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("RBS")) {
                 superlativeAdv++;
             }

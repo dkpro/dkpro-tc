@@ -23,7 +23,7 @@ public class FeatureUtil
      */
     public static String escapeFeatureName(String name) {
         
-        // TODO improve the escaping
+        // TODO Issue 120: improve the escaping
         // the fix was necessary due to Issue 32
         // http://code.google.com/p/dkpro-tc/issues/detail?id=32
         StringBuilder sb = new StringBuilder();

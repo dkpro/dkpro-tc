@@ -13,7 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.SingleLabelReaderBase;
 /**
  * Reads the Movie Review Corpus
  * 
- * TODO: do we actually have an example that uses this?
+ * TODO Issue 122: do we actually have an example that uses this?
  */
 public class MovieReviewCorpusReader
     extends SingleLabelReaderBase

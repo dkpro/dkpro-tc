@@ -45,12 +45,12 @@ public class WekaUtils
      */
     public static final String RELATION_NAME = "dkpro-tc-generated";
     /**
-     * TODO: ??
+     * TODO: Issue 117
      */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
 
     /**
-     * TODO: ??
+     * TODO: Issue 177
      * @param trainData
      * @param testData
      * @param multilabel
