@@ -191,15 +191,6 @@ public class NGramUtils
         
         return charNgrams;
     }
-    
-    public static FrequencyDistribution<String> getAnnotationPosNgrams(JCas jcas, Annotation anno, int minN, int maxN, boolean useCanonical) {
-        FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
-        
-        System.err.println("Attention: unit classification POS ngrams are not yet implemented");
-        // FIXME implement this
-        return fd;
-    }
-
 
     /**
      * An ngram (represented by the list of tokens) does not pass the stopword filter:

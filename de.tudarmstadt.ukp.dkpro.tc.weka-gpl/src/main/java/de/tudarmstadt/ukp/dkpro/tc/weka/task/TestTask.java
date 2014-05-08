@@ -60,7 +60,7 @@ public class TestTask
     @Discriminator
     String threshold;
 
-    // FIXME: this constants should be defined in a more generic place, shouldn't they?
+    // FIXME Issue 127: this constants should be defined in a more generic place, shouldn't they?
     public static final String INPUT_KEY_TRAIN = "input.train";
     public static final String INPUT_KEY_TEST = "input.test";
     public static final String OUTPUT_KEY = "output";

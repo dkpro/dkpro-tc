@@ -42,7 +42,7 @@ public class PastVsFutureFeatureExtractor
 
         for (V tag : JCasUtil.select(jcas, V.class)) {
             verbs++;
-            // FIXME depends on tagset
+            // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("VBD") || tag.getPosValue().contains("VBN")) {
                 pastVerbs++;
             }

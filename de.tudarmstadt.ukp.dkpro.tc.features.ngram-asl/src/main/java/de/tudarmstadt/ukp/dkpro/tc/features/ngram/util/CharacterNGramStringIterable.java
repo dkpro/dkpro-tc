@@ -29,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
  * @author zesch
  *
  */
-// FIXME - copied from DKPro Core - remove when switching to 1.6.0 release
+// FIXME Issue 124: copied from DKPro Core - remove when switching to 1.6.0 release
 public class CharacterNGramStringIterable implements Iterable<String>
 {
 	List<String> nGramList;

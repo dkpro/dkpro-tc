@@ -32,7 +32,7 @@ public class PluralRatioFeatureExtractor
         int singular = 0;
 
         for (POS tag : JCasUtil.select(jcas, N.class)) {
-            // FIXME depends on tagset
+            // FIXME Issue 123: depends on tagset
             if ((tag.getPosValue().equals("NNS")) || (tag.getPosValue().equals("NNPS"))
                     || (tag.getPosValue().equals("NNS"))) {
                 plural++;

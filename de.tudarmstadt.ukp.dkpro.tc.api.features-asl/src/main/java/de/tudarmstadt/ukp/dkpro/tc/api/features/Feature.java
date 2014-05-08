@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
  * @author Philipp Wetzler
  * @author Steven Bethard
  */
-//TODO replace with own Feature implementation?
+//TODO Issue 119: replace with own Feature implementation?
 public class Feature
     implements Serializable
 {

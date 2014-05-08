@@ -83,7 +83,6 @@ public abstract class PairNgramFETestBase
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)), SimpleFeatureStore.class);
-        // TODO why should there only be one instance and one outcome?
         assertEquals(1, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
         
