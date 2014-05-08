@@ -10,6 +10,9 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.SingleLabelReaderBase;
 
+/**
+ * Reads the classical TwentyNewsgroups text classification corpus.
+ */
 public class TwentyNewsgroupsCorpusReader
     extends SingleLabelReaderBase
 {

@@ -24,10 +24,16 @@ public class SimilarityPairFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements PairFeatureExtractor
 {
+    /**
+     * Feature path specifying the document segments (tokens, lemmas, sentences) that the measure should use for computing similarity
+     */
     public static final String PARAM_SEGMENT_FEATURE_PATH = "segmentFeaturePath";
     @ConfigurationParameter(name = PARAM_SEGMENT_FEATURE_PATH, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     private String segmentFeaturePath;
 
+    /**
+     * Text similarity measure to be used.
+     */
     public static final String PARAM_TEXT_SIMILARITY_RESOURCE = "textSimilarityResource";
     @ExternalResource(key = PARAM_TEXT_SIMILARITY_RESOURCE, mandatory = true)
     private TextSimilarityResourceBase textSimilarityResource;

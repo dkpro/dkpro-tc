@@ -19,7 +19,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
  * Multiple exclamations in a row are considered as one exclamation sentence.
  * 
  */
-
 public class ExclamationFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor

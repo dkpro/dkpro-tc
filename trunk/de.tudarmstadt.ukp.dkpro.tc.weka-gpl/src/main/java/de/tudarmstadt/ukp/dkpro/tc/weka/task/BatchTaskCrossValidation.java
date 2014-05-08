@@ -96,7 +96,7 @@ public class BatchTaskCrossValidation
 
         if (experimentName == null || preprocessingPipeline == null) {
             throw new IllegalStateException(
-                    "You must set experiment name, datawriter and aggregate.");
+                    "You must set experiment name, datawriter and preprocessing aggregate.");
         }
 
         if (numFolds < 2) {

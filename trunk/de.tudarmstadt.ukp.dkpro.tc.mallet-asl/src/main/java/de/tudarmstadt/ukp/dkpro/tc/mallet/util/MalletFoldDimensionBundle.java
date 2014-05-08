@@ -10,7 +10,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
 
-// FIXME - instanceID should contains sequenceID - so we can easily make sure that sequences are completed moved into folds
+// FIXME - instanceID should contain sequenceID - so we can easily make sure that sequences are completed moved into folds
 /**
  * Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in the same fold
  * 

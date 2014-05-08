@@ -23,6 +23,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
 
+/**
+ * Extracts NP-VP-NP triples from chunked sentences.
+ * Uses all triples that appeared in the training data with a frequency above the threshold as features.
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
 public class ChunkTripleDFE
     extends FeatureExtractorResource_ImplBase

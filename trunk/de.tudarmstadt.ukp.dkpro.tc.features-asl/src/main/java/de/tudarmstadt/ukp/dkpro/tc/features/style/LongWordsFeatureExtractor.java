@@ -11,7 +11,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
-/*
+/**
  * Calculates the proportions of tokens that are longer than 5 characters
  * and tokens shorter than 3 characters to all tokens. This property can 
  * be useful for capturing stylistic differences, e.g. in gender recognition.

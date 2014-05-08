@@ -13,6 +13,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneCharacterSkipNgramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
+/**
+ * Extracts characters skip-ngrams.
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LuceneSkipCharacterNGramDFE
     extends LuceneCharacterSkipNgramFeatureExtractorBase

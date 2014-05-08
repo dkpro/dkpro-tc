@@ -16,8 +16,11 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
 
+/**
+ * Report that computes evaluation results given the classification results.
+ */
 public class ClassificationReport
-extends ReportBase
+	extends ReportBase
 {
 
 	List<String> actualLabelsList = new ArrayList<String>();

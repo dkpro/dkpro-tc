@@ -30,7 +30,7 @@ public class PairTwentyNewsgroupsReaderTest
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
         		PairTwentyNewsgroupsReader.class,
         		PairTwentyNewsgroupsReader.PARAM_LISTFILE, "src/test/resources/data/pairs/pairslist",
-        		PairTwentyNewsgroupsReader.PARAM_LANGUAGE2, "en");
+        		PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, "en");
 
         int i = 0;
         for (JCas jcas : new JCasIterable(reader)) {
