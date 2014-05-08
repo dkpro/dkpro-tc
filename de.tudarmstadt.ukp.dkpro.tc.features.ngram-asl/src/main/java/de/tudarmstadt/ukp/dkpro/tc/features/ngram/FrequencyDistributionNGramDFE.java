@@ -15,6 +15,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+@Deprecated
 public class FrequencyDistributionNGramDFE
     extends FrequencyDistributionNGramFeatureExtractorBase
     implements DocumentFeatureExtractor

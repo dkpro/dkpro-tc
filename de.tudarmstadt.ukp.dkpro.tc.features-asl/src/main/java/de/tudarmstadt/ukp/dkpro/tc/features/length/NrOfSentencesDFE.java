@@ -12,12 +12,18 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
+/**
+ * Extracts the number of documents in the sentence
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
 public class NrOfSentencesDFE
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
 
+    /**
+     * Public name of the feature "number of sentences"
+     */
     public static final String FN_NR_OF_SENTENCES = "NrofSentences";
 
     @Override

@@ -13,6 +13,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
+/**
+ * Extracts the type-token ration in the document
+ */
 public class TypeTokenRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor

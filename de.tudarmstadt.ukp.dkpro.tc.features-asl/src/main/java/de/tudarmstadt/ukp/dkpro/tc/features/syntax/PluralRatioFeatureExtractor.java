@@ -13,6 +13,11 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
+/**
+ * Extracts the ratio of plural to total nouns.
+ * 
+ * Works for Penn Treebank POS tags only.
+ */
 public class PluralRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor

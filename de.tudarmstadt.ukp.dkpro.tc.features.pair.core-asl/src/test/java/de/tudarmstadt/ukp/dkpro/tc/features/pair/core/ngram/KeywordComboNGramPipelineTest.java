@@ -13,7 +13,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedKeywordNGramPairMetaCollector;
 
 public class KeywordComboNGramPipelineTest

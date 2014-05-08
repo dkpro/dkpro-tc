@@ -25,6 +25,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
+/**
+ * Extracts the ratio of each universal POS tags to the total number of tags 
+ */
 public class POSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor

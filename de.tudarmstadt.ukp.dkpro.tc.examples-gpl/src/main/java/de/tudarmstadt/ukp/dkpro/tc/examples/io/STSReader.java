@@ -19,15 +19,24 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 
+/**
+ * Reads the Semantic Text Similarity (STS) SemEval format.
+ */
 public class STSReader
     extends AbstractPairReader
     implements TCReaderSingleLabel
 {
 
+    /**
+     * File that lists the the text pairs to be used. One pair per line, tab separated.
+     */
     public static final String PARAM_INPUT_FILE = "InputFile";
     @ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = true)
     protected File inputFile;
 
+    /**
+     * The gold standard values for each pair. Same line offsets as in the text pair file.
+     */
     public static final String PARAM_GOLD_FILE = "GoldFile";
     @ConfigurationParameter(name = PARAM_GOLD_FILE, mandatory = true)
     protected File goldFile;

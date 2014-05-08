@@ -11,10 +11,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
-/*
+/**
  * Quick, very simplified approximation of usage of past tense
  * in comparison to present/future tense in the text.
+ * 
  * Works for Penn Treebank POS tags only.
+ * 
  * Captures the ratio of all verbs to
  * "VBD" (verb praeterite) and "VBN" (verb past participle) as past and
  * "VB" (verb base form), "VBP" (verb present) and "VBZ" (verb present 3rd pers sg) as present/future.

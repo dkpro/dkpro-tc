@@ -13,12 +13,18 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
+/**
+ * Extracts the number of sentences in this classification unit
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
 public class NrOfSentencesUFE
     extends FeatureExtractorResource_ImplBase
     implements ClassificationUnitFeatureExtractor
 {
 
+    /**
+     * Public name of the feature "number of sentences in this unit"
+     */
     public static final String FN_NR_OF_SENTENCES = "NrofSentences";
 
     @Override

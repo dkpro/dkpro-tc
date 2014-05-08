@@ -13,6 +13,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
+/**
+ * Extracts token ngrams where tokens are first converted to their phonetic representation (e.g. Soundex).
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LucenePhoneticNGramDFE

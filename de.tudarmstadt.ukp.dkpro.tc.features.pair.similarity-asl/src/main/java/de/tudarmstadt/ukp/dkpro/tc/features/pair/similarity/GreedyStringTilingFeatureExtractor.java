@@ -12,6 +12,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.algorithms.lexical.string.GreedyStringTiling;
 
+/**
+ * Extracts the document pair similarity using the GreedyStringTiling measure
+ */
 public class GreedyStringTilingFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements PairFeatureExtractor

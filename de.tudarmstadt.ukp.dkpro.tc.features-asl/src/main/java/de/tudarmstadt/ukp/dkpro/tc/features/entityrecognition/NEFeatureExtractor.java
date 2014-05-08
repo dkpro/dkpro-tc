@@ -15,6 +15,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
+/**
+ * Extracts the ratio of named entities per sentence
+ */
 public class NEFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor

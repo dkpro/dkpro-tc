@@ -27,6 +27,9 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 
+/**
+ * Reads the classic Reuters text classification corpus
+ */
 public class ReutersCorpusReader
     extends TextReader
     implements TCReaderMultiLabel

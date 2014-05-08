@@ -14,6 +14,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneNgramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
+/**
+ * Extracts token n-grams within the given text classification unit
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LuceneNGramUFE

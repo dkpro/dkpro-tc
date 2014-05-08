@@ -14,6 +14,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
+/**
+ * Extracts the number of tokens and the ratio of tokens per sentence
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NrOfTokensDFE
@@ -21,7 +24,13 @@ public class NrOfTokensDFE
     implements DocumentFeatureExtractor
 {
 
+    /**
+     * Public name of the feature "number of tokens"
+     */
     public static final String FN_NR_OF_TOKENS = "NrofTokens";
+    /**
+     * Public name of the feature "number of tokens per sentence"
+     */
     public static final String FN_TOKENS_PER_SENTENCE = "NrofTokensPerSentence";
 
     @Override

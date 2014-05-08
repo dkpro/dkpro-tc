@@ -15,6 +15,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
+/**
+ * Extracts the number of tokens and the ratio of tokens per sentence in the classification unit
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NrOfTokensUFE
@@ -22,7 +25,13 @@ public class NrOfTokensUFE
     implements ClassificationUnitFeatureExtractor
 {
 
+    /**
+     * Public name of the feature "number of tokens" in this classification unit
+     */
     public static final String FN_NR_OF_TOKENS = "NrofTokens";
+    /**
+     * Public name of the feature "number of tokens per sentence" in this classification unit
+     */
     public static final String FN_TOKENS_PER_SENTENCE = "NrofTokensPerSentence";
 
     @Override

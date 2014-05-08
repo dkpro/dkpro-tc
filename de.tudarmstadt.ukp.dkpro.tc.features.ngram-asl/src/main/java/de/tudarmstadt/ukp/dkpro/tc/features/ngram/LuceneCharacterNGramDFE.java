@@ -12,6 +12,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
+/**
+ * Extracts character n-grams.
+ */
 public class LuceneCharacterNGramDFE
     extends LuceneCharacterNGramFeatureExtractorBase
     implements DocumentFeatureExtractor

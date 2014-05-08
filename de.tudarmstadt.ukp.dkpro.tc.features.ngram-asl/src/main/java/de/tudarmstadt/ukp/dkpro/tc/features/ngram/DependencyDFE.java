@@ -25,6 +25,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
 
+/**
+ * Extracts dependency triples (governor, dependent, type) from a dependency parsed document.
+ * Uses all triples that appeared in the training data with a frequency above the threshold as features.
+ */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" })
 public class DependencyDFE
     extends FeatureExtractorResource_ImplBase
@@ -51,11 +55,6 @@ public class DependencyDFE
     public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        // if(focusAnnotation!=null){
-        // throw new TextClassificationException(new
-        // UnsupportedOperationException("FocusAnnotation not yet supported!"));
-        // }
-
         List<Feature> features = new ArrayList<Feature>();
 
         Set<String> depStrings = new HashSet<String>();
