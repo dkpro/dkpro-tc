@@ -1,5 +1,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.evaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,7 +41,7 @@ public class MulanEvaluationWrapper
 {
 
     /**
-     * TODO: ??
+     * TODO: Issue 117
      * @param predictions
      * @param actuals
      * @param threshold
@@ -132,7 +133,7 @@ public class MulanEvaluationWrapper
     }
 
     /**
-     * TODO: ??
+     * TODO: Issue 117
      * @param actuals
      * @return
      */
@@ -155,9 +156,10 @@ public class MulanEvaluationWrapper
      * @param thresholds
      * @param m
      * @return
+     * @throws IOException 
      */
     public static Measure getMulanMeasure(ArrayList<double[]> predictions, boolean[][] actuals,
-            double[] thresholds, Measure m)
+            double[] thresholds, Measure m) throws IOException
     {
         m.reset();
         try {
@@ -170,8 +172,7 @@ public class MulanEvaluationWrapper
             }
         }
         catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	throw new IOException(e);
         }
         return m;
     }
