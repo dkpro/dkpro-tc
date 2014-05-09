@@ -27,14 +27,12 @@ public interface Constants
      */
     public static String PART_TWO = "PART_TWO";
 
-    
-    
     /*
      * Instance storage
      */
 
     /**
-     * TODO Issue 117 where and why is this used?
+     * This prefix is used to make sure that class label names do not match names of features
      */
     public static final String CLASS_ATTRIBUTE_PREFIX = "__";
     /**
@@ -47,8 +45,6 @@ public interface Constants
      */
     public static final int LEAVE_ONE_OUT = -1;
 
-    
-    
     /*
      * Discriminators
      */
@@ -63,11 +59,11 @@ public interface Constants
     public static final String DIM_READER_TRAIN_PARAMS = "readerTrainParams";
     /**
      * Name of the discriminator that stores the reader for test data
-     */    
+     */
     public static final String DIM_READER_TEST = "readerTest";
     /**
      * Name of the discriminator that stores the parameters for the test data reader
-     */    
+     */
     public static final String DIM_READER_TEST_PARAMS = "readerTestParams";
 
     /**
@@ -81,21 +77,16 @@ public interface Constants
     public static final String DIM_PIPELINE_PARAMS = "pipelineParameters";
 
     /**
-     * Name of the discriminator that stores the additional argument passed to the classification algorithms
+     * Name of the discriminator that stores the additional argument passed to the classification
+     * algorithms
      */
     public static final String DIM_CLASSIFICATION_ARGS = "classificationArguments";
 
     /**
-     * Name of the discriminator that stores the bipartition threshold used in multi-label classification
+     * Name of the discriminator that stores the bipartition threshold used in multi-label
+     * classification
      */
     public static final String DIM_BIPARTITION_THRESHOLD = "threshold";
-
-    // public static final String DIM_IS_REGRESSION = "isRegressionExperiment";
-    // public static final String DIM_IS_PAIR_CLASSIFICATION = "isPairClassification";
-    // public static final String DIM_MULTI_LABEL = "multiLabel";
-
-    // public static final String DIM_LOWER_CASE = "lowerCase";
-    // public static final String DIM_IS_UNIT_CLASSIFICATION = "isUnitClassification";
 
     /**
      * Name of the discriminator that stores the data writer class
@@ -122,8 +113,6 @@ public interface Constants
      */
     public static final String LM_REGRESSION = "regression";
 
-    
-    
     /*
      * feature modes
      */
@@ -148,8 +137,6 @@ public interface Constants
      */
     public static final String FM_PAIR = "pair";
 
-    
-    
     /*
      * Mainly for reports
      */
@@ -182,8 +169,6 @@ public interface Constants
      */
     public static final String CM_PREDICTED = " (pred.)";
 
-    
-    
     /*
      * Weka / Meka
      */
@@ -192,17 +177,16 @@ public interface Constants
      */
     public static final String ARFF_FILENAME = "training-data.arff.gz";
     /**
-     * Name of the weka data writer class.
-     * This constant can be used instead of the class reference, if the tc.weka module cannot be used as a dependency
+     * Name of the weka data writer class. This constant can be used instead of the class reference,
+     * if the tc.weka module cannot be used as a dependency
      */
     public static final String WEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.WekaDataWriter";
     /**
-     * Name of the meka (multi-label weka) data writer class.
-     * This constant can be used instead of the class reference, if the tc.weka module cannot be used as a dependency
-     */   
+     * Name of the meka (multi-label weka) data writer class. This constant can be used instead of
+     * the class reference, if the tc.weka module cannot be used as a dependency
+     */
     public static final String MEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.MekaDataWriter";
 
-    
     /*
      * Mallet
      */

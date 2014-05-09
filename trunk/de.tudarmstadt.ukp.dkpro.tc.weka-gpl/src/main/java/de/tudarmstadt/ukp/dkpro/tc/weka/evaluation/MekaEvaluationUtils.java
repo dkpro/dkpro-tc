@@ -17,16 +17,22 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants;
  * 
  */
 public class MekaEvaluationUtils
-    extends MLEvalUtils implements ReportConstants
+    extends MLEvalUtils
+    implements ReportConstants
 {
 
     /**
-     * TODO: Issue 117
+     * Calculates a number of evaluation measures for multi-label classification.
+     * 
      * @param Rankings
+     *            predictions by the classifier (ranking)
      * @param Actuals
+     *            gold standard (bipartition)
      * @param t
+     *            a threshold to create bipartitions from rankings
      * @param classNames
-     * @return
+     *            the class label names
+     * @return various measures, manually defined
      */
     public static HashMap<String, Double> calcMLStats(ArrayList<double[]> Rankings,
             ArrayList<int[]> Actuals, double t[], String[] classNames)
@@ -37,7 +43,7 @@ public class MekaEvaluationUtils
         int p_sum_total = 0, r_sum_total = 0;
         double log_loss_D = 0.0, log_loss_L = 0.0;
         int set_empty_total = 0;
-        int exact_match = 0; 
+        int exact_match = 0;
         int hloss_total = 0;
         int[] o_tp = new int[L], o_fp = new int[L], o_fn = new int[L], o_tn = new int[L];
         // double average_accuracy_online = 0.0;
@@ -50,7 +56,6 @@ public class MekaEvaluationUtils
             for (int j = 0; j < L; j++) {
                 pred[j] = (ranking[j] >= t[j]) ? 1 : 0;
             }
-
 
             // calculate
             int p_sum = 0, r_sum = 0;
@@ -92,11 +97,8 @@ public class MekaEvaluationUtils
                 log_loss_L += calcLogLoss(R, ranking[j], Math.log(L));
             }
 
-
-
             p_sum_total += p_sum;
             r_sum_total += r_sum;
-
 
             if (p_sum <= 0) {
                 set_empty_total++;
