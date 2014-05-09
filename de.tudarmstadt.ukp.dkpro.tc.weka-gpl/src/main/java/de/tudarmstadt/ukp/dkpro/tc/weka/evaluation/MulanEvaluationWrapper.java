@@ -33,6 +33,9 @@ import mulan.evaluation.measure.RankingLoss;
 import mulan.evaluation.measure.SubsetAccuracy;
 
 /**
+ * A wrapper for evaluation measures calculated by the Mulan framework for multi-label
+ * classification.
+ * 
  * @author Jinseok Nam
  * @author Johannes Daxenberger
  * 
@@ -41,11 +44,16 @@ public class MulanEvaluationWrapper
 {
 
     /**
-     * TODO: Issue 117
+     * Retrieves evaluation measures calculated by the Mulan framework for multi-label
+     * classification
+     * 
      * @param predictions
+     *            predictions by the classifier
      * @param actuals
+     *            gold standard
      * @param threshold
-     * @return
+     *            a threshold to create bipartitions from rankings
+     * @return measures as defined in {@link #getMeasures(MultiLabelOutput, int, boolean)}
      */
     public static List<Measure> getMulanEvals(ArrayList<double[]> predictions, boolean[][] actuals,
             double threshold)
@@ -133,9 +141,11 @@ public class MulanEvaluationWrapper
     }
 
     /**
-     * TODO: Issue 117
+     * Converts a list of {0,1}-integer arrays into a boolean-matrix.
+     * 
      * @param actuals
-     * @return
+     *            a list of {0,1}-integer arrays
+     * @return a matrix holding only boolean values
      */
     public static boolean[][] getBooleanArrayFromList(ArrayList<int[]> actuals)
     {
@@ -149,17 +159,24 @@ public class MulanEvaluationWrapper
     }
 
     /**
-     * For individual measures.
+     * Retrieves a single evaluation measure calculated by the Mulan framework for multi-label
+     * classification
+     * 
      * 
      * @param predictions
+     *            predictions by the classifier
      * @param actuals
+     *            gold standard
      * @param thresholds
+     *            a threshold to create bipartitions from rankings (one per instance)
      * @param m
-     * @return
-     * @throws IOException 
+     *            the measure
+     * @return the updated measure
+     * @throws IOException
      */
     public static Measure getMulanMeasure(ArrayList<double[]> predictions, boolean[][] actuals,
-            double[] thresholds, Measure m) throws IOException
+            double[] thresholds, Measure m)
+        throws IOException
     {
         m.reset();
         try {
@@ -172,7 +189,7 @@ public class MulanEvaluationWrapper
             }
         }
         catch (Exception e) {
-        	throw new IOException(e);
+            throw new IOException(e);
         }
         return m;
     }

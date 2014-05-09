@@ -37,24 +37,35 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
  * Utils for WEKA
  */
 public class WekaUtils
-	implements Constants
+    implements Constants
 {
 
     /**
      * Name of the relation == name of the arff file
      */
     public static final String RELATION_NAME = "dkpro-tc-generated";
+
     /**
-     * TODO: Issue 117
+     * Suffix for class label names in the test data that have been adapted to match the training
+     * data
+     * 
+     * @see #makeOutcomeClassesCompatible(Instances, Instances, boolean)
      */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
 
     /**
-     * TODO: Issue 177
+     * Adapts the test data class labels to the training data. Class labels from the test data
+     * unseen in the training data will be deleted from the test data. Class labels from the
+     * training data unseen in the test data will be added the test data. If training and test class
+     * labels are equals, nothing will be done.
+     * 
      * @param trainData
+     *            training data
      * @param testData
+     *            test data
      * @param multilabel
-     * @return
+     *            whether this is a multi-label classification problem
+     * @return the adapted test data
      * @throws Exception
      */
     public static Instances makeOutcomeClassesCompatible(Instances trainData, Instances testData,
@@ -178,8 +189,7 @@ public class WekaUtils
     }
 
     /**
-     * Converts a feature store to a list of instances.
-     * Single-label case.
+     * Converts a feature store to a list of instances. Single-label case.
      * 
      * @param outputFile
      * @param instanceList
@@ -192,8 +202,7 @@ public class WekaUtils
     }
 
     /**
-     * Converts a feature store to a list of instances.
-     * Single-label case.
+     * Converts a feature store to a list of instances. Single-label case.
      * 
      * TODO: maybe rename to "featureStore2ArffFile"
      * 
@@ -218,7 +227,7 @@ public class WekaUtils
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
-    	List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
+        List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
         Attribute outcomeAttribute = createOutcomeAttribute(outcomeList,
                 isRegressionExperiment);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
@@ -277,9 +286,7 @@ public class WekaUtils
     }
 
     /**
-    /**
-     * Converts a feature store to a list of instances.
-     * Multi-label case.
+     * /** Converts a feature store to a list of instances. Multi-label case.
      * 
      * TODO: maybe rename to "featureStore2ArffFile"
      * 
