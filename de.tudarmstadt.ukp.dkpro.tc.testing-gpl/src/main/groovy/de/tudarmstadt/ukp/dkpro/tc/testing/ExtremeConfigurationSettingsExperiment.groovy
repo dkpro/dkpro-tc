@@ -12,9 +12,9 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
-import de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups.io.TwentyNewsgroupsCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
@@ -74,9 +74,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     [
         "TopK",
         "500",
-        FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
         1,
-        FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
     );
@@ -100,7 +100,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     [
         [
             NrOfTokensDFE.class.name,
-            FrequencyDistributionNGramDFE.class.name
+            LuceneNGramDFE.class.name
         ].toArray()
     ] as Object[]
     );
