@@ -11,16 +11,16 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.SingleLabelReaderBase;
 
 /**
- * Reads the Movie Review Corpus
+ * Reads the Movie Review Corpus. Used by the Sentiment Polarity demo.
  * 
- * TODO Issue 122: do we actually have an example that uses this?
+ * @see de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.SentimentPolarityDemo
  */
 public class MovieReviewCorpusReader
     extends SingleLabelReaderBase
 {
     @Override
     public String getTextClassificationOutcome(JCas jcas)
-            throws CollectionException
+        throws CollectionException
     {
         try {
             String uriString = DocumentMetaData.get(jcas).getDocumentUri();
