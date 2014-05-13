@@ -41,26 +41,29 @@ public class LucenePairNGramMetaCollectorTest
         File tmpDir = folder.newFolder();
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestPairReader.class, 
+                TestPairReader.class,
                 TestPairReader.PARAM_INPUT_FILE, "src/test/resources/data/textpairs.txt"
-        );
-        
-        AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
+                );
+
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_ONE);
         builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
-        
+
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramPairMetaCollector.class,
                 LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, tmpDir
-        );
+                );
 
-        //test fails if for-loop removed
-        for (JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
-//            System.out.println(jcas.getDocumentText().length());
+        // test fails if for-loop removed
+        for (@SuppressWarnings("unused")
+        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(),
+                metaCollector)) {
+            // System.out.println(jcas.getDocumentText().length());
         }
-        
+
         int i = 0;
         IndexReader index;
         try {
@@ -73,14 +76,15 @@ public class LucenePairNGramMetaCollectorTest
 
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
-//                        System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
-//                        System.out.println(termsEnum.docFreq());
-                        
+                        // System.out.println(text.utf8ToString() + " - " +
+                        // termsEnum.totalTermFreq());
+                        // System.out.println(termsEnum.docFreq());
+
                         if (text.utf8ToString().equals("this")) {
                             assertEquals(2, termsEnum.docFreq());
                             assertEquals(3, termsEnum.totalTermFreq());
                         }
-                        
+
                         i++;
                     }
                 }
@@ -89,7 +93,7 @@ public class LucenePairNGramMetaCollectorTest
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-        
-       assertEquals(16, i);    
+
+        assertEquals(16, i);
     }
 }

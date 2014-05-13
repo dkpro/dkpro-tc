@@ -1,15 +1,13 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-
 
 /**
  * Defines names of parameters that are defined in more than one task should be defined here
  */
-public abstract class ConnectorBase 
-	extends JCasAnnotator_ImplBase
-{    
+public abstract class ConnectorBase
+    extends JCasAnnotator_ImplBase
+{
     /**
      * Array of feature extractors to be used
      */
@@ -29,10 +27,10 @@ public abstract class ConnectorBase
      * The feature mode, e.g. document, pair, unit, or sequence
      */
     public static final String PARAM_FEATURE_MODE = "featureMode";
-    
+
     /**
-     * Switches to developer mode with less restrictive settings.
-     * For example, using document level feature extractors in unit mode will not cause an exception
+     * Switches to developer mode with less restrictive settings. For example, using document level
+     * feature extractors in unit mode will not cause an exception
      */
     public static final String PARAM_DEVELOPER_MODE = "developerMode";
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -45,8 +44,8 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
-        // "NAME", "VALUE"
-        };
+                // "NAME", "VALUE"
+                };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -83,8 +82,8 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
-        // "NAME", "VALUE"
-        };
+                // "NAME", "VALUE"
+                };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -121,8 +120,8 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
-        // "NAME", "VALUE"
-        };
+                // "NAME", "VALUE"
+                };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(

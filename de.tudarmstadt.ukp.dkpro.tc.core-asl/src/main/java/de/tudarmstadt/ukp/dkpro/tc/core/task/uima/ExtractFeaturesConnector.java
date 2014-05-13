@@ -9,7 +9,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
@@ -73,9 +72,9 @@ public class ExtractFeaturesConnector
 
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
-    
+
     private DocumentFeatureExtractor addIdExtractor;
-    
+
     protected FeatureStore featureStore;
 
     private int sequenceId;
@@ -117,10 +116,11 @@ public class ExtractFeaturesConnector
 
         for (Instance instance : instances) {
             try {
-				this.featureStore.addInstance(instance);
-			} catch (TextClassificationException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
+                this.featureStore.addInstance(instance);
+            }
+            catch (TextClassificationException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
         }
     }
 

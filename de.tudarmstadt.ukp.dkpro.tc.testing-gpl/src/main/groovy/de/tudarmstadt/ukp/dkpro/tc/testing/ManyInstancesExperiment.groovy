@@ -17,7 +17,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.testing.io.LineInstanceReader
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
@@ -57,9 +57,9 @@ public class ManyInstancesExperiment implements Constants {
     [
         "TopK",
         "500",
-        FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
         1,
-        FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
     );
@@ -72,7 +72,7 @@ public class ManyInstancesExperiment implements Constants {
     DIM_FEATURE_SET,
     [
         NrOfTokensDFE.class.name,
-        FrequencyDistributionNGramDFE.class.name
+        LuceneNGramDFE.class.name
     ]);
 
     // === Test =========================================================
@@ -104,11 +104,7 @@ public class ManyInstancesExperiment implements Constants {
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createEngineDescription(
-        createEngineDescription(BreakIteratorSegmenter.class)
-        //        ,
-        //        createEngineDescription(OpenNlpPosTagger.class)
-        );
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 
     public static void main(String[] args)
