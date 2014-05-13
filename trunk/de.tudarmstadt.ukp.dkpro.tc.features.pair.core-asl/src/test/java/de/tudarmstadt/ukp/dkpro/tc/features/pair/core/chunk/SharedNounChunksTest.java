@@ -1,9 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -20,86 +19,88 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class SharedNounChunksTest {
+public class SharedNounChunksTest
+{
 
-	private JCas jcas1;
-	private JCas jcas2;
-	
-	@Before
-	public void setUp() throws ResourceInitializationException, AnalysisEngineProcessException{
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class)
-        );
-        AnalysisEngine engine = createPrimitive(desc);
-        
+    private JCas jcas1;
+    private JCas jcas2;
+
+    @Before
+    public void setUp()
+        throws ResourceInitializationException, AnalysisEngineProcessException
+    {
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngine engine = createEngine(desc);
+
         jcas1 = engine.newJCas();
         jcas1.setDocumentLanguage("en");
         jcas1.setDocumentText("This is the text of view 1");
         engine.process(jcas1);
-        
+
         jcas2 = engine.newJCas();
         jcas2.setDocumentLanguage("en");
         jcas2.setDocumentText("This is the text of view 2");
         engine.process(jcas2);
-	}
-	
-	@Test
+    }
+
+    @Test
     public void testExtract1()
         throws Exception
     {
-		Chunk chunk1 = new Chunk(jcas1, 0, 4);
-		chunk1.addToIndexes();
-		
-		Chunk chunk2 = new Chunk(jcas2, 0, 4);
-		chunk2.addToIndexes();
-		
-		SharedNounChunks extractor = new SharedNounChunks(true);
+        Chunk chunk1 = new Chunk(jcas1, 0, 4);
+        chunk1.addToIndexes();
+
+        Chunk chunk2 = new Chunk(jcas2, 0, 4);
+        chunk2.addToIndexes();
+
+        SharedNounChunks extractor = new SharedNounChunks(true);
         List<Feature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature("SharedNounChunkView1", 1.0, feature, 0.0001);
         }
-        
-		Chunk chunk3 = new Chunk(jcas1, 5, 7);
-		chunk3.addToIndexes();
-		
-		features = extractor.extract(jcas1, jcas2);
+
+        Chunk chunk3 = new Chunk(jcas1, 5, 7);
+        chunk3.addToIndexes();
+
+        features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature("SharedNounChunkView1", 0.5, feature, 0.0001);
         }
 
     }
-	@Test
+
+    @Test
     public void testExtract2()
         throws Exception
     {
-		Chunk chunk1 = new Chunk(jcas1, 0, 4);
-		chunk1.addToIndexes();
-		
-		Chunk chunk2 = new Chunk(jcas2, 0, 4);
-		chunk2.addToIndexes();
-		
-		SharedNounChunks extractor = new SharedNounChunks(false);
+        Chunk chunk1 = new Chunk(jcas1, 0, 4);
+        chunk1.addToIndexes();
+
+        Chunk chunk2 = new Chunk(jcas2, 0, 4);
+        chunk2.addToIndexes();
+
+        SharedNounChunks extractor = new SharedNounChunks(false);
         List<Feature> features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature("SharedNounChunkView2", 1.0, feature, 0.0001);
         }
-        
-		Chunk chunk3 = new Chunk(jcas1, 5, 7);
-		chunk3.addToIndexes();
-		
-		features = extractor.extract(jcas1, jcas2);
+
+        Chunk chunk3 = new Chunk(jcas1, 5, 7);
+        chunk3.addToIndexes();
+
+        features = extractor.extract(jcas1, jcas2);
 
         assertEquals(1, features.size());
-        
+
         for (Feature feature : features) {
             assertFeature("SharedNounChunkView2", 1, feature, 0.0001);
         }

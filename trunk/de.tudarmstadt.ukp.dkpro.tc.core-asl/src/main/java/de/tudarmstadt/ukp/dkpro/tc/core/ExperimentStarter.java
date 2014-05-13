@@ -35,6 +35,6 @@ public class ExperimentStarter
         GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
         Object[] a = {};
         groovyObject.invokeMethod("run", a);
-
+        loader.close();
     }
 }

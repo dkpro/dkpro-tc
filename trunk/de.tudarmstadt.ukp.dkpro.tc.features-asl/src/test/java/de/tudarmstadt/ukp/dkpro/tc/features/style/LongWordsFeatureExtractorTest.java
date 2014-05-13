@@ -1,9 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
 import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.assertFeature;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,11 +23,8 @@ public class LongWordsFeatureExtractorTest
     public void longWordsFeatureExtractorTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createAggregateDescription(
-                createPrimitiveDescription(BreakIteratorSegmenter.class)
-
-                );
-        AnalysisEngine engine = createPrimitive(desc);
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");

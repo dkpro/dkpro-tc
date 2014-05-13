@@ -20,7 +20,8 @@ public class PairTwentyNewsgroupsReaderTest
     @Before
     public void setupLogging()
     {
-        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+        System.setProperty("org.apache.uima.logger.class",
+                "org.apache.uima.util.impl.Log4jLogger_impl");
     }
 
     @Test
@@ -28,35 +29,36 @@ public class PairTwentyNewsgroupsReaderTest
         throws Exception
     {
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-        		PairTwentyNewsgroupsReader.class,
-        		PairTwentyNewsgroupsReader.PARAM_LISTFILE, "src/test/resources/data/pairs/pairslist",
-        		PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, "en");
+                PairTwentyNewsgroupsReader.class,
+                PairTwentyNewsgroupsReader.PARAM_LISTFILE,
+                "src/test/resources/data/pairs/pairslist",
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, "en");
 
         int i = 0;
         for (JCas jcas : new JCasIterable(reader)) {
             DocumentMetaData md = DocumentMetaData.get(jcas);
             dumpMetaData(md);
-            
+
             assertNotNull("CollectionID should not be null", md.getCollectionId());
             assertNotNull("Base URI should not be null", md.getDocumentBaseUri());
             assertNotNull("URI should not be null", md.getDocumentUri());
-            
+
             JCas view1 = jcas.getView("PART_ONE");
-            DocumentMetaData mdView1 = DocumentMetaData.get(view1);            
+            DocumentMetaData mdView1 = DocumentMetaData.get(view1);
             JCas view2 = jcas.getView("PART_TWO");
             DocumentMetaData mdView2 = DocumentMetaData.get(view2);
-            
-            if (i==0){
-            	assertTrue("Pair1Text1 should be 11891 char long", mdView1.getCoveredText().length() == 11891);
-            	assertTrue("Pair1Text2 should be 32056 char long", mdView2.getCoveredText().length() == 32056);
+
+            if (i == 0) {
+                assertTrue("Pair1Text1 should be 11891 char long", mdView1.getCoveredText()
+                        .length() == 11891);
+                assertTrue("Pair1Text2 should be 32056 char long", mdView2.getCoveredText()
+                        .length() == 32056);
             }
-            
-            int outcomeCounter = 0;
+
             for (TextClassificationOutcome outcome : JCasUtil.select(jcas,
                     TextClassificationOutcome.class)) {
-            	assertTrue("Outcomes should be set", outcome.getOutcome().equals("y"));
+                assertTrue("Outcomes should be set", outcome.getOutcome().equals("y"));
                 System.out.println(outcome);
-                outcomeCounter++;
             }
             assertEquals("Incorrect count of outcomes", 1, 1);
             i++;
