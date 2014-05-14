@@ -53,17 +53,12 @@ public class BatchTaskCrossValidation
     }
 
     /**
-     * Preconfigured crossvalidation setup which should work out-of-the-box. You might want to set a
-     * report to collect the results.
+     * Preconfigured crossvalidation setup.
      * 
      * @param aExperimentName
      *            name of the experiment
-     * @param aReader
-     *            collection reader for input data
      * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
-     * @param aDataWriterClassName
-     *            data writer class name
      * @param aNumFolds
      *            the number of folds for crossvalidation (default 10)
      */
