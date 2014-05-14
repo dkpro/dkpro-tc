@@ -1,57 +1,33 @@
 #summary List of parameters which have to or may be used to set up DKPro-TC experiments
 
-In the following, all DKPro-TC discriminators ("Dimensions"), which have to be used (mandatory) or may be used (optional) are listed. You have to insert all mandatory and those optional discriminators you need to define into a _ParameterSpace_ where every task can access them. If various values should be tested for a parameter (e.g. various classification algorithms), you can simply specify a list with all the different values for that parameter. For detailed examples on how to specify parameters, please have a look at the [DemoExperiments demo experiments].
+In the following, all DKPro-TC discriminators ("Dimensions"), which have to be used (mandatory) or may be used (optional) are listed. You have to insert all mandatory and those optional discriminators you want to define into a _ParameterSpace_ where every task can access them. If various values should be tested for a parameter (e.g. various classification algorithms), you can simply specify a list with all the different values for that parameter. 
+We list each discriminator with the expected type of its value and a short explanation. For detailed examples on how to specify parameters, please have a look at the [DemoExperiments demo experiments].
 
-== In version 0.6.0 ==
+
+== Latest version ==
+_if you use DKPRo-TC version 0.5.0, see [here Discriminators_0_5_0]_
 
 === Mandatory Parameters ===
 
-   * readers (DimensionBundle)
-      * readerTrain (name of the reader for the training data)
-      * readerTrainParams (further parameters for the training data reader)
-      * readerTest (name of the reader for the test data) _not necessary for Crossvalidation_
-      * readerTestParams (further parameters for the test data reader) _not necessary for Crossvalidation_
-   * dataWriter (a writer to produce the input for the classification framework, e.g. Weka)
-   * classificationArguments (the classification algorithm and a list of arguments to parametrize it)
-   * featureSet (the names of the feature extractors to use)
-   * pipelineParameters (further parameters necessary to configure the feature extractors)
-   * featureMode (one of `document`, `unit`, `pair`)
-   * learningMode (one of `singleLabel`, `multiLabel`, `regression`)
+   * `readers` (DimensionBundle)
+      * `readerTrain`: name of the reader class for the training data
+      * `readerTrainParams`: a list of parameterName-value pairs to configure the training data reader
+      * `readerTest`: name of the reader class for the test data (_not necessary for Crossvalidation_)
+      * `readerTestParams`: a list of parameterName-value pairs to configure the test data reader (_not necessary for Crossvalidation_)
+   * `featureSet`: a list of feature extractor class names (the feature extractors to use)
+   * `pipelineParameters`: a list of parameterName-value pairs (parameters necessary to configure the feature extractors)
+   * `dataWriter`: a DataWriter class (a writer to produce the input for the classification framework, e.g. Weka)
+   * `classificationArguments`: a Weka/Meka classifier class and list of arguments to parametrize it (the classification algorithm)
+   * `featureMode`: one of `document`, `unit`, `pair`, or `sequence`
+   * `learningMode`: one of `singleLabel`, `multiLabel`, or `regression`
 
 === Optional Parameters ===
 
-   * threshold (_needs to be set when multiLabel is true_)
-   * featureSelection (DimensionBundle)
-      * attributeEvaluator
-      * featureSearcher (only for single-label)
-      * labelTransformationMethod (only for multi-label)
-      * numLabelsToKeep (only for multi-label)
-      * apply selection
-
-== In version 0.5.0 and previous ==
-
-=== Mandatory Parameters ===
-
-   * readers (DimensionBundle)
-      * readerTrain (name of the reader for the training data)
-      * readerTrainParams (further parameters for the training data reader)
-      * readerTest (name of the reader for the test data) _not necessary for Crossvalidation_
-      * readerTestParams (further parameters for the test data reader) _not necessary for Crossvalidation_
-   * dataWriter (a writer to produce the input for the classification framework, e.g. Weka)
-   * classificationArguments (the classification algorithm and a list of arguments to parametrize it)
-   * featureSet (the names of the feature extractors to use)
-   * pipelineParameters (further parameters necessary to configure the feature extractors)
-
-=== Optional Parameters with default values ===
-
-   * multiLabel: false (if true, you need to set threshold)
-   * threshold: 0 _needs to be set when multiLabel is true_
-   * featureSelection (DimensionBundle)
-      * attributeEvaluator
-      * featureSearcher (only for single-label)
-      * labelTransformationMethod (only for multi-label)
-      * numLabelsToKeep (only for multi-label)
-      * apply selection
-   * isRegressionExperiment: false
-   * isPairClassification: false
-   * isUnitClassification: false
+   * `threshold`: boolean (the threshold to create a bipratition from a ranking; _only for multiLabel learning mode_)
+   * `featureSelection` (DimensionBundle)
+      * `attributeEvaluator`: Weka attribute selection evaluation class and list of arguments to parametrize it (the attribute evaluation algorithm)
+      * `featureSearcher`: Weka attribute selection search class and list of arguments to parametrize it (the ranking algorithm; _only for singleLabel learning mode_)
+      * `labelTransformationMethod`: a Mulan label transformation method (the label transformation method; _only for multiLabel learning mode_)
+      * `numLabelsToKeep`: integer (the number of features which will be selected; _only for multiLabel learning mode_)
+      * `apply selection`: boolean (whether to actually apply the )
+   * `developerMode`: boolean (if true, you will not be warned when using feature extractors incompatible with the specified `featureMode`)
