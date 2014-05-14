@@ -1,3 +1,16 @@
 #summary How to set up a DKPro-TC reader
 
-TBD.
+=Creating a reader for your data=
+
+For reference, you should have a look at the readers of the `io` package in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module.
+
+==Minimal requirements==
+
+All DKPro-TC readers should implement either `TCReaderSingleLabel` (single-label classification and regression experiments) or `TCReaderMultiLabel` (multi-label classification experiments).
+
+A reader in DKPro-TC needs to define at least:
+  * the structure of the UIMA CAS (i.e. the document text)
+  * the classification outcome (i.e. the class labels of the document)
+
+You can re-use most readers from the `io` modules of [http://code.google.com/p/dkpro-core-asl DKPro Core], which contain readers for different simple data formats such as TXT or HTML, but also readers for popular data collections, e.g. the BNC.
+If your DKPro-TC reader inherits from a DKPro Core reader, you don't have to care about the structure of the CAS, but only need to additionally specify the `getTextClassificationOutcome()`. The latter sets the document labels.
