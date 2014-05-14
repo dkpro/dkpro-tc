@@ -1,7 +1,8 @@
 #summary How to configure your experiments using JSON (not included in Demo examples)
 
-This tutorial explains how to use JSON instead of the (recommended) Groovy classes to configure your experiments. It refers to the [DemoExperiments Twenty Newsgroups Demo]. 
-Please note: This tutorial might not reflect the latest changes in the configuration of DKPro-TC experiments. It is rather intended as a starting point for users wanting to create their own experiment configuration using JSON.
+This tutorial explains how to use JSON instead of the (recommended) Groovy classes to configure your experiments. 
+
+*Please note: The configuration code in this tutorial is incomplete and not necessarily up-to-date with the latest release of DKPro-TC. It is intended as a starting point for users who want to create their own experiment configuration using JSON, but it will not work as is.*
 
 = Example JSON file =
 
@@ -10,7 +11,6 @@ This is an example JSON file specifying a couple of parameters for an experiment
 {{{
 {
     "corpusFilePathTrain" : "src/main/resources/data/bydate-train",
-    "languageCode" : "en",
     "nGramMinSize" : 1,
     "nGramMaxSize" : 3,
     "pipelineParameters" :
@@ -39,7 +39,6 @@ public class ParameterSpaceParser
 
     {
 
-        final String languageCode = pipelineConfiguration.getString("languageCode");
         final String corpusFilePathTrain = pipelineConfiguration.getString("corpusFilePathTrain");
 
         // DIMENSIONS for pipelineParameters
@@ -65,7 +64,6 @@ public class ParameterSpaceParser
         dimReaderTrain.put("readerTrain", TwentyNewsgroupsCorpusReader.class);
         dimReaderTrain.put("readerTrainParams", Arrays.asList(
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
                 TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
                 ));
@@ -75,7 +73,6 @@ public class ParameterSpaceParser
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readerTrain", dimReaderTrain),
-                Dimension.create("multiLabel", false),
                 Dimension.create("pipelineParameters", pipelineParameters.toArray()),
                 // other dimensions...
         return pSpace;
@@ -120,12 +117,9 @@ public class TwentyNewsgroupsExperiment
 
         // re-using the pre-configured BatchTask
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
-                getPreprocessing(), WekaDataWriter.class.getName());
-        batch.setInnerReport(TrainTestReport.class);
+                getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+        // remaining configuration...
 
         // Run
         Lab.getInstance().run(batch);
@@ -134,11 +128,7 @@ public class TwentyNewsgroupsExperiment
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        languageCode));
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 }
 }}}
