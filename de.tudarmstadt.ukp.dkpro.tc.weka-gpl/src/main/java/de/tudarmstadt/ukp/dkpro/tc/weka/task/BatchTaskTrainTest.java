@@ -43,19 +43,12 @@ public class BatchTaskTrainTest
     }
 
     /**
-     * Preconfigured train-test setup which should work out-of-the-box. You might want to set a
-     * report to collect the results.
+     * Preconfigured train-test setup.
      * 
      * @param aExperimentName
      *            name of the experiment
-     * @param aReaderTrain
-     *            collection reader for train data
-     * @param aReaderTest
-     *            collection reader for test data
      * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
-     * @param aDataWriterClassName
-     *            data writer class name
      */
     public BatchTaskTrainTest(String aExperimentName,
             AnalysisEngineDescription preprocessingPipeline)
