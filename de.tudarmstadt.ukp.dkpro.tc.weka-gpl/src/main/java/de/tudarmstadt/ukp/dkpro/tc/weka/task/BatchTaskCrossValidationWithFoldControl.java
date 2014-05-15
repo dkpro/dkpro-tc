@@ -21,6 +21,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
@@ -159,12 +160,18 @@ public class BatchTaskCrossValidationWithFoldControl
         // classification (numFolds times)
         testTask = new TestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.addReport(OutcomeIDReport.class);
+
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {
                 testTask.addReport(report);
             }
         }
+        else {
+            // add default report
+            testTask.addReport(ClassificationReport.class);
+        }
+        // always add OutcomeIdReport
+        testTask.addReport(OutcomeIDReport.class);
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.INPUT_KEY_TRAIN);
@@ -182,9 +189,7 @@ public class BatchTaskCrossValidationWithFoldControl
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        if (innerReports != null) {
-            crossValidationTask.addReport(BatchTrainTestReport.class);
-        }
+        crossValidationTask.addReport(BatchTrainTestReport.class);
 
         addTask(checkTask);
         addTask(preprocessTask);
