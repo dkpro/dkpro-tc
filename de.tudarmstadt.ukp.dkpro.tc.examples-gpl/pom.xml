@@ -66,6 +66,13 @@
     		de.tudarmstadt.ukp.dkpro.core.io.tei-asl
     	</artifactId>
     </dependency>
+    <dependency>
+    	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+    	<artifactId>
+    		de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default
+    	</artifactId>
+    	<version>20120919.1</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
   	<dependencies>
