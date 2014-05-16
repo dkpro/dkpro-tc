@@ -1,6 +1,6 @@
 #summary Getting started with DKPro TC: Demo Experiments
 
-=Introduction=
+==Introduction==
 _If you are using version 0.5.0, please change to the following [DemoExperiments_0_5_0 tutorial]._
 
 In this quick start guide, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
@@ -35,8 +35,6 @@ If you don't know where to start, go with the TwitterSentimentDemo first, as it 
 
 ==Binary Classification with DKPro-TC: TwitterSentiment Demo==
 
-It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
-
 There are two ways to run the experiment:
    * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl` module)
    * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module)
@@ -53,7 +51,7 @@ The configuration takes care of
   * evaluating classifiers (either with designated train/test sets or using cross-validation)
   * writing results (which reports to use)
 
-The overall setup for a cross-validation experiment looks like this:
+The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation using the Weka Machine Learning framework.
 
 {{{
      BatchTaskCrossValidation batchTask = [
@@ -77,88 +75,46 @@ The overall setup for a cross-validation experiment looks like this:
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 // learning mode; must be unique
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                // an array of feature extractors
+                // a list of feature extractors
                 Dimension.create(DIM_FEATURE_SET, [
                     EmoticonRatioDFE.name,
                     NumberOfHashTagsDFE.name
                 ]),
                 // this data writer writes the extracted features into ARFF format; must be unique
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name),
-                // machine learning classifiers
+                // machine learning classifiers; two classifiers will be tested
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
-            // a reader collecting the results from folds
+            // a report collecting the results from folds
             reports: [BatchCrossValidationReport], 
             // the number of folds
             numFolds: 10]
 }}}
 
+`BatchTaskCrossValidation` and `BatchTaskTrainTest` are pre-configured experiment setups. We recommend to re-use these setups.
+
+The `preprocessingPipeline` expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
+
+The `parameterSpace` contains configuration parameters which can be tested for different values. Such parameters are called discriminators.
+You can find a list of all configurable discriminators and their explanantion [Discriminators here]. 
+
+In short, the above example define:
+
+*the reader*
+
 {{{
-            Dimension.createBundle("readers", [
-                    readerTrain: LabeledTweetReader,
-                    readerTrainParams: [
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/train/*/*.txt"
-                    ],
-                    readerTest: LabeledTweetReader,
-                    readerTestParams: [
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/test/*/*.txt"
-                    ],
-                ])
+Dimension.createBundle("readers", ...
 }}}
 
-Parameters which should be tested for different values and combinations will be defined as explained [Discriminators here]. These parameters are usually prefixed with _dim_ and will be injected into the `parameterSpace`.
+In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`.
 
-The input data and reader(s) are defined as `DimensionBundle`.
-
-<wiki:comment>
-
-
-
-In this case, the `TwentyNewsgroupsCorpusReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`/`corpusFilePathTest`.
-
-The collected data is then processed via
-
+*the feature mode and the learning mode*
 {{{
-private AnalysisEngineDescription getPreprocessing()
-}}}
-
-In the given examples two preprocessing methods are used:
-
-{{{
-BreakIteratorSegmenter
-OpenNlpPosTagger
-}}}
-
-A segmenter and a Part-of-Speech Tagger. 
-
-The feature extractors which will be used are defined as
-
-{{{
-def dimFeatureSets = Dimension.create("featureSet"...
-}}}
-
-Any configuration parameters which can be set for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) are defined as follows:
-
-{{{
-def dimPipelineParameters = Dimension.create("pipelineParameters" ...
-}}}
-
-The classifiers as defined here:
-
-{{{
-def dimClassificationArgs = Dimension.create("classificationArguments"...
-}}}
-
-Finally, you need to set a _feature mode_ and a _learning mode_:
-
-{{{
-def dimFeatureMode = Dimension.create("featureMode"...
+Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
 }}}
 
 {{{
-def dimLearningMode = Dimension.create("learningMode"...
+Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
 }}}
 
 The feature mode defines the type of feature extraction you want to apply to your data:
@@ -168,28 +124,34 @@ The feature mode defines the type of feature extraction you want to apply to you
    * sequence: features are extracted from `units` within a sequence
 
 The learning mode defines whether the experiment is a classification task (either single- or multilabel), or a regression task.
+For more information on feature and learning modes, refer to the following paper: [https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.]
 
-For more information on feature and leanring modes, refer to the following paper:
-
-[https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.]
-
-There are two basic evaluation setups in DKPro-TC: x-fold-cross-validation and training/testing on specified sets.
-
-====runCrossValidation()====
-
-In the presented example, two folds are used:
-
+*the feature extractors*
 {{{
-def numFolds = 2;
+Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
 }}}
 
-Gluing all of the various parameters and processing tasks together to actually perform all the tasks is governed by `runCrossValidation()`
+The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept").
 
-</wiki:comment>
+Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
-====runTrainTest()====
+{{{
+Dimension.create(DIM_PIPELINE_PARAMS, ...)
+}}}
 
-Similarly, for the designated test and train sets.
+*the data writer*
+{{{
+Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
+}}}
+
+This data writer creates ARFF files which can be consumed by Weka. For multi-label experiments, you have to use `MekaDataWriter` which produces output for Meka.
+
+*the learning algorithm*
+{{{
+Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])]
+}}}
+
+Here, a varargs list of lists containing the learning algorithms and their configuration (none in the example) is configured. A NaiveBayes and a RandomForest classifier will iteratively be tested.
 
 ===Output===
 
