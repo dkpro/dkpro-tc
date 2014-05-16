@@ -160,6 +160,8 @@ The `Evaluation...` folders (usually one for the TrainTest setup and one for Cro
 E.g., the `eval.xls` file contains information about the performance of the individual configurations (especially useful if you want to compare several classifiers or feature sets on the same data set). 
 After an experiment has run, the path to the folder storing detailed results will be displayed on the console.
 
+===Next Steps===
+
 Once you got this example running as it is, you can start adapting various parameters:
 
   * using different data sets - which are completely up to you (also see [Readers here])
