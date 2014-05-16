@@ -22,61 +22,99 @@ de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
 
 They are sorted into packages based on their feature and learning modes, e.g. 
 {{{
-TwentyNewsgroupsDemo
+TwitterSentimentDemo
 }}} 
 can be found in the package
 {{{
 de.tudarmstadt.ukp.dkpro.tc.examples.single.document
 }}}
-as it demonstrates a single-label classification experiment with entire documents as classification objects. For an explanation of feature and learning modes, please see below. 
+as it demonstrates a single-label classification experiment with entire documents (tweets) as classification objects. For an explanation of feature and learning modes, please see below. 
 
-All example projects come with a set of data and can be run right away. The _twentynewsgroups_ experiment is a binary, single-label classification task. The _reuters_ example is a multi-label classification task.  The _regression_ demo shows how to use DKPro-TC for regression experiments. The _pairtwentynewsgroups_ demo is a text-pair classification task (`pair` feature mode).
-If you don't know where to start, go with the twentynewsgroups demo first, as it has the most extensive documentation and configuration classes.
+All example projects come with a set of data and can be run right away. The _TwitterSentimentDemo_ and _TwentyNewsgroupsDemo_experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
+If you don't know where to start, go with the TwitterSentimentDemo first, as it has the most extensive documentation.
 
-==Binary Classification with DKPro-TC: twentynewsgroups demo==
+==Binary Classification with DKPro-TC: TwitterSentiment Demo==
 
 It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
 
 There are two ways to run the experiment:
-   * `TwentyNewsgroupsDemo.groovy` (Groovy configuration)
-   * `TwentyNewsgroupsDemo.java` (Java configuration)
+   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl` module)
+   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module)
 
-===TwentyNewsgroupsGroovyExperiment===
+In this tutorial, we will follow the Groovy version of the experiment, which is easier to read. The Java configuration is very similar.
 
-It takes care of 
+===Twitter Sentiment Groovy Experiment===
 
-  * loading the data
+The configuration takes care of 
+
+  * loading the data (reading the original files)
   * extracting features (which feature extractors are used and how to configure them)
   * training classifiers (which classifiers to use and how to configure them)
   * evaluating classifiers (either with designated train/test sets or using cross-validation)
   * writing results (which reports to use)
 
-Parameters which should be tested for different values and combinations will be defined as [Discriminators here]. These parameters are usually prefixed with _dim_ and will be injected into the `ParameterSpace`.
+The overall setup for a cross-validation experiment looks like this:
+
+{{{
+     BatchTaskCrossValidation batchTask = [
+            // identifier for your experiment
+            experimentName: "Twitter-Sentiment-CV",
+            // the name of the folder to hold the final evaluation results
+            type: "Evaluation-Twitter-Sentiment-CV",
+            // Preprocessing components and configuration
+            preprocessingPipeline: createEngineDescription(
+            ArktweetTagger, ArktweetTagger.PARAM_LANGUAGE, "en", ArktweetTagger.PARAM_VARIANT, "default"), 
+            // all parameters in the parameter space with more than one value in a list will be swept
+            parameterSpace: [
+                // source data reader
+                Dimension.createBundle("readers", [
+                    readerTrain: LabeledTweetReader,
+                    readerTrainParams: [
+                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
+                        "src/main/resources/data/twitter/train/*/*.txt"
+                    ]]),
+                // feature mode; must be unique
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+                // learning mode; must be unique
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                // an array of feature extractors
+                Dimension.create(DIM_FEATURE_SET, [
+                    EmoticonRatioDFE.name,
+                    NumberOfHashTagsDFE.name
+                ]),
+                // this data writer writes the extracted features into ARFF format; must be unique
+                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name),
+                // machine learning classifiers
+                Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
+            ],
+            // a reader collecting the results from folds
+            reports: [BatchCrossValidationReport], 
+            // the number of folds
+            numFolds: 10]
+}}}
+
+{{{
+            Dimension.createBundle("readers", [
+                    readerTrain: LabeledTweetReader,
+                    readerTrainParams: [
+                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
+                        "src/main/resources/data/twitter/train/*/*.txt"
+                    ],
+                    readerTest: LabeledTweetReader,
+                    readerTestParams: [
+                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
+                        "src/main/resources/data/twitter/test/*/*.txt"
+                    ],
+                ])
+}}}
+
+Parameters which should be tested for different values and combinations will be defined as explained [Discriminators here]. These parameters are usually prefixed with _dim_ and will be injected into the `parameterSpace`.
 
 The input data and reader(s) are defined as `DimensionBundle`.
 
-{{{
-def dimReaders = Dimension.createBundle("readers", [
-   readerTrain: TwentyNewsgroupsCorpusReader.class,
-   readerTrainParams: [
-      TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-      corpusFilePathTrain,
-      TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-      languageCode,
-      TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-      TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-   ],
-   readerTest: TwentyNewsgroupsCorpusReader.class,
-   readerTestParams: [
-      TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-      corpusFilePathTest,
-      TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-      languageCode,
-      TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-      TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-   ]
-]);
-}}}
+<wiki:comment>
+
+
 
 In this case, the `TwentyNewsgroupsCorpusReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`/`corpusFilePathTest`.
 
@@ -146,6 +184,8 @@ def numFolds = 2;
 }}}
 
 Gluing all of the various parameters and processing tasks together to actually perform all the tasks is governed by `runCrossValidation()`
+
+</wiki:comment>
 
 ====runTrainTest()====
 
