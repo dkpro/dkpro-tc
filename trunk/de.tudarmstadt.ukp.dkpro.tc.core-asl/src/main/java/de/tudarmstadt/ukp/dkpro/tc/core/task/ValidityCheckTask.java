@@ -89,7 +89,7 @@ public class ValidityCheckTask
             parameters.addAll(pipelineParameters);
         }
 
-        parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
+        parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
         parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
         parameters.add(dataWriter);
