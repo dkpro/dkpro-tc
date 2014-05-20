@@ -62,6 +62,7 @@ public class TwentyNewsgroupsDemo
         experiment.runTrainTest(pSpace);
     }
 
+    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
@@ -82,12 +83,10 @@ public class TwentyNewsgroupsDemo
                         LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
                         TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
 
-        @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }),
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
@@ -99,7 +98,6 @@ public class TwentyNewsgroupsDemo
                         "1000", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
                         1, FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
