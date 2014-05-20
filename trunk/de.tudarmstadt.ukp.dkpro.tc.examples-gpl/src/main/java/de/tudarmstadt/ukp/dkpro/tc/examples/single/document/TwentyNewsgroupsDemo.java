@@ -69,19 +69,22 @@ public class TwentyNewsgroupsDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                        corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
+        dimReaders
+                .put(
+                        DIM_READER_TRAIN_PARAMS,
+                        Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                                corpusFilePathTrain,
+                                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
+                                        + "*/*.txt")));
         dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] { TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
                         corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
                         LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
+                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }),

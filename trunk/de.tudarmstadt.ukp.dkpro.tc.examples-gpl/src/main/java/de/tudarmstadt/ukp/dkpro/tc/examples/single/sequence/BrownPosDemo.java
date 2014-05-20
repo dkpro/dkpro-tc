@@ -52,14 +52,10 @@ public class BrownPosDemo
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] {
-                        BrownCorpusReader.PARAM_LANGUAGE,
-                        "en",
-                        BrownCorpusReader.PARAM_SOURCE_LOCATION,
-                        corpusFilePathTrain,
-                        BrownCorpusReader.PARAM_PATTERNS,
-                        Arrays.asList(new String[] { INCLUDE_PREFIX + "*.xml",
-                                INCLUDE_PREFIX + "*.xml.gz" }) }));
+                Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE, "en",
+                        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        BrownCorpusReader.PARAM_PATTERNS, Arrays.asList(INCLUDE_PREFIX + "*.xml",
+                                INCLUDE_PREFIX + "*.xml.gz")));
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
