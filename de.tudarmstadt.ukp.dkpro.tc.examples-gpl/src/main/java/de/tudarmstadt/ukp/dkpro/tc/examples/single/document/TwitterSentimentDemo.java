@@ -1,0 +1,132 @@
+package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
+
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.resource.ResourceInitializationException;
+
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.trees.RandomForest;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
+import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+
+/**
+ * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
+ * 
+ * <pre>
+ * Johannes Daxenberger and Oliver Ferschke and Iryna Gurevych and Torsten Zesch (2014).
+ * DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.
+ * In: Proceedings of the 52nd Annual Meeting of the ACL.
+ * </pre>
+ * 
+ * This simplistic demo show-cases how to setup an experiment to classify a set of tweets as either
+ * "emotional" or "neutral".
+ * 
+ * @see de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo
+ */
+public class TwitterSentimentDemo
+    implements Constants
+{
+
+    public static void main(String[] args)
+        throws Exception
+    {
+        ParameterSpace pSpace = getParameterSpace();
+
+        TwitterSentimentDemo experiment = new TwitterSentimentDemo();
+        experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest(pSpace);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ParameterSpace getParameterSpace()
+    {
+        // configure training and test data reader dimension
+        // train/test will use both, while cross-validation will only use the train part
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+        dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
+        dimReaders.put(
+                DIM_READER_TRAIN_PARAMS,
+                Arrays.asList(new Object[] { TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                        "src/main/resources/data/twitter/train",
+                        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+                        "en", TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
+        dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
+        dimReaders.put(
+                DIM_READER_TEST_PARAMS,
+                Arrays.asList(new Object[] { TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                        "src/main/resources/data/twitter/test",
+                        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+                        "en", TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt" }));
+
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new String[] { NaiveBayes.class.getName() }),
+                Arrays.asList(new String[] { RandomForest.class.getName() }));
+
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(new String[] { EmoticonRatioDFE.class.getName(),
+                        NumberOfHashTagsDFE.class.getName() }));
+
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
+                        DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                dimClassificationArgs);
+
+        return pSpace;
+    }
+
+    // ##### CV #####
+    protected void runCrossValidation(ParameterSpace pSpace)
+        throws Exception
+    {
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwitterSentimentCV",
+                getPreprocessing(), 10);
+        batch.setParameterSpace(pSpace);
+        batch.addReport(BatchCrossValidationReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
+    // ##### TRAIN-TEST #####
+    protected void runTrainTest(ParameterSpace pSpace)
+        throws Exception
+    {
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwitterSentimentTrainTest",
+                getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.addReport(BatchTrainTestReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
+    protected AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(
+                ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
+                ArktweetTagger.PARAM_VARIANT,
+                "default");
+    }
+}

@@ -5,13 +5,12 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfSentencesDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
+import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
+import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -21,35 +20,35 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * The pipeline will run all DKPro TC components up to the creation of the input the for the Machine
  * Learning framework. No actual learning or evaluation will be done.
  * 
- * @author zesch
- * 
  */
-public class TwentyNewsgroupsRaw
+public class TwitterSentimentRaw
 {
     public static void main(String[] args)
         throws Exception
     {
-        String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train/*/*.txt";
+        String corpusFilePathTrain = "src/main/resources/data/twitter/train/*/*.txt";
+        String outputPath = "target/ts_raw_output";
 
         runPipeline(
                 // Reader
                 createReaderDescription(
-                        TwentyNewsgroupsCorpusReader.class,
-                        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en"),
+                        LabeledTweetReader.class,
+                        LabeledTweetReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        LabeledTweetReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(
+                        ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
+                        ArktweetTagger.PARAM_VARIANT, "default"),
                 // Feature extraction
                 createEngineDescription(
                         ExtractFeaturesConnector.class,
-                        ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, "target/tn_raw_output",
+                        ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
                         ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
                         ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
                         ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
-                                createExternalResourceDescription(NrOfTokensDFE.class),
-                                createExternalResourceDescription(NrOfSentencesDFE.class))));
+                                createExternalResourceDescription(EmoticonRatioDFE.class),
+                                createExternalResourceDescription(NumberOfHashTagsDFE.class))));
     }
 }
