@@ -15,10 +15,10 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class NrOfTokensFeatureExtractorTest
+public class NrOfTokensPerSentenceFeatureExtractorTest
 {
     @Test
-    public void nrOfTokensFeatureExtractorTest()
+    public void nrOfTokensPerSentenceFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
@@ -28,17 +28,17 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
 
-        NrOfTokensDFE extractor = new NrOfTokensDFE();
+        NrOfTokensPerSentenceDFE extractor = new NrOfTokensPerSentenceDFE();
         List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensDFE.FN_NR_OF_TOKENS, 5., iter.next());
+        assertFeature(NrOfTokensPerSentenceDFE.FN_TOKENS_PER_SENTENCE, 5., iter.next());
     }
 
     @Test
-    public void nrOfTokensExteremeFeatureExtractorTest()
+    public void nrOfTokensPerSentenceExteremeFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
@@ -48,12 +48,12 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentText("");
         engine.process(jcas);
 
-        NrOfTokensDFE extractor = new NrOfTokensDFE();
+        NrOfTokensPerSentenceDFE extractor = new NrOfTokensPerSentenceDFE();
         List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(1, features.size());
 
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensDFE.FN_NR_OF_TOKENS, 0., iter.next());
+        assertFeature(NrOfTokensPerSentenceDFE.FN_TOKENS_PER_SENTENCE, 0., iter.next());
     }
 }
