@@ -30,7 +30,7 @@ de.tudarmstadt.ukp.dkpro.tc.examples.single.document
 }}}
 as it demonstrates a single-label classification experiment with entire documents (tweets) as classification objects. For an explanation of feature and learning modes, please see below. 
 
-All example projects come with a set of data and can be run right away. The _TwitterSentimentDemo_ and _TwentyNewsgroupsDemo_experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
+All example projects come with a set of data and can be run right away. The _TwitterSentimentDemo_ and _TwentyNewsgroupsDemo_ experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
 If you don't know where to start, go with the TwitterSentimentDemo first, as it has the most extensive documentation.
 
 ==Binary Classification with DKPro-TC: TwitterSentiment Demo==
