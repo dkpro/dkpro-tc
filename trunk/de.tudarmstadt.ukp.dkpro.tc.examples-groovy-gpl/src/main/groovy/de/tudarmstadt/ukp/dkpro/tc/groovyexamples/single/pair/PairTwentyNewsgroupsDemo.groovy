@@ -14,7 +14,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne.SharedNEsFeatureExtractor
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
@@ -44,76 +44,49 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     // === PARAMETERS===========================================================
 
-    def experimentName = "PairTwentyNewsgroupsExperiment";
-    def languageCode = "en";
-    def listFilePathTrain = "src/main/resources/data/twentynewsgroups/pairs/pairslist.train";
-    def listFilePathTest  ="src/main/resources/data/twentynewsgroups/pairs/pairslist.test";
+    def experimentName = "PairTwentyNewsgroupsExperiment"
+    def languageCode = "en"
+    def listFilePathTrain = "src/main/resources/data/twentynewsgroups/pairs/pairslist.train"
+    def listFilePathTest  ="src/main/resources/data/twentynewsgroups/pairs/pairslist.test"
 
 
     // === DIMENSIONS===========================================================
 
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: PairTwentyNewsgroupsReader.class,
+        readerTest: PairTwentyNewsgroupsReader,
         readerTestParams: [
             PairTwentyNewsgroupsReader.PARAM_LISTFILE,
             listFilePathTest,
             PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
             languageCode
         ],
-        readerTrain: PairTwentyNewsgroupsReader.class,
+        readerTrain: PairTwentyNewsgroupsReader,
         readerTrainParams: [
             PairTwentyNewsgroupsReader.PARAM_LISTFILE,
             listFilePathTrain,
             PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
             languageCode
         ]
-    ]);
+    ])
 
-    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR);
-    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    //	[NaiveBayes.class.name],
-    [SMO.class.name]);
+    //	[NaiveBayes.name],
+    [SMO.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
         // This feature is sensible and fast, but gives bad results on the demo data
-        SharedNEsFeatureExtractor.class.name,
+        DiffNrOfTokensPairFeatureExtractor.name,
         // Please review LuceneNGramPairFeatureExtractor's javadoc to understand
         // the parameters before using LuceneNGramPairFeatureExtractor.
-        //      LuceneNGramPairFeatureExtractor.class.name
+        //      LuceneNGramPairFeatureExtractor.name
     ]
-    );
-
-    def dimPipelineParameters = Dimension.create(
-    DIM_PIPELINE_PARAMS,
-
-    [
-        //        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1,
-        //        			1,
-        //        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1,
-        //        			2,
-        //        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2,
-        //        			1,
-        //        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2,
-        //        			2,
-        //        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW1,
-        //        			"100",
-        //        			LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K_VIEW2,
-        //        			"100",
-        //					LuceneNGramPairFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-        //					"500",
-        //					LuceneNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES,
-        //					"false",
-        //					LuceneNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES,
-        //					"true",
-        //					LuceneNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES,
-        //					"true"
-    ]
-    );
+    )
 
     // === Experiments =========================================================
 
@@ -131,38 +104,38 @@ class PairTwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport.class],            parameterSpace : [
+            innerReports: [ClassificationReport],
+            parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
                 dimDataWriter,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParameters
+                dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
-        ];
+        ]
 
         // Run
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
 
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
         return createEngineDescription(
-        createEngineDescription(StanfordSegmenter.class),
-        createEngineDescription(StanfordNamedEntityRecognizer.class,
+        createEngineDescription(StanfordSegmenter),
+        createEngineDescription(StanfordNamedEntityRecognizer,
         StanfordNamedEntityRecognizer.PARAM_VARIANT, "all.3class.distsim.crf")
-        );
+        )
     }
 
     public static void main(String[] args)
     {
-        new PairTwentyNewsgroupsDemo().runTrainTest();
+        new PairTwentyNewsgroupsDemo().runTrainTest()
     }
 
 }

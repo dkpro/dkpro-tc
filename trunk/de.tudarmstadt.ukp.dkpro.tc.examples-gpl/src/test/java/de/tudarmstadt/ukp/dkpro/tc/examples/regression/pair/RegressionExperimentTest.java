@@ -19,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 public class RegressionExperimentTest
 {
     ParameterSpace pSpace;
-    SemanticTextSimilarityDemo experiment;
+    RegressionDemo experiment;
     
     @Before
     public void setupLogging()
@@ -35,8 +35,8 @@ public class RegressionExperimentTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        experiment = new SemanticTextSimilarityDemo();
-        pSpace = SemanticTextSimilarityDemo.setup();
+        experiment = new RegressionDemo();
+        pSpace = RegressionDemo.setup();
     }
 
     @Test
