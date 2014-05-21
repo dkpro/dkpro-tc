@@ -23,5 +23,17 @@
   			de.tudarmstadt.ukp.dkpro.core.arktools-gpl
   		</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>
+  			de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
+  		</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  		<artifactId>
+  			de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl
+  		</artifactId>
+  	</dependency>
   </dependencies>
 </project>

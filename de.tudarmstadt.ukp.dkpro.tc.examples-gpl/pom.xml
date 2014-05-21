@@ -46,12 +46,6 @@
         <artifactId>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</artifactId>
     </dependency>
     <dependency>
-        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>
-            de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl
-        </artifactId>
-    </dependency>
-    <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
     </dependency>
@@ -72,6 +66,12 @@
     		de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default
     	</artifactId>
     	<version>20120919.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+    	<artifactId>
+    		de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
+    	</artifactId>
     </dependency>
   </dependencies>
   <dependencyManagement>

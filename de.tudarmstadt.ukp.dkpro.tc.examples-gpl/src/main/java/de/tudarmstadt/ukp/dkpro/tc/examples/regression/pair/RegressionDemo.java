@@ -19,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * similarity features between document pairs and <br>
  * then learns a regression model that predicts similarity of unseen document pairs.
  */
-public class SemanticTextSimilarityDemo
+public class RegressionDemo
 {
     public static final String LANGUAGE_CODE = "en";
     public static final int NUM_FOLDS = 2;
@@ -67,7 +67,9 @@ public class SemanticTextSimilarityDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                Arrays.asList(new String[] { GreedyStringTilingFeatureExtractor.class.getName() }));
+                // yields really bad results. To improve the performance, use a string similarity
+                // based feature extractor
+                Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(
@@ -83,7 +85,7 @@ public class SemanticTextSimilarityDemo
         throws Exception
     {
 
-        SemanticTextSimilarityDemo experiment = new SemanticTextSimilarityDemo();
+        RegressionDemo experiment = new RegressionDemo();
         experiment.runCrossValidation(setup());
         experiment.runTrainTest(setup());
     }
