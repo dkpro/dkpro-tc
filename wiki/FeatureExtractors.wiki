@@ -1,0 +1,57 @@
+#summary Quick Guide about how to write your own feature extractor
+
+This tutorial shows how to create a custom feature extractor.
+
+==Example==
+
+As example, we will have at look at the `NrOfTokensPerSentence` feature extractor:
+
+{{{
+public class NrOfTokensPerSentence extends FeatureExtractorResource_ImplBase
+    implements DocumentFeatureExtractor // the type of the feature extractor
+{
+    @Override
+    public List<Feature> extract(JCas jcas) throws TextClassificationException
+    {
+        List<Feature> featList = new ArrayList<Feature>();
+        // retrieve annotations from previously running preprocessing task
+        double numTokens = JCasUtil.select(jcas, Token.class).size(); 
+        double numSentences = JCasUtil.select(jcas, Sentence.class).size(); 
+
+        double ratio = numTokens / numSentences;
+
+        if (numSentences == 0) { // if there is no full sentence in the document, we cannot calculate this feature
+            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(MissingValueNonNominalType.NUMERIC)));
+        }
+        else {
+            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
+        }
+        return featList;
+    }
+}
+}}}
+
+==Options==
+
+Here is a list of options you have to specify a feature extractor according to your needs.
+
+===Feature Modes===
+
+DKPro TC supports the following feature modes and feature extractor types:
+
+|| *Feature Mode* || *Corresponding Feature Extractor Type* || *Has Access To* ||
+|| document || DocumentFeatureExtractor || the entire CAS ||
+|| pair || PairFeatureExtractor || both documents, in the form of two views on the same CAS ||
+|| unit/sequence || UnitFeatureExtractor || the current unit, all other units in the CAS, and to the entire CAS itself  ||
+
+
+===Feature Value Types===
+
+DKPro TC supports the following types of values for features:
+
+|| *Java Object* || *Corresponding Feature Value Type* ||
+|| Boolean || boolean (true or false) || 
+|| Number || a numeric value ||
+|| Enum || a nominal value (from a finite set of strings) ||
+|| String || a string value ||
+|| MissingValue || a missing value for cases in which no value can be calculated ||
