@@ -42,7 +42,7 @@ DKPro TC supports the following feature modes and feature extractor types:
 || *Feature Mode* || *Corresponding Feature Extractor Type* || *Has Access To* ||
 || document || DocumentFeatureExtractor || the entire CAS ||
 || pair || PairFeatureExtractor || both documents, in the form of two views on the same CAS ||
-|| unit/sequence || UnitFeatureExtractor || the current unit, all other units in the CAS, and to the entire CAS itself  ||
+|| unit/sequence || ClassificationUnitFeatureExtractor || the current unit, all other units in the CAS, and to the entire CAS itself  ||
 
 
 ===Feature Value Types===
