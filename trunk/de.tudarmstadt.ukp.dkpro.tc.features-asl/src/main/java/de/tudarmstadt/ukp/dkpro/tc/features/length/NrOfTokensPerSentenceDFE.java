@@ -13,6 +13,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue.MissingValueNonNominalType;
 
 /**
  * Extracts the ratio of tokens per sentence
@@ -39,7 +41,8 @@ public class NrOfTokensPerSentenceDFE
         double ratio = numTokens / numSentences;
 
         if (numSentences == 0) {
-            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, 0.));
+            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
+                    MissingValueNonNominalType.NUMERIC)));
         }
         else {
             featList.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
