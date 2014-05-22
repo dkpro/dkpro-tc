@@ -28,8 +28,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
 import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
-import de.tudarmstadt.ukp.dkpro.tc.weka.filter.ReplaceMissingValuesWithZeroFilter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
@@ -222,7 +222,7 @@ public class WekaUtils
             throw new IllegalArgumentException("List of instance outcomes is empty.");
         }
 
-        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+        // Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
@@ -247,7 +247,7 @@ public class WekaUtils
         }
 
         ArffSaver saver = new ArffSaver();
-        preprocessingFilter.setInputFormat(wekaInstances);
+        // preprocessingFilter.setInputFormat(wekaInstances);
         saver.setRetrieval(Saver.INCREMENTAL);
         saver.setFile(outputFile);
         saver.setCompressOutput(true);
@@ -277,8 +277,9 @@ public class WekaUtils
                 wekaInstance.setClassValue(outcome);
             }
 
-            preprocessingFilter.input(wekaInstance);
-            saver.writeIncremental(preprocessingFilter.output());
+            // preprocessingFilter.input(wekaInstance);
+            // saver.writeIncremental(preprocessingFilter.output());
+            saver.writeIncremental(wekaInstance);
         }
 
         // finishes the incremental saving process
@@ -300,7 +301,7 @@ public class WekaUtils
         throws Exception
     {
 
-        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+        // Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(featureStore);
 
@@ -323,7 +324,7 @@ public class WekaUtils
         }
 
         ArffSaver saver = new ArffSaver();
-        preprocessingFilter.setInputFormat(wekaInstances);
+        // preprocessingFilter.setInputFormat(wekaInstances);
         saver.setRetrieval(Saver.INCREMENTAL);
         saver.setFile(outputFile);
         saver.setCompressOutput(true);
@@ -353,8 +354,9 @@ public class WekaUtils
 
             wekaInstance.setDataset(wekaInstances);
 
-            preprocessingFilter.input(wekaInstance);
-            saver.writeIncremental(preprocessingFilter.output());
+            // preprocessingFilter.input(wekaInstance);
+            // saver.writeIncremental(preprocessingFilter.output());
+            saver.writeIncremental(wekaInstance);
         }
 
         // finishes the incremental saving process
@@ -379,7 +381,7 @@ public class WekaUtils
             List<Attribute> attributes, List<String> allClassLabels)
         throws Exception
     {
-        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+        // Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
         AttributeStore attributeStore = new AttributeStore();
         List<Attribute> outcomeAttributes = createOutcomeAttributes(allClassLabels);
@@ -398,14 +400,15 @@ public class WekaUtils
                 + " ", attributeStore.getAttributes(), instance.getFeatures().size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
         // System.out.println(instances);
-        preprocessingFilter.setInputFormat(wekaInstances);
+        // preprocessingFilter.setInputFormat(wekaInstances);
 
         double[] featureValues = getFeatureValues(attributeStore, instance);
 
         SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
         sparseInstance.setDataset(wekaInstances);
-        preprocessingFilter.input(sparseInstance);
-        return preprocessingFilter.output();
+        // preprocessingFilter.input(sparseInstance);
+        // return preprocessingFilter.output();
+        return sparseInstance;
     }
 
     private static Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
@@ -452,7 +455,7 @@ public class WekaUtils
             List<Attribute> attributes, List<String> allClasses, boolean isRegressionExperiment)
         throws Exception
     {
-        Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
+        // Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
         AttributeStore attributeStore = new AttributeStore();
 
         for (int i = 0; i < attributes.size() - 1; i++) {
@@ -467,15 +470,16 @@ public class WekaUtils
                 instance.getFeatures().size());
         wekaInstances.setClass(outcomeAttribute);
 
-        preprocessingFilter.setInputFormat(wekaInstances);
+        // preprocessingFilter.setInputFormat(wekaInstances);
 
         double[] featureValues = getFeatureValues(attributeStore, instance);
 
         SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
         sparseInstance.setDataset(wekaInstances);
         sparseInstance.setClassMissing();
-        preprocessingFilter.input(sparseInstance);
-        return preprocessingFilter.output();
+        // preprocessingFilter.input(sparseInstance);
+        // return preprocessingFilter.output();
+        return sparseInstance;
     }
 
     private static double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
@@ -490,18 +494,32 @@ public class WekaUtils
 
                 double attributeValue;
                 if (featureValue instanceof Number) {
+                    // numeric attribute
                     attributeValue = ((Number) feature.getValue()).doubleValue();
                 }
                 else if (featureValue instanceof Boolean) {
+                    // boolean attribute
                     attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
                 }
-                else { // this branch is unsafe - the code is copied from SparseInstance (can it be
-                       // done safer?)
+                else if (featureValue instanceof MissingValue) {
+                    // missing value
+                    attributeValue = WekaFeatureEncoder.getMissingValueConversionMap().get(
+                            ((MissingValue) featureValue).getType());
+                }
+                else if (featureValue == null) {
+                    // null
+                    throw new IllegalArgumentException(
+                            "You have an instance which doesn't specify a value for the feature "
+                                    + feature.getName());
+                }
+                else {
+                    // nominal or string
                     Object stringValue = feature.getValue();
                     if (!attribute.isNominal() && !attribute.isString()) {
                         throw new IllegalArgumentException("Attribute neither nominal nor string: "
                                 + stringValue);
                     }
+
                     int valIndex = attribute.indexOfValue(stringValue.toString());
                     if (valIndex == -1) {
                         if (attribute.isNominal()) {

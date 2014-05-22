@@ -13,6 +13,8 @@ import org.junit.Test;
 import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue.MissingValueNonNominalType;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 public class WekaUtilTest
@@ -27,24 +29,37 @@ public class WekaUtilTest
         i1.addFeature(new Feature("feature1", 2));
         i1.addFeature(new Feature("feature2", 2));
         i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new Feature("feature4", Values.VALUE_1));
         i1.setOutcomes("1");
 
         Instance i2 = new Instance();
         i2.addFeature(new Feature("feature1", 1));
         i2.addFeature(new Feature("feature2", 1));
         i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new Feature("feature4", Values.VALUE_2));
         i2.setOutcomes("2");
 
         Instance i3 = new Instance();
         i3.addFeature(new Feature("feature1", 1));
         i3.addFeature(new Feature("feature2", 1));
         i3.addFeature(new Feature("feature3_{{", "b"));
+        i3.addFeature(new Feature("feature4", Values.VALUE_3));
         i3.setOutcomes("2");
+
+        // test missing values
+        Instance i4 = new Instance();
+        i4.addFeature(new Feature("feature1", new MissingValue(MissingValueNonNominalType.BOOLEAN)));
+        i4.addFeature(new Feature("feature2", new MissingValue(MissingValueNonNominalType.NUMERIC)));
+        i4.addFeature(new Feature("feature3_{{",
+                new MissingValue(MissingValueNonNominalType.STRING)));
+        i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
+        i4.setOutcomes("2");
 
         SimpleFeatureStore iList = new SimpleFeatureStore();
         iList.addInstance(i1);
         iList.addInstance(i2);
         iList.addInstance(i3);
+        iList.addInstance(i4);
 
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();
@@ -60,36 +75,48 @@ public class WekaUtilTest
     public void instanceToArffTest_multiLabel()
         throws Exception
     {
-
         Instance i1 = new Instance();
         i1.addFeature(new Feature("feature1", 2));
         i1.addFeature(new Feature("feature2", 2));
         i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new Feature("feature4", Values.VALUE_1));
         i1.setOutcomes("1", "2");
 
         Instance i2 = new Instance();
         i2.addFeature(new Feature("feature1", 1));
         i2.addFeature(new Feature("feature2", 1));
         i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new Feature("feature4", Values.VALUE_2));
         i2.setOutcomes("2", "3");
 
         Instance i3 = new Instance();
         i3.addFeature(new Feature("feature1", 1));
         i3.addFeature(new Feature("feature2", 1));
         i3.addFeature(new Feature("feature3_{{", "b"));
+        i3.addFeature(new Feature("feature4", Values.VALUE_3));
         i3.setOutcomes("2");
+
+        // test missing values
+        Instance i4 = new Instance();
+        i4.addFeature(new Feature("feature1", new MissingValue(MissingValueNonNominalType.BOOLEAN)));
+        i4.addFeature(new Feature("feature2", new MissingValue(MissingValueNonNominalType.NUMERIC)));
+        i4.addFeature(new Feature("feature3_{{",
+                new MissingValue(MissingValueNonNominalType.STRING)));
+        i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
+        i4.setOutcomes("1", "3");
 
         SimpleFeatureStore iList = new SimpleFeatureStore();
         iList.addInstance(i1);
         iList.addInstance(i2);
         iList.addInstance(i3);
+        iList.addInstance(i4);
 
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();
         outfile.createNewFile();
         outfile.deleteOnExit();
 
-        WekaUtils.instanceListToArffFile(outfile, iList);
+        WekaUtils.instanceListToArffFileMultiLabel(outfile, iList, false);
 
         System.out.println(FileUtils.readFileToString(outfile));
     }
@@ -117,9 +144,18 @@ public class WekaUtilTest
         attributes.add(new Attribute("feature1"));
         attributes.add(new Attribute("outcome", outcomeValues));
 
+        // test missing values
+        Instance i3 = new Instance();
+        i3.addFeature(new Feature("feature1", new MissingValue(MissingValueNonNominalType.BOOLEAN)));
+        i3.addFeature(new Feature("feature2", new MissingValue(MissingValueNonNominalType.NUMERIC)));
+        i3.addFeature(new Feature("feature3_{{",
+                new MissingValue(MissingValueNonNominalType.STRING)));
+
         weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, attributes,
                 outcomeValues, false);
         weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToWekaInstance(i2, attributes,
+                outcomeValues, false);
+        weka.core.Instance wekaInstance3 = WekaUtils.tcInstanceToWekaInstance(i3, attributes,
                 outcomeValues, false);
 
         assertEquals(true, wekaInstance1.equalHeaders(wekaInstance2));
@@ -127,8 +163,10 @@ public class WekaUtilTest
 
         wekaInstance1.dataset().add(wekaInstance1);
         wekaInstance2.dataset().add(wekaInstance2);
+        wekaInstance3.dataset().add(wekaInstance3);
         System.out.println(wekaInstance1.dataset() + "\n");
         System.out.println(wekaInstance2.dataset() + "\n");
+        System.out.println(wekaInstance3.dataset() + "\n");
     }
 
     @Test
@@ -189,5 +227,10 @@ public class WekaUtilTest
         @SuppressWarnings("unused")
         weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, attributes,
                 outcomeValues, false);
+    }
+
+    private enum Values
+    {
+        VALUE_1, VALUE_2, VALUE_3
     }
 }
