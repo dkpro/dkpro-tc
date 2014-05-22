@@ -13,13 +13,15 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue.MissingValueNonNominalType;
 
 /**
  * Extracts the number of characters in the document, per sentence, and per token
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class NrOfCharsFeatureExtractor
+public class NrOfCharsDFE
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
@@ -41,24 +43,30 @@ public class NrOfCharsFeatureExtractor
     public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        int nrOfChars = jcas.getDocumentText().length();
-        int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
-        int nrOfTokens = JCasUtil.select(jcas, Token.class).size();
+        double nrOfChars = jcas.getDocumentText().length();
+        double nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
+        double nrOfTokens = JCasUtil.select(jcas, Token.class).size();
 
         List<Feature> featList = new ArrayList<Feature>();
         featList.add(new Feature(FN_NR_OF_CHARS, nrOfChars));
 
-        double charPerSentence = 0.0;
         if (nrOfSentences > 0) {
-            charPerSentence = (double) nrOfChars / nrOfSentences;
+            featList.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, (double) nrOfChars
+                    / nrOfSentences));
         }
-        featList.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, charPerSentence));
+        else {
+            featList.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, new MissingValue(
+                    MissingValueNonNominalType.NUMERIC)));
+        }
 
-        double charPerToken = 0.0;
         if (nrOfTokens > 0) {
-            charPerToken = (double) nrOfChars / nrOfTokens;
+            featList.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, (double) nrOfChars
+                    / nrOfTokens));
         }
-        featList.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, charPerToken));
+        else {
+            featList.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, new MissingValue(
+                    MissingValueNonNominalType.NUMERIC)));
+        }
 
         return featList;
     }

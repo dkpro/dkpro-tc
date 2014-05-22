@@ -17,5 +17,9 @@
             de.tudarmstadt.ukp.dkpro.tc.api.features-asl
         </artifactId>
     </dependency>
+    <dependency>
+    	<groupId>commons-collections</groupId>
+    	<artifactId>commons-collections</artifactId>
+    </dependency>
   </dependencies>
 </project>
