@@ -106,7 +106,7 @@ In short, the above example define:
 Dimension.createBundle("readers", ...
 }}}
 
-In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`.
+In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`. See also [Readers here].
 
 *the feature mode and the learning mode*
 {{{
@@ -131,7 +131,7 @@ For more information on feature and learning modes, refer to the following paper
 Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
 }}}
 
-The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept").
+The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also [FeatureExtractors here].
 
 Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
