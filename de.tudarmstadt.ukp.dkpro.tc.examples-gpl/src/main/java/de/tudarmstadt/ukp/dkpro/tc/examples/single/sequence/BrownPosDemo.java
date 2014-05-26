@@ -95,6 +95,6 @@ public class BrownPosDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(createEngineDescription(NoOpAnnotator.class));
+        return createEngineDescription(NoOpAnnotator.class);
     }
 }
