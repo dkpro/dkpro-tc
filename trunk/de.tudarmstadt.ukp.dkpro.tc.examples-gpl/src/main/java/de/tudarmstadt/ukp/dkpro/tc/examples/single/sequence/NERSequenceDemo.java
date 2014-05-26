@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.examples.single.unit;
+package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
@@ -12,8 +12,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -21,23 +19,16 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.style.SituatedBetweenTwoTokensUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
 
 /**
- * This is an example for NER as unit classification. Each Entity is treated as a
- * classification unit.
- * This is only a showcase of the concept.
- * 
- * @author Andriy Nadolskyy
- * @author daxenberger
+ * Example for NER as sequence classification.
  */
-public class NERUnitDemo
+public class NERSequenceDemo
     implements Constants
 {
 
@@ -48,7 +39,7 @@ public class NERUnitDemo
     public static void main(String[] args)
         throws Exception
     {
-        NERUnitDemo demo = new NERUnitDemo();
+        NERSequenceDemo demo = new NERSequenceDemo();
         demo.runCrossValidation(getParameterSpace());
     }
 
@@ -56,13 +47,12 @@ public class NERUnitDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NERDemoCV",
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NamedEntitySequenceDemoCV",
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(ClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
                 
         // Run
         Lab.getInstance().run(batch);
@@ -78,29 +68,18 @@ public class NERUnitDemo
                 		NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 		NERDemoReader.PARAM_PATTERNS,
                 		INCLUDE_PREFIX + "*.txt" }));
-        
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }),
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
-        
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { SituatedBetweenTwoTokensUFE.PARAM_SPACE_SEPARATED_BOUNDARY_TOKENS,
-                        "\" \"" }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
         		Arrays.asList(new String[] { NrOfCharsUFE.class.getName(), 
-        				InitialCharacterUpperCaseUFE.class.getName(),
-        				SituatedBetweenTwoTokensUFE.class.getName() }));
+        				InitialCharacterUpperCaseUFE.class.getName()
+        		}));
 
+        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
+                        DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets);
 
         return pSpace;
     }
