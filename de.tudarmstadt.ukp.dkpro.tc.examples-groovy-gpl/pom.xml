@@ -35,5 +35,9 @@
   			de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl
   		</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>net.sf.meka</groupId>
+  		<artifactId>meka</artifactId>
+  	</dependency>
   </dependencies>
 </project>

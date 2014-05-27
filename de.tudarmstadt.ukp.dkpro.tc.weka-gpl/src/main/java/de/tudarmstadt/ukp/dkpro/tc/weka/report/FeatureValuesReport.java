@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import meka.core.Result;
+
 import org.apache.commons.lang.StringUtils;
 
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Result;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;

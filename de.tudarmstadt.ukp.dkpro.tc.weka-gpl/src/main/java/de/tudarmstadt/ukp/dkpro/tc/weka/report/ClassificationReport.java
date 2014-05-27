@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import meka.core.Result;
 import mulan.evaluation.measure.Measure;
 import weka.core.Instances;
-import weka.core.Result;
 import weka.core.SerializationHelper;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
@@ -102,8 +102,8 @@ public class ClassificationReport
                     predictedLabelsList, tempM);
 
             // Meka Evaluation
-            Map<String, Double> mekaResults = MekaEvaluationUtils.calcMLStats(r.predictions,
-                    r.actuals, t, classNames);
+            Map<String, Double> mekaResults = MekaEvaluationUtils.calcMLStats(r.allPredictions(),
+                    r.allActuals(), t, classNames);
             results.putAll(mekaResults);
 
             // average PR curve
