@@ -1,14 +1,14 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.multi.document;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.multi.document
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
+import meka.classifiers.multilabel.BR
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
 
 import weka.attributeSelection.InfoGainAttributeEval
 import weka.classifiers.bayes.NaiveBayes
-import weka.classifiers.multilabel.BR
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
@@ -41,18 +41,18 @@ public class ReutersDemo implements Constants {
 
     // === PARAMETERS===========================================================
 
-    def experimentName = "ReutersTextClassification";
-    def corpusFilePathTrain = "src/main/resources/data/reuters/training";
-    def corpusFilePathTest = "src/main/resources/data/reuters/test";
-    def goldLabelFilePath = "src/main/resources/data/reuters/cats.txt";
-    def languageCode = "en";
-    def numFolds = 2;
-    def threshold = "0.5";
+    def experimentName = "ReutersTextClassification"
+    def corpusFilePathTrain = "src/main/resources/data/reuters/training"
+    def corpusFilePathTest = "src/main/resources/data/reuters/test"
+    def goldLabelFilePath = "src/main/resources/data/reuters/cats.txt"
+    def languageCode = "en"
+    def numFolds = 2
+    def threshold = "0.5"
 
     // === DIMENSIONS===========================================================
 
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: ReutersCorpusReader.class,
+        readerTest: ReutersCorpusReader,
         readerTestParams: [
             ReutersCorpusReader.PARAM_SOURCE_LOCATION,
             corpusFilePathTest,
@@ -63,7 +63,7 @@ public class ReutersDemo implements Constants {
             ReutersCorpusReader.PARAM_PATTERNS,
             ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"
         ],
-        readerTrain: ReutersCorpusReader.class,
+        readerTrain: ReutersCorpusReader,
         readerTrainParams: [
             ReutersCorpusReader.PARAM_SOURCE_LOCATION,
             corpusFilePathTrain,
@@ -74,39 +74,39 @@ public class ReutersDemo implements Constants {
             ReutersCorpusReader.PARAM_PATTERNS,
             ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"
         ]
-    ]);
+    ])
 
-    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL);
-    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
-    def dimThreshold = Dimension.create(DIM_BIPARTITION_THRESHOLD, threshold);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, MekaDataWriter.class.name);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL)
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimThreshold = Dimension.create(DIM_BIPARTITION_THRESHOLD, threshold)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, MekaDataWriter.name)
 
     def dimClassificationArgs =
     Dimension.create(
     DIM_CLASSIFICATION_ARGS,
     [
-        BR.class.name,
+        BR.name,
         "-W",
-        NaiveBayes.class.name
-    ]);
+        NaiveBayes.name
+    ])
 
     def dimFeatureSelection = Dimension.createBundle("featureSelection", [
         labelTransformationMethod: "BinaryRelevanceAttributeEvaluator",
         attributeEvaluator: [
-            InfoGainAttributeEval.class.name
+            InfoGainAttributeEval.name
         ],
         numLabelsToKeep: 100,
         applySelection: true
-    ]);
+    ])
 
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensDFE.class.name,
-        LuceneNGramDFE.class.name
+        NrOfTokensDFE.name,
+        LuceneNGramDFE.name
     ]
-    );
+    )
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
@@ -126,7 +126,7 @@ public class ReutersDemo implements Constants {
         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
         3
     ]
-    );
+    )
 
     // === Experiments =========================================================
 
@@ -143,7 +143,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport.class],
+            innerReports: [ClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -157,9 +157,9 @@ public class ReutersDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchCrossValidationReport],
-            numFolds: numFolds];
+            numFolds: numFolds]
 
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
     /**
      * TrainTest Setting
@@ -174,7 +174,8 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport.class],            parameterSpace : [
+            innerReports: [ClassificationReport],
+            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -189,25 +190,25 @@ public class ReutersDemo implements Constants {
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
-        ];
+        ]
 
         // Run
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
 
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
         return createEngineDescription(
-        createEngineDescription(BreakIteratorSegmenter.class),
-        createEngineDescription(OpenNlpPosTagger.class)
-        );
+        createEngineDescription(BreakIteratorSegmenter),
+        createEngineDescription(OpenNlpPosTagger)
+        )
     }
 
     public static void main(String[] args)
     {
-        new ReutersDemo().runTrainTest();
-        new ReutersDemo().runCrossValidation();
+        new ReutersDemo().runTrainTest()
+        new ReutersDemo().runCrossValidation()
     }
 
 }

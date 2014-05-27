@@ -5,15 +5,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.Result;
+
 import org.apache.commons.lang.StringUtils;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.classifiers.multilabel.Evaluation;
-import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Result;
 import weka.core.converters.ConverterUtils.DataSink;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;

@@ -7,15 +7,16 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.Result;
+
 import org.apache.commons.lang.StringUtils;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
-import weka.core.Result;
 import weka.core.SelectedTag;
 import weka.core.SparseInstance;
 import weka.core.converters.ArffSaver;
@@ -581,7 +582,7 @@ public class WekaUtils
             Instances testData, String threshold)
         throws Exception
     {
-        Result r = weka.classifiers.multilabel.Evaluation.evaluateModel((MultilabelClassifier) cl,
+        Result r = meka.classifiers.multilabel.Evaluation.evaluateModel((MultilabelClassifier) cl,
                 trainData, testData, threshold);
         return r;
     }

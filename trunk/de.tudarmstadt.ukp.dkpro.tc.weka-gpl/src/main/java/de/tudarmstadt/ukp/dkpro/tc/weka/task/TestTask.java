@@ -3,15 +3,16 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import java.io.File;
 import java.util.List;
 
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.Result;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 
 import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
-import weka.core.Result;
 import weka.core.converters.ConverterUtils.DataSink;
 import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;

@@ -6,16 +6,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import meka.classifiers.multilabel.BR;
+import meka.core.Result;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SMOreg;
-import weka.classifiers.multilabel.BR;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
-import weka.core.Result;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -111,7 +112,7 @@ public class WekaResultsTest
         cl.buildClassifier(trainData);
         Result eval = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, "0.2");
         assertEquals(16.0, eval.L, 0.01);
-        assertEquals(0.0, Result.getStats(eval).get("Exact_match"), 0.01);
+        assertEquals(0.0, Result.getStats(eval, "1").get("Exact match"), 0.01);
     }
 
 }

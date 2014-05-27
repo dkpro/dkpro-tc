@@ -32,11 +32,11 @@
   		<artifactId>weka-dev</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>mulan</groupId>
+  		<groupId>net.sf.meka.thirdparty</groupId>
   		<artifactId>mulan</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>nz.ac.waikato.cms.weka</groupId>
+  		<groupId>net.sf.meka</groupId>
   		<artifactId>meka</artifactId>
   	</dependency>
   	<dependency>

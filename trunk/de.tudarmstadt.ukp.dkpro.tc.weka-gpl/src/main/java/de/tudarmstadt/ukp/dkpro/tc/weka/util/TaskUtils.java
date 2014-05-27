@@ -16,6 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import meka.core.MLUtils;
+import meka.core.Result;
+import meka.core.ThresholdUtils;
+import meka.filters.unsupervised.attribute.MekaClassAttributes;
 import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelNodeImpl;
 import mulan.data.LabelsMetaDataImpl;
@@ -34,14 +38,10 @@ import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.Evaluation;
 import weka.core.Attribute;
 import weka.core.Instances;
-import weka.core.MLUtils;
-import weka.core.Result;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.MekaClassAttributes;
 import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 
 /**
  * Utils required by Weka/Meka tasks.
@@ -165,12 +165,12 @@ public class TaskUtils
             // one threshold for all labels (PCut1 in Meka)
             Arrays.fill(
                     t,
-                    MekaEvaluationUtils.calibrateThreshold(r.predictions,
+                    ThresholdUtils.calibrateThreshold(r.predictions,
                             Double.valueOf(r.getValue("LCard_train"))));
         }
         else if (threshold.equals("PCutL")) {
             // one threshold for each label (PCutL in Meka)
-            t = MekaEvaluationUtils.calibrateThresholds(r.predictions,
+            t = ThresholdUtils.calibrateThresholds(r.predictions,
                     MLUtils.labelCardinalities(data));
             // FIXME
             throw new Exception("Not yet implemented.");
