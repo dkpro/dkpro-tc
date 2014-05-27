@@ -21,8 +21,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.style.SituatedBetweenTwoTokensUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.style.IsSurroundedByCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
@@ -30,9 +30,8 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
- * This is an example for NER as unit classification. Each Entity is treated as a
- * classification unit.
- * This is only a showcase of the concept.
+ * This is an example for NER as unit classification. Each Entity is treated as a classification
+ * unit. This is only a showcase of the concept.
  * 
  * @author Andriy Nadolskyy
  * @author daxenberger
@@ -63,7 +62,7 @@ public class NERUnitDemo
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
         batch.addReport(BatchRuntimeReport.class);
-                
+
         // Run
         Lab.getInstance().run(batch);
     }
@@ -75,26 +74,27 @@ public class NERUnitDemo
         dimReaders.put(
                 DIM_READER_TRAIN_PARAMS,
                 Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
-                		NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                		NERDemoReader.PARAM_PATTERNS,
-                		INCLUDE_PREFIX + "*.txt" }));
-        
+                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        NERDemoReader.PARAM_PATTERNS,
+                        INCLUDE_PREFIX + "*.txt" }));
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }),
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
-        
+
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { SituatedBetweenTwoTokensUFE.PARAM_SPACE_SEPARATED_BOUNDARY_TOKENS,
-                        "\" \"" }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension
+                .create(
+                        DIM_PIPELINE_PARAMS,
+                        Arrays.asList(new Object[] {
+                                IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-        		Arrays.asList(new String[] { NrOfCharsUFE.class.getName(), 
-        				InitialCharacterUpperCaseUFE.class.getName(),
-        				SituatedBetweenTwoTokensUFE.class.getName() }));
+                Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
+                        InitialCharacterUpperCaseUFE.class.getName(),
+                        IsSurroundedByCharsUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
@@ -104,7 +104,6 @@ public class NERUnitDemo
 
         return pSpace;
     }
-    
 
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
