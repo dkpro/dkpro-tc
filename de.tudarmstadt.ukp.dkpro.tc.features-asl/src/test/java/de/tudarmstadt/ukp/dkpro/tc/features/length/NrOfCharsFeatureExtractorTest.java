@@ -35,7 +35,7 @@ public class NrOfCharsFeatureExtractorTest
 
         Iterator<Feature> iter = features.iterator();
 
-        assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS, 31, iter.next());
+        assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS, 31., iter.next());
         assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, iter.next());
         assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS_PER_TOKEN, 3.1, iter.next());
     }
