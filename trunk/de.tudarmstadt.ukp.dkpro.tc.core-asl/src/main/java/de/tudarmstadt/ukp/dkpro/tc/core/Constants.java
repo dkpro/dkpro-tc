@@ -83,6 +83,36 @@ public interface Constants
     public static final String DIM_CLASSIFICATION_ARGS = "classificationArguments";
 
     /**
+     * Name of the discriminator that stores the feature selection class and a list of arguments to
+     * parametrize it
+     */
+    public static final String DIM_ATTRIBUTE_EVALUATOR_ARGS = "attributeEvaluator";
+
+    /**
+     * Name of the discriminator that stores the feature selection search class and a list of
+     * arguments to parametrize it (single-label learning)
+     */
+    public static final String DIM_FEATURE_SEARCHER_ARGS = "featureSearcher";
+
+    /**
+     * Name of the discriminator that stores a Mulan label transformation method (multi-label
+     * learning)
+     */
+    public static final String DIM_LABEL_TRANSFORMATION_METHOD = "labelTransformationMethod";
+
+    /**
+     * Name of the discriminator that stores the number of features to be selected (multi-label
+     * learning)
+     */
+    public static final String DIM_NUM_LABELS_TO_KEEP = "numLabelsToKeep";
+
+    /**
+     * Name of the discriminator that stores whether the feature selection should be applied to
+     * learning task or not
+     */
+    public static final String DIM_APPLY_FEATURE_SELECTION = "applySelection";
+
+    /**
      * Name of the discriminator that stores the bipartition threshold used in multi-label
      * classification
      */
