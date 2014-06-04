@@ -29,5 +29,5 @@ _if you use DKPRo-TC version 0.5.0, see [Discriminators_0_5_0 here]_
       * `featureSearcher`: Weka attribute selection search class and list of arguments to parametrize it (the ranking algorithm; _only for singleLabel learning mode_)
       * `labelTransformationMethod`: a Mulan label transformation method (the label transformation method; _only for multiLabel learning mode_)
       * `numLabelsToKeep`: integer (the number of features which will be selected; _only for multiLabel learning mode_)
-      * `apply selection`: boolean (whether to actually apply the )
+      * `applySelection`: boolean (whether to actually apply the )
    * `developerMode`: boolean (if true, you will not be warned when using feature extractors incompatible with the specified `featureMode`)
