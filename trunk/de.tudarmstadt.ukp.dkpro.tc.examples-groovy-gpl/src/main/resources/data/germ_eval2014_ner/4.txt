@@ -1,0 +1,15 @@
+#	stern.de vom 21.03.2006	[2006-03-21]	
+1	Bayern	B-ORG	B-LOC
+2	München	I-ORG	B-LOC
+3	ist	O	O
+4	wieder	O	O
+5	alleiniger	O	O
+6	Top-	O	O
+7	Favorit	O	O
+8	auf	O	O
+9	den	O	O
+10	Gewinn	O	O
+11	der	O	O
+12	deutschen	B-LOCderiv	O
+13	Fußball-Meisterschaft	O	O
+14	.	O	O
