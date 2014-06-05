@@ -1,81 +1,11 @@
  = Reducing Information Leak on Cross-Validation Tasks = 
  ==== by Emily Jamison ==== 
 
- == Introduction == 
-In an experimental setting, it is common knowledge that an evaluation dataset must not contain the same instances as were contained in the training set, or the model will be overfitted and the results ungeneralizable.  However, it is also important to control for data variables that are undesirable in the model.
-
-Consider the following opinion mining task.  The research question is: For each review text, classify the text as positive (supporting the product) or negative (criticizing the product).  Now, consider the training dataset:
-{{{
-review1: positive review about an Apple product
-review2: positive review about an Apple product
-review3: positive review about an Apple product
-review4: positive review about an Apple product
-review5: positive review about a Sony product
-review6: positive review about a Sony product
-
-review7: negative review about a Sony product
-review8: negative review about a Sony product
-review9: negative review about a Sony product
-review10: negative review about a Toshiba product
-review11: negative review about a Toshiba product
-review12: negative review about a Dell product
-}}}
-
-An ngram model trained on this data may find features such as the words "like", "happy", "awesome", "frustrated", "no good" to be highly predictive.  But, it may also find words such as "Apple", "Jobs", "iPod", etc, to be highly predictive!  Such a model would not be classifying by review opinion, but also by company!  This model is not generalizable.
-To make sure our results reflect only the system's ability on the opinion mining task, we can use an evaluation dataset of opinions from a new set of companies.  Or, we can divide the instances by company name, and make sure instances from a single company never occur in both training and evaluation datasets at the same time.
-
-
- == Cross Validation == 
-In a k-fold cross-validation (CV) evaluation setting, the data is divided into k folds and for each of k iterations, one fold is used as the evaluation dataset; the results are averaged together.  This reduces deviation in results.
-CV has several benefits over a single training+evaluation pair dataset.  Given only a limited number of instances, CV maximizes both training and evaluation dataset sizes, while not using any overlapping instances.  However, regular CV cannot be used in a situation with potential information leak, because care is not taken to keep related instances together in a single fold.  The only arrangement that will prevent two instances from occuring in separate training and evaluation datasets is that the two instances must be located in the same fold.
-
-
-
- == Is Randomness of Fold-Assignment Necessary? == 
-The folds are usually created in a pseudo-random manner.  This is for convenience; as long as all instances are contained in exactly one of the evaluation folds, particular permutations of class-imbalance will usually be erased when results from the folds are averaged.
-
-Consider a 2-class topic-classification experiment:
-{{{
-food/text1
-food/text2
-food/text3
-food/text4
-food/text5
-movies/text1
-movies/text2
-movies/text3
-movies/text4
-movies/text5
-}}}
-
-Let us assume our features represent each class's presence in the training corpus, such that training on: 
-{{{
-food/text1
-food/text2
-movies/text1
-movies/text2 
-}}}
-
-and testing on:
-{{{
-movies/text4
-movies/text5
-}}}
-
-will give us an accuracy of 50%.
-
-Now, the greater the number of folds, the larger the training dataset, and the less deviation will occur in results of different iterations.  But consider a small example.
-In our data, with 2 folds of equal size, results (shown as class1 accuracy, class2 accuracy, and number of distributions creating this result) range from (0,0)x2, (20, 80)x5x5x2, (40,60)x5x4x5x4x2.  I.e., for random distributions of equal sized folds, there are two outcomes in how the data can be represented: in 850/852 distributions, the average of the 2-fold iterations will give the same result as if the training and test size approached infinity and maintained original class-balance.  This is exactly the outcome we are trying to produce: we want the same results on our erroneously small dataset as if the dataset approached size infinity.  In 2/852 distributions, the average of the 2-fold iterations will give an accuracy of 0.  This is caused by the fold boundary occuring on the class divide: none of the testing class was seen in the training data.
-
-Whenever all the instances from a single class end up in a single fold, then iteration-averaged accuracy of that class from k-fold cross-validation will be 0 and will not represent a true model of the class.
-
-However, notice that there is no "sweet spot" distribution, where averaged performance is maximized.  Averaged performance is always the same, unless one class ends up contained in a single fold, in which case performance on that class drops to 0.  This means that, under other motivating circumstances, we can control fold distribution without artificially inflating the averaged results.
-
 
  == How to run Your Experiment == 
 If you have a dataset with potential information leakage, but you want to take advantage of the results-deviation-reducing capability of k-fold cross validation, you should customize your DKPro TC experiment in the following ways:
 
-First, you need to determine which instance must occur in the same training dataset or the same test dataset.  For example, in our opinion mining dataset above, we will locate all reviews about the same company's products into a folder together.
+First, you need to determine which instances must occur in the same training dataset or the same test dataset.  
 You must define a comparator to determine whether two instances need to occur together.  For our opinion mining dataset, we define a folder-based comparator, which returns '0' if two instances have the same parent folder (which makes them occur together in a fold)
 {{{
 Comparator<String> myComparator = new Comparator<String>(){
