@@ -7,8 +7,8 @@
 == Getting Started ==
   * [DemoExperiments Quick-Start Tutorial]
   * [Discriminators Mandatory and optional parameters to configure DKPro-TC experiments]
-  * [FeatureExtractors Creating costum feature extractors]
-  * [Readers Creating costum data readers]
+  * [FeatureExtractors Creating custom feature extractors]
+  * [Readers Creating custom data readers]
   
 == FAQ ==  
   * [FAQ]
