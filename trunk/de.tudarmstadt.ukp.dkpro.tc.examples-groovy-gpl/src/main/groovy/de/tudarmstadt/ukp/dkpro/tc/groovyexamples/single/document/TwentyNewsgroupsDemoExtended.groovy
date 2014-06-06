@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
@@ -47,9 +47,9 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     // === PARAMETERS===========================================================
 
-    def corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    def corpusFilePathTest  ="src/main/resources/data/twentynewsgroups/bydate-test";
-    def languageCode = "en";
+    def corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train"
+    def corpusFilePathTest  ="src/main/resources/data/twentynewsgroups/bydate-test"
+    def languageCode = "en"
 
     // === DIMENSIONS===========================================================
 
@@ -72,11 +72,11 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
-    ]);
+    ])
 
-    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
-    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -96,13 +96,13 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         1,
         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
         3
-    ]);
+    ])
 
 
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS,
     [NaiveBayes.class.name],
-    [SMO.class.name]);
+    [SMO.class.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
@@ -110,7 +110,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         NrOfTokensDFE.class.name,
         LuceneNGramDFE.class.name
     ]
-    );
+    )
 
     // === Experiments =========================================================
 
@@ -129,46 +129,46 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             preprocessingPipeline:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
             isTesting: false
-        ];
+        ]
 
         PreprocessTask preprocessTaskTest = [
             preprocessingPipeline:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
             isTesting: true
-        ];
+        ]
 
         MetaInfoTask metaTask = [
             type: "MetaInfoTask-TwentyNewsgroups-TrainTest",
-        ];
+        ]
 
         ExtractFeaturesTask featuresTrainTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Train",
             isTesting: false
-        ];
+        ]
 
         ExtractFeaturesTask featuresTestTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Test",
             isTesting: true
-        ];
+        ]
 
         TestTask testTask = [
             type:"TestTask.TwentyNewsgroups",
             reports: [
                 ClassificationReport,
                 OutcomeIDReport]
-        ];
+        ]
 
 
         /*
          * Wire tasks
          */
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
-        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
-        featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
-        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY);
-        featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY);
-        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TRAIN);
-        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, TestTask.INPUT_KEY_TEST);
+        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY)
+        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY)
+        featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
+        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
+        featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
+        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA)
+        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TEST_DATA)
 
         /*
          *	Wrap wired tasks in batch task
@@ -197,10 +197,10 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
-        ];
+        ]
 
         // Run
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
 
     private AnalysisEngineDescription getPreprocessing()
@@ -209,12 +209,12 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         return createEngineDescription(
         createEngineDescription(BreakIteratorSegmenter),
         createEngineDescription(OpenNlpPosTagger)
-        );
+        )
     }
 
     public static void main(String[] args)
     {
-        new TwentyNewsgroupsDemoExtended().runTrainTest();
+        new TwentyNewsgroupsDemoExtended().runTrainTest()
     }
 
 }

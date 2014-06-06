@@ -31,10 +31,10 @@ public class RegressionReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
+        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
         Properties props = new Properties();
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + TestTask.EVALUATION_DATA_KEY);
+                + TestTask.EVALUATION_DATA_FILENAME);
 
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(evaluationFile.getAbsolutePath());
@@ -51,6 +51,6 @@ public class RegressionReport
         }
 
         // Write out properties
-        getContext().storeBinary(TestTask.RESULTS_KEY, new PropertiesAdapter(props));
+        getContext().storeBinary(TestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
     }
 }

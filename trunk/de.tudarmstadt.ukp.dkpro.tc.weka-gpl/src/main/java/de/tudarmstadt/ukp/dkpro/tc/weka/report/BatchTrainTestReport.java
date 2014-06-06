@@ -52,7 +52,7 @@ public class BatchTrainTestReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
-                        TestTask.RESULTS_KEY, new PropertiesAdapter()).getMap();
+                        TestTask.RESULTS_FILENAME, new PropertiesAdapter()).getMap();
 
                 File confMatrix = store.getStorageFolder(subcontext.getId(), CONFUSIONMATRIX_KEY);
 

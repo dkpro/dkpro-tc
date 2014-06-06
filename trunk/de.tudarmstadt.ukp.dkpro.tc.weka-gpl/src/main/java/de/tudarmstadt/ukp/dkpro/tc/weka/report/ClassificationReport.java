@@ -58,7 +58,8 @@ public class ClassificationReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
+        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY,
+                AccessMode.READONLY);
         boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
 
@@ -70,13 +71,14 @@ public class ClassificationReport
         double[][] confusionMatrix = null;
 
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + TestTask.EVALUATION_DATA_KEY);
+                + TestTask.EVALUATION_DATA_FILENAME);
 
         if (multiLabel) {
             // ============= multi-label setup ======================
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
 
-            File dataFile = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
+            File dataFile = new File(storage.getAbsolutePath() + "/"
+                    + TestTask.PREDICTIONS_FILENAME);
             Instances data = TaskUtils.getInstances(dataFile, true);
             String[] classNames = new String[data.classIndex()];
 
@@ -125,7 +127,7 @@ public class ClassificationReport
             results.put(WGT_PRECISION, eval.weightedPrecision());
             results.put(WGT_RECALL, eval.weightedRecall());
 
-            List<String> classLabels = TaskUtils.getClassLabels(eval);
+            List<String> classLabels = TaskUtils.getClassLabels(eval.getHeader(), multiLabel);
             // class-wise recall, precision, f1
             for (String label : classLabels) {
                 double recall = eval.recall(eval.getHeader()
@@ -140,7 +142,7 @@ public class ClassificationReport
             }
 
             // confusion matrix
-            for (String label : TaskUtils.getClassLabels(eval)) {
+            for (String label : TaskUtils.getClassLabels(eval.getHeader(), multiLabel)) {
                 // in single-label mode, we always have a square matrix
                 actualLabelsList.add(label);
                 predictedLabelsList.add(label);
@@ -157,7 +159,7 @@ public class ClassificationReport
             ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
                     ReportUtils.createXYDataset(prcData));
             FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
-                    TestTask.OUTPUT_KEY, AccessMode.READWRITE)
+                    TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                     + "/" + PR_CURVE_KEY));
             renderer.write(fos);
         }
@@ -177,7 +179,7 @@ public class ClassificationReport
         }
 
         // Write out properties
-        getContext().storeBinary(TestTask.RESULTS_KEY, new PropertiesAdapter(props));
+        getContext().storeBinary(TestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
         getContext().storeBinary(ClassificationReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
 
     }

@@ -35,7 +35,6 @@ import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.attributeSelection.AttributeSelection;
-import weka.classifiers.Evaluation;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -132,13 +131,20 @@ public class TaskUtils
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<String> getClassLabels(Evaluation eval)
+    public static List<String> getClassLabels(Instances data, boolean isMultilabel)
     {
-        Enumeration<String> classLabels = eval.getHeader().attribute(eval.getHeader().classIndex())
-                .enumerateValues();
         List<String> classLabelList = new ArrayList<String>();
-        while (classLabels.hasMoreElements()) {
-            classLabelList.add(classLabels.nextElement());
+        if (!isMultilabel) {
+            Enumeration<String> classLabels = data.classAttribute().enumerateValues();
+            while (classLabels.hasMoreElements()) {
+                classLabelList.add(classLabels.nextElement());
+            }
+        }
+        else {
+            int numLabels = data.classIndex();
+            for (int i = 0; i < numLabels; i++) {
+                classLabelList.add(data.attribute(i).name());
+            }
         }
         return classLabelList;
     }

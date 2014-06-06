@@ -146,9 +146,9 @@ public class BatchTaskTrainTest
         testTask.addReport(OutcomeIDReport.class);
 
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.INPUT_KEY_TRAIN);
+                TestTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.INPUT_KEY_TEST);
+                TestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
 
         addTask(checkTask);
         addTask(preprocessTaskTrain);

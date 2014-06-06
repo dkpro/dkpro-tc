@@ -200,6 +200,30 @@ public interface Constants
     public static final String CM_PREDICTED = " (pred.)";
 
     /*
+     * Machine Learning (General)
+     */
+    /**
+     * Name of the file which holds evaluation results from the machine learning framework
+     */
+    public static final String RESULTS_FILENAME = "results.prop";
+    /**
+     * Name of the attribute/label which stores the prediction values
+     */
+    public static final String PREDICTION_CLASS_LABEL_NAME = "prediction";
+    /**
+     * Name of the training data input key in the TestTask
+     */
+    public static final String TEST_TASK_INPUT_KEY_TRAINING_DATA = "input.train";
+    /**
+     * Name of the test data input key in the TestTask
+     */
+    public static final String TEST_TASK_INPUT_KEY_TEST_DATA = "input.test";
+    /**
+     * Name of the output input key in the TestTask
+     */
+    public static final String TEST_TASK_OUTPUT_KEY = "output";
+
+    /*
      * Weka / Meka
      */
     /**
@@ -216,6 +240,22 @@ public interface Constants
      * the class reference, if the tc.weka module cannot be used as a dependency
      */
     public static final String MEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.MekaDataWriter";
+    /**
+     * Name of the ARFF file which which holds the predictions
+     */
+    public static final String PREDICTIONS_FILENAME = "predictions.arff";
+    /**
+     * Name of the compressed ARFF which holds the training data
+     */
+    public static final String TRAINING_DATA_FILENAME = "training-data.arff.gz";
+    /**
+     * Name of the binary file which holds an evaluation object
+     */
+    public static final String EVALUATION_DATA_FILENAME = "evaluation.bin";
+    /**
+     * Name of the text file which holds the results from the feature selection
+     */
+    public static final String FEATURE_SELECTION_DATA_FILENAME = "attributeEvaluationResults.txt";
 
     /*
      * Mallet
