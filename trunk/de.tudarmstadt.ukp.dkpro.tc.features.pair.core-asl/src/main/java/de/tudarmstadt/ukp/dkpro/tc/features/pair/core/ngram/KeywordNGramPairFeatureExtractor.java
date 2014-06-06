@@ -33,6 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LucenePairFeatureExtractorBase;
 
 /**
  * Pair keyword ngram feature extractor for
@@ -47,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPai
  * 
  */
 public class KeywordNGramPairFeatureExtractor
-    extends LuceneFeatureExtractorBase
+    extends LucenePairFeatureExtractorBase
     implements PairFeatureExtractor
 {
 
@@ -68,9 +69,6 @@ public class KeywordNGramPairFeatureExtractor
 
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
 	protected boolean includeCommas;
-
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
-    protected int keywordNgramUseTopK;
 
     protected Set<String> keywords;
     /**
@@ -97,18 +95,6 @@ public class KeywordNGramPairFeatureExtractor
     public static final String PARAM_KEYWORD_NGRAM_MAX_N_VIEW2 = "keywordNgramMaxNView2";
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     protected int ngramMaxN2;
-    /**
-     * Use this number of most frequent ngrams from View 1's.
-     */
-    public static final String PARAM_KEYWORD_NGRAM_USE_TOP_K_VIEW1 = "keywordNgramUseTopK1";
-    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_USE_TOP_K_VIEW1, mandatory = true, defaultValue = "500")
-    protected int ngramUseTopK1;
-    /**
-     * Use this number of most frequent ngrams from View 2's.
-     */
-    public static final String PARAM_KEYWORD_NGRAM_USE_TOP_K_VIEW2 = "keywordNgramUseTopK2";
-    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_USE_TOP_K_VIEW2, mandatory = true, defaultValue = "500")
-    protected int ngramUseTopK2;
     /**
      * Each ngram from View 1 documents added to the document pair instance as a feature. E.g.
      * Feature: view1NG_Dear
@@ -143,22 +129,11 @@ public class KeywordNGramPairFeatureExtractor
     public static final String PARAM_MARK_VIEWBLIND_KEYWORD_NGRAMS_WITH_LOCAL_VIEW = "markViewBlindKeywordNgramsWithLocalView";
     @ConfigurationParameter(name = PARAM_MARK_VIEWBLIND_KEYWORD_NGRAMS_WITH_LOCAL_VIEW, mandatory = false, defaultValue = "false")
     protected boolean markViewBlindNgramsWithLocalView;
-    /**
-     * Whether features should be marked with binary (occurs, doesn't occur in this document pair)
-     * values, versus the document count of the feature. In combo ngrams this is (doc1freq *
-     * doc2freq). Note this only applies to feature values; frequency selection of features is based
-     * on frequency across documents, not within documents.
-     */
-    public static final String PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO = "keywordNgramBinaryFeatureValuesCombos";
-    @ConfigurationParameter(name = PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, mandatory = false, defaultValue = "true")
-    protected boolean ngramBinaryFeatureValuesCombos;
 
     // These are only public so the MetaCollector can see them
-    public static final String KEYWORD_NGRAM_FIELD1 = "keywordngram1";
-    public static final String KEYWORD_NGRAM_FIELD2 = "keywordngram2";
-
-    protected FrequencyDistribution<String> topKSetView1;
-    protected FrequencyDistribution<String> topKSetView2;
+  public static final String KEYWORD_NGRAM_FIELD1 = "keywordngram1";
+  public static final String KEYWORD_NGRAM_FIELD2 = "keywordngram2";
+  
 
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
@@ -173,11 +148,24 @@ public class KeywordNGramPairFeatureExtractor
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
     {
+    	//FIXME This is a hack workaround because ngramUseTopK won't set until after super.initialize,
+    	// but super.initialize tries to call getTopNgrams() anyways, which needs ngramUseTopK.
+        fieldOfTheMoment = KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD; //was ""
+        topNOfTheMoment = 500;//was 1
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        topKSetView1 = getTopNgramsView1();
-        topKSetView2 = getTopNgramsView2();
+        fieldOfTheMoment = KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
+        topNOfTheMoment = ngramUseTopK;
+        topKSet = getTopNgrams();
+        
+        fieldOfTheMoment = KEYWORD_NGRAM_FIELD1;
+        topNOfTheMoment = ngramUseTopK1;
+        topKSetView1 = getTopNgrams();
+        
+        fieldOfTheMoment = KEYWORD_NGRAM_FIELD2;
+        topNOfTheMoment = ngramUseTopK2;
+        topKSetView2 = getTopNgrams();
 
         try {
             keywords = FeatureUtil.getStopwords(keywordsFile, true);
@@ -215,87 +203,11 @@ public class KeywordNGramPairFeatureExtractor
         if (useViewBlindNgramsAsFeatures && markViewBlindNgramsWithLocalView) {
             prefix = "keyNGall1";
             features = addToFeatureArray(view1Ngrams, topKSet, features);
-            prefix = "keyNGall1";
+            prefix = "keyNGall2";
             features = addToFeatureArray(view2Ngrams, topKSet, features);
         }
 
         return features;
-    }
-
-    protected List<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
-            FrequencyDistribution<String> topKSet, List<Feature> features)
-    {
-        for (String ngram : topKSet.getKeys()) {
-            long value = 1;
-            if (!ngramBinaryFeatureValuesCombos) {
-                value = viewNgrams.getCount(ngram);
-            }
-            if (viewNgrams.contains(ngram)) {
-                features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, value));
-            }
-            else {
-                features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, 0));
-            }
-        }
-        return features;
-    }
-
-    @Override
-    protected FrequencyDistribution<String> getTopNgrams()
-        throws ResourceInitializationException
-    {
-        return getTopNgrams(ngramUseTopK, KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD);
-    }
-
-    protected FrequencyDistribution<String> getTopNgramsView1()
-        throws ResourceInitializationException
-    {
-        return getTopNgrams(ngramUseTopK1, KEYWORD_NGRAM_FIELD1);
-    }
-
-    protected FrequencyDistribution<String> getTopNgramsView2()
-        throws ResourceInitializationException
-    {
-        return getTopNgrams(ngramUseTopK2, KEYWORD_NGRAM_FIELD2);
-    }
-
-    private FrequencyDistribution<String> getTopNgrams(int topNgramThreshold, String fieldName)
-        throws ResourceInitializationException
-    {
-
-        FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
-
-        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
-                .maximumSize(topNgramThreshold).create();
-        IndexReader reader;
-        try {
-            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
-            Fields fields = MultiFields.getFields(reader);
-            if (fields != null) {
-                Terms terms = fields.terms(fieldName);
-                if (terms != null) {
-                    TermsEnum termsEnum = terms.iterator(null);
-                    BytesRef text = null;
-                    while ((text = termsEnum.next()) != null) {
-                        String term = text.utf8ToString();
-                        long freq = termsEnum.totalTermFreq();
-                        topN.add(new TermFreqTuple(term, freq));
-                    }
-                }
-            }
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-
-        int size = topN.size();
-        for (int i = 0; i < size; i++) {
-            TermFreqTuple tuple = topN.poll();
-            // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
-            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
-        }
-
-        return topNGrams;
     }
 
     protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2)
@@ -310,31 +222,13 @@ public class KeywordNGramPairFeatureExtractor
     @Override
     protected String getFieldName()
     {
-        return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
+        return fieldOfTheMoment;
     }
 
     @Override
     protected int getTopN()
     {
-        return keywordNgramUseTopK;
+        return topNOfTheMoment;
     }
 
-    @Override
-    protected String getFeaturePrefix()
-    {
-        return "allNG";
-    }
-
-    // protected void setStopwords(Set<String> newStopwords){
-    // stopwords = newStopwords;
-    // }
-    // protected void setFilterPartialStopwordMatches(boolean filtering){
-    // filterPartialStopwordMatches = filtering;
-    // }
-    // protected void setLowerCase(boolean isLower){
-    // ngramLowerCase = isLower;
-    // }
-    // protected void makeTopKSet(FrequencyDistribution<String> topK){
-    // topKSet = topK;
-    // }
 }

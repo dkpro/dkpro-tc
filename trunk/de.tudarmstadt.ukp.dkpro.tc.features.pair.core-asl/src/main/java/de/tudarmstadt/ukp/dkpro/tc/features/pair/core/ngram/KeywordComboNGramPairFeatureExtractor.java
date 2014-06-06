@@ -83,23 +83,26 @@ public class KeywordComboNGramPairFeatureExtractor
     protected FrequencyDistribution<String> topKSetCombo;
 
     @Override
-    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
-        throws ResourceInitializationException
-    {
-        if (!super.initialize(aSpecifier, aAdditionalParams)) {
-            return false;
-        }
-        topKSetCombo = getTopNgramsCombo(ngramUseTopKCombo, LUCENE_NGRAM_FIELD_KEYWORDCOMBO);
-        return true;
-    }
-    
-    @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
         metaCollectorClasses.add(CombinedKeywordNGramPairMetaCollector.class);
 
         return metaCollectorClasses;
+    }
+    
+    @Override
+    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+        throws ResourceInitializationException
+    {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
+        fieldOfTheMoment = LUCENE_NGRAM_FIELD_KEYWORDCOMBO;
+        topNOfTheMoment = ngramUseTopKCombo;
+        topKSetCombo = getTopNgrams();
+        
+        return true;
     }
     
     @Override
@@ -122,55 +125,22 @@ public class KeywordComboNGramPairFeatureExtractor
         return features;
     }
 
-    private FrequencyDistribution<String> getTopNgramsCombo(int topNgramThreshold, String fieldName)
-        throws ResourceInitializationException
-    {
-        FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
+    @Override
+    protected boolean conditionsAreMet(String term){
 
-        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
-                .maximumSize(topNgramThreshold).create();
-        IndexReader reader;
-        try {
-            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
-            Fields fields = MultiFields.getFields(reader);
-            if (fields != null) {
-                Terms terms = fields.terms(fieldName);
-                if (terms != null) {
-                    TermsEnum termsEnum = terms.iterator(null);
-                    BytesRef text = null;
-                    while ((text = termsEnum.next()) != null) {
-                        String term = text.utf8ToString();
-                        long freq = termsEnum.totalTermFreq();
-                        //add conditions here, like ngram1 is in most freq ngrams1...
-                        String combo1 = term.split(ComboUtils.JOINT)[0];
-                        String combo2 = term.split(ComboUtils.JOINT)[1];
-                        int combinedSize = combo1.split("_").length
-                              + combo2.split("_").length;
-                        if(topKSetView1.contains(combo1) 
-                        		&& topKSet.contains(combo1) 
-                        		&& topKSetView2.contains(combo2) 
-                        		&& topKSet.contains(combo2)
-                        		&& combinedSize <= ngramMaxNCombo
-                                && combinedSize >= ngramMinNCombo){
-                        	topN.add(new TermFreqTuple(term, freq));
-                        }
-                    }
-                }
-            }
+        String combo1 = term.split(ComboUtils.JOINT)[0];
+        String combo2 = term.split(ComboUtils.JOINT)[1];
+        int combinedSize = combo1.split("_").length
+              + combo2.split("_").length;
+        if(topKSetView1.contains(combo1) 
+        		&& topKSet.contains(combo1) 
+        		&& topKSetView2.contains(combo2) 
+        		&& topKSet.contains(combo2)
+        		&& combinedSize <= ngramMaxNCombo
+                && combinedSize >= ngramMinNCombo){
+        	return true;
         }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-        
-
-        int size = topN.size();
-        for (int i = 0; i < size; i++) {
-            TermFreqTuple tuple = topN.poll();
-            // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
-            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
-        }
-
-        return topNGrams;
+        return false;
     }
 
 }
