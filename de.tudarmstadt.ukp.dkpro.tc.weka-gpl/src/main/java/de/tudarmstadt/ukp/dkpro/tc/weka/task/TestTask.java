@@ -33,46 +33,26 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  */
 public class TestTask
     extends ExecutableTaskBase
+    implements Constants
 {
     @Discriminator
     private List<String> classificationArguments;
-
     @Discriminator
     private List<String> featureSearcher;
-
     @Discriminator
     private List<String> attributeEvaluator;
-
     @Discriminator
     private String labelTransformationMethod;
-
     @Discriminator
     private int numLabelsToKeep;
-
     @Discriminator
     private boolean applySelection;
-
     @Discriminator
     private String featureMode;
-
     @Discriminator
     private String learningMode;
-
     @Discriminator
     String threshold;
-
-    // FIXME Issue 127: this constants should be defined in a more generic place, shouldn't they?
-    public static final String INPUT_KEY_TRAIN = "input.train";
-    public static final String INPUT_KEY_TEST = "input.test";
-    public static final String OUTPUT_KEY = "output";
-    public static final String RESULTS_KEY = "results.prop";
-    public static final String PREDICTIONS_KEY = "predictions.arff";
-    public static final String TRAINING_DATA_KEY = "training-data.arff.gz";
-    public static final String EVALUATION_DATA_KEY = "evaluation.bin";
-    public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";
-    public static final String PREDICTION_CLASS_LABEL_NAME = "prediction";
-
-    // public static final String GOLD_STANDARD_CLASS_LABEL_NAME = "goldstandard";
 
     @Override
     public void execute(TaskContext aContext)
@@ -80,12 +60,13 @@ public class TestTask
     {
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
-        File arffFileTrain = new File(aContext.getStorageLocation(INPUT_KEY_TRAIN,
+        File arffFileTrain = new File(aContext.getStorageLocation(
+                TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_KEY);
-        File arffFileTest = new File(aContext.getStorageLocation(INPUT_KEY_TEST,
+                + "/" + TRAINING_DATA_FILENAME);
+        File arffFileTest = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_KEY);
+                + "/" + TRAINING_DATA_FILENAME);
 
         Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
@@ -119,8 +100,10 @@ public class TestTask
                         featureSearcher, attributeEvaluator);
                 // Write the results of attribute selection
                 FileUtils.writeStringToFile(
-                        new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
-                                .getAbsolutePath() + "/" + FEATURE_SELECTION_DATA_KEY),
+                        new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                                AccessMode.READWRITE)
+                                .getAbsolutePath()
+                                + "/" + FEATURE_SELECTION_DATA_FILENAME),
                         selector.toResultsString());
                 if (applySelection) {
                     trainData = selector.reduceDimensionality(trainData);
@@ -135,9 +118,9 @@ public class TestTask
                 && numLabelsToKeep != 0) {
             try {
                 // file to hold the results of attribute selection
-                File fsResultsFile = new File(aContext.getStorageLocation(OUTPUT_KEY,
+                File fsResultsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
                         AccessMode.READWRITE).getAbsolutePath()
-                        + "/" + FEATURE_SELECTION_DATA_KEY);
+                        + "/" + FEATURE_SELECTION_DATA_FILENAME);
                 // filter for reducing dimension of attributes
                 Remove removeFilter = TaskUtils.multiLabelAttributeSelection(trainData,
                         labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
@@ -154,8 +137,10 @@ public class TestTask
         }
 
         // file to hold prediction results
-        File evalOutput = new File(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
-                .getPath() + "/" + EVALUATION_DATA_KEY);
+        File evalOutput = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                AccessMode.READWRITE)
+                .getPath()
+                + "/" + EVALUATION_DATA_FILENAME);
 
         // evaluation & prediction generation
         if (multiLabel) {
@@ -178,7 +163,7 @@ public class TestTask
         }
 
         // Write out the predictions
-        DataSink.write(aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
-                .getAbsolutePath() + "/" + PREDICTIONS_KEY, testData);
+        DataSink.write(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
+                .getAbsolutePath() + "/" + PREDICTIONS_FILENAME, testData);
     }
 }

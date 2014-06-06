@@ -44,14 +44,14 @@ public class FeatureValuesReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
+        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
         boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
         Properties props = new Properties();
-        File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
+        File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_FILENAME);
         Instances predictions = TaskUtils.getInstances(arff, multiLabel);
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + TestTask.EVALUATION_DATA_KEY);
+                + TestTask.EVALUATION_DATA_FILENAME);
         String[] classValues;
         List<String> attrNames = new ArrayList<String>();
 

@@ -41,8 +41,8 @@ public class OutcomeIDReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
-        File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
+        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
+        File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_FILENAME);
 
         boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
