@@ -57,7 +57,6 @@ public abstract class LucenePairFeatureExtractorBase
     protected int topNOfTheMoment;
 	
 
-
     protected List<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
             FrequencyDistribution<String> topKSet, List<Feature> features)
     {
@@ -75,57 +74,4 @@ public abstract class LucenePairFeatureExtractorBase
         }
         return features;
     }
-
-    protected FrequencyDistribution<String> getTopNgrams(int topNgramThreshold, String fieldName)
-        throws ResourceInitializationException
-    {
-
-        FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
-
-        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
-                .maximumSize(topNgramThreshold).create();
-        IndexReader reader;
-        try {
-            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
-            Fields fields = MultiFields.getFields(reader);
-            if (fields != null) {
-                Terms terms = fields.terms(fieldName);
-                if (terms != null) {
-                    TermsEnum termsEnum = terms.iterator(null);
-                    BytesRef text = null;
-                    while ((text = termsEnum.next()) != null) {
-                        String term = text.utf8ToString();
-                        long freq = termsEnum.totalTermFreq();
-                        
-                        if(conditionsAreMet(term)){
-                        	topN.add(new TermFreqTuple(term, freq));
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-
-        int size = topN.size();
-        for (int i = 0; i < size; i++) {
-            TermFreqTuple tuple = topN.poll();
-            // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
-            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
-        }
-
-        return topNGrams;
-    }
-    protected boolean conditionsAreMet(String term){
-    	return true;
-    }
-  
-    //FIXME This class must be instantiated in NGramFeatureExtractorBase, but can't be anything useful then.
-  @Override
-  protected String getFeaturePrefix()
-  {
-      return "ThisIsAnError";
-  }
-
 }

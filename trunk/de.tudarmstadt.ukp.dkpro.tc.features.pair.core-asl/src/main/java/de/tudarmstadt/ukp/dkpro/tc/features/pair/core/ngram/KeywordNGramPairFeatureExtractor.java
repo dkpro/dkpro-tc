@@ -150,8 +150,8 @@ public class KeywordNGramPairFeatureExtractor
     {
     	//FIXME This is a hack workaround because ngramUseTopK won't set until after super.initialize,
     	// but super.initialize tries to call getTopNgrams() anyways, which needs ngramUseTopK.
-        fieldOfTheMoment = KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD; //was ""
-        topNOfTheMoment = 500;//was 1
+        fieldOfTheMoment = "";
+        topNOfTheMoment = 1;
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
@@ -230,5 +230,11 @@ public class KeywordNGramPairFeatureExtractor
     {
         return topNOfTheMoment;
     }
-
+    
+    //FIXME This class must be instantiated in NGramFeatureExtractorBase, but can't be anything useful then.
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return "ThisIsAnError";
+    }
 }
