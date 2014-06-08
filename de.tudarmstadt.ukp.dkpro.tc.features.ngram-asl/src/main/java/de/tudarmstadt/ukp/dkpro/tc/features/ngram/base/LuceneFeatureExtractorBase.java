@@ -49,7 +49,9 @@ public abstract class LuceneFeatureExtractorBase
                     while ((text = termsEnum.next()) != null) {
                         String term = text.utf8ToString();
                         long freq = termsEnum.totalTermFreq();
-                        topN.add(new TermFreqTuple(term, freq));
+                        if(passesScreening(term)){ 
+                            topN.add(new TermFreqTuple(term, freq));
+                        }
                     }
                 }
             }
@@ -78,4 +80,18 @@ public abstract class LuceneFeatureExtractorBase
      * @return How many of the most frequent ngrams should be returned.
      */
     protected abstract int getTopN();
+    
+    /**
+     * Permits the Pair FE's to use {@link #getTopNgrams()}: can be optionally overridden,
+     * to constrain which ngrams are used as features.  (Pair ngram FE's generate a huge
+     * number of features, that must usually be constrained.)  Without this method, getTopNgrams()
+     * must be overridden in {@link LucenePairFeatureExtractorBase} with essentially the same method,
+     * but with the constraint option in place, resulting in code duplication.
+     * 
+     * @param term potential new feature
+     * @return
+     */
+    protected boolean passesScreening(String term){
+        return true;
+    }
 }

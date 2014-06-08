@@ -81,6 +81,8 @@ public class KeywordComboNGramPairFeatureExtractor
     public static final String LUCENE_NGRAM_FIELD_KEYWORDCOMBO = "ngramKeywordCombo";
 
     protected FrequencyDistribution<String> topKSetCombo;
+    
+    private boolean useNgramScreening;
 
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
@@ -95,9 +97,11 @@ public class KeywordComboNGramPairFeatureExtractor
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
     {
+        useNgramScreening = false;
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
+        useNgramScreening = true;
         fieldOfTheMoment = LUCENE_NGRAM_FIELD_KEYWORDCOMBO;
         topNOfTheMoment = ngramUseTopKCombo;
         topKSetCombo = getTopNgrams();
@@ -126,21 +130,25 @@ public class KeywordComboNGramPairFeatureExtractor
     }
 
     @Override
-    protected boolean conditionsAreMet(String term){
-
-        String combo1 = term.split(ComboUtils.JOINT)[0];
-        String combo2 = term.split(ComboUtils.JOINT)[1];
-        int combinedSize = combo1.split("_").length
-              + combo2.split("_").length;
-        if(topKSetView1.contains(combo1) 
-        		&& topKSet.contains(combo1) 
-        		&& topKSetView2.contains(combo2) 
-        		&& topKSet.contains(combo2)
-        		&& combinedSize <= ngramMaxNCombo
-                && combinedSize >= ngramMinNCombo){
-        	return true;
+    protected boolean passesScreening(String term){
+        if(useNgramScreening){
+            String combo1 = term.split(ComboUtils.JOINT)[0];
+            String combo2 = term.split(ComboUtils.JOINT)[1];
+            int combinedSize = combo1.split("_").length
+                  + combo2.split("_").length;
+            if(topKSetView1.contains(combo1) 
+            		&& topKSet.contains(combo1) 
+            		&& topKSetView2.contains(combo2) 
+            		&& topKSet.contains(combo2)
+            		&& combinedSize <= ngramMaxNCombo
+                    && combinedSize >= ngramMinNCombo){
+            	return true;
+            }
+            else{
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
 }
