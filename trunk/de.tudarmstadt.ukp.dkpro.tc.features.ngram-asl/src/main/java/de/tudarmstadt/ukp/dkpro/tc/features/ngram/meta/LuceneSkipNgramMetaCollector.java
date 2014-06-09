@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -51,25 +50,15 @@ public class LuceneSkipNgramMetaCollector
             throw new ResourceInitializationException(e);
         }
     }
-
+    
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-    	initializeDocument(jcas);
-    	
-        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentSkipNgrams(
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        return NGramUtils.getDocumentSkipNgrams(
                 jcas, ngramLowerCase, filterPartialStopwordMatches, minN, maxN, skipSize, stopwords);
-
-        for (String ngram : documentNGrams.getKeys()) {
-			addField(jcas, LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD, ngram);
-        }
-       
-        try {
-            writeToIndex();
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+    }
+    
+    @Override
+    protected String getFieldName(){
+        return LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD;
     }
 }

@@ -1,8 +1,5 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
-import java.io.IOException;
-
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
@@ -25,24 +22,15 @@ public class LuceneCharSkipNgramMetaCollector
     @ConfigurationParameter(name = LuceneCharacterSkipNgramFeatureExtractorBase.PARAM_CHAR_SKIP_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
     private boolean ngramLowerCase;
 
+    
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-    	initializeDocument(jcas);
-    	
-        FrequencyDistribution<String> charNGrams = NGramUtils.getCharacterSkipNgrams(
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        return NGramUtils.getCharacterSkipNgrams(
                 jcas, ngramLowerCase, minN, maxN, skipSize);
-
-        for (String ngram : charNGrams.getKeys()) {
-			addField(jcas, LuceneCharacterSkipNgramFeatureExtractorBase.LUCENE_CHAR_SKIP_NGRAM_FIELD, ngram);
-        }
-       
-        try {
-            writeToIndex();
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+    }
+    
+    @Override
+    protected String getFieldName(){
+        return LuceneCharacterSkipNgramFeatureExtractorBase.LUCENE_CHAR_SKIP_NGRAM_FIELD;
     }
 }

@@ -22,7 +22,9 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
@@ -82,6 +84,35 @@ public abstract class LuceneBasedMetaCollector
                     currentDocumentId,
                     Field.Store.YES
             ));
+        }
+    }
+    
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+        
+        initializeDocument(jcas);
+        FrequencyDistribution<String> documentNGrams;
+        try{
+            documentNGrams = getNgramsFD(jcas);
+        }catch(TextClassificationException e){
+            throw new AnalysisEngineProcessException(e);
+        }
+
+        for (String ngram : documentNGrams.getKeys()) {
+            // As a result of discussion, we add a field for each ngram per doc, 
+            // not just each ngram type per doc.
+            for (int i=0;i<documentNGrams.getCount(ngram);i++){
+                addField(jcas, getFieldName(), ngram);
+            }
+        }
+       
+        try {
+            writeToIndex();
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
         }
     }
     
@@ -145,4 +176,9 @@ public abstract class LuceneBasedMetaCollector
     {
         return DocumentMetaData.get(jcas).getDocumentTitle();
     }
+    
+    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas) 
+            throws TextClassificationException;
+    
+    protected abstract String getFieldName();
 }
