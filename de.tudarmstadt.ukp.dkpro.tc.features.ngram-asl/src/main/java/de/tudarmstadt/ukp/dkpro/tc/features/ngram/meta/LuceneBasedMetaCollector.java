@@ -21,6 +21,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
@@ -95,6 +96,10 @@ public abstract class LuceneBasedMetaCollector
     protected void writeToIndex()
         throws IOException
     {
+    	if (currentDocument == null) {
+    		getLogger().log(Level.WARNING, "Meta collector writing empty document.");
+    		currentDocument = new Document();
+    	}
         indexWriter.addDocument(currentDocument);
     }
     

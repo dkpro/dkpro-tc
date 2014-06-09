@@ -92,4 +92,29 @@ public class LuceneNGramMetaCollectorTest
         
        assertEquals(35, i);    
     }
+    
+    @Test
+    public void emptyDocumentTest()
+        throws Exception
+    {
+        File tmpDir = folder.newFolder();
+
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TextReader.class, 
+                TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/empty/",
+                TextReader.PARAM_LANGUAGE, "en",
+                TextReader.PARAM_PATTERNS, "empty*.txt"
+        );
+        
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
+                LuceneNGramMetaCollector.class,
+                LuceneNGramDFE.PARAM_LUCENE_DIR, tmpDir
+        );
+
+        for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
+//            System.out.println(jcas.getDocumentText().length());
+        }
+    }
 }
