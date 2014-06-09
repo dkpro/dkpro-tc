@@ -9,6 +9,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -28,11 +29,17 @@ public class LucenePOSNGramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+    	initializeDocument(jcas);
+    	
         FrequencyDistribution<String> documentPOSNGrams = NGramUtils.getDocumentPosNgrams(jcas,
                 posNgramMinN, posNgramMaxN, useCanonical);
 
         for (String ngram : documentPOSNGrams.getKeys()) {
-            addField(jcas, LUCENE_POS_NGRAM_FIELD, ngram); 
+            try {
+				addField(jcas, LUCENE_POS_NGRAM_FIELD, ngram);
+			} catch (TextClassificationException e) {
+				throw new AnalysisEngineProcessException(e);
+			} 
         }
        
         try {

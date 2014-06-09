@@ -24,6 +24,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
@@ -74,7 +75,7 @@ public abstract class LuceneBasedMetaCollector
         fieldType.freeze();
     }
     
-    protected void addField(JCas jcas, String fieldName, String value) {
+    protected void initializeDocument(JCas jcas) {
         if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
             currentDocumentId = getDocumentId(jcas);
             currentDocument = new Document();
@@ -83,6 +84,15 @@ public abstract class LuceneBasedMetaCollector
                     currentDocumentId,
                     Field.Store.YES
             ));
+        }
+    }
+    
+    protected void addField(JCas jcas, String fieldName, String value) 
+    	throws TextClassificationException 
+    {
+        if (currentDocument == null) {
+        	throw new TextClassificationException("Document not initialized. "
+        			+ "Probably a lucene-based meta collector that calls addField() before initializeDocument()");
         }
 
         Field field = new Field(
@@ -97,8 +107,7 @@ public abstract class LuceneBasedMetaCollector
         throws IOException
     {
     	if (currentDocument == null) {
-    		getLogger().log(Level.WARNING, "Meta collector writing empty document.");
-    		currentDocument = new Document();
+    		throw new IOException("Lucene document not initialized. Fatal error.");
     	}
         indexWriter.addDocument(currentDocument);
     }

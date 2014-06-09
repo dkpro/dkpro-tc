@@ -27,6 +27,8 @@ public class LucenePhoneticNGramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+    	initializeDocument(jcas);
+    	
         FrequencyDistribution<String> documentPhoneticNGrams;
 		try {
 			documentPhoneticNGrams = NGramUtils.getDocumentPhoneticNgrams(jcas,
@@ -36,7 +38,11 @@ public class LucenePhoneticNGramMetaCollector
 		}
 
         for (String ngram : documentPhoneticNGrams.getKeys()) {
-            addField(jcas, LUCENE_PHONETIC_NGRAM_FIELD, ngram); 
+            try {
+				addField(jcas, LUCENE_PHONETIC_NGRAM_FIELD, ngram);
+			} catch (TextClassificationException e) {
+				throw new AnalysisEngineProcessException(e);
+			} 
         }
        
         try {
