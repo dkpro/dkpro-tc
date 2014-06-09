@@ -82,6 +82,9 @@ public void process(JCas jcas)
     catch (Exception e) {
         throw new AnalysisEngineProcessException(e);
     }
+	
+	initializeDocument(jcas);
+	
 	List<JCas> jcases = new ArrayList<JCas>();
 	jcases.add(view1);
 	jcases.add(view2);
