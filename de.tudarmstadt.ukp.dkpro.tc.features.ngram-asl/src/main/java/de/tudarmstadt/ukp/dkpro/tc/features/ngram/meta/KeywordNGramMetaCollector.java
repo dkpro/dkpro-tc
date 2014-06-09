@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -53,24 +52,15 @@ public class KeywordNGramMetaCollector
 	    }
 	}
 	
-	@Override
-	public void process(JCas jcas)
-	    throws AnalysisEngineProcessException
-	{
-		initializeDocument(jcas);
-		
-	    FrequencyDistribution<String> documentNGrams = KeywordNGramUtils.getDocumentKeywordNgrams(
-	            jcas, minN, maxN, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+    @Override
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        return KeywordNGramUtils.getDocumentKeywordNgrams(
+                jcas, minN, maxN, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+    }
+    
+    @Override
+    protected String getFieldName(){
+        return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
+    }
 	
-	    for (String ngram : documentNGrams.getKeys()) {
-			addField(jcas, KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD, ngram);
-	    }
-	   
-	    try {
-	        writeToIndex();
-	    }
-	    catch (IOException e) {
-	        throw new AnalysisEngineProcessException(e);
-	    }
-	}
 }

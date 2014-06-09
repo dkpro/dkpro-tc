@@ -92,7 +92,7 @@ public class LucenePOSNGramFeatureExtractorTest
         Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
         assertEquals(5, featureNames.size());
         assertTrue(featureNames.contains("posngram_CARD"));
-        assertTrue(featureNames.contains("posngram_V"));
+        assertTrue(featureNames.contains("posngram_NN"));
         assertTrue(featureNames.contains("posngram_CARD_CARD"));
 
     }

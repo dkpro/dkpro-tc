@@ -2,9 +2,6 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import static de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase.LUCENE_POS_NGRAM_FIELD;
 
-import java.io.IOException;
-
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
@@ -23,25 +20,35 @@ public class LucenePOSNGramMetaCollector
 
     @ConfigurationParameter(name = LucenePOSNGramFeatureExtractorBase.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
     private boolean useCanonical;
-
+    
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-    	initializeDocument(jcas);
-    	
-        FrequencyDistribution<String> documentPOSNGrams = NGramUtils.getDocumentPosNgrams(jcas,
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        return NGramUtils.getDocumentPosNgrams(jcas,
                 posNgramMinN, posNgramMaxN, useCanonical);
-
-        for (String ngram : documentPOSNGrams.getKeys()) {
-			addField(jcas, LUCENE_POS_NGRAM_FIELD, ngram);
-        }
-       
-        try {
-            writeToIndex();
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
     }
+    
+    @Override
+    protected String getFieldName(){
+        return LUCENE_POS_NGRAM_FIELD;
+    }
+
+//    @Override
+//    public void process(JCas jcas)
+//        throws AnalysisEngineProcessException
+//    {
+//    	initializeDocument(jcas);
+//    	
+//        FrequencyDistribution<String> documentPOSNGrams = getNgramsFD(jcas);
+//
+//        for (String ngram : documentPOSNGrams.getKeys()) {
+//			addField(jcas, getFieldName(), ngram);// under discussion: binary records per doc
+//        }
+//       
+//        try {
+//            writeToIndex();
+//        }
+//        catch (IOException e) {
+//            throw new AnalysisEngineProcessException(e);
+//        }
+//    }
 }
