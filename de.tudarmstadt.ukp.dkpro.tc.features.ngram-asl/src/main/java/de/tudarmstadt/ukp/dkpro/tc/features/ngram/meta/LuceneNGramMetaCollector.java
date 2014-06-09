@@ -10,6 +10,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
@@ -54,12 +55,19 @@ public class LuceneNGramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+    	
+    	initializeDocument(jcas);
+    	
         FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
                 jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i=0;i<documentNGrams.getCount(ngram);i++){
-                addField(jcas, LuceneNGramDFE.LUCENE_NGRAM_FIELD, ngram); 
+                try {
+					addField(jcas, LuceneNGramDFE.LUCENE_NGRAM_FIELD, ngram);
+				} catch (TextClassificationException e) {
+					throw new AnalysisEngineProcessException(e);
+				} 
             }
         }
        

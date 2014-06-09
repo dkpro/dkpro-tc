@@ -7,6 +7,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneCharacterSkipNgramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -29,11 +30,17 @@ public class LuceneCharSkipNgramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+    	initializeDocument(jcas);
+    	
         FrequencyDistribution<String> charNGrams = NGramUtils.getCharacterSkipNgrams(
                 jcas, ngramLowerCase, minN, maxN, skipSize);
 
         for (String ngram : charNGrams.getKeys()) {
-            addField(jcas, LuceneCharacterSkipNgramFeatureExtractorBase.LUCENE_CHAR_SKIP_NGRAM_FIELD, ngram); 
+            try {
+				addField(jcas, LuceneCharacterSkipNgramFeatureExtractorBase.LUCENE_CHAR_SKIP_NGRAM_FIELD, ngram);
+			} catch (TextClassificationException e) {
+				throw new AnalysisEngineProcessException(e);
+			} 
         }
        
         try {
