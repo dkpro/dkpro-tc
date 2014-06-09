@@ -21,10 +21,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
@@ -88,11 +86,11 @@ public abstract class LuceneBasedMetaCollector
     }
     
     protected void addField(JCas jcas, String fieldName, String value) 
-    	throws TextClassificationException 
+    	throws AnalysisEngineProcessException 
     {
         if (currentDocument == null) {
-        	throw new TextClassificationException("Document not initialized. "
-        			+ "Probably a lucene-based meta collector that calls addField() before initializeDocument()");
+        	throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
+        			+ "Probably a lucene-based meta collector that calls addField() before initializeDocument()"));
         }
 
         Field field = new Field(

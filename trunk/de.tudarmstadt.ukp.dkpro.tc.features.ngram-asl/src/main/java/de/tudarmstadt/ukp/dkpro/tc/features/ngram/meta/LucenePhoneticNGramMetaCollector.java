@@ -38,11 +38,7 @@ public class LucenePhoneticNGramMetaCollector
 		}
 
         for (String ngram : documentPhoneticNGrams.getKeys()) {
-            try {
-				addField(jcas, LUCENE_PHONETIC_NGRAM_FIELD, ngram);
-			} catch (TextClassificationException e) {
-				throw new AnalysisEngineProcessException(e);
-			} 
+			addField(jcas, LUCENE_PHONETIC_NGRAM_FIELD, ngram);
         }
        
         try {
