@@ -10,7 +10,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneSkipNgramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
@@ -63,11 +62,7 @@ public class LuceneSkipNgramMetaCollector
                 jcas, ngramLowerCase, filterPartialStopwordMatches, minN, maxN, skipSize, stopwords);
 
         for (String ngram : documentNGrams.getKeys()) {
-            try {
-				addField(jcas, LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD, ngram);
-			} catch (TextClassificationException e) {
-				throw new AnalysisEngineProcessException(e);
-			} 
+			addField(jcas, LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD, ngram);
         }
        
         try {

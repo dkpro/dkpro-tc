@@ -7,7 +7,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -38,15 +37,12 @@ public class LuceneCharacterNGramMetaCollector
                 ngram = ngram.toLowerCase();
             }
             
-            try {
-				addField(
-				    jcas,
-				    LuceneCharacterNGramFeatureExtractorBase.LUCENE_CHAR_NGRAM_FIELD,
-				    ngram
-				);
-			} catch (TextClassificationException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
+			addField(
+			    jcas,
+			    LuceneCharacterNGramFeatureExtractorBase.LUCENE_CHAR_NGRAM_FIELD,
+			    ngram
+			);
+			
         }
        
         try {
