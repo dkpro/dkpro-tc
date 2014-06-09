@@ -2,25 +2,13 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
 import java.util.List;
 
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.Fields;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.MultiFields;
-import org.apache.lucene.index.Terms;
-import org.apache.lucene.index.TermsEnum;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.resource.ResourceInitializationException;
-
-import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 
 public abstract class LucenePairFeatureExtractorBase
 	extends LuceneFeatureExtractorBase
