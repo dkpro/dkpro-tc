@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBas
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
 
 /**
  * Pair ngram feature extractor for document pair classification. Can be used to extract ngrams from
@@ -37,12 +37,12 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPair
  * set separately, or both documents can be treated together as one extended document. <br />
  * Note that ngram features created by this class are each from a single document, i.e., not
  * combinations of ngrams from the pair of documents. To make combinations of ngrams across both
- * documents, please use {@link CombinedNGramPairFeatureExtractor}.
+ * documents, please use {@link LuceneNGramCPFE}.
  * 
  * @author Emily Jamison
  * 
  */
-public class LuceneNGramPairFeatureExtractor
+public class LuceneNGramPFE
     extends LuceneFeatureExtractorBase
     implements PairFeatureExtractor
 {
@@ -137,7 +137,7 @@ public class LuceneNGramPairFeatureExtractor
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LuceneNGramPairMetaCollector.class);
+        metaCollectorClasses.add(LuceneNGramPMetaCollector.class);
 
         return metaCollectorClasses;
     }

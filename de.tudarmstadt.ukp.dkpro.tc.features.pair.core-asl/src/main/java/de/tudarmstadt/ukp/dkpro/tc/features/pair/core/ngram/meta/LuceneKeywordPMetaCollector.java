@@ -14,25 +14,25 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.KeywordNGramPairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneKeywordPFE;
 
-public class KeywordNGramPairMetaCollector
-        extends LuceneBasedPairMetaCollector
+public class LuceneKeywordPMetaCollector
+        extends LucenePMetaCollectorBase
 {
 
-    @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
     private int ngramMinN1;
     
-    @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
     private int ngramMinN2;
     
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
     
-    @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
     private int ngramMaxN1;
     
-    @ConfigurationParameter(name = KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     private int ngramMaxN2;
     
     @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
@@ -108,13 +108,13 @@ public class KeywordNGramPairMetaCollector
     @Override
     protected String getFieldNameView1()
     {
-        return KeywordNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD1;
+        return LuceneKeywordPFE.KEYWORD_NGRAM_FIELD1;
     }
     
     @Override
     protected String getFieldNameView2()
     {
-        return KeywordNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD2;
+        return LuceneKeywordPFE.KEYWORD_NGRAM_FIELD2;
     }
     
     
@@ -152,12 +152,12 @@ public class KeywordNGramPairMetaCollector
 //        }
 //        for (String ngram : view1NGrams.getKeys()) {
 //            for (int i=0;i<view1NGrams.getCount(ngram);i++){
-//                addField(jcas, KeywordNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD1, ngram); 
+//                addField(jcas, LuceneKeywordPFE.KEYWORD_NGRAM_FIELD1, ngram); 
 //            }
 //        }
 //        for (String ngram : view2NGrams.getKeys()) {
 //            for (int i=0;i<view2NGrams.getCount(ngram);i++){
-//                addField(jcas, KeywordNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD2, ngram); 
+//                addField(jcas, LuceneKeywordPFE.KEYWORD_NGRAM_FIELD2, ngram); 
 //            }
 //        }
 //        

@@ -20,7 +20,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE;
  * 
  */
 @Deprecated
-public class NGramPairFeatureExtractor
+public class FrequencyDistributionNGramPFE
     extends FrequencyDistributionNGramDFE
     implements PairFeatureExtractor
 {

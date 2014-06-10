@@ -13,22 +13,22 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMetaCollector;
 
-public class ComboNGramPipelineTest
-    extends PairNgramFETestBase
+public class NGramCPPipelineTest
+    extends PPipelineTestBase
 {
     @Test
     public void testComboFeatures_defaults()
         throws Exception
     {
-        ComboNGramPipelineTest test = new ComboNGramPipelineTest();
+        NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath, };
+                LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath, };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 65);
@@ -47,14 +47,14 @@ public class ComboNGramPipelineTest
     public void testComboFeatures_size1()
         throws Exception
     {
-        ComboNGramPipelineTest test = new ComboNGramPipelineTest();
+        NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
-                CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, 2 };
+                LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 16);
@@ -65,14 +65,14 @@ public class ComboNGramPipelineTest
     public void testComboFeatures_size3()
         throws Exception
     {
-        ComboNGramPipelineTest test = new ComboNGramPipelineTest();
+        NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
-                CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, 6 };
+                LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 81);
@@ -85,16 +85,16 @@ public class ComboNGramPipelineTest
     public void testNonBinaryFeatureValues()
         throws Exception
     {
-        ComboNGramPipelineTest test = new ComboNGramPipelineTest();
+        NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
-                CombinedNGramPairFeatureExtractor.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, false,
-                CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, 2,
-                CombinedNGramPairFeatureExtractor.PARAM_NGRAM_SYMMETRY_COMBO, true };
+                LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
+                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, false,
+                LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 2,
+                LuceneNGramCPFE.PARAM_NGRAM_SYMMETRY_COMBO, true };
         test.runPipeline();
         int two = 0;
         int one = 0;
@@ -123,14 +123,14 @@ public class ComboNGramPipelineTest
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                CombinedNGramPairFeatureExtractor.class.getName());
+                LuceneNGramCPFE.class.getName());
     }
     @Override
 	protected void getMetaCollector(List<Object> parameterList)
 			throws ResourceInitializationException
 	{
 		metaCollector = AnalysisEngineFactory.createEngineDescription(
-				CombinedNGramPairMetaCollector.class,
+				LuceneNGramCPMetaCollector.class,
 	            parameterList.toArray()
 	    );
 	}

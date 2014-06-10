@@ -12,7 +12,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 
-public abstract class LuceneBasedPairMetaCollector
+public abstract class LucenePMetaCollectorBase
     extends LuceneBasedMetaCollector
 {
     @Override

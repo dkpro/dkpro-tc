@@ -32,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBas
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPairMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LucenePairFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
 
 /**
  * Pair keyword ngram feature extractor for
@@ -47,8 +47,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LucenePairFeatu
  * @author Emily Jamison
  * 
  */
-public class KeywordNGramPairFeatureExtractor
-    extends LucenePairFeatureExtractorBase
+public class LuceneKeywordPFE
+    extends LucenePFEBase
     implements PairFeatureExtractor
 {
 
@@ -139,7 +139,7 @@ public class KeywordNGramPairFeatureExtractor
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(KeywordNGramPairMetaCollector.class);
+        metaCollectorClasses.add(LuceneKeywordPMetaCollector.class);
 
         return metaCollectorClasses;
     }

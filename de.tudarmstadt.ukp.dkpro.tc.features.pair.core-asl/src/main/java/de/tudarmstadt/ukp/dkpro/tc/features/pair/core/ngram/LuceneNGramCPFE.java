@@ -26,7 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
 
 /**
@@ -41,13 +41,13 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
  * some combination ngrams are:<br />
  * comboNG_cats_birds:1, comboNG_cats_eat_birds:1, comboNG_cats_birds_chase:1, etc. <br />
  * Note: To extract ngrams from a pair of documents that are not combinations of ngrams across the
- * documents, please use {@link LuceneNGramPairFeatureExtractor}.
+ * documents, please use {@link LuceneNGramPFE}.
  * 
  * @author Emily Jamison
  * 
  */
-public class CombinedNGramPairFeatureExtractor
-    extends LuceneNGramPairFeatureExtractor
+public class LuceneNGramCPFE
+    extends LuceneNGramPFE
     implements PairFeatureExtractor
 {
     /**
@@ -97,7 +97,7 @@ public class CombinedNGramPairFeatureExtractor
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(CombinedNGramPairMetaCollector.class);
+        metaCollectorClasses.add(LuceneNGramCPMetaCollector.class);
 
         return metaCollectorClasses;
     }

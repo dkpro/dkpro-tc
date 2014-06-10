@@ -11,10 +11,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 
-public abstract class LuceneBasedComboMetaCollector
-    extends LuceneBasedPairMetaCollector
+public abstract class LuceneCPMetaCollectorBase
+    extends LucenePMetaCollectorBase
 {
     @Override
     public void process(JCas jcas)
@@ -70,10 +70,13 @@ public abstract class LuceneBasedComboMetaCollector
                         + ngram2.split(NGramUtils.NGRAM_GLUE).length;
                 if (combinedSize <= getNgramMaxNCombo()
                         && combinedSize >= getNgramMinNCombo()) {
-                    // keep value 1, for doc freq and not total term freq
-                    addField(jcas, 
-                            getFieldNameCombo(),
-                            ngram1 + ComboUtils.JOINT + ngram2);
+                    // set count = 1, for doc freq and not total term freq
+                	long count = view1NGrams.getCount(ngram1) * view2NGrams.getCount(ngram2);
+                	for(int i=0;i<count;i++){
+	                    addField(jcas, 
+	                            getFieldNameCombo(),
+	                            ngram1 + ComboUtils.JOINT + ngram2);
+                	}
                 }
             }
         }

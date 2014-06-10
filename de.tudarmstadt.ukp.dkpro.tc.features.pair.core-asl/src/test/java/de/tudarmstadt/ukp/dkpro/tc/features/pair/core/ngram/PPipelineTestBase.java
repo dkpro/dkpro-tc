@@ -25,12 +25,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.TestPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 
-public abstract class PairNgramFETestBase
+public abstract class PPipelineTestBase
 {
 	protected List<Instance> instanceList;
 	protected List<List<String>> outcomeList;
@@ -101,7 +101,7 @@ public abstract class PairNgramFETestBase
 		throws ResourceInitializationException
 	{
 		metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramPairMetaCollector.class,
+                LuceneNGramPMetaCollector.class,
                 parameterList.toArray()
         );
 	}
