@@ -78,7 +78,7 @@ public class KeywordComboNGramPairFeatureExtractor
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_SYMMETRY_COMBO, mandatory = false, defaultValue = "false")
     protected boolean ngramUseSymmetricalCombos;
 
-    public static final String LUCENE_NGRAM_FIELD_KEYWORDCOMBO = "ngramKeywordCombo";
+    public static final String KEYWORD_NGRAM_FIELD_COMBO = "ngramKeywordCombo";
 
     protected FrequencyDistribution<String> topKSetCombo;
     
@@ -102,7 +102,7 @@ public class KeywordComboNGramPairFeatureExtractor
             return false;
         }
         useNgramScreening = true;
-        fieldOfTheMoment = LUCENE_NGRAM_FIELD_KEYWORDCOMBO;
+        fieldOfTheMoment = KEYWORD_NGRAM_FIELD_COMBO;
         topNOfTheMoment = ngramUseTopKCombo;
         topKSetCombo = getTopNgrams();
         

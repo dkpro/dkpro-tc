@@ -65,7 +65,6 @@ public abstract class LuceneBasedComboMetaCollector
         }
         for (String ngram1: view1NGrams.getKeys()){
             for (String ngram2: view2NGrams.getKeys()){
-//              System.out.println("ComboMeta70 Got pair: " + ngram1 + ComboUtils.JOINT + ngram2);
 
                 int combinedSize = ngram1.split(NGramUtils.NGRAM_GLUE).length 
                         + ngram2.split(NGramUtils.NGRAM_GLUE).length;
@@ -73,7 +72,7 @@ public abstract class LuceneBasedComboMetaCollector
                         && combinedSize >= getNgramMinNCombo()) {
                     // keep value 1, for doc freq and not total term freq
                     addField(jcas, 
-                            CombinedNGramPairFeatureExtractor.LUCENE_NGRAM_FIELDCOMBO, 
+                            getFieldNameCombo(),
                             ngram1 + ComboUtils.JOINT + ngram2);
                 }
             }
@@ -89,5 +88,6 @@ public abstract class LuceneBasedComboMetaCollector
     
     protected abstract int getNgramMinNCombo();
     protected abstract int getNgramMaxNCombo();
+    protected abstract String getFieldNameCombo();
 
 }

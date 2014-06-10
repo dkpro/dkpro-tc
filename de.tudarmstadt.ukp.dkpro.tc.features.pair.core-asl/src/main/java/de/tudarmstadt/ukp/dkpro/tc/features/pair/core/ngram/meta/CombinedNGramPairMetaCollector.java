@@ -109,22 +109,23 @@ public class CombinedNGramPairMetaCollector
         return NGramUtils.getDocumentNgrams(
               view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN, stopwords);
     }
-    
     @Override
     protected String getFieldName()
     {
         return LuceneNGramDFE.LUCENE_NGRAM_FIELD;
     }
-
     @Override
     protected String getFieldNameView1()
     {
         return LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD1;
     }
-
     @Override
     protected String getFieldNameView2()
     {
         return LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2;
+    }
+    @Override
+    protected String getFieldNameCombo(){
+    	return CombinedNGramPairFeatureExtractor.LUCENE_NGRAM_FIELDCOMBO;
     }
 }
