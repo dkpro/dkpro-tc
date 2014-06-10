@@ -82,9 +82,9 @@ class PairTwentyNewsgroupsDemo implements Constants {
     [
         // This feature is sensible and fast, but gives bad results on the demo data
         DiffNrOfTokensPairFeatureExtractor.name,
-        // Please review LuceneNGramPairFeatureExtractor's javadoc to understand
-        // the parameters before using LuceneNGramPairFeatureExtractor.
-        //      LuceneNGramPairFeatureExtractor.name
+        // Please review LuceneNGramPFE's javadoc to understand
+        // the parameters before using LuceneNGramPFE.
+        //      LuceneNGramPFE.name
     ]
     )
 

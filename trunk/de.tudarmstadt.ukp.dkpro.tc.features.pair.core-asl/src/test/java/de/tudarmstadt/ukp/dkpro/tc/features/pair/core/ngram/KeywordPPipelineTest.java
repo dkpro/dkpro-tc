@@ -13,30 +13,30 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.KeywordNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
 
-public class PairKeywordNgramsTest
-    extends PairNgramFETestBase
+public class KeywordPPipelineTest
+    extends PPipelineTestBase
 {
     @Test
     public void testSize1Features()
         throws Exception
     {
-        PairKeywordNgramsTest test = new PairKeywordNgramsTest();
+        KeywordPPipelineTest test = new KeywordPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 1,
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 1,
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 1,
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 1,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 1,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 1,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 1,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 1,
                 KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, 1,
                 KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, 1,
-                KeywordNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
-                KeywordNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
-                KeywordNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
+                LuceneKeywordPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
+                LuceneKeywordPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
+                LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 true, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                KeywordNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneKeywordPFE.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 16);
         assertTrue(test.featureNames.contains("keyNG1_peach"));
@@ -49,21 +49,21 @@ public class PairKeywordNgramsTest
     public void testSize3Features()
         throws Exception
     {
-        PairKeywordNgramsTest test = new PairKeywordNgramsTest();
+        KeywordPPipelineTest test = new KeywordPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 3,
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 3,
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 3,
-                KeywordNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 3,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 3,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 3,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 3,
+                LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 3,
                 KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, 3,
                 KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, 3,
-                KeywordNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
-                KeywordNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
-                KeywordNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
+                LuceneKeywordPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
+                LuceneKeywordPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
+                LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 true, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                KeywordNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneKeywordPFE.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 12);
         assertTrue(test.featureNames.contains("keyNG1_peach_nectarine_SB"));
@@ -84,7 +84,7 @@ public class PairKeywordNgramsTest
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                KeywordNGramPairFeatureExtractor.class.getName());
+                LuceneKeywordPFE.class.getName());
     }
 
     // can be overwritten
@@ -93,7 +93,7 @@ public class PairKeywordNgramsTest
         throws ResourceInitializationException
     {
         metaCollector = AnalysisEngineFactory.createEngineDescription(
-                KeywordNGramPairMetaCollector.class, parameterList.toArray());
+                LuceneKeywordPMetaCollector.class, parameterList.toArray());
     }
 
 }

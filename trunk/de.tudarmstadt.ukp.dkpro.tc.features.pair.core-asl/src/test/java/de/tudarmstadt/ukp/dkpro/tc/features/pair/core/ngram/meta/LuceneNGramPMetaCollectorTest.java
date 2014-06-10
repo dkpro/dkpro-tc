@@ -27,9 +27,9 @@ import org.junit.rules.TemporaryFolder;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 
-public class LucenePairNGramMetaCollectorTest
+public class LuceneNGramPMetaCollectorTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -53,8 +53,8 @@ public class LucenePairNGramMetaCollectorTest
         builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramPairMetaCollector.class,
-                LuceneNGramPairFeatureExtractor.PARAM_LUCENE_DIR, tmpDir
+                LuceneNGramPMetaCollector.class,
+                LuceneNGramPFE.PARAM_LUCENE_DIR, tmpDir
                 );
 
         // test fails if for-loop removed

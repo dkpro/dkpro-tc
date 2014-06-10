@@ -26,9 +26,9 @@ import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 
-public class CombinedNGramPairMetaCollectorTest
+public class LuceneNGramCPMetaCollectorTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -52,8 +52,8 @@ public class CombinedNGramPairMetaCollectorTest
         builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                CombinedNGramPairMetaCollector.class,
-                CombinedNGramPairFeatureExtractor.PARAM_LUCENE_DIR, tmpDir
+                LuceneNGramCPMetaCollector.class,
+                LuceneNGramCPFE.PARAM_LUCENE_DIR, tmpDir
                 );
 
         // test fails if for-loop removed
@@ -69,7 +69,7 @@ public class CombinedNGramPairMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(CombinedNGramPairFeatureExtractor.LUCENE_NGRAM_FIELDCOMBO);
+                Terms terms = fields.terms(LuceneNGramCPFE.LUCENE_NGRAM_FIELDCOMBO);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
 

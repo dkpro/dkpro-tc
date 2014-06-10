@@ -10,7 +10,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBas
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
-public abstract class LucenePairFeatureExtractorBase
+public abstract class LucenePFEBase
 	extends LuceneFeatureExtractorBase
 {
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")

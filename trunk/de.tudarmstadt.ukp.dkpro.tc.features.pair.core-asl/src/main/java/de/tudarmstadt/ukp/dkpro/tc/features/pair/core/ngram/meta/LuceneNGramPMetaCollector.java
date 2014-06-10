@@ -14,49 +14,42 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.CombinedNGramPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 
-public class CombinedNGramPairMetaCollector
-	extends LuceneBasedComboMetaCollector
+public class LuceneNGramPMetaCollector
+	extends LucenePMetaCollectorBase
 {
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_COMBO, mandatory = true, defaultValue = "2")
-	protected int ngramMinNCombo;
-    
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_COMBO, mandatory = true, defaultValue = "4")
-	protected int ngramMaxNCombo;
-    
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
 	protected int ngramView1MinN;
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
 	protected int ngramView2MinN;
     
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
 	protected int ngramMinN;
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
 	protected int ngramView1MaxN;
     
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
 	protected int ngramView2MaxN;
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
 	protected int ngramMaxN;
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
 	protected boolean filterPartialStopwordMatches;
 
-    @ConfigurationParameter(name = CombinedNGramPairFeatureExtractor.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
 	protected boolean ngramLowerCase;
 	
 
     protected Set<String> stopwords;
-	
+    
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -70,13 +63,7 @@ public class CombinedNGramPairMetaCollector
             throw new ResourceInitializationException(e);
         }
     }
-    
-    protected int getNgramMinNCombo(){
-        return ngramMinNCombo;
-    }
-    protected int getNgramMaxNCombo(){
-        return ngramMaxNCombo;
-    }
+
     @Override
     protected FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException
@@ -109,23 +96,22 @@ public class CombinedNGramPairMetaCollector
         return NGramUtils.getDocumentNgrams(
               view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN, stopwords);
     }
+    
     @Override
     protected String getFieldName()
     {
         return LuceneNGramDFE.LUCENE_NGRAM_FIELD;
     }
+
     @Override
     protected String getFieldNameView1()
     {
-        return LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD1;
+        return LuceneNGramPFE.LUCENE_NGRAM_FIELD1;
     }
+
     @Override
     protected String getFieldNameView2()
     {
-        return LuceneNGramPairFeatureExtractor.LUCENE_NGRAM_FIELD2;
-    }
-    @Override
-    protected String getFieldNameCombo(){
-    	return CombinedNGramPairFeatureExtractor.LUCENE_NGRAM_FIELDCOMBO;
+        return LuceneNGramPFE.LUCENE_NGRAM_FIELD2;
     }
 }

@@ -14,24 +14,24 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.CombinedKeywordNGramPairMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordCPMetaCollector;
 
-public class KeywordComboNGramPipelineTest
-    extends PairNgramFETestBase
+public class KeywordCPPipelineTest
+    extends PPipelineTestBase
 {
     @Test
     public void testComboFeatures_defaults()
         throws Exception
     {
-        KeywordComboNGramPipelineTest test = new KeywordComboNGramPipelineTest();
+        KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-                KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-                KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-                KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
+                LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                KeywordComboNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 116); //this number changed historically when ComboUtils.JOINT changed.
@@ -51,16 +51,16 @@ public class KeywordComboNGramPipelineTest
     public void testComboFeatures_size1()
         throws Exception
     {
-        KeywordComboNGramPipelineTest test = new KeywordComboNGramPipelineTest();
+        KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
+        		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+        		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+        		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                KeywordComboNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
-                KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2 };
+                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 24);
@@ -72,17 +72,17 @@ public class KeywordComboNGramPipelineTest
     public void testComboFeatures_size3()
         throws Exception
     {
-        KeywordComboNGramPipelineTest test = new KeywordComboNGramPipelineTest();
+        KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
+        		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+        		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+        		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                KeywordComboNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
-                KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, 6,
-                KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 6 };
+                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, 6,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 10);
@@ -96,18 +96,18 @@ public class KeywordComboNGramPipelineTest
     public void testNonBinaryFeatureValues()
         throws Exception
     {
-        KeywordComboNGramPipelineTest test = new KeywordComboNGramPipelineTest();
+        KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
         test.parameters = new Object[] {
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		KeywordComboNGramPairFeatureExtractor.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
+        		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+        		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+        		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                KeywordComboNGramPairFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
-                KeywordComboNGramPairFeatureExtractor.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO,
-                false, KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2,
-                KeywordComboNGramPairFeatureExtractor.PARAM_KEYWORD_NGRAM_SYMMETRY_COMBO, true };
+                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneKeywordCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO,
+                false, LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_SYMMETRY_COMBO, true };
         test.runPipeline();
         int four = 0;
         int three = 0;
@@ -152,7 +152,7 @@ public class KeywordComboNGramPipelineTest
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                KeywordComboNGramPairFeatureExtractor.class.getName());
+                LuceneKeywordCPFE.class.getName());
     }
 
     @Override
@@ -160,7 +160,7 @@ public class KeywordComboNGramPipelineTest
         throws ResourceInitializationException
     {
         metaCollector = AnalysisEngineFactory.createEngineDescription(
-                CombinedKeywordNGramPairMetaCollector.class, 
+                LuceneKeywordCPMetaCollector.class, 
                 parameterList.toArray());
     }
 

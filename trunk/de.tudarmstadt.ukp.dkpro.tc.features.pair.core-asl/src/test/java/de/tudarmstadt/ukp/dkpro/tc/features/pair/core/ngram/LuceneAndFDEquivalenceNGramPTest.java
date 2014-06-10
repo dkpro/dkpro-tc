@@ -20,9 +20,9 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 
-public class CompareOldAndNewPairNgramFETest
+public class LuceneAndFDEquivalenceNGramPTest
 {
-    LuceneNGramPairFeatureExtractor extractor;
+    LuceneNGramPFE extractor;
     JCas jcas;
     JCas view1;
     JCas view2;
@@ -47,7 +47,7 @@ public class CompareOldAndNewPairNgramFETest
 
         SimplePipeline.runPipeline(jcas, builder.createAggregateDescription());
 
-        extractor = new LuceneNGramPairFeatureExtractor();
+        extractor = new LuceneNGramPFE();
         extractor.ngramMinN1 = 1;
         extractor.ngramMinN2 = 1;
         // extractor.ngramMinN = 1;
@@ -95,7 +95,7 @@ public class CompareOldAndNewPairNgramFETest
             }
         }
 
-        NGramPairFeatureExtractor oldExtractor = new NGramPairFeatureExtractor();
+        FrequencyDistributionNGramPFE oldExtractor = new FrequencyDistributionNGramPFE();
         // oldExtractor.ngramMinN = 1;
         // oldExtractor.ngramMaxN = 3;
 
