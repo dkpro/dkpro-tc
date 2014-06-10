@@ -15,3 +15,9 @@
 
 *I am running a DKPro-TC experiment under Windows and get an IOException*
    * Please make sure, that you have set a DocumentId in the DocumentMetadata of your JCases while reading the input data. You should not use an absolute path name here. DKPro-TC will try to store the output of the PreprocessingTask in a subfolder named after the DocumentId, which causes troubles under Windows if the name contains a drive letter.
+
+*How can I configure classifier hyperparameters?*
+   * Classifier hyperparameters settings (e.g. kernel settings for Support Vector Machines) are bound to the machine learning framework you are using. The `ComplexConfigurationSingleDemo` and `ComplexConfigurationMultiDemo` in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module show example configurations for Weka and Meka classifiers.
+
+*Is it possible to apply feature/attribute selection in DKPro TC?*
+   * Yes it is, with the help of Weka and Mulan. The `ComplexConfigurationSingleDemo` and `ComplexConfigurationMultiDemo` in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module show example configurations for single- and multi-label experiments with feature selection.
