@@ -118,17 +118,19 @@ public void initialize(UimaContext context)
     {
         return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
     }
-    
     @Override
     protected String getFieldNameView1()
     {
         return KeywordNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD1;
     }
-    
     @Override
     protected String getFieldNameView2()
     {
         return KeywordNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD2;
+    }
+    @Override
+    protected String getFieldNameCombo(){
+    	return KeywordComboNGramPairFeatureExtractor.KEYWORD_NGRAM_FIELD_COMBO;
     }
 
 }
