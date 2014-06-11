@@ -18,12 +18,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.io.UnlabeledTweetReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskPrediction;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -35,12 +33,12 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * In: Proceedings of the 52nd Annual Meeting of the ACL.
  * </pre>
  * 
- * This simplistic demo show-cases how to setup an experiment to classify a set of tweets as either
- * "emotional" or "neutral".
+ * This simplistic demo show-cases how to setup an experiment to classify a set of unlabeled tweets
+ * as either "emotional" or "neutral", using a small set of labeled tweets to train a model.
  * 
  * @see de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo
  */
-public class TwitterSentimentDemo
+public class TwitterSentimentPredictionDemo
     implements Constants
 {
 
@@ -49,16 +47,15 @@ public class TwitterSentimentDemo
     {
         ParameterSpace pSpace = getParameterSpace();
 
-        TwitterSentimentDemo experiment = new TwitterSentimentDemo();
-        experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
+        TwitterSentimentPredictionDemo experiment = new TwitterSentimentPredictionDemo();
+        experiment.runPrediction(pSpace);
     }
 
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
     {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
+
+        // training data to learn a model
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, LabeledTweetReader.class);
         dimReaders.put(
@@ -68,14 +65,15 @@ public class TwitterSentimentDemo
                         LabeledTweetReader.PARAM_LANGUAGE,
                         "en", LabeledTweetReader.PARAM_PATTERNS,
                         LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt" }));
+        // unlabeled data which will be classified using the trained model
         dimReaders.put(DIM_READER_TEST, LabeledTweetReader.class);
         dimReaders.put(
                 DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] { LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/test",
-                        LabeledTweetReader.PARAM_LANGUAGE,
-                        "en", LabeledTweetReader.PARAM_PATTERNS,
-                        LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt" }));
+                Arrays.asList(new Object[] { UnlabeledTweetReader.PARAM_SOURCE_LOCATION,
+                        "src/main/resources/data/twitter/unlabeled",
+                        UnlabeledTweetReader.PARAM_LANGUAGE,
+                        "en", UnlabeledTweetReader.PARAM_PATTERNS,
+                        UnlabeledTweetReader.INCLUDE_PREFIX + "*.txt" }));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }),
@@ -95,27 +93,13 @@ public class TwitterSentimentDemo
         return pSpace;
     }
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
+    // ##### PREDICTION #####
+    protected void runPrediction(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwitterSentimentCV",
-                getPreprocessing(), 10);
-        batch.setParameterSpace(pSpace);
-        batch.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
-
-    // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
-        throws Exception
-    {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwitterSentimentTrainTest",
+        BatchTaskPrediction batch = new BatchTaskPrediction("TwitterSentimentPrediction",
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);
