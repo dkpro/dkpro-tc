@@ -23,6 +23,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaSerializedModel;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
@@ -35,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
  * @author daxenberger
  * 
  */
+@Deprecated
 public class GenerateModelTask
     extends ExecutableTaskBase
 {
@@ -48,10 +50,9 @@ public class GenerateModelTask
     private List<String> classificationArguments;
 
     @Discriminator
-    private boolean multiLabel;
-
+    private String featureMode;
     @Discriminator
-    private boolean isRegressionExperiment;
+    private String learningMode;
 
     @Discriminator
     private String threshold;
@@ -70,7 +71,8 @@ public class GenerateModelTask
                 AccessMode.READONLY).getPath()
                 + "/" + TRAINING_DATA_KEY);
 
-        Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
+        Instances trainData = TaskUtils.getInstances(arffFileTrain,
+                learningMode.equals(Constants.LM_MULTI_LABEL));
 
         Instances filteredTrainData;
 
@@ -105,13 +107,14 @@ public class GenerateModelTask
         trainedClassifier.buildClassifier(filteredTrainData);
 
         List<String> labels = new ArrayList<String>();
-        
-        if(multiLabel){
+
+        if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
             for (int j = 0; j < trainData.classIndex(); j++) {
-                labels.add(trainData.attribute(j).name().split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1]);
+                labels.add(trainData.attribute(j).name()
+                        .split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1]);
             }
         }
-        else{
+        else {
             for (int i = 0; i < trainData.classAttribute().numValues(); i++) {
                 labels.add(trainData.classAttribute().value(i));
             }
