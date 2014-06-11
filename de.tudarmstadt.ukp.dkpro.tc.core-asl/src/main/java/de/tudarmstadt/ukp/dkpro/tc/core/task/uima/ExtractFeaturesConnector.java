@@ -2,35 +2,24 @@ package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 /**
@@ -73,21 +62,15 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
 
-    private DocumentFeatureExtractor addIdExtractor;
-
     protected FeatureStore featureStore;
 
     private int sequenceId;
-
-    private JCas jcas;
 
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-
-        addIdExtractor = new AddIdFeatureExtractor();
 
         featureStore = new SimpleFeatureStore();
 
@@ -103,15 +86,16 @@ public class ExtractFeaturesConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        this.jcas = jcas;
 
         List<Instance> instances = new ArrayList<Instance>();
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            instances = getMultipleInstances();
+            instances = TaskUtils.getMultipleInstances(featureMode,
+                    featureExtractors, jcas, developerMode, addInstanceId, sequenceId);
             sequenceId++;
         }
         else {
-            instances.add(getSingleInstance());
+            instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
+                    developerMode, addInstanceId));
         }
 
         for (Instance instance : instances) {
@@ -138,175 +122,5 @@ public class ExtractFeaturesConnector
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
-    }
-
-    private Instance getSingleInstance()
-        throws AnalysisEngineProcessException
-    {
-        Instance instance = new Instance();
-
-        if (featureMode.equals(Constants.FM_DOCUMENT)) {
-            try {
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof DocumentFeatureExtractor)) {
-                        throw new TextClassificationException(
-                                "Using non-document FE in document mode: "
-                                        + featExt.getResourceName());
-                    }
-
-                    instance.setOutcomes(getOutcomes(null));
-
-                    instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
-                }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-        else if (featureMode.equals(Constants.FM_PAIR)) {
-            try {
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof PairFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-pair FE in pair mode: "
-                                + featExt.getResourceName());
-                    }
-                    JCas view1 = jcas.getView(Constants.PART_ONE);
-                    JCas view2 = jcas.getView(Constants.PART_TWO);
-
-                    instance.setOutcomes(getOutcomes(null));
-
-                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
-                }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (CASException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-        else if (featureMode.equals(Constants.FM_UNIT)) {
-            try {
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                        if (featExt instanceof DocumentFeatureExtractor && developerMode) {
-                            // we're ok
-                        }
-                        else {
-                            throw new TextClassificationException(
-                                    "Using non-unit FE in unit mode: " + featExt.getResourceName());
-                        }
-                    }
-                    TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
-                            TextClassificationFocus.class);
-                    Collection<TextClassificationUnit> classificationUnits = JCasUtil
-                            .selectCovered(jcas, TextClassificationUnit.class, focus);
-
-                    if (classificationUnits.size() != 1) {
-                        throw new AnalysisEngineProcessException(
-                                "There are more than one TextClassificationUnit anotations in the JCas.",
-                                null);
-                    }
-
-                    TextClassificationUnit unit = classificationUnits.iterator().next();
-
-                    instance.setOutcomes(getOutcomes(unit));
-
-                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, unit));
-                }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-
-        if (addInstanceId) {
-            try {
-                instance.addFeatures(addIdExtractor.extract(jcas));
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-
-        return instance;
-    }
-
-    private List<Instance> getMultipleInstances()
-        throws AnalysisEngineProcessException
-    {
-        List<Instance> instances = new ArrayList<Instance>();
-
-        TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas,
-                TextClassificationUnit.class, focus);
-
-        List<Feature> instanceId;
-        try {
-            instanceId = addIdExtractor.extract(jcas);
-        }
-        catch (TextClassificationException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-
-        int sequencePosition = 0;
-        for (TextClassificationUnit unit : units) {
-            Instance instance = new Instance();
-
-            if (addInstanceId) {
-                instance.addFeatures(instanceId);
-            }
-
-            try {
-
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                        throw new TextClassificationException(
-                                "Using non-unit FE in sequence mode: " + featExt.getResourceName());
-                    }
-
-                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, unit));
-                }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-
-            // set and write outcome label(s)
-            instance.setOutcomes(getOutcomes(unit));
-            instance.setSequenceId(sequenceId);
-            instance.setSequencePosition(sequencePosition);
-            sequencePosition++;
-
-            instances.add(instance);
-        }
-
-        return instances;
-    }
-
-    private List<String> getOutcomes(AnnotationFS unit)
-        throws AnalysisEngineProcessException
-    {
-        Collection<TextClassificationOutcome> outcomes;
-        if (unit == null) {
-            outcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
-        }
-        else {
-            outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, unit);
-        }
-
-        if (outcomes.size() == 0) {
-            throw new AnalysisEngineProcessException(new TextClassificationException(
-                    "No outcome annotations present in current CAS."));
-        }
-
-        List<String> stringOutcomes = new ArrayList<String>();
-        for (TextClassificationOutcome outcome : outcomes) {
-            stringOutcomes.add(outcome.getOutcome());
-        }
-
-        return stringOutcomes;
     }
 }

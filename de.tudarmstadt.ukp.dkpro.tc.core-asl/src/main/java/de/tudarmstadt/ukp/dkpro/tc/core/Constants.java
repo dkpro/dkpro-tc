@@ -46,6 +46,15 @@ public interface Constants
     public static final int LEAVE_ONE_OUT = -1;
 
     /*
+     * Readers
+     */
+
+    /**
+     * Name of the outcome value for instances in prediction mode
+     */
+    public static String UNKNOWN_OUTCOME = "UNKNOWN_OUTCOME";
+
+    /*
      * Discriminators
      */
 
