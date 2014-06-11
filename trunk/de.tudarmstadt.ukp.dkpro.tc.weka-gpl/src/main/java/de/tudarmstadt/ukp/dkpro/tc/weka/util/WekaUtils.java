@@ -459,6 +459,7 @@ public class WekaUtils
         // Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
         AttributeStore attributeStore = new AttributeStore();
 
+        // outcome attribute is last and will be ignored
         for (int i = 0; i < attributes.size() - 1; i++) {
             attributeStore.addAttribute(attributes.get(i).name(), attributes.get(i));
         }
@@ -477,7 +478,7 @@ public class WekaUtils
 
         SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
         sparseInstance.setDataset(wekaInstances);
-        sparseInstance.setClassMissing();
+        // sparseInstance.setClassMissing();
         // preprocessingFilter.input(sparseInstance);
         // return preprocessingFilter.output();
         return sparseInstance;
