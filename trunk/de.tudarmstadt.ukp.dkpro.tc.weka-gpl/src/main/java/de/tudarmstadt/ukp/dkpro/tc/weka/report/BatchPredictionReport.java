@@ -58,7 +58,14 @@ public class BatchPredictionReport
                     row.put(predicted_value, StringUtils.join(resultMap.get(id), ","));
                     table.addRow(id, row);
                 }
-                getContext().storeBinary(report_name + subcontext.getId() + SUFFIX_EXCEL,
+                // create a separate output folder for each execution of
+                // ExtractFeaturesAndPredictTask
+                File contextFolder = store.getStorageFolder(getContext().getId(),
+                        subcontext.getId());
+                getContext().storeBinary(
+                        contextFolder.getName() + System.getProperty("file.separator")
+                                + report_name
+                                + SUFFIX_EXCEL,
                         table.getExcelWriter());
             }
         }
