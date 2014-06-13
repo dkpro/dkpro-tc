@@ -25,14 +25,16 @@ import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.examples.single.document.SimpleDkproTCReaderDemo;
 
 /**
- * Show case for a simple DKPro TC reader
- *
+ * A very basic DKPro TC reader, which reads sentences from a text file and labels from another text
+ * file. It is used in {@link SimpleDkproTCReaderDemo}.
+ * 
  */
 public class SimpleDkproTCReader
     extends JCasResourceCollectionReader_ImplBase
-	implements TCReaderSingleLabel
+    implements TCReaderSingleLabel
 
 {
     /**
@@ -41,25 +43,25 @@ public class SimpleDkproTCReader
     public static final String PARAM_ENCODING = ComponentParameters.PARAM_SOURCE_ENCODING;
     @ConfigurationParameter(name = PARAM_ENCODING, mandatory = true, defaultValue = "UTF-8")
     private String encoding;
-    
+
     /**
      * Path to the file containing the gold standard labels.
      */
     public static final String PARAM_GOLD_LABEL_FILE = "GoldLabelFile";
     @ConfigurationParameter(name = PARAM_GOLD_LABEL_FILE, mandatory = true)
     private String goldLabelFile;
-    
+
     private List<String> golds;
 
     private List<String> texts;
     private int offset;
-    
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         // read file with gold labels
         golds = new ArrayList<String>();
         try {
@@ -73,8 +75,8 @@ public class SimpleDkproTCReader
         }
         catch (URISyntaxException ex) {
             throw new ResourceInitializationException(ex);
-        } 
-        
+        }
+
         // read file with instances
         offset = 0;
         Resource res = nextFile();
@@ -85,26 +87,27 @@ public class SimpleDkproTCReader
 
             String line;
             while ((line = reader.readLine()) != null) {
-            	texts.add(line);
+                texts.add(line);
             }
-        } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
         finally {
             closeQuietly(reader);
         }
     }
-    
+
     @Override
     public boolean hasNext()
         throws IOException, CollectionException
     {
         return offset < texts.size();
     }
-  
-    
+
     @Override
     public void getNext(JCas aJCas)
         throws IOException, CollectionException
@@ -116,22 +119,23 @@ public class SimpleDkproTCReader
         dmd.setDocumentTitle(dmd.getDocumentTitle() + "-" + offset);
         dmd.setDocumentUri(dmd.getDocumentUri() + "-" + offset);
         dmd.setDocumentId(String.valueOf(offset));
-    	
-    	aJCas.setDocumentText(texts.get(offset));
-        
+
+        // setting the document text
+        aJCas.setDocumentText(texts.get(offset));
+
+        // setting the outcome / label for this document
         TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
         outcome.setOutcome(getTextClassificationOutcome(aJCas));
         outcome.addToIndexes();
-	
+
         offset++;
     }
 
-
-	@Override
-	public String getTextClassificationOutcome(JCas jcas) 
-			throws CollectionException
-	{
-		return golds.get(offset);
-	}
+    @Override
+    public String getTextClassificationOutcome(JCas jcas)
+        throws CollectionException
+    {
+        return golds.get(offset);
+    }
 
 }
