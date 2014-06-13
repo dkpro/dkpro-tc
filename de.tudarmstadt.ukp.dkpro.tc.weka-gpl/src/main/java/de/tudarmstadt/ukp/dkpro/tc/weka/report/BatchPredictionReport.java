@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
+import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.ExtractFeaturesAndPredictTask;
@@ -43,6 +45,9 @@ public class BatchPredictionReport
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (subcontext.getType().startsWith(ExtractFeaturesAndPredictTask.class.getName())) {
 
+                Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
+                        Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+
                 // deserialize file
                 FileInputStream f = new FileInputStream(store.getStorageFolder(subcontext.getId(),
                         ExtractFeaturesAndPredictConnector.PREDICTION_MAP_FILE_NAME));
@@ -59,14 +64,22 @@ public class BatchPredictionReport
                     table.addRow(id, row);
                 }
                 // create a separate output folder for each execution of
-                // ExtractFeaturesAndPredictTask
+                // ExtractFeaturesAndPredictTask, 36 is the length of the UUID hash
                 File contextFolder = store.getStorageFolder(getContext().getId(),
-                        subcontext.getId());
+                        subcontext.getId().substring(subcontext.getId().length() - 36));
                 getContext().storeBinary(
                         contextFolder.getName() + System.getProperty("file.separator")
                                 + report_name
                                 + SUFFIX_EXCEL,
                         table.getExcelWriter());
+                getContext().storeBinary(
+                        contextFolder.getName() + System.getProperty("file.separator")
+                                + report_name
+                                + SUFFIX_CSV,
+                        table.getCsvWriter());
+                getContext()
+                        .storeBinary(contextFolder.getName() + System.getProperty("file.separator")
+                                + Task.DISCRIMINATORS_KEY, new PropertiesAdapter(discriminatorsMap));
             }
         }
 
