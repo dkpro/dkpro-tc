@@ -29,84 +29,92 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
- * This demo shows how to use a simple self written dkpro-tc reader
+ * This demo uses the {@link SimpleDkproTCReader}.
  */
 
-public class SimpleDkproTCReaderDemo implements Constants {
-	public static final String LANGUAGE_CODE = "en";
-	public static final int NUM_FOLDS = 2;
-	public static final String FILEPATH_TRAIN = "src/main/resources/data/simple_reader/train";
-	public static final String FILEPATH_GOLD_LABELS = "src/main/resources/data/simple_reader/gold_labels.txt";
+public class SimpleDkproTCReaderDemo
+    implements Constants
+{
+    public static final String LANGUAGE_CODE = "en";
+    public static final int NUM_FOLDS = 2;
+    public static final String FILEPATH_TRAIN = "src/main/resources/data/simple_reader/train";
+    public static final String FILEPATH_GOLD_LABELS = "src/main/resources/data/simple_reader/gold_labels.txt";
 
-	public static void main(String[] args) throws Exception {
-		SimpleDkproTCReaderDemo demo = new SimpleDkproTCReaderDemo();
-		demo.runCrossValidation(getParameterSpace());
-	}
+    public static void main(String[] args)
+        throws Exception
+    {
+        SimpleDkproTCReaderDemo demo = new SimpleDkproTCReaderDemo();
+        demo.runCrossValidation(getParameterSpace());
+    }
 
-	// ##### CV #####
-	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
-		BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
-				"SimpleReaderDemoCV", getPreprocessing(), NUM_FOLDS);
-		batch.addInnerReport(ClassificationReport.class);
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchCrossValidationReport.class);
-		batch.addReport(BatchRuntimeReport.class);
+    // ##### CV #####
+    protected void runCrossValidation(ParameterSpace pSpace)
+        throws Exception
+    {
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
+                "SimpleReaderDemoCV", getPreprocessing(), NUM_FOLDS);
+        batch.addInnerReport(ClassificationReport.class);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(BatchRuntimeReport.class);
 
-		// Run
-		Lab.getInstance().run(batch);
-	}
+        // Run
+        Lab.getInstance().run(batch);
+    }
 
-	public static ParameterSpace getParameterSpace() {
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
-		dimReaders.put(DIM_READER_TRAIN, SimpleDkproTCReader.class);
-		dimReaders.put(
-				DIM_READER_TRAIN_PARAMS,
-				Arrays.asList(new Object[] {
-						SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-						SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE,
-						FILEPATH_GOLD_LABELS,
-						SimpleDkproTCReader.PARAM_SOURCE_LOCATION,
-						FILEPATH_TRAIN, SimpleDkproTCReader.PARAM_PATTERNS,
-						INCLUDE_PREFIX + "*.txt" }));
+    public static ParameterSpace getParameterSpace()
+    {
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+        dimReaders.put(DIM_READER_TRAIN, SimpleDkproTCReader.class);
+        dimReaders.put(
+                DIM_READER_TRAIN_PARAMS,
+                Arrays.asList(new Object[] {
+                        SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                        SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE,
+                        FILEPATH_GOLD_LABELS,
+                        SimpleDkproTCReader.PARAM_SOURCE_LOCATION,
+                        FILEPATH_TRAIN, SimpleDkproTCReader.PARAM_PATTERNS,
+                        INCLUDE_PREFIX + "*.txt" }));
 
-		@SuppressWarnings("unchecked")
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(
-				DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+                DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-		@SuppressWarnings("unchecked")
-		Dimension<List<String>> dimFeatureSets = Dimension.create(
-				DIM_FEATURE_SET,
-				asList(new String[] { LuceneNGramDFE.class.getName() }));
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                asList(new String[] { LuceneNGramDFE.class.getName() }));
 
-		// parameters to configure feature extractors
-		@SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimPipelineParameters = Dimension
-				.create(DIM_PIPELINE_PARAMS,
-						asList(new Object[] {
-								FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-								"100",
-								FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-								1,
-								FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
-								3 }));
+        // parameters to configure feature extractors
+        @SuppressWarnings("unchecked")
+        Dimension<List<Object>> dimPipelineParameters = Dimension
+                .create(DIM_PIPELINE_PARAMS,
+                        asList(new Object[] {
+                                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
+                                "100",
+                                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
+                                1,
+                                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
+                                3 }));
 
-		@SuppressWarnings("unchecked")
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(
-				"readers", dimReaders), Dimension.create(DIM_DATA_WRITER,
-				WekaDataWriter.class.getName()), Dimension.create(
-				DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-				DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-				dimFeatureSets, dimClassificationArgs);
+        @SuppressWarnings("unchecked")
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(
+                "readers", dimReaders), Dimension.create(DIM_DATA_WRITER,
+                WekaDataWriter.class.getName()), Dimension.create(
+                DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
+                DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs);
 
-		return pSpace;
-	}
-	
-	protected AnalysisEngineDescription getPreprocessing()
-			throws ResourceInitializationException {
-		return createEngineDescription(createEngineDescription(
-				BreakIteratorSegmenter.class,
-				BreakIteratorSegmenter.PARAM_LANGUAGE, LANGUAGE_CODE));
-	}
+        return pSpace;
+    }
+
+    protected AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(createEngineDescription(
+                BreakIteratorSegmenter.class,
+                BreakIteratorSegmenter.PARAM_LANGUAGE, LANGUAGE_CODE));
+    }
 }
