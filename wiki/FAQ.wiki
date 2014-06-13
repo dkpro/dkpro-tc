@@ -21,3 +21,6 @@
 
 *Is it possible to apply feature/attribute selection in DKPro TC?*
    * Yes it is, with the help of Weka and Mulan. The `ComplexConfigurationSingleDemo` and `ComplexConfigurationMultiDemo` in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module show example configurations for single- and multi-label experiments with feature selection.
+
+*Is it possible to classify unlabeled data based on a trained model?*
+   * Yes. DKPro TC offers the `BatchTaskPrediction` in the `de.tudarmstadt.ukp.dkpro.tc.weka-gpl` module, for single-label, multi-label and regression learning task with Weka. The `TwitterSentimentPredictionDemo` in `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` shows how to apply it, based on the [DemoExperiments TwitterSentimentDemo].
