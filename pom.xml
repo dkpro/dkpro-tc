@@ -5,15 +5,13 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 		<artifactId>dkpro-parent-pom</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
 	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.target>1.6</java.target>
 		<dkpro.core.version>1.6.0</dkpro.core.version>
 		<lucene.version>4.4.0</lucene.version>
 		<uima.version>2.6.0</uima.version>
@@ -436,4 +434,6 @@
 			</build>
 		</profile>
 	</profiles>
+	<inceptionYear>2013</inceptionYear>
+	<description>DKPro TC is a UIMA-based text classification framework built on top of DKPro Core and DKPro Lab. It is intended to alleviate supervised machine learning experiments with any kind of textual data.</description>
 </project>
