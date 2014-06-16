@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -47,8 +48,19 @@ public class BatchTrainTestReport
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
         Map<List<String>, Double> confMatrixMap = new HashMap<List<String>, Double>();
 
+        Properties outcomeIdProps = new Properties();
+
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (subcontext.getType().startsWith(TestTask.class.getName())) {
+
+                try {
+                    outcomeIdProps.putAll(store.retrieveBinary(subcontext.getId(),
+                            OutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
+                }
+                catch (Exception e) {
+                    // silently ignore if this file was not generated
+                }
+
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
@@ -96,10 +108,13 @@ public class BatchTrainTestReport
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
 
         // this report is reused in CV, and we only want to aggregate confusion matrices from folds
-        // in CV
+        // in CV, and an aggregated OutcomeIdReport
         if (getContext().getId().startsWith(BatchTaskCrossValidation.class.getSimpleName())) {
             FlexTable<String> confMatrix = ReportUtils.createOverallConfusionMatrix(confMatrixMap);
             getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
+            if (outcomeIdProps.size() > 0)
+                getContext().storeBinary(OutcomeIDReport.ID_OUTCOME_KEY,
+                        new PropertiesAdapter(outcomeIdProps));
         }
 
         // output the location of the batch evaluation folder
