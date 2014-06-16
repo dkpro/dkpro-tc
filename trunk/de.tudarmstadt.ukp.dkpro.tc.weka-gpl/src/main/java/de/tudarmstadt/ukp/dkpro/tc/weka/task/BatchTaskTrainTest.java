@@ -97,7 +97,6 @@ public class BatchTaskTrainTest
         preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
-        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
@@ -105,7 +104,6 @@ public class BatchTaskTrainTest
         preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
-        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
@@ -150,6 +148,7 @@ public class BatchTaskTrainTest
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
 
+        // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);

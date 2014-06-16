@@ -108,7 +108,6 @@ public class BatchTaskCrossValidation
         preprocessTask.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTask.setOperativeViews(operativeViews);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
-        preprocessTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
@@ -199,6 +198,7 @@ public class BatchTaskCrossValidation
         // the test task here (with another report)
         crossValidationTask.addReport(BatchTrainTestReport.class);
 
+        // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);
         addTask(preprocessTask);
         addTask(crossValidationTask);
