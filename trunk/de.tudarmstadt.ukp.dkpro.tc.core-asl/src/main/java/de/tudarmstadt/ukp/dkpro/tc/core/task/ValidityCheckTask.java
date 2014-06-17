@@ -3,7 +3,6 @@ package de.tudarmstadt.ukp.dkpro.tc.core.task;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -31,10 +29,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
 public class ValidityCheckTask
     extends UimaTaskBase
 {
-    /**
-     * Public name of the task key
-     */
-    public static final String DUMMY_KEY = "dummy";
 
     @Discriminator
     protected Class<? extends CollectionReader> readerTrain;
@@ -79,10 +73,6 @@ public class ValidityCheckTask
             throw new ResourceInitializationException(new TextClassificationException(
                     "No feature extractors have been added to the experiment."));
         }
-
-        // make a dummy folder so that the lab can create an import on it
-        File file = new File(aContext.getStorageLocation(DUMMY_KEY, AccessMode.READWRITE).getPath());
-        file.mkdir();
 
         List<Object> parameters = new ArrayList<Object>();
         if (pipelineParameters != null) {
