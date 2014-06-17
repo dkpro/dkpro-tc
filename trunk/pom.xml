@@ -15,6 +15,7 @@
 		<dkpro.core.version>1.6.0</dkpro.core.version>
 		<lucene.version>4.4.0</lucene.version>
 		<uima.version>2.6.0</uima.version>
+		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 	</properties>
 	<scm>
 		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/trunk</connection>
@@ -34,7 +35,7 @@
 		</license>
 	</licenses>
 	<organization>
-		<name>Ubiquitous Knowledge Processing (UKP) Lab</name>
+		<name>${organisation.name}</name>
 		<url>http://www.ukp.tu-darmstadt.de/</url>
 	</organization>
 	<url>http://dkpro-tc.googlecode.com/</url>
@@ -43,23 +44,23 @@
 			<id>ukp-oss</id>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
 		</repository>
-		<!--  
-		  - Required when using snapshot versions of DKPro Core
-  		  -->
+		<!--
+			- Required when using snapshot versions of DKPro Core
+		-->
 		<repository>
 			<id>ukp-oss-snapshots</id>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local/</url>
 		</repository>
-		<!--  
-		  - Required when using snapshot versions of UIMA or uimaFIT
-		<repository>
+		<!--
+			- Required when using snapshot versions of UIMA or uimaFIT
+			<repository>
 			<id>apache.snapshots</id>
 			<name>Apache Snapshot Repository</name>
 			<url>http://repository.apache.org/snapshots</url>
 			<releases>
-				<enabled>false</enabled>
+			<enabled>false</enabled>
 			</releases>
-		</repository>
+			</repository>
 		-->
 	</repositories>
 	<distributionManagement>
@@ -132,10 +133,10 @@
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>de.tudarmstadt.ukp.dkpro.tc.docbook-asl</artifactId>
-                <version>0.6.0-SNAPSHOT</version>
-            </dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.tc.docbook-asl</artifactId>
+				<version>0.6.0-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</artifactId>
@@ -294,14 +295,23 @@
 				<artifactId>gson</artifactId>
 				<version>2.2.4</version>
 			</dependency>
-	        <dependency>
-		        <groupId>org.apache.uima</groupId>
-		        <artifactId>uimaj-core</artifactId>
-		        <version>${uima.version}</version>
-		    </dependency>
-	    </dependencies>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-core</artifactId>
+				<version>${uima.version}</version>
+			</dependency>
+		</dependencies>
 	</dependencyManagement>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -309,57 +319,143 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <notimestamp>true</notimestamp>
-                    <!-- Exclude UIMA types and internal API -->
-                    <excludePackageNames>*.type:*.internal.*:*.exception</excludePackageNames>
-                    <groups>
-                        <group>
-                            <title>API definitions</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.api*</packages>
-                        </group>
-                        <group>
-                            <title>Core functionality</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.core*</packages>
-                        </group>
-                        <group>
-                            <title>Usage examples (Java)</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.examples*</packages>
-                        </group>
-                        <group>
-                            <title>Usage examples (Groovy)</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.groovyexamples*</packages>
-                        </group>
-                        <group>
-                            <title>Basic feature extractors</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.features*</packages>
-                        </group>
-                        <group>
-                            <title>N-gram feature extractors</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.features.ngram*</packages>
-                        </group>
-                        <group>
-                            <title>Pair feature extractors</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.features.pair*</packages>
-                        </group>
-                        <group>
-                            <title>Support for MALLET machine learning framework</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.mallet*</packages>
-                        </group>
-                        <group>
-                            <title>Support for WEKA machine learning framework</title>
-                            <packages>de.tudarmstadt.ukp.dkpro.tc.weka*</packages>
-                        </group>
-                    </groups>
-                </configuration>
-            </plugin>
-        </plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<notimestamp>true</notimestamp>
+					<!-- Exclude UIMA types and internal API -->
+					<excludePackageNames>*.type:*.internal.*:*.exception</excludePackageNames>
+					<groups>
+						<group>
+							<title>API definitions</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.api*</packages>
+						</group>
+						<group>
+							<title>Core functionality</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.core*</packages>
+						</group>
+						<group>
+							<title>Usage examples (Java)</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.examples*</packages>
+						</group>
+						<group>
+							<title>Usage examples (Groovy)</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.groovyexamples*</packages>
+						</group>
+						<group>
+							<title>Basic feature extractors</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.features*</packages>
+						</group>
+						<group>
+							<title>N-gram feature extractors</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.features.ngram*</packages>
+						</group>
+						<group>
+							<title>Pair feature extractors</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.features.pair*</packages>
+						</group>
+						<group>
+							<title>Support for MALLET machine learning framework</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.mallet*</packages>
+						</group>
+						<group>
+							<title>Support for WEKA machine learning framework</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.weka*</packages>
+						</group>
+					</groups>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 	<profiles>
+		<profile>
+			<id>license-check</id>
+			<activation>
+				<file>
+					<exists>.activate_license-check</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<inherited>true</inherited>
+						<groupId>com.mycila</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<header>${basedir}/.activate_license-check</header>
+							<failIfMissing>true</failIfMissing>
+							<strictCheck>true</strictCheck>
+							<properties>
+								<year>2014</year>
+							</properties>
+							<excludes>
+								<exclude>release.properties</exclude>
+								<exclude>CHANGES.txt</exclude>
+								<exclude>NOTICE.txt</exclude>
+								<exclude>README.txt</exclude>
+								<exclude>LICENSE.txt</exclude>
+								<exclude>src/main/resources/**/*</exclude>
+								<exclude>src/test/resources/**/*</exclude>
+								<exclude>.activate_rat-check</exclude>
+								<exclude>.activate_license-check</exclude>
+								<exclude>**/package-info.java</exclude>
+								<exclude>pom.xml</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<id>check-headers</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>rat-check</id>
+			<activation>
+				<file>
+					<exists>.activate_rat-check</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.rat</groupId>
+						<artifactId>apache-rat-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>default</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<!-- release generated artifact -->
+										<exclude>release.properties</exclude>
+										<exclude>CHANGES.txt</exclude>
+										<exclude>NOTICE.txt</exclude>
+										<exclude>README.txt</exclude>
+										<exclude>src/main/resources/**/*</exclude>
+										<exclude>src/test/resources/**/*</exclude>
+										<exclude>.activate_rat-check</exclude>
+										<exclude>**/package-info.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>groovy</id>
 			<activation>
@@ -388,14 +484,14 @@
 								<artifactId>groovy-eclipse-compiler</artifactId>
 								<version>2.8.0-01</version>
 							</dependency>
-							<!--  
-							  Need to add this new dependency in Groovy 2.8.0+
-							  http://groovy.codehaus.org/Groovy-Eclipse+2.8.0+New+and+Noteworthy
+							<!--
+								Need to add this new dependency in Groovy 2.8.0+
+								http://groovy.codehaus.org/Groovy-Eclipse+2.8.0+New+and+Noteworthy
 							-->
 							<dependency>
-							     <groupId>org.codehaus.groovy</groupId>
-							     <artifactId>groovy-eclipse-batch</artifactId>
-							     <version>2.1.8-01</version>
+								<groupId>org.codehaus.groovy</groupId>
+								<artifactId>groovy-eclipse-batch</artifactId>
+								<version>2.1.8-01</version>
 							</dependency>
 						</dependencies>
 					</plugin>
