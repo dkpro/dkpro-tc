@@ -108,7 +108,6 @@ public class BatchTaskCrossValidation
         preprocessTask.setTesting(false);
         preprocessTask.setOperativeViews(operativeViews);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
-        preprocessTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
@@ -196,6 +195,7 @@ public class BatchTaskCrossValidation
             crossValidationTask.addReport(BatchTrainTestReport.class);
         }
 
+        // don't move! makes sure this task is executed at the beginning of the pipeline!
         addTask(checkTask);
         addTask(preprocessTask);
         addTask(crossValidationTask);

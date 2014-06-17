@@ -102,7 +102,6 @@ public class BatchTaskTrainTest
         preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
-        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
@@ -110,7 +109,6 @@ public class BatchTaskTrainTest
         preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
-        preprocessTaskTrain.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
@@ -119,8 +117,6 @@ public class BatchTaskTrainTest
 
         metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
                 MetaInfoTask.INPUT_KEY);
-
-        metaTask.addImport(checkTask, ValidityCheckTask.DUMMY_KEY);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
@@ -150,6 +146,7 @@ public class BatchTaskTrainTest
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TestTask.INPUT_KEY_TEST);
 
+        // don't move! makes sure this task is executed at the beginning of the pipeline!
         addTask(checkTask);
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);
