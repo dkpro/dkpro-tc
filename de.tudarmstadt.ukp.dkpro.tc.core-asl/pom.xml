@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+    <artifactId>dkpro-tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
+  <artifactId>dkpro-tc-core</artifactId>
     <dependencies>    
 	    <dependency>
 	        <groupId>net.sf.json-lib</groupId>
@@ -26,15 +26,15 @@
 	    </dependency>
 	    <dependency>
 	        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-	        <artifactId>de.tudarmstadt.ukp.dkpro.tc.api-asl</artifactId>
+	        <artifactId>dkpro-tc-api</artifactId>
 	    </dependency>
 	    <dependency>
 	        <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-	        <artifactId>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</artifactId>
+	        <artifactId>dkpro-tc-api-features</artifactId>
 	    </dependency>
 	    <dependency>
             <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</artifactId>
+            <artifactId>dkpro-tc-fstore-simple</artifactId>
         </dependency>
 	    <dependency>
 	        <groupId>junit</groupId>
@@ -46,17 +46,15 @@
 	    </dependency>
 	    <dependency>
 	       	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-	       	<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
+	       	<artifactId>dkpro-lab-core</artifactId>
 	    </dependency>
 	    <dependency>
 	       	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-	       	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
+	       	<artifactId>dkpro-lab-uima</artifactId>
 	    </dependency>
 	    <dependency>
 	       	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-	       	<artifactId>
-	       		de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple
-	       	</artifactId>
+	       	<artifactId>dkpro-lab-uima-engine-simple</artifactId>
 	    </dependency>
 	    <dependency>
 	    	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>

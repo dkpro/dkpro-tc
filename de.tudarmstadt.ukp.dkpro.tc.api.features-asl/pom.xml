@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+    <artifactId>dkpro-tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</artifactId>
+  <artifactId>dkpro-tc-api-features</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>commons-lang</groupId>
@@ -17,7 +17,7 @@
     </dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-  		<artifactId>de.tudarmstadt.ukp.dkpro.tc.api-asl</artifactId>
+  		<artifactId>dkpro-tc-api</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>

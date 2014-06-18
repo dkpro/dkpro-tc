@@ -8,11 +8,11 @@
 		<version>9</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-	<artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+	<artifactId>dkpro-tc</artifactId>
 	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
-		<dkpro.core.version>1.6.0</dkpro.core.version>
+		<dkpro.core.version>1.6.1</dkpro.core.version>
 		<lucene.version>4.4.0</lucene.version>
 		<uima.version>2.6.0</uima.version>
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
@@ -92,21 +92,21 @@
 	</developers>
 	<modules>
 		<!-- Please keep in alphabetical order -->
-		<module>de.tudarmstadt.ukp.dkpro.tc.api-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.core-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.docbook-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.features.spelling-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</module>
-		<module>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</module>
+		<module>dkpro-tc-api</module>
+		<module>dkpro-tc-api-features</module>
+		<module>dkpro-tc-core</module>
+		<module>dkpro-tc-docbook</module>
+		<module>dkpro-tc-examples</module>
+		<module>dkpro-tc-examples-groovy</module>
+		<module>dkpro-tc-features</module>
+		<module>dkpro-tc-features-ngram</module>
+		<module>dkpro-tc-features-pair</module>
+		<module>dkpro-tc-features-pair-similarity</module>
+		<module>dkpro-tc-features-spelling</module>
+		<module>dkpro-tc-fstore-simple</module>
+		<module>dkpro-tc-mallet</module>
+		<module>dkpro-tc-testing</module>
+		<module>dkpro-tc-weka</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -119,77 +119,77 @@
 			<!-- Modules: Please keep the following dependencies in alphabetical order -->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.api-asl</artifactId>
+				<artifactId>dkpro-tc-api</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.api.features-asl</artifactId>
+				<artifactId>dkpro-tc-api-features</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
+				<artifactId>dkpro-tc-core</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.docbook-asl</artifactId>
+				<artifactId>dkpro-tc-docbook</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</artifactId>
+				<artifactId>dkpro-tc-examples</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl</artifactId>
+				<artifactId>dkpro-tc-examples-groovy</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features-asl</artifactId>
+				<artifactId>dkpro-tc-features</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</artifactId>
+				<artifactId>dkpro-tc-features-ngram</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</artifactId>
+				<artifactId>dkpro-tc-features-pair</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl</artifactId>
+				<artifactId>dkpro-tc-features-pair-similarity</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.features.spelling-asl</artifactId>
+				<artifactId>dkpro-tc-features-spelling</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</artifactId>
+				<artifactId>dkpro-tc-fstore-simple</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
+				<artifactId>dkpro-tc-mallet</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</artifactId>
+				<artifactId>dkpro-tc-testing</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+				<artifactId>dkpro-tc-weka</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<!-- Other dependencies -->
@@ -199,6 +199,13 @@
 				<version>${dkpro.core.version}</version>
 				<scope>import</scope>
 				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core-gpl</artifactId>
+				<version>${dkpro.core.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -225,8 +232,8 @@
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<artifactId>dkpro-lab</artifactId>
+				<version>0.11.0</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -278,13 +285,6 @@
 				<version>3.2</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.core-gpl</artifactId>
-				<version>${dkpro.core.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
 				<groupId>net.sf.json-lib</groupId>
 				<artifactId>json-lib</artifactId>
 				<version>2.4</version>
@@ -299,6 +299,11 @@
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-core</artifactId>
 				<version>${uima.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>16.0.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
