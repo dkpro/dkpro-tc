@@ -2,19 +2,19 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+    <artifactId>dkpro-tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.testing-gpl</artifactId>
+  <artifactId>dkpro-tc-testing</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-  		<artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+  		<artifactId>dkpro-tc-weka</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>
-  			de.tudarmstadt.ukp.dkpro.tc.examples-gpl
+  			dkpro-tc-examples
   		</artifactId>
   	</dependency>
   </dependencies>

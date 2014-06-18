@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+    <artifactId>dkpro-tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl</artifactId>
+  <artifactId>dkpro-tc-features-pair</artifactId>
   <dependencies>
         <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -28,19 +28,19 @@
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.api.features-asl
+    		dkpro-tc-api-features
     	</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
     	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.features-asl
+    		dkpro-tc-features
     	</artifactId>
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
         <artifactId>
-            de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl
+            dkpro-tc-features-ngram
         </artifactId>
     </dependency>
     <dependency>
@@ -57,7 +57,7 @@
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+    	<artifactId>dkpro-tc-weka</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -68,7 +68,6 @@
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>16.0.1</version>
     </dependency>
   </dependencies>
 </project>

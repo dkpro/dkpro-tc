@@ -85,6 +85,7 @@ public class BatchTaskCrossValidationWithFoldControl
     {
         return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds,
                 comparator);
+        
     }
 
     public void setComparator(Comparator<String> aComparator)

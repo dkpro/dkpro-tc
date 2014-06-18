@@ -2,18 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+    <artifactId>dkpro-tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.examples-gpl</artifactId>
+  <artifactId>dkpro-tc-examples</artifactId>
   <dependencies>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.core-asl</artifactId>
+        <artifactId>dkpro-tc-core</artifactId>
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.weka-gpl</artifactId>
+        <artifactId>dkpro-tc-weka</artifactId>
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -39,20 +39,19 @@
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.features-asl</artifactId>
+        <artifactId>dkpro-tc-features</artifactId>
     </dependency>
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-        <artifactId>de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl</artifactId>
+        <artifactId>dkpro-tc-features-ngram</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    	<artifactId>de.tudarmstadt.ukp.dkpro.tc.mallet-asl</artifactId>
+    	<artifactId>dkpro-tc-mallet</artifactId>
     </dependency>
     <dependency>
     	<groupId>net.sf.trove4j</groupId>
     	<artifactId>trove4j</artifactId>
-    	<version>2.0.2</version>
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -69,9 +68,7 @@
     </dependency>
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    	<artifactId>
-    		de.tudarmstadt.ukp.dkpro.tc.features.pair.core-asl
-    	</artifactId>
+    	<artifactId>dkpro-tc-features-pair</artifactId>
     </dependency>
   </dependencies>
   <dependencyManagement>

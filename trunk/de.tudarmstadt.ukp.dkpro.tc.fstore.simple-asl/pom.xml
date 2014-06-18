@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-    <artifactId>de.tudarmstadt.ukp.dkpro.tc</artifactId>
+    <artifactId>dkpro-tc</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl</artifactId>
+  <artifactId>dkpro-tc-fstore-simple</artifactId>
   <dependencies>
     <dependency>
         <groupId>junit</groupId>
@@ -14,7 +14,7 @@
     <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
         <artifactId>
-            de.tudarmstadt.ukp.dkpro.tc.api.features-asl
+            dkpro-tc-api-features
         </artifactId>
     </dependency>
     <dependency>
