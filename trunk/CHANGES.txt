@@ -1,3 +1,50 @@
+DKPro-TC 0.6.0 Release
+
+== Highlights ==
+Release on Maven Central
+Issue 107: Support sequence labeling (with Mallet)
+Issue 97: Enable Modes for Learning and Feature Types 
+Pair NGram / NGram module has been entirely re-written
+Reordered demo modules: separated modules for groovy and java setup
+
+== Enhancements ==
+Support for SkipNgrams
+Issue 117: Coverage of source code comments has been drastically increased
+Added several show cases (e.g. for unit classification )
+Issue 79: Support for Missing Values in Feature Extractors
+Issue 110: Add a documentation module (which is work in progress)
+Issue 130: Upgrade to Groovy 2.2.2 
+Issue 24: Bag of sounds feature extractor 
+Issue 90: Add data writers for testing 
+Issue 104: Add PerformanceBatchReport 
+BatchTaskCrossValidationWithFoldControl
+
+== Major Version Enhancements ==
+upgrade to DKPro Lab 0.11.0
+upgrade to DKPro Core 1.6.1
+upgrade to Apache uimafit 2.1.0
+upgrade to Meka 1.6.2
+
+== Other Fixed Issues ==
+Issue 80: Feature extractors returning empty lists can cause errors 
+Issue 84: DocumentFeatureExtractor and ClassificationUnitFeatureExtractor are used inconsistently 
+Issue 94: Setting number of folds accidentally to 1 causes exception 
+Issue 105: FeatureValuesReport broken
+Issue 106: Throw Exception when mode-incompatible FE is encountered
+Issue 116 Improve format of the output by OutcomeIDReport 
+Issue 118: Rename preprocessing aggregate 
+Issue 131: NrOfTokensFEs cause an exception in FeatureExtractionTask when at least one but not all documents contain valid sentence annotations 
+Issue 133: Phonetic ngrams in POS ngram DFE can't be turned off? Crash on some characters 
+Issue 142: Some lucene ngram Meta Collectors don't record term counts in a document 
+Issue 152: Naming scheme of ArtifactIds changed to the simpler, dashed maven standard + license suffixes removed from ArtifactIDs;
+		   e.g. "dkpro-tc-core" instead of "de.tudarmstadt.ukp.dkpro.tc.core-asl". GroupIDs and class names remain unchanged.
+
+== Other ==
+Module de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central.
+
+
+************************************************
+
 DKPro-TC 0.5.0 Release
 
 == Highlights ==
