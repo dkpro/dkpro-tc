@@ -6,18 +6,19 @@ Issue 107: Support sequence labeling (with Mallet)
 Issue 97: Enable Modes for Learning and Feature Types 
 Pair NGram / NGram module has been entirely re-written
 Reordered demo modules: separated modules for groovy and java setup
+Upgrade to Java 7
 
 == Enhancements ==
 Support for SkipNgrams
 Issue 117: Coverage of source code comments has been drastically increased
-Added several show cases (e.g. for unit classification )
 Issue 79: Support for Missing Values in Feature Extractors
 Issue 110: Add a documentation module (which is work in progress)
 Issue 130: Upgrade to Groovy 2.2.2 
 Issue 24: Bag of sounds feature extractor 
 Issue 90: Add data writers for testing 
 Issue 104: Add PerformanceBatchReport 
-BatchTaskCrossValidationWithFoldControl
+Added several show cases (e.g. for unit classification )
+Added BatchTaskCrossValidationWithFoldControl
 
 == Major Version Enhancements ==
 upgrade to DKPro Lab 0.11.0
@@ -40,7 +41,7 @@ Issue 152: Naming scheme of ArtifactIds changed to the simpler, dashed maven sta
 		   e.g. "dkpro-tc-core" instead of "de.tudarmstadt.ukp.dkpro.tc.core-asl". GroupIDs and class names remain unchanged.
 
 == Other ==
-Module de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central.
+Module de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central. 
 
 
 ************************************************
