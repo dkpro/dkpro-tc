@@ -438,13 +438,15 @@
 									<excludes>
 										<!-- release generated artifact -->
 										<exclude>release.properties</exclude>
+										<!-- informational files -->
 										<exclude>CHANGES.txt</exclude>
 										<exclude>NOTICE.txt</exclude>
 										<exclude>README.txt</exclude>
+										<!-- build artifacts -->
+										<exclude>.activate_rat-check</exclude>
+										<!-- resources which may not be able to carry headers -->
 										<exclude>src/main/resources/**/*</exclude>
 										<exclude>src/test/resources/**/*</exclude>
-										<exclude>.activate_rat-check</exclude>
-										<exclude>**/package-info.java</exclude>
 									</excludes>
 								</configuration>
 							</execution>
