@@ -386,7 +386,8 @@
 							<failIfMissing>true</failIfMissing>
 							<strictCheck>true</strictCheck>
 							<properties>
-								<year>2014</year>
+								<inceptionYear>${project.inceptionYear}</inceptionYear>
+								<currentYear>2014</currentYear>
 							</properties>
 							<excludes>
 								<exclude>release.properties</exclude>
@@ -398,8 +399,6 @@
 								<exclude>src/test/resources/**/*</exclude>
 								<exclude>.activate_rat-check</exclude>
 								<exclude>.activate_license-check</exclude>
-								<exclude>**/package-info.java</exclude>
-								<exclude>pom.xml</exclude>
 							</excludes>
 						</configuration>
 						<executions>
