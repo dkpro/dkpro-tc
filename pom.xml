@@ -100,12 +100,6 @@
 		<module>dkpro-tc-testing</module>
 		<module>dkpro-tc-weka</module>
 	</modules>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit-core</artifactId>
-		</dependency>
-	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<!-- Modules: Please keep the following dependencies in alphabetical order -->
@@ -529,4 +523,10 @@
 			</build>
 		</profile>
 	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+		</dependency>
+	</dependencies>
 </project>
