@@ -53,8 +53,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<!-- This should be a test dependency. See issue 157 -->
-			<!-- scope>test</scope -->
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -83,9 +81,62 @@
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple
-			</artifactId>
+			<artifactId>dkpro-lab-uima-engine-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimafit-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>		
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimafit-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>		
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>		
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>		
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.frequency-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>		
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.lexmorph-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>		
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>		
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.ner-asl</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
