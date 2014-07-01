@@ -118,11 +118,17 @@ public class BatchTrainTestReport
 
         getContext().getLoggingService().message(getContextLabel(),
                 ReportUtils.getPerformanceOverview(table));
-        getContext()
-                .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        // Excel cannot cope with more than 255 columns
+        if (table.getColumnIds().length <= 255) {
+            getContext()
+                    .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        }
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
         table.setCompact(false);
-        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        // Excel cannot cope with more than 255 columns
+        if (table.getColumnIds().length <= 255) {
+            getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        }
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
 
         // this report is reused in CV, and we only want to aggregate confusion matrices from folds
