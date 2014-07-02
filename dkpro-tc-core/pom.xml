@@ -24,6 +24,13 @@
 		<version>0.6.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dkpro-tc-core</artifactId>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
@@ -112,7 +119,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies>
-            <!-- Models not detected by byte-code analysis -->
+            <!-- Dependencies on DKPro Lab engines are not detected by byte-code analysis -->
             <usedDependency>de.tudarmstadt.ukp.dkpro.lab:dkpro-lab-uima-engine-simple</usedDependency>
           </usedDependencies>
         </configuration>
