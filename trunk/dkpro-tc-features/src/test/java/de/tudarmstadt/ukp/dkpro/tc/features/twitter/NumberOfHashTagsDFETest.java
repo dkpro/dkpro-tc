@@ -27,10 +27,10 @@ import junit.framework.Assert;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class NumberOfHashTagsDFETest
@@ -40,8 +40,7 @@ public class NumberOfHashTagsDFETest
         throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
-                ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
-                ArktweetTagger.PARAM_VARIANT, "default");
+                NoOpAnnotator.class);
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
