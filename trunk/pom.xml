@@ -291,6 +291,16 @@
 				<artifactId>guava</artifactId>
 				<version>16.0.1</version>
 			</dependency>
+			<dependency>
+				<groupId>jfree</groupId>
+				<artifactId>jfreechart</artifactId>
+				<version>1.0.13</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -523,10 +533,4 @@
 			</build>
 		</profile>
 	</profiles>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
-		</dependency>
-	</dependencies>
 </project>

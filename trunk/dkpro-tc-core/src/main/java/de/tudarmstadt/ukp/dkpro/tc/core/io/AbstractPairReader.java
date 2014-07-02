@@ -19,7 +19,6 @@ package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
 import java.io.IOException;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
@@ -29,26 +28,26 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
- * Abstract base class for readers used in pair-classification. 
- * We assume pair classification consists of two texts with one or more
- * outcomes for the pair.  Optionally, additional text (such as text common
- * to the pair of texts) can be included as a third text.  The pair of texts,
- * optional third text, and outcomes(s) is the instance.
+ * Abstract base class for readers used in pair-classification. We assume pair classification
+ * consists of two texts with one or more outcomes for the pair. Optionally, additional text (such
+ * as text common to the pair of texts) can be included as a third text. The pair of texts, optional
+ * third text, and outcomes(s) is the instance.
  * <p>
- * The <code>jcas</code> representing the instance contains two <code>views</code>.  
- * Each text in the pair of texts is set to one of the <code>views</code>.  
- * The optional additional text is set to the original <code>jcas</code> of 
- * the instance.  Information about the instance, such as <code>title</code>
- * and <code>instance id</code>, is set to the original <code>jcas</code>.
+ * The <code>jcas</code> representing the instance contains two <code>views</code>. Each text in the
+ * pair of texts is set to one of the <code>views</code>. The optional additional text is set to the
+ * original <code>jcas</code> of the instance. Information about the instance, such as
+ * <code>title</code> and <code>instance id</code>, is set to the original <code>jcas</code>.
  * <p>
  * Basic Implementation:
  * <p>
- * If you have basic pairs of texts with one possible outcome each, 
- * you can create your text pair reader in the following manner:
+ * If you have basic pairs of texts with one possible outcome each, you can create your text pair
+ * reader in the following manner:
  * <ul>
- * <li> Create a class that extends this class and implements {@link TCReaderSingleLabel}.
+ * <li>Create a class that extends this class and implements {@link TCReaderSingleLabel}.
+ * 
  * <pre>
  * <code>
  * import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
@@ -57,7 +56,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
  * public class MyReader extends AbstractPairReader implements TCReaderSingleLabel {
  * </code>
  * </pre>
- * <li> Implement the method {@link #getCollectionId()} in your class, so it returns the generic corpus name.
+ * 
+ * <li>Implement the method {@link #getCollectionId()} in your class, so it returns the generic
+ * corpus name.
+ * 
  * <pre>
  * <code>
  * protected String getCollectionId(){
@@ -66,19 +68,20 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
  * }
  * 	</code>
  * </pre>
- * <li> Implement {@link #getLanguage()}, returning the language of your corpus.
- * <li> Implement {@link #getInitialViewDocId()}, returning an ID for this instance, 
- * such as "<code>345{@literal &nbsp;}12.csv</code>".  The id may refer to a filename, or other string in which certain 
- * characters neec to be escaped or are not easily human-readable.
- * <li> Implement {@link #getInitialViewTitle()}, returning a human-readable title 
- * for this instance, such as "345part12".
- * <li> Implement {@link #getBaseUri()} if your text pair originates from a single document
- * in one location, to return the absolute location without the filename, 
- * such as "/home/schmidt/MyCorpus/folder3/".  This will be used for recursive reading of 
- * folders and writing the jcas while preserving directory structure.
- * <li> Implement {@link #getText(String)}, conditionally returning either the first or the 
- * second text of your text pair, depending on whether <code>String</code> equals "PART_ONE"
- * or "PART_TWO".
+ * 
+ * <li>Implement {@link #getLanguage()}, returning the language of your corpus.
+ * <li>Implement {@link #getInitialViewDocId()}, returning an ID for this instance, such as "
+ * <code>345{@literal &nbsp;}12.csv</code>". The id may refer to a filename, or other string in
+ * which certain characters neec to be escaped or are not easily human-readable.
+ * <li>Implement {@link #getInitialViewTitle()}, returning a human-readable title for this instance,
+ * such as "345part12".
+ * <li>Implement {@link #getBaseUri()} if your text pair originates from a single document in one
+ * location, to return the absolute location without the filename, such as
+ * "/home/schmidt/MyCorpus/folder3/". This will be used for recursive reading of folders and writing
+ * the jcas while preserving directory structure.
+ * <li>Implement {@link #getText(String)}, conditionally returning either the first or the second
+ * text of your text pair, depending on whether <code>String</code> equals "PART_ONE" or "PART_TWO".
+ * 
  * <pre>
  * <code>
  * protected String getText(String part) throws IOException{
@@ -91,7 +94,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
  * 	}
  * </code>
  * </pre>
- * <li> Implement {@link de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel#TCReaderSingleLabel TCReaderSingleLabel} to return the label for your instance.
+ * 
+ * <li>Implement {@link de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel#TCReaderSingleLabel
+ * TCReaderSingleLabel} to return the label for your instance.
+ * 
  * <pre>
  * <code>
  * {@literal @}Override
@@ -99,8 +105,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
  * 	return "positiveInstance";
  * }
  * 	</code>
- * 	</pre>
- * <li> Then implement {@link #getNext(JCas)} to attach the classification outcome to the jcas.
+ * </pre>
+ * 
+ * <li>Then implement {@link #getNext(JCas)} to attach the classification outcome to the jcas.
+ * 
  * <pre>
  * <code>
  * {@literal @}Override
@@ -115,9 +123,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
  * }
  * </code>
  * </pre>
- * <li> Implement {@link BaseCollectionReader#hasNext} to return whether or not there are 
- * more documents to be read from your collection.  Also implement {@link BaseCollectionReader#getProgress}
- * to return the counter of the current document and total number of documents in your collection.
+ * 
+ * <li>Implement {@link BaseCollectionReader#hasNext} to return whether or not there are more
+ * documents to be read from your collection. Also implement
+ * {@link BaseCollectionReader#getProgress} to return the counter of the current document and total
+ * number of documents in your collection.
+ * 
  * <pre>
  * <code>
  * private List<String> myCorpusFilenames;
@@ -138,39 +149,26 @@ import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
  * 			Progress.ENTITIES) }; //i.e., we're on number 6 out of 10 total
  * }
  * 	</code>
- * 	</pre>
+ * </pre>
  * 
  * </ul>
  * <p>
- * If your text pairs have multiple outcomes each, you should implement {@link TCReaderMultiLabel} 
+ * If your text pairs have multiple outcomes each, you should implement {@link TCReaderMultiLabel}
  * instead of {@link TCReaderSingleLabel}.
- *
+ * 
  * @author Nico Erbs
  * @author zesch
  * @author daxenberger
  * @author jamison
- *
+ * 
  */
 public abstract class AbstractPairReader
     extends JCasCollectionReader_ImplBase
+    implements Constants
 {
-    /**
-     * Name of initial view
-     */
-    public static final String INITIAL_VIEW = CAS.NAME_DEFAULT_SOFA;
-    
-    /**
-     * Name of view holding part one of the pair
-     */
-    public static final String PART_ONE = "PART_ONE";
-    
-    /**
-     * Name of the view holding part two of the pair
-     */
-    public static final String PART_TWO = "PART_TWO";
 
     /**
-     * Generic corpus name.  
+     * Generic corpus name.
      * 
      * Example: "Reuters-21578"
      * 
@@ -181,25 +179,29 @@ public abstract class AbstractPairReader
     protected abstract String getLanguage();
 
     /**
-     * This is for text common to both texts of the text pair being classified.  
+     * This is for text common to both texts of the text pair being classified.
      * 
      * Example: The original text that the pair texts are extracted from.
      * 
      * @return commonText
-     * @throws IOException so user can read in text from a file
+     * @throws IOException
+     *             so user can read in text from a file
      */
-    protected abstract String getInitialViewText() throws IOException;
+    protected abstract String getInitialViewText()
+        throws IOException;
 
     /**
-     * This is for the ID of 
-     * {@link #getInitialViewText()}.<p />
+     * This is for the ID of {@link #getInitialViewText()}.
+     * <p />
      * 
-     * The docID, combined with the {@link #getBaseUri() BaseURI} should be unique for each instance.<p />
+     * The docID, combined with the {@link #getBaseUri() BaseURI} should be unique for each
+     * instance.
+     * <p />
      * 
-     * Note: If each of your data instances doesn't have its own source file,
-     * then we recommend just using some instance-unique name here, <b>without</b>
-     * any directories or special characters!  Otherwise, DKPro Lab may lose some
-     * of your data without loudly notifying you.<p />
+     * Note: If each of your data instances doesn't have its own source file, then we recommend just
+     * using some instance-unique name here, <b>without</b> any directories or special characters!
+     * Otherwise, DKPro Lab may lose some of your data without loudly notifying you.
+     * <p />
      * To check for lost data, look in "Evaluation[...]" file and add up the experiment's
      * "Correctly Classified Examples" and "Incorrectly Classified Examples".
      * 
@@ -208,23 +210,26 @@ public abstract class AbstractPairReader
     protected abstract String getInitialViewDocId();
 
     /**
-     * This is a human-readable title of 
-     * {@link #getInitialViewText()}.
+     * This is a human-readable title of {@link #getInitialViewText()}.
      * 
      * @return title
      */
     protected abstract String getInitialViewTitle();
-    
+
     /**
      * If the pair of texts come from one document, set this to the document's original pathname,
-     * without the final filename.  It is used if the CAS is written to file.  The {@link pathname} does not
-     * need to actually exist.<p />
+     * without the final filename. It is used if the CAS is written to file. The {@link pathname}
+     * does not need to actually exist.
+     * <p />
      * 
-     * The docID, combined with the {@link #getBaseUri() BaseURI} should be unique for each instance.<p />
+     * The docID, combined with the {@link #getBaseUri() BaseURI} should be unique for each
+     * instance.
+     * <p />
      * 
-     * Note: If each of your data instances doesn't have its own source file,
-     * then we recommend using an empty string here, or a very simple directory name.
-     * Otherwise, DKPro Lab may lose some of your data without loudly notifying you.<p />
+     * Note: If each of your data instances doesn't have its own source file, then we recommend
+     * using an empty string here, or a very simple directory name. Otherwise, DKPro Lab may lose
+     * some of your data without loudly notifying you.
+     * <p />
      * To check for lost data, look in "Evaluation[...]" file and add up the experiment's
      * "Correctly Classified Examples" and "Incorrectly Classified Examples".
      * 
@@ -233,14 +238,17 @@ public abstract class AbstractPairReader
     protected abstract String getBaseUri();
 
     /**
-     * Sets the text for each of the two views (representing the pair of texts).  Intended to contain a 
-     * case/part or if/else statement depending on which of the two views is the argument {@link part}, when overridden.
+     * Sets the text for each of the two views (representing the pair of texts). Intended to contain
+     * a case/part or if/else statement depending on which of the two views is the argument
+     * {@link part}, when overridden.
      * 
-     * @param part Either {@link #PART_ONE} or {@link #PART_TWO}
+     * @param part
+     *            Either {@link #PART_ONE} or {@link #PART_TWO}
      * @return text
      * @throws IOException
      */
-    protected abstract String getText(String part) throws IOException;
+    protected abstract String getText(String part)
+        throws IOException;
 
     @Override
     public void getNext(JCas jcas)
