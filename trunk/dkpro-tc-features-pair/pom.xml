@@ -24,6 +24,13 @@
 		<version>0.6.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dkpro-tc-features-pair</artifactId>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
