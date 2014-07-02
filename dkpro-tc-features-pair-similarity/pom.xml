@@ -39,11 +39,6 @@
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features-pair</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api</artifactId>
 		</dependency>
 		<dependency>
@@ -58,17 +53,18 @@
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>dkpro.similarity</groupId>
 			<artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
-			<scope>provided</scope>
+		</dependency>
+		<dependency>		
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>
