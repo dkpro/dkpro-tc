@@ -32,6 +32,8 @@
 		</license>
 	</licenses>
 	<properties>
+		<!-- This module should not be deployed to the repository -->
+    	<maven.deploy.skip>true</maven.deploy.skip>
 		<uimaBuildResourcesVersion>5</uimaBuildResourcesVersion>
 		<uimaScmProject>${project.artifactId}</uimaScmProject>
 		<bookNameRoot>dkpro.tc.book</bookNameRoot>
