@@ -18,6 +18,17 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.weka.evaluation;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.AVERAGE_THRESHOLD;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.EMPTY_VECTORS;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.FMEASURE;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_PRED;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_REAL;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.NUMBER_EXAMPLES;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.NUMBER_LABELS;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PRECISION;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.RECALL;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.ZERO_ONE_LOSS;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -28,8 +39,6 @@ import meka.core.ThresholdUtils;
 
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants;
-
 /**
  * Originally written by Jesse Read. Small adaptions by Johannes Daxenberger.
  * 
@@ -39,7 +48,6 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants;
  */
 public class MekaEvaluationUtils
     extends MLEvalUtils
-    implements ReportConstants
 {
 
     /**

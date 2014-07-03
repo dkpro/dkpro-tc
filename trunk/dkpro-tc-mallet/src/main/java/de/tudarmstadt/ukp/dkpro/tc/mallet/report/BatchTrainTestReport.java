@@ -35,8 +35,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
 
 /**
  * Collects the final evaluation results in a train/test setting.
