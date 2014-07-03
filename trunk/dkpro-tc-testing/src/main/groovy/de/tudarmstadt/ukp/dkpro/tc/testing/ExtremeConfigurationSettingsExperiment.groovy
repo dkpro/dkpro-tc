@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.tudarmstadt.ukp.dkpro.tc.testing;
+package de.tudarmstadt.ukp.dkpro.tc.testing
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 
@@ -50,15 +50,15 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  */
 public class ExtremeConfigurationSettingsExperiment implements Constants {
 
-    def experimentName = "ExtremeConfigurationSettingsTest";
+    def experimentName = "ExtremeConfigurationSettingsTest"
 
     // === PARAMETERS===========================================================
 
-    def corpusFilePathTrain = "src/main/resources/data/train";
-    def corpusFilePathTest  ="src/main/resources/data/test";
-    def languageCode = "en";
-    def numFolds = 2;
-    def manyFolds = 10;
+    def corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/train"
+    def corpusFilePathTest  ="src/main/resources/data/twentynewsgroups/test"
+    def languageCode = "en"
+    def numFolds = 2
+    def manyFolds = 10
 
     // === DIMENSIONS===========================================================
 
@@ -80,11 +80,11 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             languageCode,
             TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
-    ]);
+    ])
 
-    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
-    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -97,10 +97,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
         LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
-    );
+    )
 
     //UIMA parameters for FE configuration
-    def dimPipelineParametersEmpty = Dimension.create(DIM_PIPELINE_PARAMS, []);
+    def dimPipelineParametersEmpty = Dimension.create(DIM_PIPELINE_PARAMS, [])
 
     def dimClassificationArgs =
     Dimension.create(
@@ -108,10 +108,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     [
         [NaiveBayes.class.name].toArray()
     ] as Object[]
-    );
+    )
 
     def dimClassificationArgsEmpty =
-    Dimension.create(DIM_CLASSIFICATION_ARGS, [] as Object[]);
+    Dimension.create(DIM_CLASSIFICATION_ARGS, [] as Object[])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
@@ -121,9 +121,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             LuceneNGramDFE.class.name
         ].toArray()
     ] as Object[]
-    );
+    )
 
-    def dimFeatureSetsEmpty = Dimension.create(DIM_FEATURE_SET, [] as Object[]);
+    def dimFeatureSetsEmpty = Dimension.create(DIM_FEATURE_SET, [] as Object[])
 
     // === Test =========================================================
 
@@ -146,9 +146,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchCrossValidationReport],
-            numFolds: numFolds];
+            numFolds: numFolds]
 
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
 
         BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
@@ -168,10 +168,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
-        ];
+        ]
 
         // Run
-        Lab.getInstance().run(batchTaskTrainTest);
+        Lab.getInstance().run(batchTaskTrainTest)
     }
 
     public void runEmptyFeatureExtractorSet() throws Exception
@@ -193,9 +193,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchCrossValidationReport],
-            numFolds: numFolds];
+            numFolds: numFolds]
 
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
 
         BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
@@ -215,10 +215,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
-        ];
+        ]
 
         // Run
-        Lab.getInstance().run(batchTaskTrainTest);
+        Lab.getInstance().run(batchTaskTrainTest)
     }
 
     private AnalysisEngineDescription getPreprocessing()
@@ -227,6 +227,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
         return createEngineDescription(
         createEngineDescription(BreakIteratorSegmenter.class),
         createEngineDescription(OpenNlpPosTagger.class)
-        );
+        )
     }
 }
