@@ -1,2 +1,20 @@
-Data from the SemEval 2012 task 6:
-http://www.cs.york.ac.uk/semeval-2012/task6/
+Data from the SemEval 2012 task 6
+
+The dataset comprises pairs of sentences drawn from publicly
+available datasets:
+
+- MSR-Paraphrase, Microsoft Research Paraphrase Corpus
+  http://research.microsoft.com/en-us/downloads/607d14d9-20cd-47e3-85bc-a2f65cd28042/
+
+- MSR-Video, Microsoft Research Video Description Corpus
+  http://research.microsoft.com/en-us/downloads/38cf15fd-b8df-477e-a4e4-a4680caa75af/
+
+License
+-------
+
+All participants need to agree with the license terms from Microsoft Research:
+
+http://research.microsoft.com/en-us/downloads/607d14d9-20cd-47e3-85bc-a2f65cd28042/
+http://research.microsoft.com/en-us/downloads/38cf15fd-b8df-477e-a4e4-a4680caa75af/
+
+Source: http://www.cs.york.ac.uk/semeval-2012/task6/
