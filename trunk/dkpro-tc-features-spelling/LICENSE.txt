@@ -199,3 +199,12 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+   
+NOTE REGARDING DATA OTHER THAN SOURCE CODE CONTAINED IN THIS MODULE 
+
+Please note that, although the source code in this module is distributed under 
+the Apache License, data under src/main/resources and src/main/resources
+may be licensed under a more restrictive license (e.g. for non-commercial use only). 
+This data is contained only for demonstration / testing purpose. Please make sure 
+that you understand and comply with the respective licenses, as listed along with 
+the individual data files.
