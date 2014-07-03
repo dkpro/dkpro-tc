@@ -18,11 +18,11 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.CORRELATION;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.MEAN_ABSOLUTE_ERROR;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.RELATIVE_ABSOLUTE_ERROR;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.ROOT_MEAN_SQUARED_ERROR;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.ROOT_RELATIVE_SQUARED_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.CORRELATION;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.MEAN_ABSOLUTE_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.RELATIVE_ABSOLUTE_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.ROOT_MEAN_SQUARED_ERROR;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.ROOT_RELATIVE_SQUARED_ERROR;
 
 import java.io.File;
 import java.util.HashMap;

@@ -18,17 +18,17 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.CORRECT;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.FMEASURE;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.INCORRECT;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_CORRECT;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_INCORRECT;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PCT_UNCLASSIFIED;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.PRECISION;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.RECALL;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.WGT_FMEASURE;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.WGT_PRECISION;
-import static de.tudarmstadt.ukp.dkpro.tc.weka.report.ReportConstants.WGT_RECALL;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.CORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.FMEASURE;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.INCORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PCT_CORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PCT_INCORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PCT_UNCLASSIFIED;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PRECISION;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.RECALL;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.WGT_FMEASURE;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.WGT_PRECISION;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.WGT_RECALL;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,8 +52,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.ReportUtils;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaReportUtils;
 
 /**
  * Report that computes evaluation results given the classification results.
@@ -118,7 +119,7 @@ public class ClassificationReport
             }
 
             // Confusion Matrix
-            ReportUtils.updateTempMLConfusionMatrix(r, classNames, actualLabelsList,
+            WekaReportUtils.updateTempMLConfusionMatrix(r, classNames, actualLabelsList,
                     predictedLabelsList, tempM);
 
             // Meka Evaluation
@@ -127,7 +128,7 @@ public class ClassificationReport
             results.putAll(mekaResults);
 
             // average PR curve
-            double[][] prc = ReportUtils.createPRData(actualsArray, r.predictions);
+            double[][] prc = WekaReportUtils.createPRData(actualsArray, r.predictions);
             prcData.add(prc);
         }
 
