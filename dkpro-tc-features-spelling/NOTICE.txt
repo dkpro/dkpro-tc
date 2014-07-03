@@ -1,6 +1,0 @@
-en_US_dict.txt
-
-This dictionary is based on a subset of the original
-English wordlist created by Kevin Atkinson for Pspell 
-and  Aspell and thus is covered by his original 
-LGPL license.
