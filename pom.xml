@@ -10,7 +10,6 @@
 	<artifactId>dkpro-tc</artifactId>
 	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>DKPro Text Classification Framework</name>
 	<description>DKPro TC is a UIMA-based text classification framework built on top of DKPro Core and DKPro Lab. It is intended to alleviate supervised machine learning experiments with any kind of textual data.</description>
 	<inceptionYear>2013</inceptionYear>
 	<url>http://dkpro-tc.googlecode.com/</url>
