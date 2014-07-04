@@ -1,0 +1,6 @@
+The files in this directory have been generated based on the files from the projects:
+de.tudarmstadt.ukp.dkpro.tc.demo.twentynewsgroups-gpl (single-label)
+de.tudarmstadt.ukp.dkpro.tc.demo.reuters-gpl (multi-label)
+de.tudarmstadt.ukp.dkpro.tc.demo.regression-gpl (regression)
+
+Please refer to the respective projects to get more information about the source files. 
