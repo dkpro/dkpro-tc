@@ -40,6 +40,13 @@
 		<url>http://code.google.com/p/dkpro-tc/source/browse/branches/0.6.x</url>
 	</scm>
 	<repositories>
+    <repository>
+      <id>ukp-oss-model-releases</id>
+      <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-model-releases-local</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
 		<!-- 
 			- Required for internal releases 
 		<repository>
