@@ -7,7 +7,7 @@
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 	<artifactId>dkpro-tc</artifactId>
-	<version>0.6.0</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<description>DKPro TC is a UIMA-based text classification framework built on top of DKPro Core and DKPro Lab. It is intended to alleviate supervised machine learning experiments with any kind of textual data.</description>
 	<inceptionYear>2013</inceptionYear>
@@ -35,9 +35,9 @@
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/tags/dkpro-tc-0.6.0</connection>
-		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/tags/dkpro-tc-0.6.0</developerConnection>
-		<url>http://code.google.com/p/dkpro-tc/source/browse/tags/dkpro-tc-0.6.0</url>
+		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/branches/0.6.x</connection>
+		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/branches/0.6.x</developerConnection>
+		<url>http://code.google.com/p/dkpro-tc/source/browse/branches/0.6.x</url>
 	</scm>
 	<repositories>
 		<!-- 
@@ -106,72 +106,72 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-api</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-api-features</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-core</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-docbook</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-examples</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-examples-groovy</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-ngram</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-pair</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-spelling</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-fstore-simple</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-mallet</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-testing</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-weka</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<!-- Other dependencies -->
 			<dependency>
