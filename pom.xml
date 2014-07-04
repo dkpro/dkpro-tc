@@ -91,7 +91,6 @@
 		<module>dkpro-tc-features</module>
 		<module>dkpro-tc-features-ngram</module>
 		<module>dkpro-tc-features-pair</module>
-		<module>dkpro-tc-features-pair-similarity</module>
 		<module>dkpro-tc-features-spelling</module>
 		<module>dkpro-tc-fstore-simple</module>
 		<module>dkpro-tc-mallet</module>
@@ -144,11 +143,6 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-pair</artifactId>
-				<version>0.6.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>dkpro-tc-features-pair-similarity</artifactId>
 				<version>0.6.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -235,13 +229,6 @@
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimafit-core</artifactId>
 				<version>2.1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>dkpro.similarity</groupId>
-				<artifactId>dkpro.similarity-asl</artifactId>
-				<version>2.1.0</version>
-				<type>pom</type>
-				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>cc.mallet</groupId>
