@@ -1,0 +1,10 @@
+#summary Release Guide for DKPro TC
+
+=Release to Maven Central=
+
+Please follow the [http://code.google.com/p/dkpro-core-asl/wiki/ReleaseGuide DKPro Core Release Guide]. 
+
+Exceptions are as follows:
+
+   * during branching/releasing, the formatting of the headers in the POMs might change, which will make the mycila license header plugin check fail. To avoid this, deactivate the check during the release.
+
