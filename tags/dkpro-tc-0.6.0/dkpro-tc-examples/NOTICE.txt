@@ -1,0 +1,16 @@
+Source and license of the files packaged in src/main/resources:
+
+brown_tei: http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml (non-commercial use)
+germ_Eval2014_ner: https://sites.google.com/site/germeval2014ner/data/NER-de-train.tsv (CC-BY)
+reuters: http://kdd.ics.uci.edu/databases/reuters21578/reuters21578.html (research purposes only)
+simple_reader: in-house (ASL)
+sts2012: http://www.cs.york.ac.uk/semeval-2012/task6/index.php?id=data (Microsoft Research Shared Source & Microsoft Research License license; non-commercial use)
+twentynewsgroups: http://qwone.com/~jason/20Newsgroups
+twitter: in-house (ASL)
+
+Please note that, although the source code in this module is distributed under 
+the GNU GENERAL PUBLIC LICENSE, the data under src/main/resources may be licensed
+under a more restrictive license (e.g. for non-commercial use only). This data is 
+contained only for demonstration / testing purpose. Please make sure that you 
+understand and comply with the respective licenses, listed in this file and along 
+with the individual data files.
