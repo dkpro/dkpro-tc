@@ -393,6 +393,7 @@
 								<exclude>.activate_license-check</exclude>
 							</excludes>
 						</configuration>
+						<!-- 
 						<executions>
 							<execution>
 								<id>check-headers</id>
@@ -402,6 +403,7 @@
 								</goals>
 							</execution>
 						</executions>
+						-->
 					</plugin>
 				</plugins>
 			</build>
