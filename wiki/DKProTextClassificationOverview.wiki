@@ -25,10 +25,11 @@ To get a first impression about DKPro TC, [https://dkpro-tc.googlecode.com/svn/w
   * [ServerSetup Howto: Running DKPro-TC experiments on a server]
   * [CommitMessagesBestPractices Commit Messages: Recommended Practices]
   * [ReleaseGuide Release Guide]
-  
+
 </td>
 <td valign="top">
 <img src="https://dkpro-tc.googlecode.com/svn/wiki/images/dkpro_tc_poster_acl2014.png" alt="DKPro TC Poster ACL 2014" width="200" height="141">
+
 </td>
 </tr>
 </table>
