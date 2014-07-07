@@ -19,7 +19,7 @@
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=24 Issue 24]: Bag of sounds feature extractor
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=90 Issue 90]: Add data writers for testing
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=104 Issue 104]: Add PerformanceBatchReport
-   * Increased number of demos (e.g. for unit classification )
+   * Increased number of demos (e.g. for unit classification)
    * Added [CVWithFoldControl BatchTaskCrossValidationWithFoldControl]
 
 == Major Version Enhancements ==
@@ -40,9 +40,9 @@
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=116 Issue 116]: Improve format of the output by OutcomeIDReport 
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=118 Issue 118]: Rename preprocessing aggregate 
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=131 Issue 131]: NrOfTokensFEs cause an exception in FeatureExtractionTask when at least one but not all documents contain valid sentence annotations 
-   * [http://code.google.com/p/dkpro-tc/issues/detail?id=133 Issue 133]: Phonetic ngrams in POS ngram DFE can't be turned off? Crash on some characters 
-   * [http://code.google.com/p/dkpro-tc/issues/detail?id=142 Issue 142]: Some lucene ngram Meta Collectors don't record term counts in a document 
-   * [http://code.google.com/p/dkpro-tc/issues/detail?id=152 Issue 152]: Naming scheme of ArtifactIds changed to the simpler, dashed Maven standard. Furtermore, license suffixes have been removed from ArtifactIDs; e.g. `dkpro-tc-core` instead of `de.tudarmstadt.ukp.dkpro.tc.core-asl`. GroupIDs and class names remain unchanged.
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=133 Issue 133]: Phonetic ngrams in POS ngram DFE crash on some characters 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=142 Issue 142]: Some Lucene NGram Meta Collectors don't record term counts in a document 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=152 Issue 152]: Naming scheme of ArtifactIds changed to the simpler, dashed Maven standard. Furthermore, license suffixes have been removed from ArtifactIDs; e.g. `dkpro-tc-core` instead of `de.tudarmstadt.ukp.dkpro.tc.core-asl`. GroupIDs and class names remain unchanged.
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=156 Issue 156]: Adding license headers to all classes
 
 == Other ==
