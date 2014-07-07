@@ -1,15 +1,19 @@
 = Overview =
 
 <table cellspacing="10">
+  <colgroup>
+    <col width="220">
+    <col width="300">
+  </colgroup>
 <tr>
 <td valign="top">
 
-To get a first impression about DKPro TC, [https://dkpro-tc.googlecode.com/svn/wiki/files/dkpro_tc_poster_acl2014.pdf this] poster presented at the 2014 Annual Meeting of the Association for Computational Linguistics (ACL 2014) might be helpful.
+<img src="https://dkpro-tc.googlecode.com/svn/wiki/images/dkpro_tc_poster_acl2014.png" alt="DKPro TC Poster ACL 2014" width="200" height="141"/>
 
 </td>
 <td valign="top">
 
-<img src="https://dkpro-tc.googlecode.com/svn/wiki/images/dkpro_tc_poster_acl2014.png" alt="DKPro TC Poster ACL 2014" width="200" height="141"/>
+To get a first impression about DKPro TC, [https://dkpro-tc.googlecode.com/svn/wiki/files/dkpro_tc_poster_acl2014.pdf this] poster presented at the 2014 Annual Meeting of the Association for Computational Linguistics (ACL 2014) might be helpful.
 
 </td>
 </tr>
