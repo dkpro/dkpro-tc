@@ -1,0 +1,49 @@
+#summary Release Notes 0.6.0 Release
+
+=DKPro TC 0.6.0-Release=
+
+== Highlights ==
+
+   * Release on Maven Central
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=107 Issue 107]: Support sequence labeling (with Mallet)
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=97 Issue 97]: Enable Modes for Learning and Feature Types
+   * NGram and PairNGram modules have been entirely re-written
+   * Demo modules have been re-ordered: separated modules for Groovy and Java setup
+   * Upgrade to Java 7
+
+== Enhancements ==
+
+   * Support for SkipNGrams
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=117 Issue 117]: Coverage of source code comments has been increased
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=79 Issue 79]: Support for Missing Values in Feature Extractors
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=24 Issue 24]: Bag of sounds feature extractor
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=90 Issue 90]: Add data writers for testing
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=104 Issue 104]: Add PerformanceBatchReport
+   * Increased number of demos (e.g. for unit classification )
+   * Added [CVWithFoldControl BatchTaskCrossValidationWithFoldControl]
+
+== Major Version Enhancements ==
+
+   * Upgrade to DKPro Lab 0.11.0
+   * Upgrade to DKPro Core 1.6.1
+   * Upgrade to Apache uimafit 2.1.0
+   * Upgrade to Meka 1.6.2
+   * Upgrade to Groovy 2.2.2
+
+== Other Issues Fixed ==
+
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=80 Issue 80]: Feature extractors returning empty lists can cause errors 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=84 Issue 84]: DocumentFeatureExtractor and ClassificationUnitFeatureExtractor are used inconsistently 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=94 Issue 94]: Setting number of folds accidentally to 1 causes exception 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=105 Issue 105]: FeatureValuesReport broken
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=106 Issue 106]: Throw Exception when mode-incompatible FE is encountered
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=116 Issue 116]: Improve format of the output by OutcomeIDReport 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=118 Issue 118]: Rename preprocessing aggregate 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=131 Issue 131]: NrOfTokensFEs cause an exception in FeatureExtractionTask when at least one but not all documents contain valid sentence annotations 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=133 Issue 133]: Phonetic ngrams in POS ngram DFE can't be turned off? Crash on some characters 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=142 Issue 142]: Some lucene ngram Meta Collectors don't record term counts in a document 
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=152 Issue 152]: Naming scheme of ArtifactIds changed to the simpler, dashed Maven standard. Furtermore, license suffixes have been removed from ArtifactIDs; e.g. ``dkpro-tc-core'' instead of ``de.tudarmstadt.ukp.dkpro.tc.core-asl''. GroupIDs and class names remain unchanged.
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=156 Issue 156]: Adding license headers to all classes
+
+== Other ==
+   * Module ``de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl'' has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central. 
