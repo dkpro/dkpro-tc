@@ -42,8 +42,8 @@
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=131 Issue 131]: NrOfTokensFEs cause an exception in FeatureExtractionTask when at least one but not all documents contain valid sentence annotations 
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=133 Issue 133]: Phonetic ngrams in POS ngram DFE can't be turned off? Crash on some characters 
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=142 Issue 142]: Some lucene ngram Meta Collectors don't record term counts in a document 
-   * [http://code.google.com/p/dkpro-tc/issues/detail?id=152 Issue 152]: Naming scheme of ArtifactIds changed to the simpler, dashed Maven standard. Furtermore, license suffixes have been removed from ArtifactIDs; e.g. ``dkpro-tc-core'' instead of ``de.tudarmstadt.ukp.dkpro.tc.core-asl''. GroupIDs and class names remain unchanged.
+   * [http://code.google.com/p/dkpro-tc/issues/detail?id=152 Issue 152]: Naming scheme of ArtifactIds changed to the simpler, dashed Maven standard. Furtermore, license suffixes have been removed from ArtifactIDs; e.g. `dkpro-tc-core` instead of `de.tudarmstadt.ukp.dkpro.tc.core-asl`. GroupIDs and class names remain unchanged.
    * [http://code.google.com/p/dkpro-tc/issues/detail?id=156 Issue 156]: Adding license headers to all classes
 
 == Other ==
-   * Module ``de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl'' has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central. 
+   * Module `de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl` has been excluded from the Maven Central release, since the DKPro Similarity dependency is not yet available on Central. 
