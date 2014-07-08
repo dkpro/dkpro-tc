@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 		<artifactId>dkpro-tc</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.6.1</version>
 	</parent>
 	<artifactId>dkpro-tc-examples-groovy</artifactId>
 	<licenses>
