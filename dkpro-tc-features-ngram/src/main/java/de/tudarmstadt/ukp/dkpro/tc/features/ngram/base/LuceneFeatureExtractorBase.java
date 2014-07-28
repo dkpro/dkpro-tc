@@ -77,7 +77,8 @@ public abstract class LuceneFeatureExtractorBase
             throw new ResourceInitializationException(e);
         }
         
-        for (int i=0; i < topN.size(); i++) {
+        int size = topN.size();
+        for (int i=0; i < size; i++) {
             TermFreqTuple tuple = topN.poll();
             topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
