@@ -85,11 +85,14 @@ public class BatchPredictionReport
                 // ExtractFeaturesAndPredictTask, 36 is the length of the UUID hash
                 File contextFolder = store.getStorageFolder(getContext().getId(),
                         subcontext.getId().substring(subcontext.getId().length() - 36));
-                getContext().storeBinary(
-                        contextFolder.getName() + System.getProperty("file.separator")
-                                + report_name
-                                + SUFFIX_EXCEL,
-                        table.getExcelWriter());
+                // Excel cannot cope with more than 255 columns
+                if (table.getColumnIds().length <= 255) {
+                    getContext().storeBinary(
+                            contextFolder.getName() + System.getProperty("file.separator")
+                                    + report_name
+                                    + SUFFIX_EXCEL,
+                            table.getExcelWriter());
+                }
                 getContext().storeBinary(
                         contextFolder.getName() + System.getProperty("file.separator")
                                 + report_name

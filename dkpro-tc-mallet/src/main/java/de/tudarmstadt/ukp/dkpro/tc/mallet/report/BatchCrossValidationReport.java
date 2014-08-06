@@ -79,9 +79,9 @@ public class BatchCrossValidationReport
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
                 File eval = store.getStorageFolder(subcontext.getId(), EVAL_FILE_NAME + SUFFIX_CSV);
-                
+
                 Map<String, String> resultMap = new HashMap<String, String>();
-                
+
                 String[][] evalMatrix = null;
 
                 int i = 0;
@@ -175,12 +175,18 @@ public class BatchCrossValidationReport
         getContext().getLoggingService().message(getContextLabel(),
                 ReportUtils.getPerformanceOverview(table));
 
-        getContext()
-                .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        // Excel cannot cope with more than 255 columns
+        if (table.getColumnIds().length <= 255) {
+            getContext()
+                    .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+        }
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
 
         table.setCompact(false);
-        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        // Excel cannot cope with more than 255 columns
+        if (table.getColumnIds().length <= 255) {
+            getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+        }
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
 
         // output the location of the batch evaluation folder
