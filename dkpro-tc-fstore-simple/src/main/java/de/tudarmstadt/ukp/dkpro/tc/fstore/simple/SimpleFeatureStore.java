@@ -88,7 +88,7 @@ public class SimpleFeatureStore
                 featureNames)).toArray(new String[] {});
         if (symDiff.length > 0) {
             throw new TextClassificationException(
-                    "One or more, but not all of your instances, extracted feature "
+                    "One or more, but not all of your instances return the following feature(s): "
                             + StringUtils.join(symDiff, " and "));
         }
 
