@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
-import static de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase.LUCENE_POS_NGRAM_FIELD;
+import static de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase.LUCENE_PHONETIC_NGRAM_FIELD;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -36,16 +36,18 @@ public class LucenePhoneticNGramMetaCollector
 
     @ConfigurationParameter(name = LucenePhoneticNGramFeatureExtractorBase.PARAM_PHONETIC_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int phoneticNgramMaxN;
-    
+
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas) 
-            throws TextClassificationException{
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException
+    {
         return NGramUtils.getDocumentPhoneticNgrams(jcas,
                 phoneticNgramMinN, phoneticNgramMaxN);
     }
-    
+
     @Override
-    protected String getFieldName(){
-        return LUCENE_POS_NGRAM_FIELD;
+    protected String getFieldName()
+    {
+        return LUCENE_PHONETIC_NGRAM_FIELD;
     }
 }
