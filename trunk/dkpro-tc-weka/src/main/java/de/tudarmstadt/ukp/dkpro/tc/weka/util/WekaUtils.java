@@ -75,8 +75,8 @@ public class WekaUtils
     /**
      * Adapts the test data class labels to the training data. Class labels from the test data
      * unseen in the training data will be deleted from the test data. Class labels from the
-     * training data unseen in the test data will be added the test data. If training and test class
-     * labels are equals, nothing will be done.
+     * training data unseen in the test data will be added to the test data. If training and test class
+     * labels are equal, nothing will be done.
      * 
      * @param trainData
      *            training data
