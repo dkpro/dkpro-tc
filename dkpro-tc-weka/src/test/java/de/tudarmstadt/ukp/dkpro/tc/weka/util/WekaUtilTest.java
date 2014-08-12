@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import weka.core.Attribute;
+import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
@@ -286,5 +287,18 @@ public class WekaUtilTest
     private enum Values
     {
         VALUE_1, VALUE_2, VALUE_3
+    }
+    
+    @Test
+    public void makeOutcomeClassesCompatibleTest()
+        throws Exception
+    {
+    	Instances train = TaskUtils.getInstances(new File("src/test/resources/utils/train.arff"), false);
+    	Instances test = TaskUtils.getInstances(new File("src/test/resources/utils/test.arff"), false);
+    	
+    	Instances testCompatible = WekaUtils.makeOutcomeClassesCompatible(train, test, false);
+    	
+    	System.out.println(TaskUtils.getClassLabels(testCompatible, false));
+    	assertEquals(2, TaskUtils.getClassLabels(testCompatible, false).size());
     }
 }
