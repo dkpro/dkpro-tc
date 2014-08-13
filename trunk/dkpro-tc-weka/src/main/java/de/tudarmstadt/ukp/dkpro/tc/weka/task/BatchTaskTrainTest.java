@@ -49,7 +49,8 @@ public class BatchTaskTrainTest
     private List<String> operativeViews;
     private List<Class<? extends Report>> innerReports;
 
-    private ValidityCheckTask checkTask;
+    private ValidityCheckTask checkTaskTrain;
+    private ValidityCheckTask checkTaskTest;
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
     private MetaInfoTask metaTask;
@@ -107,7 +108,11 @@ public class BatchTaskTrainTest
         }
 
         // check the validity of the experiment setup first
-        checkTask = new ValidityCheckTask();
+        checkTaskTrain = new ValidityCheckTask();
+        checkTaskTrain.setType(checkTaskTrain + "-Train-" + experimentName);
+        checkTaskTest = new ValidityCheckTask();
+        checkTaskTest.setTesting(true);
+        checkTaskTest.setType(checkTaskTest + "-Test-" + experimentName);
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
@@ -167,7 +172,8 @@ public class BatchTaskTrainTest
                 TestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
 
         // DKPro Lab issue 38: must be added as *first* task
-        addTask(checkTask);
+        addTask(checkTaskTrain);
+        addTask(checkTaskTest);
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);
         addTask(metaTask);

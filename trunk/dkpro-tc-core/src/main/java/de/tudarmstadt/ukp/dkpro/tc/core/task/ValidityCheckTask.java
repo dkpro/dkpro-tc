@@ -50,7 +50,11 @@ public class ValidityCheckTask
     @Discriminator
     protected Class<? extends CollectionReader> readerTrain;
     @Discriminator
+    protected Class<? extends CollectionReader> readerTest;
+    @Discriminator
     protected List<Object> readerTrainParams;
+    @Discriminator
+    protected List<Object> readerTestParams;
     @Discriminator
     protected List<Object> pipelineParameters;
     @Discriminator
@@ -66,14 +70,34 @@ public class ValidityCheckTask
     @Discriminator
     protected boolean developerMode;
 
+    private boolean isTesting = false;
+
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        CollectionReaderDescription readerDesc = createReaderDescription(readerTrain,
-                readerTrainParams.toArray());
+        CollectionReaderDescription readerDesc;
+        if (!isTesting) {
+            readerDesc = createReaderDescription(readerTrain,
+                    readerTrainParams.toArray());
+        }
+        else {
+            readerDesc = createReaderDescription(readerTest,
+                    readerTestParams.toArray());
+        }
 
         return readerDesc;
+    }
+
+    /**
+     * Set testing mode.
+     * 
+     * @param isTesting
+     *            true if testing mode should be active
+     */
+    public void setTesting(boolean isTesting)
+    {
+        this.isTesting = isTesting;
     }
 
     @Override
