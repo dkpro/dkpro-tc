@@ -136,7 +136,7 @@ public class ExtractFeaturesAndPredictConnector
 
             weka.core.Instances trainData = TaskUtils.getInstances(arffFileTrainingData,
                     isMultiLabel);
-            trainData = WekaUtils.removeOutcomeId(trainData, isMultiLabel);
+            trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
             wekaClassifier.buildClassifier(trainData);
 
             attributes = new ArrayList<Attribute>();

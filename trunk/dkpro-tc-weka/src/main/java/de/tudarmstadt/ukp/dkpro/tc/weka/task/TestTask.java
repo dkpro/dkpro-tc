@@ -108,8 +108,8 @@ public class TestTask
         }
 
         Instances copyTestData = new Instances(testData);
-        trainData = WekaUtils.removeOutcomeId(trainData, multiLabel);
-        testData = WekaUtils.removeOutcomeId(testData, multiLabel);
+        trainData = WekaUtils.removeInstanceId(trainData, multiLabel);
+        testData = WekaUtils.removeInstanceId(testData, multiLabel);
 
         // FEATURE SELECTION
         if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
@@ -168,7 +168,7 @@ public class TestTask
             Result.writeResultToFile(r, evalOutput.getAbsolutePath());
             double[] t = TaskUtils.getMekaThreshold(threshold, r, trainData);
             testData = WekaUtils.getPredictionInstancesMultiLabel(testData, cl, t);
-            testData = WekaUtils.addOutcomeId(testData, copyTestData, true);
+            testData = WekaUtils.addInstanceId(testData, copyTestData, true);
         }
         else {
             // train the classifier on the train set split - not necessary in multilabel setup, but
@@ -177,7 +177,7 @@ public class TestTask
             weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(),
                     WekaUtils.getEvaluationSinglelabel(cl, trainData, testData));
             testData = WekaUtils.getPredictionInstancesSingleLabel(testData, cl);
-            testData = WekaUtils.addOutcomeId(testData, copyTestData, false);
+            testData = WekaUtils.addInstanceId(testData, copyTestData, false);
         }
 
         // Write out the predictions

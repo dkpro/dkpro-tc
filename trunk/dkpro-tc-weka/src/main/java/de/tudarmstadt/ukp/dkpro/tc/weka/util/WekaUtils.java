@@ -708,7 +708,7 @@ public class WekaUtils
      * @return the data set without OutcomeId attribute
      * @throws Exception
      */
-    public static Instances removeOutcomeId(Instances data, boolean multilabel)
+    public static Instances removeInstanceId(Instances data, boolean multilabel)
         throws Exception
     {
 
@@ -745,7 +745,7 @@ public class WekaUtils
      * @return a data set with or without OutcomeId attribute
      * @throws Exception
      */
-    public static Instances addOutcomeId(Instances newData, Instances oldData, boolean isMultilabel)
+    public static Instances addInstanceId(Instances newData, Instances oldData, boolean isMultilabel)
         throws Exception
     {
         Instances filteredData;
