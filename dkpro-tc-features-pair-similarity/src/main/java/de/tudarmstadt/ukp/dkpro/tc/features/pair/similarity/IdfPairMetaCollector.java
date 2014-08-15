@@ -1,4 +1,3 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
@@ -16,6 +15,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
 import java.io.IOException;
 import java.util.ArrayList;
