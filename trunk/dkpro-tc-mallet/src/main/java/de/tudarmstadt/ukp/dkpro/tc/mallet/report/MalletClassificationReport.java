@@ -31,12 +31,13 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 
 /**
  * Report that computes evaluation results given the classification results.
  */
-public class ClassificationReport
+public class MalletClassificationReport
 	extends ReportBase
 {
 
@@ -52,14 +53,14 @@ public class ClassificationReport
 	@Override
 	public void execute() throws Exception
 	{
-		File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
+		File storage = getContext().getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
 
 		Properties props = new Properties();
 		// table to hold CM results
 		FlexTable<String> cMTable = FlexTable.forClass(String.class);
 		cMTable.setSortRows(false);
 
-		File evaluationFile = new File(storage.getAbsolutePath() + "/" + TestTask.EVALUATION_DATA_KEY);
+		File evaluationFile = new File(storage.getAbsolutePath() + "/" + MalletTestTask.EVALUATION_DATA_KEY);
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(evaluationFile), "UTF-8"));
 		String line = null;
@@ -81,7 +82,7 @@ public class ClassificationReport
 		}
 
 		// Write out properties
-		getContext().storeBinary(TestTask.RESULTS_KEY, new PropertiesAdapter(props));
+		getContext().storeBinary(Constants.RESULTS_FILENAME, new PropertiesAdapter(props));
 //		getContext().storeBinary(ClassificationReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
 
 	}

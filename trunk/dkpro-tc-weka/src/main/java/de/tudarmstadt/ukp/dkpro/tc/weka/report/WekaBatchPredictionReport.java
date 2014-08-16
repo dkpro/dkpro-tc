@@ -44,7 +44,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.ExtractFeaturesAndPredictConne
  * @author daxenberger
  * 
  */
-public class BatchPredictionReport
+public class WekaBatchPredictionReport
     extends BatchReportBase
     implements Constants
 {

@@ -33,10 +33,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
@@ -134,7 +134,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReports: [ClassificationReport.class],
+            innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -145,7 +145,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimPipelineParametersEmpty
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -154,7 +154,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReports: [ClassificationReport.class],
+            innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -166,8 +166,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                WekaBatchTrainTestReport,
+                WekaBatchOutcomeIDReport]
         ]
 
         // Run
@@ -181,7 +181,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReports: [ClassificationReport.class],
+            innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -192,7 +192,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -201,7 +201,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReports: [ClassificationReport.class],
+            innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -213,8 +213,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                WekaBatchTrainTestReport,
+                WekaBatchOutcomeIDReport]
         ]
 
         // Run

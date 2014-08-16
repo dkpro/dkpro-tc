@@ -1,21 +1,22 @@
-/*******************************************************************************
+/**
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.mallet.task;
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ */
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +26,18 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.OutcomeIDReport;
 
 /**
  * Train-Test setup
  * 
- * @author Krish Perumal
+ * @author daxenberger
+ * @author zesch
  * 
  */
 public class BatchTaskTrainTest
@@ -45,38 +48,34 @@ public class BatchTaskTrainTest
     private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
     private List<Class<? extends Report>> innerReports;
+    private TCMachineLearningAdapter mlAdapter;
 
-    private ValidityCheckTask checkTask;
+    private ValidityCheckTask checkTaskTrain;
+    private ValidityCheckTask checkTaskTest;
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private ExtractFeaturesTask featuresTestTask;
-    private TestTask testTask;
+    private ExecutableTaskBase testTask;
 
     public BatchTaskTrainTest()
     {/* needed for Groovy */
     }
 
     /**
-     * Preconfigured train-test setup which should work out-of-the-box. You might want to set a
-     * report to collect the results.
+     * Preconfigured train-test setup.
      * 
      * @param aExperimentName
      *            name of the experiment
-     * @param aReaderTrain
-     *            collection reader for train data
-     * @param aReaderTest
-     *            collection reader for test data
      * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
-     * @param aDataWriterClassName
-     *            data writer class name
      */
-    public BatchTaskTrainTest(String aExperimentName,
+    public BatchTaskTrainTest(String aExperimentName, TCMachineLearningAdapter mlAdapter,
             AnalysisEngineDescription preprocessingPipeline)
     {
         setExperimentName(aExperimentName);
+        setMachineLearningAdapter(mlAdapter);
         setPreprocessingPipeline(preprocessingPipeline);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
@@ -107,11 +106,15 @@ public class BatchTaskTrainTest
 
         {
             throw new IllegalStateException(
-                    "You must set Experiment Name, DataWriter and Preprocessing Aggregate.");
+                    "You must set Experiment Name, DataWriter and Aggregate.");
         }
 
         // check the validity of the experiment setup first
-        checkTask = new ValidityCheckTask();
+        checkTaskTrain = new ValidityCheckTask();
+        checkTaskTrain.setType(checkTaskTrain + "-Train-" + experimentName);
+        checkTaskTest = new ValidityCheckTask();
+        checkTaskTest.setTesting(true);
+        checkTaskTest.setType(checkTaskTest + "-Test-" + experimentName);
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
@@ -150,21 +153,29 @@ public class BatchTaskTrainTest
                 ExtractFeaturesTask.INPUT_KEY);
 
         // test task operating on the models of the feature extraction train and test tasks
-        testTask = new TestTask();
+        testTask = mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
+
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {
                 testTask.addReport(report);
             }
         }
-        testTask.addReport(OutcomeIDReport.class);
-        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.INPUT_KEY_TRAIN);
-        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.INPUT_KEY_TEST);
+        else {
+            // add default report
+            testTask.addReport(mlAdapter.getClassificationReportClass());
+        }
+        // always add OutcomeIdReport
+        testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 
-        // don't move! makes sure this task is executed at the beginning of the pipeline!
-        addTask(checkTask);
+        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
+
+        // DKPro Lab issue 38: must be added as *first* task
+        addTask(checkTaskTrain);
+        addTask(checkTaskTest);
         addTask(preprocessTaskTrain);
         addTask(preprocessTaskTest);
         addTask(metaTask);
@@ -173,6 +184,11 @@ public class BatchTaskTrainTest
         addTask(testTask);
     }
 
+    public void setMachineLearningAdapter(TCMachineLearningAdapter mlAdapter)
+    {
+        this.mlAdapter = mlAdapter;
+    }
+    
     public void setExperimentName(String experimentName)
     {
         this.experimentName = experimentName;
@@ -189,7 +205,7 @@ public class BatchTaskTrainTest
     }
 
     /**
-     * Adds a report for the inner test task
+     * Sets the report for the test task
      * 
      * @param innerReport
      *            classification report or regression report

@@ -38,10 +38,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -118,9 +119,10 @@ public class TwitterSentimentDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwitterSentimentCV",
+        		WekaAdapter.getInstance(),
                 getPreprocessing(), 10);
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(WekaBatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -131,9 +133,10 @@ public class TwitterSentimentDemo
         throws Exception
     {
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwitterSentimentTrainTest",
+        		WekaAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(WekaBatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

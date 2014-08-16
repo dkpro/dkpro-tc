@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -43,7 +43,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * @author zesch
  * 
  */
-public class OutcomeIDReport
+public class WekaOutcomeIDReport
     extends ReportBase
 {
     /**
@@ -59,10 +59,10 @@ public class OutcomeIDReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
-        File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_FILENAME);
+        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
+        File arff = new File(storage.getAbsolutePath() + "/" + WekaTestTask.PREDICTIONS_FILENAME);
 
-        boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
+        boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
         Instances predictions = TaskUtils.getInstances(arff, multiLabel);
         Properties props = generateProperties(predictions, multiLabel);
@@ -109,7 +109,7 @@ public class OutcomeIDReport
                     gold = new Double(inst.value(predictions
                             .attribute(Constants.CLASS_ATTRIBUTE_NAME)));
                 }
-                Attribute gsAtt = predictions.attribute(TestTask.PREDICTION_CLASS_LABEL_NAME);
+                Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
                 Double prediction = new Double(inst.value(gsAtt));
                 try {
                     props.setProperty(

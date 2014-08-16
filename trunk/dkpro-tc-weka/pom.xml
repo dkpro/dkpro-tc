@@ -42,6 +42,19 @@
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+            <artifactId>dkpro-tc-ml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+            <artifactId>dkpro-tc-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+            <artifactId>dkpro-tc-fstore-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -64,10 +77,6 @@
 			<artifactId>meka</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.frequency-asl</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
 		</dependency>
@@ -75,16 +84,26 @@
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-uima</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+            <artifactId>dkpro-lab-core</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
 			</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.frequency-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>
+                de.tudarmstadt.ukp.dkpro.core.io.bincas-asl
+            </artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
@@ -102,31 +121,12 @@
 			<artifactId>commons-math</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>dkpro-lab-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-fstore-simple</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.io.bincas-asl
-			</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>		
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>

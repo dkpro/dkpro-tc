@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.mallet.report;
 /**
  * Constants that are used in reports
  */
-public interface ReportConstants
+public interface MalletReportConstants
 {
     // accuracy
     public static final String CORRECT = "Correctly Classified Examples";

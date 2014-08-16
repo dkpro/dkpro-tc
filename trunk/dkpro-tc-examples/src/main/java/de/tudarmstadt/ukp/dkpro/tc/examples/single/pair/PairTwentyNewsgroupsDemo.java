@@ -39,9 +39,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -131,11 +132,12 @@ public class PairTwentyNewsgroupsDemo
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
+        		WekaAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(WekaBatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

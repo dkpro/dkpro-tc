@@ -51,7 +51,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaReportUtils;
@@ -59,7 +59,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaReportUtils;
 /**
  * Report that computes evaluation results given the classification results.
  */
-public class ClassificationReport
+public class WekaClassificationReport
     extends ReportBase
     implements Constants
 {
@@ -77,9 +77,9 @@ public class ClassificationReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY,
+        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY,
                 AccessMode.READONLY);
-        boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
+        boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
 
         Properties props = new Properties();
@@ -90,14 +90,14 @@ public class ClassificationReport
         double[][] confusionMatrix = null;
 
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + TestTask.EVALUATION_DATA_FILENAME);
+                + WekaTestTask.EVALUATION_DATA_FILENAME);
 
         if (multiLabel) {
             // ============= multi-label setup ======================
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
 
             File dataFile = new File(storage.getAbsolutePath() + "/"
-                    + TestTask.PREDICTIONS_FILENAME);
+                    + WekaTestTask.PREDICTIONS_FILENAME);
             Instances data = TaskUtils.getInstances(dataFile, true);
             String[] classNames = new String[data.classIndex()];
 
@@ -178,7 +178,7 @@ public class ClassificationReport
             ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
                     ReportUtils.createXYDataset(prcData));
             FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
-                    TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
+                    WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                     + "/" + PR_CURVE_KEY));
             renderer.write(fos);
         }
@@ -198,8 +198,8 @@ public class ClassificationReport
         }
 
         // Write out properties
-        getContext().storeBinary(TestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
-        getContext().storeBinary(ClassificationReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
+        getContext().storeBinary(WekaTestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
+        getContext().storeBinary(WekaClassificationReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
 
     }
 

@@ -32,10 +32,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.RegressionReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
@@ -106,7 +106,7 @@ public class RegressionDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            innerReports: [RegressionReport],
+            innerReports: [WekaRegressionReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -116,7 +116,7 @@ public class RegressionDemo implements Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: NUM_FOLDS]
 
         Lab.getInstance().run(batchTask)
@@ -135,7 +135,7 @@ public class RegressionDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            innerReports: [RegressionReport],
+            innerReports: [WekaRegressionReport],
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -146,8 +146,8 @@ public class RegressionDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                WekaBatchTrainTestReport,
+                WekaBatchOutcomeIDReport]
         ]
 
         // Run

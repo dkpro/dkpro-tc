@@ -37,10 +37,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -99,11 +100,12 @@ public class BrownPosDemo
     {
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV",
+        		MalletAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(ClassificationReport.class);
+        batch.addInnerReport(MalletClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(MalletBatchCrossValidationReport.class);
         // batch.addReport(BatchRuntimeReport.class);
 
         // Run

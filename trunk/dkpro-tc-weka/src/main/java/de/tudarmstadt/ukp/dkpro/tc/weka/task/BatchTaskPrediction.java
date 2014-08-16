@@ -28,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchPredictionReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchPredictionReport;
 
 /**
  * Pre-configured Prediction setup
@@ -135,7 +135,7 @@ public class BatchTaskPrediction
         featuresExtractAndPredictTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 ExtractFeaturesAndPredictTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-        addReport(BatchPredictionReport.class);
+        addReport(WekaBatchPredictionReport.class);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);

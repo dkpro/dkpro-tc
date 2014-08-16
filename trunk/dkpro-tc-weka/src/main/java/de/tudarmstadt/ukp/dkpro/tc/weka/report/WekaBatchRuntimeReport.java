@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 
 /**
  * Collects the final evaluation results in a train/test setting.
@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
  * @author zesch
  * 
  */
-public class BatchRuntimeReport
+public class WekaBatchRuntimeReport
     extends BatchReportBase
     implements Constants
 {
@@ -83,7 +83,7 @@ public class BatchRuntimeReport
             else if (subcontext.getType().startsWith(ExtractFeaturesTask.class.getName())) {
                 featureExtractionTime += difference;
             }
-            else if (subcontext.getType().startsWith(TestTask.class.getName())) {
+            else if (subcontext.getType().startsWith(WekaTestTask.class.getName())) {
                 testingTime += difference;
             }
         }

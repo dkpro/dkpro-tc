@@ -31,8 +31,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -82,7 +82,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            innerReports: [ClassificationReport],
+            innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -92,7 +92,7 @@ implements Constants {
                 dimClassificationArgs
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: NUM_FOLDS]
 
         // Run

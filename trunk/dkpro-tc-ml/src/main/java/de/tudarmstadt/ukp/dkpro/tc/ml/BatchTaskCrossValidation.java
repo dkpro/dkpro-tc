@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task;
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,15 +33,13 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
 
 /**
  * Crossvalidation setup
@@ -59,13 +57,14 @@ public class BatchTaskCrossValidation
     protected List<String> operativeViews;
     protected int numFolds = 10;
     protected List<Class<? extends Report>> innerReports;
+    protected TCMachineLearningAdapter mlAdapter;
 
     protected ValidityCheckTask checkTask;
     protected PreprocessTask preprocessTask;
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask extractFeaturesTrainTask;
     protected ExtractFeaturesTask extractFeaturesTestTask;
-    protected TestTask testTask;
+    protected ExecutableTaskBase testTask;
 
     public BatchTaskCrossValidation()
     {/* needed for Groovy */
@@ -82,10 +81,12 @@ public class BatchTaskCrossValidation
      *            the number of folds for crossvalidation (default 10)
      */
     public BatchTaskCrossValidation(String aExperimentName,
+    		TCMachineLearningAdapter mlAdapter,
             AnalysisEngineDescription preprocessingPipeline,
             int aNumFolds)
     {
         setExperimentName(aExperimentName);
+        setMachineLearningAdapter(mlAdapter);
         setPreprocessingPipeline(preprocessingPipeline);
         setNumFolds(aNumFolds);
         // set name of overall batch task
@@ -183,7 +184,7 @@ public class BatchTaskCrossValidation
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
 
         // classification (numFolds times)
-        testTask = new TestTask();
+        testTask = mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
 
         if (innerReports != null) {
@@ -193,15 +194,15 @@ public class BatchTaskCrossValidation
         }
         else {
             // add default report
-            testTask.addReport(ClassificationReport.class);
+            testTask.addReport(mlAdapter.getClassificationReportClass());
         }
         // always add OutcomeIdReport
-        testTask.addReport(OutcomeIDReport.class);
+        testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
+                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
@@ -214,7 +215,7 @@ public class BatchTaskCrossValidation
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        crossValidationTask.addReport(BatchTrainTestReport.class);
+        crossValidationTask.addReport(mlAdapter.getBatchTrainTestReportClass());
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);
@@ -240,6 +241,10 @@ public class BatchTaskCrossValidation
         this.experimentName = experimentName;
     }
 
+    public void setMachineLearningAdapter(TCMachineLearningAdapter mlAdapter) {
+    	this.mlAdapter = mlAdapter;
+    }
+    
     public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
         this.preprocessingPipeline = preprocessingPipeline;

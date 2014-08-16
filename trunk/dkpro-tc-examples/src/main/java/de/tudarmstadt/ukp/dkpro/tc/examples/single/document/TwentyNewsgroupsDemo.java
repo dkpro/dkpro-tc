@@ -41,14 +41,15 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.FeatureValuesReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -138,16 +139,16 @@ public class TwentyNewsgroupsDemo
         throws Exception
     {
 
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV", WekaAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(ClassificationReport.class);
+        batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
-        batch.addInnerReport(FeatureValuesReport.class);
+        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+        batch.addReport(WekaBatchCrossValidationReport.class);
+        batch.addReport(WekaBatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -158,17 +159,17 @@ public class TwentyNewsgroupsDemo
         throws Exception
     {
 
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest", WekaAdapter.getInstance(),
                 getPreprocessing());
-        batch.addInnerReport(ClassificationReport.class);
+        batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
-        batch.addInnerReport(FeatureValuesReport.class);
+        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(WekaBatchOutcomeIDReport.class);
+        batch.addReport(WekaBatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

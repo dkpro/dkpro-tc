@@ -41,10 +41,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.IsSurroundedByCharsUFE;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchRuntimeReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -74,12 +75,13 @@ public class NERUnitDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NERDemoCV",
+        		WekaAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(ClassificationReport.class);
+        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+        batch.addReport(WekaBatchCrossValidationReport.class);
+        batch.addReport(WekaBatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

@@ -46,8 +46,9 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -153,9 +154,10 @@ public class ComplexConfigurationSingleDemo
         throws Exception
     {
         BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME,
+        		WekaAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(WekaBatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);
