@@ -38,12 +38,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.RegressionReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -113,11 +114,12 @@ public class RegressionDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
+        		WekaAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addInnerReport(RegressionReport.class);
-        batch.addReport(BatchCrossValidationReport.class);
+        batch.addInnerReport(WekaRegressionReport.class);
+        batch.addReport(WekaBatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -129,12 +131,13 @@ public class RegressionDemo
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("RegressionExampleTrainTest",
+        		WekaAdapter.getInstance(),
                 getPreprocessing());
-        batch.addInnerReport(RegressionReport.class);
+        batch.addInnerReport(WekaRegressionReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(WekaBatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

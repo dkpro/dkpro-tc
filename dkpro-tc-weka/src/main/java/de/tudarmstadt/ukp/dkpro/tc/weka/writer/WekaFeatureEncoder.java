@@ -30,7 +30,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue.MissingValueType;
-import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.AttributeStore;
 
 /**
  * Converts the TC feature representation into the Weka representation.

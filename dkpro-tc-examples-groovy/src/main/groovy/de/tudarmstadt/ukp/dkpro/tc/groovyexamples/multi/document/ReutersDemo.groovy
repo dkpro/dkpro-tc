@@ -38,10 +38,10 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter
@@ -161,7 +161,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport],
+            innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -174,7 +174,7 @@ public class ReutersDemo implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -192,7 +192,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport],
+            innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -206,8 +206,8 @@ public class ReutersDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                WekaBatchTrainTestReport,
+                WekaBatchOutcomeIDReport]
         ]
 
         // Run

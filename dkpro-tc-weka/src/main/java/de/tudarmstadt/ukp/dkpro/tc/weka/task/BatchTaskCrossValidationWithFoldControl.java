@@ -38,9 +38,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
 
 /**
  * Crossvalidation setup
@@ -176,7 +177,7 @@ public class BatchTaskCrossValidationWithFoldControl
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
 
         // classification (numFolds times)
-        testTask = new TestTask();
+        testTask = new WekaTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
 
         if (innerReports != null) {
@@ -186,15 +187,15 @@ public class BatchTaskCrossValidationWithFoldControl
         }
         else {
             // add default report
-            testTask.addReport(ClassificationReport.class);
+            testTask.addReport(WekaClassificationReport.class);
         }
         // always add OutcomeIdReport
-        testTask.addReport(OutcomeIDReport.class);
+        testTask.addReport(WekaOutcomeIDReport.class);
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+                WekaTestTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
+                WekaTestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
@@ -207,7 +208,7 @@ public class BatchTaskCrossValidationWithFoldControl
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        crossValidationTask.addReport(BatchTrainTestReport.class);
+        crossValidationTask.addReport(WekaBatchTrainTestReport.class);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);

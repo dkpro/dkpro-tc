@@ -40,11 +40,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.OutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
@@ -169,11 +169,11 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             isTesting: true
         ]
 
-        TestTask testTask = [
+        WekaTestTask testTask = [
             type:"TestTask.TwentyNewsgroups",
             reports: [
-                ClassificationReport,
-                OutcomeIDReport]
+                WekaClassificationReport,
+                WekaOutcomeIDReport]
         ]
 
 
@@ -213,8 +213,8 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                WekaBatchTrainTestReport,
+                WekaBatchOutcomeIDReport]
         ]
 
         // Run

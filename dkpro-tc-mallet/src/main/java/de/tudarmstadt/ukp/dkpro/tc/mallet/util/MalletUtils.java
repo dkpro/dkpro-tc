@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletFeatureEncoder;
 
 /**
@@ -63,7 +63,7 @@ public class MalletUtils
                 }
             }
         }
-        bw.write(TestTask.OUTCOME_CLASS_LABEL_NAME);
+        bw.write(MalletTestTask.OUTCOME_CLASS_LABEL_NAME);
         bw.close();
     }
 

@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -47,7 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * First line lists feature names, next lines class labels and class averages for each feature.
  * Currently implemented for numeric attributes/features only.
  */
-public class FeatureValuesReport
+public class WekaFeatureValuesReport
     extends ReportBase
 {
     /**
@@ -62,14 +62,14 @@ public class FeatureValuesReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
-        boolean multiLabel = getDiscriminators().get(TestTask.class.getName() + "|learningMode")
+        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
+        boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
         Properties props = new Properties();
-        File arff = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_FILENAME);
+        File arff = new File(storage.getAbsolutePath() + "/" + WekaTestTask.PREDICTIONS_FILENAME);
         Instances predictions = TaskUtils.getInstances(arff, multiLabel);
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + TestTask.EVALUATION_DATA_FILENAME);
+                + WekaTestTask.EVALUATION_DATA_FILENAME);
         String[] classValues;
         List<String> attrNames = new ArrayList<String>();
 

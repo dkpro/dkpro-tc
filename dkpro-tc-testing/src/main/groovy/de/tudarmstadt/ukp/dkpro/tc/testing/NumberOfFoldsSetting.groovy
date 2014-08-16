@@ -36,8 +36,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.testing.io.LineInstanceReader
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
@@ -88,7 +88,7 @@ public class NumberOfFoldsSetting implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-            innerReports: [ClassificationReport.class],
+            innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -98,7 +98,7 @@ public class NumberOfFoldsSetting implements Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);

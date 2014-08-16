@@ -28,8 +28,9 @@ import java.util.zip.GZIPInputStream;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
@@ -37,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.task.TestTask;
  * @author krishperumal11
  * 
  */
-public class OutcomeIDReport
+public class MalletOutcomeIDReport
     extends ReportBase
 {
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";
@@ -46,10 +47,9 @@ public class OutcomeIDReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READONLY);
-        File filePredictions = new File(storage.getAbsolutePath() + "/" + TestTask.PREDICTIONS_KEY);
-        File fileId2Outcome = new File(getContext().getStorageLocation(TestTask.OUTPUT_KEY, AccessMode.READWRITE)
-                .getPath() + "/" + ID_OUTCOME_KEY);
+        File storage = getContext().getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
+        File filePredictions = new File(storage, MalletTestTask.PREDICTIONS_KEY);
+        File fileId2Outcome = new File(storage, ID_OUTCOME_KEY);
         BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filePredictions)), "UTF-8"));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileId2Outcome), "UTF-8"));
         String line = null;
@@ -62,10 +62,10 @@ public class OutcomeIDReport
         		header = true;
         		String featureNames[] = line.split(" ");
         		for (int i = 0; i < featureNames.length; i++) {
-        			if (featureNames[i].equals(TestTask.OUTCOME_CLASS_LABEL_NAME)) {
+        			if (featureNames[i].equals(MalletTestTask.OUTCOME_CLASS_LABEL_NAME)) {
         				outcomeIndex = i;
         			}
-        			else if (featureNames[i].equals(TestTask.PREDICTION_CLASS_LABEL_NAME)) {
+        			else if (featureNames[i].equals(MalletTestTask.PREDICTION_CLASS_LABEL_NAME)) {
         				predictedOutcomeIndex = i;
         			}
         			else if (featureNames[i].equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {

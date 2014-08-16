@@ -49,7 +49,7 @@ import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ReportConstants;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletReportConstants;
 
 public class TaskUtils {
 
@@ -338,20 +338,20 @@ public class TaskUtils {
 
 		int numLabels = labelNames.size();
 		bw.write("Measure,Value");
-		bw.write("\n" + ReportConstants.CORRECT + "," + ((PerClassEvaluator) eval).getNumberOfCorrectPredictions());
-		bw.write("\n" + ReportConstants.INCORRECT + "," + ((PerClassEvaluator) eval).getNumberOfIncorrectPredictions());
-		bw.write("\n" + ReportConstants.NUMBER_EXAMPLES + "," + ((PerClassEvaluator) eval).getNumberOfExamples());
-		bw.write("\n" + ReportConstants.PCT_CORRECT + "," + ((PerClassEvaluator) eval).getPercentageOfCorrectPredictions());
-		bw.write("\n" + ReportConstants.PCT_INCORRECT + "," + ((PerClassEvaluator) eval).getPercentageOfIncorrectPredictions());
+		bw.write("\n" + MalletReportConstants.CORRECT + "," + ((PerClassEvaluator) eval).getNumberOfCorrectPredictions());
+		bw.write("\n" + MalletReportConstants.INCORRECT + "," + ((PerClassEvaluator) eval).getNumberOfIncorrectPredictions());
+		bw.write("\n" + MalletReportConstants.NUMBER_EXAMPLES + "," + ((PerClassEvaluator) eval).getNumberOfExamples());
+		bw.write("\n" + MalletReportConstants.PCT_CORRECT + "," + ((PerClassEvaluator) eval).getPercentageOfCorrectPredictions());
+		bw.write("\n" + MalletReportConstants.PCT_INCORRECT + "," + ((PerClassEvaluator) eval).getPercentageOfIncorrectPredictions());
 
 		for (int i = 0; i < numLabels; i++) {
 			String label = labelNames.get(i);
-			bw.write("\n" + ReportConstants.PRECISION + "_" + label + "," + precisionValues.get(i));
-			bw.write("\n" + ReportConstants.RECALL  + "_" + label + "," + recallValues.get(i));
-			bw.write("\n" + ReportConstants.FMEASURE + "_" + label + "," + f1Values.get(i));
+			bw.write("\n" + MalletReportConstants.PRECISION + "_" + label + "," + precisionValues.get(i));
+			bw.write("\n" + MalletReportConstants.RECALL  + "_" + label + "," + recallValues.get(i));
+			bw.write("\n" + MalletReportConstants.FMEASURE + "_" + label + "," + f1Values.get(i));
 			bw.flush();
 		}
-		bw.write("\n" + ReportConstants.MACRO_AVERAGE_FMEASURE + "," + ((PerClassEvaluator) eval).getMacroAverage());
+		bw.write("\n" + MalletReportConstants.MACRO_AVERAGE_FMEASURE + "," + ((PerClassEvaluator) eval).getMacroAverage());
 		bw.flush();
 		bw.close();
 	}

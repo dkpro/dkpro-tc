@@ -32,7 +32,7 @@ import weka.core.SerializationHelper;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 
 /**
  * Simple report for regression problems
@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
  * @author daxenberger
  * 
  */
-public class RegressionReport
+public class WekaRegressionReport
     extends ReportBase
 {
 
@@ -49,10 +49,10 @@ public class RegressionReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(TestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
+        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
         Properties props = new Properties();
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + TestTask.EVALUATION_DATA_FILENAME);
+                + WekaTestTask.EVALUATION_DATA_FILENAME);
 
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(evaluationFile.getAbsolutePath());
@@ -69,6 +69,6 @@ public class RegressionReport
         }
 
         // Write out properties
-        getContext().storeBinary(TestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
+        getContext().storeBinary(WekaTestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
     }
 }

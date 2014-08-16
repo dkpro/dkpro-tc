@@ -53,7 +53,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
  * @author daxenberger
  * 
  */
-public class BatchCrossValidationReport
+public class WekaBatchCrossValidationReport
     extends BatchReportBase
     implements Constants
 {

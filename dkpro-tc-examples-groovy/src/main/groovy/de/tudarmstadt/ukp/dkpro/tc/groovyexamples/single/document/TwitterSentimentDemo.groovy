@@ -29,8 +29,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
@@ -80,7 +80,7 @@ public class TwitterSentimentDemo implements Constants {
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name),
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
-            reports: [BatchCrossValidationReport], // collects results from folds
+            reports: [WekaBatchCrossValidationReport], // collects results from folds
             numFolds: 10]
 
         // Run
@@ -123,7 +123,7 @@ public class TwitterSentimentDemo implements Constants {
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name),
                 Dimension.create(DIM_CLASSIFICATION_ARGS, [NaiveBayes.name], [RandomForest.name])
             ],
-            reports: [BatchTrainTestReport], // collects results from folds
+            reports: [WekaBatchTrainTestReport], // collects results from folds
         ]
 
         // Run

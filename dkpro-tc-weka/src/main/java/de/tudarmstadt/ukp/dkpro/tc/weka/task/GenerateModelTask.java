@@ -43,8 +43,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaSerializedModel;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaSerializedModel;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**

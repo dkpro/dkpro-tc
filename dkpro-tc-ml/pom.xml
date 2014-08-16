@@ -6,4 +6,18 @@
     <version>0.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>dkpro-tc-ml</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+  		<artifactId>dkpro-lab-core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+  		<artifactId>dkpro-lab-uima</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-core</artifactId>
+  	</dependency>
+  </dependencies>
 </project>

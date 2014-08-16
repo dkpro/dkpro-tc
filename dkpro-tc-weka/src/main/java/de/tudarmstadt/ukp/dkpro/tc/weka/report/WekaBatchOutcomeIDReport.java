@@ -24,16 +24,16 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 
 
 /**
- * Collects all files written by the {@link OutcomeIDReport} and writes a merged file.
+ * Collects all files written by the {@link WekaOutcomeIDReport} and writes a merged file.
  * 
  * @author zesch
  *
  */
-public class BatchOutcomeIDReport
+public class WekaBatchOutcomeIDReport
 	extends BatchReportBase
 {
     
@@ -46,11 +46,11 @@ public class BatchOutcomeIDReport
         Properties props = new Properties();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (subcontext.getType().startsWith(TestTask.class.getName())) {
-                props.putAll(store.retrieveBinary(subcontext.getId(), OutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
+            if (subcontext.getType().startsWith(WekaTestTask.class.getName())) {
+                props.putAll(store.retrieveBinary(subcontext.getId(), WekaOutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
             }
         }
 
-        getContext().storeBinary(OutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter(props));
+        getContext().storeBinary(WekaOutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter(props));
     }
 }

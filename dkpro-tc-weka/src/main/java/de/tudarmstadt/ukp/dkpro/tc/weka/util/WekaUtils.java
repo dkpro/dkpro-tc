@@ -48,8 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
-import de.tudarmstadt.ukp.dkpro.tc.weka.AttributeStore;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.TestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
 /**
@@ -638,7 +637,7 @@ public class WekaUtils
 
         // add an attribute with the predicted values at the end off the attributes
         Add filter = new Add();
-        filter.setAttributeName(TestTask.PREDICTION_CLASS_LABEL_NAME);
+        filter.setAttributeName(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
         if (classVals.length() > 0) {
             filter.setAttributeType(new SelectedTag(Attribute.NOMINAL, Add.TAGS_TYPE));
             filter.setNominalLabels(classVals.toString());
@@ -685,7 +684,7 @@ public class WekaUtils
             filter.setAttributeIndex(new Integer(numLabels + i + 1).toString());
             filter.setNominalLabels("0,1");
             filter.setAttributeName(testData.attribute(i).name() + "_"
-                    + TestTask.PREDICTION_CLASS_LABEL_NAME);
+                    + WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
             filter.setInputFormat(testData);
             testData = Filter.useFilter(testData, filter);
         }
@@ -701,11 +700,11 @@ public class WekaUtils
     }
 
     /**
-     * Removes the OutcomeId attribute, iff present
+     * Removes the instanceId attribute, iff present
      * 
      * @param data
-     *            data set with or without OutcomeId attribute
-     * @return the data set without OutcomeId attribute
+     *            data set with or without instanceId attribute
+     * @return the data set without instanceId attribute
      * @throws Exception
      */
     public static Instances removeInstanceId(Instances data, boolean multilabel)
@@ -735,14 +734,14 @@ public class WekaUtils
     }
 
     /**
-     * Copies the OutcomeId attribute and its values from an existing data set, iff present. It will
+     * Copies the instanceId attribute and its values from an existing data set, iff present. It will
      * be indexed right before the class attribute
      * 
      * @param newData
-     *            data set without OutcomeId attribute
+     *            data set without instanceId attribute
      * @param oldData
-     *            data set with or without OutcomeId attribute
-     * @return a data set with or without OutcomeId attribute
+     *            data set with or without instanceId attribute
+     * @return a data set with or without instanceId attribute
      * @throws Exception
      */
     public static Instances addInstanceId(Instances newData, Instances oldData, boolean isMultilabel)

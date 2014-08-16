@@ -32,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter
 
@@ -79,7 +79,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            innerReports: [ClassificationReport],
+            innerReports: [MalletClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -88,7 +88,7 @@ implements Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [MalletBatchCrossValidationReport],
             numFolds: NUM_FOLDS]
 
         // Run

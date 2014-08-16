@@ -38,10 +38,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.ClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 
 /**
  * Example for NER as sequence classification.
@@ -66,11 +67,12 @@ public class NERSequenceDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NamedEntitySequenceDemoCV",
+        		WekaAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(ClassificationReport.class);
+        batch.addInnerReport(MalletClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(MalletBatchCrossValidationReport.class);
                 
         // Run
         Lab.getInstance().run(batch);

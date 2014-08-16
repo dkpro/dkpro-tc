@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.mallet.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,14 +34,14 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
  * 
  * @author perumal
  */
-public class MalletFoldDimensionBundle<T> extends DimensionBundle<Collection<T>> implements DynamicDimension
+public class MalletFoldDimensionBundle extends DimensionBundle<Collection<String>> implements DynamicDimension
 {
-	private Dimension<T> foldedDimension;
-	private List<T>[] buckets;
+	private Dimension<String> foldedDimension;
+	private List<String>[] buckets;
 	private int validationBucket = -1;
 	private int folds;
 	
-	public MalletFoldDimensionBundle(String aName, Dimension<T> aFoldedDimension, int aFolds)
+	public MalletFoldDimensionBundle(String aName, Dimension<String> aFoldedDimension, int aFolds)
 	{
 		super(aName, new Object[0] );
 		foldedDimension = aFoldedDimension;
@@ -55,25 +56,25 @@ public class MalletFoldDimensionBundle<T> extends DimensionBundle<Collection<T>>
 		foldedDimension.rewind();
 		int i = 0;
 		
-		T remainingFile = null;
+		String remainingFile = null;
 		while (foldedDimension.hasNext()) {
 			int bucket = i % folds;
 			
 			if (buckets[bucket] == null) {
-				buckets[bucket] = new ArrayList<T>();
+				buckets[bucket] = new ArrayList<String>();
 			}
 			
 			if (remainingFile != null) {
 				buckets[bucket].add(remainingFile);
 			}
 			
-			T firstFile = foldedDimension.next();
+			String firstFile = foldedDimension.next();
 			String firstEssayName = getEssayName(firstFile);
 			buckets[bucket].add(firstFile);
 			
-			// Ensure that all instances belonging to same essay are put in the same bucket
+			// Ensure that all instances belonging to same sequence are put in the same bucket
 			while (foldedDimension.hasNext()) {
-				T currentFile = foldedDimension.next();
+				String currentFile = foldedDimension.next();
 				String currentEssayName = getEssayName(currentFile);
 				if (!firstEssayName.equals(currentEssayName)) {
 					remainingFile = currentFile;
@@ -90,10 +91,8 @@ public class MalletFoldDimensionBundle<T> extends DimensionBundle<Collection<T>>
 		}
 	}
 
-	private String getEssayName(T file) {
-		String fileString = file.toString();
-		String simpleFileName = fileString.substring(fileString.lastIndexOf('/') + 1, 
-				fileString.length());
+	private String getEssayName(String file) {
+		String simpleFileName = new File(file).getName();
 		return simpleFileName.substring(0, simpleFileName.indexOf('_'));
 	}
 	
@@ -111,23 +110,23 @@ public class MalletFoldDimensionBundle<T> extends DimensionBundle<Collection<T>>
 	}
 
 	@Override
-	public Map<String, Collection<T>> next()
+	public Map<String, Collection<String>> next()
 	{
 		validationBucket++;
 		return current();
 	}
 
 	@Override
-	public Map<String, Collection<T>> current()
+	public Map<String, Collection<String>> current()
 	{
-		List<T> trainingData = new ArrayList<T>();
+		List<String> trainingData = new ArrayList<String>();
 		for (int i = 0; i < buckets.length; i++) {
 			if (i != validationBucket) {
 				trainingData.addAll(buckets[i]);
 			}
 		}
 		
-		Map<String, Collection<T>> data = new HashMap<String, Collection<T>>();
+		Map<String, Collection<String>> data = new HashMap<String, Collection<String>>();
 		data.put(getName()+"_training", trainingData);
 		data.put(getName()+"_validation", buckets[validationBucket]);
 		
