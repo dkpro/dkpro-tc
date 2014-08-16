@@ -38,6 +38,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
@@ -67,7 +68,7 @@ public class NERSequenceDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NamedEntitySequenceDemoCV",
-        		WekaAdapter.getInstance(),
+        		MalletAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(MalletClassificationReport.class);
         batch.setParameterSpace(pSpace);
