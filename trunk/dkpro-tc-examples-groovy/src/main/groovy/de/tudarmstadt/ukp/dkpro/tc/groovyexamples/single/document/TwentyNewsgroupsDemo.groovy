@@ -35,12 +35,13 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
@@ -160,7 +161,9 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [WekaClassificationReport.class],            parameterSpace : [
+			machineLearningAdapter: WekaAdapter.getInstance(),
+            innerReports: [WekaClassificationReport.class],           
+			parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -188,7 +191,9 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [WekaClassificationReport.class],            parameterSpace : [
+			machineLearningAdapter: WekaAdapter.getInstance(),
+            innerReports: [WekaClassificationReport.class],           
+			parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
