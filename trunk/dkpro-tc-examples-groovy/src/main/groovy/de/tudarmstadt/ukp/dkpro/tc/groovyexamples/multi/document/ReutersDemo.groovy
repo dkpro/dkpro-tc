@@ -40,6 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
