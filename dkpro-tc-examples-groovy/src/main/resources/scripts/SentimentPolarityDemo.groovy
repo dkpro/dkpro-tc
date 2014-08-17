@@ -19,12 +19,12 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.MovieReviewCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.BatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.ClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
@@ -121,7 +121,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport.class],            parameterSpace : [
+            innerReports: [WekaClassificationReport.class],            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -131,7 +131,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [WekaBatchCrossValidationReport],
             numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);
@@ -149,7 +149,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            innerReports: [ClassificationReport.class],            parameterSpace : [
+            innerReports: [WekaClassificationReport.class],            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -160,8 +160,8 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                WekaBatchTrainTestReport,
+                WekaBatchOutcomeIDReport]
         ];
 
         // Run
