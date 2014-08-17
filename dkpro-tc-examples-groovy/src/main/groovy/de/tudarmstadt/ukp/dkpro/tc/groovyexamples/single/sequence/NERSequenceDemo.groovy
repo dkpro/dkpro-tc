@@ -32,10 +32,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
+import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
 
 /**
  * Example for German NER as sequence classification (groovy setup).
@@ -79,6 +80,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
+			machineLearningAdapter: MalletAdapter.getInstance(),
             innerReports: [MalletClassificationReport],
             parameterSpace : [
                 dimReaders,

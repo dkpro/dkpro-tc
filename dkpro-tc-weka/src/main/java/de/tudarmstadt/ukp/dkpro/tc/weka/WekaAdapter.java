@@ -19,7 +19,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.util.Collection;
-import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;

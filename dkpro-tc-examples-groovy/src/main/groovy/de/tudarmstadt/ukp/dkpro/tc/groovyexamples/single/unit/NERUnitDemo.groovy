@@ -34,9 +34,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
@@ -88,6 +89,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
+			machineLearningAdapter: WekaAdapter.getInstance(),
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,

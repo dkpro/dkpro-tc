@@ -31,10 +31,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
+import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.mallet.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
 
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
@@ -77,6 +78,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
+			machineLearningAdapter: MalletAdapter.getInstance(),
             innerReports: [MalletClassificationReport],
             parameterSpace : [
                 dimReaders,
