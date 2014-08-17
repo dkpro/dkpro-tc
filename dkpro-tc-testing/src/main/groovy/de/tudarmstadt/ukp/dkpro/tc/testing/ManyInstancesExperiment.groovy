@@ -22,7 +22,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
@@ -36,10 +35,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
+import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.testing.io.LineInstanceReader
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
@@ -102,6 +102,7 @@ public class ManyInstancesExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
+			machineLearningAdapter: WekaAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
