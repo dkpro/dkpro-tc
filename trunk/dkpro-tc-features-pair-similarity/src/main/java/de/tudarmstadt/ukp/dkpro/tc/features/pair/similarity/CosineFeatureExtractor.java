@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
@@ -108,8 +110,18 @@ public class CosineFeatureExtractor
         throws TextClassificationException
     {
         try {
-            double similarity = measure.getSimilarity(view1.getDocumentText(),
-                    view2.getDocumentText());
+        	//Note: getSimilarity(String, String) is *not* a convenience 
+        	// method for getSimilarity(Collection<String>, Collection<String>).
+            List<String> text1 = new ArrayList<String>();
+            List<String> text2 = new ArrayList<String>();
+            for(Token token: JCasUtil.select(view1, Token.class)){
+            	text1.add(token.getCoveredText());
+            }
+            for(Token token: JCasUtil.select(view2, Token.class)){
+            	text2.add(token.getCoveredText());
+            }
+            double similarity = measure.getSimilarity(text1,
+                  text2);
             
             // Temporary fix for DKPro Similarity Issue 30
             if (Double.isNaN(similarity)){
