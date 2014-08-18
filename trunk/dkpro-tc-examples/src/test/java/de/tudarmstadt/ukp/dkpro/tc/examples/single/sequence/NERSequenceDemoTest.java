@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
 import java.io.File;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +62,9 @@ public class NERSequenceDemoTest
     public void testJavaCrossValidation()
         throws Exception
     {
+    	
+        Assume.assumeTrue(Runtime.getRuntime().maxMemory() >= 2000000000);
+
         // Java setup with automatic task wiring
         javaExperiment.runCrossValidation(pSpace);
     }
