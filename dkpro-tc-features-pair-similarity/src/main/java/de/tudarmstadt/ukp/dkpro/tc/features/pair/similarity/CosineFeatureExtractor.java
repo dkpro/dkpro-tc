@@ -140,7 +140,7 @@ public class CosineFeatureExtractor
     private static Map<String, Double> fdToMap(FrequencyDistribution<String> fD){
     	Map<String, Double> map = new HashMap<String, Double>();
     	for(String token: fD.getKeys()){
-    		map.put(token, new Double(fD.getCount(token)));
+    		map.put(token, new Double(1.0 / fD.getCount(token)));
     	}
     	return map;
     	

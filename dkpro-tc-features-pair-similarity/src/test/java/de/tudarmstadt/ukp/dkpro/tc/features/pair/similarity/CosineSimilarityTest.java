@@ -35,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.PPipelineTestBase;
 public class CosineSimilarityTest
     extends PPipelineTestBase
 {
+	private static final double epsilon = 0.0001;
     /**
      * Tests if just View1 ngrams are being extracted as features.
      * 
@@ -53,7 +54,7 @@ public class CosineSimilarityTest
         assertEquals(test.featureNames.size(), 1);
         
         for(Feature feat: test.instanceList.get(0).getFeatures()){
-        	assertEquals(feat.getValue(), 0.0);
+        	assertEquals((double)feat.getValue(), 0.3333, epsilon);//, epsilon
         }
         
         
