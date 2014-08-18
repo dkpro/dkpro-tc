@@ -43,7 +43,6 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationRepor
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 
 /**
  * Example for NER as sequence classification.
