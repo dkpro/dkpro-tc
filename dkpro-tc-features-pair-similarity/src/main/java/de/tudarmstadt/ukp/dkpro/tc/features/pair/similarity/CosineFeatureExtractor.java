@@ -115,13 +115,14 @@ public class CosineFeatureExtractor
             List<String> text1 = new ArrayList<String>();
             List<String> text2 = new ArrayList<String>();
             for(Token token: JCasUtil.select(view1, Token.class)){
-            	text1.add(token.getCoveredText());
+            	text1.add(token.getCoveredText().toLowerCase());
             }
             for(Token token: JCasUtil.select(view2, Token.class)){
-            	text2.add(token.getCoveredText());
+            	text2.add(token.getCoveredText().toLowerCase());
             }
             double similarity = measure.getSimilarity(text1,
                   text2);
+
             
             // Temporary fix for DKPro Similarity Issue 30
             if (Double.isNaN(similarity)){
@@ -153,6 +154,7 @@ public class CosineFeatureExtractor
     	Map<String, Double> map = new HashMap<String, Double>();
     	for(String token: fD.getKeys()){
     		map.put(token, new Double(1.0 / fD.getCount(token)));
+//    		map.put(token, new Double(fD.getCount(token)));
     	}
     	return map;
     	

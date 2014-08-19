@@ -18,25 +18,20 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class IdfPairMetaCollector
 	extends LuceneBasedMetaCollector
@@ -67,22 +62,31 @@ public class IdfPairMetaCollector
         }
         
         initializeDocument(jcas);
-
-        List<JCas> jcases = new ArrayList<JCas>();
-        jcases.add(view1);
-        jcases.add(view2);
         
-        FrequencyDistribution<String> documentNGrams;
+        FrequencyDistribution<String> document1NGrams;
+        FrequencyDistribution<String> document2NGrams;
         try{
-            documentNGrams = getNgramsFD(jcases);
+            document1NGrams = getNgramsFD(view1);
+            document2NGrams = getNgramsFD(view2);
         }catch(TextClassificationException e){
             throw new AnalysisEngineProcessException(e);
         }
 
+        FrequencyDistribution<String> documentNGrams = new FrequencyDistribution<String>();
+    	// Only add a term once per document, no matter how many times it occurs in the doc.  "Document Frequency".
+    	// This is different than other metacollectors.
+        for(String key: document1NGrams.getKeys()){
+        	documentNGrams.addSample(key, 1);
+        }
+        for(String key: document2NGrams.getKeys()){
+        	documentNGrams.addSample(key, 1);
+        }
+        
+
         for (String ngram : documentNGrams.getKeys()) {
-        	// Only add a term once per document, no matter how many times it occurs in the doc.  "Document Frequency".
-        	// This is different than other metacollectors.
-            addField(jcas, getFieldName(), ngram);
+//        	for(int i=0;i<documentNGrams.getCount(ngram);i++){ //This should not be commented out.  Buggy.
+        		addField(jcas, getFieldName(), ngram);
+//        	}
         }
        
         try {
@@ -93,20 +97,16 @@ public class IdfPairMetaCollector
         }
     }
 
-    // This is an inherited artifact that is never used.
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
-        return null;
-    }
-    protected FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
-            throws TextClassificationException
-        {
-            return ComboUtils.getMultipleViewNgrams(
-            jcases, null, true, false, 1, 1, stopwords);
-        }
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    		throws TextClassificationException
+    	{
+    	return NGramUtils.getDocumentNgrams(
+                jcas, true, false, 1, 1, stopwords);
+    	}
     
     @Override
     protected String getFieldName(){
-        return LuceneNGramDFE.LUCENE_NGRAM_FIELD;
+        return LuceneFeatureExtractorBase.LUCENE_NGRAM_FIELD;
     }
 }
