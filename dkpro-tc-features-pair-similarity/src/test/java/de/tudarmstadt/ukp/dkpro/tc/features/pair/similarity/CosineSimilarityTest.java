@@ -54,7 +54,7 @@ public class CosineSimilarityTest
         assertEquals(test.featureNames.size(), 1);
         
         for(Feature feat: test.instanceList.get(0).getFeatures()){
-        	assertEquals((double)feat.getValue(), 0.3333, epsilon);//, epsilon
+        	assertEquals(0.25, (double)feat.getValue(), epsilon);//, epsilon
         }
         
         
