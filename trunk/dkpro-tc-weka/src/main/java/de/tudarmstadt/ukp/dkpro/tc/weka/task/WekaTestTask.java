@@ -38,7 +38,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -86,8 +85,8 @@ public class WekaTestTask
                 AccessMode.READONLY).getPath()
                 + "/" + TRAINING_DATA_FILENAME);
 
-        Instances trainData = TaskUtils.getInstances(arffFileTrain, multiLabel);
-        Instances testData = TaskUtils.getInstances(arffFileTest, multiLabel);
+        Instances trainData = WekaUtils.getInstances(arffFileTrain, multiLabel);
+        Instances testData = WekaUtils.getInstances(arffFileTest, multiLabel);
 
         // do not balance in regression experiments
         if (!learningMode.equals(Constants.LM_REGRESSION)) {
@@ -114,7 +113,7 @@ public class WekaTestTask
         // FEATURE SELECTION
         if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
             try {
-                AttributeSelection selector = TaskUtils.singleLabelAttributeSelection(trainData,
+                AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData,
                         featureSearcher, attributeEvaluator);
                 // Write the results of attribute selection
                 FileUtils.writeStringToFile(
@@ -140,12 +139,12 @@ public class WekaTestTask
                         AccessMode.READWRITE).getAbsolutePath()
                         + "/" + FEATURE_SELECTION_DATA_FILENAME);
                 // filter for reducing dimension of attributes
-                Remove removeFilter = TaskUtils.multiLabelAttributeSelection(trainData,
+                Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData,
                         labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
                         fsResultsFile);
                 if (removeFilter != null && applySelection) {
-                    trainData = TaskUtils.applyAttributeSelectionFilter(trainData, removeFilter);
-                    testData = TaskUtils.applyAttributeSelectionFilter(testData, removeFilter);
+                    trainData = WekaUtils.applyAttributeSelectionFilter(trainData, removeFilter);
+                    testData = WekaUtils.applyAttributeSelectionFilter(testData, removeFilter);
                 }
             }
             catch (Exception e) {
@@ -166,7 +165,7 @@ public class WekaTestTask
             // automatically
             Result r = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, threshold);
             Result.writeResultToFile(r, evalOutput.getAbsolutePath());
-            double[] t = TaskUtils.getMekaThreshold(threshold, r, trainData);
+            double[] t = WekaUtils.getMekaThreshold(threshold, r, trainData);
             testData = WekaUtils.getPredictionInstancesMultiLabel(testData, cl, t);
             testData = WekaUtils.addInstanceId(testData, copyTestData, true);
         }

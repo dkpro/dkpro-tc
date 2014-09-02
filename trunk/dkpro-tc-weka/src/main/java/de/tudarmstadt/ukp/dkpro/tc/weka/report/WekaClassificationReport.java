@@ -49,12 +49,12 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaReportUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Report that computes evaluation results given the classification results.
@@ -98,7 +98,7 @@ public class WekaClassificationReport
 
             File dataFile = new File(storage.getAbsolutePath() + "/"
                     + WekaTestTask.PREDICTIONS_FILENAME);
-            Instances data = TaskUtils.getInstances(dataFile, true);
+            Instances data = WekaUtils.getInstances(dataFile, true);
             String[] classNames = new String[data.classIndex()];
 
             for (int i = 0; i < data.classIndex(); i++) {
@@ -106,7 +106,7 @@ public class WekaClassificationReport
             }
 
             String threshold = r.getInfo("Threshold");
-            double[] t = TaskUtils.getMekaThreshold(threshold, r, data);
+            double[] t = WekaUtils.getMekaThreshold(threshold, r, data);
 
             // Mulan Evaluation
             boolean[][] actualsArray = MulanEvaluationWrapper.getBooleanArrayFromList(r.actuals);
@@ -146,7 +146,7 @@ public class WekaClassificationReport
             results.put(WGT_PRECISION, eval.weightedPrecision());
             results.put(WGT_RECALL, eval.weightedRecall());
 
-            List<String> classLabels = TaskUtils.getClassLabels(eval.getHeader(), multiLabel);
+            List<String> classLabels = WekaUtils.getClassLabels(eval.getHeader(), multiLabel);
             // class-wise recall, precision, f1
             for (String label : classLabels) {
                 double recall = eval.recall(eval.getHeader()
@@ -161,7 +161,7 @@ public class WekaClassificationReport
             }
 
             // confusion matrix
-            for (String label : TaskUtils.getClassLabels(eval.getHeader(), multiLabel)) {
+            for (String label : WekaUtils.getClassLabels(eval.getHeader(), multiLabel)) {
                 // in single-label mode, we always have a square matrix
                 actualLabelsList.add(label);
                 predictedLabelsList.add(label);

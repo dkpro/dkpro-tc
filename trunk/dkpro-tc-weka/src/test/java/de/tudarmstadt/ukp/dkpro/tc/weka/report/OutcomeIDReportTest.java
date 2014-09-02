@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import weka.core.Instances;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Tests the correct generation of the OutcomeIdReport for various setups.
@@ -63,9 +63,9 @@ public class OutcomeIDReportTest
             throw new IOException(e);
         }
 
-        singleLabelData = TaskUtils.getInstances(singleLabelFile, false);
-        multiLabelData = TaskUtils.getInstances(multiLabelFile, true);
-        regressionData = TaskUtils.getInstances(regressionFile, false);
+        singleLabelData = WekaUtils.getInstances(singleLabelFile, false);
+        multiLabelData = WekaUtils.getInstances(multiLabelFile, true);
+        regressionData = WekaUtils.getInstances(regressionFile, false);
     }
 
     @Test

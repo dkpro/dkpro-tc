@@ -26,7 +26,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletUtils;
 
 /**
  * Builds the classifier from the training data and performs classification on the test data.
@@ -91,7 +91,7 @@ public class MalletTestTask
         File fileModel = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + MALLET_MODEL_KEY);
         
-        TransducerEvaluator eval = TaskUtils.runTrainTest(fileTrain, fileTest, fileModel, gaussianPriorVariance, iterations, defaultLabel,
+        TransducerEvaluator eval = MalletUtils.runTrainTest(fileTrain, fileTest, fileModel, gaussianPriorVariance, iterations, defaultLabel,
     			false, orders, tagger, denseFeatureValues);
         
         //TODO move to reports (@author krishperumal11)
@@ -99,16 +99,16 @@ public class MalletTestTask
         File filePredictions = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + PREDICTIONS_KEY);
         
-        TaskUtils.outputPredictions(eval, fileTest, filePredictions, PREDICTION_CLASS_LABEL_NAME);
+        MalletUtils.outputPredictions(eval, fileTest, filePredictions, PREDICTION_CLASS_LABEL_NAME);
         
         File fileEvaluation = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + EVALUATION_DATA_KEY);
         
-        TaskUtils.outputEvaluation(eval, fileEvaluation);
+        MalletUtils.outputEvaluation(eval, fileEvaluation);
         
         File fileConfusionMatrix = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + CONFUSION_MATRIX_KEY);
         
-        TaskUtils.outputConfusionMatrix(eval, fileConfusionMatrix);
+        MalletUtils.outputConfusionMatrix(eval, fileConfusionMatrix);
     }
 }

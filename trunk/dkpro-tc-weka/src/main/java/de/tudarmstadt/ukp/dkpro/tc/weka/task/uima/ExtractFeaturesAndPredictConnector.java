@@ -46,7 +46,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.ExtractFeaturesAndPredictTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
@@ -134,7 +133,7 @@ public class ExtractFeaturesAndPredictConnector
                                 .subList(1, classificationArguments.size()).toArray(new String[0]));
             }
 
-            weka.core.Instances trainData = TaskUtils.getInstances(arffFileTrainingData,
+            weka.core.Instances trainData = WekaUtils.getInstances(arffFileTrainingData,
                     isMultiLabel);
             trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
             wekaClassifier.buildClassifier(trainData);
@@ -146,7 +145,7 @@ public class ExtractFeaturesAndPredictConnector
             }
             attributes.add(trainData.classAttribute());
             if (!isRegression) {
-                allClassLabels = TaskUtils.getClassLabels(trainData, isMultiLabel);
+                allClassLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);
             }
         }
         catch (Exception e) {

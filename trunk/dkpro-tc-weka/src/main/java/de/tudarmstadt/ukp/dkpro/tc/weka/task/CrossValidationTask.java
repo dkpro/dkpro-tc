@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 @Deprecated
 public class CrossValidationTask
@@ -76,7 +76,7 @@ public class CrossValidationTask
         File arffFile = new File(aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY)
                 .getPath() + "/" + TRAINING_DATA_KEY);
 
-        Instances data = TaskUtils.getInstances(arffFile, multiLabel);
+        Instances data = WekaUtils.getInstances(arffFile, multiLabel);
 
         Instances randData = new Instances(data);
 
@@ -144,7 +144,7 @@ public class CrossValidationTask
                         filteredTestData, threshold);
                 Result.writeResultToFile(r, evalOutput.getAbsolutePath());
                 // add predictions for test set
-                double[] t = TaskUtils.getMekaThreshold(threshold, r, filteredTrainData);
+                double[] t = WekaUtils.getMekaThreshold(threshold, r, filteredTrainData);
                 for (int j = 0; j < filteredTestData.numInstances(); j++) {
                     Instance predicted = filteredTestData.instance(j);
                     // multi-label classification results

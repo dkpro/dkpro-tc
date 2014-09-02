@@ -34,7 +34,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -64,7 +63,7 @@ public class WekaOutcomeIDReport
 
         boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
-        Instances predictions = TaskUtils.getInstances(arff, multiLabel);
+        Instances predictions = WekaUtils.getInstances(arff, multiLabel);
         Properties props = generateProperties(predictions, multiLabel);
         getContext().storeBinary(ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
