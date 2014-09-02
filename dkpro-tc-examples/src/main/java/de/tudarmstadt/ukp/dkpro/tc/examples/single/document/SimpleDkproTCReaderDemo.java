@@ -18,7 +18,6 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
@@ -92,9 +91,8 @@ public class SimpleDkproTCReaderDemo
                         SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                         SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE,
                         FILEPATH_GOLD_LABELS,
-                        SimpleDkproTCReader.PARAM_SOURCE_LOCATION,
-                        FILEPATH_TRAIN, SimpleDkproTCReader.PARAM_PATTERNS,
-                        INCLUDE_PREFIX + "*.txt" }));
+                        SimpleDkproTCReader.PARAM_SENTENCES_FILE,
+                        FILEPATH_TRAIN + "/instances.txt"}));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
