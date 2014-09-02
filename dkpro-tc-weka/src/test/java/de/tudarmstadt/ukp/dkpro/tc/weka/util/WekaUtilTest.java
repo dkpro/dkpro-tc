@@ -293,12 +293,12 @@ public class WekaUtilTest
     public void makeOutcomeClassesCompatibleTest()
         throws Exception
     {
-    	Instances train = TaskUtils.getInstances(new File("src/test/resources/utils/train.arff"), false);
-    	Instances test = TaskUtils.getInstances(new File("src/test/resources/utils/test.arff"), false);
+    	Instances train = WekaUtils.getInstances(new File("src/test/resources/utils/train.arff"), false);
+    	Instances test = WekaUtils.getInstances(new File("src/test/resources/utils/test.arff"), false);
     	
     	Instances testCompatible = WekaUtils.makeOutcomeClassesCompatible(train, test, false);
     	
-    	System.out.println(TaskUtils.getClassLabels(testCompatible, false));
-    	assertEquals(2, TaskUtils.getClassLabels(testCompatible, false).size());
+    	System.out.println(WekaUtils.getClassLabels(testCompatible, false));
+    	assertEquals(2, WekaUtils.getClassLabels(testCompatible, false).size());
     }
 }

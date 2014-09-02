@@ -35,7 +35,6 @@ import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SMOreg;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -83,12 +82,12 @@ public class WekaResultsTest
             throw new IOException(e);
         }
 
-        singleLabelTrainData = TaskUtils.getInstances(singleLabelTrainFile, false);
-        singleLabelTestData = TaskUtils.getInstances(singleLabelTestFile, false);
-        multiLabelTrainData = TaskUtils.getInstances(multiLabelTrainFile, true);
-        multiLabelTestData = TaskUtils.getInstances(multiLabelTestFile, true);
-        regressionTrainData = TaskUtils.getInstances(regressionTrainFile, false);
-        regressionTestData = TaskUtils.getInstances(regressionTestFile, false);
+        singleLabelTrainData = WekaUtils.getInstances(singleLabelTrainFile, false);
+        singleLabelTestData = WekaUtils.getInstances(singleLabelTestFile, false);
+        multiLabelTrainData = WekaUtils.getInstances(multiLabelTrainFile, true);
+        multiLabelTestData = WekaUtils.getInstances(multiLabelTestFile, true);
+        regressionTrainData = WekaUtils.getInstances(regressionTrainFile, false);
+        regressionTestData = WekaUtils.getInstances(regressionTestFile, false);
     }
 
     @Test

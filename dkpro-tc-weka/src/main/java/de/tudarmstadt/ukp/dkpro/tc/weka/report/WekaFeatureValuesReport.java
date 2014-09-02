@@ -38,7 +38,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -67,7 +66,7 @@ public class WekaFeatureValuesReport
                 .equals(Constants.LM_MULTI_LABEL);
         Properties props = new Properties();
         File arff = new File(storage.getAbsolutePath() + "/" + WekaTestTask.PREDICTIONS_FILENAME);
-        Instances predictions = TaskUtils.getInstances(arff, multiLabel);
+        Instances predictions = WekaUtils.getInstances(arff, multiLabel);
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
                 + WekaTestTask.EVALUATION_DATA_FILENAME);
         String[] classValues;
@@ -91,7 +90,7 @@ public class WekaFeatureValuesReport
                         .split(Constants.CLASS_ATTRIBUTE_PREFIX)[1];
             }
             String threshold = r.getInfo("Threshold");
-            double[] t = TaskUtils.getMekaThreshold(threshold, r, predictions);
+            double[] t = WekaUtils.getMekaThreshold(threshold, r, predictions);
 
             // iterate over instances
             for (Instance inst : predictions) {

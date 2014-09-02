@@ -43,8 +43,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaSerializedModel;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -89,7 +89,7 @@ public class GenerateModelTask
                 AccessMode.READONLY).getPath()
                 + "/" + TRAINING_DATA_KEY);
 
-        Instances trainData = TaskUtils.getInstances(arffFileTrain,
+        Instances trainData = WekaUtils.getInstances(arffFileTrain,
                 learningMode.equals(Constants.LM_MULTI_LABEL));
 
         Instances filteredTrainData;
