@@ -57,7 +57,9 @@ public class BrownPosDemo
 
     public static void main(String[] args)
         throws Exception
-    {
+    {	
+    	System.setProperty("java.util.logging.config.file","src/main/resources/logging.properties");
+
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
 
         BrownPosDemo experiment = new BrownPosDemo();

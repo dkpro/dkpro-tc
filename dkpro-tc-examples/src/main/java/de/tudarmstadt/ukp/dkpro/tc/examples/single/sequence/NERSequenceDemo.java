@@ -57,7 +57,9 @@ public class NERSequenceDemo
 
     public static void main(String[] args)
         throws Exception
-    {
+    { 	
+    	System.setProperty("java.util.logging.config.file","src/main/resources/logging.properties");
+
         NERSequenceDemo demo = new NERSequenceDemo();
         demo.runCrossValidation(getParameterSpace());
     }
