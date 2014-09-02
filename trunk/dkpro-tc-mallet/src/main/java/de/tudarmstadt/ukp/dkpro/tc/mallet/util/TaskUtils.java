@@ -32,6 +32,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -52,11 +53,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletReportConstants;
 
 public class TaskUtils {
-
-	private static ArrayList<Double> precisionValues;
-	private static ArrayList<Double> recallValues;
-	private static ArrayList<Double> f1Values;
-	private static ArrayList<String> labels;
 
 	public static CRF trainCRF(InstanceList training, CRF crf, double gaussianPriorVariance, int iterations, String defaultLabel,
 			boolean fullyConnected, int[] orders) {
@@ -164,11 +160,16 @@ public class TaskUtils {
 			//			logger.info(buf.toString());
             }
 		}
+		
 		test(new NoopTransducerTrainer(crf), eval, testData);
-		labels = ((PerClassEvaluator) eval).getLabelNames();
-		precisionValues = ((PerClassEvaluator) eval).getPrecisionValues();
-		recallValues = ((PerClassEvaluator) eval).getRecallValues();
-		f1Values = ((PerClassEvaluator) eval).getF1Values();
+		
+		List<String> labels = ((PerClassEvaluator) eval).getLabelNames();
+		List<Double> precisionValues = ((PerClassEvaluator) eval).getPrecisionValues();
+		List<Double> recallValues = ((PerClassEvaluator) eval).getRecallValues();
+		List<Double> f1Values = ((PerClassEvaluator) eval).getF1Values();
+		
+		printEvaluationMeasures(labels, precisionValues, recallValues, f1Values);
+		
 		return eval;
 	}
 
@@ -179,7 +180,6 @@ public class TaskUtils {
 		if (tagger.equals("CRF")) {
 			runTrainCRF(trainFile,modelFile, var, iterations, defaultLabel, fullyConnected, orders, denseFeatureValues);
 			eval = runTestCRF(testFile, modelFile);
-			printEvaluationMeasures();
 		}
 		else if (tagger.equals("HMM")){
 			throw new TextClassificationException("'HMM' is not currently supported.");
@@ -273,7 +273,7 @@ public class TaskUtils {
 //	}
 
 
-	public static void printEvaluationMeasures() {
+	public static void printEvaluationMeasures(List<String> labels, List<Double> precisionValues, List<Double> recallValues, List<Double> f1Values) {
 		double values[][] = new double[labels.size()][3];
 		Iterator<Double> itPrecision = precisionValues.iterator();
 		Iterator<Double> itRecall = recallValues.iterator();
