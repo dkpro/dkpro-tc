@@ -36,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
@@ -58,8 +59,14 @@ public class BrownPosDemo
     public static void main(String[] args)
         throws Exception
     {	
+    	// Suppress mallet logging output
     	System.setProperty("java.util.logging.config.file","src/main/resources/logging.properties");
-
+	
+    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
+    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+    	DemoUtils.setDkproHome(BrownPosDemo.class.getSimpleName());
+    	
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
 
         BrownPosDemo experiment = new BrownPosDemo();

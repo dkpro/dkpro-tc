@@ -38,6 +38,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.IsSurroundedByCharsUFE;
@@ -66,6 +67,11 @@ public class NERUnitDemo
     public static void main(String[] args)
         throws Exception
     {
+    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
+    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+    	DemoUtils.setDkproHome(NERUnitDemo.class.getSimpleName());
+    	
         NERUnitDemo demo = new NERUnitDemo();
         demo.runCrossValidation(getParameterSpace());
     }
@@ -116,7 +122,8 @@ public class NERUnitDemo
                         InitialCharacterUpperCaseUFE.class.getName(),
                         IsSurroundedByCharsUFE.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+        @SuppressWarnings("unchecked")
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,

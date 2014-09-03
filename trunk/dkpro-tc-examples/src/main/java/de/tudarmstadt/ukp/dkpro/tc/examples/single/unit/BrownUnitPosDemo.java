@@ -38,6 +38,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
@@ -64,6 +65,11 @@ public class BrownUnitPosDemo
     public static void main(String[] args)
         throws Exception
     {
+    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
+    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+    	DemoUtils.setDkproHome(BrownUnitPosDemo.class.getSimpleName());
+    	
         new BrownUnitPosDemo().runCrossValidation(getParameterSpace());
     }
 
@@ -111,7 +117,8 @@ public class BrownUnitPosDemo
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensUFE.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+        @SuppressWarnings("unchecked")
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
