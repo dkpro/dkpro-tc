@@ -22,8 +22,6 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-import de.tudarmstadt.ukp.dkpro.tc.testing.ManyInstancesExperiment;
-
 public class ManyInstancesTest
 {
     @Before

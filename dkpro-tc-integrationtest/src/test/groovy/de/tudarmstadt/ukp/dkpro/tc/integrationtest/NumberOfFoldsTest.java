@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
-import de.tudarmstadt.ukp.dkpro.tc.testing.NumberOfFoldsSetting;
 
 public class NumberOfFoldsTest
 {

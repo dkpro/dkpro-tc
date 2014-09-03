@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.testing;
+package de.tudarmstadt.ukp.dkpro.tc.integrationtest;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -34,8 +34,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
+import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.testing.io.LineInstanceReader
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
