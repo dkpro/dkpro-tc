@@ -6,4 +6,14 @@
     <version>0.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>dkpro-tc-testing</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-api-features</artifactId>
+  	</dependency>
+  </dependencies>
 </project>

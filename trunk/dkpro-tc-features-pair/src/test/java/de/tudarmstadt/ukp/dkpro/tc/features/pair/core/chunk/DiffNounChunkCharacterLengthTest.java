@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
-import static de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil.*;
+import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureTestUtil;
+import de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil;
 
 public class DiffNounChunkCharacterLengthTest
 {

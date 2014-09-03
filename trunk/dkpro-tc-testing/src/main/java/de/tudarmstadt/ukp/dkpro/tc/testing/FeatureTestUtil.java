@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.api.features.util;
+package de.tudarmstadt.ukp.dkpro.tc.testing;
 
 import junit.framework.Assert;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
