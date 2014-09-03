@@ -17,8 +17,8 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 /**
- * Setups for integration tests.
+ * Special readers for testing
  *
  * @since 0.1.0
  */
-package de.tudarmstadt.ukp.dkpro.tc.testing;
+package de.tudarmstadt.ukp.dkpro.tc.integrationtest.io;
