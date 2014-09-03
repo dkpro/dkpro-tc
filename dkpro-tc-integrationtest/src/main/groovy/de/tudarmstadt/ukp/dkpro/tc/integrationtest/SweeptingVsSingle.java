@@ -1,21 +1,20 @@
-/**
+/*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see http://www.gnu.org/licenses/.
- */
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.integrationtest;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
@@ -61,75 +60,79 @@ public class SweeptingVsSingle
 
     public static final int NUM_FOLDS = 3;
 
-//    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/train";
-//    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/test";
+    // public static final String corpusFilePathTrain =
+    // "src/main/resources/data/twentynewsgroups/train";
+    // public static final String corpusFilePathTest =
+    // "src/main/resources/data/twentynewsgroups/test";
     public static final String corpusFilePathTrain = "/Users/zesch/Downloads/20news-bydate-train";
     public static final String corpusFilePathTest = "/Users/zesch/Downloads/20news-bydate-test";
-   
+
     @SuppressWarnings("unchecked")
-	public static void main(String[] args)
+    public static void main(String[] args)
         throws Exception
     {
-    	
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(SweeptingVsSingle.class.getSimpleName());
-    	
-    	// for sweeping
-    	Dimension<List<Object>> dimPipelineParametersAll = Dimension.create(
-                 DIM_PIPELINE_PARAMS,
-                 Arrays.asList(new Object[] {
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
-                 Arrays.asList(new Object[] {
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
-                 Arrays.asList(new Object[] {
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 5000,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),                 
-                 Arrays.asList(new Object[] {
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 10000,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                 		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })        		
-    			 
-    	);
-    	
-    	Dimension<List<Object>> dimPipelineParameters500 = Dimension.create(
+
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(SweeptingVsSingle.class.getSimpleName());
+
+        // for sweeping
+        Dimension<List<Object>> dimPipelineParametersAll = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
+                Arrays.asList(new Object[] {
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
+                Arrays.asList(new Object[] {
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 5000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
+                Arrays.asList(new Object[] {
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 10000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-    	);
-    	
-    	Dimension<List<Object>> dimPipelineParameters1000 = Dimension.create(
+
+                );
+
+        Dimension<List<Object>> dimPipelineParameters500 = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-    	);
-    	
-    	Dimension<List<Object>> dimPipelineParameters5000 = Dimension.create(
+                );
+
+        Dimension<List<Object>> dimPipelineParameters1000 = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 5000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-    	);
-    	
-    	Dimension<List<Object>> dimPipelineParameters10000 = Dimension.create(
+                );
+
+        Dimension<List<Object>> dimPipelineParameters5000 = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 10000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 5000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-    	);
-    	 
+                );
+
+        Dimension<List<Object>> dimPipelineParameters10000 = Dimension.create(
+                DIM_PIPELINE_PARAMS,
+                Arrays.asList(new Object[] {
+                        NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 10000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
+                );
+
         ParameterSpace pSpaceAll = getParameterSpace(dimPipelineParametersAll);
         ParameterSpace pSpace500 = getParameterSpace(dimPipelineParameters500);
         ParameterSpace pSpace1000 = getParameterSpace(dimPipelineParameters1000);
@@ -139,7 +142,7 @@ public class SweeptingVsSingle
         // with sweeping
         SweeptingVsSingle experimentAll = new SweeptingVsSingle();
         experimentAll.runTrainTest(pSpaceAll);
-        
+
         // single experiments
         SweeptingVsSingle experiment500 = new SweeptingVsSingle();
         experiment500.runTrainTest(pSpace500);
@@ -178,7 +181,6 @@ public class SweeptingVsSingle
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));
 
-       
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
@@ -198,7 +200,8 @@ public class SweeptingVsSingle
         throws Exception
     {
 
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest", WekaAdapter.getInstance(),
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
+                WekaAdapter.getInstance(),
                 getPreprocessing());
         batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
