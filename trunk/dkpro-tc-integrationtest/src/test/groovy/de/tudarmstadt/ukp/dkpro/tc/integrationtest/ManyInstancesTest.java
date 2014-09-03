@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.testing;
+package de.tudarmstadt.ukp.dkpro.tc.integrationtest;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+
+import de.tudarmstadt.ukp.dkpro.tc.testing.ManyInstancesExperiment;
 
 public class ManyInstancesTest
 {
