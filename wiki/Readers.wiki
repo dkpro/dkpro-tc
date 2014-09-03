@@ -1,5 +1,7 @@
 #summary How to set up a DKPro-TC reader
 
+_This tutorial referes to the 0.6.0-Release of DKPro TC._
+
 =Creating a reader for your data=
 
 For reference, you should have a look at the readers of the `io` package in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module.
