@@ -92,7 +92,7 @@ public class CosineFeatureExtractor
         	weightingModeTf = CosineSimilarity.WeightingModeTf.FREQUENCY_LOGPLUSONE;
         }
         if(weightingModeIdf == null){
-        	weightingModeIdf = CosineSimilarity.WeightingModeIdf.BINARY;
+        	weightingModeIdf = CosineSimilarity.WeightingModeIdf.PASSTHROUGH;
         }
         if(normalizationMode == null){
         	normalizationMode = CosineSimilarity.NormalizationMode.L2;
