@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
@@ -64,6 +65,21 @@ public class RegressionDemo
     public static final String inputFileTest = "src/main/resources/data/sts2012/STS.input.MSRvid.txt";
     public static final String goldFileTest = "src/main/resources/data/sts2012/STS.gs.MSRvid.txt";
 
+
+    public static void main(String[] args)
+        throws Exception
+    {
+
+    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
+    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+    	DemoUtils.setDkproHome(RegressionDemo.class.getSimpleName());
+    	
+        RegressionDemo experiment = new RegressionDemo();
+        experiment.runCrossValidation(setup());
+        experiment.runTrainTest(setup());
+    }
+    
     public static ParameterSpace setup()
     {
         // configure training data reader dimension
@@ -98,15 +114,6 @@ public class RegressionDemo
                         Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()), dimFeatureSets,
                 dimClassificationArgs);
         return pSpace;
-    }
-
-    public static void main(String[] args)
-        throws Exception
-    {
-
-        RegressionDemo experiment = new RegressionDemo();
-        experiment.runCrossValidation(setup());
-        experiment.runTrainTest(setup());
     }
 
     // ##### CV #####

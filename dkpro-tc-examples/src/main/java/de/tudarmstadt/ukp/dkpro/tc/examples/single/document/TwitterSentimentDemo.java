@@ -36,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
@@ -66,6 +67,12 @@ public class TwitterSentimentDemo
     public static void main(String[] args)
         throws Exception
     {
+    	
+    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
+    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+    	DemoUtils.setDkproHome(TwitterSentimentDemo.class.getSimpleName());
+    	
         ParameterSpace pSpace = getParameterSpace();
 
         TwitterSentimentDemo experiment = new TwitterSentimentDemo();
