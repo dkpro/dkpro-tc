@@ -64,14 +64,14 @@ public class SimpleDkproTCReader
     public static final String PARAM_LANGUAGE = ComponentParameters.PARAM_LANGUAGE;
     @ConfigurationParameter(name = PARAM_LANGUAGE, mandatory = true)
     private String language;
-    
+
     /**
      * Path to the file containing the sentences
      */
     public static final String PARAM_SENTENCES_FILE = "SentencesFile";
     @ConfigurationParameter(name = PARAM_SENTENCES_FILE, mandatory = true)
     private String sentencesFile;
-    
+
     /**
      * Path to the file containing the gold standard labels
      */
@@ -103,7 +103,7 @@ public class SimpleDkproTCReader
         catch (IOException e) {
             throw new ResourceInitializationException(e);
         }
-        
+
         texts = new ArrayList<String>();
         try {
             URL resourceUrl = ResourceUtils.resolveLocation(sentencesFile, this, context);
@@ -119,11 +119,13 @@ public class SimpleDkproTCReader
 
         offset = 0;
     }
-    
-	@Override
-	public boolean hasNext() throws IOException, CollectionException {
-		return offset < texts.size();
-	}
+
+    @Override
+    public boolean hasNext()
+        throws IOException, CollectionException
+    {
+        return offset < texts.size();
+    }
 
     @Override
     public void getNext(JCas aJCas)
@@ -132,13 +134,13 @@ public class SimpleDkproTCReader
         // setting the document text
         aJCas.setDocumentText(texts.get(offset));
         aJCas.setDocumentLanguage(language);
-        
+
         // as we are creating more than one CAS out of a single file, we need to have different
         // document titles and URIs for each CAS
         // otherwise, serialized CASes will be overwritten
         DocumentMetaData dmd = DocumentMetaData.create(aJCas);
-        dmd.setDocumentTitle("" + offset);
-        dmd.setDocumentUri("" + offset);
+        dmd.setDocumentTitle("Sentence" + offset);
+        dmd.setDocumentUri("Sentence" + offset);
         dmd.setDocumentId(String.valueOf(offset));
 
         // setting the outcome / label for this document
@@ -156,8 +158,9 @@ public class SimpleDkproTCReader
         return golds.get(offset);
     }
 
-	@Override
-	public Progress[] getProgress() {
+    @Override
+    public Progress[] getProgress()
+    {
         return new Progress[] { new ProgressImpl(offset, texts.size(), "sentences") };
-	}
+    }
 }
