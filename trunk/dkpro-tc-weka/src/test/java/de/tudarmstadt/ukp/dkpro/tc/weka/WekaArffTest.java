@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.testing;
+package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.io.File;
 

@@ -28,8 +28,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue.MissingValueType;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue.MissingValueType;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.AttributeStore;
 
 /**

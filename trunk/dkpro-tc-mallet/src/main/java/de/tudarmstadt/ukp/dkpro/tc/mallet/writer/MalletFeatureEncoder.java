@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.mallet.writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue.MissingValueType;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue.MissingValueType;
 
 public class MalletFeatureEncoder
 {

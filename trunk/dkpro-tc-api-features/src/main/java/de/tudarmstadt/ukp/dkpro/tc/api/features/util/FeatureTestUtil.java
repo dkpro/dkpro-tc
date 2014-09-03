@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.core.util;
+package de.tudarmstadt.ukp.dkpro.tc.api.features.util;
 
 import junit.framework.Assert;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.MissingValue;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
 
 /**
  * Utils for testing feature extractors
