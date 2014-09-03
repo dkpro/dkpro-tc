@@ -15,19 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.testing;
+package de.tudarmstadt.ukp.dkpro.tc.integrationtest;
 
-import junit.framework.Assert;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
+import de.tudarmstadt.ukp.dkpro.tc.testing.NumberOfFoldsSetting;
 
-public class ExtremeConfiguratonSettingsTest
+public class NumberOfFoldsTest
 {
     @Before
     public void setupLogging()
@@ -41,25 +39,11 @@ public class ExtremeConfiguratonSettingsTest
         System.setProperty("DKPRO_HOME", "target/dkpro_home");
     }
 
-    @Test
-    public void testExtremeValues_emptyPipelineparameters()
+    @Test(expected = ExecutionException.class) 
+    public void testNumberOfFolds()
         throws Exception
     {
-        new ExtremeConfigurationSettingsExperiment().runEmptyPipelineParameters();
-    }
-
-    @Test  
-    public void testExtremeValues_emptyFeatureExtractorSet()
-        throws Exception
-    {
-        try {
-            new ExtremeConfigurationSettingsExperiment().runEmptyFeatureExtractorSet();
-        }
-        catch (ExecutionException e) {
-            if (!ExceptionUtils.getRootCauseMessage(e).contains("No feature extractors have been added to the experiment.")) {
-                Assert.fail("Unexpected exception");
-            }
-        }
+        new NumberOfFoldsSetting().run();
     }
 
     @Rule
