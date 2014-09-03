@@ -97,6 +97,7 @@
 		<module>dkpro-tc-integrationtest</module>
 		<module>dkpro-tc-mallet</module>
 		<module>dkpro-tc-ml</module>
+        <module>dkpro-tc-testing</module>
 		<module>dkpro-tc-weka</module>
 	</modules>
 	<dependencyManagement>
@@ -177,7 +178,12 @@
                 <artifactId>dkpro-tc-ml</artifactId>
                 <version>0.7.0-SNAPSHOT</version>
             </dependency>
-			<dependency>
+            <dependency>
+                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <artifactId>dkpro-tc-testing</artifactId>
+                <version>0.7.0-SNAPSHOT</version>
+            </dependency>
+  			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-weka</artifactId>
 				<version>0.7.0-SNAPSHOT</version>
