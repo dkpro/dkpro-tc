@@ -33,7 +33,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-weka</artifactId>
+			<artifactId>dkpro-tc-ml-weka</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
