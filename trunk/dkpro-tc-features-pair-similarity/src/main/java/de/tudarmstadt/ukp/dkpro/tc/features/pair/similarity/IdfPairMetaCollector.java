@@ -84,9 +84,9 @@ public class IdfPairMetaCollector
         
 
         for (String ngram : documentNGrams.getKeys()) {
-//        	for(int i=0;i<documentNGrams.getCount(ngram);i++){ //This should not be commented out.  Buggy.
+        	for(int i=0;i<documentNGrams.getCount(ngram);i++){ 
         		addField(jcas, getFieldName(), ngram);
-//        	}
+        	}
         }
        
         try {
