@@ -37,7 +37,16 @@ public class CosineSimilarityTest
 {
 	private static final double epsilon = 0.0001;
     /**
-     * Tests if just View1 ngrams are being extracted as features.
+     * Tests TFIDF Cosine Similarity with TF weight FREQUENCY_LOGPLUSONE, 
+     * IDF weight PASSTHROUGH, and normalization mode L2. <br />
+     * 
+     * Answer 0.2 confirmed by following equation 15.2, pg 541, in Manning and Schuetze. <br />
+     * Vector1 = 1,.5,0,1,.5,0 <br />
+     * Vector2 = 0,.5,1,0,.5,1 <br />
+     * Sum of vector products (svp) = (1x0)+(.5x.5)+(0x1)+(1x0)+(.5x.5)+(0x1) =.5 <br />
+     * normVector1 = sqrt(sum(i in finalVector1, ^2)) = sqrt(1+.25+0+1+.25+0) = 1.58 <br />
+     * normVector2 = sqrt(sum(i in finalVector2, ^2)) = sqrt(0+.25+1+0+.25+1) = 1.58 <br />
+     * CosSim = svp/(normVector1*normVector2) = 0.5 / (1.58*1.58) = 0.2 <br />
      * 
      * @throws Exception
      */
@@ -54,7 +63,8 @@ public class CosineSimilarityTest
         assertEquals(test.featureNames.size(), 1);
         
         for(Feature feat: test.instanceList.get(0).getFeatures()){
-//        	assertEquals(0.5, (double)feat.getValue(), epsilon);//, epsilon
+        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+//        	System.out.println("CosSim score: " + (double)feat.getValue());
         }
         
         

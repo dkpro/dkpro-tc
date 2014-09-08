@@ -43,7 +43,9 @@ import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.WeightingMode
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.WeightingModeTf;
 
 /**
- * Extracts the document pair similarity using the GreedyStringTiling measure
+ * Extracts the document pair similarity using {@link dkpro.similarity.algorithms.lexical.string.CosineSimilarity
+ * CosineSimilarity} (tokens) measure.
+ * Please be aware this Cosine Similarity API has a history of bugginess.
  */
 public class CosineFeatureExtractor
     extends LuceneFeatureExtractorBase // FeatureExtractorResource_ImplBase -> NGramFeatureExtractorBase -> LuceneFeatureExtractorBase
