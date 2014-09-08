@@ -46,7 +46,7 @@ public class WekaOutcomeIDReport
     extends ReportBase
 {
     /**
-     * Name of the file where the instanceID / outcome pairs ar stored
+     * Name of the file where the instanceID / outcome pairs are stored
      */
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";
     /**
