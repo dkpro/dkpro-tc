@@ -37,7 +37,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 
 /**
@@ -191,16 +190,16 @@ public class ValidityCheckConnector
             // iff pair classification is set, 2 views need to be present
             if (featureModeI == 3) {
                 try {
-                    jcas.getView(AbstractPairReader.PART_ONE);
-                    jcas.getView(AbstractPairReader.PART_TWO);
+                    jcas.getView(Constants.PART_ONE);
+                    jcas.getView(Constants.PART_TWO);
                 }
                 catch (CASException e) {
                     throw new AnalysisEngineProcessException(new TextClassificationException(
                             "Your experiment is configured to be pair classification, but I could not find the two views "
-                                    + AbstractPairReader.PART_ONE + " and "
-                                    + AbstractPairReader.PART_TWO
+                                    + Constants.PART_ONE + " and "
+                                    + Constants.PART_TWO
                                     + ". Please use a reader that inhereits from "
-                                    + AbstractPairReader.class.getName()));
+                                    + Constants.class.getName()));
                 }
             }
 

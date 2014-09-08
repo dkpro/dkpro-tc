@@ -32,16 +32,17 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.PairReader_ImplBase;
 
 
 /**
  * Reads pairs of TwentyNewsgroups corpus texts.
  */
 public class PairTwentyNewsgroupsReader
-    extends AbstractPairReader
+    extends PairReader_ImplBase
     implements TCReaderSingleLabel
 {
 	
@@ -93,59 +94,68 @@ public class PairTwentyNewsgroupsReader
                 Progress.ENTITIES) }; // i.e., we're on number 6 out of 10 total
     }
 
-    @Override
-    protected String getCollectionId()
-    {
-        return doc1.getParentFile().getParentFile().getParentFile().getName();
-    }
-
-    @Override
-    protected String getLanguage()
-    {
-        return language;
-    }
-
-    @Override
-    protected String getInitialViewText()
-    {
-        return null;
-    }
-
-    @Override
-    protected String getInitialViewDocId()
-    {
-        return doc1.getParentFile().getName() + "/" + doc1.getName() + "_" + doc2.getParentFile().getName() + "/"
-                + doc2.getName();
-    }
-
-    @Override
-    protected String getInitialViewTitle()
-    {
-
-        return doc1.getParent() + "/" + doc1.getName() + "_" + doc2.getParent() + "/"
-                + doc2.getName();
-    }
-
-    @Override
-    protected String getBaseUri()
-    {
-
-        return doc1.getParent() + "_" + doc2.getParent();
-    }
-
-    @Override
-    protected String getText(String part)
-        throws IOException
-    {
-        if (part.equals("PART_ONE")) {
-            return FileUtils.readFileToString(doc1);
-        }
-        else if (part.equals("PART_TWO")) {
-            return FileUtils.readFileToString(doc2);
-        }
-        return null;
-    }
-
+	@Override
+	public String getCollectionId1() {
+		return doc1.getParentFile().getParentFile().getParentFile().getName();
+	}
+	
+	@Override
+	public String getCollectionId2() {
+		return doc2.getParentFile().getParentFile().getParentFile().getName();
+	}
+	
+	@Override
+	public String getDocumentId1() {
+		return doc1.getParentFile().getName() + "/" + doc1.getName();
+	}
+	
+	@Override
+	public String getDocumentId2() {
+		return doc2.getParentFile().getName() + "/" + doc2.getName();
+	}
+	
+	@Override
+	public String getTitle1() {
+		return doc1.getParent() + "/" + doc1.getName();
+	}
+	
+	@Override
+	public String getTitle2() {
+		return doc2.getParent() + "/" + doc2.getName();
+	}
+	
+	@Override
+	public String getLanguage1() {
+		return language;
+	}
+	
+	@Override
+	public String getLanguage2() {
+		return language;
+	}
+	
+	@Override
+	public String getText1() 
+			throws TextClassificationException
+	{
+		try {
+			return FileUtils.readFileToString(doc1);
+		} catch (IOException e) {
+			throw new TextClassificationException(e);
+		}
+	}
+	
+	@Override
+	public String getText2()
+			throws TextClassificationException
+	{
+		try {
+			return FileUtils.readFileToString(doc2);
+		} catch (IOException e) {
+			throw new TextClassificationException(e);
+		}
+	}
+	
     @Override
     public void getNext(JCas jcas)
         throws IOException, CollectionException

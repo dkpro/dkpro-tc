@@ -26,7 +26,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public abstract class LuceneCPMetaCollectorBase
@@ -39,8 +39,8 @@ public abstract class LuceneCPMetaCollectorBase
         JCas view1;
         JCas view2;
         try{
-            view1 = jcas.getView(AbstractPairReader.PART_ONE);
-            view2 = jcas.getView(AbstractPairReader.PART_TWO);
+            view1 = jcas.getView(Constants.PART_ONE);
+            view2 = jcas.getView(Constants.PART_TWO);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

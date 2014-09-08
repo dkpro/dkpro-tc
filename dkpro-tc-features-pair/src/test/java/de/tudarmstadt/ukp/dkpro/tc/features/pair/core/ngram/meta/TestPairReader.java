@@ -34,12 +34,13 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.PairReader_ImplBase;
 
 public class TestPairReader
-    extends AbstractPairReader
+    extends PairReader_ImplBase
     implements TCReaderMultiLabel
 {
 
@@ -116,58 +117,60 @@ public class TestPairReader
     }
 
     @Override
-    protected String getCollectionId()
-    {
-        return inputFile.getParent();
-    }
-
-    @Override
-    protected String getLanguage()
-    {
-        return "en";
-    }
-
-    @Override
-    protected String getInitialViewText()
-    {
-        return texts1.get(fileOffset) + "\t" + texts2.get(fileOffset);
-    }
-
-    @Override
-    protected String getInitialViewDocId()
-    {
-        return inputFile.getName() + "-" + fileOffset;
-    }
-
-    @Override
-    protected String getInitialViewTitle()
-    {
-        return inputFile.getName() + "-" + fileOffset;
-    }
-
-    @Override
-    protected String getBaseUri()
-    {
-        return inputFile.getParent();
-    }
-
-    @Override
-    protected String getText(String part)
-    {
-        if (part.equals(PART_ONE)) {
-            return texts1.get(fileOffset);
-        }
-        else if (part.equals(PART_TWO)) {
-            return texts2.get(fileOffset);
-        }
-        return "";
-    }
-
-    @Override
     public Set<String> getTextClassificationOutcomes(JCas jcas)
     {
         Set<String> outcomes = new HashSet<String>();
         outcomes.add("test");
         return outcomes;
     }
+
+	@Override
+	public String getCollectionId1() throws TextClassificationException {
+        return inputFile.getParent();
+	}
+
+	@Override
+	public String getCollectionId2() throws TextClassificationException {
+        return inputFile.getParent();
+	}
+
+	@Override
+	public String getDocumentId1() throws TextClassificationException {
+        return inputFile.getName() + "-" + fileOffset;
+	}
+
+	@Override
+	public String getDocumentId2() throws TextClassificationException {
+        return inputFile.getName() + "-" + fileOffset;
+	}
+
+	@Override
+	public String getTitle1() throws TextClassificationException {
+        return inputFile.getName() + "-" + fileOffset;
+	}
+
+	@Override
+	public String getTitle2() throws TextClassificationException {
+        return inputFile.getName() + "-" + fileOffset;
+	}
+
+	@Override
+	public String getLanguage1() throws TextClassificationException {
+		return "en";
+	}
+
+	@Override
+	public String getLanguage2() throws TextClassificationException {
+		return "en";
+	}
+
+	@Override
+	public String getText1() throws TextClassificationException {
+        return texts1.get(fileOffset);
+	}
+
+	@Override
+	public String getText2() throws TextClassificationException {
+        return texts2.get(fileOffset);
+	}
 }

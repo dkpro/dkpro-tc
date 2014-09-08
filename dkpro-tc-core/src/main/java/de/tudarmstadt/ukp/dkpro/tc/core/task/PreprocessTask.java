@@ -36,7 +36,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
 /**
@@ -129,9 +128,9 @@ public class PreprocessTask
         if (featureMode.equals(Constants.FM_PAIR)) {
             AggregateBuilder builder = new AggregateBuilder();
             builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
-                    AbstractPairReader.PART_ONE);
+                    Constants.PART_ONE);
             builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
-                    AbstractPairReader.PART_TWO);
+                    Constants.PART_TWO);
             preprocessingPipeline = builder.createAggregateDescription();
         }
         else if (operativeViews != null) {
