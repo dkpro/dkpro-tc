@@ -80,5 +80,9 @@
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-features-pair</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-testing</artifactId>
+		</dependency>
 	</dependencies>
 </project>
