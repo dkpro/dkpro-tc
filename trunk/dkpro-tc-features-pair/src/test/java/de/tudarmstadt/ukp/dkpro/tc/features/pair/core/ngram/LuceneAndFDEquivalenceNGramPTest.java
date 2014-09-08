@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 public class LuceneAndFDEquivalenceNGramPTest
 {
@@ -51,12 +51,12 @@ public class LuceneAndFDEquivalenceNGramPTest
         AnalysisEngine engine = createEngine(seg);
 
         AggregateBuilder builder = new AggregateBuilder();
-        builder.add(seg, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_ONE);
-        builder.add(seg, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
+        builder.add(seg, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(seg, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         jcas = engine.newJCas();
-        view1 = jcas.createView(AbstractPairReader.PART_ONE);
-        view2 = jcas.createView(AbstractPairReader.PART_TWO);
+        view1 = jcas.createView(Constants.PART_ONE);
+        view2 = jcas.createView(Constants.PART_TWO);
         view1.setDocumentLanguage("en");
         view2.setDocumentLanguage("en");
         view1.setDocumentText("Cats eat mice.");
@@ -98,8 +98,8 @@ public class LuceneAndFDEquivalenceNGramPTest
         extractor.useView2NgramsAsFeatures = true;
         extractor.setLowerCase(true);
 
-        List<Feature> newFeatures = extractor.extract(jcas.getView(AbstractPairReader.PART_ONE),
-                jcas.getView(AbstractPairReader.PART_TWO));
+        List<Feature> newFeatures = extractor.extract(jcas.getView(Constants.PART_ONE),
+                jcas.getView(Constants.PART_TWO));
         FrequencyDistribution<String> view1features = new FrequencyDistribution<String>();
         FrequencyDistribution<String> view2features = new FrequencyDistribution<String>();
 

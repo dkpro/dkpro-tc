@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 
 public class LuceneNGramCPMetaCollectorTest
@@ -65,8 +65,8 @@ public class LuceneNGramCPMetaCollectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AggregateBuilder builder = new AggregateBuilder();
-        builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_ONE);
-        builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramCPMetaCollector.class,

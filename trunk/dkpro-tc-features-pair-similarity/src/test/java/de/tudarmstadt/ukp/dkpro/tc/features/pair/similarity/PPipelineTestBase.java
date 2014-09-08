@@ -40,9 +40,9 @@ import com.google.gson.Gson;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.TestPairReader;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.TestPairReader;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 
 
@@ -84,8 +84,8 @@ public abstract class PPipelineTestBase
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
 
         AggregateBuilder builder = new AggregateBuilder();
-        builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_ONE);
-        builder.add(segmenter, AbstractPairReader.INITIAL_VIEW, AbstractPairReader.PART_TWO);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         getMetaCollector(parameterList);
 
