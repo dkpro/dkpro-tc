@@ -45,6 +45,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
+import de.tudarmstadt.ukp.dkpro.tc.testing.TestPairReader;
 
 public class LuceneNGramPMetaCollectorTest
 {

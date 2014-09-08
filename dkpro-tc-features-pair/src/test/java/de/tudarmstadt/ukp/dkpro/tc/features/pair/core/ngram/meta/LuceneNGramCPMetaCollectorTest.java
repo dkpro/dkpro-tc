@@ -44,6 +44,7 @@ import org.junit.rules.TemporaryFolder;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
+import de.tudarmstadt.ukp.dkpro.tc.testing.TestPairReader;
 
 public class LuceneNGramCPMetaCollectorTest
 {

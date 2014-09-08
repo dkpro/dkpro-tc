@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
+package de.tudarmstadt.ukp.dkpro.tc.testing;
 
 import java.io.File;
 import java.io.IOException;
