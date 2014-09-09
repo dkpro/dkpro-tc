@@ -38,6 +38,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -80,10 +82,10 @@ public class WekaTestTask
         File arffFileTrain = new File(aContext.getStorageLocation(
                 TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_FILENAME);
+                + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
         File arffFileTest = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_FILENAME);
+                + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
 
         Instances trainData = WekaUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = WekaUtils.getInstances(arffFileTest, multiLabel);
@@ -120,7 +122,7 @@ public class WekaTestTask
                         new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
                                 AccessMode.READWRITE)
                                 .getAbsolutePath()
-                                + "/" + FEATURE_SELECTION_DATA_FILENAME),
+                                + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureSelectionFile)),
                         selector.toResultsString());
                 if (applySelection) {
                     trainData = selector.reduceDimensionality(trainData);
@@ -137,7 +139,7 @@ public class WekaTestTask
                 // file to hold the results of attribute selection
                 File fsResultsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
                         AccessMode.READWRITE).getAbsolutePath()
-                        + "/" + FEATURE_SELECTION_DATA_FILENAME);
+                        + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureSelectionFile));
                 // filter for reducing dimension of attributes
                 Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData,
                         labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
@@ -157,7 +159,7 @@ public class WekaTestTask
         File evalOutput = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
                 AccessMode.READWRITE)
                 .getPath()
-                + "/" + EVALUATION_DATA_FILENAME);
+                + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
 
         // evaluation & prediction generation
         if (multiLabel) {
@@ -181,6 +183,6 @@ public class WekaTestTask
 
         // Write out the predictions
         DataSink.write(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                .getAbsolutePath() + "/" + PREDICTIONS_FILENAME, testData);
+                .getAbsolutePath() + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile), testData);
     }
 }

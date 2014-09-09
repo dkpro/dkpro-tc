@@ -32,6 +32,8 @@ import weka.core.SerializationHelper;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 
 /**
@@ -52,7 +54,7 @@ public class WekaRegressionReport
         File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
         Properties props = new Properties();
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + WekaTestTask.EVALUATION_DATA_FILENAME);
+                + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
 
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(evaluationFile.getAbsolutePath());

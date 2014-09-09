@@ -33,6 +33,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -59,7 +61,7 @@ public class WekaOutcomeIDReport
         throws Exception
     {
         File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
-        File arff = new File(storage.getAbsolutePath() + "/" + WekaTestTask.PREDICTIONS_FILENAME);
+        File arff = new File(storage.getAbsolutePath() + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
 
         boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);

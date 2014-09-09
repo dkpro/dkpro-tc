@@ -37,6 +37,8 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -65,10 +67,10 @@ public class WekaFeatureValuesReport
         boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
         Properties props = new Properties();
-        File arff = new File(storage.getAbsolutePath() + "/" + WekaTestTask.PREDICTIONS_FILENAME);
+        File arff = new File(storage.getAbsolutePath() + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + WekaTestTask.EVALUATION_DATA_FILENAME);
+                + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
         String[] classValues;
         List<String> attrNames = new ArrayList<String>();
 

@@ -250,45 +250,4 @@ public interface Constants
      */
     public static final String TEST_TASK_OUTPUT_KEY = "output";
 
-    /*
-     * Weka / Meka
-     */
-    /**
-     * Name of the file where the weka data writer stores the instances in ARFF format
-     */
-    public static final String ARFF_FILENAME = "training-data.arff.gz";
-    /**
-     * Name of the weka data writer class. This constant can be used instead of the class reference,
-     * if the tc.weka module cannot be used as a dependency
-     */
-    public static final String WEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.WekaDataWriter";
-    /**
-     * Name of the meka (multi-label weka) data writer class. This constant can be used instead of
-     * the class reference, if the tc.weka module cannot be used as a dependency
-     */
-    public static final String MEKA_DATA_WRITER_NAME = "de.tudarmstadt.ukp.dkpro.tc.weka.MekaDataWriter";
-    /**
-     * Name of the ARFF file which which holds the predictions
-     */
-    public static final String PREDICTIONS_FILENAME = "predictions.arff";
-    /**
-     * Name of the compressed ARFF which holds the training data
-     */
-    public static final String TRAINING_DATA_FILENAME = "training-data.arff.gz";
-    /**
-     * Name of the binary file which holds an evaluation object
-     */
-    public static final String EVALUATION_DATA_FILENAME = "evaluation.bin";
-    /**
-     * Name of the text file which holds the results from the feature selection
-     */
-    public static final String FEATURE_SELECTION_DATA_FILENAME = "attributeEvaluationResults.txt";
-
-    /*
-     * Mallet
-     */
-    /**
-     * Name of the file where the Mallet data writer stores the instances
-     */
-    public static final String MALLET_FILE = "training-data.txt.gz";
 }
