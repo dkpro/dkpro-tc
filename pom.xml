@@ -398,6 +398,10 @@
 							<title>Support for WEKA machine learning framework</title>
 							<packages>de.tudarmstadt.ukp.dkpro.tc.weka*</packages>
 						</group>
+						<group>
+							<title>Machine Learning (framework independent)</title>
+							<packages>de.tudarmstadt.ukp.dkpro.tc.ml*</packages>
+						</group>
 					</groups>
 				</configuration>
 			</plugin>
