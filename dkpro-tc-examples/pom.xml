@@ -43,6 +43,10 @@
 			<artifactId>dkpro-tc-ml-weka</artifactId>
 		</dependency>
 		<dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+            <artifactId>dkpro-tc-ml-liblinear</artifactId>
+        </dependency>
+		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
 		</dependency>
