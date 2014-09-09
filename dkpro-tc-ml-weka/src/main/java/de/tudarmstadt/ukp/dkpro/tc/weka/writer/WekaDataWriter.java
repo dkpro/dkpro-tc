@@ -23,6 +23,8 @@ import java.io.File;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -40,8 +42,9 @@ public class WekaDataWriter
             String learningMode)
         throws Exception
     {
-        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
-        WekaUtils.instanceListToArffFile(new File(outputDirectory, ARFF_FILENAME), featureStore,
+        boolean isRegression = learningMode.equals(LM_REGRESSION);
+        WekaUtils.instanceListToArffFile(new File(outputDirectory, 
+        		WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile)), featureStore,
                 useDenseInstances, isRegression);
     }
 }

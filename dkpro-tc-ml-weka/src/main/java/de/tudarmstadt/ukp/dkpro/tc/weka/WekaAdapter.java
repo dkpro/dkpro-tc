@@ -64,4 +64,17 @@ public class WekaAdapter
 			String[] files, int folds) {
 		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
 	}
+
+	@Override
+	public String getFrameworkFilename(AdapterNameEntries name) {
+
+        switch (name) {
+            case trainingFile         :  return "training-data.arff.gz";
+            case predictionsFile      :  return "predictions.arff";
+            case evaluationFile       :  return "evaluation.bin";
+            case featureSelectionFile :  return "attributeEvaluationResults.txt";
+        }
+        
+        return null;
+	}
 }

@@ -28,6 +28,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
  */
 public interface TCMachineLearningAdapter {
 
+	public enum AdapterNameEntries {
+		trainingFile,
+		predictionsFile,
+		evaluationFile,
+		featureSelectionFile
+	}
+
 	/**
 	 * @return The task that reads the ML feature store format, trains the classifier and stores the test results.
 	 */
@@ -52,4 +59,10 @@ public interface TCMachineLearningAdapter {
 	 * @return The fold dimension bundle for CV
 	 */
 	public<T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files, int folds);
+	
+	/**
+	 * @param name Which name should be returned
+	 * @return Returns the filename that is used for specific files by the framework
+	 */
+	public String getFrameworkFilename(AdapterNameEntries name);
 }

@@ -43,8 +43,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
  * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on
  * the CAS.
  * 
- * @author zesch
- * 
  */
 public class ValidityCheckConnector
     extends ConnectorBase
@@ -142,7 +140,7 @@ public class ValidityCheckConnector
 
             // iff multi-label classification is active, no single-label data writer may be used
             if (learningModeI == 2) {
-                if (dataWriter.equals(Constants.WEKA_DATA_WRITER_NAME)) {
+                if (dataWriter.equals("de.tudarmstadt.ukp.dkpro.tc.weka.WekaDataWriter")) {
                     throw new AnalysisEngineProcessException(
                             new TextClassificationException(
                                     "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));

@@ -49,6 +49,8 @@ import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.ExtractFeaturesAndPredictConnector;
 
 /**
@@ -99,7 +101,7 @@ public class ExtractFeaturesAndPredictTask
         File arffFileTrain = new File(aContext.getStorageLocation(
                 TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_FILENAME);
+                + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
 
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
