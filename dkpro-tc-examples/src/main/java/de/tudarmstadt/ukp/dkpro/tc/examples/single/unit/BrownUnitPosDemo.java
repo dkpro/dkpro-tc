@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
@@ -79,7 +79,7 @@ public class BrownUnitPosDemo
     {
 
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV",
-        		WekaAdapter.getInstance(),
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);

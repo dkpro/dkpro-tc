@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
@@ -126,7 +126,7 @@ public class TwitterSentimentDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwitterSentimentCV",
-        		WekaAdapter.getInstance(),
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing(), 10);
         batch.setParameterSpace(pSpace);
         batch.addReport(WekaBatchCrossValidationReport.class);
@@ -140,7 +140,7 @@ public class TwitterSentimentDemo
         throws Exception
     {
         BatchTaskTrainTest batch = new BatchTaskTrainTest("TwitterSentimentTrainTest",
-        		WekaAdapter.getInstance(),
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(WekaBatchTrainTestReport.class);

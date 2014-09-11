@@ -70,7 +70,6 @@ public class WekaBatchTrainTestReport
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (subcontext.getType().startsWith(WekaTestTask.class.getName())) {
-
                 try {
                     outcomeIdProps.putAll(store.retrieveBinary(subcontext.getId(),
                             WekaOutcomeIDReport.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
@@ -84,10 +83,15 @@ public class WekaBatchTrainTestReport
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
                         WekaTestTask.RESULTS_FILENAME, new PropertiesAdapter()).getMap();
 
-                File confMatrix = store.getStorageFolder(subcontext.getId(), CONFUSIONMATRIX_KEY);
+                File confMatrix = store.getStorageFolder(subcontext.getId(),
+                        CONFUSIONMATRIX_KEY);
 
                 if (confMatrix.isFile()) {
-                    confMatrixMap = ReportUtils.updateAggregateMatrix(confMatrixMap, confMatrix);
+                    confMatrixMap = ReportUtils
+                            .updateAggregateMatrix(confMatrixMap, confMatrix);
+                }
+                else {
+                    confMatrix.delete();
                 }
 
                 String key = getKey(discriminatorsMap);
@@ -134,8 +138,12 @@ public class WekaBatchTrainTestReport
         // this report is reused in CV, and we only want to aggregate confusion matrices from folds
         // in CV, and an aggregated OutcomeIdReport
         if (getContext().getId().startsWith(BatchTaskCrossValidation.class.getSimpleName())) {
-            FlexTable<String> confMatrix = ReportUtils.createOverallConfusionMatrix(confMatrixMap);
-            getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
+            // no confusion matrix for regression
+            if (confMatrixMap.size() > 0) {
+                FlexTable<String> confMatrix = ReportUtils
+                        .createOverallConfusionMatrix(confMatrixMap);
+                getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
+            }
             if (outcomeIdProps.size() > 0)
                 getContext().storeBinary(WekaOutcomeIDReport.ID_OUTCOME_KEY,
                         new PropertiesAdapter(outcomeIdProps));

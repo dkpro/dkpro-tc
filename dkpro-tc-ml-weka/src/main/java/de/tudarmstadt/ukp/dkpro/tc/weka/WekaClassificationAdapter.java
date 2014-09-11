@@ -31,12 +31,12 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 
-public class WekaAdapter 
+public class WekaClassificationAdapter 
 	implements TCMachineLearningAdapter
 {
 
 	public static TCMachineLearningAdapter getInstance() {
-		return new WekaAdapter();
+		return new WekaClassificationAdapter();
 	}
 	
 	@Override

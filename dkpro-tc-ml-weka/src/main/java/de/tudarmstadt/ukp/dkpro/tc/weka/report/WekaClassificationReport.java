@@ -51,7 +51,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
@@ -92,14 +92,14 @@ public class WekaClassificationReport
         double[][] confusionMatrix = null;
 
         File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
+                + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
 
         if (multiLabel) {
             // ============= multi-label setup ======================
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
 
             File dataFile = new File(storage.getAbsolutePath() + "/"
-                    + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
+                    + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
             Instances data = WekaUtils.getInstances(dataFile, true);
             String[] classNames = new String[data.classIndex()];
 

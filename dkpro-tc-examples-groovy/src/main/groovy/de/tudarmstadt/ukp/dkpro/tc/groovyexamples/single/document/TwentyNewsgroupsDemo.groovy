@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
@@ -161,7 +161,7 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],           
 			parameterSpace : [
                 dimReaders,
@@ -191,7 +191,7 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],           
 			parameterSpace : [
                 dimReaders,

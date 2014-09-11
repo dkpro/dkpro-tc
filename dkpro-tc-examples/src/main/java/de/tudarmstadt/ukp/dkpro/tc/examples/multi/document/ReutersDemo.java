@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
@@ -152,7 +152,7 @@ public class ReutersDemo
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation(EXPERIMENT_NAME
                 + "-CrossValidation",
-                WekaAdapter.getInstance(),
+                WekaClassificationAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -167,7 +167,7 @@ public class ReutersDemo
         throws Exception
     {
         BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		WekaAdapter.getInstance(),
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

@@ -24,7 +24,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -44,7 +44,7 @@ public class WekaDataWriter
     {
         boolean isRegression = learningMode.equals(LM_REGRESSION);
         WekaUtils.instanceListToArffFile(new File(outputDirectory, 
-        		WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile)), featureStore,
+        		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile)), featureStore,
                 useDenseInstances, isRegression);
     }
 }

@@ -71,7 +71,7 @@ public class OutcomeIDReportTest
     @Test
     public void testGenerateOutcomeIdPropertiesSingleLabel()
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(singleLabelData, false);
+        Properties props = WekaOutcomeIDReport.generateProperties(singleLabelData, false, false);
 
         assertEquals(16, props.size());
         assertEquals("comp.graphics;alt.atheism", props.getProperty("alt.atheism/53261.txt"));
@@ -84,7 +84,7 @@ public class OutcomeIDReportTest
     @Test
     public void testGenerateOutcomeIdPropertiesMultiLabel()
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true);
+        Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false);
 
         assertEquals(6, props.size());
         assertEquals(";__grain", props.getProperty("14828.txt"));
@@ -95,11 +95,12 @@ public class OutcomeIDReportTest
     @Test
     public void testGenerateOutcomeIdPropertiesRegression()
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(regressionData, false);
+        Properties props = WekaOutcomeIDReport.generateProperties(regressionData, false, true);
 
-        assertEquals(375, props.size());
+        assertEquals(376, props.size());
         assertEquals("3.44168;3.75", props.getProperty("STS.input.MSRpar.txt-1"));
         assertEquals("2.640227;1.75", props.getProperty("STS.input.MSRpar.txt-100"));
         assertEquals("4.41385;5.0", props.getProperty("STS.input.MSRpar.txt-133"));
+        assertEquals("0.87415;0.0", props.getProperty("test"));
     }
 }

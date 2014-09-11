@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
@@ -123,7 +123,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
