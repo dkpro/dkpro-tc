@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
@@ -76,7 +76,7 @@ public class SimpleDkproTCReaderDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
-                "SimpleReaderDemoCV", WekaAdapter.getInstance(), getPreprocessing(), NUM_FOLDS);
+                "SimpleReaderDemoCV", WekaClassificationAdapter.getInstance(), getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

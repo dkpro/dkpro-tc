@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -60,18 +60,27 @@ public class WekaOutcomeIDReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
-        File arff = new File(storage.getAbsolutePath() + "/" + WekaAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
+        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY,
+                AccessMode.READONLY);
+        File arff = new File(storage.getAbsolutePath()
+                + "/"
+                + WekaClassificationAdapter.getInstance()
+                        .getFrameworkFilename(AdapterNameEntries.predictionsFile));
 
-        boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
+        boolean multiLabel = getDiscriminators()
+                .get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
+        boolean regression = getDiscriminators()
+                .get(WekaTestTask.class.getName() + "|learningMode")
+                .equals(Constants.LM_REGRESSION);
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
-        Properties props = generateProperties(predictions, multiLabel);
+        Properties props = generateProperties(predictions, multiLabel, regression);
         getContext().storeBinary(ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
     }
 
-    protected static Properties generateProperties(Instances predictions, boolean isMultilabel)
+    protected static Properties generateProperties(Instances predictions, boolean isMultilabel,
+            boolean isRegression)
     {
         Properties props = new Properties();
         String[] classValues = new String[predictions.numClasses()];
@@ -112,14 +121,14 @@ public class WekaOutcomeIDReport
                 }
                 Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
                 Double prediction = new Double(inst.value(gsAtt));
-                try {
+                if (!isRegression) {
                     props.setProperty(
                             inst.stringValue(attOffset),
                             gsAtt.value(prediction.intValue()) + SEPARATOR_CHAR
                                     + classValues[gold.intValue()]);
                 }
-                catch (Exception e) {
-                    // if the outcome is numeric
+                else {
+                    // the outcome is numeric
                     props.setProperty(inst.stringValue(attOffset), prediction + SEPARATOR_CHAR
                             + gold);
                 }

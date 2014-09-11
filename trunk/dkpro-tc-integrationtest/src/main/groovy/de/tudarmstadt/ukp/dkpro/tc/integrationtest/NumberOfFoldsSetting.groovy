@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
@@ -87,7 +87,7 @@ public class NumberOfFoldsSetting implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,

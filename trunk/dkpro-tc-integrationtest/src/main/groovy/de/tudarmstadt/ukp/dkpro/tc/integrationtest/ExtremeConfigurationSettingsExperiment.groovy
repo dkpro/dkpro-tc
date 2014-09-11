@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
@@ -134,7 +134,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
@@ -155,7 +155,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
@@ -183,7 +183,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,
@@ -204,7 +204,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaAdapter.getInstance(),
+			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport.class],
             parameterSpace : [
                 dimReaders,

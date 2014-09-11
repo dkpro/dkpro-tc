@@ -41,11 +41,10 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -65,21 +64,22 @@ public class RegressionDemo
     public static final String inputFileTest = "src/main/resources/data/sts2012/STS.input.MSRvid.txt";
     public static final String goldFileTest = "src/main/resources/data/sts2012/STS.gs.MSRvid.txt";
 
-
     public static void main(String[] args)
         throws Exception
     {
 
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(RegressionDemo.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(RegressionDemo.class.getSimpleName());
+
         RegressionDemo experiment = new RegressionDemo();
         experiment.runCrossValidation(setup());
         experiment.runTrainTest(setup());
     }
-    
+
     public static ParameterSpace setup()
     {
         // configure training data reader dimension
@@ -121,11 +121,10 @@ public class RegressionDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
-        		WekaAdapter.getInstance(),
+                WekaRegressionAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addInnerReport(WekaRegressionReport.class);
         batch.addReport(WekaBatchCrossValidationReport.class);
 
         // Run
@@ -138,9 +137,8 @@ public class RegressionDemo
     {
 
         BatchTaskTrainTest batch = new BatchTaskTrainTest("RegressionExampleTrainTest",
-        		WekaAdapter.getInstance(),
+                WekaRegressionAdapter.getInstance(),
                 getPreprocessing());
-        batch.addInnerReport(WekaRegressionReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchTrainTestReport.class);
