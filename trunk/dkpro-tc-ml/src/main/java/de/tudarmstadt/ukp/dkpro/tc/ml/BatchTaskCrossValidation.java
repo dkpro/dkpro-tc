@@ -80,7 +80,7 @@ public class BatchTaskCrossValidation
      *            the number of folds for crossvalidation (default 10)
      */
     public BatchTaskCrossValidation(String aExperimentName,
-    		TCMachineLearningAdapter mlAdapter,
+            TCMachineLearningAdapter mlAdapter,
             AnalysisEngineDescription preprocessingPipeline,
             int aNumFolds)
     {
@@ -191,10 +191,9 @@ public class BatchTaskCrossValidation
                 testTask.addReport(report);
             }
         }
-        else {
-            // add default report
-            testTask.addReport(mlAdapter.getClassificationReportClass());
-        }
+
+        // always add default report
+        testTask.addReport(mlAdapter.getClassificationReportClass());
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 
@@ -240,10 +239,11 @@ public class BatchTaskCrossValidation
         this.experimentName = experimentName;
     }
 
-    public void setMachineLearningAdapter(TCMachineLearningAdapter mlAdapter) {
-    	this.mlAdapter = mlAdapter;
+    public void setMachineLearningAdapter(TCMachineLearningAdapter mlAdapter)
+    {
+        this.mlAdapter = mlAdapter;
     }
-    
+
     public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
         this.preprocessingPipeline = preprocessingPipeline;
