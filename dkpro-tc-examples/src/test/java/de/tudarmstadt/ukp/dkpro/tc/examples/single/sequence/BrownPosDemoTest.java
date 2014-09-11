@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 @Ignore
 public class BrownPosDemoTest
 {
-    BrownPosDemo javaExperiment;
+    BrownPosDemoMallet javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -56,8 +56,8 @@ public class BrownPosDemoTest
                 + name.getMethodName();
         System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 
-        javaExperiment = new BrownPosDemo();
-        pSpace = BrownPosDemo.getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
+        javaExperiment = new BrownPosDemoMallet();
+        pSpace = BrownPosDemoMallet.getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
     }
 
     @Test

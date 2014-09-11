@@ -47,7 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class BrownPosDemo
+public class BrownPosDemoMallet
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -65,11 +65,11 @@ public class BrownPosDemo
     	// This is used to ensure that the required DKPRO_HOME environment variable is set.
     	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
     	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(BrownPosDemo.class.getSimpleName());
+    	DemoUtils.setDkproHome(BrownPosDemoMallet.class.getSimpleName());
     	
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
 
-        BrownPosDemo experiment = new BrownPosDemo();
+        BrownPosDemoMallet experiment = new BrownPosDemoMallet();
         experiment.runCrossValidation(pSpace);
     }
 
@@ -108,7 +108,7 @@ public class BrownPosDemo
         throws Exception
     {
 
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV",
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV_Mallet",
         		MalletAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(MalletClassificationReport.class);
