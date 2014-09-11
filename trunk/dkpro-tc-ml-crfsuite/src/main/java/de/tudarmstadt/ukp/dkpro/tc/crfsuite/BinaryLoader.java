@@ -1,5 +1,5 @@
-package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 /*******************************************************************************
+
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
@@ -16,6 +16,7 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 import java.io.File;
 import java.net.URL;
 
