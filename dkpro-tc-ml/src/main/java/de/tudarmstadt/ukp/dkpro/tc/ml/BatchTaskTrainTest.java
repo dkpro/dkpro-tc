@@ -160,10 +160,9 @@ public class BatchTaskTrainTest
                 testTask.addReport(report);
             }
         }
-        else {
-            // add default report
-            testTask.addReport(mlAdapter.getClassificationReportClass());
-        }
+
+        // always add default report
+        testTask.addReport(mlAdapter.getClassificationReportClass());
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 
@@ -187,7 +186,7 @@ public class BatchTaskTrainTest
     {
         this.mlAdapter = mlAdapter;
     }
-    
+
     public void setExperimentName(String experimentName)
     {
         this.experimentName = experimentName;
