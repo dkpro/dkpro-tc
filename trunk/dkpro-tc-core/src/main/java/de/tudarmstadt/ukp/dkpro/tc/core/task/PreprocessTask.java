@@ -28,6 +28,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
@@ -37,6 +38,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.PreprocessConnector;
 
 /**
  * Performs the preprocessing steps, that were configured by the user, on the documents.
@@ -122,6 +124,11 @@ public class PreprocessTask
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
                 aContext.getStorageLocation(output, AccessMode.READWRITE).getPath(),
                 BinaryCasWriter.PARAM_FORMAT, "6+");
+        
+        // add a special connector as the first analysis engine that just checks whether there are no instances
+        // and outputs a meaningful error message then
+        AnalysisEngineDescription emptyProblemChecker = AnalysisEngineFactory.createEngineDescription(PreprocessConnector.class);
+        preprocessingPipeline = AnalysisEngineFactory.createEngineDescription(emptyProblemChecker, preprocessingPipeline);
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
