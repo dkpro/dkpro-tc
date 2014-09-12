@@ -104,6 +104,8 @@ public class CRFSuiteTestTask
         if (denominator > 0) {
             accuracy = numerator / denominator;
         }
+        System.out.println("Correct: " + correct + "\nIncorrect: " + incorrect + "\nAccuracy: "
+                + accuracy*100);
 
         // write predictions
         File predictionsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
