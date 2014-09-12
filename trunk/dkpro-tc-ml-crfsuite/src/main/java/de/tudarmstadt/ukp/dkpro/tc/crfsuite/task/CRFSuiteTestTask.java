@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -136,7 +137,9 @@ public class CRFSuiteTestTask
     {
 
         List<String> testModelCommand = buildTestCommand(aContext, aExecutablePath, aModelLocation);
+        System.out.println("Testing model against test data");
         String output = runTest(testModelCommand);
+        System.out.println("Testing finished");
 
         return output;
     }
@@ -186,8 +189,9 @@ public class CRFSuiteTestTask
         String tmpModelLocation = System.getProperty("java.io.tmpdir") + MODELNAME;
         List<String> modelTrainCommand = buildTrainCommand(aContext, aExecutablePath,
                 tmpModelLocation);
-
+        System.out.println("Start training model");
         runTrain(modelTrainCommand);
+        System.out.println("Training finished");
 
         return writeModel(aContext, tmpModelLocation);
     }
