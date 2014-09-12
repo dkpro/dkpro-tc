@@ -34,54 +34,57 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
-public class CRFSuiteDataWriterTest {
-	 
-	@Rule
+public class CRFSuiteDataWriterTest
+{
+
+    @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-	@Test
-	public void dataWriterTest() throws Exception {
-		
-//		FeatureStore fs = new SimpleFeatureStore();
-//		
-//		List<Feature> features1 = new ArrayList<>();
-//		features1.add(new Feature("feature1", 1.0));
-//		features1.add(new Feature("feature2", 0.0));
-//		features1.add(new Feature("feature3", "Water"));
-//		
-//		List<Feature> features2 = new ArrayList<>();
-//		features2.add(new Feature("feature2", 0.5));
-//		features2.add(new Feature("feature1", 0.5));
-//		features2.add(new Feature("feature3", "Fanta"));
-//		
-//		Instance instance1 = new Instance(features1, "1");
-//		instance1.setSequenceId(0);
-//		instance1.setSequencePosition(0);
-//		Instance instance2 = new Instance(features2, "2");
-//		instance2.setSequenceId(0);
-//		instance2.setSequencePosition(1);
-//		Instance instance3 = new Instance(features1, "3");
-//        instance3.setSequenceId(0);
-//        instance3.setSequencePosition(2);
-//        
-//        Instance instance4 = new Instance(features1, "4");
-//        instance4.setSequenceId(1);
-//        instance4.setSequencePosition(0);
-//        Instance instance5 = new Instance(features2, "4");
-//        instance5.setSequenceId(1);
-//        instance5.setSequencePosition(1);
-//
-//
-//		fs.addInstance(instance1);
-//		fs.addInstance(instance2);
-//		fs.addInstance(instance3);
-//		fs.addInstance(instance4);
-//		fs.addInstance(instance5);
-//		
-//		File outputDirectory = folder.newFolder();
-//		File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
-//		CRFSuiteDataWriter writer = new CRFSuiteDataWriter();
-//		writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL);
-		
-	}
+    @Test
+    public void dataWriterTest()
+        throws Exception
+    {
+
+        FeatureStore fs = new SimpleFeatureStore();
+
+        List<Feature> features1 = new ArrayList<Feature>();
+        features1.add(new Feature("feature1", 1.0));
+        features1.add(new Feature("feature2", 0.0));
+        features1.add(new Feature("feature3", "Water"));
+
+        List<Feature> features2 = new ArrayList<Feature>();
+        features2.add(new Feature("feature2", 0.5));
+        features2.add(new Feature("feature1", 0.5));
+        features2.add(new Feature("feature3", "Fanta"));
+
+        Instance instance1 = new Instance(features1, "1");
+        instance1.setSequenceId(0);
+        instance1.setSequencePosition(0);
+        Instance instance2 = new Instance(features2, "2");
+        instance2.setSequenceId(0);
+        instance2.setSequencePosition(1);
+        Instance instance3 = new Instance(features1, "3");
+        instance3.setSequenceId(0);
+        instance3.setSequencePosition(2);
+
+        Instance instance4 = new Instance(features1, "4");
+        instance4.setSequenceId(1);
+        instance4.setSequencePosition(0);
+        Instance instance5 = new Instance(features2, "4");
+        instance5.setSequenceId(1);
+        instance5.setSequencePosition(1);
+
+        fs.addInstance(instance1);
+        fs.addInstance(instance2);
+        fs.addInstance(instance3);
+        fs.addInstance(instance4);
+        fs.addInstance(instance5);
+
+        File outputDirectory = folder.newFolder();
+        File outputFile = new File(outputDirectory,
+                CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+        CRFSuiteDataWriter writer = new CRFSuiteDataWriter();
+        writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL);
+
+    }
 }

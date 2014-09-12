@@ -105,7 +105,7 @@ public class CRFSuiteTestTask
             accuracy = numerator / denominator;
         }
         System.out.println("Correct: " + correct + "\nIncorrect: " + incorrect + "\nAccuracy: "
-                + accuracy*100);
+                + accuracy * 100);
 
         // write predictions
         File predictionsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
@@ -169,7 +169,7 @@ public class CRFSuiteTestTask
         File test = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
         // Evaluate model against test data
-        List<String> commandTestModel = new ArrayList<>();
+        List<String> commandTestModel = new ArrayList<String>();
         commandTestModel.add(aExecutablePath);
         commandTestModel.add("tag");
         commandTestModel.add("-r");
