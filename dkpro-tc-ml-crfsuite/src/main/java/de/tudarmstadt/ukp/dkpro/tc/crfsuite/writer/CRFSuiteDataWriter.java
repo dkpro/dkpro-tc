@@ -17,7 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -37,6 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntrie
 public class CRFSuiteDataWriter
     implements DataWriter
 {
+	Log logger = null;
 
     @Override
     public void write(File aOutputDirectory, FeatureStore aFeatureStore,
@@ -46,6 +51,11 @@ public class CRFSuiteDataWriter
         Iterable<Instance> instances = aFeatureStore.getInstances();
 
         int totalCountOfInstances = getTotalCountOfInstances(instances);
+
+        File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.trainingFile));
+        BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
+        log("Start writing features to file " + outputFile.getAbsolutePath());
 
         StringBuilder sb = new StringBuilder();
         int lastSeenSeqId = -1;
@@ -87,14 +97,15 @@ public class CRFSuiteDataWriter
             }
             else if (ins + 1 == totalCountOfInstances) {
                 sb = appendEOS(sb);
+                bf.write(sb.toString());
+                sb = new StringBuilder();
             }
 
             sb.append("\n");
         }
-
-        File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.trainingFile));
-        FileUtils.writeStringToFile(outputFile, sb.toString());
+        bf.write(sb.toString());
+        bf.close();
+        log("Finished writing features to file " + outputFile.getAbsolutePath());
 
         Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
         File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
@@ -146,5 +157,12 @@ public class CRFSuiteDataWriter
         }
         return outcomeMapping;
     }
+    
+    private void log(String text) {
+		if (logger == null) {
+			logger = LogFactory.getLog(getClass());
+		}
+		logger.warn(text);
+	}
 
 }
