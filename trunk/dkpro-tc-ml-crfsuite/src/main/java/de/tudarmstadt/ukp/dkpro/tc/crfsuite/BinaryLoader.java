@@ -17,6 +17,7 @@
  * limitations under the License.
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
+
 import java.io.File;
 import java.net.URL;
 
@@ -34,7 +35,7 @@ public class BinaryLoader
         PlatformDetector pd = new PlatformDetector();
         try {
             String platform = pd.getPlatformId();
-            LogFactory.getLog(getClass()).warn("Your platform is " + platform);
+            LogFactory.getLog(getClass()).info("Your platform is " + platform);
             if (isLinux32Bit(platform)) {
                 return loadBinary(platform, pd.getExecutableSuffix());
             }
@@ -105,9 +106,12 @@ public class BinaryLoader
         String loc = packagePrefix + prefix + fileName + appendSuffix(execSuffix);
         URL resource = getClass().getResource("/" + loc);
         File executable = ResourceUtils.getUrlAsExecutable(resource, true);
-        
+
         Process chmod = Runtime.getRuntime().exec("chmod +x " + executable.getAbsolutePath());
         chmod.waitFor();
+
+        LogFactory.getLog(getClass()).info(
+                "Created temporary copy of binary in: " + executable.getAbsolutePath());
 
         return executable;
     }

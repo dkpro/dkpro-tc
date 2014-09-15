@@ -237,6 +237,6 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 		if (logger == null) {
 			logger = LogFactory.getLog(getClass());
 		}
-		logger.warn(text);
+		logger.info(text);
 	}
 }
