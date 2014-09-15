@@ -103,25 +103,65 @@ public class NGramUtils
         return annoNgrams;
     }
 
-
+/**
+ * Convenience method to return document ngrams when there's no stopword list.
+ * 
+ * @param jcas
+ * @param lowerCaseNGrams
+ * @param filterPartialMatches
+ * @param minN
+ * @param maxN
+ * @return
+ */
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
     {
         Set<String> empty = Collections.emptySet();
         return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
     }
+    
+    /**
+     * Convenience method to return document ngrams over Tokens.  
+     * 
+     * @param jcas
+     * @param lowerCaseNGrams
+     * @param filterPartialMatches
+     * @param minN
+     * @param maxN
+     * @param stopwords
+     * @return
+     */
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
+            boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
+            Set<String> stopwords)
+    {
+        return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, stopwords, Token.class);
+    }
 
+    /**
+     * Returns document ngrams over any annotation type that extends Annotation.  Intended use is Lemma, Stem, etc.
+     * 
+     * @param jcas
+     * @param lowerCaseNGrams
+     * @param filterPartialMatches
+     * @param minN
+     * @param maxN
+     * @param stopwords
+     * @param annotationClass annotation type of the ngram
+     * @return
+     */
     public static FrequencyDistribution<String> getDocumentNgrams(
             JCas jcas,
             boolean lowerCaseNGrams,
             boolean filterPartialMatches,
             int minN,
             int maxN,
-            Set<String> stopwords)
+            Set<String> stopwords,
+            Class<? extends Annotation> annotationClass)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
-            for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
+            for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(annotationClass,
                     s)), minN, maxN)) {
 
             	if(lowerCaseNGrams){
