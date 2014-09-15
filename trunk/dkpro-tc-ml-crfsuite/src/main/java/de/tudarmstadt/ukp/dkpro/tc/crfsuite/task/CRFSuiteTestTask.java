@@ -197,7 +197,7 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private void runTrain(List<String> aModelTrainCommand) throws Exception {
-		Process process = new ProcessBuilder().command(aModelTrainCommand)
+		Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand)
 				.start();
 		process.waitFor();
 	}
