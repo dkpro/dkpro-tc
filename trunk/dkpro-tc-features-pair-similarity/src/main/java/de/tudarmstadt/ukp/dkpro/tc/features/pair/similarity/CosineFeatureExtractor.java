@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
@@ -47,7 +48,7 @@ import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.WeightingMode
  * CosineSimilarity} (tokens) measure.
  * Please be aware this Cosine Similarity API has a history of bugginess.
  */
-public class CosineFeatureExtractor
+public class CosineFeatureExtractor<T extends Annotation>
     extends LuceneFeatureExtractorBase // FeatureExtractorResource_ImplBase -> NGramFeatureExtractorBase -> LuceneFeatureExtractorBase
     implements PairFeatureExtractor
 {
@@ -71,6 +72,14 @@ public class CosineFeatureExtractor
     public static final String PARAM_NORMALIZATION_MODE = "normalizationMode";
     @ConfigurationParameter(name = PARAM_NORMALIZATION_MODE, mandatory = false)
     private CosineSimilarity.NormalizationMode normalizationMode;
+    
+    /**
+     * This is the annotation type of the ngrams: usually Token.class, but possibly 
+     * Lemma.class or Stem.class,etc.
+     */
+    public static final String PARAM_NGRAM_ANNO_TYPE = "ngramAnnotationType";
+    @ConfigurationParameter(name = PARAM_NGRAM_ANNO_TYPE, mandatory = false, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
+    private Class<T> ngramAnnotationType;
 
     private CosineSimilarity measure;
     
@@ -116,10 +125,10 @@ public class CosineFeatureExtractor
         	// method for getSimilarity(Collection<String>, Collection<String>).
             List<String> text1 = new ArrayList<String>();
             List<String> text2 = new ArrayList<String>();
-            for(Token token: JCasUtil.select(view1, Token.class)){
+            for(T token: JCasUtil.select(view1, ngramAnnotationType)){
             	text1.add(token.getCoveredText().toLowerCase());
             }
-            for(Token token: JCasUtil.select(view2, Token.class)){
+            for(T token: JCasUtil.select(view2, ngramAnnotationType)){
             	text2.add(token.getCoveredText().toLowerCase());
             }
             double similarity = measure.getSimilarity(text1,

@@ -23,7 +23,9 @@ import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -33,10 +35,16 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBas
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
-public class IdfPairMetaCollector
+public class IdfPairMetaCollector<T extends Annotation>
 	extends LuceneBasedMetaCollector
     implements Constants
 {
+    /**
+     * This is the annotation type of the ngrams: usually Token.class, but possibly 
+     * Lemma.class or Stem.class,etc.
+     */
+    @ConfigurationParameter(name = CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, mandatory = false, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
+    private Class<T> ngramAnnotationType;
 
     private Set<String> stopwords;
     
@@ -102,7 +110,7 @@ public class IdfPairMetaCollector
     		throws TextClassificationException
     	{
     	return NGramUtils.getDocumentNgrams(
-                jcas, true, false, 1, 1, stopwords);
+                jcas, true, false, 1, 1, stopwords, ngramAnnotationType);
     	}
     
     @Override
