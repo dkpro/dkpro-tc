@@ -221,14 +221,14 @@ public class CRFSuiteTestTask
             }
             sb.append("\n");
         }
-        StorageService store = aContext.getStorageService();
-
-        File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
-        confMatrix.getParentFile().mkdirs();
-        BufferedWriter bf = new BufferedWriter(new FileWriter(new File(confMatrix.getAbsolutePath()
-                + "/confusionMatrix.txt")));
-        bf.write(sb.toString());
-        bf.close();
+//        StorageService store = aContext.getStorageService();
+//
+//        File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
+//        confMatrix.getParentFile().mkdirs();
+//        BufferedWriter bf = new BufferedWriter(new FileWriter(new File(confMatrix.getAbsolutePath()
+//                + "/confusionMatrix.txt")));
+//        bf.write(sb.toString());
+//        bf.close();
         log("\n" + sb.toString());
     }
 
