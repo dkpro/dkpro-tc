@@ -54,6 +54,12 @@ public class IdfPairMetaCollector<T extends Annotation>
     {
         super.initialize(context);
         stopwords = new HashSet<String>();
+        
+        String ngramAnnotationTypeName = ngramAnnotationType.getName().split("\\.")[ngramAnnotationType.getName().split("\\.").length-1];
+    	if(!ngramAnnotationTypeName.equals("Lemma") && !ngramAnnotationTypeName.equals("Stem") && !ngramAnnotationTypeName.equals("Token")){
+    		throw new ResourceInitializationException("Type " + ngramAnnotationTypeName + " is not currently supported.  "
+    				+ "Please use Token, Lemma, or Stem.", null);
+    	}
     }
     @Override
     public void process(JCas jcas)

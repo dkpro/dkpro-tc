@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -31,12 +32,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
@@ -98,6 +99,11 @@ public class CosineFeatureExtractor<T extends Annotation>
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
+        String ngramAnnotationTypeName = ngramAnnotationType.getName().split("\\.")[ngramAnnotationType.getName().split("\\.").length-1];
+    	if(!ngramAnnotationTypeName.equals("Lemma") && !ngramAnnotationTypeName.equals("Stem") && !ngramAnnotationTypeName.equals("Token")){
+    		throw new ResourceInitializationException("Type " + ngramAnnotationTypeName + " is not currently supported.  "
+    				+ "Please use Token, Lemma, or Stem.", null);
+    	}
         
         if(weightingModeTf == null){
         	weightingModeTf = CosineSimilarity.WeightingModeTf.FREQUENCY_LOGPLUSONE;
@@ -123,14 +129,11 @@ public class CosineFeatureExtractor<T extends Annotation>
         try {
         	//Note: getSimilarity(String, String) is *not* a convenience 
         	// method for getSimilarity(Collection<String>, Collection<String>).
-            List<String> text1 = new ArrayList<String>();
-            List<String> text2 = new ArrayList<String>();
-            for(T token: JCasUtil.select(view1, ngramAnnotationType)){
-            	text1.add(token.getCoveredText().toLowerCase());
-            }
-            for(T token: JCasUtil.select(view2, ngramAnnotationType)){
-            	text2.add(token.getCoveredText().toLowerCase());
-            }
+            Set<String> text1 = NGramUtils.getDocumentNgrams(
+                    view1, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
+            Set<String> text2 = NGramUtils.getDocumentNgrams(
+                    view2, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
+            
             double similarity = measure.getSimilarity(text1,
                   text2);
 
