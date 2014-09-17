@@ -37,7 +37,9 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Stem;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -160,9 +162,10 @@ public class NGramUtils
             Class<? extends Annotation> annotationClass)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
+        String annotationClassName = annotationClass.getName().split("\\.")[annotationClass.getName().split("\\.").length-1];
         for (Sentence s : select(jcas, Sentence.class)) {
-            for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(annotationClass,
-                    s)), minN, maxN)) {
+            for (List<String> ngram : new NGramStringListIterable(valuesToText(selectCovered(annotationClass,
+                    s), annotationClassName), minN, maxN)) {
 
             	if(lowerCaseNGrams){
             		ngram = lower(ngram);
@@ -341,5 +344,26 @@ public class NGramUtils
     		newNgram.add(token.toLowerCase());
     	}
     	return newNgram;
+    }
+    public static <T extends Annotation> List<String> valuesToText(Iterable<T> annotations, String annotationClassName) {
+    	List<String> texts = new ArrayList<String>();
+
+        if(annotationClassName.equals("Stem")){
+            for(Stem token: (Iterable<Stem>)annotations){
+            	texts.add(token.getValue().toLowerCase());
+//            	System.out.println("Stem: " + token.getValue().toLowerCase());
+            }
+        }else if(annotationClassName.equals("Lemma")){
+            for(Lemma token: (Iterable<Lemma>)annotations){
+            	texts.add(token.getValue().toLowerCase());
+//            	System.out.println("Lemma: " + token.getValue().toLowerCase());
+            }
+        }else if(annotationClassName.equals("Token")){
+            for(Token token: (Iterable<Token>)annotations){
+            	texts.add(token.getCoveredText().toLowerCase());
+//            	System.out.println("Token: " + token.getCoveredText().toLowerCase());
+            }
+        }
+    	return texts;
     }
 }
