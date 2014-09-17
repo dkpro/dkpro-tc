@@ -330,8 +330,8 @@ public class CRFSuiteTestTask
 
         File train = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
         
-        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/");
-        aExecutablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
+//        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/");
+//        aExecutablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
 
         List<String> commandTrainModel = new ArrayList<String>();
         commandTrainModel.add(aExecutablePath);
