@@ -36,6 +36,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
@@ -163,7 +164,7 @@ public class CRFSuiteTestTask
 
             HashMap<String, Integer> wc = map.get(actual);
             if (wc == null) {
-                wc = new HashMap<>();
+                wc = new HashMap<String, Integer>();
             }
             Integer integer = wc.get(prediciton);
             if (integer == null) {
@@ -174,7 +175,7 @@ public class CRFSuiteTestTask
             wc.put(prediciton, integer);
         }
 
-        List<String> uniqeLabelList = new ArrayList<>();
+        List<String> uniqeLabelList = new ArrayList<String>();
         for (String l : uniqeLables) {
             uniqeLabelList.add(l);
         }
@@ -328,6 +329,9 @@ public class CRFSuiteTestTask
                         AdapterNameEntries.trainingFile));
 
         File train = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
+        
+        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/");
+        aExecutablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
 
         List<String> commandTrainModel = new ArrayList<String>();
         commandTrainModel.add(aExecutablePath);
