@@ -146,8 +146,8 @@ public class CRFSuiteTestTask
     private void printConfusionmatrix(String[] aLines, TaskContext aContext)
         throws IOException
     {
-        Set<String> uniqeLables = new HashSet<>();
-        HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
+        Set<String> uniqeLables = new HashSet<String>();
+        HashMap<String, HashMap<String, Integer>> map = new HashMap<String, HashMap<String, Integer>>();
         for (String line : aLines) {
             String[] split = line.split("\t");
 
@@ -221,14 +221,15 @@ public class CRFSuiteTestTask
             }
             sb.append("\n");
         }
-//        StorageService store = aContext.getStorageService();
-//
-//        File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
-//        confMatrix.getParentFile().mkdirs();
-//        BufferedWriter bf = new BufferedWriter(new FileWriter(new File(confMatrix.getAbsolutePath()
-//                + "/confusionMatrix.txt")));
-//        bf.write(sb.toString());
-//        bf.close();
+        // StorageService store = aContext.getStorageService();
+        //
+        // File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
+        // confMatrix.getParentFile().mkdirs();
+        // BufferedWriter bf = new BufferedWriter(new FileWriter(new
+        // File(confMatrix.getAbsolutePath()
+        // + "/confusionMatrix.txt")));
+        // bf.write(sb.toString());
+        // bf.close();
         log("\n" + sb.toString());
     }
 
