@@ -17,8 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
@@ -150,7 +153,7 @@ public class CRFSuiteTestTask
     private void printConfusionmatrix(String[] aLines, TaskContext aContext)
         throws IOException
     {
-        Set<String> uniqeLables = new HashSet<String>();
+        Set<String> predictedLables = new HashSet<String>();
         HashMap<String, HashMap<String, Integer>> map = new HashMap<String, HashMap<String, Integer>>();
         for (String line : aLines) {
             String[] split = line.split("\t");
@@ -159,13 +162,12 @@ public class CRFSuiteTestTask
                 continue;
             }
 
-            String actual = split[0];
+            String actual = getActual(split[0]);
             String prediciton = split[1];
 
-            uniqeLables.add(prediciton);
-            uniqeLables.add(actual);
+            predictedLables.add(prediciton);
 
-            HashMap<String, Integer> wc = map.get(actual);
+            HashMap<String, Integer> wc = map.get(prediciton);
             if (wc == null) {
                 wc = new HashMap<String, Integer>();
             }
@@ -173,25 +175,27 @@ public class CRFSuiteTestTask
             if (integer == null) {
                 integer = new Integer(0);
             }
-            map.put(actual, wc);
+            map.put(prediciton, wc);
             integer++;
-            wc.put(prediciton, integer);
+            wc.put(actual, integer);
         }
 
         List<String> uniqeLabelList = new ArrayList<String>();
-        for (String l : uniqeLables) {
+        for (String l : predictedLables) {
             uniqeLabelList.add(l);
         }
 
-        String data[][] = new String[uniqeLables.size() + 1][uniqeLables.size() + 1];
+        String data[][] = new String[predictedLables.size() + 1][predictedLables.size() + 1];
         data[0][0] = "";
         for (int i = 0; i < uniqeLabelList.size(); i++) {
             String label = uniqeLabelList.get(i);
             HashMap<String, Integer> perLabel = map.get(label);
+
             data[i + 1][0] = label;
             data[0][i + 1] = label;
 
             int totalSumEntries = 0;
+
             for (String key : perLabel.keySet()) {
                 totalSumEntries += perLabel.get(key);
             }
@@ -205,8 +209,8 @@ public class CRFSuiteTestTask
         }
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < uniqeLables.size() + 1; i++) {
-            for (int j = 0; j < uniqeLables.size() + 1; j++) {
+        for (int i = 0; i < predictedLables.size() + 1; i++) {
+            for (int j = 0; j < predictedLables.size() + 1; j++) {
                 String format = "";
                 if (j == 0 || i == 0) {
                     format = String.format("%6s", data[j][i]);
@@ -225,16 +229,22 @@ public class CRFSuiteTestTask
             }
             sb.append("\n");
         }
-        // StorageService store = aContext.getStorageService();
-        //
-        // File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
-        // confMatrix.getParentFile().mkdirs();
-        // BufferedWriter bf = new BufferedWriter(new FileWriter(new
-        // File(confMatrix.getAbsolutePath()
-        // + "/confusionMatrix.txt")));
-        // bf.write(sb.toString());
-        // bf.close();
+        StorageService store = aContext.getStorageService();
+        File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
+        confMatrix.getParentFile().mkdirs();
+        BufferedWriter bf = new BufferedWriter(new FileWriter(new File(confMatrix.getAbsolutePath()
+                + "/confusionMatrix.txt")));
+        bf.write(sb.toString());
+        bf.close();
         log("\n" + sb.toString());
+    }
+
+    private String getActual(String aString)
+    {
+        String actual = (aString.equals("(null)")) ? "XYZ" : aString;
+        actual = actual.trim().equals("") ? "XYZ" : actual;
+
+        return actual;
     }
 
     private String testModel(TaskContext aContext, String aExecutablePath, String aModelLocation)
@@ -257,7 +267,8 @@ public class CRFSuiteTestTask
         Scanner sc = new Scanner(src);
         StringBuilder dest = new StringBuilder();
         while (sc.hasNextLine()) {
-            dest.append(sc.nextLine() + "\n");
+            String l = sc.nextLine();
+            dest.append(l + "\n");
         }
         sc.close();
 
