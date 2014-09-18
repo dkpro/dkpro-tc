@@ -350,17 +350,17 @@ public class NGramUtils
 
         if(annotationClassName.equals("Stem")){
             for(Stem token: (Iterable<Stem>)annotations){
-            	texts.add(token.getValue().toLowerCase());
+            	texts.add(token.getValue());
 //            	System.out.println("Stem: " + token.getValue().toLowerCase());
             }
         }else if(annotationClassName.equals("Lemma")){
             for(Lemma token: (Iterable<Lemma>)annotations){
-            	texts.add(token.getValue().toLowerCase());
+            	texts.add(token.getValue());
 //            	System.out.println("Lemma: " + token.getValue().toLowerCase());
             }
         }else if(annotationClassName.equals("Token")){
             for(Token token: (Iterable<Token>)annotations){
-            	texts.add(token.getCoveredText().toLowerCase());
+            	texts.add(token.getCoveredText());
 //            	System.out.println("Token: " + token.getCoveredText().toLowerCase());
             }
         }
