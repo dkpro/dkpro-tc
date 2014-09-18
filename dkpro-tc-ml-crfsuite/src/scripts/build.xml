@@ -40,43 +40,110 @@
 	<target name="install-executables">
 		<property name="version.bin" value="0.12"/>
 
-		<mkdir dir="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/linux-x86_32"/>
-		<mkdir dir="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/linux-x86_64"/>
-		<mkdir dir="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/windows-x86_32"/>
-		<mkdir dir="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/osx-x86_64"/>
+		<mkdir dir="target/download"/>
+
+		<!-- OSX -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64"/>
 
 		<get 
-    		src="http://hunpos.googlecode.com/files/hunpos-1.0-macosx.tgz" 
-    		dest="target/download/hunpos-1.0-macosx.tar.gz" 
-    		skipexisting="true"/>
+	    		src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.osx-x86_64.tar.gz" 
+	    		dest="target/download/crfsuite.osx-x86_64.tar.gz" 
+	    		skipexisting="true"/>
 		<gunzip 
-			src="target/download/crfsuite-macosx.tar.gz"
-			dest="target/download/crfsuite-macosx.tar"/>
+				src="target/download/crfsuite.osx-x86_64.tar.gz"
+				dest="target/download/crfsuite.osx-x86_64.tar"/>
 		<untar 
-			src="target/download/crfsuite-macosx.tar"
-			dest="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/core/tc/crfsuite/bin/osx-x86_64">
+				src="target/download/crfsuite.osx-x86_64.tar"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64">
 			<patternset>
-				<include name="*/*" />
+				<include name="*" />
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
-		<copydir 
-			src="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/core/hunpos/bin/windows-x86_32" 
-			dest="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/core/hunpos/bin/windows-x86_64"/>
+
 		<propertyfile
-		    file="target/crfsuiteBinary/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/osx-x86_64/manifest.properties">
+		    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64/manifest.properties">
+			<entry  key="crfsuite" value="executable"/>
+		</propertyfile>
+
+		<!-- LINUX 32 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32"/>
+		<get 
+	    		src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.linux-x86_32.tar.gz" 
+	    		dest="target/download/crfsuite.linux-x86_32.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/crfsuite.linux-x86_32.tar.gz"
+				dest="target/download/crfsuite.linux-x86_32.tar"/>
+		<untar 
+				src="target/download/crfsuite.linux-x86_32.tar"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32">
+			<patternset>
+				<include name="*" />
+			</patternset>
+			<mapper type="flatten" />
+		</untar>
+
+		<propertyfile
+		    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32/manifest.properties">
+			<entry  key="crfsuite" value="executable"/>
+		</propertyfile>
+
+		<!-- LINUX 64 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_64"/>
+		<get 
+			    src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.linux-x86_64.tar.gz" 
+			    dest="target/download/crfsuite.linux-x86_64.tar.gz" 
+			    skipexisting="true"/>
+		<gunzip 
+				src="target/download/crfsuite.linux-x86_64.tar.gz"
+				dest="target/download/crfsuite.linux-x86_64.tar"/>
+		<untar 
+				src="target/download/crfsuite.linux-x86_64.tar"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_64">
+			<patternset>
+				<include name="*" />
+			</patternset>
+			<mapper type="flatten" />
+		</untar>
+
+		<propertyfile
+				    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_64/manifest.properties">
+			<entry  key="crfsuite" value="executable"/>
+		</propertyfile>
+
+		<!-- WINDOWS 32 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32"/>
+		<get 
+				src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.windows-x86_32.tar.gz" 
+				dest="target/download/crfsuite.windows-x86_32.tar.gz" 
+				skipexisting="true"/>
+		<gunzip 
+				src="target/download/crfsuite.windows-x86_32.tar.gz"
+				dest="target/download/crfsuite.windows-x86_32.tar"/>
+		<untar 
+				src="target/download/crfsuite.windows-x86_32.tar"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32">
+			<patternset>
+				<include name="*" />
+			</patternset>
+			<mapper type="flatten" />
+		</untar>
+
+		<propertyfile
+			file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
 		<jar 
-			destfile="target/de.tudarmstadt.ukp.dkpro.core.tc.crfsuite-${version.bin}.jar" 
+			destfile="target/de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin-${version.bin}.jar" 
 			compress="true">
-			<fileset dir="target/crfsuiteBinary">
+			<fileset dir="target/model-staging">
 				<include name="META-INF/**/*"/>
-				<include name="**/bin/**/*"/>
+				<include name="**/*"/>
 			</fileset>
 		</jar>
-
+		
 		<generate-pom 
 			groupId="de.tudarmstadt.ukp.dkpro.tc"
 			artifactId="de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin" 
@@ -84,10 +151,11 @@
 
 		<install-artifact 
 			file="target/de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin-${version.bin}.jar"
-			groupId="de.tudarmstadt.ukp.dkpro.core"
+			groupId="de.tudarmstadt.ukp.dkpro.tc"
 			artifactId="de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin" 
 			version="${version.bin}"/>
 		<clean-pom/>
-		<delete dir="target/crfsuiteBinary"/>
+	 	<delete dir="target/model-staging"/>
+		<delete dir="target/download"/> 
 	</target>
 </project>

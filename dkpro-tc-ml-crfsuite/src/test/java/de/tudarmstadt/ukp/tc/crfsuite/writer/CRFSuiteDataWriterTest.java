@@ -17,10 +17,15 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.tc.crfsuite.writer;
 
+import static org.junit.Assert.*;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -40,12 +45,21 @@ public class CRFSuiteDataWriterTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @Test
-    public void dataWriterTest()
+    FeatureStore fs;
+    File outputDirectory;
+
+    @Before
+    public void setUp()
         throws Exception
     {
+        buildFeatureStore();
+        outputDirectory = folder.newFolder();
+    }
 
-        FeatureStore fs = new SimpleFeatureStore();
+    private void buildFeatureStore()
+        throws Exception
+    {
+        fs = new SimpleFeatureStore();
 
         List<Feature> features1 = new ArrayList<Feature>();
         features1.add(new Feature("feature1", 1.0));
@@ -79,12 +93,51 @@ public class CRFSuiteDataWriterTest
         fs.addInstance(instance3);
         fs.addInstance(instance4);
         fs.addInstance(instance5);
+    }
 
-        File outputDirectory = folder.newFolder();
-        File outputFile = new File(outputDirectory,
-                CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+    @Test
+    public void dataWriterTest()
+        throws Exception
+    {
+        writeFeaturesWithDataWriter();
+        List<String> fileContent = readDataBackIn();
+
+        assertEquals(8, fileContent.size());
+        assertEquals("1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__",
+                fileContent.get(0));
+        assertEquals("2\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta", fileContent.get(1));
+        assertEquals("3\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__EOS__",
+                fileContent.get(2));
+        assertEquals("", fileContent.get(3));
+        assertEquals("4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__",
+                fileContent.get(4));
+        assertEquals("4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__",
+                fileContent.get(5));
+        assertEquals("", fileContent.get(6));
+        assertEquals("", fileContent.get(7));
+
+    }
+
+    private List<String> readDataBackIn()
+        throws Exception
+    {
+        File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.trainingFile));
+        BufferedReader br = new BufferedReader(new FileReader(outputFile));
+
+        List<String> lines = new ArrayList<String>();
+        String currentLine = null;
+        while ((currentLine = br.readLine()) != null) {
+            lines.add(currentLine);
+        }
+        br.close();
+        return lines;
+    }
+
+    private void writeFeaturesWithDataWriter()
+        throws Exception
+    {
         CRFSuiteDataWriter writer = new CRFSuiteDataWriter();
         writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL);
-
     }
 }
