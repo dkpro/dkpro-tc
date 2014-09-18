@@ -38,7 +38,7 @@
 	<target name="separate-jars" depends="install-executables"/>
 
 	<target name="install-executables">
-		<property name="version.bin" value="0.12"/>
+		<property name="version.bin" value="20140918.0"/>
 
 		<mkdir dir="target/download"/>
 
@@ -60,6 +60,10 @@
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
+
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64/README">
+			crfsuite version 0.12
+		</echo>
 
 		<propertyfile
 		    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64/manifest.properties">
@@ -84,6 +88,10 @@
 			<mapper type="flatten" />
 		</untar>
 
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32/README">
+			crfsuite version 0.12
+		</echo>
+		
 		<propertyfile
 		    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
@@ -106,6 +114,10 @@
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
+
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_64/README">
+			crfsuite version 0.12
+		</echo>
 
 		<propertyfile
 				    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_64/manifest.properties">
@@ -130,7 +142,11 @@
 			<mapper type="flatten" />
 		</untar>
 
-		<propertyfile
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32/README">
+			crfsuite version 0.12
+		</echo>
+		
+		<propertyfile 
 			file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
