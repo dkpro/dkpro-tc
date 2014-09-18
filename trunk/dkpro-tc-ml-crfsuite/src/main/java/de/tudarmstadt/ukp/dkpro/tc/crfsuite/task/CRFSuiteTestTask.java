@@ -17,10 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,14 +36,12 @@ import org.apache.commons.logging.LogFactory;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.BinaryLoader;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
@@ -76,13 +72,20 @@ public class CRFSuiteTestTask
                     "Multi-label requested, but CRFSuite only supports single label setups.");
         }
 
-        String executablePath = new BinaryLoader().loadCRFBinary().getAbsolutePath();
+        String executablePath = getExecutablePath();
         String modelLocation = trainModel(aContext, executablePath);
         String rawTextOutput = testModel(aContext, executablePath, modelLocation);
 
         // FIXME that is supposed to be in the evaluation modul
         evaluate(aContext, rawTextOutput);
 
+    }
+
+    private String getExecutablePath()
+        throws Exception
+    {
+        return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
+                "crfsuite").getAbsolutePath();
     }
 
     private void evaluate(TaskContext aContext, String aRawTextOutput)
@@ -329,9 +332,6 @@ public class CRFSuiteTestTask
                         AdapterNameEntries.trainingFile));
 
         File train = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
-        
-//        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/bin/");
-//        aExecutablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
 
         List<String> commandTrainModel = new ArrayList<String>();
         commandTrainModel.add(aExecutablePath);
