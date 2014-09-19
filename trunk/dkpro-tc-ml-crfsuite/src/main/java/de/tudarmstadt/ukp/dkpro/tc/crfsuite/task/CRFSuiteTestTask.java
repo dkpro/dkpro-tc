@@ -64,6 +64,11 @@ public class CRFSuiteTestTask
     private static final String MODELNAME = "model.crfsuite";
     Log logger = null;
 
+    private String executablePath = null;
+    private String modelLocation = null;
+    private File trainFile = null;
+    private File testFile = null;
+
     @Override
     public void execute(TaskContext aContext)
         throws Exception
@@ -75,9 +80,9 @@ public class CRFSuiteTestTask
                     "Multi-label requested, but CRFSuite only supports single label setups.");
         }
 
-        String executablePath = getExecutablePath();
-        String modelLocation = trainModel(aContext, executablePath);
-        String rawTextOutput = testModel(aContext, executablePath, modelLocation);
+        executablePath = getExecutablePath();
+        modelLocation = trainModel(aContext);
+        String rawTextOutput = testModel(aContext);
 
         // FIXME that is supposed to be in the evaluation modul
         evaluate(aContext, rawTextOutput);
@@ -99,8 +104,6 @@ public class CRFSuiteTestTask
         int correct = 0;
         int incorrect = 0;
 
-        printConfusionmatrix(lines, aContext);
-
         List<String> predictionValues = new ArrayList<String>();
         for (String line : lines) {
             String[] split = line.split("\t");
@@ -117,6 +120,13 @@ public class CRFSuiteTestTask
                 incorrect++;
             }
         }
+
+        // call crfsuite again to obtain p/r/f1 per class as calculated by crfsuite
+        String precRecF1perClass = getPrecisionRecallF1PerClass();
+        log(precRecF1perClass);
+        File precRecF1File = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                AccessMode.READWRITE), "precisionRecallF1PerWordClass.txt");
+        FileUtils.write(precRecF1File, "\n" + precRecF1perClass);
 
         double denominator = correct + incorrect;
         double numerator = correct;
@@ -150,108 +160,29 @@ public class CRFSuiteTestTask
         FileUtils.writeStringToFile(evalFile, sb.toString());
     }
 
-    private void printConfusionmatrix(String[] aLines, TaskContext aContext)
-        throws IOException
+    private String getPrecisionRecallF1PerClass()
+        throws Exception
     {
-        Set<String> predictedLables = new HashSet<String>();
-        HashMap<String, HashMap<String, Integer>> map = new HashMap<String, HashMap<String, Integer>>();
-        for (String line : aLines) {
-            String[] split = line.split("\t");
+        String executablePath = getExecutablePath();
+        List<String> evalCommand = new ArrayList<String>();
+        evalCommand.add(executablePath);
+        evalCommand.add("tag");
+        evalCommand.add("-qt");
+        evalCommand.add("-m");
+        evalCommand.add(modelLocation);
+        evalCommand.add(testFile.getAbsolutePath());
 
-            if (split.length < 2) {
-                continue;
-            }
+        Process process = new ProcessBuilder().command(evalCommand).start();
+        String output = captureProcessOutput(process);
 
-            String actual = getActual(split[0]);
-            String prediciton = split[1];
-
-            predictedLables.add(prediciton);
-
-            HashMap<String, Integer> wc = map.get(prediciton);
-            if (wc == null) {
-                wc = new HashMap<String, Integer>();
-            }
-            Integer integer = wc.get(prediciton);
-            if (integer == null) {
-                integer = new Integer(0);
-            }
-            map.put(prediciton, wc);
-            integer++;
-            wc.put(actual, integer);
-        }
-
-        List<String> uniqeLabelList = new ArrayList<String>();
-        for (String l : predictedLables) {
-            uniqeLabelList.add(l);
-        }
-
-        String data[][] = new String[predictedLables.size() + 1][predictedLables.size() + 1];
-        data[0][0] = "";
-        for (int i = 0; i < uniqeLabelList.size(); i++) {
-            String label = uniqeLabelList.get(i);
-            HashMap<String, Integer> perLabel = map.get(label);
-
-            data[i + 1][0] = label;
-            data[0][i + 1] = label;
-
-            int totalSumEntries = 0;
-
-            for (String key : perLabel.keySet()) {
-                totalSumEntries += perLabel.get(key);
-            }
-
-            int j = 1;
-            for (String prediction : uniqeLabelList) {
-                Integer count = perLabel.get(prediction);
-                data[j++][i + 1] = ""
-                        + ((count == null) ? "0.0" : "" + (double) count / totalSumEntries);
-            }
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < predictedLables.size() + 1; i++) {
-            for (int j = 0; j < predictedLables.size() + 1; j++) {
-                String format = "";
-                if (j == 0 || i == 0) {
-                    format = String.format("%6s", data[j][i]);
-                }
-                else {
-                    Double doubleVal = new Double(data[j][i]);
-                    if (doubleVal == 0) {
-                        format = String.format("%6s", "");
-                    }
-                    else {
-                        format = String.format("%6.2f", doubleVal.doubleValue());
-                        format = format.replaceFirst("^0+(?!$)", "");
-                    }
-                }
-                sb.append(format);
-            }
-            sb.append("\n");
-        }
-        StorageService store = aContext.getStorageService();
-        File confMatrix = store.getStorageFolder(aContext.getId(), TEST_TASK_OUTPUT_KEY);
-        confMatrix.getParentFile().mkdirs();
-        BufferedWriter bf = new BufferedWriter(new FileWriter(new File(confMatrix.getAbsolutePath()
-                + "/confusionMatrix.txt")));
-        bf.write(sb.toString());
-        bf.close();
-        log("\n" + sb.toString());
+        return output;
     }
 
-    private String getActual(String aString)
-    {
-        String actual = (aString.equals("(null)")) ? "XYZ" : aString;
-        actual = actual.trim().equals("") ? "XYZ" : actual;
-
-        return actual;
-    }
-
-    private String testModel(TaskContext aContext, String aExecutablePath, String aModelLocation)
+    private String testModel(TaskContext aContext)
         throws Exception
     {
 
-        List<String> testModelCommand = buildTestCommand(aContext, aExecutablePath, aModelLocation);
+        List<String> testModelCommand = buildTestCommand(aContext);
         log("Testing model");
         String output = runTest(testModelCommand);
         log("Testing model finished");
@@ -263,7 +194,16 @@ public class CRFSuiteTestTask
         throws Exception
     {
         Process process = new ProcessBuilder().command(aTestModelCommand).start();
-        InputStream src = process.getInputStream();
+
+        String output = captureProcessOutput(process);
+
+        return output;
+
+    }
+
+    private String captureProcessOutput(Process aProcess)
+    {
+        InputStream src = aProcess.getInputStream();
         Scanner sc = new Scanner(src);
         StringBuilder dest = new StringBuilder();
         while (sc.hasNextLine()) {
@@ -271,13 +211,10 @@ public class CRFSuiteTestTask
             dest.append(l + "\n");
         }
         sc.close();
-
         return dest.toString();
-
     }
 
-    private List<String> buildTestCommand(TaskContext aContext, String aExecutablePath,
-            String aModelLocation)
+    private List<String> buildTestCommand(TaskContext aContext)
         throws Exception
     {
         File tmpTest = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
@@ -285,26 +222,25 @@ public class CRFSuiteTestTask
                 + "/"
                 + CRFSuiteAdapter.getInstance().getFrameworkFilename(
                         AdapterNameEntries.trainingFile));
-        File test = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
+        testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
         // Evaluate model against test data
         List<String> commandTestModel = new ArrayList<String>();
-        commandTestModel.add(aExecutablePath);
+        commandTestModel.add(executablePath);
         commandTestModel.add("tag");
         commandTestModel.add("-r");
         commandTestModel.add("-m");
-        commandTestModel.add(aModelLocation);
-        commandTestModel.add(test.getAbsolutePath());
+        commandTestModel.add(modelLocation);
+        commandTestModel.add(testFile.getAbsolutePath());
         return commandTestModel;
     }
 
-    private String trainModel(TaskContext aContext, String aExecutablePath)
+    private String trainModel(TaskContext aContext)
         throws Exception
     {
-
         String tmpModelLocation = System.getProperty("java.io.tmpdir") + MODELNAME;
-        List<String> modelTrainCommand = buildTrainCommand(aContext, aExecutablePath,
-                tmpModelLocation);
+        List<String> modelTrainCommand = buildTrainCommand(aContext, tmpModelLocation);
+
         log("Start training model");
         long time = System.currentTimeMillis();
         runTrain(modelTrainCommand);
@@ -332,8 +268,7 @@ public class CRFSuiteTestTask
         return modelLocation.getAbsolutePath();
     }
 
-    private List<String> buildTrainCommand(TaskContext aContext, String aExecutablePath,
-            String aTmpModelLocation)
+    private List<String> buildTrainCommand(TaskContext aContext, String aTmpModelLocation)
         throws Exception
     {
         File tmpTrain = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
@@ -342,14 +277,14 @@ public class CRFSuiteTestTask
                 + CRFSuiteAdapter.getInstance().getFrameworkFilename(
                         AdapterNameEntries.trainingFile));
 
-        File train = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
+        trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 
         List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(aExecutablePath);
+        commandTrainModel.add(executablePath);
         commandTrainModel.add("learn");
         commandTrainModel.add("-m");
         commandTrainModel.add(aTmpModelLocation);
-        commandTrainModel.add(train.getAbsolutePath());
+        commandTrainModel.add(trainFile.getAbsolutePath());
         return commandTrainModel;
     }
 
