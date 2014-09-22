@@ -65,6 +65,7 @@ public class CRFSuiteAdapter
         return CRFSuiteBatchTrainTestReport.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public DimensionBundle<Collection<String>> getFoldDimensionBundle(
             String[] files, int folds) {
