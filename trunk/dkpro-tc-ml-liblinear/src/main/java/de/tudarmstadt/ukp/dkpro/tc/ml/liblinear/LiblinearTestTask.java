@@ -75,6 +75,8 @@ public class LiblinearTestTask
 	    double C = 1.0;    // cost of constraints violation
 	    double eps = 0.01; // stopping criteria
 
+	    Linear.setDebugOutput(null);
+	    
 	    Parameter parameter = new Parameter(solver, C, eps);
 	    Model model = Linear.train(train, parameter);
 	    
