@@ -99,13 +99,15 @@ public class CRFSuiteTestTask
 
         List<String> predictionValues = new ArrayList<String>();
         for (String line : lines) {
+            predictionValues.add(line);
+            
             String[] split = line.split("\t");
             if (split.length < 2) {
                 continue;
             }
             String actual = split[0];
             String prediction = split[1];
-            predictionValues.add(prediction);
+            
             if (actual.equals(prediction)) {
                 correct++;
             }
