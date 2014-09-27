@@ -29,6 +29,8 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.ConditionalFrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -94,20 +96,22 @@ public class CRFSuiteTestTask
     {
         String[] lines = aRawTextOutput.split("\n");
 
+        printConfusionMatrix(aContext, lines);
+
         int correct = 0;
         int incorrect = 0;
 
         List<String> predictionValues = new ArrayList<String>();
         for (String line : lines) {
             predictionValues.add(line);
-            
+
             String[] split = line.split("\t");
             if (split.length < 2) {
                 continue;
             }
             String actual = split[0];
             String prediction = split[1];
-            
+
             if (actual.equals(prediction)) {
                 correct++;
             }
@@ -153,6 +157,128 @@ public class CRFSuiteTestTask
         sb.append(ReportConstants.INCORRECT + "=" + incorrect + "\n");
         sb.append(ReportConstants.PCT_CORRECT + "=" + accuracy + "\n");
         FileUtils.writeStringToFile(evalFile, sb.toString());
+    }
+
+    private void printConfusionMatrix(TaskContext aContext, String[] aLines)
+        throws Exception
+    {
+        ConditionalFrequencyDistribution<String, String> cfd = buildCondFreqDis(aLines);
+
+        String[][] data = new String[cfd.getConditions().size() + 1][cfd.getConditions().size() + 1];
+
+        data = setColumnRowLabels(cfd, data);
+        data = setContents(cfd, data);
+
+        outputConfusionMatrix2File(aContext, data, cfd.getConditions().size());
+
+    }
+
+    private void outputConfusionMatrix2File(TaskContext aContext, String[][] data, int size)
+        throws Exception
+    {
+        File confMatrix = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                AccessMode.READWRITE), "confusionMatrix.txt");
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                sb.append(String.format("%7s", data[i][j]));
+            }
+            sb.append("\n");
+        }
+
+        FileUtils.writeStringToFile(confMatrix, sb.toString());
+    }
+
+    private String[][] setContents(ConditionalFrequencyDistribution<String, String> cfd,
+            String[][] data)
+    {
+        int maxCond = cfd.getConditions().size();
+
+        int i = 2;
+        for (String c : cfd.getConditions()) {
+            FrequencyDistribution<String> fd = cfd.getFrequencyDistribution(c);
+            long total = fd.getN();
+
+            int j = 2;
+            for (String key : cfd.getConditions()) {
+                Double val = new Double((double) fd.getCount(key) / total);
+                if (val > 0) {
+                    data[i][j] = "" + String.format("%.3f", val);
+                }
+                else {
+                    data[i][j] = "" + String.format("%d", 0);
+                }
+                j++;
+                if (j >= maxCond) {
+                    break;
+                }
+            }
+            i++;
+            if (i >= maxCond) {
+                break;
+            }
+        }
+        return data;
+    }
+
+    private String[][] setColumnRowLabels(ConditionalFrequencyDistribution<String, String> cfd,
+            String[][] data)
+    {
+
+        // Set headlines
+        int maxConditions = cfd.getConditions().size();
+
+        // Init outer row/column
+        for (int k = 0; k < maxConditions; k++) {
+            for (int j = 0; j < maxConditions; j++) {
+                data[j][k] = "";
+                data[k][j] = "";
+            }
+        }
+
+        String[] prediction = { "P", "R", "E", "D", "I", "C", "T", "I", "O", "N" };
+        int l = 0;
+        for (int k = (maxConditions / 2) - (prediction.length / 2); k < maxConditions; k++) {
+            data[0][k] = prediction[l++];
+            if (l >= prediction.length || l >= k) {
+                break;
+            }
+        }
+
+        String[] actual = { "A", "C", "T", "U", "A", "L" };
+        l = 0;
+        for (int k = (maxConditions / 2) - (actual.length / 2); k < maxConditions; k++) {
+            data[k][0] = actual[l++];
+            if (l >= actual.length || l >= k) {
+                break;
+            }
+        }
+
+        int i = 2;
+        for (String c : cfd.getConditions()) {
+            data[i][1] = c;
+            data[1][i] = c;
+            i++;
+            if (i >= cfd.getConditions().size()) {
+                break;
+            }
+        }
+
+        return data;
+    }
+
+    private ConditionalFrequencyDistribution<String, String> buildCondFreqDis(String[] aLines)
+    {
+        ConditionalFrequencyDistribution<String, String> cfd = new ConditionalFrequencyDistribution<String, String>();
+        for (int i = 0; i < aLines.length; i++) {
+            String line = aLines[i];
+            String[] split = line.split("\t");
+            if (split.length > 1) {
+                cfd.addSample(split[0], split[1]);
+            }
+        }
+        return cfd;
     }
 
     private String getPrecisionRecallF1PerClass()
