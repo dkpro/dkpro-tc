@@ -164,25 +164,55 @@ public class CRFSuiteTestTask
     {
         ConditionalFrequencyDistribution<String, String> cfd = buildCondFreqDis(aLines);
 
+        outputConfusionMatrixWithAbsoluteFrequencies(aContext, cfd, cfd.getConditions().size());
+
+        outputConfusionMatrixWithRatios(aContext, cfd, cfd.getConditions().size());
+    }
+
+    private void outputConfusionMatrixWithRatios(TaskContext aContext,
+            ConditionalFrequencyDistribution<String, String> cfd, int aSize)
+        throws Exception
+    {
         String[][] data = new String[cfd.getConditions().size() + 1][cfd.getConditions().size() + 1];
 
         data = setColumnRowLabels(cfd, data);
-        data = setContents(cfd, data);
+        data = setContents(cfd, data, false);
 
-        outputConfusionMatrix2File(aContext, data, cfd.getConditions().size());
-
+        outputConfusionMatrix2File(aContext, data, cfd.getConditions().size(),
+                "confusionMatrixRatio.txt");
     }
 
-    private void outputConfusionMatrix2File(TaskContext aContext, String[][] data, int size)
+    private void outputConfusionMatrixWithAbsoluteFrequencies(TaskContext aContext,
+            ConditionalFrequencyDistribution<String, String> cfd, int aSize)
         throws Exception
     {
+        String[][] data = new String[cfd.getConditions().size() + 1][cfd.getConditions().size() + 1];
+
+        data = setColumnRowLabels(cfd, data);
+        data = setContents(cfd, data, true);
+
+        outputConfusionMatrix2File(aContext, data, cfd.getConditions().size(),
+                "confusionMatrixFreq.txt");
+    }
+
+    private void outputConfusionMatrix2File(TaskContext aContext, String[][] data, int size,
+            String name)
+        throws Exception
+    {
+        int maxLabelLen = 7;
+        for (int i = 1; i < size; i++) {
+            if (data[1][i].length() > maxLabelLen) {
+                maxLabelLen = data[1][i].length();
+            }
+        }
+
         File confMatrix = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE), "confusionMatrix.txt");
+                AccessMode.READWRITE), name);
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                sb.append(String.format("%7s", data[i][j]));
+                sb.append(String.format("%" + maxLabelLen + "s", data[i][j]));
             }
             sb.append("\n");
         }
@@ -191,24 +221,23 @@ public class CRFSuiteTestTask
     }
 
     private String[][] setContents(ConditionalFrequencyDistribution<String, String> cfd,
-            String[][] data)
+            String[][] data, boolean absFreq)
     {
         int maxCond = cfd.getConditions().size();
 
         int i = 2;
         for (String c : cfd.getConditions()) {
             FrequencyDistribution<String> fd = cfd.getFrequencyDistribution(c);
-            long total = fd.getN();
-
+            long max = fd.getN();
             int j = 2;
             for (String key : cfd.getConditions()) {
-                Double val = new Double((double) fd.getCount(key) / total);
-                if (val > 0) {
-                    data[i][j] = "" + String.format("%.3f", val);
+                if (absFreq) {
+                    data = setIntegerValue(data, fd, key, i, j);
                 }
                 else {
-                    data[i][j] = "" + String.format("%d", 0);
+                    data = setDoubleValue(data, fd, key, i, j, max);
                 }
+
                 j++;
                 if (j >= maxCond) {
                     break;
@@ -218,6 +247,33 @@ public class CRFSuiteTestTask
             if (i >= maxCond) {
                 break;
             }
+        }
+        return data;
+    }
+
+    private String[][] setDoubleValue(String[][] data, FrequencyDistribution<String> fd,
+            String key, int i, int j, long max)
+    {
+        Double val = new Double((double) fd.getCount(key) / max);
+        if (val > 0) {
+            data[i][j] = "" + String.format("%.3f", val);
+        }
+        else {
+            data[i][j] = "" + String.format("%d", 0);
+        }
+        return data;
+
+    }
+
+    private String[][] setIntegerValue(String[][] data, FrequencyDistribution<String> fd,
+            String key, int i, int j)
+    {
+        Integer val = new Integer((int) fd.getCount(key));
+        if (val > 0) {
+            data[i][j] = "" + String.format("%d", val);
+        }
+        else {
+            data[i][j] = "" + String.format("%d", 0);
         }
         return data;
     }
