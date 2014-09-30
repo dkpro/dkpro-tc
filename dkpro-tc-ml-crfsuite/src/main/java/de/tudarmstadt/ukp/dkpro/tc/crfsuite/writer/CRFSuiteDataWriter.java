@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntrie
 public class CRFSuiteDataWriter
     implements DataWriter
 {
-	Log logger = null;
+    Log logger = null;
 
     @Override
     public void write(File aOutputDirectory, FeatureStore aFeatureStore,
@@ -57,7 +57,6 @@ public class CRFSuiteDataWriter
         BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
         log("Start writing features to file " + outputFile.getAbsolutePath());
 
-        StringBuilder sb = new StringBuilder();
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
         for (int ins = 0; ins < totalCountOfInstances; ins++) {
@@ -68,22 +67,22 @@ public class CRFSuiteDataWriter
                 lastSeenSeqId = i.getSequenceId();
             }
 
-            sb.append(i.getOutcome());
-            sb.append("\t");
+            bf.write(i.getOutcome());
+            bf.write("\t");
 
             List<Feature> features = i.getFeatures();
             for (int idx = 0; idx < features.size(); idx++) {
                 Feature f = features.get(idx);
-                sb.append(f.getName() + "=" + f.getValue());
+                bf.write(f.getName() + "=" + f.getValue());
                 if (idx + 1 < features.size()) {
-                    sb.append("\t");
+                    bf.write("\t");
                 }
             }
 
             // Mark first line of new sequence with an additional __BOS__
             if (seqIdChanged) {
-                sb.append("\t");
-                sb.append("__BOS__");
+                bf.write("\t");
+                bf.write("__BOS__");
                 seqIdChanged = false;
             }
 
@@ -91,19 +90,16 @@ public class CRFSuiteDataWriter
             if (ins + 1 < totalCountOfInstances) {
                 Instance next = aFeatureStore.getInstance(ins + 1);
                 if (next.getSequenceId() != lastSeenSeqId) {
-                    sb = appendEOS(sb);
+                    appendEOS(bf);
                     continue;
                 }
             }
             else if (ins + 1 == totalCountOfInstances) {
-                sb = appendEOS(sb);
-                bf.write(sb.toString());
-                sb = new StringBuilder();
+                appendEOS(bf);
             }
 
-            sb.append("\n");
+            bf.write("\n");
         }
-        bf.write(sb.toString());
         bf.close();
         log("Finished writing features to file " + outputFile.getAbsolutePath());
 
@@ -112,15 +108,12 @@ public class CRFSuiteDataWriter
         FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
     }
 
-
-    private StringBuilder appendEOS(StringBuilder aSb)
+    private void appendEOS(BufferedWriter bf) throws Exception
     {
-        aSb.append("\t");
-        aSb.append("__EOS__");
-        aSb.append("\n");
-        aSb.append("\n");
-
-        return aSb;
+        bf.write("\t");
+        bf.write("__EOS__");
+        bf.write("\n");
+        bf.write("\n");
     }
 
     private int getTotalCountOfInstances(Iterable<Instance> aInstances)
@@ -133,7 +126,7 @@ public class CRFSuiteDataWriter
         }
         return totalCountOfInstances;
     }
-    
+
     public static String outcomeMap2String(Map<String, Integer> map)
     {
         StringBuilder sb = new StringBuilder();
@@ -157,12 +150,13 @@ public class CRFSuiteDataWriter
         }
         return outcomeMapping;
     }
-    
-    private void log(String text) {
-		if (logger == null) {
-			logger = LogFactory.getLog(getClass());
-		}
-		logger.info(text);
-	}
+
+    private void log(String text)
+    {
+        if (logger == null) {
+            logger = LogFactory.getLog(getClass());
+        }
+        logger.info(text);
+    }
 
 }
