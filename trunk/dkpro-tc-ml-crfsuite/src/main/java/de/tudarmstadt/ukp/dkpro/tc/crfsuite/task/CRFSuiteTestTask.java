@@ -239,7 +239,7 @@ public class CRFSuiteTestTask
 
         String[] prediction = { "P", "R", "E", "D", "I", "C", "T", "I", "O", "N" };
         int l = 0;
-        for (int k = (maxConditions / 2) - (prediction.length / 2); k < maxConditions; k++) {
+        for (int k = (maxConditions / 2) - (prediction.length / 2); k >= 0 && k < maxConditions; k++) {
             data[0][k] = prediction[l++];
             if (l >= prediction.length || l >= k) {
                 break;
@@ -248,7 +248,7 @@ public class CRFSuiteTestTask
 
         String[] actual = { "A", "C", "T", "U", "A", "L" };
         l = 0;
-        for (int k = (maxConditions / 2) - (actual.length / 2); k < maxConditions; k++) {
+        for (int k = (maxConditions / 2) - (actual.length / 2); k >= 0 && k < maxConditions; k++) {
             data[k][0] = actual[l++];
             if (l >= actual.length || l >= k) {
                 break;
