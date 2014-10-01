@@ -53,7 +53,7 @@ public class CRFSuiteDataWriter
         int totalCountOfInstances = getTotalCountOfInstances(instances);
 
         File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.trainingFile));
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
         log("Start writing features to file " + outputFile.getAbsolutePath());
 

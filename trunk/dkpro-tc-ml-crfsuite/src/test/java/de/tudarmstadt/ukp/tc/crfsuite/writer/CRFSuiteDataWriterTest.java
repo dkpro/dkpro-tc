@@ -122,7 +122,7 @@ public class CRFSuiteDataWriterTest
         throws Exception
     {
         File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.trainingFile));
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader br = new BufferedReader(new FileReader(outputFile));
 
         List<String> lines = new ArrayList<String>();

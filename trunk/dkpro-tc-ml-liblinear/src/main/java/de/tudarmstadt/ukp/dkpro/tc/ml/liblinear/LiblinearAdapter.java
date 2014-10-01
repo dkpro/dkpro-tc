@@ -69,7 +69,7 @@ public class LiblinearAdapter
 	public String getFrameworkFilename(AdapterNameEntries name) {
 
         switch (name) {
-            case trainingFile         :  return "training-data.txt";
+            case featureVectorsFile:  return "training-data.txt";
             case predictionsFile      :  return "predictions.txt";
             case evaluationFile       :  return "evaluation.txt";
             case featureSelectionFile :  return "attributeEvaluationResults.txt";

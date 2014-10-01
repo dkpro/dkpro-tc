@@ -76,7 +76,7 @@ public class WekaRegressionAdapter
     {
 
         switch (name) {
-        case trainingFile:
+        case featureVectorsFile:
             return "training-data.arff.gz";
         case predictionsFile:
             return "predictions.arff";

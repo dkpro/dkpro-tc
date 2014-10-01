@@ -44,7 +44,7 @@ public class WekaDataWriter
     {
         boolean isRegression = learningMode.equals(LM_REGRESSION);
         WekaUtils.instanceListToArffFile(new File(outputDirectory, 
-        		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile)), featureStore,
+        		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile)), featureStore,
                 useDenseInstances, isRegression);
     }
 }

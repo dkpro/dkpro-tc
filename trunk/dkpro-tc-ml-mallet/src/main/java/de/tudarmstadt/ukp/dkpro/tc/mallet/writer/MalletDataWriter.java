@@ -42,7 +42,7 @@ public class MalletDataWriter
         throws Exception
     {
         MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/"
-                + MalletAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile)), 
+                + MalletAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile)),
                 featureStore, useDenseInstances);
     }
 }

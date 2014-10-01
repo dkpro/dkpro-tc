@@ -101,7 +101,7 @@ public class ExtractFeaturesAndPredictTask
         File arffFileTrain = new File(aContext.getStorageLocation(
                 TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
