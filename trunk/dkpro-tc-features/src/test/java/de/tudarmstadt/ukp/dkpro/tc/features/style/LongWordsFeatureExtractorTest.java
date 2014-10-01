@@ -29,15 +29,14 @@ import junit.framework.Assert;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 
 public class LongWordsFeatureExtractorTest
 {
-    @Ignore
     @Test
     public void longWordsFeatureExtractorTest()
         throws Exception
@@ -50,12 +49,12 @@ public class LongWordsFeatureExtractorTest
         jcas.setDocumentText("This is a test of incredibly surprising long words.");
         engine.process(jcas);
 
-        LongWordsFeatureExtractor extractor = new LongWordsFeatureExtractor();
+        LongWordsFeatureExtractor extractor = FeatureUtil.createResource(LongWordsFeatureExtractor.class);
+
         List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(2, features.size());
         Iterator<Feature> iter = features.iterator();
-        //FIXME this will fail
         assertFeature(LongWordsFeatureExtractor.FN_LW_RATIO, 0.2, iter.next());
         assertFeature(LongWordsFeatureExtractor.FN_SW_RATIO, 0.4, iter.next());
     }
