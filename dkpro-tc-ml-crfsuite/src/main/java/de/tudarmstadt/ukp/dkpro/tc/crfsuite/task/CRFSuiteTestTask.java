@@ -398,7 +398,7 @@ public class CRFSuiteTestTask
                 AccessMode.READONLY).getPath()
                 + "/"
                 + CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.trainingFile));
+                        AdapterNameEntries.featureVectorsFile));
         testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
         // Evaluate model against test data
@@ -415,7 +415,7 @@ public class CRFSuiteTestTask
     private String trainModel(TaskContext aContext)
         throws Exception
     {
-        String tmpModelLocation = System.getProperty("java.io.tmpdir") + MODELNAME;
+        String tmpModelLocation = System.getProperty("java.io.tmpdir") + File.separator + MODELNAME;
         List<String> modelTrainCommand = buildTrainCommand(aContext, tmpModelLocation);
 
         log("Start training model");
@@ -431,6 +431,7 @@ public class CRFSuiteTestTask
     private void runTrain(List<String> aModelTrainCommand)
         throws Exception
     {
+        System.out.println("aModelTrainCommand: " + aModelTrainCommand);
         Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand).start();
         process.waitFor();
     }
@@ -452,7 +453,7 @@ public class CRFSuiteTestTask
                 AccessMode.READONLY).getPath()
                 + "/"
                 + CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.trainingFile));
+                        AdapterNameEntries.featureVectorsFile));
 
         trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 

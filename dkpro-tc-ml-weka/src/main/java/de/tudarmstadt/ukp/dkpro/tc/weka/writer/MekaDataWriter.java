@@ -43,7 +43,7 @@ public class MekaDataWriter
         throws Exception
     {
         WekaUtils.instanceListToArffFileMultiLabel(new File(outputDirectory,
-        		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile)),
+        		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile)),
                 featureStore, useDenseInstances);
     }
 }

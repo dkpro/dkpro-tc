@@ -79,7 +79,7 @@ public class LiblinearDataWriter
 			sb.append("\n");
 		}
 		
-		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 		FileUtils.writeStringToFile(outputFile, sb.toString());
 		
 		File mappingFile = new File(outputDirectory, LiblinearAdapter.getOutcomeMappingFilename());

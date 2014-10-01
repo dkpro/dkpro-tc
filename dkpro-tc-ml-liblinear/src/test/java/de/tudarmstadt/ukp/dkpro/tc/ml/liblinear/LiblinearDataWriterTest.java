@@ -60,7 +60,7 @@ public class LiblinearDataWriterTest {
 		fs.addInstance(instance2);
 		
 		File outputDirectory = folder.newFolder();
-		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 		LiblinearDataWriter writer = new LiblinearDataWriter();
 		writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL);
 		

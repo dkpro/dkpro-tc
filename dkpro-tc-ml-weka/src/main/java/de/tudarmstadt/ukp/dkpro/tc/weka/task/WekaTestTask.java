@@ -82,10 +82,10 @@ public class WekaTestTask
         File arffFileTrain = new File(aContext.getStorageLocation(
                 TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         File arffFileTest = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY).getPath()
-                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
         Instances trainData = WekaUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = WekaUtils.getInstances(arffFileTest, multiLabel);

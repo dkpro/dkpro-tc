@@ -29,9 +29,21 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 public interface TCMachineLearningAdapter {
 
 	public enum AdapterNameEntries {
-		trainingFile,
+        /**
+         * Intended for storing feature vectors (both in training and testing phases)
+         */
+        featureVectorsFile,
+
+        /**
+         * Intended for actual predictions on test data, i.e. label sequence
+         */
 		predictionsFile,
+
+        /**
+         * Intended for storing evaluation of the task
+         */
 		evaluationFile,
+
 		featureSelectionFile
 	}
 

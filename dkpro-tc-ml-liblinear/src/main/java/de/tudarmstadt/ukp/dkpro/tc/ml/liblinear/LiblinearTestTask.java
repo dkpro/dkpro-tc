@@ -62,9 +62,9 @@ public class LiblinearTestTask
 	    }
 	    
 	    File fileTrain = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-	            AccessMode.READONLY).getPath() + "/" + LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+	            AccessMode.READONLY).getPath() + "/" + LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 	    File fileTest = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
-	            AccessMode.READONLY).getPath() + "/" + LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.trainingFile));
+	            AccessMode.READONLY).getPath() + "/" + LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
 	    // default for bias is -1, documentation says to set it to 1 in order to get results closer to libsvm
 	    // writer adds bias, so if we de-activate that here for some reason, we need to also deactivate it there

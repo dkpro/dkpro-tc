@@ -29,7 +29,6 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletFoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 public class MalletAdapter 
 	implements TCMachineLearningAdapter
@@ -69,7 +68,7 @@ public class MalletAdapter
 	public String getFrameworkFilename(AdapterNameEntries name) {
 
         switch (name) {
-            case trainingFile         :  return "training-data.txt.gz";
+            case featureVectorsFile:  return "training-data.txt.gz";
             case predictionsFile      :  return "predictions.txt";
             case evaluationFile       :  return "evaluation.txt";
             case featureSelectionFile :  return "attributeEvaluationResults.txt";

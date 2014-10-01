@@ -76,7 +76,7 @@ public class CRFSuiteAdapter
     public String getFrameworkFilename(AdapterNameEntries aName)
     {
         switch (aName) {
-        case trainingFile:
+        case featureVectorsFile:
             return "training-data.txt";
         case predictionsFile:
             return "predictions.txt";
