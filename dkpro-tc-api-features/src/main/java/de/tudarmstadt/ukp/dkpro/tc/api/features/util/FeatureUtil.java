@@ -25,6 +25,15 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceAccessException;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
+import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
@@ -82,4 +91,26 @@ public class FeatureUtil
         
         return stopwords;
     }
+    
+    // TODO this will eventually also be included in uimaFit and can be removed then
+	@SuppressWarnings("unchecked")
+	public static <T extends Resource> T createResource(Class<T> aClass, Object... aParam)
+	        throws ResourceInitializationException, ResourceAccessException  {
+	  // Configure external resource
+	  ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
+	          aClass, aParam);
+	
+	  // Configure resource manager
+	  ResourceManagerConfiguration cfg = UIMAFramework.getResourceSpecifierFactory()
+	          .createResourceManagerConfiguration();
+	
+	  ExternalResourceFactory.bindExternalResource(cfg, "rootResource", desc);
+	
+	  // Instantiate resource manager (internally instantiates resources)
+	  ResourceManager manager = new ResourceManager_impl();
+	  manager.initializeExternalResources(cfg, "", null);
+	
+	  // Get resource instance
+	  return (T) manager.getResource("rootResource");
+	}
 }
