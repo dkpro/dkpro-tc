@@ -115,7 +115,8 @@ public class BatchTaskCrossValidation
 
         if (numFolds < 2) {
             throw new IllegalStateException(
-                    "Number of folds is not configured correctly. Number of folds needs to be at least 2.");
+                    "Number of folds is not configured correctly. Number of folds needs to be at " +
+                            "least 2 (but was " + numFolds + ")");
         }
 
         // check the validity of the experiment setup first
