@@ -31,7 +31,7 @@ public class MacroFScore extends LabelBasedMeasuresBase implements MeasuresBase{
 		super(decomposedConfusionMatrix);
 	}
 
-	public Double calculateMeasure(){
+	public Double calculateMeasure(boolean softEvaluation){
 		int numberOfMatrices = decomposedConfusionMatrix.length;
 		double summedFScore = 0.0;
 		
@@ -49,7 +49,7 @@ public class MacroFScore extends LabelBasedMeasuresBase implements MeasuresBase{
 				recall = tp / localSum;
 			if ((localSum = precision + recall) != 0.0)
 				summedFScore += (2 * precision * recall) / localSum;
-			else 
+			else if (! softEvaluation)
 				return Double.NaN;
 		}
 		return Double.valueOf(summedFScore / numberOfMatrices);	

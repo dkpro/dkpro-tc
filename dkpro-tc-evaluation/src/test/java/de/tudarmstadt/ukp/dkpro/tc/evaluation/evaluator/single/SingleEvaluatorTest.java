@@ -44,12 +44,13 @@ public class SingleEvaluatorTest {
 	
 	static File file = new File("src/test/resources/datasets/single/id2outcome.txt");
 	EvaluationMode mode = EvaluationMode.SINGLE;
+	boolean softEvaluation = true;
 	HashMap<String, String> results;
 	
 	@Before
     public void setup() throws IOException
     {
-		EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode);
+		EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
 		evalFactory.readDataFile();
 		EvaluatorBase evaluator = evalFactory.makeEvaluator();
 		results = evaluator.calculateEvaluationMeasures();
@@ -63,8 +64,10 @@ public class SingleEvaluatorTest {
 		
 		// macro recall
 		Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
-		//assertEquals(0.047619047619047616, reValue, 0.00000001);
-		assertTrue("result should be an invalid value, but isn't", Double.isNaN(reValue));
+		// result for softEvaluation = true;
+		assertEquals(0.047619047619047616, reValue, 0.00000001);
+		// result for softEvaluation = false; 
+		//assertTrue("result should be an invalid value, but isn't", Double.isNaN(reValue));
 		
 		// macro accuracy
 		Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
@@ -72,7 +75,9 @@ public class SingleEvaluatorTest {
 		
 		// macro f-score
 		Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
-		//assertEquals(0.047619047619047616, fScValue, 0.000001);
-		assertTrue("result should be an invalid value, but isn't", Double.isNaN(fScValue));
+		// result for softEvaluation = true;
+		assertEquals(0.047619047619047616, fScValue, 0.000001);
+		// result for softEvaluation = false;
+		//assertTrue("result should be an invalid value, but isn't", Double.isNaN(fScValue));
 	}
 }

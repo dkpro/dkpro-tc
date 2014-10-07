@@ -30,8 +30,8 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 public class RegressionEvaluator extends EvaluatorBase {
 
 	public RegressionEvaluator(HashMap<String, Integer> class2number,
-			LinkedList<String> readData) {
-		super(class2number, readData);
+			LinkedList<String> readData, boolean softEvaluation) {
+		super(class2number, readData, softEvaluation);
 	}
 
 	@Override

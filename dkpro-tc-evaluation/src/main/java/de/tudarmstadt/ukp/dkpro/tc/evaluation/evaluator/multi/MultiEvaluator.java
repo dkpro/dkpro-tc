@@ -35,10 +35,10 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 public class MultiEvaluator extends EvaluatorBase implements BipartitionBased {
 
 	public MultiEvaluator(HashMap<String, Integer> class2number,
-			LinkedList<String> readData) {
-		super(class2number, readData);
+			LinkedList<String> readData, boolean softEvaluation) {
+		super(class2number, readData, softEvaluation);
 	}
-	
+
 	public ConfusionMatrix<HashMap<String, HashMap<String, Double>>> buildConfusionMatrix() {
 		HashSet<String> labelCombinations = getSetOfLabelCombinations();
 		

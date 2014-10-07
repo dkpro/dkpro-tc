@@ -39,6 +39,12 @@ public class EvaluatorFactory {
 	private EvaluationMode mode;
 	protected HashMap<String, Integer> class2number;
 	protected LinkedList<String> readData;
+	/**
+	 * used for cases of dividing by 0
+	 * true: 	0 is the output
+	 * false: 	NaN is the output
+	 */
+	boolean softEvaluation;
 	
 	
 	public enum EvaluationMode{
@@ -50,22 +56,23 @@ public class EvaluatorFactory {
 	 * @param file - file containing data are to be evaluated
 	 * @param mode 
 	 */
-	public EvaluatorFactory(File file, EvaluationMode mode){
+	public EvaluatorFactory(File file, EvaluationMode mode, boolean softEvaluation){
 		this.file = file;
 		this.mode = mode;
+		this.softEvaluation = softEvaluation;
 	}
 	
 	public EvaluatorBase makeEvaluator(){
 		EvaluatorBase evaluator = null;
 		switch (mode) {
 			case SINGLE:
-				evaluator = new SingleEvaluator(class2number, readData);
+				evaluator = new SingleEvaluator(class2number, readData, softEvaluation);
 				break;
 			case MULTI:
-				evaluator = new MultiEvaluator(class2number, readData);
+				evaluator = new MultiEvaluator(class2number, readData, softEvaluation);
 				break;
 			case REGRESSION:
-				evaluator = new RegressionEvaluator(class2number, readData);
+				evaluator = new RegressionEvaluator(class2number, readData, softEvaluation);
 				break;
 		}		
 		return evaluator;

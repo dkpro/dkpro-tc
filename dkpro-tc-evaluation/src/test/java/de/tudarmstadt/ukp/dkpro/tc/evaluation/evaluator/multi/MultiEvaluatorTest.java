@@ -39,12 +39,13 @@ public class MultiEvaluatorTest {
 	
 	static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
 	EvaluationMode mode = EvaluationMode.MULTI;
+	boolean softEvaluation = false;
 	HashMap<String, String> results;
 	
 	@Before
     public void setup() throws IOException
     {
-		EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode);
+		EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
 		evalFactory.readDataFile();
 		EvaluatorBase evaluator = evalFactory.makeEvaluator();
 		results = evaluator.calculateEvaluationMeasures();
