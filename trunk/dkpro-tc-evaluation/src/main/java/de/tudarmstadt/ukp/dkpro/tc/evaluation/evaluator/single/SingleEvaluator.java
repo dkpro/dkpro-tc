@@ -34,8 +34,8 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 public class SingleEvaluator extends EvaluatorBase implements BipartitionBased{
 
 	public SingleEvaluator(HashMap<String, Integer> class2number,
-			LinkedList<String> readData) {
-		super(class2number, readData);
+			LinkedList<String> readData, boolean softEvaluation) {
+		super(class2number, readData, softEvaluation);
 	}
 
 	public ConfusionMatrix<ArrayList<ArrayList<Double>>> buildConfusionMatrix() {

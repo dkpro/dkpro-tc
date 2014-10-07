@@ -31,7 +31,7 @@ public class MacroRecall extends LabelBasedMeasuresBase implements MeasuresBase{
 		super(decomposedConfusionMatrix);
 	}
 
-	public Double calculateMeasure(){
+	public Double calculateMeasure(boolean softEvaluation){
 		int numberOfMatrices = decomposedConfusionMatrix.length;
 		double summedRecall = 0.0;
 		
@@ -45,7 +45,7 @@ public class MacroRecall extends LabelBasedMeasuresBase implements MeasuresBase{
 				recall = tp / localSum;
 				summedRecall += recall;
 			}
-			else 
+			else if (! softEvaluation)
 				return Double.NaN;
 		}
 		return Double.valueOf(summedRecall / numberOfMatrices);	

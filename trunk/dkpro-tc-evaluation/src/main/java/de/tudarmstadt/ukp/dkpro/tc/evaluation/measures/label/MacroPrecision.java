@@ -31,7 +31,7 @@ public class MacroPrecision extends LabelBasedMeasuresBase implements MeasuresBa
 		super(decomposedConfusionMatrix);
 	}
 
-	public Double calculateMeasure(){
+	public Double calculateMeasure(boolean softEvaluation){
 		int numberOfMatrices = decomposedConfusionMatrix.length;
 		double summedPrecision = 0.0;
 		
@@ -45,7 +45,7 @@ public class MacroPrecision extends LabelBasedMeasuresBase implements MeasuresBa
 				precision = tp / localSum;
 				summedPrecision += precision;
 			}
-			else 
+			else if (! softEvaluation)
 				return Double.NaN;
 		}
 		return Double.valueOf(summedPrecision / numberOfMatrices);	

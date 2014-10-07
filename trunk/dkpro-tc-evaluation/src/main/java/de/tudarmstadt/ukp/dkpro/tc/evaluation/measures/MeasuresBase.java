@@ -24,5 +24,5 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures;
  */
 public interface MeasuresBase {
 	
-	public Double calculateMeasure();
+	public Double calculateMeasure(boolean softEvaluation);
 }

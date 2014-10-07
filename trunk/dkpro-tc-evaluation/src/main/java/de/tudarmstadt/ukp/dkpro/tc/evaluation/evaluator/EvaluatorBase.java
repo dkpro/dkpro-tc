@@ -34,12 +34,14 @@ public abstract class EvaluatorBase {
 	
 	protected HashMap<String, Integer> class2number;
 	protected LinkedList<String> readData;
+	protected boolean softEvaluation;
 	
 	public EvaluatorBase(HashMap<String, Integer> class2number,
-			LinkedList<String> readData) {
+			LinkedList<String> readData, boolean softEvaluation) {
 		super();
 		this.class2number = class2number;
 		this.readData = readData;
+		this.softEvaluation = softEvaluation;
 	}
 	
 	public abstract HashMap<String, String> calculateEvaluationMeasures();		
@@ -57,22 +59,22 @@ public abstract class EvaluatorBase {
 		// macro precision
 		MacroPrecision macroPrec = new MacroPrecision(decomposedConfusionMatrix);
 		String keyMacroPrec = MacroPrecision.class.getSimpleName(); 
-		Double macroPrecValue = macroPrec.calculateMeasure();
+		Double macroPrecValue = macroPrec.calculateMeasure(softEvaluation);
 		results.put(keyMacroPrec, String.valueOf(macroPrecValue));
 		// macro recall
 		MacroRecall macroRec = new MacroRecall(decomposedConfusionMatrix);
 		String keyMacroRec = MacroRecall.class.getSimpleName(); 
-		Double macroRecValue = macroRec.calculateMeasure();
+		Double macroRecValue = macroRec.calculateMeasure(softEvaluation);
 		results.put(keyMacroRec, String.valueOf(macroRecValue));
 		// macro accuracy
 		MacroAccuracy macroAcc = new MacroAccuracy(decomposedConfusionMatrix);
 		String keyMacroAcc = MacroAccuracy.class.getSimpleName(); 
-		Double macroAccValue = macroAcc.calculateMeasure();
+		Double macroAccValue = macroAcc.calculateMeasure(softEvaluation);
 		results.put(keyMacroAcc, String.valueOf(macroAccValue));
 		// macro f-score
 		MacroFScore macroFSc = new MacroFScore(decomposedConfusionMatrix);
 		String keyMacroFSc = MacroFScore.class.getSimpleName(); 
-		Double macroFScValue = macroFSc.calculateMeasure();
+		Double macroFScValue = macroFSc.calculateMeasure(softEvaluation);
 		results.put(keyMacroFSc, String.valueOf(macroFScValue));
 		return results;
 	}

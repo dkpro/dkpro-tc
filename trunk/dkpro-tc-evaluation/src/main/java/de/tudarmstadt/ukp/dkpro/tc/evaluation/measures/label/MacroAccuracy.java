@@ -31,7 +31,7 @@ public class MacroAccuracy extends LabelBasedMeasuresBase implements MeasuresBas
 		super(decomposedConfusionMatrix);
 	}
 
-	public Double calculateMeasure(){
+	public Double calculateMeasure(boolean softEvaluation){
 		int numberOfMatrices = decomposedConfusionMatrix.length;
 		double summedAccuracy = 0.0;
 		
@@ -44,7 +44,7 @@ public class MacroAccuracy extends LabelBasedMeasuresBase implements MeasuresBas
 			double localSum = 0.0;
 			if ((localSum = tp + fp + fn + tn) != 0.0)
 				summedAccuracy += (tp + tn) / localSum; 
-			else 
+			else if (! softEvaluation)
 				return Double.NaN;
 		}
 		return Double.valueOf(summedAccuracy / numberOfMatrices);	
