@@ -22,22 +22,25 @@ import java.util.LinkedList;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
-
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class RegressionEvaluator extends EvaluatorBase {
+public class RegressionEvaluator
+    extends EvaluatorBase
+{
 
-	public RegressionEvaluator(HashMap<String, Integer> class2number,
-			LinkedList<String> readData, boolean softEvaluation) {
-		super(class2number, readData, softEvaluation);
-	}
+    public RegressionEvaluator(HashMap<String, Integer> class2number,
+            LinkedList<String> readData, boolean softEvaluation)
+    {
+        super(class2number, readData, softEvaluation);
+    }
 
-	@Override
-	public HashMap<String, String> calculateEvaluationMeasures() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-		
+    @Override
+    public HashMap<String, String> calculateEvaluationMeasures()
+    {
+        // TODO add measures
+        return null;
+    }
+
 }
