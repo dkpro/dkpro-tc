@@ -40,7 +40,7 @@ public class CosineSimilarityTest
      * Tests TFIDF Cosine Similarity with TF weight FREQUENCY_LOGPLUSONE, 
      * IDF weight PASSTHROUGH, and normalization mode L2. <br />
      * 
-     * Answer 0.2 confirmed by following equation 15.2, pg 541, in Manning and Schuetze. <br />
+     * Answer 0.2 for Tokens confirmed by following equation 15.2, pg 541, in Manning and Schuetze. <br />
      * Vector1 = 1,.5,0,1,.5,0 <br />
      * Vector2 = 0,.5,1,0,.5,1 <br />
      * Sum of vector products (svp) = (1x0)+(.5x.5)+(0x1)+(1x0)+(.5x.5)+(0x1) =.5 <br />
@@ -57,7 +57,8 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath };
+        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath
+        		};
         test.runPipeline();
         assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
         assertEquals(test.featureNames.size(), 1);
@@ -66,8 +67,60 @@ public class CosineSimilarityTest
         	assertEquals(0.2, (double)feat.getValue(), epsilon);
 //        	System.out.println("CosSim score: " + (double)feat.getValue());
         }
+    }
+    @Test
+    public void testCosSimWithStems()
+        throws Exception
+    {
+    	CosineSimilarityTest test = new CosineSimilarityTest();
+        test.initialize();
+        test.parameters = new Object[] { 
+        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+        		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Stem"
+        		};
+        test.runPipeline();
+        assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
+        assertEquals(test.featureNames.size(), 1);
         
+        for(Feature feat: test.instanceList.get(0).getFeatures()){
+        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+        }
+    }
+    @Test
+    public void testCosSimWithLemmas()
+        throws Exception
+    {
+    	CosineSimilarityTest test = new CosineSimilarityTest();
+        test.initialize();
+        test.parameters = new Object[] { 
+        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+        		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma"
+        		};
+        test.runPipeline();
+        assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
+        assertEquals(test.featureNames.size(), 1);
         
+        for(Feature feat: test.instanceList.get(0).getFeatures()){
+        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+        }
+    }
+    @Test
+    public void testCosSimWithPosTags()
+        throws Exception
+    {
+    	CosineSimilarityTest test = new CosineSimilarityTest();
+        test.initialize();
+        test.parameters = new Object[] { 
+        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+        		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
+        		};
+        test.runPipeline();
+        assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
+        assertEquals(test.featureNames.size(), 1);
+        
+        for(Feature feat: test.instanceList.get(0).getFeatures()){
+        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+        }
     }
     @Override
     protected void getFeatureExtractorCollector(List<Object> parameterList)

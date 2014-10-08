@@ -38,6 +38,9 @@ import org.junit.rules.TemporaryFolder;
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -82,10 +85,19 @@ public abstract class PPipelineTestBase
         );
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngineDescription stemmer = AnalysisEngineFactory.createEngineDescription(SnowballStemmer.class);
+        AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(StanfordLemmatizer.class);
+        AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(StanfordPosTagger.class);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(posTagger, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(posTagger, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         getMetaCollector(parameterList);
 

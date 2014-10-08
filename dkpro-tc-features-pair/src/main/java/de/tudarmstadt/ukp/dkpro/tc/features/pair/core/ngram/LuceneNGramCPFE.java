@@ -36,6 +36,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 import com.google.common.collect.MinMaxPriorityQueue;
 
+import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -123,10 +124,16 @@ public class LuceneNGramCPFE
     public List<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = NGramUtils.getDocumentNgrams(view1, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN1, ngramMaxN1, stopwords);
-        FrequencyDistribution<String> view2Ngrams = NGramUtils.getDocumentNgrams(view2, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN2, ngramMaxN2, stopwords);
+    	FrequencyDistribution<String> view1Ngrams = null;
+    	FrequencyDistribution<String> view2Ngrams = null;
+    	try{
+	        view1Ngrams = NGramUtils.getDocumentNgrams(view1, ngramLowerCase, filterPartialStopwordMatches,
+	                ngramMinN1, ngramMaxN1, stopwords);
+	        view2Ngrams = NGramUtils.getDocumentNgrams(view2, ngramLowerCase, filterPartialStopwordMatches,
+	                ngramMinN2, ngramMaxN2, stopwords);
+    	}catch(FeaturePathException e){
+    		throw new TextClassificationException(e);
+    	}
 
         FrequencyDistribution<String> documentComboNgrams = ComboUtils
                 .getCombinedNgrams(view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
