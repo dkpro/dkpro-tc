@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
+import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -75,8 +76,8 @@ public class ComboUtils
     public static FrequencyDistribution<String> getMultipleViewNgrams(List<JCas> jcases,
     		Annotation classificationUnit, boolean ngramLowerCase, 
     		boolean filterPartialStopwords,
-    		int ngramMinN, int ngramMaxN, Set<String>stopwords){
-//    		throws TextClassificationException{
+    		int ngramMinN, int ngramMaxN, Set<String>stopwords)
+    		throws FeaturePathException{
     	
         FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
         

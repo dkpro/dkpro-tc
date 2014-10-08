@@ -29,6 +29,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
@@ -78,12 +79,15 @@ public class NGramMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
-                jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);      
-
-        for (String ngram : documentNGrams.getKeys()) {
-            fd.addSample(ngram, documentNGrams.getCount(ngram));
-        }
+    	try{
+	        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
+	                jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);  
+	        for (String ngram : documentNGrams.getKeys()) {
+	            fd.addSample(ngram, documentNGrams.getCount(ngram));
+	        }    
+    	} catch(FeaturePathException e){
+    		throw new AnalysisEngineProcessException(e);
+    	}
     }
 
     @Override

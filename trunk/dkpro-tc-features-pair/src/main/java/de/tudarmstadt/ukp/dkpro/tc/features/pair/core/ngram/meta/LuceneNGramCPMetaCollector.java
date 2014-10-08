@@ -26,6 +26,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
@@ -100,8 +101,15 @@ public class LuceneNGramCPMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException
     {
-        return ComboUtils.getMultipleViewNgrams(
-              jcases, null, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+    	FrequencyDistribution<String> fd = null;
+    	try{
+    		fd = ComboUtils.getMultipleViewNgrams(
+    	              jcases, null, ngramLowerCase, filterPartialStopwordMatches, 
+    	              ngramMinN, ngramMaxN, stopwords);
+    	}catch(FeaturePathException e){
+    		throw new TextClassificationException(e);
+    	}
+        return fd;
     }
     /**
      * This is an artifact to be merged with getNgramsFD(List<JCas> jcases) when pair FEs are ready.
@@ -117,16 +125,30 @@ public class LuceneNGramCPMetaCollector
     protected FrequencyDistribution<String> getNgramsFDView1(JCas view1)
         throws TextClassificationException
     {
-        return NGramUtils.getDocumentNgrams(
-              view1, ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, ngramView1MaxN, stopwords);
+    	FrequencyDistribution<String> fd = null;
+    	try{
+    		fd = NGramUtils.getDocumentNgrams(
+    	              view1, ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, 
+    	              ngramView1MaxN, stopwords);
+    	}catch(FeaturePathException e){
+    		throw new TextClassificationException(e);
+    	}
+        return fd;
     }
 
     @Override
     protected FrequencyDistribution<String> getNgramsFDView2(JCas view2)
         throws TextClassificationException
     {
-        return NGramUtils.getDocumentNgrams(
-              view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN, stopwords);
+    	FrequencyDistribution<String> fd = null;
+    	try{
+    		fd = NGramUtils.getDocumentNgrams(
+    	              view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, 
+    	              ngramView2MaxN, stopwords);
+    	}catch(FeaturePathException e){
+    		throw new TextClassificationException(e);
+    	}
+        return fd;
     }
     @Override
     protected String getFieldName()

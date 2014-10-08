@@ -31,6 +31,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
+import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -99,11 +100,6 @@ public class CosineFeatureExtractor<T extends Annotation>
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        String ngramAnnotationTypeName = ngramAnnotationType.getName().split("\\.")[ngramAnnotationType.getName().split("\\.").length-1];
-    	if(!ngramAnnotationTypeName.equals("Lemma") && !ngramAnnotationTypeName.equals("Stem") && !ngramAnnotationTypeName.equals("Token")){
-    		throw new ResourceInitializationException("Type " + ngramAnnotationTypeName + " is not currently supported.  "
-    				+ "Please use Token, Lemma, or Stem.", null);
-    	}
         
         if(weightingModeTf == null){
         	weightingModeTf = CosineSimilarity.WeightingModeTf.FREQUENCY_LOGPLUSONE;
@@ -145,7 +141,7 @@ public class CosineFeatureExtractor<T extends Annotation>
             
             return Arrays.asList(new Feature("Similarity" + measure.getName(), similarity));
         }
-        catch (SimilarityException e) {
+        catch (SimilarityException | FeaturePathException e) {
             throw new TextClassificationException(e);
         }
     }
