@@ -26,50 +26,57 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleConfusionMa
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
-
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class SingleEvaluator extends EvaluatorBase implements BipartitionBased{
+public class SingleEvaluator
+    extends EvaluatorBase
+    implements BipartitionBased
+{
 
-	public SingleEvaluator(HashMap<String, Integer> class2number,
-			LinkedList<String> readData, boolean softEvaluation) {
-		super(class2number, readData, softEvaluation);
-	}
+    public SingleEvaluator(HashMap<String, Integer> class2number,
+            LinkedList<String> readData, boolean softEvaluation)
+    {
+        super(class2number, readData, softEvaluation);
+    }
 
-	public ConfusionMatrix<ArrayList<ArrayList<Double>>> buildConfusionMatrix() {
-		int number = class2number.keySet().size();
-		ArrayList<ArrayList<Double>> confusionMatrix = new ArrayList<ArrayList<Double>>();
-		for (int i = 0; i < number; i++) {
-			ArrayList<Double> local = new ArrayList<Double>(); 
-			for (int j = 0; j < number; j++) {
-				local.add(0.0);
-			}
-			confusionMatrix.add(i, (ArrayList<Double>) local.clone());
-		}
-		
-		for (String line : readData) {
-			// consists of: prediction, gold label, threshold
-			// in the case of single label the threshold is ignored
-			String[] splittedEvaluationData = line.split(";");
-			int predictedClass = Integer.valueOf(splittedEvaluationData[0]);
-			int goldClass = Integer.valueOf(splittedEvaluationData[1]);
-			
-			double oldValue = confusionMatrix.get(goldClass).get(predictedClass);
-			confusionMatrix.get(goldClass).set(predictedClass, oldValue + 1);		
-		} 
-		return new SingleConfusionMatrix(confusionMatrix, class2number);
-	}
-	
-	@Override
-	public HashMap<String, String> calculateEvaluationMeasures() {
-		SingleConfusionMatrix confMatr = (SingleConfusionMatrix) buildConfusionMatrix();
-		double[][][] decomposedConfusionMatrix = confMatr.decomposeConfusionMatrix();
-		
-		HashMap<String, String> results = 
-				calculateLabelBasedEvaluationMeasures(decomposedConfusionMatrix);		
-		return results;
-	}
-	
+    public ConfusionMatrix<ArrayList<ArrayList<Double>>> buildConfusionMatrix()
+    {
+        int number = class2number.keySet().size();
+        ArrayList<ArrayList<Double>> confusionMatrix = new ArrayList<ArrayList<Double>>();
+        for (int i = 0; i < number; i++) {
+            ArrayList<Double> local = new ArrayList<Double>();
+            for (int j = 0; j < number; j++) {
+                local.add(0.0);
+            }
+            confusionMatrix.add(i, (ArrayList<Double>) local.clone());
+        }
+
+        for (String line : readData) {
+            // consists of: prediction, gold label, threshold
+            // in the case of single label the threshold is ignored
+            String[] splittedEvaluationData = line.split(";");
+            int predictedClass = Integer.valueOf(splittedEvaluationData[0]);
+            int goldClass = Integer.valueOf(splittedEvaluationData[1]);
+
+            double oldValue = confusionMatrix.get(goldClass).get(predictedClass);
+            confusionMatrix.get(goldClass).set(predictedClass, oldValue + 1);
+        }
+        return new SingleConfusionMatrix(confusionMatrix, class2number);
+    }
+
+    @Override
+    public HashMap<String, String> calculateEvaluationMeasures()
+    {
+        SingleConfusionMatrix confMatr = (SingleConfusionMatrix) buildConfusionMatrix();
+        double[][][] decomposedConfusionMatrix = confMatr.decomposeConfusionMatrix();
+
+        // TODO: add measures for individual labels
+        // TODO: add micro-averaged measures
+        HashMap<String, String> results =
+                calculateLabelBasedEvaluationMeasures(decomposedConfusionMatrix);
+        return results;
+    }
+
 }

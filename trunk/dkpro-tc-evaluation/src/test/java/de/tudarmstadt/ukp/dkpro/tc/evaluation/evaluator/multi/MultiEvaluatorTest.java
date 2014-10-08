@@ -56,6 +56,7 @@ public class MultiEvaluatorTest
         throws IOException
     {
         setup(true);
+        // TODO: hand-calculate measures and test
         // for (String key : results.keySet()) {
         // System.out.println(key + "\t" + results.get(key));
         // }
@@ -69,6 +70,7 @@ public class MultiEvaluatorTest
         throws IOException
     {
         setup(false);
+        // TODO: hand-calculate measures and test
         // for (String key : results.keySet()) {
         // System.out.println(key + "\t" + results.get(key));
         // }
