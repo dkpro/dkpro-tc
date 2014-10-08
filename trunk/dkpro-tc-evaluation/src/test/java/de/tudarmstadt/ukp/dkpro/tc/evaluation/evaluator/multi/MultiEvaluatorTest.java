@@ -17,46 +17,62 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory.EvaluationMode;
-
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class MultiEvaluatorTest {
-	
-	static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
-	EvaluationMode mode = EvaluationMode.MULTI;
-	boolean softEvaluation = false;
-	HashMap<String, String> results;
-	
-	@Before
-    public void setup() throws IOException
+public class MultiEvaluatorTest
+{
+
+    static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
+    EvaluationMode mode = EvaluationMode.MULTI;
+    HashMap<String, String> results;
+
+    public void setup(boolean softEvaluation)
+        throws IOException
     {
-		EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
-		evalFactory.readDataFile();
-		EvaluatorBase evaluator = evalFactory.makeEvaluator();
-		results = evaluator.calculateEvaluationMeasures();
+        EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
+        evalFactory.readDataFile();
+        EvaluatorBase evaluator = evalFactory.makeEvaluator();
+        results = evaluator.calculateEvaluationMeasures();
     }
-	
-	@Test
-    public void testCalculateEvaluationMeasures() {
-		for (String key : results.keySet()) {
-			System.out.println(key + "\t" + results.get(key));
-		}
-		
-		assertTrue(true);
-	}
+
+    @Test
+    public void testCalculateSoftEvaluationMeasures()
+        throws IOException
+    {
+        setup(true);
+        // for (String key : results.keySet()) {
+        // System.out.println(key + "\t" + results.get(key));
+        // }
+        assertNotSame(results.get(MacroFScore.class.getSimpleName()),
+                String.valueOf(Double.NaN));
+
+    }
+
+    @Test
+    public void testCalculateStrictEvaluationMeasures()
+        throws IOException
+    {
+        setup(false);
+        // for (String key : results.keySet()) {
+        // System.out.println(key + "\t" + results.get(key));
+        // }
+        assertEquals(results.get(MacroFScore.class.getSimpleName()),
+                String.valueOf(Double.NaN));
+    }
 }

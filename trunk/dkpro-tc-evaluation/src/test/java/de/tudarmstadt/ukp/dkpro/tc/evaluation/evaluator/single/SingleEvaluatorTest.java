@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
@@ -35,49 +34,69 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
 
-
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class SingleEvaluatorTest {
-	
-	static File file = new File("src/test/resources/datasets/single/id2outcome.txt");
-	EvaluationMode mode = EvaluationMode.SINGLE;
-	boolean softEvaluation = true;
-	HashMap<String, String> results;
-	
-	@Before
-    public void setup() throws IOException
+public class SingleEvaluatorTest
+{
+
+    static File file = new File("src/test/resources/datasets/single/id2outcome.txt");
+    EvaluationMode mode = EvaluationMode.SINGLE;
+    HashMap<String, String> results;
+
+    public void setup(boolean softEvaluation)
+        throws IOException
     {
-		EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
-		evalFactory.readDataFile();
-		EvaluatorBase evaluator = evalFactory.makeEvaluator();
-		results = evaluator.calculateEvaluationMeasures();
+        EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
+        evalFactory.readDataFile();
+        EvaluatorBase evaluator = evalFactory.makeEvaluator();
+        results = evaluator.calculateEvaluationMeasures();
     }
-	
-	@Test
-    public void testCalculateEvaluationMeasures() {
-		// macro precision
-		Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
-		assertEquals(0.047619047619047616, prValue, 0.00001);
-		
-		// macro recall
-		Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
-		// result for softEvaluation = true;
-		assertEquals(0.047619047619047616, reValue, 0.00000001);
-		// result for softEvaluation = false; 
-		//assertTrue("result should be an invalid value, but isn't", Double.isNaN(reValue));
-		
-		// macro accuracy
-		Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
-		assertEquals(0.38095238095238093, accValue, 0.0001);
-		
-		// macro f-score
-		Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
-		// result for softEvaluation = true;
-		assertEquals(0.047619047619047616, fScValue, 0.000001);
-		// result for softEvaluation = false;
-		//assertTrue("result should be an invalid value, but isn't", Double.isNaN(fScValue));
-	}
+
+    @Test
+    public void testCalculateSoftEvaluationMeasures()
+        throws IOException
+    {
+        setup(true);
+        // macro precision
+        Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
+        assertEquals(0.047619047619047616, prValue, 0.00001);
+
+        // macro recall
+        Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
+        assertEquals(0.047619047619047616, reValue, 0.00000001);
+
+        // macro accuracy
+        Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
+        assertEquals(0.38095238095238093, accValue, 0.0001);
+
+        // macro f-score
+        Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
+        assertEquals(0.047619047619047616, fScValue, 0.000001);
+    }
+
+    @Test
+    public void testCalculateStrictEvaluationMeasures()
+        throws IOException
+    {
+        setup(false);
+
+        // macro precision
+        Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
+        assertEquals(0.047619047619047616, prValue, 0.00001);
+
+        // macro recall
+        Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
+        assertTrue("result should be an invalid value, but isn't", Double.isNaN(reValue));
+
+        // macro accuracy
+        Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
+        assertEquals(0.38095238095238093, accValue, 0.0001);
+
+        // macro f-score
+        Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
+        assertTrue("result should be an invalid value, but isn't", Double.isNaN(fScValue));
+    }
+
 }
