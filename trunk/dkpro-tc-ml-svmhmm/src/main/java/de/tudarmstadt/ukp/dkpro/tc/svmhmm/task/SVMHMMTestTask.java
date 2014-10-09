@@ -1,0 +1,313 @@
+/*
+ * Copyright 2014
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package de.tudarmstadt.ukp.dkpro.tc.svmhmm.task;
+
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.logging.Logger;
+
+/**
+ * Wrapper for training and testing using SVM_HMM C implementation with default parameters.
+ * Consult  {@code http://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html} for parameter
+ * settings.
+ *
+ * @author Ivan Habernal
+ */
+public class SVMHMMTestTask
+        extends ExecutableTaskBase
+        implements Constants
+{
+    static Logger log = Logger.getLogger(SVMHMMTestTask.class.getName());
+
+    private static final String BINARIES_BASE_LOCATION = "classpath:/de/tudarmstadt/ukp/dkpro/tc/svmhmm/";
+
+    /**
+     * Learning mode discriminators; Only Constants.LM_SINGLE_LABEL is allowed
+     */
+    @Discriminator
+    private String learningMode = LM_SINGLE_LABEL;
+
+    /**
+     * Parameter "-c <C>": Typical SVM parameter C trading-off slack vs. magnitude of the
+     * weight-vector.
+     * NOTE: The default value for this parameter is unlikely to work well for your particular
+     * problem. A good value for C must be selected via cross-validation, ideally exploring
+     * values over several orders of magnitude.
+     * NOTE: Unlike in V1.01, the value of C is divided by the number of training examples.
+     * So, to get results equivalent to V1.01, multiply C by the number of training examples.
+     */
+    @Discriminator
+    private double paramC = 5;
+
+    /**
+     * Parameter "-e <EPSILON>": This specifies the precision to which constraints are required
+     * to be satisfied by the solution. The smaller EPSILON, the longer and the more memory
+     * training takes, but the solution is more precise. However, solutions more accurate than 0.5
+     * typically do not improve prediction accuracy.
+     */
+    @Discriminator
+    private double paramEpsilon = 0.5;
+
+    /**
+     * Parameter "--t <ORDER_T>": Order of dependencies of transitions in HMM. Can be any number
+     * larger than 1. (default 1)
+     */
+    @Discriminator
+    private int paramOrderT = 1;
+
+    /**
+     * Parameter "--e <ORDER_E>": Order of dependencies of emissions in HMM. Can be any number
+     * larger than 0. (default 0)
+     */
+    @Discriminator
+    private int paramOrderE = 0;
+
+    /**
+     * Parameter "--b <WIDTH>": A non-zero value turns on (approximate) beam search to replace
+     * the exact Viterbi algorithm both for finding the most violated constraint, as well as for
+     * computing predictions. The value is the width of the beam used (e.g. 100). (default 0).
+     */
+    @Discriminator
+    private int paramB = 0;
+
+    // where the trained model is stored
+    private static final String MODEL_NAME = "svm_struct.model";
+
+    @Override
+    public void execute(TaskContext taskContext)
+            throws Exception
+    {
+        // where the training date are located
+        File trainingDataStorage = taskContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                StorageService.AccessMode.READONLY);
+
+        // where the test data are located
+        File testDataStorage = taskContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
+                StorageService.AccessMode.READONLY);
+
+        // file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND TESTING!!!!!!
+        String fileName = new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+
+        File trainingFile = new File(trainingDataStorage, fileName);
+        File testFile = new File(testDataStorage, fileName);
+
+        if (!Constants.LM_SINGLE_LABEL.equals(learningMode)) {
+            throw new TextClassificationException(
+                    learningMode + " was requested but only single label setup is supported.");
+        }
+
+        // mapping outcome labels to integers
+        SortedSet<String> outcomeLabels = SVMHMMUtils.extractOutcomeLabelsFromFeatureVectorFiles(
+                trainingFile, testFile);
+        BidiMap labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
+
+        // save mapping to file
+        File mappingFile = new File(taskContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE),
+                SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
+        SVMHMMUtils.saveMapping(labelsToIntegersMapping, mappingFile);
+
+        File augmentedTrainingFile = SVMHMMUtils
+                .replaceLabelsWithIntegers(trainingFile, labelsToIntegersMapping);
+
+        File augmentedTestFile = SVMHMMUtils
+                .replaceLabelsWithIntegers(testFile, labelsToIntegersMapping);
+
+        // train the model
+        trainModel(taskContext, augmentedTrainingFile);
+
+        // test the model
+        testModel(taskContext, augmentedTestFile);
+    }
+
+    /**
+     * Tests the model against the test data and stores the outcomes in the
+     * {@linkplain TCMachineLearningAdapter.AdapterNameEntries#predictionsFile} file.
+     *
+     * @param taskContext context
+     * @param testFile    test file
+     * @throws Exception
+     */
+    private void testModel(TaskContext taskContext, File testFile)
+            throws Exception
+    {
+        // file to hold prediction results
+        File predictionsFile = new File(taskContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE), new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile));
+
+        // location of the trained model
+        File modelFile = taskContext
+                .getStorageLocation(MODEL_NAME, StorageService.AccessMode.READONLY);
+
+        List<String> testCommand = buildTestCommand(testFile, modelFile.getAbsolutePath(),
+                predictionsFile.getAbsolutePath());
+
+        runCommand(testCommand);
+    }
+
+    /**
+     * Trains the model and stores it into the task context
+     *
+     * @param taskContext context
+     * @throws Exception
+     */
+    private void trainModel(TaskContext taskContext, File trainingFile)
+            throws Exception
+    {
+
+        File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
+        List<String> modelTrainCommand = buildTrainCommand(trainingFile, tmpModelFile.getPath());
+
+        log.info("Start training model");
+        long time = System.currentTimeMillis();
+        runCommand(modelTrainCommand);
+        long completedIn = System.currentTimeMillis() - time;
+        String formattedDuration = DurationFormatUtils.formatDuration(completedIn, "HH:mm:ss:SS");
+        log.info("Training finished after " + formattedDuration);
+
+        FileInputStream stream = new FileInputStream(tmpModelFile);
+        taskContext.storeBinary(MODEL_NAME, stream);
+
+        // clean-up
+        IOUtils.closeQuietly(stream);
+        FileUtils.deleteQuietly(tmpModelFile);
+    }
+
+    /**
+     * Builds command line parameters for testing predictions
+     *
+     * @param testFile          test file
+     * @param modelLocation     trained model file
+     * @param outputPredictions where the results will be stored
+     * @return command as a list of Strings
+     */
+    private List<String> buildTestCommand(File testFile, String modelLocation,
+            String outputPredictions)
+            throws IOException
+    {
+        List<String> result = new ArrayList<>();
+
+        result.add(resolveSVMHmmClassifyCommand());
+        result.add(testFile.getAbsolutePath());
+        result.add(modelLocation);
+        result.add(outputPredictions);
+
+        return result;
+    }
+
+    /**
+     * Returns absolute path to svm_hmm_classify binary
+     *
+     * @return binary path
+     */
+    protected String resolveSVMHmmClassifyCommand()
+    {
+        try {
+            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_classify")
+                    .getAbsolutePath();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns absolute path to svm_hmm_learn binary
+     *
+     * @return binary path
+     */
+    protected String resolveSVMHmmLearnCommand()
+    {
+        try {
+            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_learn")
+                    .getAbsolutePath();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Builds the cmd with parameters to run svm_hmm_train
+     *
+     * @param trainingFile        training file
+     * @param targetModelLocation where the trained model will be stored
+     * @return command as list of Strings
+     */
+    private List<String> buildTrainCommand(File trainingFile, String targetModelLocation)
+    {
+        List<String> result = new ArrayList<>();
+        result.add(resolveSVMHmmLearnCommand());
+
+        // svm struct params
+        result.add("-c");
+        result.add(String.format(Locale.ENGLISH, "%f", this.paramC));
+        result.add("--e");
+        result.add(Integer.toString(this.paramOrderE));
+        result.add("--t");
+        result.add(Integer.toString(this.paramOrderT));
+        result.add("-e");
+        result.add(String.format(Locale.ENGLISH, "%f", this.paramEpsilon));
+        result.add("--b");
+        result.add(Integer.toString(this.paramB));
+
+        // training file
+        result.add(trainingFile.getAbsolutePath());
+
+        // output model
+        result.add(targetModelLocation);
+
+        return result;
+    }
+
+    /**
+     * Executes the command (runs a new process outside the JVM and waits for its completion)
+     *
+     * @param command command as list of Strings
+     */
+    private void runCommand(List<String> command)
+            throws Exception
+    {
+        log.info(command.toString());
+        Process process = new ProcessBuilder().inheritIO().command(command).start();
+        process.waitFor();
+    }
+}
