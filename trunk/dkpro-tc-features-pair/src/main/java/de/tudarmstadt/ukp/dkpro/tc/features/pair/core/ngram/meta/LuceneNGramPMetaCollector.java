@@ -26,7 +26,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
@@ -86,14 +85,9 @@ public class LuceneNGramPMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException
     {
-    	FrequencyDistribution<String> fd = null;
-    	try{
-    		fd = ComboUtils.getMultipleViewNgrams(
+    	FrequencyDistribution<String> fd = ComboUtils.getMultipleViewNgrams(
     	              jcases, null, ngramLowerCase, filterPartialStopwordMatches, 
     	              ngramMinN, ngramMaxN, stopwords);
-    	}catch(FeaturePathException e){
-    		throw new TextClassificationException(e);
-    	}
         return fd;
     }
     /**
@@ -110,14 +104,9 @@ public class LuceneNGramPMetaCollector
     protected FrequencyDistribution<String> getNgramsFDView1(JCas view1)
         throws TextClassificationException
     {
-    	FrequencyDistribution<String> fd = null;
-    	try{
-    		fd = NGramUtils.getDocumentNgrams(
+    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
     	              view1, ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, 
     	              ngramView1MaxN, stopwords);
-    	}catch(FeaturePathException e){
-    		throw new TextClassificationException(e);
-    	}
         return fd;
     }
 
@@ -125,16 +114,11 @@ public class LuceneNGramPMetaCollector
     protected FrequencyDistribution<String> getNgramsFDView2(JCas view2)
         throws TextClassificationException
     {
-    	FrequencyDistribution<String> fd = null;
-    	try{
-    		fd = NGramUtils.getDocumentNgrams(
+    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
     	              view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, 
     	              ngramView2MaxN, stopwords);
-    	}catch(FeaturePathException e){
-    		throw new TextClassificationException(e);
-    	}
         return fd;
-        }
+    }
     
     @Override
     protected String getFieldName()

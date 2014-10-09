@@ -25,7 +25,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
@@ -72,12 +71,8 @@ public class LuceneNGramMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException{
     	
     	FrequencyDistribution<String> fd = null;
-    	try{
-    		fd = NGramUtils.getDocumentNgrams(
-                    jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
-    	} catch(FeaturePathException e){
-    		throw new TextClassificationException(e);
-    	}
+    	fd = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+ 
         return fd;
     }
     
