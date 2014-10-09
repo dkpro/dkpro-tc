@@ -1,0 +1,151 @@
+<!--
+   Copyright 2014
+   Ubiquitous Knowledge Processing (UKP) Lab
+   Technische Universität Darmstadt
+   
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project basedir="../../.." default="separate-jars">
+	<import>
+		<url url="http://dkpro-core-asl.googlecode.com/svn/built-ant-macros/tags/0.6.0/ant-macros.xml"/>
+	</import>
+
+	<!-- 
+	  - Output package configuration
+	  -->
+	<property name="outputPackage" value="de/tudarmstadt/ukp/dkpro/tc/svmhmm/lib"/>
+
+	<target name="local-maven">
+		<property name="install-artifact-mode" value="local"/>
+		<antcall target="separate-jars"/>
+	</target>
+
+	<target name="remote-maven">
+		<property name="install-artifact-mode" value="remote"/>
+		<antcall target="separate-jars"/>
+	</target>
+
+	<target name="separate-jars" depends="install-executables"/>
+
+	<target name="install-executables">
+		<property name="version.bin" value="20080814.0"/>
+
+		<mkdir dir="target/download"/>
+
+		<!-- LINUX 32 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32"/>
+		<get src="http://download.joachims.org/svm_hmm/current/svm_hmm_linux32.tar.gz"
+		     dest="target/download/svmhmm.linux-x86_32.tar.gz"
+		     skipexisting="true"/>
+		<gunzip
+				src="target/download/svmhmm.linux-x86_32.tar.gz"
+				dest="target/download/svmhmm.linux-x86_32.tar"/>
+		<untar
+				src="target/download/svmhmm.linux-x86_32.tar"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32">
+			<patternset>
+				<include name="*"/>
+			</patternset>
+			<mapper type="flatten"/>
+		</untar>
+
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32/LICENSE.txt">
+			SVMhmm - Sequence Tagging with Structural Support Vector Machines
+			Version V3.10, 14. August 2008
+		</echo>
+
+		<propertyfile
+				file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32/manifest.properties">
+			<entry key="svm_hmm_classify" value="executable"/>
+			<entry key="svm_hmm_learn" value="executable"/>
+		</propertyfile>
+
+		<!-- LINUX 64 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64"/>
+		<get
+				src="http://download.joachims.org/svm_hmm/current/svm_hmm_linux64.tar.gz"
+				dest="target/download/svmhmm.linux-x86_64.tar.gz"
+				skipexisting="true"/>
+		<gunzip
+				src="target/download/svmhmm.linux-x86_64.tar.gz"
+				dest="target/download/svmhmm.linux-x86_64.tar"/>
+		<untar
+				src="target/download/svmhmm.linux-x86_64.tar"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64">
+			<patternset>
+				<include name="*"/>
+			</patternset>
+			<mapper type="flatten"/>
+		</untar>
+
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64/README">
+			SVMhmm - Sequence Tagging with Structural Support Vector Machines
+			Version V3.10, 14. August 2008
+		</echo>
+
+		<propertyfile
+				file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64/manifest.properties">
+			<entry key="svm_hmm_classify" value="executable"/>
+			<entry key="svm_hmm_learn" value="executable"/>
+		</propertyfile>
+
+		<!-- WINDOWS 32 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32"/>
+		<get
+				src="http://download.joachims.org/svm_hmm/current/svm_hmm_windows.zip"
+				dest="target/download/svmhmm.windows-x86_32.zip"
+				skipexisting="true"/>
+		<unzip
+				src="target/download/svmhmm.windows-x86_32.zip"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32">
+			<patternset>
+				<include name="*"/>
+			</patternset>
+			<mapper type="flatten"/>
+		</unzip>
+
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32/README">
+			SVMhmm - Sequence Tagging with Structural Support Vector Machines
+			Version V3.10, 14. August 2008
+		</echo>
+
+		<propertyfile
+				file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32/manifest.properties">
+			<entry key="svm_hmm_classify.exe" value="executable"/>
+			<entry key="svm_hmm_learn.exe" value="executable"/>
+		</propertyfile>
+
+		<jar
+				destfile="target/de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin-${version.bin}.jar"
+				compress="true">
+			<fileset dir="target/model-staging">
+				<include name="META-INF/**/*"/>
+				<include name="**/*"/>
+			</fileset>
+		</jar>
+
+		<generate-pom
+				groupId="de.tudarmstadt.ukp.dkpro.tc"
+				artifactId="de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin"
+				version="${version.bin}"/>
+
+		<install-artifact
+				file="target/de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin-${version.bin}.jar"
+				groupId="de.tudarmstadt.ukp.dkpro.tc"
+				artifactId="de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin"
+				version="${version.bin}"/>
+		<clean-pom/>
+		<delete dir="target/model-staging"/>
+		<delete dir="target/download"/>
+	</target>
+</project>
