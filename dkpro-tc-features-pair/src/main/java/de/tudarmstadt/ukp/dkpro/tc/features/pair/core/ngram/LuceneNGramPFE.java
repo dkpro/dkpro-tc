@@ -37,7 +37,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 import com.google.common.collect.MinMaxPriorityQueue;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -181,15 +180,12 @@ public class LuceneNGramPFE
     	FrequencyDistribution<String> view1Ngrams = null;
     	FrequencyDistribution<String> view2Ngrams = null;
     	FrequencyDistribution<String> allNgrams = null;
-    	try{
-	        view1Ngrams = NGramUtils.getDocumentNgrams(view1, ngramLowerCase, filterPartialStopwordMatches,
-	                ngramMinN1, ngramMaxN1, stopwords);
-	        view2Ngrams = NGramUtils.getDocumentNgrams(view2, ngramLowerCase, filterPartialStopwordMatches,
-	                ngramMinN2, ngramMaxN2, stopwords);
-	        allNgrams = getViewNgrams(view1, view2);
-    	}catch(FeaturePathException e){
-    		throw new TextClassificationException(e);
-    	}
+        view1Ngrams = NGramUtils.getDocumentNgrams(view1, ngramLowerCase, filterPartialStopwordMatches,
+                ngramMinN1, ngramMaxN1, stopwords);
+        view2Ngrams = NGramUtils.getDocumentNgrams(view2, ngramLowerCase, filterPartialStopwordMatches,
+                ngramMinN2, ngramMaxN2, stopwords);
+        allNgrams = getViewNgrams(view1, view2);
+    	
 
         List<Feature> features = new ArrayList<Feature>();
         if (useView1NgramsAsFeatures) {
@@ -292,7 +288,7 @@ public class LuceneNGramPFE
 
 
     protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2) 
-    		throws FeaturePathException
+    		throws TextClassificationException
     {
         List<JCas> jcases = new ArrayList<JCas>();
         jcases.add(view1);

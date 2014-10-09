@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
@@ -45,12 +44,9 @@ public class FrequencyDistributionNGramDFE
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
-        try{
         documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
-        }catch(FeaturePathException e){
-        	throw new TextClassificationException(e);
-        }
+
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));

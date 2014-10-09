@@ -25,13 +25,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -41,9 +39,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBas
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
-import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
-import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.WeightingModeIdf;
-import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.WeightingModeTf;
 
 /**
  * Extracts the document pair similarity using {@link dkpro.similarity.algorithms.lexical.string.CosineSimilarity
@@ -141,7 +136,7 @@ public class CosineFeatureExtractor<T extends Annotation>
             
             return Arrays.asList(new Feature("Similarity" + measure.getName(), similarity));
         }
-        catch (SimilarityException | FeaturePathException e) {
+        catch (SimilarityException e) {
             throw new TextClassificationException(e);
         }
     }

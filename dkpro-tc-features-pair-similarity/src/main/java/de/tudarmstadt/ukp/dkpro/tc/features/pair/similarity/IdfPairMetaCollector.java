@@ -28,7 +28,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -110,15 +109,10 @@ public class IdfPairMetaCollector<T extends Annotation>
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     		throws TextClassificationException
     	{
-    	FrequencyDistribution<String> toReturn = null;
-    	try{
-    		toReturn = NGramUtils.getDocumentNgrams(
+    	FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(
                     jcas, true, false, 1, 1, stopwords, ngramAnnotationType);
-    	}catch (FeaturePathException e){
-    		throw new TextClassificationException(e);
-    	}
     	return toReturn;
-    	}
+    }
     
     @Override
     protected String getFieldName(){

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.util;
 
-import java.util.Map.Entry;
-
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.toText;
@@ -26,22 +24,21 @@ import static org.apache.uima.fit.util.JCasUtil.toText;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.uima.cas.text.AnnotationFS;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 import org.apache.commons.codec.language.ColognePhonetic;
 import org.apache.commons.codec.language.Soundex;
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
-
+import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -122,7 +119,7 @@ public class NGramUtils
  */
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
-            throws FeaturePathException
+            throws TextClassificationException
     {
         Set<String> empty = Collections.emptySet();
         return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
@@ -142,7 +139,7 @@ public class NGramUtils
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords)
-            throws FeaturePathException
+            throws TextClassificationException
     {
         return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, stopwords, Token.class);
     }
@@ -167,13 +164,13 @@ public class NGramUtils
             int maxN,
             Set<String> stopwords,
             Class<? extends Annotation> annotationClass)
-            throws FeaturePathException
+            		throws TextClassificationException
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
-            for (List<String> ngram : new NGramStringListIterable(valuesToText(jcas, annotationClass.getName()), minN, maxN)) {
-
-            	if(lowerCaseNGrams){
+        	List<String> strings = valuesToText(jcas, s, annotationClass.getName());
+            for (List<String> ngram : new NGramStringListIterable(strings, minN, maxN)) {
+            	if (lowerCaseNGrams) {
             		ngram = lower(ngram);
             	}
 
@@ -346,22 +343,26 @@ public class NGramUtils
     
     public static List<String> lower(List<String> ngram){
     	List<String> newNgram = new ArrayList<String>();
-    	for(String token: ngram){
+    	for (String token: ngram) {
     		newNgram.add(token.toLowerCase());
     	}
     	return newNgram;
     }
 
-    public static <T extends Annotation> List<String> valuesToText(JCas jcas, String annotationClassName)
-    throws FeaturePathException{
+    public static <T extends Annotation> List<String> valuesToText(JCas jcas, Sentence s, String annotationClassName)
+    		throws TextClassificationException
+    {
         List<String> texts = new ArrayList<String>();
         
-        for (Entry<AnnotationFS, String> entry : FeaturePathFactory.select(jcas.getCas(),
-                annotationClassName)) { 
-//             System.out.println("Key: " + entry.getKey());
-//             System.out.println("Value: " + entry.getValue());
-             texts.add(entry.getValue());
-        }
+        try {
+			for (Entry<AnnotationFS, String> entry : FeaturePathFactory.select(jcas.getCas(), annotationClassName)) {
+				if (entry.getKey().getBegin() >= s.getBegin() && entry.getKey().getEnd() <= s.getEnd()) {
+				     texts.add(entry.getValue());					
+				}
+			}
+		} catch (FeaturePathException e) {
+			throw new TextClassificationException(e);
+		}
         return texts;
     }
 }
