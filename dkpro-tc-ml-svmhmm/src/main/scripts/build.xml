@@ -17,7 +17,7 @@
 -->
 <project basedir="../../.." default="separate-jars">
 	<import>
-		<url url="http://dkpro-core-asl.googlecode.com/svn/built-ant-macros/tags/0.6.0/ant-macros.xml"/>
+		<url url="http://dkpro-core-asl.googlecode.com/svn/built-ant-macros/tags/0.7.0/ant-macros.xml"/>
 	</import>
 
 	<!-- 
@@ -59,7 +59,7 @@
 			<mapper type="flatten"/>
 		</untar>
 
-		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32/LICENSE.txt">
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32/README.txt">
 			SVMhmm - Sequence Tagging with Structural Support Vector Machines
 			Version V3.10, 14. August 2008
 		</echo>
@@ -124,6 +124,10 @@
 			<entry key="svm_hmm_classify.exe" value="executable"/>
 			<entry key="svm_hmm_learn.exe" value="executable"/>
 		</propertyfile>
+
+		<!--copy license to target -->
+		<copy tofile="target/model-staging/META-INF/LICENSE.txt"
+		      file="src/main/scripts/LICENSE.txt"/>
 
 		<jar
 				destfile="target/de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin-${version.bin}.jar"
