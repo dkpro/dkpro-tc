@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universität Darmstadt
+ * Technische Universit??t Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,12 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue May 06 17:51:57 CEST 2014
+ * Updated by JCasGen Fri Oct 10 14:31:03 CEST 2014
  * @generated */
 public class TextClassificationUnit_Type extends Annotation_Type {
   /** @generated 
@@ -40,8 +42,7 @@ public class TextClassificationUnit_Type extends Annotation_Type {
   /** @generated */
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
-      @Override
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+      public FeatureStructure createFS(int addr, CASImpl cas) {
   			 if (TextClassificationUnit_Type.this.useExistingInstance) {
   			   // Return eq fs instance if already created
   		     FeatureStructure fs = TextClassificationUnit_Type.this.jcas.getJfsFromCaddr(addr);
@@ -64,6 +65,32 @@ public class TextClassificationUnit_Type extends Annotation_Type {
 
 
 
+  /** @generated */
+  final Feature casFeat_id;
+  /** @generated */
+  final int     casFeatCode_id;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getId(int addr) {
+        if (featOkTst && casFeat_id == null)
+      jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_id);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setId(int addr, String v) {
+        if (featOkTst && casFeat_id == null)
+      jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    ll_cas.ll_setStringValue(addr, casFeatCode_id, v);}
+    
+  
+
+
+
   /** initialize variables to correspond with Cas Type and Features
 	 * @generated
 	 * @param jcas JCas
@@ -72,6 +99,10 @@ public class TextClassificationUnit_Type extends Annotation_Type {
   public TextClassificationUnit_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+
+ 
+    casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.String", featOkTst);
+    casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
 
   }
 }

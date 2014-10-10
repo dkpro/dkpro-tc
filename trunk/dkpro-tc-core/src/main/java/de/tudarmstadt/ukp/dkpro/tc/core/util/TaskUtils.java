@@ -371,7 +371,7 @@ public class TaskUtils
 
                     if (classificationUnits.size() != 1) {
                         throw new AnalysisEngineProcessException(
-                                "There are more than one TextClassificationUnit anotations in the JCas.",
+                                "There is more than one TextClassificationUnit anotation in the JCas.",
                                 null);
                     }
 
@@ -388,7 +388,20 @@ public class TaskUtils
 
         if (addInstanceId) {
             try {
-                instance.addFeatures(addIdFeatureExtractor.extract(jcas));
+            	List<Feature> instanceId = addIdFeatureExtractor.extract(jcas);
+            	
+            	// add optional unit id
+            	if (featureMode.equals(Constants.FM_UNIT)) {
+            		TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
+                            TextClassificationFocus.class);
+                    TextClassificationUnit classificationUnit = JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus).get(0);
+                    String id = classificationUnit.getId();
+                    if (id != null && id.length() > 0) {
+                        instanceId.get(0).setValue(instanceId.get(0).getValue() + "_" + id);                    	
+                    }
+            	}
+            	
+                instance.addFeatures(instanceId);
             }
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
@@ -416,8 +429,7 @@ public class TaskUtils
         AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
 
         TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas,
-                TextClassificationUnit.class, focus);
+        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus);
 
         List<Feature> instanceId;
         try {
@@ -426,12 +438,22 @@ public class TaskUtils
         catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
         }
+        String instanceIdString = (String) instanceId.get(0).getValue();
 
         int sequencePosition = 0;
         for (TextClassificationUnit unit : units) {
             Instance instance = new Instance();
-
+ 
             if (addInstanceId) {
+            	// add sequence position and optional unit id to instanceID
+                String focusUnitId = unit.getId();
+                if (focusUnitId == null || focusUnitId.length() == 0) {
+                    instanceId.get(0).setValue(instanceIdString + "_" + sequencePosition);
+                }
+                else {
+                    instanceId.get(0).setValue(instanceIdString + "_" + sequencePosition + "_" + focusUnitId);                	
+                }
+                
                 instance.addFeatures(instanceId);
             }
 

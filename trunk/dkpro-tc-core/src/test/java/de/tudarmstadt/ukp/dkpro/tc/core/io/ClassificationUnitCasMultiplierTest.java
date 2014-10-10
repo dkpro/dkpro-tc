@@ -137,6 +137,7 @@ public class ClassificationUnitCasMultiplierTest
         unit.setBegin(index);
         unit.setEnd(index + 1);
         unit.addToIndexes();
+        
         TextClassificationOutcome out = new TextClassificationOutcome(jCas);
         out.setBegin(index);
         out.setEnd(index + 1);
