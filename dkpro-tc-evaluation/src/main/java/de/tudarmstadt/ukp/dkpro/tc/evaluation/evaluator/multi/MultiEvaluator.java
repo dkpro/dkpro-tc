@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class MultiEvaluator
 {
 
     public MultiEvaluator(Map<String, Integer> class2number,
-            LinkedList<String> readData, boolean softEvaluation)
+            List<String> readData, boolean softEvaluation)
     {
         super(class2number, readData, softEvaluation);
     }

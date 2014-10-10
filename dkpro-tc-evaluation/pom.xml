@@ -36,5 +36,9 @@
   		<artifactId>junit</artifactId>
   		<scope>test</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-core</artifactId>
+  	</dependency>
   </dependencies>
 </project>

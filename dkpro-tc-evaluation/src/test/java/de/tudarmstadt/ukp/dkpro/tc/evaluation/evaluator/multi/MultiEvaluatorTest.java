@@ -26,9 +26,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory.EvaluationMode;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 
 /**
@@ -39,15 +39,12 @@ public class MultiEvaluatorTest
 {
 
     static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
-    EvaluationMode mode = EvaluationMode.MULTI;
     Map<String, String> results;
 
     public void setup(boolean softEvaluation)
         throws IOException
     {
-        EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
-        evalFactory.readDataFile();
-        EvaluatorBase evaluator = evalFactory.makeEvaluator();
+        EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_MULTI_LABEL, softEvaluation);
         results = evaluator.calculateEvaluationMeasures();
     }
 

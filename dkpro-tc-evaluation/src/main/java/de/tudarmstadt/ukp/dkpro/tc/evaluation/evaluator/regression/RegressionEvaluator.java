@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
@@ -30,14 +30,14 @@ public class RegressionEvaluator
     extends EvaluatorBase
 {
 
-    public RegressionEvaluator(HashMap<String, Integer> class2number,
-            LinkedList<String> readData, boolean softEvaluation)
+    public RegressionEvaluator(Map<String, Integer> class2number,
+            List<String> readData, boolean softEvaluation)
     {
         super(class2number, readData, softEvaluation);
     }
 
     @Override
-    public HashMap<String, String> calculateEvaluationMeasures()
+    public Map<String, String> calculateEvaluationMeasures()
     {
         // TODO add measures
         return null;

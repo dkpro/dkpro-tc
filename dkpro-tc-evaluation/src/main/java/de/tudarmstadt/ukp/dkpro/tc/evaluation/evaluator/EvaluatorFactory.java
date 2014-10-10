@@ -23,11 +23,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
-
 
 /**
  * @author Andriy Nadolskyy
@@ -35,57 +37,18 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
  */
 public class EvaluatorFactory {
 	
-	private File file;
-	private EvaluationMode mode;
-	protected HashMap<String, Integer> class2number;
-	protected LinkedList<String> readData;
-	/**
-	 * used for cases of dividing by 0
-	 * true: 	0 is the output
-	 * false: 	NaN is the output
-	 */
-	boolean softEvaluation;
-	
-	
-	public enum EvaluationMode{
-		SINGLE, MULTI, REGRESSION
-	}
-	
 	/***
 	 * 
 	 * @param file - file containing data are to be evaluated
 	 * @param mode 
+	 * @param softEvaluation Controls how division by zero is treated. Soft: returns 0; Hard: returns NaN
+	 * @throws IOException 
 	 */
-	public EvaluatorFactory(File file, EvaluationMode mode, boolean softEvaluation){
-		this.file = file;
-		this.mode = mode;
-		this.softEvaluation = softEvaluation;
-	}
-	
-	public EvaluatorBase makeEvaluator(){
-		EvaluatorBase evaluator = null;
-		switch (mode) {
-			case SINGLE:
-				evaluator = new SingleEvaluator(class2number, readData, softEvaluation);
-				break;
-			case MULTI:
-				evaluator = new MultiEvaluator(class2number, readData, softEvaluation);
-				break;
-			case REGRESSION:
-				evaluator = new RegressionEvaluator(class2number, readData, softEvaluation);
-				break;
-		}		
-		return evaluator;
-	}
-	
-	/**
-	 * read evaluation relevant data from file
-	 * 
-	 * @throws IOException
-	 */
-	public void readDataFile() throws IOException{
-		class2number = new HashMap<String, Integer>();
-		readData = new LinkedList<String>();
+	public static EvaluatorBase createEvaluator(File file, String learningMode, boolean softEvaluation) 
+			throws IOException
+	{	
+		Map<String, Integer> class2number = new HashMap<String, Integer>();
+		List<String> readData = new LinkedList<String>();
 		
 		BufferedReader br = new BufferedReader(new FileReader(file)); 
 		String line = ""; 
@@ -104,6 +67,21 @@ public class EvaluatorFactory {
 			}
 		}
 		br.close();
+		
+		EvaluatorBase evaluator = null;
+		if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
+			evaluator = new SingleEvaluator(class2number, readData, softEvaluation);
+		}
+		else if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
+			evaluator = new MultiEvaluator(class2number, readData, softEvaluation);
+		}
+		else if (learningMode.equals(Constants.LM_REGRESSION)) {
+			evaluator = new RegressionEvaluator(class2number, readData, softEvaluation);
+		}		
+		else {
+			throw new IllegalArgumentException("Invalid value for learning mode: " + learningMode);
+		}
+		
+		return evaluator;
 	}
-
 }

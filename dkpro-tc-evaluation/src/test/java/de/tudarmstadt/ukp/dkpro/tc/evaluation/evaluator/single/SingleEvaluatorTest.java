@@ -26,9 +26,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory.EvaluationMode;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroAccuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
@@ -42,15 +42,12 @@ public class SingleEvaluatorTest
 {
 
     static File file = new File("src/test/resources/datasets/single/id2outcome.txt");
-    EvaluationMode mode = EvaluationMode.SINGLE;
     Map<String, String> results;
 
     public void setup(boolean softEvaluation)
         throws IOException
     {
-        EvaluatorFactory evalFactory = new EvaluatorFactory(file, mode, softEvaluation);
-        evalFactory.readDataFile();
-        EvaluatorBase evaluator = evalFactory.makeEvaluator();
+        EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_SINGLE_LABEL, softEvaluation);
         results = evaluator.calculateEvaluationMeasures();
     }
 
