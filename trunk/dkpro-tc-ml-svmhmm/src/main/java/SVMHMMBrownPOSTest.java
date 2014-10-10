@@ -25,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 import org.apache.uima.fit.component.NoOpAnnotator;
@@ -61,9 +62,26 @@ public class SVMHMMBrownPOSTest
                         Arrays.asList(INCLUDE_PREFIX + "b15.xml")));
 
         // no parameters needed for now... see TwentyNewsgroupDemo for multiple parametrization
+        // or pipeline
         Dimension<List<Object>> dimPipelineParameters = Dimension
                 .create(Constants.DIM_PIPELINE_PARAMS, Arrays.asList());
 
+        // try different parametrization of C
+        Dimension<Double> dimClassificationArgsC = Dimension.create(
+                SVMHMMTestTask.PARAM_C, 1.0, 5.0);
+//                SVMHMMTestTask.PARAM_C, 1.0, 5.0, 10.0);
+
+        // various orders of dependencies of transitions in HMM (max 3)
+        Dimension<Integer> dimClassificationArgsT = Dimension.create(
+                SVMHMMTestTask.PARAM_ORDER_T, 1);
+//                SVMHMMTestTask.PARAM_ORDER_T, 1, 2, 3);
+
+        // various orders of dependencies of emissions in HMM (max 1)
+        Dimension<Integer> dimClassificationArgsE = Dimension.create(
+                SVMHMMTestTask.PARAM_ORDER_E, 0);
+//                SVMHMMTestTask.PARAM_ORDER_E, 0, 1);
+
+        // feature extractors
         Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
                         OriginalTokenHolderFeatureExtractor.class.getName() }));
@@ -71,7 +89,12 @@ public class SVMHMMBrownPOSTest
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_DATA_WRITER, SVMHMMDataWriter.class.getName()),
                 Dimension.create(Constants.DIM_LEARNING_MODE, learningMode), Dimension.create(
-                Constants.DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets);
+                Constants.DIM_FEATURE_MODE, featureMode),
+                dimPipelineParameters, dimFeatureSets,
+                dimClassificationArgsC,
+                dimClassificationArgsT,
+                dimClassificationArgsE
+        );
     }
 
     protected void runCrossValidation(ParameterSpace pSpace)
@@ -90,6 +113,10 @@ public class SVMHMMBrownPOSTest
 
     public static void main(String[] args)
     {
+        //        Logger.getRootLogger();
+        System.setProperty("org.apache.uima.logger.class",
+                "org.apache.uima.util.impl.Log4jLogger_impl");
+
         try {
             ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE,
                     Constants.LM_SINGLE_LABEL);
