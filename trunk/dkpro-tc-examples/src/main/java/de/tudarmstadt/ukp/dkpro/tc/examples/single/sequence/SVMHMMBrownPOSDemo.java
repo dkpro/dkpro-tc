@@ -1,4 +1,4 @@
-/*
+package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;/*
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
@@ -43,10 +43,10 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
  *
  * @author Ivan Habernal
  */
-public class SVMHMMBrownPOSTest
+public class SVMHMMBrownPOSDemo
 {
 
-    public static final String corpusFilePathTrain = "src/main/resources/brown_tei";
+    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
     private static final int NUM_FOLDS = 10;
 
     @SuppressWarnings("unchecked")
@@ -59,7 +59,7 @@ public class SVMHMMBrownPOSTest
                 Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
                         "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                         BrownCorpusReader.PARAM_PATTERNS,
-                        Arrays.asList(INCLUDE_PREFIX + "b15.xml")));
+                        Arrays.asList(INCLUDE_PREFIX + "*.xml")));
 
         // no parameters needed for now... see TwentyNewsgroupDemo for multiple parametrization
         // or pipeline
@@ -121,7 +121,7 @@ public class SVMHMMBrownPOSTest
             ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE,
                     Constants.LM_SINGLE_LABEL);
 
-            SVMHMMBrownPOSTest experiment = new SVMHMMBrownPOSTest();
+            SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
             experiment.runCrossValidation(pSpace);
         }
         catch (Exception e) {
