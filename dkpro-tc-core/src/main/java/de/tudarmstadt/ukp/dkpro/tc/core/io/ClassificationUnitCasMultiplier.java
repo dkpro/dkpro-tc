@@ -57,7 +57,7 @@ public class ClassificationUnitCasMultiplier
     @ConfigurationParameter(name = PARAM_USE_SEQUENCES, mandatory = true, defaultValue="false")
     private boolean useSequences;
     
-    private final static String UNIT_ID_PREFIX = "_unit_";
+    private final static String UNIT_ID_PREFIX = "_unit";
 
     // For each TextClassificationUnit stored in this collection one corresponding JCas is created.
     private Collection<? extends AnnotationFS> annotations;
@@ -118,9 +118,9 @@ public class ClassificationUnitCasMultiplier
 
         // Set new ids and URIs for copied cases.
         DocumentMetaData.get(copyJCas).setDocumentId(
-                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX + counter);
+                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX);
         DocumentMetaData.get(copyJCas).setDocumentUri(
-                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + counter);
+                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX);
 
         // set the focus annotation
         AnnotationFS focusUnit = this.iterator.next();
