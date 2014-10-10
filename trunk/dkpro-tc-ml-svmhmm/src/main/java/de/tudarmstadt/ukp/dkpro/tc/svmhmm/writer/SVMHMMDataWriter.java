@@ -28,6 +28,8 @@ import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtract
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,7 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 
 /**
  * Converts features to the internal format for SVM HMM
@@ -48,7 +49,7 @@ public class SVMHMMDataWriter
         implements DataWriter
 {
 
-    static Logger log = Logger.getLogger(SVMHMMDataWriter.class.getName());
+    static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
 
     @Override
     public void write(File aOutputDirectory, FeatureStore featureStore, boolean aUseDenseInstances,
