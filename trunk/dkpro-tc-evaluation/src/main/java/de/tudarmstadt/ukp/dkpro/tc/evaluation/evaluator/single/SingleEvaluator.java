@@ -18,13 +18,14 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 /**
  * @author Andriy Nadolskyy
@@ -35,16 +36,16 @@ public class SingleEvaluator
     implements BipartitionBased
 {
 
-    public SingleEvaluator(HashMap<String, Integer> class2number,
-            LinkedList<String> readData, boolean softEvaluation)
+    public SingleEvaluator(Map<String, Integer> class2number,
+            List<String> readData, boolean softEvaluation)
     {
         super(class2number, readData, softEvaluation);
     }
 
-    public ConfusionMatrix<ArrayList<ArrayList<Double>>> buildConfusionMatrix()
+    public ConfusionMatrix<List<List<Double>>> buildConfusionMatrix()
     {
         int number = class2number.keySet().size();
-        ArrayList<ArrayList<Double>> confusionMatrix = new ArrayList<ArrayList<Double>>();
+        List<List<Double>> confusionMatrix = new ArrayList<List<Double>>();
         for (int i = 0; i < number; i++) {
             ArrayList<Double> local = new ArrayList<Double>();
             for (int j = 0; j < number; j++) {
@@ -67,15 +68,14 @@ public class SingleEvaluator
     }
 
     @Override
-    public HashMap<String, String> calculateEvaluationMeasures()
+    public Map<String, String> calculateEvaluationMeasures()
     {
         SingleConfusionMatrix confMatr = (SingleConfusionMatrix) buildConfusionMatrix();
-        double[][][] decomposedConfusionMatrix = confMatr.decomposeConfusionMatrix();
+        ContingencyTable table = confMatr.decomposeConfusionMatrix();
 
         // TODO: add measures for individual labels
         // TODO: add micro-averaged measures
-        HashMap<String, String> results =
-                calculateLabelBasedEvaluationMeasures(decomposedConfusionMatrix);
+        Map<String, String> results = calculateLabelBasedEvaluationMeasures(table);
         return results;
     }
 

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.LabelBasedMeasuresBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
 
 
@@ -25,29 +25,31 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
  * @author Andriy Nadolskyy
  * 
  */
-public class MacroAccuracy extends LabelBasedMeasuresBase implements MeasuresBase{
+public class MacroAccuracy
+	implements MeasuresBase
+{
 
-	public MacroAccuracy(double[][][] decomposedConfusionMatrix) {
-		super(decomposedConfusionMatrix);
-	}
 
-	public Double calculateMeasure(boolean softEvaluation){
-		int numberOfMatrices = decomposedConfusionMatrix.length;
+	public static Double calculate(ContingencyTable cTable, boolean softEvaluation){
+		int numberOfMatrices = cTable.getSize();
 		double summedAccuracy = 0.0;
 		
 		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = decomposedConfusionMatrix[i][0][0];
-			double fp = decomposedConfusionMatrix[i][1][0];
-			double fn = decomposedConfusionMatrix[i][0][1];
-			double tn = decomposedConfusionMatrix[i][1][1];
+			double tp = cTable.getTruePositives(i);
+			double fp = cTable.getFalsePositives(i);
+			double fn = cTable.getFalseNegatives(i);
+			double tn = cTable.getTrueNegatives(i);
 			
-			double localSum = 0.0;
-			if ((localSum = tp + fp + fn + tn) != 0.0)
-				summedAccuracy += (tp + tn) / localSum; 
-			else if (! softEvaluation)
+			double n = tp + fp + fn + tn;
+			if (n != 0.0) {
+				double accuracy = (double) (tp + tn) / n;
+				summedAccuracy += accuracy;
+			}
+			else if (! softEvaluation) {
 				return Double.NaN;
+			}
 		}
+		
 		return Double.valueOf(summedAccuracy / numberOfMatrices);	
-	}
-	
+	}	
 }

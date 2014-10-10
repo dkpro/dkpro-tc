@@ -17,25 +17,31 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
-import java.util.HashMap;
+import java.util.Map;
+
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class MultiConfusionMatrix extends ConfusionMatrix<HashMap<String, HashMap<String, Double>>>{
+public class MultiConfusionMatrix
+	extends ConfusionMatrix<Map<String, Map<String, Double>>>
+{
 
 	public MultiConfusionMatrix(
-			HashMap<String, HashMap<String, Double>> matrix,
-			HashMap<String, Integer> class2number) {
+			Map<String, Map<String, Double>> matrix,
+			Map<String, Integer> class2number)
+	{
 		super(matrix, class2number);
 	}
 
 	@Override
-	public double[][][] decomposeConfusionMatrix() {
+	public ContingencyTable decomposeConfusionMatrix()
+	{
 		int numberOfClasses = class2number.size(); 
-		double[][][] decomposedConfusionMatrix = new double[numberOfClasses][2][2];
+		ContingencyTable cTable = new ContingencyTable(numberOfClasses);
 		
 		for (int decomposed = 0; decomposed < numberOfClasses; decomposed++){
 			for (String goldKey : matrix.keySet()) {
@@ -54,15 +60,13 @@ public class MultiConfusionMatrix extends ConfusionMatrix<HashMap<String, HashMa
 									// "true positives"
 									if (predictionLabel == goldLabel){
 										matchedPositives = true;
-										decomposedConfusionMatrix[decomposed][0][0] += 
-												matrix.get(goldKey).get(predictionKey);
+										cTable.addTruePositives(decomposed, matrix.get(goldKey).get(predictionKey));
 										break;	
 									}						
 								}
 								// "false negatives"
 								if (! matchedPositives){
-									decomposedConfusionMatrix[decomposed][0][1] += 
-											matrix.get(goldKey).get(predictionKey);
+									cTable.addFalseNegatives(decomposed, matrix.get(goldKey).get(predictionKey));
 								}
 							}
 						}
@@ -77,15 +81,13 @@ public class MultiConfusionMatrix extends ConfusionMatrix<HashMap<String, HashMa
 									// "false positives"
 									if (predictionLabel == goldLabel){
 										matchedNegatives = true;
-										decomposedConfusionMatrix[decomposed][1][0] += 
-												matrix.get(goldKey).get(predictionKey);
+										cTable.addFalsePositives(decomposed, matrix.get(goldKey).get(predictionKey));
 										break;
 									}
 								}
 								// "true negatives"
 								if (! matchedNegatives){
-									decomposedConfusionMatrix[decomposed][1][1] += 
-											matrix.get(goldKey).get(predictionKey);
+									cTable.addTrueNegatives(decomposed, matrix.get(goldKey).get(predictionKey));
 								}
 							}
 						}
@@ -93,7 +95,6 @@ public class MultiConfusionMatrix extends ConfusionMatrix<HashMap<String, HashMa
 				}
 			}
 		}
-		return decomposedConfusionMatrix;
+		return cTable;
 	}
-
 }

@@ -21,11 +21,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 /**
  * @author Andriy Nadolskyy
@@ -36,19 +39,19 @@ public class MultiEvaluator
     implements BipartitionBased
 {
 
-    public MultiEvaluator(HashMap<String, Integer> class2number,
+    public MultiEvaluator(Map<String, Integer> class2number,
             LinkedList<String> readData, boolean softEvaluation)
     {
         super(class2number, readData, softEvaluation);
     }
 
-    public ConfusionMatrix<HashMap<String, HashMap<String, Double>>> buildConfusionMatrix()
+    public ConfusionMatrix<Map<String, Map<String, Double>>> buildConfusionMatrix()
     {
-        HashSet<String> labelCombinations = getSetOfLabelCombinations();
+        Set<String> labelCombinations = getSetOfLabelCombinations();
 
         // gold - prediction - value
-        HashMap<String, HashMap<String, Double>> confusionMatrix =
-                new HashMap<String, HashMap<String, Double>>();
+        Map<String, Map<String, Double>> confusionMatrix =
+                new HashMap<String, Map<String, Double>>();
         HashMap<String, Double> tempDimension = new HashMap<String, Double>();
         for (String labelCombination : labelCombinations) {
             tempDimension.put(labelCombination, 0.0);
@@ -120,16 +123,15 @@ public class MultiEvaluator
     }
 
     @Override
-    public HashMap<String, String> calculateEvaluationMeasures()
+    public Map<String, String> calculateEvaluationMeasures()
     {
         MultiConfusionMatrix confMatr = (MultiConfusionMatrix) buildConfusionMatrix();
-        double[][][] decomposedConfusionMatrix = confMatr.decomposeConfusionMatrix();
+        ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
 
         // TODO: add measures for individual labels
         // TODO: add micro-averaged measures
         // TODO: add example-based measures
-        HashMap<String, String> results =
-                calculateLabelBasedEvaluationMeasures(decomposedConfusionMatrix);
+        Map<String, String> results = calculateLabelBasedEvaluationMeasures(cTable);
         return results;
     }
 

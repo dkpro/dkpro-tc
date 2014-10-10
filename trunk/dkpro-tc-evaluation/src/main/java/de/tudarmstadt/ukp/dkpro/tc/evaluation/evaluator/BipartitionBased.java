@@ -24,7 +24,8 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
  * @author Andriy Nadolskyy
  * 
  */
+// TODO what does bipartion-based mean?
 public interface BipartitionBased {
 	
-	public ConfusionMatrix buildConfusionMatrix();
+	public <T> ConfusionMatrix<T> buildConfusionMatrix();
 }

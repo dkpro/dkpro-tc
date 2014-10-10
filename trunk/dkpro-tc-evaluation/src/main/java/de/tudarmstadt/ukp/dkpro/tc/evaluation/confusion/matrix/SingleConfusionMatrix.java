@@ -17,51 +17,58 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class SingleConfusionMatrix extends ConfusionMatrix<ArrayList<ArrayList<Double>>>{
+public class SingleConfusionMatrix 
+	extends ConfusionMatrix<List<List<Double>>>
+{
 
-	public SingleConfusionMatrix(ArrayList<ArrayList<Double>> matrix,
-			HashMap<String, Integer> class2number) {
+	public SingleConfusionMatrix(List<List<Double>> matrix,
+			Map<String, Integer> class2number)
+	{
 		super(matrix, class2number);
 	}
 
 	@Override
-	public double[][][] decomposeConfusionMatrix() {
+	public ContingencyTable decomposeConfusionMatrix()
+	{
 		int numberOfClasses = matrix.size(); 
-		double[][][] decomposedConfusionMatrix = new double[numberOfClasses][2][2];
-
+		ContingencyTable table = new ContingencyTable(numberOfClasses);
+		
 		for (int x = 0; x < numberOfClasses; x++){
 			for (int y = 0; y < numberOfClasses; y++){
 				// true positives
-				if(x == y){
-					decomposedConfusionMatrix[x][0][0] = matrix.get(x).get(x);
+				if (x == y) {
+					table.addTruePositives(x, matrix.get(x).get(x));
 				} 
 				// false negatives
-				else{
-					decomposedConfusionMatrix[x][0][1] += matrix.get(x).get(y);
+				else {
+					table.addFalseNegatives(x, matrix.get(x).get(y));
 				}
 				
-				if(y != x ){
+				if (y != x ){
 					// false positives
-					decomposedConfusionMatrix[x][1][0] += matrix.get(y).get(x);
+					table.addFalsePositives(x, matrix.get(y).get(x));
 					
 					for (int z = 0; z < numberOfClasses; z++){
 						// true negatives
 						if (z != x){
-							decomposedConfusionMatrix[x][1][1] += matrix.get(y).get(z);
+							table.addTrueNegatives(x, matrix.get(y).get(z));
 						}
 					}
 				}
 			}
 		}
-		return decomposedConfusionMatrix;
+		
+		return table;
 	}
 
 }

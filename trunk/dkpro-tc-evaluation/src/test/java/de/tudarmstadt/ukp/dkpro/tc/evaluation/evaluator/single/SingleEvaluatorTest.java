@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class SingleEvaluatorTest
 
     static File file = new File("src/test/resources/datasets/single/id2outcome.txt");
     EvaluationMode mode = EvaluationMode.SINGLE;
-    HashMap<String, String> results;
+    Map<String, String> results;
 
     public void setup(boolean softEvaluation)
         throws IOException
@@ -59,21 +59,22 @@ public class SingleEvaluatorTest
         throws IOException
     {
         setup(true);
+        
         // macro precision
         Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
-        assertEquals(0.047619047619047616, prValue, 0.00001);
+        assertEquals(0.0476190, prValue, 0.00001);
 
         // macro recall
         Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
-        assertEquals(0.047619047619047616, reValue, 0.00000001);
+        assertEquals(0.0476190, reValue, 0.00001);
 
         // macro accuracy
         Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
-        assertEquals(0.38095238095238093, accValue, 0.0001);
+        assertEquals(0.3809523, accValue, 0.0001);
 
         // macro f-score
         Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
-        assertEquals(0.047619047619047616, fScValue, 0.000001);
+        assertEquals(0.0476190, fScValue, 0.0001);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class SingleEvaluatorTest
 
         // macro precision
         Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
-        assertEquals(0.047619047619047616, prValue, 0.00001);
+        assertEquals(0.0476190, prValue, 0.00001);
 
         // macro recall
         Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
@@ -92,7 +93,7 @@ public class SingleEvaluatorTest
 
         // macro accuracy
         Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
-        assertEquals(0.38095238095238093, accValue, 0.0001);
+        assertEquals(0.3809523, accValue, 0.0001);
 
         // macro f-score
         Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
