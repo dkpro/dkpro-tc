@@ -17,7 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
-import java.util.HashMap;
+import java.util.Map;
+
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 
 /**
@@ -26,12 +28,12 @@ import java.util.HashMap;
  */
 public abstract class ConfusionMatrix<T> {
 	protected T matrix;
-	protected HashMap<String, Integer> class2number;
+	protected Map<String, Integer> class2number;
 	
-	public ConfusionMatrix(T matrix, HashMap<String, Integer> class2number){
+	public ConfusionMatrix(T matrix, Map<String, Integer> class2number){
 		this.matrix = matrix;
 		this.class2number = class2number;
 	}
 	
-	public abstract double[][][] decomposeConfusionMatrix();
+	public abstract ContingencyTable decomposeConfusionMatrix();
 }

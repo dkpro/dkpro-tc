@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.LabelBasedMeasuresBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
 
 
@@ -25,34 +25,37 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
  * @author Andriy Nadolskyy
  * 
  */
-public class MacroFScore extends LabelBasedMeasuresBase implements MeasuresBase{
+// TODO fscore should calculate f_1 as a default but allow to configure other betas
+public class MacroFScore
+	implements MeasuresBase
+{
 
-	public MacroFScore(double[][][] decomposedConfusionMatrix) {
-		super(decomposedConfusionMatrix);
-	}
-
-	public Double calculateMeasure(boolean softEvaluation){
-		int numberOfMatrices = decomposedConfusionMatrix.length;
+	public static Double calculate(ContingencyTable cTable, boolean softEvaluation){
+		int numberOfMatrices = cTable.getSize();
 		double summedFScore = 0.0;
 		
 		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = decomposedConfusionMatrix[i][0][0];
-			double fp = decomposedConfusionMatrix[i][1][0];
-			double fn = decomposedConfusionMatrix[i][0][1];
+			double tp = cTable.getTruePositives(i);
+			double fp = cTable.getFalsePositives(i);
+			double fn = cTable.getFalseNegatives(i);
 			
 			double localSum = 0.0;
 			double precision = 0.0;
 			double recall = 0.0;
-			if ((localSum = tp + fp) != 0.0)
+			if ((localSum = tp + fp) != 0.0) {
 				precision = tp / localSum;
-			if ((localSum = tp + fn) != 0.0)
+			}
+			if ((localSum = tp + fn) != 0.0) {
 				recall = tp / localSum;
-			if ((localSum = precision + recall) != 0.0)
+			}
+			if ((localSum = precision + recall) != 0.0) {
 				summedFScore += (2 * precision * recall) / localSum;
-			else if (! softEvaluation)
+			}
+			else if (! softEvaluation) {
 				return Double.NaN;
+			}
 		}
-		return Double.valueOf(summedFScore / numberOfMatrices);	
+		return summedFScore / numberOfMatrices;	
 	}
 	
 }

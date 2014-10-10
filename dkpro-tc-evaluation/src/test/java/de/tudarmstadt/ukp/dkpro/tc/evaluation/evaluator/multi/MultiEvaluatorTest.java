@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotSame;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class MultiEvaluatorTest
 
     static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
     EvaluationMode mode = EvaluationMode.MULTI;
-    HashMap<String, String> results;
+    Map<String, String> results;
 
     public void setup(boolean softEvaluation)
         throws IOException
