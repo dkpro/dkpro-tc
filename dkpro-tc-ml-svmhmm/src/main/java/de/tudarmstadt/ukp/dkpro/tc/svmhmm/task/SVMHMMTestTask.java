@@ -32,6 +32,8 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.SortedSet;
-import java.util.logging.Logger;
 
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters.
@@ -53,8 +54,6 @@ public class SVMHMMTestTask
         extends ExecutableTaskBase
         implements Constants
 {
-    static Logger log = Logger.getLogger(SVMHMMTestTask.class.getName());
-
     private static final String BINARIES_BASE_LOCATION = "classpath:/de/tudarmstadt/ukp/dkpro/tc/svmhmm/";
 
     /**
@@ -108,6 +107,9 @@ public class SVMHMMTestTask
 
     // where the trained model is stored
     private static final String MODEL_NAME = "svm_struct.model";
+
+    // logger
+    private static Log log = LogFactory.getLog(SVMHMMTestTask.class);
 
     @Override
     public void execute(TaskContext taskContext)
@@ -196,7 +198,7 @@ public class SVMHMMTestTask
         File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
         List<String> modelTrainCommand = buildTrainCommand(trainingFile, tmpModelFile.getPath());
 
-        log.info("Start training model");
+        log.debug("Start training model");
         long time = System.currentTimeMillis();
         runCommand(modelTrainCommand);
         long completedIn = System.currentTimeMillis() - time;
@@ -303,11 +305,34 @@ public class SVMHMMTestTask
      *
      * @param command command as list of Strings
      */
-    private void runCommand(List<String> command)
+    private static void runCommand(List<String> command)
             throws Exception
     {
         log.info(command.toString());
-        Process process = new ProcessBuilder().inheritIO().command(command).start();
+
+        // create temp files for capturing output instead of printing to stdout/stderr
+        File tmpErrLog = File.createTempFile("tmp.err.", ".log");
+        File tmpOutLog = File.createTempFile("tmp.out.", ".log");
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectError(tmpErrLog);
+        processBuilder.redirectOutput(tmpOutLog);
+
+        // run the process
+        Process process = processBuilder.start();
         process.waitFor();
+
+        // debut the output
+        String outLog = FileUtils.readFileToString(tmpOutLog);
+        String errLog = FileUtils.readFileToString(tmpErrLog);
+
+        log.debug(outLog);
+        if (!errLog.isEmpty()) {
+            log.error(errLog);
+        }
+
+        // delete files
+        FileUtils.deleteQuietly(tmpErrLog);
+        FileUtils.deleteQuietly(tmpOutLog);
     }
 }

@@ -41,11 +41,31 @@ import java.util.TreeSet;
  */
 public final class SVMHMMUtils
 {
+    /**
+     * File name of serialized mapping from String labels to numbers
+     */
     public static final String LABELS_TO_INTEGERS_MAPPING_FILE_NAME =
             "labelsToIntegersMapping_DualTreeBidiMap.bin";
+
+    /**
+     * CSV file comment
+     */
     public static final String CSV_COMMENT = "Columns: gold, predicted, token, seqID";
+
+    /**
+     * Format of CSV files
+     */
     public static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.withCommentMarker('#');
+
+    /**
+     * Where the gold outcomes, predicted outcomes, and tokens are stored
+     */
     public static final String GOLD_PREDICTED_OUTCOMES_CSV = "outcomesGoldPredicted.csv";
+
+    /**
+     * How many fields are in comment for each instance -- currently 3: "token", "TAG", "4"
+     */
+    private static final int NUMBER_OF_FIELDS_IN_COMMENT = 3;
 
     private SVMHMMUtils()
     {
@@ -191,18 +211,23 @@ public final class SVMHMMUtils
      * Reads the featureVectorsFile and splits comment on each line into a list of strings, i.e.
      * "TAG qid:4 1:1 2:1 4:2 # token TAG 4" produces "token", "TAG", "4"
      *
-     * @param featureVectorsFile featureVectors file
+     * @param featureVectorsFileStream featureVectors file stream
+     * @param expectedFieldsCount      how many fields are in comment
      * @return list (for each line) of list of comment parts
      * @throws IOException
+     * @throws java.lang.IllegalArgumentException if number of fields in each comment differs
+     *                                            from {@code expectedFieldsCount}
      */
-    protected static List<List<String>> extractComments(File featureVectorsFile)
-            throws IOException
+    protected static List<List<String>> extractComments(InputStream featureVectorsFileStream,
+            int expectedFieldsCount)
+            throws IOException, IllegalArgumentException
     {
         List<List<String>> result = new ArrayList<>();
 
-        List<String> lines = FileUtils.readLines(featureVectorsFile);
+        List<String> lines = IOUtils.readLines(featureVectorsFileStream);
+        IOUtils.closeQuietly(featureVectorsFileStream);
         for (String line : lines) {
-            String comment = line.split("#")[1];
+            String comment = line.split("#", 2)[1];
 
             List<String> list = new ArrayList<>();
 
@@ -212,6 +237,12 @@ public final class SVMHMMUtils
                 if (!token.trim().isEmpty()) {
                     list.add(token.trim());
                 }
+            }
+
+            if (list.size() != expectedFieldsCount) {
+                throw new IllegalArgumentException(
+                        "Expected " + expectedFieldsCount + " fields in comment on line '" + line
+                                + "' but only " + list.size() + " (" + list + ") found.");
             }
 
             result.add(list);
@@ -230,7 +261,11 @@ public final class SVMHMMUtils
             throws IOException
     {
         List<String> result = new ArrayList<>();
-        for (List<String> comment : extractComments(featureVectorsFile)) {
+
+        List<List<String>> comments = extractComments(new FileInputStream(featureVectorsFile),
+                NUMBER_OF_FIELDS_IN_COMMENT);
+
+        for (List<String> comment : comments) {
             // original token is the first one in comments
             result.add(comment.get(0));
         }
@@ -275,7 +310,10 @@ public final class SVMHMMUtils
     {
         List<Integer> result = new ArrayList<>();
 
-        for (List<String> comment : extractComments(featureVectorsFile)) {
+        List<List<String>> comments = extractComments(new FileInputStream(featureVectorsFile),
+                NUMBER_OF_FIELDS_IN_COMMENT);
+
+        for (List<String> comment : comments) {
             // sequence number is the third token in the comment token
             result.add(Integer.valueOf(comment.get(2)));
         }

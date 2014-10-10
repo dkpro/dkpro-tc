@@ -30,13 +30,14 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author Ivan Habernal
@@ -44,12 +45,12 @@ import java.util.logging.Logger;
 public class SVMHMMBatchCrossValidationReport
         extends BatchReportBase
 {
-    static Logger logger = Logger.getLogger(SVMHMMBatchCrossValidationReport.class.getName());
-
+    static Log log = LogFactory.getLog(SVMHMMBatchCrossValidationReport.class);
 
     @Override public void execute()
             throws Exception
     {
+
         StorageService storageService = getContext().getStorageService();
 
         // aggregate rows from all CSVs from all folds
@@ -88,7 +89,7 @@ public class SVMHMMBatchCrossValidationReport
                 getContext().getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY,
                         StorageService.AccessMode.READWRITE),
                 SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
-        System.out.println(evaluationFile.getAbsolutePath());
+        log.debug("Evaluation file: " + evaluationFile.getAbsolutePath());
 
         CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(evaluationFile),
                 SVMHMMUtils.CSV_FORMAT);
@@ -112,7 +113,7 @@ public class SVMHMMBatchCrossValidationReport
         SVMHMMUtils.writeOutputResults(getContext(), cm);
 
         // and print detailed results
-        logger.info(cm.printNiceResults());
-        logger.info(cm.printLabelPrecRecFm());
+        log.info(cm.printNiceResults());
+        log.info(cm.printLabelPrecRecFm());
     }
 }
