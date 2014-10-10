@@ -54,6 +54,11 @@ public class SVMHMMTestTask
         extends ExecutableTaskBase
         implements Constants
 {
+    /*
+    for svm_hmm debugging purposes
+     */
+    private static final boolean PRINT_STDOUT = false;
+
     private static final String BINARIES_BASE_LOCATION = "classpath:/de/tudarmstadt/ukp/dkpro/tc/svmhmm/";
 
     /**
@@ -71,6 +76,7 @@ public class SVMHMMTestTask
      * NOTE: Unlike in V1.01, the value of C is divided by the number of training examples.
      * So, to get results equivalent to V1.01, multiply C by the number of training examples.
      */
+    public static final String PARAM_C = "paramC";
     @Discriminator
     private double paramC = 5;
 
@@ -80,6 +86,7 @@ public class SVMHMMTestTask
      * training takes, but the solution is more precise. However, solutions more accurate than 0.5
      * typically do not improve prediction accuracy.
      */
+    public static final String PARAM_EPSILON = "paramEpsilon";
     @Discriminator
     private double paramEpsilon = 0.5;
 
@@ -88,12 +95,15 @@ public class SVMHMMTestTask
      * larger than 1. (default 1)
      */
     @Discriminator
+    public static final String PARAM_ORDER_T = "paramOrderT";
     private int paramOrderT = 1;
 
     /**
      * Parameter "--e <ORDER_E>": Order of dependencies of emissions in HMM. Can be any number
      * larger than 0. (default 0)
+     * UPDATE: according to svm_struct_api.c: must be either 0 or 1; fails for >1
      */
+    public static final String PARAM_ORDER_E = "paramOrderE";
     @Discriminator
     private int paramOrderE = 0;
 
@@ -103,6 +113,7 @@ public class SVMHMMTestTask
      * computing predictions. The value is the width of the beam used (e.g. 100). (default 0).
      */
     @Discriminator
+    public static final String PARAM_B = "paramB";
     private int paramB = 0;
 
     // where the trained model is stored
@@ -115,6 +126,8 @@ public class SVMHMMTestTask
     public void execute(TaskContext taskContext)
             throws Exception
     {
+        checkParameters();
+
         // where the training date are located
         File trainingDataStorage = taskContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 StorageService.AccessMode.READONLY);
@@ -157,6 +170,37 @@ public class SVMHMMTestTask
 
         // test the model
         testModel(taskContext, augmentedTestFile);
+    }
+
+    /**
+     * Checks parameters and throws exception if the parameters are out of range
+     *
+     * @throws java.lang.IllegalArgumentException if model params out of range
+     */
+    private void checkParameters()
+            throws IllegalArgumentException
+    {
+        if (this.paramOrderT < 0 || this.paramOrderT > 3) {
+            throw new IllegalArgumentException(
+                    "paramOrderT (=" + this.paramOrderT + ") must be in range [0..3])");
+        }
+
+        if (this.paramOrderE < 0 || this.paramOrderE > 1) {
+            throw new IllegalArgumentException(
+                    "paramOrderE (=" + this.paramOrderE + ") must be in range [0..1])");
+        }
+
+        if (this.paramB < 0) {
+            throw new IllegalArgumentException("paramB (=" + this.paramB + ") must be >= 0");
+        }
+
+        if (this.paramC < 0) {
+            throw new IllegalArgumentException("paramC (=" + this.paramC + ") must be >= 0");
+        }
+
+        if (this.paramOrderT < this.paramOrderE) {
+            throw new IllegalArgumentException("paramOrderE must be <= paramOrderT");
+        }
     }
 
     /**
@@ -310,29 +354,36 @@ public class SVMHMMTestTask
     {
         log.info(command.toString());
 
-        // create temp files for capturing output instead of printing to stdout/stderr
-        File tmpErrLog = File.createTempFile("tmp.err.", ".log");
-        File tmpOutLog = File.createTempFile("tmp.out.", ".log");
-
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        processBuilder.redirectError(tmpErrLog);
-        processBuilder.redirectOutput(tmpOutLog);
-
-        // run the process
-        Process process = processBuilder.start();
-        process.waitFor();
-
-        // debut the output
-        String outLog = FileUtils.readFileToString(tmpOutLog);
-        String errLog = FileUtils.readFileToString(tmpErrLog);
-
-        log.debug(outLog);
-        if (!errLog.isEmpty()) {
-            log.error(errLog);
+        if (PRINT_STDOUT) {
+            Process process = new ProcessBuilder().inheritIO().command(command).start();
+            process.waitFor();
         }
+        else {
+            // create temp files for capturing output instead of printing to stdout/stderr
+            File tmpErrLog = File.createTempFile("tmp.err.", ".log");
+            File tmpOutLog = File.createTempFile("tmp.out.", ".log");
 
-        // delete files
-        FileUtils.deleteQuietly(tmpErrLog);
-        FileUtils.deleteQuietly(tmpOutLog);
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+
+            processBuilder.redirectError(tmpErrLog);
+            processBuilder.redirectOutput(tmpOutLog);
+
+            // run the process
+            Process process = processBuilder.start();
+            process.waitFor();
+
+            // debut the output
+            String outLog = FileUtils.readFileToString(tmpOutLog);
+            String errLog = FileUtils.readFileToString(tmpErrLog);
+
+            log.debug(outLog);
+            if (!errLog.isEmpty()) {
+                log.error(errLog);
+            }
+
+            // delete files
+            FileUtils.deleteQuietly(tmpErrLog);
+            FileUtils.deleteQuietly(tmpOutLog);
+        }
     }
 }
