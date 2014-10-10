@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universität Darmstadt
+ * Technische Universit??t Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue May 06 17:51:57 CEST 2014
- * XML source: /Users/zesch/Documents/workspace/de.tudarmstadt.ukp.dkpro.tc/de.tudarmstadt.ukp.dkpro.tc.api-asl/src/main/resources/desc/type/TextClassification.xml
+ * Updated by JCasGen Fri Oct 10 14:31:03 CEST 2014
+ * XML source: /Users/zesch/Documents/workspace/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationUnit extends Annotation {
   /** @generated
@@ -90,6 +90,26 @@ public class TextClassificationUnit extends Annotation {
    */
   private void readObject() {/*default - does nothing empty block */}
      
-}
+  //*--------------*
+  //* Feature: id
+
+  /** getter for id - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getId() {
+    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id);}
+    
+  /** setter for id - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setId(String v) {
+    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id, v);}    
+  }
 
     

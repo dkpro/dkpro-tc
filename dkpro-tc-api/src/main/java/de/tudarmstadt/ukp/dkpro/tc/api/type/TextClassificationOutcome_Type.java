@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universität Darmstadt
+ * Technische Universit??t Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue May 06 17:51:57 CEST 2014
+ * Updated by JCasGen Fri Oct 10 14:31:03 CEST 2014
  * @generated */
 public class TextClassificationOutcome_Type extends Annotation_Type {
   /** @generated 
@@ -42,8 +42,7 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
   /** @generated */
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
-      @Override
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+      public FeatureStructure createFS(int addr, CASImpl cas) {
   			 if (TextClassificationOutcome_Type.this.useExistingInstance) {
   			   // Return eq fs instance if already created
   		     FeatureStructure fs = TextClassificationOutcome_Type.this.jcas.getJfsFromCaddr(addr);
