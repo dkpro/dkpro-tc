@@ -40,10 +40,9 @@ public class MultiConfusionMatrix
 	@Override
 	public ContingencyTable decomposeConfusionMatrix()
 	{
-		int numberOfClasses = class2number.size(); 
-		ContingencyTable cTable = new ContingencyTable(numberOfClasses);
+		ContingencyTable cTable = new ContingencyTable(class2number);
 		
-		for (int decomposed = 0; decomposed < numberOfClasses; decomposed++){
+		for (int decomposed = 0; decomposed < class2number.size(); decomposed++){
 			for (String goldKey : matrix.keySet()) {
 				
 				String[] goldLabels = goldKey.split(",");

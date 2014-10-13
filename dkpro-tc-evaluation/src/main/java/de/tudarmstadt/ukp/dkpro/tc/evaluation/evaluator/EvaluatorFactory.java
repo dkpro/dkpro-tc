@@ -21,15 +21,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 /**
  * @author Andriy Nadolskyy
@@ -47,7 +49,7 @@ public class EvaluatorFactory {
 	public static EvaluatorBase createEvaluator(File file, String learningMode, boolean softEvaluation) 
 			throws IOException
 	{	
-		Map<String, Integer> class2number = new HashMap<String, Integer>();
+		Set<String> labels = new HashSet<String>();
 		List<String> readData = new LinkedList<String>();
 		
 		BufferedReader br = new BufferedReader(new FileReader(file)); 
@@ -58,7 +60,7 @@ public class EvaluatorFactory {
 				
 				// filter #labels out and collect labels
 				for (int i = 1; i < classes.length; i++) {
-					class2number.put(classes[i], i-1);
+					labels.add(classes[i]);
 				}
 			}	
 			else if (! line.startsWith("#")){
@@ -68,6 +70,8 @@ public class EvaluatorFactory {
 		}
 		br.close();
 		
+		Map<String, Integer> class2number = ContingencyTable.classNamesToMapping(labels);
+
 		EvaluatorBase evaluator = null;
 		if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
 			evaluator = new SingleEvaluator(class2number, readData, softEvaluation);

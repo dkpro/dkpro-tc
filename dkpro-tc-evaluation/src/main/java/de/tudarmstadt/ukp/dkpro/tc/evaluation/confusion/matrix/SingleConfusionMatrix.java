@@ -40,11 +40,10 @@ public class SingleConfusionMatrix
 	@Override
 	public ContingencyTable decomposeConfusionMatrix()
 	{
-		int numberOfClasses = matrix.size(); 
-		ContingencyTable table = new ContingencyTable(numberOfClasses);
+		ContingencyTable table = new ContingencyTable(class2number);
 		
-		for (int x = 0; x < numberOfClasses; x++){
-			for (int y = 0; y < numberOfClasses; y++){
+		for (int x = 0; x < table.getSize(); x++){
+			for (int y = 0; y < table.getSize(); y++){
 				// true positives
 				if (x == y) {
 					table.addTruePositives(x, matrix.get(x).get(x));
@@ -58,7 +57,7 @@ public class SingleConfusionMatrix
 					// false positives
 					table.addFalsePositives(x, matrix.get(y).get(x));
 					
-					for (int z = 0; z < numberOfClasses; z++){
+					for (int z = 0; z < table.getSize(); z++){
 						// true negatives
 						if (z != x){
 							table.addTrueNegatives(x, matrix.get(y).get(z));
