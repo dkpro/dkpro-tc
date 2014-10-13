@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.CombinedContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroAccuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroPrecision;

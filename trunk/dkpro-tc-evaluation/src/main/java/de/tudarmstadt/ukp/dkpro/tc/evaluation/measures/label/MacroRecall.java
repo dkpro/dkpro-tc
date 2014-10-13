@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 
 
 /**

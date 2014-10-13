@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroAccuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures;
+package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
 import java.util.ArrayList;
 import java.util.Arrays;
