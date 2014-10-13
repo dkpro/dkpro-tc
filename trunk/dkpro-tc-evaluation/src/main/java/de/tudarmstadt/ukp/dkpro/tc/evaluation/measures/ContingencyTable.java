@@ -33,6 +33,9 @@ public class ContingencyTable {
 	
 	public ContingencyTable(String ... classNames)
 	{
+		if (classNames.length == 0) {
+			throw new IllegalArgumentException("Must at least specify on class name.");
+		}
 		this.class2Number = classNamesToMapping(Arrays.asList(classNames));
 		this.table = new double[class2Number.size()][2][2];
 	}
