@@ -307,8 +307,8 @@ public class TaskUtils
      * @throws AnalysisEngineProcessException
      */
     public static Instance getSingleInstance(String featureMode,
-            FeatureExtractorResource_ImplBase[] featureExtractors,
-            JCas jcas, boolean developerMode, boolean addInstanceId)
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
+            boolean developerMode, boolean addInstanceId)
         throws AnalysisEngineProcessException
     {
         AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
@@ -371,7 +371,7 @@ public class TaskUtils
 
                     if (classificationUnits.size() != 1) {
                         throw new AnalysisEngineProcessException(
-                                "There is more than one TextClassificationUnit anotation in the JCas.",
+                                "There is more than one TextClassificationUnit annotation in the JCas.",
                                 null);
                     }
 
@@ -388,19 +388,20 @@ public class TaskUtils
 
         if (addInstanceId) {
             try {
-            	List<Feature> instanceId = addIdFeatureExtractor.extract(jcas);
-            	
-            	// add optional unit id
-            	if (featureMode.equals(Constants.FM_UNIT)) {
-            		TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
+                List<Feature> instanceId = addIdFeatureExtractor.extract(jcas);
+
+                // add optional unit id
+                if (featureMode.equals(Constants.FM_UNIT)) {
+                    TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
                             TextClassificationFocus.class);
-                    TextClassificationUnit classificationUnit = JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus).get(0);
+                    TextClassificationUnit classificationUnit = JCasUtil.selectCovered(jcas,
+                            TextClassificationUnit.class, focus).get(0);
                     String id = classificationUnit.getId();
                     if (id != null && id.length() > 0) {
-                        instanceId.get(0).setValue(instanceId.get(0).getValue() + "_" + id);                    	
+                        instanceId.get(0).setValue(instanceId.get(0).getValue() + "_" + id);
                     }
-            	}
-            	
+                }
+
                 instance.addFeatures(instanceId);
             }
             catch (TextClassificationException e) {
@@ -420,20 +421,21 @@ public class TaskUtils
      * @return
      * @throws AnalysisEngineProcessException
      */
-    public static List<Instance> getMultipleInstances(String featureMode,
-            FeatureExtractorResource_ImplBase[] featureExtractors,
-            JCas jcas, boolean developerMode, boolean addInstanceId, int sequenceId)
+    public static List<Instance> getMultipleInstances(
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
+             boolean addInstanceId, int sequenceId)
         throws AnalysisEngineProcessException
     {
         List<Instance> instances = new ArrayList<Instance>();
         AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
 
         TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus);
+        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas,
+                TextClassificationUnit.class, focus);
 
         int sequencePosition = 0;
         for (TextClassificationUnit unit : units) {
-        	
+
             List<Feature> instanceId;
             String instanceIdString;
             try {
@@ -443,19 +445,21 @@ public class TaskUtils
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
             }
-        	
-        	
+
             Instance instance = new Instance();
             if (addInstanceId) {
-            	// add sequence position and optional unit id to instanceID
+                // add sequence position and optional unit id to instanceID
                 String focusUnitId = unit.getId();
                 if (focusUnitId == null || focusUnitId.length() == 0) {
-                    instanceId.get(0).setValue(instanceIdString + "_" + sequenceId);
+                    instanceId.get(0).setValue(
+                            instanceIdString + "_" + sequenceId + "_" + sequencePosition);
                 }
                 else {
-                    instanceId.get(0).setValue(instanceIdString + "_" + sequenceId + "_" + focusUnitId);                	
+                    instanceId.get(0).setValue(
+                            instanceIdString + "_" + sequenceId + "_" + sequencePosition + "_"
+                                    + focusUnitId);
                 }
-                
+
                 instance.addFeatures(instanceId);
             }
 
