@@ -118,9 +118,9 @@ public class ClassificationUnitCasMultiplier
 
         // Set new ids and URIs for copied cases.
         DocumentMetaData.get(copyJCas).setDocumentId(
-                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX);
+                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX + counter);
         DocumentMetaData.get(copyJCas).setDocumentUri(
-                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX);
+                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + counter);
 
         // set the focus annotation
         AnnotationFS focusUnit = this.iterator.next();
