@@ -91,7 +91,7 @@ public class ExtractFeaturesConnector
 
         featureStore = new SimpleFeatureStore();
 
-        sequenceId = 1;
+        sequenceId = 0;
 
         if (featureExtractors.length == 0) {
             context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
@@ -106,8 +106,8 @@ public class ExtractFeaturesConnector
 
         List<Instance> instances = new ArrayList<Instance>();
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            instances = TaskUtils.getMultipleInstances(featureMode,
-                    featureExtractors, jcas, developerMode, addInstanceId, sequenceId);
+            instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId,
+                    sequenceId);
             sequenceId++;
         }
         else {
