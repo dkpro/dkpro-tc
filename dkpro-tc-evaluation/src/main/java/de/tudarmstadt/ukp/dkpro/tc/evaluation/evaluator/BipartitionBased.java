@@ -21,10 +21,16 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
 
 
 /**
+ * "The bipartitions-based evaluation measures are calculated based
+ * on the comparison of the predicted relevant labels with the
+ * ground truth relevant labels. This group of evaluation measures
+ * is further divided into example-based and label-based."
+ * Gj. Madjarov, et al., An extensive experimental comparison of methods for multi-label learning, 
+ * Pattern Recognition (2012)
+ * 
  * @author Andriy Nadolskyy
  * 
  */
-// TODO what does bipartion-based mean?
 public interface BipartitionBased {
 	
 	public <T> ConfusionMatrix<T> buildConfusionMatrix();

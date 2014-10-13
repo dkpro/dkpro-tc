@@ -15,13 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures;
+package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
+
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.CombinedContingencyTable;
 
 
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public interface MeasuresBase {
-	
+public class MicroPrecision
+{
+
+
+	public static Double calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
+		double tp = cCTable.getTruePositives();
+		double fp = cCTable.getFalsePositives();
+		
+		double precision = 0.0;
+		double denominator = tp + fp;
+		if (denominator != 0.0) {
+			precision = (double) tp / denominator;
+		}
+		else if (! softEvaluation) {
+			return Double.NaN;
+		}		
+		return precision;
+	}	
 }

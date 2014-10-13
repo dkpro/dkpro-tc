@@ -26,8 +26,10 @@ import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiConfusionMatrix;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 /**
@@ -77,11 +79,12 @@ public class MultiEvaluator
                 }
             }
 
-            // FIXME: handle empty prediction
-            if (!accumulatedLabelCombination.equals("")) {
-                Double updatedValue = confusionMatrix.get(gold).get(accumulatedLabelCombination) + 1;
-                confusionMatrix.get(gold).put(accumulatedLabelCombination, updatedValue);
+            if (accumulatedLabelCombination.equals("")) {
+                // replace with appropriate label
+            	accumulatedLabelCombination = String.valueOf(class2number.get(""));
             }
+            Double updatedValue = confusionMatrix.get(gold).get(accumulatedLabelCombination) + 1;
+            confusionMatrix.get(gold).put(accumulatedLabelCombination, updatedValue);
         }
         return new MultiConfusionMatrix(confusionMatrix, class2number);
     }
@@ -113,11 +116,17 @@ public class MultiEvaluator
                 }
             }
 
-            // FIXME: handle empty prediction
-            if (!accumulatedLabelCombination.equals("")) {
-                labelCombinations.add(accumulatedLabelCombination);
-                labelCombinations.add(gold);
-            }
+            labelCombinations.add(accumulatedLabelCombination);
+            labelCombinations.add(gold);
+        }
+         
+        if (labelCombinations.contains("")) {
+        	// add "" label to class2number and replace it in list of labelCombinations
+        	// with the next free number from class2number
+        	int additionalLabelNumber = class2number.size();
+        	class2number.put("", additionalLabelNumber);
+        	labelCombinations.remove("");
+        	labelCombinations.add(String.valueOf(additionalLabelNumber));
         }
         return labelCombinations;
     }
@@ -127,11 +136,13 @@ public class MultiEvaluator
     {
         MultiConfusionMatrix confMatr = (MultiConfusionMatrix) buildConfusionMatrix();
         ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
+        CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();
 
         // TODO: add measures for individual labels
-        // TODO: add micro-averaged measures
         // TODO: add example-based measures
-        Map<String, String> results = calculateLabelBasedEvaluationMeasures(cTable);
+        Map<String, String> results = calculateLabelBasedMacroMeasures(cTable);
+        Map<String, String> microResults = calculateLabelBasedMicroMeasures(cCTable);;
+        results.putAll(microResults);
         return results;
     }
 
