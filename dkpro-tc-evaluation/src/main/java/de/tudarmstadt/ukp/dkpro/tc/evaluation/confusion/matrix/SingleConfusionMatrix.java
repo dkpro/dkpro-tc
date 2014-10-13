@@ -20,8 +20,6 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
-
 
 /**
  * @author Andriy Nadolskyy
