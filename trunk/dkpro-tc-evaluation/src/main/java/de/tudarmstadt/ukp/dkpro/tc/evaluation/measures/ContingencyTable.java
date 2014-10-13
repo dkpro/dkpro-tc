@@ -18,16 +18,64 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ContingencyTable {
 
+	private Map<String, Integer> class2Number;
 	private double[][][] table;
 	
-	public ContingencyTable(int numberOfClasses) {
-		this.table = new double[numberOfClasses][2][2];
+	public ContingencyTable(String ... classNames)
+	{
+		this.class2Number = classNamesToMapping(Arrays.asList(classNames));
+		this.table = new double[class2Number.size()][2][2];
+	}
+	
+	public ContingencyTable(Map<String, Integer> class2Number) {
+		this.class2Number = class2Number;
+		this.table = new double[class2Number.size()][2][2];
 	}
 	
 	public int getSize() {
 		return table.length;
+	}
+	
+	public void addTruePositives(String className, double count) {
+		table[class2Number.get(className)][0][0] += count;		
+	}
+
+	public void addTrueNegatives(String className, double count) {
+		table[class2Number.get(className)][1][1] += count;
+	}
+
+	public void addFalsePositives(String className, double count) {
+		table[class2Number.get(className)][0][1] += count;
+	}
+
+	public void addFalseNegatives(String className, double count) {
+		table[class2Number.get(className)][1][0] += count;		
+	}
+	
+	public double getTruePositives(String className) {
+		return table[class2Number.get(className)][0][0];
+	}
+
+	public double getTrueNegatives(String className) {
+		return table[class2Number.get(className)][1][1];
+	}
+
+	public double getFalsePositives(String className) {
+		return table[class2Number.get(className)][1][0];		
+	}
+
+	public double getFalseNegatives(String className) {
+		return table[class2Number.get(className)][0][1];
 	}
 	
 	public void addTruePositives(int classId, double count) {
@@ -60,5 +108,18 @@ public class ContingencyTable {
 
 	public double getFalseNegatives(int classId) {
 		return table[classId][0][1];
+	}
+	
+	public static Map<String, Integer> classNamesToMapping(Collection<String> collection)
+	{
+		List<String> classNames = new ArrayList<>(collection);
+		Collections.sort(classNames);
+		
+		Map<String, Integer> mapping = new HashMap<String, Integer>();
+		for (int i=0; i<classNames.size(); i++) {
+			mapping.put(classNames.get(i), i);
+		}
+		
+		return mapping;
 	}
 }
