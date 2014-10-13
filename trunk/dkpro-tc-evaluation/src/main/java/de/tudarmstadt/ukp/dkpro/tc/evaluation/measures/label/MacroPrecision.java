@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
 
 
 /**
@@ -26,7 +25,6 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
  * 
  */
 public class MacroPrecision
-	implements MeasuresBase
 {
 
 	public static Double calculate(ContingencyTable cTable, boolean softEvaluation){

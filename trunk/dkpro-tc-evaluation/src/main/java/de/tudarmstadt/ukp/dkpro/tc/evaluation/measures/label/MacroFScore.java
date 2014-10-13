@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
 
 
 /**
@@ -27,7 +26,6 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.MeasuresBase;
  */
 // TODO fscore should calculate f_1 as a default but allow to configure other betas
 public class MacroFScore
-	implements MeasuresBase
 {
 
 	public static Double calculate(ContingencyTable cTable, boolean softEvaluation){

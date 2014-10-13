@@ -17,34 +17,31 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.CombinedContingencyTable;
 
 
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class MacroRecall
+public class MicroAccuracy
 {
 
-	public static Double calculate(ContingencyTable cTable, boolean softEvaluation){
-		int numberOfMatrices = cTable.getSize();
-		double summedRecall = 0.0;
-		
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fn = cTable.getFalseNegatives(i);
+
+	public static Double calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
+		double tp = cCTable.getTruePositives();
+		double fp = cCTable.getFalsePositives();
+		double fn = cCTable.getFalseNegatives();
+		double tn = cCTable.getTrueNegatives();
 			
-			double denominator = tp + fn;
-			if (denominator != 0.0) {
-				double recall = (double) tp / denominator;
-				summedRecall += recall;
-			}
-			else if (! softEvaluation) {
-				return Double.NaN;
-			}
+		double accuracy = 0.0;
+		double n = tp + fp + fn + tn;
+		if (n != 0.0) {
+			accuracy = (double) (tp + tn) / n;
 		}
-		
-		return summedRecall / numberOfMatrices;	
+		else if (! softEvaluation) {
+			return Double.NaN;
+		}
+		return accuracy;		 	
 	}	
 }

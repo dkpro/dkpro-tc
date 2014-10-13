@@ -90,11 +90,11 @@ public class ContingencyTable {
 	}
 
 	public void addFalsePositives(int classId, double count) {
-		table[classId][0][1] += count;
+		table[classId][1][0] += count;
 	}
 
 	public void addFalseNegatives(int classId, double count) {
-		table[classId][1][0] += count;		
+		table[classId][0][1] += count;		
 	}
 	
 	public double getTruePositives(int classId) {
@@ -124,5 +124,22 @@ public class ContingencyTable {
 		}
 		
 		return mapping;
+	}
+	
+	/**
+	 * combine contingency tables of all labels into one table
+	 * 
+	 * @return
+	 */
+	public CombinedContingencyTable buildCombinedMatrix() {
+		double[][] combinedMatrix = new double[2][2]; 
+		for (int x = 0; x < table.length; x++){
+			for (int y = 0; y < 2; y++) {
+				for (int z = 0; z < 2; z++) {
+					combinedMatrix[y][z] += table[x][y][z];
+				}
+			}
+		}
+		return new CombinedContingencyTable(combinedMatrix);
 	}
 }

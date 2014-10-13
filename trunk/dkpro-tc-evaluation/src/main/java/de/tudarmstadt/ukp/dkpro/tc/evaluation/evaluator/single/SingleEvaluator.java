@@ -25,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.ContingencyTable;
 
 /**
@@ -71,11 +72,13 @@ public class SingleEvaluator
     public Map<String, String> calculateEvaluationMeasures()
     {
         SingleConfusionMatrix confMatr = (SingleConfusionMatrix) buildConfusionMatrix();
-        ContingencyTable table = confMatr.decomposeConfusionMatrix();
+        ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
+        CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();        
 
         // TODO: add measures for individual labels
-        // TODO: add micro-averaged measures
-        Map<String, String> results = calculateLabelBasedEvaluationMeasures(table);
+        Map<String, String> results = calculateLabelBasedMacroMeasures(cTable);
+        Map<String, String> microResults = calculateLabelBasedMicroMeasures(cCTable);;
+        results.putAll(microResults);
         return results;
     }
 
