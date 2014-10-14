@@ -2,13 +2,13 @@
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
@@ -134,8 +134,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -146,7 +148,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimPipelineParametersEmpty
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [WekaBatchCrossValidationReport],
+            reports:         [
+                WekaBatchCrossValidationReport
+            ],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -155,8 +159,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -183,8 +189,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -195,7 +203,9 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [WekaBatchCrossValidationReport],
+            reports:         [
+                WekaBatchCrossValidationReport
+            ],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -204,8 +214,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

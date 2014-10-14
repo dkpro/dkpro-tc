@@ -19,8 +19,8 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.MovieReviewCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport

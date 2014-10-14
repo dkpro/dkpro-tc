@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.IsSurroundedByCharsUFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;

@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;

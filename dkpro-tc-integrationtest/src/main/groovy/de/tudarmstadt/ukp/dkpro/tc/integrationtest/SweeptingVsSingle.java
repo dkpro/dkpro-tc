@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;

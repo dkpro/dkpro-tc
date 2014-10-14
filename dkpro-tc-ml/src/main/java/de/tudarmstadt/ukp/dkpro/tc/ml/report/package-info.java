@@ -17,8 +17,8 @@
  ******************************************************************************/
 
 /**
- * Contains generic classes to connect to the high-level machine learning functionality.
+ * Contains high-level reports (mostly to be used with predefined classification scenarios).
  *
  * @since 0.7.0
  */
-package de.tudarmstadt.ukp.dkpro.tc.ml;
+package de.tudarmstadt.ukp.dkpro.tc.ml.report;

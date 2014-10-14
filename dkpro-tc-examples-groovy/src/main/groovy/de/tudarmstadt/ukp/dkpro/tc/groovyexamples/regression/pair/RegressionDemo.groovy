@@ -32,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport

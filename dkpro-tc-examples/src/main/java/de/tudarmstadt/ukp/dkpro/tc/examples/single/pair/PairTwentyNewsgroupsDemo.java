@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;

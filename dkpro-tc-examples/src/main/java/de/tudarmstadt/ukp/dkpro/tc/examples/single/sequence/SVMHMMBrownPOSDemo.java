@@ -24,12 +24,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
+
 import org.apache.uima.fit.component.NoOpAnnotator;
 
 import java.util.Arrays;

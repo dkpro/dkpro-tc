@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.ml;
+package de.tudarmstadt.ukp.dkpro.tc.ml.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 
 /**
  * Train-Test setup

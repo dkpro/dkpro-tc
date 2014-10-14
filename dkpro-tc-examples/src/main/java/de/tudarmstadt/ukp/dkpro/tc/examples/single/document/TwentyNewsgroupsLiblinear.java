@@ -40,12 +40,12 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.

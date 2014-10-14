@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
