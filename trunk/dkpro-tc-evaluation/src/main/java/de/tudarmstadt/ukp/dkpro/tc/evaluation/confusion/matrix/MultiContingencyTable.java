@@ -24,11 +24,11 @@ import java.util.Map;
  * @author Andriy Nadolskyy
  * 
  */
-public class MultiConfusionMatrix
-	extends ConfusionMatrix<Map<String, Map<String, Double>>>
+public class MultiContingencyTable
+	extends AbstractContingencyTable<Map<String, Map<String, Double>>>
 {
 
-	public MultiConfusionMatrix(
+	public MultiContingencyTable(
 			Map<String, Map<String, Double>> matrix,
 			Map<String, Integer> class2number)
 	{

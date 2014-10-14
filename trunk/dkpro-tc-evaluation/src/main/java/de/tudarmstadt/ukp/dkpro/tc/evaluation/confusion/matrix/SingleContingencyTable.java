@@ -25,11 +25,11 @@ import java.util.Map;
  * @author Andriy Nadolskyy
  * 
  */
-public class SingleConfusionMatrix 
-	extends ConfusionMatrix<List<List<Double>>>
+public class SingleContingencyTable 
+	extends AbstractContingencyTable<List<List<Double>>>
 {
 
-	public SingleConfusionMatrix(List<List<Double>> matrix,
+	public SingleContingencyTable(List<List<Double>> matrix,
 			Map<String, Integer> class2number)
 	{
 		super(matrix, class2number);

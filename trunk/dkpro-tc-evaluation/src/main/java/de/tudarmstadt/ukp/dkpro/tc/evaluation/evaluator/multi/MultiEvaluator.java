@@ -25,10 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiConfusionMatrix;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleConfusionMatrix;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
@@ -47,7 +47,7 @@ public class MultiEvaluator
         super(class2number, readData, softEvaluation);
     }
 
-    public ConfusionMatrix<Map<String, Map<String, Double>>> buildConfusionMatrix()
+    public AbstractContingencyTable<Map<String, Map<String, Double>>> buildConfusionMatrix()
     {
         Set<String> labelCombinations = getSetOfLabelCombinations();
 
@@ -86,7 +86,7 @@ public class MultiEvaluator
             Double updatedValue = confusionMatrix.get(gold).get(accumulatedLabelCombination) + 1;
             confusionMatrix.get(gold).put(accumulatedLabelCombination, updatedValue);
         }
-        return new MultiConfusionMatrix(confusionMatrix, class2number);
+        return new MultiContingencyTable(confusionMatrix, class2number);
     }
 
     /**
@@ -134,7 +134,7 @@ public class MultiEvaluator
     @Override
     public Map<String, String> calculateEvaluationMeasures()
     {
-        MultiConfusionMatrix confMatr = (MultiConfusionMatrix) buildConfusionMatrix();
+        MultiContingencyTable confMatr = (MultiContingencyTable) buildConfusionMatrix();
         ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
         CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();
 
