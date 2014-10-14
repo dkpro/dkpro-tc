@@ -18,19 +18,6 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,13 +27,27 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
+
 /**
  * Converts features to the internal format for SVM HMM
- *
+ * 
  * @author Ivan Habernal
  */
 public class SVMHMMDataWriter
-        implements DataWriter
+    implements DataWriter
 {
 
     static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
@@ -54,7 +55,7 @@ public class SVMHMMDataWriter
     @Override
     public void write(File aOutputDirectory, FeatureStore featureStore, boolean aUseDenseInstances,
             String aLearningMode)
-            throws Exception
+        throws Exception
     {
         // map features to feature numbers
         BidiMap featureNameToFeatureNumberMapping = SVMHMMUtils.mapVocabularyToIntegers(
@@ -107,11 +108,11 @@ public class SVMHMMDataWriter
                 if (entry.getValue() instanceof Double) {
                     // format double on 4 decimal places
                     pw.printf(Locale.ENGLISH, "%d:%f.4 ", entry.getKey(),
-                            (double) entry.getValue());
+                            entry.getValue().doubleValue());
                 }
                 else {
                     // format as integer
-                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(), (int) entry.getValue());
+                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(), entry.getValue().intValue());
                 }
             }
 
