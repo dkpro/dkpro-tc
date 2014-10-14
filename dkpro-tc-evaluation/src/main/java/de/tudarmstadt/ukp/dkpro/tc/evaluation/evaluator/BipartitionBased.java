@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
 
 
 /**
@@ -33,5 +33,5 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
  */
 public interface BipartitionBased {
 	
-	public <T> ConfusionMatrix<T> buildConfusionMatrix();
+	public <T> AbstractContingencyTable<T> buildConfusionMatrix();
 }

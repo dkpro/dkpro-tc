@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ConfusionMatrix;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleConfusionMatrix;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
@@ -43,7 +43,7 @@ public class SingleEvaluator
         super(class2number, readData, softEvaluation);
     }
 
-    public ConfusionMatrix<List<List<Double>>> buildConfusionMatrix()
+    public AbstractContingencyTable<List<List<Double>>> buildConfusionMatrix()
     {
         int number = class2number.keySet().size();
         List<List<Double>> confusionMatrix = new ArrayList<List<Double>>();
@@ -65,13 +65,13 @@ public class SingleEvaluator
             double oldValue = confusionMatrix.get(goldClass).get(predictedClass);
             confusionMatrix.get(goldClass).set(predictedClass, oldValue + 1);
         }
-        return new SingleConfusionMatrix(confusionMatrix, class2number);
+        return new SingleContingencyTable(confusionMatrix, class2number);
     }
 
     @Override
     public Map<String, String> calculateEvaluationMeasures()
     {
-        SingleConfusionMatrix confMatr = (SingleConfusionMatrix) buildConfusionMatrix();
+        SingleContingencyTable confMatr = (SingleContingencyTable) buildConfusionMatrix();
         ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
         CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();        
 
