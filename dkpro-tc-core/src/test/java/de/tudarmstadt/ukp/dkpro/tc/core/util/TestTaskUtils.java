@@ -119,7 +119,7 @@ public class TestTaskUtils
 
             TextClassificationUnit unit = new TextClassificationUnit(jCas, start, end);
             if (setUnitIdAsPartOfTheInstanceId){
-            unit.setId(tokens[i][0]);
+            	unit.setId(tokens[i][0]);
             }
             unit.addToIndexes();
 
