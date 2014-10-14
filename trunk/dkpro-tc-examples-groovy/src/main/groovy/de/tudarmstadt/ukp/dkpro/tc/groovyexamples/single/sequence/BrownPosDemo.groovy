@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
 
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
@@ -78,7 +78,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-			machineLearningAdapter: MalletAdapter.getInstance(),
+            machineLearningAdapter: MalletAdapter.getInstance(),
             innerReports: [MalletClassificationReport],
             parameterSpace : [
                 dimReaders,
@@ -88,7 +88,9 @@ implements Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [MalletBatchCrossValidationReport],
+            reports:         [
+                MalletBatchCrossValidationReport
+            ],
             numFolds: NUM_FOLDS]
 
         // Run

@@ -2,25 +2,25 @@
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.integrationtest;
+package de.tudarmstadt.ukp.dkpro.tc.integrationtest
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.resource.ResourceInitializationException
 
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
@@ -34,8 +34,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader;
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
@@ -47,13 +47,13 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  */
 public class ManyInstancesExperiment implements Constants {
 
-    def experimentName = "ManyInstancesTest";
+    def experimentName = "ManyInstancesTest"
 
     // === PARAMETERS===========================================================
 
-    def corpusFilePathTrain = "classpath:/data/smalltexts/smallInstances.txt.gz";
-    def languageCode = "en";
-    def numFolds = 10;
+    def corpusFilePathTrain = "classpath:/data/smalltexts/smallInstances.txt.gz"
+    def languageCode = "en"
+    def numFolds = 10
 
     // === DIMENSIONS===========================================================
 
@@ -62,11 +62,11 @@ public class ManyInstancesExperiment implements Constants {
         readerTrainParams: [
             LineInstanceReader.PARAM_SOURCE_LOCATION,
             corpusFilePathTrain]
-    ]);
+    ])
 
-    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
-    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -79,18 +79,18 @@ public class ManyInstancesExperiment implements Constants {
         LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
-    );
+    )
 
     def dimClassificationArgs = Dimension.create(
     DIM_CLASSIFICATION_ARGS,
-    [NaiveBayes.class.name]);
+    [NaiveBayes.class.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
         NrOfTokensDFE.class.name,
         LuceneNGramDFE.class.name
-    ]);
+    ])
 
     // === Test =========================================================
 
@@ -101,8 +101,10 @@ public class ManyInstancesExperiment implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline: getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -113,20 +115,22 @@ public class ManyInstancesExperiment implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [WekaBatchCrossValidationReport],
-            numFolds: numFolds];
+            reports:         [
+                WekaBatchCrossValidationReport
+            ],
+            numFolds: numFolds]
 
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
 
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createEngineDescription(BreakIteratorSegmenter.class);
+        return createEngineDescription(BreakIteratorSegmenter.class)
     }
 
     public static void main(String[] args)
     {
-        new ManyInstancesExperiment().run();
+        new ManyInstancesExperiment().run()
     }
 }

@@ -29,8 +29,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
@@ -62,7 +62,7 @@ public class TwitterSentimentDemo implements Constants {
         BatchTaskCrossValidation batchTask = [
             experimentName: "Twitter-Sentiment-CV",
             type: "Evaluation-Twitter-Sentiment-CV",
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             preprocessingPipeline: createEngineDescription(
             ArktweetTagger, ArktweetTagger.PARAM_LANGUAGE, "en", ArktweetTagger.PARAM_VARIANT, "default"), // Preprocessing
             parameterSpace: [
@@ -82,7 +82,9 @@ public class TwitterSentimentDemo implements Constants {
                 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name),
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
-            reports: [WekaBatchCrossValidationReport], // collects results from folds
+            reports: [
+                WekaBatchCrossValidationReport
+            ], // collects results from folds
             numFolds: 10]
 
         // Run
@@ -100,7 +102,7 @@ public class TwitterSentimentDemo implements Constants {
         BatchTaskTrainTest batchTask = [
             experimentName: "Twitter-Sentiment-TrainTest",
             type: "Evaluation-Twitter-Sentiment-TrainTest",
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             preprocessingPipeline: createEngineDescription(
             ArktweetTagger, ArktweetTagger.PARAM_LANGUAGE, "en", ArktweetTagger.PARAM_VARIANT, "default"), // Preprocessing
             parameterSpace: [

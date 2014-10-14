@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
@@ -35,8 +35,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
@@ -59,11 +59,11 @@ public class TwentyNewsgroupsDemo implements Constants {
 
     // === PARAMETERS===========================================================
 
-    def experimentName = "TwentyNewsgroups";
-    def corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    def corpusFilePathTest  ="src/main/resources/data/twentynewsgroups/bydate-test";
-    def languageCode = "en";
-    def numFolds = 2;
+    def experimentName = "TwentyNewsgroups"
+    def corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train"
+    def corpusFilePathTest  ="src/main/resources/data/twentynewsgroups/bydate-test"
+    def languageCode = "en"
+    def numFolds = 2
 
     // === DIMENSIONS===========================================================
 
@@ -86,15 +86,15 @@ public class TwentyNewsgroupsDemo implements Constants {
             TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
             TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         ]
-    ]);
+    ])
 
-    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
-    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
+    def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
+    def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [NaiveBayes.class.name],
-    [SMO.class.name]);
+    [SMO.class.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
@@ -104,7 +104,7 @@ public class TwentyNewsgroupsDemo implements Constants {
         //        NGramFeatureExtractor.class.name
 
     ]
-    );
+    )
 
     //    def dimPipelineParameters = Dimension.create(
     //    DIM_PIPELINE_PARAMS,
@@ -144,7 +144,7 @@ public class TwentyNewsgroupsDemo implements Constants {
         LuceneNGramDFE.PARAM_NGRAM_MAX_N,
         3
     ]
-    );
+    )
 
     // === Experiments =========================================================
 
@@ -161,9 +161,11 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],           
-			parameterSpace : [
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
+            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -173,10 +175,12 @@ public class TwentyNewsgroupsDemo implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [WekaBatchCrossValidationReport],
-            numFolds: numFolds];
+            reports:         [
+                WekaBatchCrossValidationReport
+            ],
+            numFolds: numFolds]
 
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
     /**
      * TrainTest Setting
@@ -191,9 +195,11 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-			machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],           
-			parameterSpace : [
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            innerReports: [
+                WekaClassificationReport.class
+            ],
+            parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
@@ -206,10 +212,10 @@ public class TwentyNewsgroupsDemo implements Constants {
             reports:         [
                 WekaBatchTrainTestReport,
                 WekaBatchOutcomeIDReport]
-        ];
+        ]
 
         // Run
-        Lab.getInstance().run(batchTask);
+        Lab.getInstance().run(batchTask)
     }
 
     private AnalysisEngineDescription getPreprocessing()
@@ -218,13 +224,13 @@ public class TwentyNewsgroupsDemo implements Constants {
         return createEngineDescription(
         createEngineDescription(BreakIteratorSegmenter.class),
         createEngineDescription(OpenNlpPosTagger.class)
-        );
+        )
     }
 
     public static void main(String[] args)
     {
-        new TwentyNewsgroupsDemo().runTrainTest();
-        new TwentyNewsgroupsDemo().runCrossValidation();
+        new TwentyNewsgroupsDemo().runTrainTest()
+        new TwentyNewsgroupsDemo().runCrossValidation()
     }
 
 }

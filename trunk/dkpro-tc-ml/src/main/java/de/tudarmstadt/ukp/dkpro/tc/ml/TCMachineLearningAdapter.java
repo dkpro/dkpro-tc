@@ -20,6 +20,8 @@ package de.tudarmstadt.ukp.dkpro.tc.ml;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 
 import java.util.Collection;
 
@@ -56,8 +58,8 @@ public interface TCMachineLearningAdapter
 
     /**
      * This report is always added to {@code testTask} reports by default in
-     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation}
-     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest}.
+     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation}
+     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest}.
      *
      * @return The report that computes the classification results.
      */
@@ -65,8 +67,8 @@ public interface TCMachineLearningAdapter
 
     /**
      * This report is always added to {@code testTask} reports by default in
-     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation}
-     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskTrainTest}.
+     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation}
+     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest}.
      *
      * @return The report that collects the outcomeId to prediction values.
      */
@@ -74,7 +76,7 @@ public interface TCMachineLearningAdapter
 
     /**
      * This report is always added to {@code crossValidationTask} reports
-     * by default in {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.BatchTaskCrossValidation}.
+     * by default in {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation}.
      *
      * @return The report that collects the results from the different folds.
      */
