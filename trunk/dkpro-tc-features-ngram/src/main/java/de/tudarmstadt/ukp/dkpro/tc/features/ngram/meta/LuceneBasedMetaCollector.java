@@ -2,13 +2,13 @@
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public abstract class LuceneBasedMetaCollector
     extends MetaCollector
 {
     public final static String LUCENE_DIR = "lucence";
-    
+
     public static final String LUCENE_ID_FIELD = "id";
 
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_LUCENE_DIR, mandatory = true)
@@ -58,12 +58,12 @@ public abstract class LuceneBasedMetaCollector
 
     // this is a static singleton as different Lucene-based meta collectors will use the same writer
     protected static IndexWriter indexWriter = null;
-    
+
     private String currentDocumentId;
     private Document currentDocument;
-    
+
     private FieldType fieldType;
-    
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -71,18 +71,18 @@ public abstract class LuceneBasedMetaCollector
         super.initialize(context);
 
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
-         
+
         if (indexWriter == null) {
             try {
                 indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
             } catch (IOException e) {
                 throw new ResourceInitializationException(e);
-            }  
+            }
         }
-        
+
         currentDocumentId = null;
         currentDocument = null;
-        
+
         fieldType = new FieldType();
         fieldType.setIndexed(true);
         fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
@@ -91,10 +91,17 @@ public abstract class LuceneBasedMetaCollector
         fieldType.setTokenized(false);
         fieldType.freeze();
     }
-    
+
     protected void initializeDocument(JCas jcas) {
         if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
             currentDocumentId = getDocumentId(jcas);
+            if (currentDocumentId == null) {
+                throw new IllegalArgumentException(
+                        "Document has no id. id: " + DocumentMetaData.get(jcas).getDocumentId()
+                                + ", title: " +
+                                DocumentMetaData.get(jcas).getDocumentTitle() + ", uri: "
+                                + DocumentMetaData.get(jcas).getDocumentUri());
+            }
             currentDocument = new Document();
             currentDocument.add(new StringField(
                     LUCENE_ID_FIELD,
@@ -103,12 +110,12 @@ public abstract class LuceneBasedMetaCollector
             ));
         }
     }
-    
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        
+
         initializeDocument(jcas);
         FrequencyDistribution<String> documentNGrams;
         try{
@@ -124,7 +131,7 @@ public abstract class LuceneBasedMetaCollector
                 addField(jcas, getFieldName(), ngram);
             }
         }
-       
+
         try {
             writeToIndex();
         }
@@ -132,9 +139,9 @@ public abstract class LuceneBasedMetaCollector
             throw new AnalysisEngineProcessException(e);
         }
     }
-    
-    protected void addField(JCas jcas, String fieldName, String value) 
-    	throws AnalysisEngineProcessException 
+
+    protected void addField(JCas jcas, String fieldName, String value)
+    	throws AnalysisEngineProcessException
     {
         if (currentDocument == null) {
         	throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
@@ -148,7 +155,7 @@ public abstract class LuceneBasedMetaCollector
         );
         currentDocument.add(field);
     }
-    
+
     protected void writeToIndex()
         throws IOException
     {
@@ -157,7 +164,7 @@ public abstract class LuceneBasedMetaCollector
     	}
         indexWriter.addDocument(currentDocument);
     }
-    
+
     @Override
     public void collectionProcessComplete()
         throws AnalysisEngineProcessException
@@ -178,9 +185,9 @@ public abstract class LuceneBasedMetaCollector
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        
+
     }
-    
+
     @Override
     public Map<String, String> getParameterKeyPairs()
     {
@@ -188,14 +195,14 @@ public abstract class LuceneBasedMetaCollector
         mapping.put(LuceneNGramDFE.PARAM_LUCENE_DIR, LUCENE_DIR);
         return mapping;
     }
-    
+
     protected String getDocumentId(JCas jcas)
     {
-        return DocumentMetaData.get(jcas).getDocumentTitle();
+        return DocumentMetaData.get(jcas).getDocumentId();
     }
-    
-    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas) 
+
+    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas)
             throws TextClassificationException;
-    
+
     protected abstract String getFieldName();
 }
