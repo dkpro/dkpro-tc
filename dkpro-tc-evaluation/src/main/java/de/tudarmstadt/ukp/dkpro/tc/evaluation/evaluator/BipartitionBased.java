@@ -33,5 +33,5 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingen
  */
 public interface BipartitionBased {
 	
-	public <T> AbstractContingencyTable<T> buildConfusionMatrix();
+	public <T> AbstractContingencyTable<T> buildContingencyTable();
 }

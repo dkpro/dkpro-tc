@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
@@ -43,7 +43,7 @@ public class SingleEvaluator
         super(class2number, readData, softEvaluation);
     }
 
-    public AbstractContingencyTable<List<List<Double>>> buildConfusionMatrix()
+    public AbstractContingencyTable<List<List<Double>>> buildContingencyTable()
     {
         int number = class2number.keySet().size();
         List<List<Double>> confusionMatrix = new ArrayList<List<Double>>();
@@ -71,13 +71,13 @@ public class SingleEvaluator
     @Override
     public Map<String, String> calculateEvaluationMeasures()
     {
-        SingleContingencyTable confMatr = (SingleContingencyTable) buildConfusionMatrix();
-        ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
+        SingleContingencyTable confMatr = (SingleContingencyTable) buildContingencyTable();
+        ContingencyTable cTable = confMatr.decomposeContingencyTable();
         CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();        
 
         // TODO: add measures for individual labels
-        Map<String, String> results = calculateLabelBasedMacroMeasures(cTable);
-        Map<String, String> microResults = calculateLabelBasedMicroMeasures(cCTable);;
+        Map<String, String> results = calculateMacroMeasures(cTable);
+        Map<String, String> microResults = calculateMicroMeasures(cCTable);;
         results.putAll(microResults);
         return results;
     }

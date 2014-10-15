@@ -33,5 +33,5 @@ public abstract class AbstractContingencyTable<T> {
 		this.class2number = class2number;
 	}
 	
-	public abstract ContingencyTable decomposeConfusionMatrix();
+	public abstract ContingencyTable decomposeContingencyTable();
 }

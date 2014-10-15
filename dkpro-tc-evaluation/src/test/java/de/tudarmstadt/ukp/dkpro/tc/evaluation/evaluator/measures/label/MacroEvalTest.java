@@ -20,7 +20,6 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.measures.label;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
@@ -31,8 +30,6 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
 
 public class MacroEvalTest {
 
-	// TODO: ignore for now to fix build - @Andriy - please have a look at that
-	@Ignore
 	@Test
 	public void macroPrecisionTest() {
 		ContingencyTable cTable = new ContingencyTable("class1");
