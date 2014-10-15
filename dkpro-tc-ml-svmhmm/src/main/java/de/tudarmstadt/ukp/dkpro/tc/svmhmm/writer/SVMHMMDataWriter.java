@@ -50,6 +50,8 @@ public class SVMHMMDataWriter
     implements DataWriter
 {
 
+    private static final double EPS = 0.00000000001;
+
     static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
 
     @Override
@@ -92,11 +94,17 @@ public class SVMHMMDataWriter
                     continue;
                 }
 
+                // we ignore zero value features
+                Number featureValueNumber = (Number) featureValue;
+                if (Math.abs(featureValueNumber.doubleValue() - 0d) < EPS) {
+                    continue;
+                }
+
                 // get number and int value of the feature
                 Integer featureNumber = (Integer) featureNameToFeatureNumberMapping
                         .get(featureName);
 
-                featureValues.put(featureNumber, (Number) featureValue);
+                featureValues.put(featureNumber, featureValueNumber);
             }
 
             // print formatted output: label name and sequence id
