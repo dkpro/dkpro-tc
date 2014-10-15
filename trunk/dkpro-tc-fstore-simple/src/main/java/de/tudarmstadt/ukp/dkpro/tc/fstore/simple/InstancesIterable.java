@@ -36,7 +36,7 @@ public class InstancesIterable
      * 
      * @param featureStore
      */
-    public InstancesIterable(SimpleFeatureStore featureStore) {
+    public InstancesIterable(FeatureStore featureStore) {
         this.featureStore = featureStore;
         instanceCounter = 0;
     }
