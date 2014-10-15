@@ -58,11 +58,11 @@ public class ContingencyTable {
 	}
 
 	public void addFalsePositives(String className, double count) {
-		table[class2Number.get(className)][0][1] += count;
+		table[class2Number.get(className)][1][0] += count;
 	}
 
 	public void addFalseNegatives(String className, double count) {
-		table[class2Number.get(className)][1][0] += count;		
+		table[class2Number.get(className)][0][1] += count;		
 	}
 	
 	public double getTruePositives(String className) {

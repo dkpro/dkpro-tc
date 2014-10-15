@@ -24,11 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
@@ -47,7 +46,7 @@ public class MultiEvaluator
         super(class2number, readData, softEvaluation);
     }
 
-    public AbstractContingencyTable<Map<String, Map<String, Double>>> buildConfusionMatrix()
+    public AbstractContingencyTable<Map<String, Map<String, Double>>> buildContingencyTable()
     {
         Set<String> labelCombinations = getSetOfLabelCombinations();
 
@@ -134,14 +133,14 @@ public class MultiEvaluator
     @Override
     public Map<String, String> calculateEvaluationMeasures()
     {
-        MultiContingencyTable confMatr = (MultiContingencyTable) buildConfusionMatrix();
-        ContingencyTable cTable = confMatr.decomposeConfusionMatrix();
+        MultiContingencyTable confMatr = (MultiContingencyTable) buildContingencyTable();
+        ContingencyTable cTable = confMatr.decomposeContingencyTable();
         CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();
 
         // TODO: add measures for individual labels
         // TODO: add example-based measures
-        Map<String, String> results = calculateLabelBasedMacroMeasures(cTable);
-        Map<String, String> microResults = calculateLabelBasedMicroMeasures(cCTable);;
+        Map<String, String> results = calculateMacroMeasures(cTable);
+        Map<String, String> microResults = calculateMicroMeasures(cCTable);;
         results.putAll(microResults);
         return results;
     }

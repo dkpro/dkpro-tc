@@ -59,7 +59,7 @@ public abstract class EvaluatorBase {
 	 * @param cTable
 	 * @return
 	 */
-	protected Map<String, String> calculateLabelBasedMacroMeasures(ContingencyTable cTable)
+	protected Map<String, String> calculateMacroMeasures(ContingencyTable cTable)
 	{
 		Map<String, String> results = new HashMap<String, String>();
 		
@@ -92,7 +92,7 @@ public abstract class EvaluatorBase {
 	 * @param cCTable
 	 * @return
 	 */
-	protected Map<String, String> calculateLabelBasedMicroMeasures(CombinedContingencyTable cCTable)
+	protected Map<String, String> calculateMicroMeasures(CombinedContingencyTable cCTable)
 	{
 		Map<String, String> results = new HashMap<String, String>();
 		

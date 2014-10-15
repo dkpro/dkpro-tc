@@ -36,7 +36,7 @@ public class MultiContingencyTable
 	}
 
 	@Override
-	public ContingencyTable decomposeConfusionMatrix()
+	public ContingencyTable decomposeContingencyTable()
 	{
 		ContingencyTable cTable = new ContingencyTable(class2number);
 		
