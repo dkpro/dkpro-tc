@@ -57,11 +57,6 @@ public class ExtractFeaturesConnector
     private File outputDirectory;
 
     /**
-     * Name of the class that implements {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}
-     */
-    public static final String PARAM_FEATURE_STORE = "featureStore";
-
-    /**
      * Whether an ID should be added to each instance in the feature file
      */
     public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
@@ -87,10 +82,10 @@ public class ExtractFeaturesConnector
 
     protected FeatureStore featureStoreImpl;
 
-    private static final String DEFAULT_FEATURE_STORE = SimpleFeatureStore.class.getName();
+    private static final String DEFAULT_FEATURE_STORE_CLASS = SimpleFeatureStore.class.getName();
 
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE, mandatory = false)
-    private String featureStore;
+    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = false)
+    private String featureStoreClass;
 
     private int sequenceId;
 
@@ -101,12 +96,12 @@ public class ExtractFeaturesConnector
         super.initialize(context);
 
         // set default feature store implementation
-        if (this.featureStore == null) {
-            featureStore = DEFAULT_FEATURE_STORE;
+        if (this.featureStoreClass == null) {
+            featureStoreClass = DEFAULT_FEATURE_STORE_CLASS;
         }
 
         try {
-            featureStoreImpl = (FeatureStore) Class.forName(featureStore).newInstance();
+            featureStoreImpl = (FeatureStore) Class.forName(featureStoreClass).newInstance();
         }
         catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new ResourceInitializationException(e);

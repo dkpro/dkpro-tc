@@ -268,7 +268,7 @@ public class TaskUtils
                 ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
                 ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
                 ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
-                ExtractFeaturesConnector.PARAM_FEATURE_STORE, featureStore
+                ExtractFeaturesConnector.PARAM_FEATURE_STORE_CLASS, featureStore
         ));
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,

@@ -50,4 +50,11 @@ public abstract class ConnectorBase
      * feature extractors in unit mode will not cause an exception
      */
     public static final String PARAM_DEVELOPER_MODE = "developerMode";
+
+    /**
+     * Name of the class implementing {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}
+     */
+    public static final String PARAM_FEATURE_STORE_CLASS= "featureStoreClass";
+
+
 }
