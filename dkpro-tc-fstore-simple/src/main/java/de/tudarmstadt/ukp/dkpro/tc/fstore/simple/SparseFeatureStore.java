@@ -27,16 +27,14 @@ import java.util.*;
 
 /**
  * Feature store that internally uses hash maps instead of arrays to store sparse features.
+ * All instances retrieved from this FeatureStore by {@link #getInstance(int)} have the same
+ * number and ordering of features, but some features might have {@code null} value.
  *
  * @author Ivan Habernal
  */
 public class SparseFeatureStore
         implements FeatureStore
 {
-    /**
-     * Feature value for non-present features
-     */
-    private static final Integer DEFAULT_NON_PRESENT_FEATURE_VALUE = 0;
 
     private List<Map<Integer, Object>> instanceList = new ArrayList<>();
     private List<List<String>> outcomeList = new ArrayList<>();
@@ -95,8 +93,10 @@ public class SparseFeatureStore
 
         // adds all features to the global feature mapping
         for (Feature feature : instance.getFeatures()) {
-            int nextId = this.featureNameToFeatureIdMapping.size();
-            this.featureNameToFeatureIdMapping.put(feature.getName(), nextId);
+            if (!this.featureNameToFeatureIdMapping.containsKey(feature.getName())) {
+                int nextId = this.featureNameToFeatureIdMapping.size();
+                this.featureNameToFeatureIdMapping.put(feature.getName(), nextId);
+            }
         }
 
         // transform features of the current instance to a map: featureId=featureValue
@@ -124,8 +124,8 @@ public class SparseFeatureStore
         for (String featureName : getFeatureNames()) {
             Integer featureId = this.featureNameToFeatureIdMapping.get(featureName);
 
-            // create default zero-valued feature
-            Feature feature = new Feature(featureName, DEFAULT_NON_PRESENT_FEATURE_VALUE);
+            // create default null-valued feature
+            Feature feature = new Feature(featureName, null);
 
             // if the feature is present in the current instance, set the correct value
             if (instanceFeatureValues.containsKey(featureId)) {
