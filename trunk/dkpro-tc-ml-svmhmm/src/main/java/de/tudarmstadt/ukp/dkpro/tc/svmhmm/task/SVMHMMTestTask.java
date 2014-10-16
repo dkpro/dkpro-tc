@@ -36,9 +36,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -361,29 +359,26 @@ public class SVMHMMTestTask
         }
         else {
             // create temp files for capturing output instead of printing to stdout/stderr
-            File tmpErrLog = File.createTempFile("tmp.err.", ".log");
             File tmpOutLog = File.createTempFile("tmp.out.", ".log");
 
             ProcessBuilder processBuilder = new ProcessBuilder(command);
 
-            processBuilder.redirectError(tmpErrLog);
+            processBuilder.redirectError(tmpOutLog);
             processBuilder.redirectOutput(tmpOutLog);
 
             // run the process
             Process process = processBuilder.start();
             process.waitFor();
 
-            // debut the output
-            String outLog = FileUtils.readFileToString(tmpOutLog);
-            String errLog = FileUtils.readFileToString(tmpErrLog);
-
-            log.debug(outLog);
-            if (!errLog.isEmpty()) {
-                log.error(errLog);
+            // re-read the output and debug it
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tmpOutLog)));
+            String line;
+            while ((line = br.readLine()) != null) {
+                log.debug(line);
             }
+            IOUtils.closeQuietly(br);
 
             // delete files
-            FileUtils.deleteQuietly(tmpErrLog);
             FileUtils.deleteQuietly(tmpOutLog);
         }
     }
