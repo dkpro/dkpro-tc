@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
@@ -30,7 +31,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.PPipelineTestBase;
 
 public class CosineSimilarityTest
     extends PPipelineTestBase
@@ -128,7 +128,8 @@ public class CosineSimilarityTest
     {
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, SimpleFeatureStore.class.getName(),
+                false, false,
                 CosineFeatureExtractor.class.getName());
     }
     @Override

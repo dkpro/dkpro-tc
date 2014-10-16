@@ -2,13 +2,13 @@
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,28 +17,18 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.*;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
@@ -56,42 +46,29 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import java.io.*;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
  * etc).
- * 
+ *
  * @author Oliver Ferschke
  * @author zesch
- * 
  */
 public class TaskUtils
 {
     /**
      * Loads the JSON file as a system resource, parses it and returnd the JSONObject.
-     * 
-     * @param path
-     *            path to the config file
+     *
+     * @param path path to the config file
      * @return the JSONObject containing all config parameters
      * @throws IOException
      */
     public static JSONObject getConfigFromJSON(String path)
-        throws IOException
+            throws IOException
     {
         String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(path)
                 .getFile()));
@@ -101,15 +78,13 @@ public class TaskUtils
     /**
      * Saves a serializable object of type <T> to disk. Output file may be uncompressed, gzipped or
      * bz2-compressed. Compressed files must have a .gz or .bz2 suffix.
-     * 
-     * @param serializedFile
-     *            model output file
-     * @param serializableObject
-     *            the object to serialize
+     *
+     * @param serializedFile     model output file
+     * @param serializableObject the object to serialize
      * @throws IOException
      */
     public static void serialize(File serializedFile, Object serializableObject)
-        throws IOException
+            throws IOException
     {
 
         FileOutputStream fos = new FileOutputStream(serializedFile);
@@ -142,14 +117,14 @@ public class TaskUtils
     /**
      * Loads serialized Object from disk. File can be uncompressed, gzipped or bz2-compressed.
      * Compressed files must have a .gz or .bz2 suffix.
-     * 
+     *
      * @param serializedFile
      * @return the deserialized Object
      * @throws IOException
      */
     @SuppressWarnings({ "unchecked" })
     public static <T> T deserialize(File serializedFile)
-        throws IOException
+            throws IOException
     {
         FileInputStream fis = new FileInputStream(serializedFile);
         BufferedInputStream bufStr = new BufferedInputStream(fis);
@@ -208,7 +183,7 @@ public class TaskUtils
      */
     public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
             List<String> featureSet)
-        throws InstantiationException, IllegalAccessException, ClassNotFoundException
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
 
@@ -228,7 +203,7 @@ public class TaskUtils
      * Get a list of required type names.
      */
     public static Set<String> getRequiredTypesFromFeatureExtractors(List<String> featureSet)
-        throws InstantiationException, IllegalAccessException, ClassNotFoundException
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<String> requiredTypes = new HashSet<String>();
 
@@ -250,16 +225,17 @@ public class TaskUtils
      * @param dataWriter
      * @param learningMode
      * @param featureMode
+     * @param featureStore
      * @param addInstanceId
      * @param developerMode
-     * @param featureExtractorClassNames
-     * @return A fully configured feature extractor connector
+     * @param featureExtractorClassNames @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
     public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
-            boolean addInstanceId, boolean developerMode, String... featureExtractorClassNames)
-        throws ResourceInitializationException
+            String featureStore, boolean addInstanceId, boolean developerMode,
+            String... featureExtractorClassNames)
+            throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
         List<Object> convertedParameters = new ArrayList<Object>();
@@ -291,7 +267,9 @@ public class TaskUtils
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
                 ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
                 ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode));
+                ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
+                ExtractFeaturesConnector.PARAM_FEATURE_STORE, featureStore
+        ));
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
                 parameters.toArray());
@@ -309,7 +287,7 @@ public class TaskUtils
     public static Instance getSingleInstance(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
             boolean developerMode, boolean addInstanceId)
-        throws AnalysisEngineProcessException
+            throws AnalysisEngineProcessException
     {
         AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
 
@@ -423,8 +401,8 @@ public class TaskUtils
      */
     public static List<Instance> getMultipleInstances(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-             boolean addInstanceId, int sequenceId)
-        throws AnalysisEngineProcessException
+            boolean addInstanceId, int sequenceId)
+            throws AnalysisEngineProcessException
     {
         List<Instance> instances = new ArrayList<Instance>();
         AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
@@ -491,7 +469,7 @@ public class TaskUtils
     }
 
     public static List<String> getOutcomes(JCas jcas, AnnotationFS unit)
-        throws AnalysisEngineProcessException
+            throws AnalysisEngineProcessException
     {
         Collection<TextClassificationOutcome> outcomes;
         if (unit == null) {
