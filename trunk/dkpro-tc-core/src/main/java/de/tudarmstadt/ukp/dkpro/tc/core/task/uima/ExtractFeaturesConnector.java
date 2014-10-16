@@ -82,9 +82,11 @@ public class ExtractFeaturesConnector
 
     protected FeatureStore featureStoreImpl;
 
-    private static final String DEFAULT_FEATURE_STORE_CLASS = SimpleFeatureStore.class.getName();
-
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = false)
+    /*
+     * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
+     */
+    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true,
+            defaultValue = "de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore")
     private String featureStoreClass;
 
     private int sequenceId;
@@ -94,11 +96,6 @@ public class ExtractFeaturesConnector
             throws ResourceInitializationException
     {
         super.initialize(context);
-
-        // set default feature store implementation
-        if (this.featureStoreClass == null) {
-            featureStoreClass = DEFAULT_FEATURE_STORE_CLASS;
-        }
 
         try {
             featureStoreImpl = (FeatureStore) Class.forName(featureStoreClass).newInstance();
