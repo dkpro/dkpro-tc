@@ -19,12 +19,15 @@
 package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 
 import com.google.gson.Gson;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,6 +41,9 @@ public class SparseFeatureStoreTest
 {
 
     private FeatureStore featureStore;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp()
@@ -94,7 +100,7 @@ public class SparseFeatureStoreTest
     public void testNullFeatureValues()
             throws Exception
     {
-        SparseFeatureStore fs = new SparseFeatureStore();
+        FeatureStore fs = new SparseFeatureStore();
         // two instance, both have different features, in unsorted manner
         Instance inst1 = new Instance(Arrays.asList(new Feature("featZ", "value")), "outcome1");
         Instance inst2 = new Instance(Arrays.asList(new Feature("featA", "value")), "outcome1");
@@ -112,5 +118,30 @@ public class SparseFeatureStoreTest
         assertNull(retrievedInstance1.getFeatures().get(0).getValue());
         // and "featZ" has value = "value"
         assertEquals("value", retrievedInstance1.getFeatures().get(1).getValue());
+    }
+
+    @Test
+    public void testInconsistentFeatureVectors()
+            throws Exception
+    {
+        FeatureStore fs = new SparseFeatureStore();
+        // two instance, both have different features, in unsorted manner
+        Instance inst1 = new Instance(Arrays.asList(new Feature("featZ", "value")), "outcome1");
+        Instance inst2 = new Instance(Arrays.asList(new Feature("featA", "value")), "outcome1");
+
+        fs.addInstance(inst1);
+        fs.addInstance(inst2);
+
+        Instance retrievedInstance1 = fs.getInstance(0);
+        // now it has two features
+        assertEquals(2, retrievedInstance1.getFeatures().size());
+
+        Instance inst3 = new Instance(Arrays.asList(new Feature("featB", "value")), "outcome1");
+
+        // adding another instance with newly introduced features would result into
+        // inconsistent feature vector
+        // must fail -> otherwise retrievedInstance1.getFeatures().size() == 3!!
+        exception.expect(TextClassificationException.class);
+        fs.addInstance(inst3);
     }
 }

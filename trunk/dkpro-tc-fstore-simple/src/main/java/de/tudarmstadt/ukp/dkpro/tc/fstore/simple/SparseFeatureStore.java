@@ -42,6 +42,13 @@ public class SparseFeatureStore
     private List<Integer> sequencePositions = new ArrayList<>();
     private SortedMap<String, Integer> featureNameToFeatureIdMapping = new TreeMap<>();
 
+    /**
+     * If this flag is set to false, it is not possible to add another instances; this is set
+     * after first calling {@linkplain #getInstance(int)}. Adding another instance might then
+     * introduce new feature and thus make feature vectors of retrieved instances inconsistent.
+     */
+    private boolean addingAnotherInstancesAllowed = true;
+
     @Override
     public int size()
     {
@@ -88,6 +95,12 @@ public class SparseFeatureStore
     public void addInstance(Instance instance)
             throws TextClassificationException
     {
+        // check consistency of feature vectors
+        if (!this.addingAnotherInstancesAllowed) {
+            throw new TextClassificationException("Not allowed to add another instance to the " +
+                    "feature store; getInstance() has been called already.");
+        }
+
         // check for duplicate features
         checkDuplicateFeatures(instance);
 
@@ -116,6 +129,9 @@ public class SparseFeatureStore
     @Override
     public Instance getInstance(int i)
     {
+        // set flag to disable adding new instances
+        this.addingAnotherInstancesAllowed = false;
+
         List<Feature> features = new ArrayList<>();
 
         // feature values of the required instance (mapping featureID: featureValue)
