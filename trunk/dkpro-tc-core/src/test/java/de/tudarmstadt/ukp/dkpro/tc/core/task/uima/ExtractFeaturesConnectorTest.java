@@ -28,6 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderRegression;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -37,18 +38,36 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class ExtractFeaturesConnectorTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { SimpleFeatureStore.class }, {SparseFeatureStore.class}
+        });
+    }
+
+    private Class<? extends FeatureStore> featureStoreClass;
+
+    public ExtractFeaturesConnectorTest(Class<? extends FeatureStore> featureStoreClass)
+    {
+        this.featureStoreClass = featureStoreClass;
+    }
 
     @Test
     public void extractFeaturesConnectorSingleLabelTest()
@@ -73,7 +92,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                SimpleFeatureStore.class.getName(), false, false,
+                featureStoreClass.getName(), false, false,
                 AddIdFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
@@ -81,7 +100,7 @@ public class ExtractFeaturesConnectorTest
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                SimpleFeatureStore.class);
+                featureStoreClass);
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
 
@@ -111,7 +130,7 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, SimpleFeatureStore.class.getName(),
+                Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(),
                 false, false,
                 AddIdFeatureExtractor.class.getName());
 
@@ -120,7 +139,7 @@ public class ExtractFeaturesConnectorTest
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                SimpleFeatureStore.class);
+                featureStoreClass);
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(3, fs.getUniqueOutcomes().size());
 
@@ -150,7 +169,7 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, SimpleFeatureStore.class.getName(),
+                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
                 false, false,
                 AddIdFeatureExtractor.class.getName());
 
@@ -159,7 +178,7 @@ public class ExtractFeaturesConnectorTest
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                SimpleFeatureStore.class);
+                featureStoreClass);
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
         assertEquals("0.45", fs.getUniqueOutcomes().first());
