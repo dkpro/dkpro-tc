@@ -37,9 +37,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
- * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} annotation in the original JCas.
- * The newly created JCas contains one {@link TextClassificationFocus} annotation that shows with TextClassificationUnit should be classified.
- * All annotations in the original JCas are copied to the new one.
+ * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} annotation in the
+ * original JCas. The newly created JCas contains one {@link TextClassificationFocus} annotation
+ * that shows with TextClassificationUnit should be classified. All annotations in the original JCas
+ * are copied to the new one.
  * 
  * @author Artem Vovk
  * @author zesch
@@ -50,13 +51,13 @@ public class ClassificationUnitCasMultiplier
 {
 
     /**
-     * If true, the multiplier create a new CAS for each sequence in the current CAS.
-     * Otherwise, it creates a new CAS for each text classification unit.
+     * If true, the multiplier create a new CAS for each sequence in the current CAS. Otherwise, it
+     * creates a new CAS for each text classification unit.
      */
     public static final String PARAM_USE_SEQUENCES = "useSequences";
-    @ConfigurationParameter(name = PARAM_USE_SEQUENCES, mandatory = true, defaultValue="false")
+    @ConfigurationParameter(name = PARAM_USE_SEQUENCES, mandatory = true, defaultValue = "false")
     private boolean useSequences;
-    
+
     private final static String UNIT_ID_PREFIX = "_unit";
 
     // For each TextClassificationUnit stored in this collection one corresponding JCas is created.
@@ -65,15 +66,15 @@ public class ClassificationUnitCasMultiplier
 
     private JCas jCas;
 
-    private int counter;
+    private int subCASCounter;
 
     @Override
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
         this.jCas = aJCas;
-        this.counter = 0;
-        
+        this.subCASCounter = 0;
+
         if (useSequences) {
             this.annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
         }
@@ -82,7 +83,7 @@ public class ClassificationUnitCasMultiplier
         }
         this.iterator = annotations.iterator();
     }
-    
+
     @Override
     public boolean hasNext()
         throws AnalysisEngineProcessException
@@ -99,7 +100,7 @@ public class ClassificationUnitCasMultiplier
     @Override
     public AbstractCas next()
         throws AnalysisEngineProcessException
-    {        
+    {
         // Create an empty CAS as a destination for a copy.
         JCas emptyJCas = this.getEmptyJCas();
         DocumentMetaData.create(emptyJCas);
@@ -117,18 +118,24 @@ public class ClassificationUnitCasMultiplier
         }
 
         // Set new ids and URIs for copied cases.
+        // The counting variable keeps track of how many new CAS objects are created from the
+        // original CAS, a CAS relative counter.
+        // NOTE: As it may cause confusion: If in sequence classification several or all CAS
+        // contains only a single sequence this counter would be zero in all cases - this is not a
+        // bug, but a cosmetic flaw
         DocumentMetaData.get(copyJCas).setDocumentId(
-                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX + counter);
+                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX + subCASCounter);
         DocumentMetaData.get(copyJCas).setDocumentUri(
-                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + counter);
+                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + subCASCounter);
 
         // set the focus annotation
         AnnotationFS focusUnit = this.iterator.next();
-        TextClassificationFocus focus = new TextClassificationFocus(copyJCas, focusUnit.getBegin(), focusUnit.getEnd());  
-        focus.addToIndexes();    
-        
-        counter++;
-        getLogger().debug("Creating CAS " + counter + " of " + annotations.size());
+        TextClassificationFocus focus = new TextClassificationFocus(copyJCas, focusUnit.getBegin(),
+                focusUnit.getEnd());
+        focus.addToIndexes();
+
+        subCASCounter++;
+        getLogger().debug("Creating CAS " + subCASCounter + " of " + annotations.size());
 
         return copyJCas;
     }
