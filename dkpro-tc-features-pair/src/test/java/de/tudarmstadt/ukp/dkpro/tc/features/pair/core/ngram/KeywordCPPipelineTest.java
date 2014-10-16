@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
@@ -168,7 +169,8 @@ public class KeywordCPPipelineTest
     {
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, SimpleFeatureStore.class.getName(),
+                false, false,
                 LuceneKeywordCPFE.class.getName());
     }
 

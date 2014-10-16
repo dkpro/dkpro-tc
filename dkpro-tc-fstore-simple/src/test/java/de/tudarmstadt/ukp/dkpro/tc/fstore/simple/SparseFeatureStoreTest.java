@@ -33,7 +33,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class SparseFeatureStoreTest
 {
@@ -56,7 +55,8 @@ public class SparseFeatureStoreTest
         featureStore.addInstance(instance);
     }
 
-    private void testValuesOfDefaultFeatureStoreInstance(FeatureStore fs) {
+    private void testValuesOfDefaultFeatureStoreInstance(FeatureStore fs)
+    {
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals("outcome", fs.getUniqueOutcomes().first());
         assertEquals(new Feature("feature1", "value1"),

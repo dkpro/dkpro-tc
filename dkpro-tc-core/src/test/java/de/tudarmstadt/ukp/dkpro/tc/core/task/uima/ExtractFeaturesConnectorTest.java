@@ -2,13 +2,13 @@
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,25 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import com.google.gson.Gson;
-
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -46,6 +28,22 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderRegression;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class ExtractFeaturesConnectorTest
 {
@@ -54,7 +52,7 @@ public class ExtractFeaturesConnectorTest
 
     @Test
     public void extractFeaturesConnectorSingleLabelTest()
-        throws Exception
+            throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -62,7 +60,7 @@ public class ExtractFeaturesConnectorTest
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
                 // "NAME", "VALUE"
-                };
+        };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -74,7 +72,8 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
+                SimpleFeatureStore.class.getName(), false, false,
                 AddIdFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
@@ -92,7 +91,7 @@ public class ExtractFeaturesConnectorTest
 
     @Test
     public void extractFeaturesConnectorMultiLabelTest()
-        throws Exception
+            throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -100,7 +99,7 @@ public class ExtractFeaturesConnectorTest
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
                 // "NAME", "VALUE"
-                };
+        };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -112,7 +111,8 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, false, false,
+                Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, SimpleFeatureStore.class.getName(),
+                false, false,
                 AddIdFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
@@ -130,7 +130,7 @@ public class ExtractFeaturesConnectorTest
 
     @Test
     public void extractFeaturesConnectorRegressionTest()
-        throws Exception
+            throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -138,7 +138,7 @@ public class ExtractFeaturesConnectorTest
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
                 // "NAME", "VALUE"
-                };
+        };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -150,7 +150,8 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false,
+                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, SimpleFeatureStore.class.getName(),
+                false, false,
                 AddIdFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
