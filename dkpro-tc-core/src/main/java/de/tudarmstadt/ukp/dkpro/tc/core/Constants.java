@@ -149,6 +149,11 @@ public interface Constants
      */
     public static final String DIM_DATA_WRITER = "dataWriter";
 
+    /**
+     * Name of the class that implements {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}
+     */
+    public static final String DIM_FEATURE_STORE = "featureStore";
+
     /*
      * Learning modes
      */

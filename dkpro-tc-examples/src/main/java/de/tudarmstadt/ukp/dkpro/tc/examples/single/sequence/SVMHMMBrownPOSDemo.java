@@ -24,6 +24,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
@@ -31,6 +32,7 @@ import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.uima.fit.component.NoOpAnnotator;
 
 import java.util.Arrays;
@@ -53,7 +55,7 @@ public class SVMHMMBrownPOSDemo
     private static final int NUM_FOLDS = 10;
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace(String featureMode, String learningMode)
+    public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<>();
@@ -91,8 +93,9 @@ public class SVMHMMBrownPOSDemo
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_DATA_WRITER, SVMHMMDataWriter.class.getName()),
-                Dimension.create(Constants.DIM_LEARNING_MODE, learningMode), Dimension.create(
-                Constants.DIM_FEATURE_MODE, featureMode),
+                Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+                Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
                 dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgsC,
                 dimClassificationArgsT,
@@ -103,7 +106,6 @@ public class SVMHMMBrownPOSDemo
     protected void runCrossValidation(ParameterSpace pSpace)
             throws Exception
     {
-
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownCVBatchTask",
                 new SVMHMMAdapter(), createEngineDescription(NoOpAnnotator.class),
                 NUM_FOLDS);
@@ -116,13 +118,12 @@ public class SVMHMMBrownPOSDemo
 
     public static void main(String[] args)
     {
-        //        Logger.getRootLogger();
         System.setProperty("org.apache.uima.logger.class",
                 "org.apache.uima.util.impl.Log4jLogger_impl");
+        BasicConfigurator.configure();
 
         try {
-            ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE,
-                    Constants.LM_SINGLE_LABEL);
+            ParameterSpace pSpace = getParameterSpace();
 
             SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
             experiment.runCrossValidation(pSpace);
