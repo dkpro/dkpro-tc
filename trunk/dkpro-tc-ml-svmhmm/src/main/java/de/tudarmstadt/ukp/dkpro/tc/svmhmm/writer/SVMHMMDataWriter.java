@@ -89,12 +89,13 @@ public class SVMHMMDataWriter
                     originalToken = (String) featureValue;
                 }
 
-                // we ignore non-number features
-                if (!(featureValue instanceof Number)) {
+                // we ignore null feature values and non-number features
+                if ((featureValue == null) || !(featureValue instanceof Number)) {
                     continue;
                 }
 
-                // we ignore zero value features
+                // in case the feature store produced dense feature vector with zeros for
+                // non-present features, we ignore zero value features here
                 Number featureValueNumber = (Number) featureValue;
                 if (Math.abs(featureValueNumber.doubleValue() - 0d) < EPS) {
                     continue;
