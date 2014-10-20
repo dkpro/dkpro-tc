@@ -38,9 +38,16 @@ public class MacroEvalTest {
 		cTable.addFalseNegatives("class1", 2);
 		cTable.addTrueNegatives("class1", 4);
 		
-		assertEquals(0.7, MacroAccuracy.calculate(cTable, true), 0.01);
-		assertEquals(0.75, MacroPrecision.calculate(cTable, true), 0.01);
-		assertEquals(0.6, MacroRecall.calculate(cTable, true), 0.01);
-		assertEquals(0.66, MacroFScore.calculate(cTable, true), 0.01);
+		Double macroAcc = MacroAccuracy.calculate(cTable, true).get(MacroAccuracy.class.getSimpleName());
+		assertEquals(0.7, macroAcc, 0.01);
+		
+		Double macroPr = MacroPrecision.calculate(cTable, true).get(MacroPrecision.class.getSimpleName());
+		assertEquals(0.75, macroPr, 0.01);
+		
+		Double macroRe = MacroRecall.calculate(cTable, true).get(MacroRecall.class.getSimpleName());
+		assertEquals(0.6, macroRe, 0.01);
+		
+		Double macroFSc = MacroFScore.calculate(cTable, true).get(MacroFScore.class.getSimpleName());
+		assertEquals(0.66, macroFSc, 0.01);
 	}
 }

@@ -42,12 +42,13 @@ public class SingleEvaluatorTest
 {
 
     static File file = new File("src/test/resources/datasets/single/id2outcome.txt");
-    Map<String, String> results;
+    Map<String, Double> results;
 
-    public void setup(boolean softEvaluation)
+    public void setup(boolean softEvaluation, boolean individualLabelMeasures)
         throws IOException
     {
-        EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_SINGLE_LABEL, softEvaluation);
+        EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_SINGLE_LABEL, 
+        		softEvaluation, individualLabelMeasures);
         results = evaluator.calculateEvaluationMeasures();
     }
 
@@ -55,46 +56,38 @@ public class SingleEvaluatorTest
     public void testCalculateSoftEvaluationMeasures()
         throws IOException
     {
-        setup(true);
+        setup(true, false);
         
-        // macro precision
-        Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
-        assertEquals(0.0476190, prValue, 0.00001);
+        Double macroPr = results.get(MacroPrecision.class.getSimpleName());
+        assertEquals(0.0476190, macroPr, 0.00001);
 
-        // macro recall
-        Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
-        assertEquals(0.0476190, reValue, 0.00001);
+        Double macroRe = results.get(MacroRecall.class.getSimpleName());
+        assertEquals(0.0476190, macroRe, 0.00001);
 
-        // macro accuracy
-        Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
-        assertEquals(0.3809523, accValue, 0.0001);
+        Double macroAcc = results.get(MacroAccuracy.class.getSimpleName());
+        assertEquals(0.3809523, macroAcc, 0.0001);
 
-        // macro f-score
-        Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
-        assertEquals(0.0476190, fScValue, 0.0001);
+        Double macroFSc = results.get(MacroFScore.class.getSimpleName());
+        assertEquals(0.0476190, macroFSc, 0.0001);
     }
 
     @Test
     public void testCalculateStrictEvaluationMeasures()
         throws IOException
     {
-        setup(false);
+        setup(false, false);
 
-        // macro precision
-        Double prValue = Double.valueOf(results.get(MacroPrecision.class.getSimpleName()));
-        assertEquals(0.0476190, prValue, 0.00001);
+        Double macroPr = results.get(MacroPrecision.class.getSimpleName());
+        assertEquals(0.0476190, macroPr, 0.00001);
 
-        // macro recall
-        Double reValue = Double.valueOf(results.get(MacroRecall.class.getSimpleName()));
-        assertTrue("result should be an invalid value, but isn't", Double.isNaN(reValue));
+        Double macroRe = results.get(MacroRecall.class.getSimpleName());
+        assertTrue("result should be an invalid value, but isn't", Double.isNaN(macroRe));
 
-        // macro accuracy
-        Double accValue = Double.valueOf(results.get(MacroAccuracy.class.getSimpleName()));
-        assertEquals(0.3809523, accValue, 0.0001);
+        Double macroAcc = results.get(MacroAccuracy.class.getSimpleName());
+        assertEquals(0.3809523, macroAcc, 0.0001);
 
-        // macro f-score
-        Double fScValue = Double.valueOf(results.get(MacroFScore.class.getSimpleName()));
-        assertTrue("result should be an invalid value, but isn't", Double.isNaN(fScValue));
+        Double macroFSc = results.get(MacroFScore.class.getSimpleName());
+        assertTrue("result should be an invalid value, but isn't", Double.isNaN(macroFSc));
     }
 
 }

@@ -17,6 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
 
 
@@ -27,21 +30,22 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingen
 public class MicroAccuracy
 {
 
-
-	public static Double calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
+	public static Map<String, Double> calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
 		double tp = cCTable.getTruePositives();
 		double fp = cCTable.getFalsePositives();
 		double fn = cCTable.getFalseNegatives();
 		double tn = cCTable.getTrueNegatives();
 			
-		double accuracy = 0.0;
+		Double accuracy = 0.0;
 		double n = tp + fp + fn + tn;
 		if (n != 0.0) {
-			accuracy = (double) (tp + tn) / n;
+			accuracy = (Double) (tp + tn) / n;
 		}
 		else if (! softEvaluation) {
-			return Double.NaN;
+			accuracy = Double.NaN;
 		}
-		return accuracy;		 	
+		Map<String, Double> results = new HashMap<String, Double>();
+		results.put(MicroAccuracy.class.getSimpleName(), accuracy);
+		return results;	 	
 	}	
 }

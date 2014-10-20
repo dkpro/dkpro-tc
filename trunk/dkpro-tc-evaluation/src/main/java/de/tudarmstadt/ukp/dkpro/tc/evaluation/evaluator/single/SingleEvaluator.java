@@ -36,14 +36,14 @@ public class SingleEvaluator
     extends EvaluatorBase
     implements BipartitionBased
 {
-
+	
     public SingleEvaluator(Map<String, Integer> class2number,
-            List<String> readData, boolean softEvaluation)
-    {
-        super(class2number, readData, softEvaluation);
-    }
+			List<String> readData, boolean softEvaluation,
+			boolean individualLabelMeasures) {
+		super(class2number, readData, softEvaluation, individualLabelMeasures);
+	}
 
-    public AbstractContingencyTable<List<List<Double>>> buildContingencyTable()
+	public AbstractContingencyTable<List<List<Double>>> buildContingencyTable()
     {
         int number = class2number.keySet().size();
         List<List<Double>> confusionMatrix = new ArrayList<List<Double>>();
@@ -69,15 +69,14 @@ public class SingleEvaluator
     }
 
     @Override
-    public Map<String, String> calculateEvaluationMeasures()
+    public Map<String, Double> calculateEvaluationMeasures()
     {
         SingleContingencyTable confMatr = (SingleContingencyTable) buildContingencyTable();
         ContingencyTable cTable = confMatr.decomposeContingencyTable();
         CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();        
 
-        // TODO: add measures for individual labels
-        Map<String, String> results = calculateMacroMeasures(cTable);
-        Map<String, String> microResults = calculateMicroMeasures(cCTable);;
+        Map<String, Double> results = calculateMacroMeasures(cTable);
+        Map<String, Double> microResults = calculateMicroMeasures(cCTable);;
         results.putAll(microResults);
         return results;
     }

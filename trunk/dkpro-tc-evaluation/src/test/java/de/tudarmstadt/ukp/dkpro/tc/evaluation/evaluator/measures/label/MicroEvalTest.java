@@ -39,9 +39,16 @@ public class MicroEvalTest {
 		double[][] table = new double[][]{{3, 2},{1, 4}};
 		CombinedContingencyTable cCTable = new CombinedContingencyTable(table);
 		
-		assertEquals(0.7, MicroAccuracy.calculate(cCTable, true), 0.01);
-		assertEquals(0.75, MicroPrecision.calculate(cCTable, true), 0.01);
-		assertEquals(0.6, MicroRecall.calculate(cCTable, true), 0.01);
-		assertEquals(0.66, MicroFScore.calculate(cCTable, true), 0.01);
+		Double microAcc = MicroAccuracy.calculate(cCTable, true).get(MicroAccuracy.class.getSimpleName());
+		assertEquals(0.7, microAcc, 0.01);
+		
+		Double microPr = MicroPrecision.calculate(cCTable, true).get(MicroPrecision.class.getSimpleName());
+		assertEquals(0.75, microPr, 0.01);
+		
+		Double microRe = MicroRecall.calculate(cCTable, true).get(MicroRecall.class.getSimpleName());
+		assertEquals(0.6, microRe, 0.01);
+		
+		Double microFSc = MicroFScore.calculate(cCTable, true).get(MicroFScore.class.getSimpleName());
+		assertEquals(0.66, microFSc, 0.01);
 	}
 }
