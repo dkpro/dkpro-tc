@@ -41,12 +41,12 @@ public class MultiEvaluator
 {
 
     public MultiEvaluator(Map<String, Integer> class2number,
-            List<String> readData, boolean softEvaluation)
-    {
-        super(class2number, readData, softEvaluation);
-    }
+			List<String> readData, boolean softEvaluation,
+			boolean individualLabelMeasures) {
+		super(class2number, readData, softEvaluation, individualLabelMeasures);
+	}
 
-    public AbstractContingencyTable<Map<String, Map<String, Double>>> buildContingencyTable()
+	public AbstractContingencyTable<Map<String, Map<String, Double>>> buildContingencyTable()
     {
         Set<String> labelCombinations = getSetOfLabelCombinations();
 
@@ -131,16 +131,15 @@ public class MultiEvaluator
     }
 
     @Override
-    public Map<String, String> calculateEvaluationMeasures()
+    public Map<String, Double> calculateEvaluationMeasures()
     {
         MultiContingencyTable confMatr = (MultiContingencyTable) buildContingencyTable();
         ContingencyTable cTable = confMatr.decomposeContingencyTable();
         CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();
 
-        // TODO: add measures for individual labels
         // TODO: add example-based measures
-        Map<String, String> results = calculateMacroMeasures(cTable);
-        Map<String, String> microResults = calculateMicroMeasures(cCTable);;
+        Map<String, Double> results = calculateMacroMeasures(cTable);
+        Map<String, Double> microResults = calculateMicroMeasures(cCTable);;
         results.putAll(microResults);
         return results;
     }

@@ -39,12 +39,13 @@ public class MultiEvaluatorTest
 {
 
     static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
-    Map<String, String> results;
+    Map<String, Double> results;
 
-    public void setup(boolean softEvaluation)
+    public void setup(boolean softEvaluation, boolean individualLabelMeasures)
         throws IOException
     {
-        EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_MULTI_LABEL, softEvaluation);
+        EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_MULTI_LABEL, 
+        		softEvaluation, individualLabelMeasures);
         results = evaluator.calculateEvaluationMeasures();
     }
 
@@ -52,13 +53,13 @@ public class MultiEvaluatorTest
     public void testCalculateSoftEvaluationMeasures()
         throws IOException
     {
-        setup(true);
+        setup(true, false);
         // TODO: hand-calculate measures and test
         // for (String key : results.keySet()) {
         // System.out.println(key + "\t" + results.get(key));
         // }
         assertNotSame(results.get(MacroFScore.class.getSimpleName()),
-                String.valueOf(Double.NaN));
+                Double.NaN);
 
     }
 
@@ -66,12 +67,12 @@ public class MultiEvaluatorTest
     public void testCalculateStrictEvaluationMeasures()
         throws IOException
     {
-        setup(false);
+        setup(false, false);
         // TODO: hand-calculate measures and test
         // for (String key : results.keySet()) {
         // System.out.println(key + "\t" + results.get(key));
         // }
         assertEquals(results.get(MacroFScore.class.getSimpleName()),
-                String.valueOf(Double.NaN));
+                Double.NaN, 0.01);
     }
 }

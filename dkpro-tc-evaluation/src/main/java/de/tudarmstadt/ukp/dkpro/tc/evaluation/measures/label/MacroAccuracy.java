@@ -17,6 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 
 
@@ -26,12 +29,13 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
  */
 public class MacroAccuracy
 {
-
-
-	public static Double calculate(ContingencyTable cTable, boolean softEvaluation){
+	
+	public static Map<String, Double> calculate(ContingencyTable cTable, boolean softEvaluation) {
 		int numberOfMatrices = cTable.getSize();
 		double summedAccuracy = 0.0;
+		Map<String, Double> results = new HashMap<String, Double>();
 		
+		Double result = 0.0;
 		for (int i = 0; i < numberOfMatrices; i++){
 			double tp = cTable.getTruePositives(i);
 			double fp = cTable.getFalsePositives(i);
@@ -44,10 +48,50 @@ public class MacroAccuracy
 				summedAccuracy += accuracy;
 			}
 			else if (! softEvaluation) {
-				return Double.NaN;
+				result = Double.NaN;
+				break;
 			}
-		}
+		}	
 		
-		return Double.valueOf(summedAccuracy / numberOfMatrices);	
+		if (result == 0.0){
+			result = (Double) summedAccuracy / numberOfMatrices;
+		}
+		results.put(MacroAccuracy.class.getSimpleName(), result);
+		return results;
+	}
+
+	
+	public static Map<String, Double> calculateExtraIndividualLabelMeasures(ContingencyTable cTable,
+			boolean softEvaluation, Map<Integer, String> number2class) {
+		int numberOfMatrices = cTable.getSize();
+		Double[] accuracy = new Double[numberOfMatrices];
+		double summedAccuracy = 0.0;
+		Map<String, Double> results = new HashMap<String, Double>();
+		
+		boolean computableCombined = true;
+		for (int i = 0; i < numberOfMatrices; i++){
+			double tp = cTable.getTruePositives(i);
+			double fp = cTable.getFalsePositives(i);
+			double fn = cTable.getFalseNegatives(i);
+			double tn = cTable.getTrueNegatives(i);
+			
+			double n = tp + fp + fn + tn;
+			String key = MacroAccuracy.class.getSimpleName() + "_" + number2class.get(i);
+			if (n != 0.0) {
+				accuracy[i] = (Double) (tp + tn) / n;
+				summedAccuracy += accuracy[i];
+				results.put(key, accuracy[i]);
+			}
+			else if (! softEvaluation) {
+				results.put(key, Double.NaN);
+				computableCombined = false;
+			}
+		}	
+		Double combinedAccuracy = Double.NaN;
+		if (computableCombined){
+			combinedAccuracy = (Double) summedAccuracy / numberOfMatrices;
+		} 
+		results.put(MacroAccuracy.class.getSimpleName(), combinedAccuracy);
+		return results;
 	}	
 }

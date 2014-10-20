@@ -31,13 +31,13 @@ public class RegressionEvaluator
 {
 
     public RegressionEvaluator(Map<String, Integer> class2number,
-            List<String> readData, boolean softEvaluation)
-    {
-        super(class2number, readData, softEvaluation);
-    }
+			List<String> readData, boolean softEvaluation,
+			boolean individualLabelMeasures) {
+		super(class2number, readData, softEvaluation, individualLabelMeasures);	
+	}
 
-    @Override
-    public Map<String, String> calculateEvaluationMeasures()
+	@Override
+    public Map<String, Double> calculateEvaluationMeasures()
     {
         // TODO add measures
         return null;

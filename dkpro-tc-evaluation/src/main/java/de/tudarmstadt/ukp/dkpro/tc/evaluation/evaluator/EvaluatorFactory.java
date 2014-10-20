@@ -44,9 +44,13 @@ public class EvaluatorFactory {
 	 * @param file - file containing data are to be evaluated
 	 * @param mode 
 	 * @param softEvaluation Controls how division by zero is treated. Soft: returns 0; Hard: returns NaN
+	 * @param individualLabelMeasures Controls calculation of measures for individual labels. 
+	 * individual: returns measures for each label and composite measures; 
+	 * not individual: returns just composite measures
 	 * @throws IOException 
 	 */
-	public static EvaluatorBase createEvaluator(File file, String learningMode, boolean softEvaluation) 
+	public static EvaluatorBase createEvaluator(File file, String learningMode, 
+			boolean softEvaluation, boolean individualLabelMeasures) 
 			throws IOException
 	{	
 		Set<String> labels = new HashSet<String>();
@@ -74,13 +78,16 @@ public class EvaluatorFactory {
 
 		EvaluatorBase evaluator = null;
 		if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
-			evaluator = new SingleEvaluator(class2number, readData, softEvaluation);
+			evaluator = new SingleEvaluator(class2number, readData, 
+					softEvaluation, individualLabelMeasures);
 		}
 		else if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
-			evaluator = new MultiEvaluator(class2number, readData, softEvaluation);
+			evaluator = new MultiEvaluator(class2number, readData, 
+					softEvaluation, individualLabelMeasures);
 		}
 		else if (learningMode.equals(Constants.LM_REGRESSION)) {
-			evaluator = new RegressionEvaluator(class2number, readData, softEvaluation);
+			evaluator = new RegressionEvaluator(class2number, readData, 
+					softEvaluation, individualLabelMeasures);
 		}		
 		else {
 			throw new IllegalArgumentException("Invalid value for learning mode: " + learningMode);

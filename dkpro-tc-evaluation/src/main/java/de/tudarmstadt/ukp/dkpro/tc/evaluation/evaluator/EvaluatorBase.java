@@ -42,16 +42,19 @@ public abstract class EvaluatorBase {
 	protected Map<String, Integer> class2number;
 	protected List<String> readData;
 	protected boolean softEvaluation;
+	protected boolean individualLabelMeasures;
 	
 	public EvaluatorBase(Map<String, Integer> class2number,
-			List<String> readData, boolean softEvaluation) {
+			List<String> readData, boolean softEvaluation,
+			boolean individualLabelMeasures) {
 		super();
 		this.class2number = class2number;
 		this.readData = readData;
 		this.softEvaluation = softEvaluation;
+		this.individualLabelMeasures = individualLabelMeasures;
 	}
 	
-	public abstract Map<String, String> calculateEvaluationMeasures();		
+	public abstract Map<String, Double> calculateEvaluationMeasures();		
 	
 	/**
 	 * calculation of label based macro measures 
@@ -59,30 +62,40 @@ public abstract class EvaluatorBase {
 	 * @param cTable
 	 * @return
 	 */
-	protected Map<String, String> calculateMacroMeasures(ContingencyTable cTable)
+	protected Map<String, Double> calculateMacroMeasures(ContingencyTable cTable)
 	{
-		Map<String, String> results = new HashMap<String, String>();
-		
-		// macro precision
-		String keyMacroPrec = MacroPrecision.class.getSimpleName(); 
-		Double macroPrecValue = MacroPrecision.calculate(cTable, softEvaluation);
-		results.put(keyMacroPrec, String.valueOf(macroPrecValue));
-		
-		// macro recall
-		String keyMacroRec = MacroRecall.class.getSimpleName(); 
-		Double macroRecValue = MacroRecall.calculate(cTable, softEvaluation);
-		results.put(keyMacroRec, String.valueOf(macroRecValue));
-		
-		// macro accuracy
-		String keyMacroAcc = MacroAccuracy.class.getSimpleName(); 
-		Double macroAccValue = MacroAccuracy.calculate(cTable, softEvaluation);
-		results.put(keyMacroAcc, String.valueOf(macroAccValue));
-		
-		// macro f-score
-		String keyMacroFSc = MacroFScore.class.getSimpleName(); 
-		Double macroFScValue = MacroFScore.calculate(cTable, softEvaluation);
-		results.put(keyMacroFSc, String.valueOf(macroFScValue));
-		
+		Map<String, Double> results = new HashMap<String, Double>();
+		Map<String, Double> macroAccRes;
+		Map<String, Double> macroFScRes;
+		Map<String, Double> macroPrRes;
+		Map<String, Double> macroReRes;
+
+		if (individualLabelMeasures) {
+			Map<Integer, String> number2class = new  HashMap<Integer, String>();
+			for (String classValue : class2number.keySet()) {
+				Integer number = class2number.get(classValue);
+				number2class.put(number, classValue);
+			}
+			
+			macroAccRes = MacroAccuracy.calculateExtraIndividualLabelMeasures(cTable, 
+					softEvaluation, number2class);
+			macroFScRes = MacroFScore.calculateExtraIndividualLabelMeasures(cTable, 
+					softEvaluation, number2class);
+			macroPrRes = MacroPrecision.calculateExtraIndividualLabelMeasures(cTable, 
+					softEvaluation, number2class);
+			macroReRes = MacroRecall.calculateExtraIndividualLabelMeasures(cTable, 
+					softEvaluation, number2class);
+		}
+		else{
+			macroAccRes = MacroAccuracy.calculate(cTable, softEvaluation);
+			macroFScRes = MacroFScore.calculate(cTable, softEvaluation);
+			macroPrRes = MacroPrecision.calculate(cTable, softEvaluation);
+			macroReRes = MacroRecall.calculate(cTable, softEvaluation);
+		}
+		results.putAll(macroAccRes);
+		results.putAll(macroFScRes);
+		results.putAll(macroPrRes);
+		results.putAll(macroReRes);
 		return results;
 	}
 	
@@ -92,30 +105,17 @@ public abstract class EvaluatorBase {
 	 * @param cCTable
 	 * @return
 	 */
-	protected Map<String, String> calculateMicroMeasures(CombinedContingencyTable cCTable)
+	protected Map<String, Double> calculateMicroMeasures(CombinedContingencyTable cCTable)
 	{
-		Map<String, String> results = new HashMap<String, String>();
-		
-		// micro precision
-		String keyMicroPrec = MicroPrecision.class.getSimpleName(); 
-		Double microPrecValue = MicroPrecision.calculate(cCTable, softEvaluation);
-		results.put(keyMicroPrec, String.valueOf(microPrecValue));
-		
-		// micro recall
-		String keyMicroRec = MicroRecall.class.getSimpleName(); 
-		Double microRecValue = MicroRecall.calculate(cCTable, softEvaluation);
-		results.put(keyMicroRec, String.valueOf(microRecValue));
-		
-		// micro accuracy
-		String keyMicroAcc = MicroAccuracy.class.getSimpleName(); 
-		Double microAccValue = MicroAccuracy.calculate(cCTable, softEvaluation);
-		results.put(keyMicroAcc, String.valueOf(microAccValue));
-		
-		// micro f-score
-		String keyMicroFSc = MicroFScore.class.getSimpleName(); 
-		Double microFScValue = MicroFScore.calculate(cCTable, softEvaluation);
-		results.put(keyMicroFSc, String.valueOf(microFScValue));
-		
+		Map<String, Double> results = new HashMap<String, Double>();
+		Map<String, Double> microAccRes = MicroAccuracy.calculate(cCTable, softEvaluation);
+		Map<String, Double> microFScRes = MicroFScore.calculate(cCTable, softEvaluation);
+		Map<String, Double> microPrRes = MicroPrecision.calculate(cCTable, softEvaluation);
+		Map<String, Double> microReRes = MicroRecall.calculate(cCTable, softEvaluation);
+		results.putAll(microAccRes);
+		results.putAll(microFScRes);
+		results.putAll(microPrRes);
+		results.putAll(microReRes);		
 		return results;
 	}
 }
