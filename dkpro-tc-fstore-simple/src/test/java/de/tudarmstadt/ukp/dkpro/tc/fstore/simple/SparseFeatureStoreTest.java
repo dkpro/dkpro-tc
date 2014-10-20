@@ -18,7 +18,7 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

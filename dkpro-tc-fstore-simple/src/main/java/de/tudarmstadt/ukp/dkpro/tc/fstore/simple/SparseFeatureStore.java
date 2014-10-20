@@ -22,6 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -35,12 +36,12 @@ import java.util.*;
 public class SparseFeatureStore
         implements FeatureStore
 {
+    static Logger log = Logger.getLogger(SparseFeatureStore.class);
 
-    private List<Map<Integer, Object>> instanceList = new ArrayList<>();
+    private List<Map<String, Object>> instanceList = new ArrayList<>();
     private List<List<String>> outcomeList = new ArrayList<>();
     private List<Integer> sequenceIds = new ArrayList<>();
     private List<Integer> sequencePositions = new ArrayList<>();
-    private SortedMap<String, Integer> featureNameToFeatureIdMapping = new TreeMap<>();
 
     /**
      * If this flag is set to false, it is not possible to add another instances; this is set
@@ -48,6 +49,12 @@ public class SparseFeatureStore
      * introduce new feature and thus make feature vectors of retrieved instances inconsistent.
      */
     private boolean addingAnotherInstancesAllowed = true;
+
+    // statistics for feature sparsity
+    int totalNonNullFeaturesCount = 0;
+
+    // cached feature names
+    private TreeSet<String> allFeatureNames = new TreeSet<>();
 
     @Override
     public int size()
@@ -106,24 +113,37 @@ public class SparseFeatureStore
 
         // adds all features to the global feature mapping
         for (Feature feature : instance.getFeatures()) {
-            if (!this.featureNameToFeatureIdMapping.containsKey(feature.getName())) {
-                int nextId = this.featureNameToFeatureIdMapping.size();
-                this.featureNameToFeatureIdMapping.put(feature.getName(), nextId);
-            }
+            this.allFeatureNames.add(feature.getName());
         }
 
-        // transform features of the current instance to a map: featureId=featureValue
-        Map<Integer, Object> currentInstanceFeatures = new HashMap<>();
+        // convert from List<Feature> to Map<name, value>
+        Map<String, Object> currentInstanceFeatures = new HashMap<>();
         for (Feature feature : instance.getFeatures()) {
-            // feature id
-            Integer featureId = this.featureNameToFeatureIdMapping.get(feature.getName());
-            currentInstanceFeatures.put(featureId, feature.getValue());
+            currentInstanceFeatures.put(feature.getName(), feature.getValue());
+
+            // increase statistics
+            totalNonNullFeaturesCount++;
         }
 
         this.instanceList.add(currentInstanceFeatures);
         this.outcomeList.add(instance.getOutcomes());
         this.sequenceIds.add(instance.getSequenceId());
         this.sequencePositions.add(instance.getSequencePosition());
+    }
+
+    /**
+     * Returns a ratio (0-1) how many features were not-null among all instances
+     *
+     * @return double
+     */
+    public double getFeatureSparsityRatio()
+    {
+        // feature vector length
+        int featureVectorLength = this.allFeatureNames.size();
+        // matrix
+        long matrixSize = featureVectorLength * this.instanceList.size();
+
+        return ((double) this.totalNonNullFeaturesCount) / ((double) matrixSize);
     }
 
     @Override
@@ -134,18 +154,16 @@ public class SparseFeatureStore
 
         List<Feature> features = new ArrayList<>();
 
-        // feature values of the required instance (mapping featureID: featureValue)
-        Map<Integer, Object> instanceFeatureValues = instanceList.get(i);
+        // feature values of the required instance (mapping featureName: featureValue)
+        Map<String, Object> instanceFeatureValues = instanceList.get(i);
 
         for (String featureName : getFeatureNames()) {
-            Integer featureId = this.featureNameToFeatureIdMapping.get(featureName);
-
             // create default null-valued feature
             Feature feature = new Feature(featureName, null);
 
             // if the feature is present in the current instance, set the correct value
-            if (instanceFeatureValues.containsKey(featureId)) {
-                feature.setValue(instanceFeatureValues.get(featureId));
+            if (instanceFeatureValues.containsKey(featureName)) {
+                feature.setValue(instanceFeatureValues.get(featureName));
             }
 
             features.add(feature);
@@ -154,6 +172,37 @@ public class SparseFeatureStore
         Instance result = new Instance(features, outcomeList.get(i));
         result.setSequenceId(sequenceIds.get(i));
         result.setSequencePosition(sequencePositions.get(i));
+
+        return result;
+    }
+
+    /**
+     * A much faster access to large sparse feature vectors. This methods returns instance with
+     * feature vector that contains only features with non-null values.
+     *
+     * @param i instance id
+     * @return instance
+     */
+    public Instance getInstanceSparseFeatures(int i)
+    {
+        // set flag to disable adding new instances
+        this.addingAnotherInstancesAllowed = false;
+
+        List<Feature> features = new ArrayList<>();
+
+        // feature values of the required instance (mapping feature mame: featureValue)
+        Map<String, Object> instanceFeatureValues = instanceList.get(i);
+
+        for (Map.Entry<String, Object> entry : instanceFeatureValues.entrySet()) {
+            Feature feature = new Feature(entry.getKey(), entry.getValue());
+
+            features.add(feature);
+        }
+
+        Instance result = new Instance(features, outcomeList.get(i));
+        result.setSequenceId(sequenceIds.get(i));
+        result.setSequencePosition(sequencePositions.get(i));
+
         return result;
     }
 
@@ -175,8 +224,27 @@ public class SparseFeatureStore
         return this.outcomeList.get(i);
     }
 
-    @Override public TreeSet<String> getFeatureNames()
+    @Override
+    public TreeSet<String> getFeatureNames()
     {
-        return new TreeSet<>(this.featureNameToFeatureIdMapping.keySet());
+        return this.allFeatureNames;
+    }
+
+    /**
+     * Primarily for debug purposes
+     *
+     * @return all instances, features, mapping, internal state, etc.
+     */
+    @Override
+    public String toString()
+    {
+        return "SparseFeatureStore{" +
+                "instanceList=" + instanceList +
+                ", outcomeList=" + outcomeList +
+                ", sequenceIds=" + sequenceIds +
+                ", sequencePositions=" + sequencePositions +
+                ", addingAnotherInstancesAllowed=" + addingAnotherInstancesAllowed +
+                ", totalNonNullFeaturesCount=" + totalNonNullFeaturesCount +
+                '}';
     }
 }
