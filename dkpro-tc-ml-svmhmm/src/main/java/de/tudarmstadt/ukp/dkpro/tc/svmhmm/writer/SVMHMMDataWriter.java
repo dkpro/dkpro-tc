@@ -116,8 +116,8 @@ public class SVMHMMDataWriter
 
                 // not allow other non-number features
                 if (!(featureValue instanceof Number)) {
-                    throw new TextClassificationException("Only features with number " +
-                            "values are allowed, but was " + f);
+                    log.warn("Only features with number values are allowed, but was " + f);
+                    continue;
                 }
 
                 // in case the feature store produced dense feature vector with zeros for
