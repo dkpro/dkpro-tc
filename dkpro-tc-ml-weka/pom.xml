@@ -128,5 +128,9 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-evaluation</artifactId>
+		</dependency>
 	</dependencies>
 </project>
