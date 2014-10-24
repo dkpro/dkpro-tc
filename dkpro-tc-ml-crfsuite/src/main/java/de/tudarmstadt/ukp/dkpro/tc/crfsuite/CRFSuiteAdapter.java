@@ -56,7 +56,7 @@ public class CRFSuiteAdapter
     @Override
     public Class<? extends ReportBase> getOutcomeIdReportClass()
     {
-        return CRFSuiteClassificationReport.class;
+        return CRFSuiteOutcomeIDReport.class;
     }
 
     @Override
