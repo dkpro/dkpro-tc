@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
 
 
 /**
@@ -30,10 +30,12 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingen
 public class MicroFScore
 {
 
-	public static Map<String, Double> calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
-		double tp = cCTable.getTruePositives();
-		double fp = cCTable.getFalsePositives();
-		double fn = cCTable.getFalseNegatives();
+	public static Map<String, Double> calculate(CombinedSmallContingencyTable cSCTable, 
+			boolean softEvaluation) 
+	{
+		double tp = cSCTable.getTruePositives();
+		double fp = cSCTable.getFalsePositives();
+		double fn = cSCTable.getFalseNegatives();
 		
 		Double fScore = 0.0;
 		double localSum = 0.0;

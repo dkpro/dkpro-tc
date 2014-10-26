@@ -22,32 +22,32 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
  * @author Andriy Nadolskyy
  * 
  */
-public class CombinedContingencyTable {
+public class CombinedSmallContingencyTable {
 
-	private double[][] combinedTable;
+	private double[][] combinedSmallContingencyTable;
 	
-	public CombinedContingencyTable(double[][] combinedTable)
+	public CombinedSmallContingencyTable(double[][] combinedTable)
 	{
-		this.combinedTable = combinedTable;
+		this.combinedSmallContingencyTable = combinedTable;
 	}
 	
 	public int getSize() {
-		return combinedTable.length;
+		return combinedSmallContingencyTable.length;
 	}
 	
 	public double getTruePositives() {
-		return combinedTable[0][0];
+		return combinedSmallContingencyTable[0][0];
 	}
 
 	public double getTrueNegatives() {
-		return combinedTable[1][1];
+		return combinedSmallContingencyTable[1][1];
 	}
 
 	public double getFalsePositives() {
-		return combinedTable[1][0];		
+		return combinedSmallContingencyTable[1][0];		
 	}
 
 	public double getFalseNegatives() {
-		return combinedTable[0][1];
+		return combinedSmallContingencyTable[0][1];
 	}
 }

@@ -18,15 +18,17 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleLargeContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
 
 /**
  * @author Andriy Nadolskyy
@@ -43,16 +45,16 @@ public class SingleEvaluator
 		super(class2number, readData, softEvaluation, individualLabelMeasures);
 	}
 
-	public AbstractContingencyTable<List<List<Double>>> buildContingencyTable()
+	public AbstractLargeContingencyTable<List<List<Double>>> buildLargeContingencyTable()
     {
         int number = class2number.keySet().size();
-        List<List<Double>> confusionMatrix = new ArrayList<List<Double>>();
+        List<List<Double>> largeContingencyTable = new ArrayList<List<Double>>();
         for (int i = 0; i < number; i++) {
             ArrayList<Double> local = new ArrayList<Double>();
             for (int j = 0; j < number; j++) {
                 local.add(0.0);
             }
-            confusionMatrix.add(i, (ArrayList<Double>) local.clone());
+            largeContingencyTable.add(i, (ArrayList<Double>) local.clone());
         }
 
         for (String line : readData) {
@@ -62,22 +64,29 @@ public class SingleEvaluator
             int predictedClass = Integer.valueOf(splittedEvaluationData[0]);
             int goldClass = Integer.valueOf(splittedEvaluationData[1]);
 
-            double oldValue = confusionMatrix.get(goldClass).get(predictedClass);
-            confusionMatrix.get(goldClass).set(predictedClass, oldValue + 1);
+            double oldValue = largeContingencyTable.get(goldClass).get(predictedClass);
+            largeContingencyTable.get(goldClass).set(predictedClass, oldValue + 1);
         }
-        return new SingleContingencyTable(confusionMatrix, class2number);
+        return new SingleLargeContingencyTable(largeContingencyTable, class2number);
     }
 
     @Override
     public Map<String, Double> calculateEvaluationMeasures()
     {
-        SingleContingencyTable confMatr = (SingleContingencyTable) buildContingencyTable();
-        ContingencyTable cTable = confMatr.decomposeContingencyTable();
-        CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();        
+        SingleLargeContingencyTable largeConfMatr = (SingleLargeContingencyTable) buildLargeContingencyTable();
+        SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+        CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();        
 
-        Map<String, Double> results = calculateMacroMeasures(cTable);
-        Map<String, Double> microResults = calculateMicroMeasures(cCTable);;
+        Map<String, Double> results = new HashMap<String, Double>();
+        Map<String, Double> macroResults = calculateMacroMeasures(smallConfMatrices);
+        Map<String, Double> microResults = calculateMicroMeasures(combinedSmallConfMatr);
+        int numberOfContingencyTables = class2number.size();
+		Map<String, Double> accuracyResult = Accuracy.calculate(combinedSmallConfMatr, 
+				numberOfContingencyTables, softEvaluation);
+		
+		results.putAll(macroResults);
         results.putAll(microResults);
+        results.putAll(accuracyResult);
         return results;
     }
 

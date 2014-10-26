@@ -23,28 +23,22 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroFScore;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroPrecision;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroRecall;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
 
 /**
  * @author Andriy Nadolskyy
  * 
  */
-public class MicroEvalTest {
+public class AccuracyEvalTest {
 
 	@Test
 	public void microPrecisionTest() {
-		double[][] table = new double[][]{{3, 2},{1, 4}};
-		CombinedSmallContingencyTable cSCTable = new CombinedSmallContingencyTable(table);
+		double[][] combinedTable = new double[][]{{3, 2},{1, 4}};
+		int numberOfSmallContingencyTables = 1;
+		CombinedSmallContingencyTable cSCTable = new CombinedSmallContingencyTable(combinedTable);
 		
-		Double microPr = MicroPrecision.calculate(cSCTable, true).get(MicroPrecision.class.getSimpleName());
-		assertEquals(0.75, microPr, 0.01);
-		
-		Double microRe = MicroRecall.calculate(cSCTable, true).get(MicroRecall.class.getSimpleName());
-		assertEquals(0.6, microRe, 0.01);
-		
-		Double microFSc = MicroFScore.calculate(cSCTable, true).get(MicroFScore.class.getSimpleName());
-		assertEquals(0.66, microFSc, 0.01);
+		Double accuracy = Accuracy.calculate(cSCTable, numberOfSmallContingencyTables, 
+				true).get(Accuracy.class.getSimpleName());
+		assertEquals(0.3, accuracy, 0.01);
 	}
 }

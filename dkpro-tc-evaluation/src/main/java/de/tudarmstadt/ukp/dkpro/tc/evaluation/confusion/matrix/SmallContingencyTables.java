@@ -26,91 +26,91 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ContingencyTable {
+public class SmallContingencyTables {
 
 	private Map<String, Integer> class2Number;
-	private double[][][] table;
+	private double[][][] smallContingencyTables;
 	
-	public ContingencyTable(String ... classNames)
+	public SmallContingencyTables(String ... classNames)
 	{
 		if (classNames.length == 0) {
 			throw new IllegalArgumentException("Must at least specify on class name.");
 		}
 		this.class2Number = classNamesToMapping(Arrays.asList(classNames));
-		this.table = new double[class2Number.size()][2][2];
+		this.smallContingencyTables = new double[class2Number.size()][2][2];
 	}
 	
-	public ContingencyTable(Map<String, Integer> class2Number) {
+	public SmallContingencyTables(Map<String, Integer> class2Number) {
 		this.class2Number = class2Number;
-		this.table = new double[class2Number.size()][2][2];
+		this.smallContingencyTables = new double[class2Number.size()][2][2];
 	}
 	
 	public int getSize() {
-		return table.length;
+		return smallContingencyTables.length;
 	}
 	
 	public void addTruePositives(String className, double count) {
-		table[class2Number.get(className)][0][0] += count;		
+		smallContingencyTables[class2Number.get(className)][0][0] += count;		
 	}
 
 	public void addTrueNegatives(String className, double count) {
-		table[class2Number.get(className)][1][1] += count;
+		smallContingencyTables[class2Number.get(className)][1][1] += count;
 	}
 
 	public void addFalsePositives(String className, double count) {
-		table[class2Number.get(className)][1][0] += count;
+		smallContingencyTables[class2Number.get(className)][1][0] += count;
 	}
 
 	public void addFalseNegatives(String className, double count) {
-		table[class2Number.get(className)][0][1] += count;		
+		smallContingencyTables[class2Number.get(className)][0][1] += count;		
 	}
 	
 	public double getTruePositives(String className) {
-		return table[class2Number.get(className)][0][0];
+		return smallContingencyTables[class2Number.get(className)][0][0];
 	}
 
 	public double getTrueNegatives(String className) {
-		return table[class2Number.get(className)][1][1];
+		return smallContingencyTables[class2Number.get(className)][1][1];
 	}
 
 	public double getFalsePositives(String className) {
-		return table[class2Number.get(className)][1][0];		
+		return smallContingencyTables[class2Number.get(className)][1][0];		
 	}
 
 	public double getFalseNegatives(String className) {
-		return table[class2Number.get(className)][0][1];
+		return smallContingencyTables[class2Number.get(className)][0][1];
 	}
 	
 	public void addTruePositives(int classId, double count) {
-		table[classId][0][0] += count;		
+		smallContingencyTables[classId][0][0] += count;		
 	}
 
 	public void addTrueNegatives(int classId, double count) {
-		table[classId][1][1] += count;
+		smallContingencyTables[classId][1][1] += count;
 	}
 
 	public void addFalsePositives(int classId, double count) {
-		table[classId][1][0] += count;
+		smallContingencyTables[classId][1][0] += count;
 	}
 
 	public void addFalseNegatives(int classId, double count) {
-		table[classId][0][1] += count;		
+		smallContingencyTables[classId][0][1] += count;		
 	}
 	
 	public double getTruePositives(int classId) {
-		return table[classId][0][0];
+		return smallContingencyTables[classId][0][0];
 	}
 
 	public double getTrueNegatives(int classId) {
-		return table[classId][1][1];
+		return smallContingencyTables[classId][1][1];
 	}
 
 	public double getFalsePositives(int classId) {
-		return table[classId][1][0];		
+		return smallContingencyTables[classId][1][0];		
 	}
 
 	public double getFalseNegatives(int classId) {
-		return table[classId][0][1];
+		return smallContingencyTables[classId][0][1];
 	}
 	
 	public static Map<String, Integer> classNamesToMapping(Collection<String> collection)
@@ -131,15 +131,15 @@ public class ContingencyTable {
 	 * 
 	 * @return
 	 */
-	public CombinedContingencyTable buildCombinedMatrix() {
+	public CombinedSmallContingencyTable buildCombinedSmallContingencyTable() {
 		double[][] combinedMatrix = new double[2][2]; 
-		for (int x = 0; x < table.length; x++){
+		for (int x = 0; x < smallContingencyTables.length; x++){
 			for (int y = 0; y < 2; y++) {
 				for (int z = 0; z < 2; z++) {
-					combinedMatrix[y][z] += table[x][y][z];
+					combinedMatrix[y][z] += smallContingencyTables[x][y][z];
 				}
 			}
 		}
-		return new CombinedContingencyTable(combinedMatrix);
+		return new CombinedSmallContingencyTable(combinedMatrix);
 	}
 }

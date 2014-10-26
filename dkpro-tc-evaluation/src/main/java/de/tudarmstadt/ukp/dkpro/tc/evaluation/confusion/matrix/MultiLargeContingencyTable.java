@@ -24,67 +24,67 @@ import java.util.Map;
  * @author Andriy Nadolskyy
  * 
  */
-public class MultiContingencyTable
-	extends AbstractContingencyTable<Map<String, Map<String, Double>>>
+public class MultiLargeContingencyTable
+	extends AbstractLargeContingencyTable<Map<String, Map<String, Double>>>
 {
 
-	public MultiContingencyTable(
-			Map<String, Map<String, Double>> matrix,
+	public MultiLargeContingencyTable(
+			Map<String, Map<String, Double>> largeContingencyTable,
 			Map<String, Integer> class2number)
 	{
-		super(matrix, class2number);
+		super(largeContingencyTable, class2number);
 	}
 
 	@Override
-	public ContingencyTable decomposeContingencyTable()
+	public SmallContingencyTables decomposeLargeContingencyTable()
 	{
-		ContingencyTable cTable = new ContingencyTable(class2number);
+		SmallContingencyTables smallContingencyTables = new SmallContingencyTables(class2number);
 		
 		for (int decomposed = 0; decomposed < class2number.size(); decomposed++){
-			for (String goldKey : matrix.keySet()) {
+			for (String goldKey : largeContingencyTable.keySet()) {
 				
 				String[] goldLabels = goldKey.split(",");
 				for (String goldLabel : goldLabels) {
 					
 					// gold includes number of label for building decomposed matrix
-					// case for "true positives" and "false negatives" 
+					// case of "true positives" and "false negatives" 
 					if (Integer.valueOf(goldLabel) == decomposed){
-						for (String predictionKey : matrix.get(goldKey).keySet()) {
-							if (matrix.get(goldKey).get(predictionKey) != 0.0){
+						for (String predictionKey : largeContingencyTable.get(goldKey).keySet()) {
+							if (largeContingencyTable.get(goldKey).get(predictionKey) != 0.0){
 								String[] predictionLabels = predictionKey.split(",");
 								boolean matchedPositives = false;
 								for (String predictionLabel : predictionLabels) {
 									// "true positives"
 									if (predictionLabel == goldLabel){
 										matchedPositives = true;
-										cTable.addTruePositives(decomposed, matrix.get(goldKey).get(predictionKey));
+										smallContingencyTables.addTruePositives(decomposed, largeContingencyTable.get(goldKey).get(predictionKey));
 										break;	
 									}						
 								}
 								// "false negatives"
 								if (! matchedPositives){
-									cTable.addFalseNegatives(decomposed, matrix.get(goldKey).get(predictionKey));
+									smallContingencyTables.addFalseNegatives(decomposed, largeContingencyTable.get(goldKey).get(predictionKey));
 								}
 							}
 						}
 					}
-					// case for "false positives" and "true negatives"
+					// case of "false positives" and "true negatives"
 					else{
-						for (String predictionKey : matrix.get(goldKey).keySet()) {
-							if (matrix.get(goldKey).get(predictionKey) != 0.0){
+						for (String predictionKey : largeContingencyTable.get(goldKey).keySet()) {
+							if (largeContingencyTable.get(goldKey).get(predictionKey) != 0.0){
 								String[] predictionLabels = predictionKey.split(",");
 								boolean matchedNegatives = false;
 								for (String predictionLabel : predictionLabels) {
 									// "false positives"
 									if (predictionLabel == goldLabel){
 										matchedNegatives = true;
-										cTable.addFalsePositives(decomposed, matrix.get(goldKey).get(predictionKey));
+										smallContingencyTables.addFalsePositives(decomposed, largeContingencyTable.get(goldKey).get(predictionKey));
 										break;
 									}
 								}
 								// "true negatives"
 								if (! matchedNegatives){
-									cTable.addTrueNegatives(decomposed, matrix.get(goldKey).get(predictionKey));
+									smallContingencyTables.addTrueNegatives(decomposed, largeContingencyTable.get(goldKey).get(predictionKey));
 								}
 							}
 						}
@@ -92,6 +92,6 @@ public class MultiContingencyTable
 				}
 			}
 		}
-		return cTable;
+		return smallContingencyTables;
 	}
 }

@@ -25,47 +25,47 @@ import java.util.Map;
  * @author Andriy Nadolskyy
  * 
  */
-public class SingleContingencyTable 
-	extends AbstractContingencyTable<List<List<Double>>>
+public class SingleLargeContingencyTable 
+	extends AbstractLargeContingencyTable<List<List<Double>>>
 {
 
-	public SingleContingencyTable(List<List<Double>> matrix,
+	public SingleLargeContingencyTable(List<List<Double>> largeContingencyTable,
 			Map<String, Integer> class2number)
 	{
-		super(matrix, class2number);
+		super(largeContingencyTable, class2number);
 	}
 
 	@Override
-	public ContingencyTable decomposeContingencyTable()
+	public SmallContingencyTables decomposeLargeContingencyTable()
 	{
-		ContingencyTable table = new ContingencyTable(class2number);
+		SmallContingencyTables smallContingencyTables = new SmallContingencyTables(class2number);
 		
-		for (int x = 0; x < table.getSize(); x++){
-			for (int y = 0; y < table.getSize(); y++){
+		for (int x = 0; x < smallContingencyTables.getSize(); x++){
+			for (int y = 0; y < smallContingencyTables.getSize(); y++){
 				// true positives
 				if (x == y) {
-					table.addTruePositives(x, matrix.get(x).get(x));
+					smallContingencyTables.addTruePositives(x, largeContingencyTable.get(x).get(x));
 				} 
 				// false negatives
 				else {
-					table.addFalseNegatives(x, matrix.get(x).get(y));
+					smallContingencyTables.addFalseNegatives(x, largeContingencyTable.get(x).get(y));
 				}
 				
 				if (y != x ){
 					// false positives
-					table.addFalsePositives(x, matrix.get(y).get(x));
+					smallContingencyTables.addFalsePositives(x, largeContingencyTable.get(y).get(x));
 					
-					for (int z = 0; z < table.getSize(); z++){
+					for (int z = 0; z < smallContingencyTables.getSize(); z++){
 						// true negatives
 						if (z != x){
-							table.addTrueNegatives(x, matrix.get(y).get(z));
+							smallContingencyTables.addTrueNegatives(x, largeContingencyTable.get(y).get(z));
 						}
 					}
 				}
 			}
 		}
 		
-		return table;
+		return smallContingencyTables;
 	}
 
 }

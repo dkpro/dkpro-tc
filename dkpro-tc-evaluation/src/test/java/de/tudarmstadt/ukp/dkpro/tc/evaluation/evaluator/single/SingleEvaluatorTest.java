@@ -29,7 +29,6 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroAccuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
@@ -64,9 +63,6 @@ public class SingleEvaluatorTest
         Double macroRe = results.get(MacroRecall.class.getSimpleName());
         assertEquals(0.0476190, macroRe, 0.00001);
 
-        Double macroAcc = results.get(MacroAccuracy.class.getSimpleName());
-        assertEquals(0.3809523, macroAcc, 0.0001);
-
         Double macroFSc = results.get(MacroFScore.class.getSimpleName());
         assertEquals(0.0476190, macroFSc, 0.0001);
     }
@@ -82,9 +78,6 @@ public class SingleEvaluatorTest
 
         Double macroRe = results.get(MacroRecall.class.getSimpleName());
         assertTrue("result should be an invalid value, but isn't", Double.isNaN(macroRe));
-
-        Double macroAcc = results.get(MacroAccuracy.class.getSimpleName());
-        assertEquals(0.3809523, macroAcc, 0.0001);
 
         Double macroFSc = results.get(MacroFScore.class.getSimpleName());
         assertTrue("result should be an invalid value, but isn't", Double.isNaN(macroFSc));

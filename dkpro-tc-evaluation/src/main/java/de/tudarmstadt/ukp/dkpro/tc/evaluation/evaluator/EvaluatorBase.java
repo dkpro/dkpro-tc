@@ -21,13 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroAccuracy;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroAccuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroRecall;
@@ -62,10 +60,9 @@ public abstract class EvaluatorBase {
 	 * @param cTable
 	 * @return
 	 */
-	protected Map<String, Double> calculateMacroMeasures(ContingencyTable cTable)
+	protected Map<String, Double> calculateMacroMeasures(SmallContingencyTables cTable)
 	{
 		Map<String, Double> results = new HashMap<String, Double>();
-		Map<String, Double> macroAccRes;
 		Map<String, Double> macroFScRes;
 		Map<String, Double> macroPrRes;
 		Map<String, Double> macroReRes;
@@ -76,9 +73,7 @@ public abstract class EvaluatorBase {
 				Integer number = class2number.get(classValue);
 				number2class.put(number, classValue);
 			}
-			
-			macroAccRes = MacroAccuracy.calculateExtraIndividualLabelMeasures(cTable, 
-					softEvaluation, number2class);
+
 			macroFScRes = MacroFScore.calculateExtraIndividualLabelMeasures(cTable, 
 					softEvaluation, number2class);
 			macroPrRes = MacroPrecision.calculateExtraIndividualLabelMeasures(cTable, 
@@ -87,12 +82,10 @@ public abstract class EvaluatorBase {
 					softEvaluation, number2class);
 		}
 		else{
-			macroAccRes = MacroAccuracy.calculate(cTable, softEvaluation);
 			macroFScRes = MacroFScore.calculate(cTable, softEvaluation);
 			macroPrRes = MacroPrecision.calculate(cTable, softEvaluation);
 			macroReRes = MacroRecall.calculate(cTable, softEvaluation);
 		}
-		results.putAll(macroAccRes);
 		results.putAll(macroFScRes);
 		results.putAll(macroPrRes);
 		results.putAll(macroReRes);
@@ -105,14 +98,14 @@ public abstract class EvaluatorBase {
 	 * @param cCTable
 	 * @return
 	 */
-	protected Map<String, Double> calculateMicroMeasures(CombinedContingencyTable cCTable)
+	protected Map<String, Double> calculateMicroMeasures(CombinedSmallContingencyTable cCTable)
 	{
 		Map<String, Double> results = new HashMap<String, Double>();
-		Map<String, Double> microAccRes = MicroAccuracy.calculate(cCTable, softEvaluation);
+		
 		Map<String, Double> microFScRes = MicroFScore.calculate(cCTable, softEvaluation);
 		Map<String, Double> microPrRes = MicroPrecision.calculate(cCTable, softEvaluation);
 		Map<String, Double> microReRes = MicroRecall.calculate(cCTable, softEvaluation);
-		results.putAll(microAccRes);
+		
 		results.putAll(microFScRes);
 		results.putAll(microPrRes);
 		results.putAll(microReRes);		
