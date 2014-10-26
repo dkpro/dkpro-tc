@@ -24,14 +24,14 @@ import java.util.Map;
  * @author Andriy Nadolskyy
  * 
  */
-public abstract class AbstractContingencyTable<T> {
-	protected T matrix;
+public abstract class AbstractLargeContingencyTable<T> {
+	protected T largeContingencyTable;
 	protected Map<String, Integer> class2number;
 	
-	public AbstractContingencyTable(T matrix, Map<String, Integer> class2number){
-		this.matrix = matrix;
+	public AbstractLargeContingencyTable(T matrix, Map<String, Integer> class2number){
+		this.largeContingencyTable = matrix;
 		this.class2number = class2number;
 	}
 	
-	public abstract ContingencyTable decomposeContingencyTable();
+	public abstract SmallContingencyTables decomposeLargeContingencyTable();
 }

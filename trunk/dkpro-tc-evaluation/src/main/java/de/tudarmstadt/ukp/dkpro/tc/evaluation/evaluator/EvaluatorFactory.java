@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
@@ -74,7 +74,7 @@ public class EvaluatorFactory {
 		}
 		br.close();
 		
-		Map<String, Integer> class2number = ContingencyTable.classNamesToMapping(labels);
+		Map<String, Integer> class2number = SmallContingencyTables.classNamesToMapping(labels);
 
 		EvaluatorBase evaluator = null;
 		if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {

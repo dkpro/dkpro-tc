@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 
 
 /**
@@ -30,15 +30,17 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 public class MacroPrecision
 {
 
-	public static Map<String, Double> calculate(ContingencyTable cTable, boolean softEvaluation) {
-		int numberOfMatrices = cTable.getSize();
+	public static Map<String, Double> calculate(SmallContingencyTables smallContTables, 
+			boolean softEvaluation) 
+	{
+		int numberOfTables = smallContTables.getSize();
 		double summedPrecision = 0.0;
 		Map<String, Double> results = new HashMap<String, Double>();
 		
 		Double result = 0.0;
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fp = cTable.getFalsePositives(i);
+		for (int i = 0; i < numberOfTables; i++){
+			double tp = smallContTables.getTruePositives(i);
+			double fp = smallContTables.getFalsePositives(i);
 			
 			double denominator = tp + fp;
 			if (denominator != 0.0) {
@@ -52,24 +54,25 @@ public class MacroPrecision
 		}	
 		
 		if (result == 0.0){
-			result = (Double) summedPrecision / numberOfMatrices;
+			result = (Double) summedPrecision / numberOfTables;
 		}
 		results.put(MacroPrecision.class.getSimpleName(), result);
 		return results;
 	}
 
 	
-	public static Map<String, Double> calculateExtraIndividualLabelMeasures(ContingencyTable cTable,
-			boolean softEvaluation, Map<Integer, String> number2class) {
-		int numberOfMatrices = cTable.getSize();
-		Double[] precision = new Double[numberOfMatrices];
+	public static Map<String, Double> calculateExtraIndividualLabelMeasures(SmallContingencyTables smallContTables,
+			boolean softEvaluation, Map<Integer, String> number2class) 
+	{
+		int numberOfTables = smallContTables.getSize();
+		Double[] precision = new Double[numberOfTables];
 		double summedPrecision = 0.0;
 		Map<String, Double> results = new HashMap<String, Double>();
 		
 		boolean computableCombined = true;
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fp = cTable.getFalsePositives(i);
+		for (int i = 0; i < numberOfTables; i++){
+			double tp = smallContTables.getTruePositives(i);
+			double fp = smallContTables.getFalsePositives(i);
 			
 			double denominator = tp + fp;
 			String key = MacroPrecision.class.getSimpleName() + "_" + number2class.get(i);
@@ -85,7 +88,7 @@ public class MacroPrecision
 		}	
 		Double combinedPrecision = Double.NaN;
 		if (computableCombined){
-			combinedPrecision = (Double) summedPrecision / numberOfMatrices;
+			combinedPrecision = (Double) summedPrecision / numberOfTables;
 		} 
 		results.put(MacroPrecision.class.getSimpleName(), combinedPrecision);
 		return results;

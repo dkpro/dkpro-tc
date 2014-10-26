@@ -24,12 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiLargeContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
 
 /**
  * @author Andriy Nadolskyy
@@ -46,19 +47,19 @@ public class MultiEvaluator
 		super(class2number, readData, softEvaluation, individualLabelMeasures);
 	}
 
-	public AbstractContingencyTable<Map<String, Map<String, Double>>> buildContingencyTable()
+	public AbstractLargeContingencyTable<Map<String, Map<String, Double>>> buildLargeContingencyTable()
     {
         Set<String> labelCombinations = getSetOfLabelCombinations();
 
         // gold - prediction - value
-        Map<String, Map<String, Double>> confusionMatrix =
+        Map<String, Map<String, Double>> largeContingencyTable =
                 new HashMap<String, Map<String, Double>>();
         HashMap<String, Double> tempDimension = new HashMap<String, Double>();
         for (String labelCombination : labelCombinations) {
             tempDimension.put(labelCombination, 0.0);
         }
         for (String labelCombination : labelCombinations) {
-            confusionMatrix.put(labelCombination, (HashMap<String, Double>) tempDimension.clone());
+            largeContingencyTable.put(labelCombination, (HashMap<String, Double>) tempDimension.clone());
         }
 
         for (String line : readData) {
@@ -82,10 +83,10 @@ public class MultiEvaluator
                 // replace with appropriate label
             	accumulatedLabelCombination = String.valueOf(class2number.get(""));
             }
-            Double updatedValue = confusionMatrix.get(gold).get(accumulatedLabelCombination) + 1;
-            confusionMatrix.get(gold).put(accumulatedLabelCombination, updatedValue);
+            Double updatedValue = largeContingencyTable.get(gold).get(accumulatedLabelCombination) + 1;
+            largeContingencyTable.get(gold).put(accumulatedLabelCombination, updatedValue);
         }
-        return new MultiContingencyTable(confusionMatrix, class2number);
+        return new MultiLargeContingencyTable(largeContingencyTable, class2number);
     }
 
     /**
@@ -133,14 +134,21 @@ public class MultiEvaluator
     @Override
     public Map<String, Double> calculateEvaluationMeasures()
     {
-        MultiContingencyTable confMatr = (MultiContingencyTable) buildContingencyTable();
-        ContingencyTable cTable = confMatr.decomposeContingencyTable();
-        CombinedContingencyTable cCTable = cTable.buildCombinedMatrix();
+        MultiLargeContingencyTable largeConfMatr = (MultiLargeContingencyTable) buildLargeContingencyTable();
+        SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+        CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
 
         // TODO: add example-based measures
-        Map<String, Double> results = calculateMacroMeasures(cTable);
-        Map<String, Double> microResults = calculateMicroMeasures(cCTable);;
+        Map<String, Double> results = new HashMap<String, Double>();
+        Map<String, Double> macroResults = calculateMacroMeasures(smallConfMatrices);
+        Map<String, Double> microResults = calculateMicroMeasures(combinedSmallConfMatr);
+        int numberOfContingencyTables = class2number.size();
+		Map<String, Double> accuracyResult = Accuracy.calculate(combinedSmallConfMatr, 
+				numberOfContingencyTables, softEvaluation);
+		
+		results.putAll(macroResults);
         results.putAll(microResults);
+        results.putAll(accuracyResult);
         return results;
     }
 

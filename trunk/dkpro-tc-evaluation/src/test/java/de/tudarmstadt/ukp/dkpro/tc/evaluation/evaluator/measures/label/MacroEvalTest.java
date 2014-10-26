@@ -22,8 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroAccuracy;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
@@ -32,14 +31,11 @@ public class MacroEvalTest {
 
 	@Test
 	public void macroPrecisionTest() {
-		ContingencyTable cTable = new ContingencyTable("class1");
+		SmallContingencyTables cTable = new SmallContingencyTables("class1");
 		cTable.addTruePositives("class1", 3);
 		cTable.addFalsePositives("class1", 1);
 		cTable.addFalseNegatives("class1", 2);
 		cTable.addTrueNegatives("class1", 4);
-		
-		Double macroAcc = MacroAccuracy.calculate(cTable, true).get(MacroAccuracy.class.getSimpleName());
-		assertEquals(0.7, macroAcc, 0.01);
 		
 		Double macroPr = MacroPrecision.calculate(cTable, true).get(MacroPrecision.class.getSimpleName());
 		assertEquals(0.75, macroPr, 0.01);

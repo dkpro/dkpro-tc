@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 
 
 /**
@@ -30,15 +30,17 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 public class MacroRecall
 {
 
-	public static Map<String, Double> calculate(ContingencyTable cTable, boolean softEvaluation) {
-		int numberOfMatrices = cTable.getSize();
+	public static Map<String, Double> calculate(SmallContingencyTables smallContTables, 
+			boolean softEvaluation) 
+	{
+		int numberOfTables = smallContTables.getSize();
 		double summedRecall = 0.0;
 		Map<String, Double> results = new HashMap<String, Double>();
 		
 		Double result = 0.0;
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fn = cTable.getFalseNegatives(i);
+		for (int i = 0; i < numberOfTables; i++){
+			double tp = smallContTables.getTruePositives(i);
+			double fn = smallContTables.getFalseNegatives(i);
 			
 			double denominator = tp + fn;
 			if (denominator != 0.0) {
@@ -52,24 +54,25 @@ public class MacroRecall
 		}	
 		
 		if (result == 0.0){
-			result = (Double) summedRecall / numberOfMatrices;
+			result = (Double) summedRecall / numberOfTables;
 		}
 		results.put(MacroRecall.class.getSimpleName(), result);
 		return results;
 	}
 
 	
-	public static Map<String, Double> calculateExtraIndividualLabelMeasures(ContingencyTable cTable,
-			boolean softEvaluation, Map<Integer, String> number2class) {
-		int numberOfMatrices = cTable.getSize();
-		Double[] recall = new Double[numberOfMatrices];
+	public static Map<String, Double> calculateExtraIndividualLabelMeasures(SmallContingencyTables smallContTables,
+			boolean softEvaluation, Map<Integer, String> number2class) 
+	{
+		int numberOfTables = smallContTables.getSize();
+		Double[] recall = new Double[numberOfTables];
 		double summedRecall = 0.0;
 		Map<String, Double> results = new HashMap<String, Double>();
 		
 		boolean computableCombined = true;
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fn = cTable.getFalseNegatives(i);
+		for (int i = 0; i < numberOfTables; i++){
+			double tp = smallContTables.getTruePositives(i);
+			double fn = smallContTables.getFalseNegatives(i);
 			
 			double denominator = tp + fn;
 			String key = MacroRecall.class.getSimpleName() + "_" + number2class.get(i);
@@ -85,7 +88,7 @@ public class MacroRecall
 		}	
 		Double combinedRecall = Double.NaN;
 		if (computableCombined){
-			combinedRecall = (Double) summedRecall / numberOfMatrices;
+			combinedRecall = (Double) summedRecall / numberOfTables;
 		} 
 		results.put(MacroRecall.class.getSimpleName(), combinedRecall);
 		return results;

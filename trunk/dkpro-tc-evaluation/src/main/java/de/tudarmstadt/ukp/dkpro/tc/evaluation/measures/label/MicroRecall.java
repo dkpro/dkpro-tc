@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
 
 
 /**
@@ -30,9 +30,11 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingen
 public class MicroRecall
 {
 
-	public static Map<String, Double> calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
-		double tp = cCTable.getTruePositives();
-		double fn = cCTable.getFalseNegatives();
+	public static Map<String, Double> calculate(CombinedSmallContingencyTable cSCTable, 
+			boolean softEvaluation) 
+	{
+		double tp = cSCTable.getTruePositives();
+		double fn = cSCTable.getFalseNegatives();
 		
 		Double recall = 0.0;
 		double denominator = tp + fn;

@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 
 
 /**
@@ -31,16 +31,18 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 public class MacroFScore
 {
 
-	public static Map<String, Double> calculate(ContingencyTable cTable, boolean softEvaluation) {
-		int numberOfMatrices = cTable.getSize();
+	public static Map<String, Double> calculate(SmallContingencyTables smallContTables, 
+			boolean softEvaluation) 
+	{
+		int numberOfTables = smallContTables.getSize();
 		double summedFScore = 0.0;
 		Map<String, Double> results = new HashMap<String, Double>();
 		
 		Double result = 0.0;
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fp = cTable.getFalsePositives(i);
-			double fn = cTable.getFalseNegatives(i);
+		for (int i = 0; i < numberOfTables; i++){
+			double tp = smallContTables.getTruePositives(i);
+			double fp = smallContTables.getFalsePositives(i);
+			double fn = smallContTables.getFalseNegatives(i);
 			
 			double localSum = 0.0;
 			double precision = 0.0;
@@ -61,25 +63,26 @@ public class MacroFScore
 		}	
 		
 		if (result == 0.0){
-			result = (Double) summedFScore / numberOfMatrices;
+			result = (Double) summedFScore / numberOfTables;
 		}
 		results.put(MacroFScore.class.getSimpleName(), result);
 		return results;
 	}
 
 	
-	public static Map<String, Double> calculateExtraIndividualLabelMeasures(ContingencyTable cTable,
-			boolean softEvaluation, Map<Integer, String> number2class) {
-		int numberOfMatrices = cTable.getSize();
-		Double[] fScore = new Double[numberOfMatrices];
+	public static Map<String, Double> calculateExtraIndividualLabelMeasures(SmallContingencyTables smallContTables,
+			boolean softEvaluation, Map<Integer, String> number2class) 
+	{
+		int numberOfTables = smallContTables.getSize();
+		Double[] fScore = new Double[numberOfTables];
 		double summedFScore = 0.0;
 		Map<String, Double> results = new HashMap<String, Double>();
 		
 		boolean computableCombined = true;
-		for (int i = 0; i < numberOfMatrices; i++){
-			double tp = cTable.getTruePositives(i);
-			double fp = cTable.getFalsePositives(i);
-			double fn = cTable.getFalseNegatives(i);
+		for (int i = 0; i < numberOfTables; i++){
+			double tp = smallContTables.getTruePositives(i);
+			double fp = smallContTables.getFalsePositives(i);
+			double fn = smallContTables.getFalseNegatives(i);
 						
 			double localSum = 0.0;
 			double precision = 0.0;
@@ -103,7 +106,7 @@ public class MacroFScore
 		}	
 		Double combinedFScore = Double.NaN;
 		if (computableCombined){
-			combinedFScore = (Double) summedFScore / numberOfMatrices;
+			combinedFScore = (Double) summedFScore / numberOfTables;
 		} 
 		results.put(MacroFScore.class.getSimpleName(), combinedFScore);
 		return results;

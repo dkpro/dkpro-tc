@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
 
 
 /**
@@ -30,7 +30,9 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedContingen
 public class MicroPrecision
 {
 
-	public static Map<String, Double> calculate(CombinedContingencyTable cCTable, boolean softEvaluation) {
+	public static Map<String, Double> calculate(CombinedSmallContingencyTable cCTable, 
+			boolean softEvaluation) 
+	{
 		double tp = cCTable.getTruePositives();
 		double fp = cCTable.getFalsePositives();
 		
