@@ -27,7 +27,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,10 +36,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
+
 public class SVMHMMDataWriterTest
 {
     private static final int TESTING_INSTANCES = 50000;
     private static final int TESTING_FEATURES_PER_INSTANCE = 50;
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -55,8 +57,8 @@ public class SVMHMMDataWriterTest
         Logger.getRootLogger().setLevel(Level.DEBUG);
     }
 
-    @Before
-    public void setUp()
+    @Test
+    public void testWrite()
             throws Exception
     {
         Set<String> randomFeatureNames = new HashSet<>();
@@ -75,7 +77,8 @@ public class SVMHMMDataWriterTest
 
             // add 10 random features
             int offset = random.nextInt(maxFeatureVectorSize - TESTING_FEATURES_PER_INSTANCE);
-            List<String> featureNames = allFeatureNames.subList(offset, offset + TESTING_FEATURES_PER_INSTANCE);
+            List<String> featureNames = allFeatureNames
+                    .subList(offset, offset + TESTING_FEATURES_PER_INSTANCE);
 
             for (String featureName : featureNames) {
                 instance.addFeature(new Feature(featureName, 1));
@@ -86,12 +89,7 @@ public class SVMHMMDataWriterTest
 
             featureStore.addInstance(instance);
         }
-    }
 
-    @Test
-    public void testWrite()
-            throws Exception
-    {
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.size());
         svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
@@ -100,4 +98,25 @@ public class SVMHMMDataWriterTest
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
         System.out.println(lines.subList(0, 5));
     }
+
+    @Test
+    public void testWriteMultiLineComment()
+            throws Exception
+    {
+        featureStore = new SparseFeatureStore();
+        featureStore.addInstance(new Instance(Arrays.asList(
+                new Feature(OriginalTokenHolderFeatureExtractor.ORIGINAL_TOKEN,
+                        "multi line \n text"))));
+
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
+        System.out.println(featureStore.size());
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+
+        List<String> lines = IOUtils.readLines(
+                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+
+        // each instance must be on one line!
+        assertEquals(1, lines.size());
+    }
+
 }
