@@ -22,7 +22,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -37,6 +38,7 @@ import java.io.FileInputStream;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SVMHMMDataWriterTest
 {
@@ -85,7 +87,7 @@ public class SVMHMMDataWriterTest
             }
 
             instance.addFeature(
-                    new Feature(OriginalTokenHolderFeatureExtractor.ORIGINAL_TOKEN, "token"));
+                    new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT, "token"));
 
             featureStore.addInstance(instance);
         }
@@ -105,7 +107,7 @@ public class SVMHMMDataWriterTest
     {
         featureStore = new SparseFeatureStore();
         featureStore.addInstance(new Instance(Arrays.asList(
-                new Feature(OriginalTokenHolderFeatureExtractor.ORIGINAL_TOKEN,
+                new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
                         "multi line \n text"))));
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
@@ -114,9 +116,47 @@ public class SVMHMMDataWriterTest
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        System.out.println(lines);
 
         // each instance must be on one line!
         assertEquals(1, lines.size());
     }
 
+    @Test
+    public void testMetDataFeatures()
+            throws Exception
+    {
+        String longText = " some long text xxx \n with multi lines";
+
+        featureStore = new SparseFeatureStore();
+        Feature f1 = new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
+                "multi line \n text");
+        Feature f2 = new Feature(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature",
+                longText);
+
+        Instance instance = new Instance(Arrays.asList(f1, f2), "outcome");
+        featureStore.addInstance(instance);
+
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
+        System.out.println(featureStore.size());
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+
+        File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
+        List<String> lines = IOUtils.readLines(new FileInputStream(featureVectorsFile));
+        System.out.println(lines);
+
+        assertEquals("outcome", SVMHMMUtils.extractOutcomeLabelsFromFeatureVectorFiles(
+                featureVectorsFile).iterator().next());
+
+        assertEquals(Integer.valueOf(0),
+                SVMHMMUtils.extractOriginalSequenceIDs(featureVectorsFile).iterator()
+                        .next());
+
+        SortedMap<String, String> metaDataFeatures = SVMHMMUtils
+                .extractMetaDataFeatures(featureVectorsFile).get(0);
+
+        assertTrue(metaDataFeatures.containsKey(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+        assertEquals(longText, metaDataFeatures.get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+
+    }
 }

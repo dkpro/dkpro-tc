@@ -23,7 +23,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualTreeBidiMap;
 import org.apache.commons.csv.CSVFormat;
@@ -32,10 +32,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * @author Ivan Habernal
@@ -213,14 +211,12 @@ public final class SVMHMMUtils
      * "TAG qid:4 1:1 2:1 4:2 # token TAG 4" produces "token", "TAG", "4"
      *
      * @param featureVectorsFileStream featureVectors file stream
-     * @param expectedFieldsCount      how many fields are in comment
      * @return list (for each line) of list of comment parts
      * @throws IOException
-     * @throws java.lang.IllegalArgumentException if number of fields in each comment differs
-     *                                            from {@code expectedFieldsCount}
      */
-    protected static List<List<String>> extractComments(InputStream featureVectorsFileStream,
-            int expectedFieldsCount)
+    protected static List<List<String>> extractComments(InputStream featureVectorsFileStream
+//            int expectedFieldsCount
+    )
             throws IOException, IllegalArgumentException
     {
         List<List<String>> result = new ArrayList<>();
@@ -235,17 +231,20 @@ public final class SVMHMMUtils
             String[] tokens = comment.split("\\s+");
             // filter empty tokens
             for (String token : tokens) {
-                if (!token.trim().isEmpty()) {
-                    list.add(token.trim());
+                String trim = token.trim();
+                if (!trim.isEmpty()) {
+                    // decode from URL representation
+                    String s = URLDecoder.decode(trim, "utf-8");
+                    list.add(s);
                 }
             }
 
-            if (list.size() != expectedFieldsCount) {
-                throw new IllegalArgumentException(
-                        "Expected " + expectedFieldsCount + " fields in comment on line '" + line
-                                + "' but only " + list.size() + " (" + list + ") found.");
-            }
-
+//            if (list.size() != expectedFieldsCount) {
+//                throw new IllegalArgumentException(
+//                        "Expected " + expectedFieldsCount + " fields in comment on line '" + line
+//                                + "' but only " + list.size() + " (" + list + ") found.");
+//            }
+//
             result.add(list);
         }
         return result;
@@ -263,12 +262,11 @@ public final class SVMHMMUtils
     {
         List<String> result = new ArrayList<>();
 
-        List<List<String>> comments = extractComments(new FileInputStream(featureVectorsFile),
-                NUMBER_OF_FIELDS_IN_COMMENT);
+        List<List<String>> comments = extractComments(new FileInputStream(featureVectorsFile));
 
         for (List<String> comment : comments) {
             // original token is the first one in comments
-            result.add(comment.get(0));
+            result.add(comment.get(2));
         }
         return result;
     }
@@ -311,12 +309,11 @@ public final class SVMHMMUtils
     {
         List<Integer> result = new ArrayList<>();
 
-        List<List<String>> comments = extractComments(new FileInputStream(featureVectorsFile),
-                NUMBER_OF_FIELDS_IN_COMMENT);
+        List<List<String>> comments = extractComments(new FileInputStream(featureVectorsFile));
 
         for (List<String> comment : comments) {
             // sequence number is the third token in the comment token
-            result.add(Integer.valueOf(comment.get(2)));
+            result.add(Integer.valueOf(comment.get(1)));
         }
 
         return result;
@@ -357,5 +354,35 @@ public final class SVMHMMUtils
         pw.println(confusionMatrix.printNiceResults());
         pw.println(confusionMatrix.printLabelPrecRecFm());
         IOUtils.closeQuietly(pw);
+    }
+
+    public static List<SortedMap<String, String>> extractMetaDataFeatures(File featureVectorsFile)
+            throws IOException
+    {
+        InputStream inputStream = new FileInputStream(featureVectorsFile);
+
+        List<SortedMap<String, String>> result = new ArrayList<>();
+
+        List<List<String>> allComments = extractComments(inputStream);
+        for (List<String> instanceComments : allComments) {
+            SortedMap<String, String> instanceResult = new TreeMap<>();
+
+            for (String comment : instanceComments) {
+                if (comment.startsWith(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX)) {
+                    String[] split = comment.split(":");
+                    String key = split[0];
+                    String value = split[1];
+
+                    instanceResult.put(URLDecoder.decode(key, "utf-8"),
+                            URLDecoder.decode(value, "utf-8"));
+                }
+            }
+
+            result.add(instanceResult);
+        }
+
+        IOUtils.closeQuietly(inputStream);
+
+        return result;
     }
 }
