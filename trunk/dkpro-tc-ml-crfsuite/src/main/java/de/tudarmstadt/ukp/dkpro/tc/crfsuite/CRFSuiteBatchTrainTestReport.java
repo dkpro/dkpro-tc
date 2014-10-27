@@ -18,15 +18,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.commons.lang.StringUtils;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
@@ -37,6 +32,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 
 public class CRFSuiteBatchTrainTestReport
     extends BatchReportBase
@@ -46,85 +43,77 @@ public class CRFSuiteBatchTrainTestReport
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             "files_validation", "files_training" });
 
-    @Override
-    public void execute()
-        throws Exception
-    {
-        // FIXME this implementation is pretty close to what the other ML implementations do
-        // once we have an evaluation module, there should be no need for a ML framework specific
-        // version
-        StorageService store = getContext().getStorageService();
+        @Override
+        public void execute()
+            throws Exception
+        {
+            boolean softEvaluation = true;
+            boolean individualLabelMeasures = false;
+            String mode = "";
+                    
+            StorageService store = getContext().getStorageService();
 
-        FlexTable<String> table = FlexTable.forClass(String.class);
+            FlexTable<String> table = FlexTable.forClass(String.class);
 
-        Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
-
-        for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (subcontext.getType().startsWith(CRFSuiteTestTask.class.getName())) {
-
-                Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
-                        Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
-                        Constants.RESULTS_FILENAME, new PropertiesAdapter()).getMap();
-
-                String key = getKey(discriminatorsMap);
-
-                List<Double> results;
-                if (key2resultValues.get(key) == null) {
-                    results = new ArrayList<Double>();
-                }
-                else {
-                    results = key2resultValues.get(key);
-                }
-                key2resultValues.put(key, results);
-
-                Map<String, String> values = new HashMap<String, String>();
-                Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
-
-                for (String disc : discriminatorsMap.keySet()) {
-                    if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
-                        cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+            for (TaskContextMetadata subcontext : getSubtasks()) {
+                if (subcontext.getType().startsWith(CRFSuiteTestTask.class.getName())) {
+                    Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
+                            Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+                    
+                    File fileToEvaluate = store.getStorageFolder(subcontext.getId(), 
+                            CRFSuiteOutcomeIDReport.ID_OUTCOME_KEY); 
+                    mode = discriminatorsMap.get(CRFSuiteTestTask.class.getName() + "|learningMode");
+                    EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(fileToEvaluate, 
+                            mode, softEvaluation, individualLabelMeasures);
+                    Map<String, Double> resultTempMap = evaluator.calculateEvaluationMeasures();
+                    Map<String, String> resultMap = new HashMap<String, String>();
+                    for (String key : resultTempMap.keySet()) {
+                        Double value = resultTempMap.get(key);
+                        resultMap.put(key, String.valueOf(value));
                     }
+
+                    Map<String, String> values = new HashMap<String, String>();
+                    Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
+
+                    for (String disc : discriminatorsMap.keySet()) {
+                        if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
+                            cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+                        }
+                    }
+                    values.putAll(cleanedDiscriminatorsMap);
+                    values.putAll(resultMap);
+
+                    table.addRow(subcontext.getLabel(), values);
                 }
-                values.putAll(cleanedDiscriminatorsMap);
-                values.putAll(resultMap);
-
-                table.addRow(subcontext.getLabel(), values);
             }
-        }
 
-        getContext().getLoggingService().message(getContextLabel(),
-                ReportUtils.getPerformanceOverview(table));
-        // Excel cannot cope with more than 255 columns
-        if (table.getColumnIds().length <= 255) {
-            getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL,
-                    table.getExcelWriter());
-        }
-        getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
-        table.setCompact(false);
-        // Excel cannot cope with more than 255 columns
-        if (table.getColumnIds().length <= 255) {
-            getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
-        }
-        getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
+            /*
+             * TODO: make rows to columns 
+             * e.g. create a new table and set columns to rows of old table and rows to columns
+             * but than must be class FlexTable in this case adapted accordingly: enable setting
+             */
+            
+            getContext().getLoggingService().message(getContextLabel(),
+                    ReportUtils.getPerformanceOverview(table));
+            // Excel cannot cope with more than 255 columns
+            if (table.getColumnIds().length <= 255) {
+                getContext()
+                        .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+            }
+            getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
+            table.setCompact(false);
+            // Excel cannot cope with more than 255 columns
+            if (table.getColumnIds().length <= 255) {
+                getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_EXCEL, table.getExcelWriter());
+            }
+            getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
 
-        // output the location of the batch evaluation folder
-        // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
-        // TODO can we also do this without creating and deleting the dummy folder?
-        getContext().getLoggingService().message(getContextLabel(),
-                "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
-        dummyFolder.delete();
-    }
-
-    private String getKey(Map<String, String> discriminatorsMap)
-    {
-        Set<String> sortedDiscriminators = new TreeSet<String>(discriminatorsMap.keySet());
-
-        List<String> values = new ArrayList<String>();
-        for (String discriminator : sortedDiscriminators) {
-            values.add(discriminatorsMap.get(discriminator));
+            // output the location of the batch evaluation folder
+            // otherwise it might be hard for novice users to locate this
+            File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+            // TODO can we also do this without creating and deleting the dummy folder?
+            getContext().getLoggingService().message(getContextLabel(),
+                    "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
+            dummyFolder.delete();
         }
-        return StringUtils.join(values, "_");
-    }
 }

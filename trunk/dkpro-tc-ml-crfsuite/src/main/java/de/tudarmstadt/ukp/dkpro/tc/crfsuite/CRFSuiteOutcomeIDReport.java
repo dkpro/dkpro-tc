@@ -19,6 +19,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -55,13 +57,52 @@ public class CRFSuiteOutcomeIDReport
     public void execute()
         throws Exception
     {
-        List<String> predictions = getPredictions();
+        List<String> labelGoldVsActual = getGoldAndPredictions();
+
+        HashMap<String, Integer> mapping = createMappingLabel2Number(labelGoldVsActual);
 
         List<String> testData = getTestData();
 
-        Properties props = generateProperties(predictions, testData);
-        getContext().storeBinary(ID_OUTCOME_KEY,
-                new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
+        Properties props = generateProperties(mapping, labelGoldVsActual, testData);
+
+        // add "#labels' line with all labels
+        StringBuilder sb = new StringBuilder();
+        sb.append("labels");
+        for (String label : mapping.keySet()) {
+            sb.append(" " + label);
+        }
+
+        getContext().storeBinary(
+                ID_OUTCOME_KEY,
+                new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"
+                        + "\n" + sb.toString()));
+    }
+
+    private HashMap<String, Integer> createMappingLabel2Number(List<String> aLabelGoldVsActual)
+    {
+        HashSet<String> labels = new HashSet<String>();
+
+        for (String line : aLabelGoldVsActual) {
+            String[] split = line.split("\t");
+            if (split.length == 0) {
+                continue;
+            }
+            if (split.length >= 1) {
+                labels.add(split[0]);
+            }
+            if (split.length >= 2) {
+                labels.add(split[1]);
+            }
+        }
+
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        int i = 0;
+        for (String label : labels) {
+            map.put(label, i);
+            i++;
+        }
+
+        return map;
     }
 
     private List<String> getTestData()
@@ -80,7 +121,7 @@ public class CRFSuiteOutcomeIDReport
         return readLines;
     }
 
-    private List<String> getPredictions()
+    private List<String> getGoldAndPredictions()
         throws Exception
     {
         File storage = getContext().getStorageLocation(CRFSuiteTestTask.TEST_TASK_OUTPUT_KEY,
@@ -94,8 +135,8 @@ public class CRFSuiteOutcomeIDReport
         return readLines;
     }
 
-    protected static Properties generateProperties(List<String> predictions,
-            List<String> testFeatures)
+    protected static Properties generateProperties(HashMap<String, Integer> aMapping,
+            List<String> predictions, List<String> testFeatures)
         throws Exception
     {
         Properties props = new Properties();
@@ -103,16 +144,17 @@ public class CRFSuiteOutcomeIDReport
         int maxLines = predictions.size();
 
         for (int idx = 0; idx < maxLines; idx++) {
-            String prediction = predictions.get(idx);
-            String[] split = prediction.split("\t");
+            String entry = predictions.get(idx);
+            String[] split = entry.split("\t");
             if (split.length != 2) {
                 continue;
             }
 
             String id = extractTCId(testFeatures.get(idx));
-
-            String entry = split[1] + SEPARATOR_CHAR + split[0];
-            props.setProperty(id, entry);
+            int numPred = aMapping.get(split[1]);
+            int numGold = aMapping.get(split[0]);
+            String propEntry = numPred + SEPARATOR_CHAR + numGold;
+            props.setProperty(id, propEntry);
         }
 
         return props;
