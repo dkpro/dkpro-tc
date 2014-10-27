@@ -111,10 +111,10 @@ public class BatchTaskTrainTest
 
         // check the validity of the experiment setup first
         checkTaskTrain = new ValidityCheckTask();
-        checkTaskTrain.setType(checkTaskTrain + "-Train-" + experimentName);
+        checkTaskTrain.setType(checkTaskTrain.getType() + "-Train-" + experimentName);
         checkTaskTest = new ValidityCheckTask();
         checkTaskTest.setTesting(true);
-        checkTaskTest.setType(checkTaskTest + "-Test-" + experimentName);
+        checkTaskTest.setType(checkTaskTest.getType() + "-Test-" + experimentName);
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
