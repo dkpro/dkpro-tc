@@ -18,7 +18,6 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -26,7 +25,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.io.IOUtils;
@@ -37,10 +36,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Converts features to the internal format for SVM HMM
@@ -50,6 +47,9 @@ import java.util.TreeMap;
 public class SVMHMMDataWriter
         implements DataWriter
 {
+
+    // random prefix for all meta-data features
+    public static final String META_DATA_FEATURE_PREFIX = "ed64ffc5d412c3d3430e0d42d6a668110d1ce8ee";
 
     private static final double EPS = 0.00000000001;
 
@@ -97,6 +97,9 @@ public class SVMHMMDataWriter
             // placeholder for original token
             String originalToken = null;
 
+            // other "features" - meta data features that will be stored in the comment
+            SortedMap<String, String> metaDataFeatures  = new TreeMap<>();
+
             // feature values
             SortedMap<Integer, Number> featureValues = new TreeMap<>();
             for (Feature f : instance.getFeatures()) {
@@ -109,15 +112,22 @@ public class SVMHMMDataWriter
                 }
 
                 // get original token stored in OriginalToken feature
-                if (OriginalTokenHolderFeatureExtractor.ORIGINAL_TOKEN.equals(featureName)) {
+                if (OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT.equals(featureName)) {
                     // if original token/text was multi line, join it to a single line
-                    originalToken = ((String) featureValue).replaceAll("\\n", " ");
+                    //                    originalToken = ((String) featureValue).replaceAll("\\n", " ");
+                    originalToken = (String) featureValue;
+                    continue;
+                }
+
+                // handle other possible features as metadata?
+                if (isMetaDataFeature(featureName)) {
+                    metaDataFeatures.put(featureName, (String) featureValue);
                     continue;
                 }
 
                 // not allow other non-number features
                 if (!(featureValue instanceof Number)) {
-                    log.warn("Only features with number values are allowed, but was " + f);
+                    log.debug("Only features with number values are allowed, but was " + f);
                     continue;
                 }
 
@@ -154,12 +164,26 @@ public class SVMHMMDataWriter
             }
 
             // print original token and label as comment
-            pw.printf(Locale.ENGLISH, "# %s %s %d%n", originalToken, instance.getOutcome(),
-                    instance.getSequenceId());
+            pw.printf(Locale.ENGLISH, "# %s %d %s ",
+                    instance.getOutcome(), instance.getSequenceId(),
+                    URLEncoder.encode(originalToken, "utf-8"));
+
+            // print meta-data features at the end
+            for (Map.Entry<String, String> entry : metaDataFeatures.entrySet()) {
+                pw.printf(" %s:%s", URLEncoder.encode(entry.getKey(), "utf-8"),
+                        URLEncoder.encode(entry.getValue(), "utf-8"));
+            }
+            // new line at the end
+            pw.println();
         }
 
         IOUtils.closeQuietly(pw);
 
         log.info("Finished writing features to file " + outputFile.getAbsolutePath());
+    }
+
+    protected boolean isMetaDataFeature(String featureName)
+    {
+        return featureName.startsWith(META_DATA_FEATURE_PREFIX);
     }
 }

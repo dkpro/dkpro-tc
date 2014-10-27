@@ -21,6 +21,7 @@ package de.tudarmstadt.ukp.dkpro.tc.svmhmm.report;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.ConfusionMatrix;
@@ -59,8 +60,7 @@ public class SVMHMMBatchCrossValidationReport
         // iterate over all sub tasks
         for (TaskContextMetadata subContext : getSubtasks()) {
             // but only test tasks are important
-            if (subContext.getLabel().startsWith(SVMHMMTestTask.class.getSimpleName())) {
-
+            if (subContext.getLabel().startsWith(getTestTaskClass().getSimpleName())) {
                 // locate CSV file with outcomes (gold, predicted, token, etc.)
                 File csvFile = storageService.getStorageFolder(subContext.getId(),
                         Constants.TEST_TASK_OUTPUT_KEY + File.separator
@@ -115,5 +115,10 @@ public class SVMHMMBatchCrossValidationReport
         // and print detailed results
         log.info(cm.printNiceResults());
         log.info(cm.printLabelPrecRecFm());
+    }
+
+    protected Class<? extends ExecutableTaskBase> getTestTaskClass()
+    {
+        return SVMHMMTestTask.class;
     }
 }

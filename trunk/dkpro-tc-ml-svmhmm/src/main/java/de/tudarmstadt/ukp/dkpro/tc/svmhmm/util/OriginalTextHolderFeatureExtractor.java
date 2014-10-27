@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author Ivan Habernal
  */
-public class OriginalTokenHolderFeatureExtractor
+public class OriginalTextHolderFeatureExtractor
         extends FeatureExtractorResource_ImplBase
         implements ClassificationUnitFeatureExtractor
 {
@@ -41,11 +41,11 @@ public class OriginalTokenHolderFeatureExtractor
     /**
      * Feature public name
      */
-    public static final String ORIGINAL_TOKEN = "OriginalToken";
+    public static final String ORIGINAL_TEXT = "OriginalText";
 
     @Override public List<Feature> extract(JCas jCas, TextClassificationUnit textClassificationUnit)
             throws TextClassificationException
     {
-        return Arrays.asList(new Feature(ORIGINAL_TOKEN, textClassificationUnit.getCoveredText()));
+        return Arrays.asList(new Feature(ORIGINAL_TEXT, textClassificationUnit.getCoveredText()));
     }
 }

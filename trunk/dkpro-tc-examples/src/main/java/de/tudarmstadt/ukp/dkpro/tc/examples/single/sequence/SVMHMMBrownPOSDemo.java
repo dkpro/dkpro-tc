@@ -25,14 +25,17 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTokenHolderFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
-
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.uima.fit.component.NoOpAnnotator;
 
 import java.util.Arrays;
@@ -74,22 +77,22 @@ public class SVMHMMBrownPOSDemo
         // try different parametrization of C
         Dimension<Double> dimClassificationArgsC = Dimension.create(
                 SVMHMMTestTask.PARAM_C, 1.0, 5.0);
-//                SVMHMMTestTask.PARAM_C, 1.0, 5.0, 10.0);
+        //                SVMHMMTestTask.PARAM_C, 1.0, 5.0, 10.0);
 
         // various orders of dependencies of transitions in HMM (max 3)
         Dimension<Integer> dimClassificationArgsT = Dimension.create(
                 SVMHMMTestTask.PARAM_ORDER_T, 1);
-//                SVMHMMTestTask.PARAM_ORDER_T, 1, 2, 3);
+        //                SVMHMMTestTask.PARAM_ORDER_T, 1, 2, 3);
 
         // various orders of dependencies of emissions in HMM (max 1)
         Dimension<Integer> dimClassificationArgsE = Dimension.create(
                 SVMHMMTestTask.PARAM_ORDER_E, 0);
-//                SVMHMMTestTask.PARAM_ORDER_E, 0, 1);
+        //                SVMHMMTestTask.PARAM_ORDER_E, 0, 1);
 
         // feature extractors
         Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
-                        OriginalTokenHolderFeatureExtractor.class.getName() }));
+                        OriginalTextHolderFeatureExtractor.class.getName() }));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_DATA_WRITER, SVMHMMDataWriter.class.getName()),
@@ -103,11 +106,12 @@ public class SVMHMMBrownPOSDemo
         );
     }
 
-    protected void runCrossValidation(ParameterSpace pSpace)
+    protected void runCrossValidation(ParameterSpace pSpace,
+            TCMachineLearningAdapter machineLearningAdapter)
             throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownCVBatchTask",
-                new SVMHMMAdapter(), createEngineDescription(NoOpAnnotator.class),
+        final BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownCVBatchTask",
+                machineLearningAdapter, createEngineDescription(NoOpAnnotator.class),
                 NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(BatchTask.ExecutionPolicy.RUN_AGAIN);
@@ -121,15 +125,20 @@ public class SVMHMMBrownPOSDemo
         System.setProperty("org.apache.uima.logger.class",
                 "org.apache.uima.util.impl.Log4jLogger_impl");
         BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
 
         try {
             ParameterSpace pSpace = getParameterSpace();
 
             SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
-            experiment.runCrossValidation(pSpace);
+            // run with a random labeler
+            experiment.runCrossValidation(pSpace, new RandomSVMHMMAdapter());
+            // run with an actual SVMHMM implementation
+            experiment.runCrossValidation(pSpace, new SVMHMMAdapter());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

@@ -121,6 +121,9 @@ public class SVMHMMTestTask
     // logger
     private static Log log = LogFactory.getLog(SVMHMMTestTask.class);
 
+    // mapping outcome labels to integers
+    protected BidiMap labelsToIntegersMapping;
+
     @Override
     public void execute(TaskContext taskContext)
             throws Exception
@@ -150,7 +153,7 @@ public class SVMHMMTestTask
         // mapping outcome labels to integers
         SortedSet<String> outcomeLabels = SVMHMMUtils.extractOutcomeLabelsFromFeatureVectorFiles(
                 trainingFile, testFile);
-        BidiMap labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
+        labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
 
         // save mapping to file
         File mappingFile = new File(taskContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
@@ -176,7 +179,7 @@ public class SVMHMMTestTask
      *
      * @throws java.lang.IllegalArgumentException if model params out of range
      */
-    private void checkParameters()
+    protected void checkParameters()
             throws IllegalArgumentException
     {
         if (this.paramOrderT < 0 || this.paramOrderT > 3) {
@@ -210,7 +213,7 @@ public class SVMHMMTestTask
      * @param testFile    test file
      * @throws Exception
      */
-    private void testModel(TaskContext taskContext, File testFile)
+    protected void testModel(TaskContext taskContext, File testFile)
             throws Exception
     {
         // file to hold prediction results
@@ -234,7 +237,7 @@ public class SVMHMMTestTask
      * @param taskContext context
      * @throws Exception
      */
-    private void trainModel(TaskContext taskContext, File trainingFile)
+    protected void trainModel(TaskContext taskContext, File trainingFile)
             throws Exception
     {
 

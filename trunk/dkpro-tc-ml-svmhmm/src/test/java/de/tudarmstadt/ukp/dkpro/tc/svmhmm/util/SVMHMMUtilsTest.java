@@ -38,7 +38,7 @@ public class SVMHMMUtilsTest
         IOUtils.write("O qid:5 2:7 # #IFTHEN O 5", outputStream);
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
-        List<List<String>> comments = SVMHMMUtils.extractComments(inputStream, 3);
+        List<List<String>> comments = SVMHMMUtils.extractComments(inputStream);
 
         assertEquals(1, comments.size());
         assertEquals("#IFTHEN", comments.get(0).get(0));
