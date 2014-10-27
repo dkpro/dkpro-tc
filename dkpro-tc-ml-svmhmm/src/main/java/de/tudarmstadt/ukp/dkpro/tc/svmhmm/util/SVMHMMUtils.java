@@ -215,7 +215,7 @@ public final class SVMHMMUtils
      * @throws IOException
      */
     protected static List<List<String>> extractComments(InputStream featureVectorsFileStream
-//            int expectedFieldsCount
+            //            int expectedFieldsCount
     )
             throws IOException, IllegalArgumentException
     {
@@ -239,12 +239,12 @@ public final class SVMHMMUtils
                 }
             }
 
-//            if (list.size() != expectedFieldsCount) {
-//                throw new IllegalArgumentException(
-//                        "Expected " + expectedFieldsCount + " fields in comment on line '" + line
-//                                + "' but only " + list.size() + " (" + list + ") found.");
-//            }
-//
+            //            if (list.size() != expectedFieldsCount) {
+            //                throw new IllegalArgumentException(
+            //                        "Expected " + expectedFieldsCount + " fields in comment on line '" + line
+            //                                + "' but only " + list.size() + " (" + list + ") found.");
+            //            }
+            //
             result.add(list);
         }
         return result;
@@ -330,15 +330,33 @@ public final class SVMHMMUtils
     public static void writeOutputResults(TaskContext context, ConfusionMatrix confusionMatrix)
             throws IOException
     {
+        writeOutputResults(context, confusionMatrix, null);
+    }
+
+    /**
+     * Given confusion matrix, it writes it in CSV and LaTeX form to the tasks output directory,
+     * and also prints evaluations (F-measure, Precision, Recall)
+     *
+     * @param context         task context
+     * @param confusionMatrix confusion matrix
+     * @param filePrefix      prefix of output files
+     * @throws java.io.IOException
+     */
+    public static void writeOutputResults(TaskContext context, ConfusionMatrix confusionMatrix,
+            String filePrefix)
+            throws IOException
+    {
         // storing the results as latex confusion matrix
+        String confMatrixFileTex = (filePrefix != null ? filePrefix : "") + "confusionMatrix.tex";
         File evaluationFileLaTeX = new File(context.getStorageLocation(
                 Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), "confusionMatrix.tex");
+                StorageService.AccessMode.READWRITE), confMatrixFileTex);
         FileUtils.writeStringToFile(evaluationFileLaTeX, confusionMatrix.toStringLatex());
 
         // as CSV confusion matrix
+        String confMatrixFileCsv = (filePrefix != null ? filePrefix : "") + "confusionMatrix.csv";
         File evaluationFileCSV = new File(context.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), "confusionMatrix.csv");
+                StorageService.AccessMode.READWRITE), confMatrixFileCsv);
 
         CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(evaluationFileCSV),
                 CSVFormat.DEFAULT);
@@ -373,8 +391,7 @@ public final class SVMHMMUtils
                     String key = split[0];
                     String value = split[1];
 
-                    instanceResult.put(URLDecoder.decode(key, "utf-8"),
-                            URLDecoder.decode(value, "utf-8"));
+                    instanceResult.put(key, value);
                 }
             }
 
