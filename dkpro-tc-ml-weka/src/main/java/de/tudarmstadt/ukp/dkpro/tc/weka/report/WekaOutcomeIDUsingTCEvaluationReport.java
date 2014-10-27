@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
+//import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.ContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
@@ -87,7 +87,9 @@ public class WekaOutcomeIDUsingTCEvaluationReport
          * all predictions are under threshold value (in case of multilable)
          */
         List<String> labels = WekaUtils.getClassLabels(predictions, multiLabel);
-        class2number = ContingencyTable.classNamesToMapping(labels);
+        // FIXME ContingencyTable no longer exists
+//        class2number = ContingencyTable.classNamesToMapping(labels);
+        class2number = null;
         StringBuilder comment = new StringBuilder();
         comment.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + 
 				SEPARATOR_CHAR + "THRESHOLD" + "\n" + "labels");
