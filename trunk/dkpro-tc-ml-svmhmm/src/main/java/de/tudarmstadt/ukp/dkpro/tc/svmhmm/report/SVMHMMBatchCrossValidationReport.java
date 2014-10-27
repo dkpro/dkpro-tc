@@ -48,7 +48,8 @@ public class SVMHMMBatchCrossValidationReport
 {
     static Log log = LogFactory.getLog(SVMHMMBatchCrossValidationReport.class);
 
-    @Override public void execute()
+    @Override
+    public void execute()
             throws Exception
     {
 
@@ -57,31 +58,37 @@ public class SVMHMMBatchCrossValidationReport
         // aggregate rows from all CSVs from all folds
         List<List<String>> allOutcomes = new ArrayList<>();
 
+        List<TaskContextMetadata> testTasks = collectTestTasks();
+
+        // we need test tasks!
+        if (testTasks.isEmpty()) {
+            throw new IllegalStateException("No test tasks found. Make sure you properly " +
+                    "define the test task in getTestTaskClass() (currently: " +
+                    getTestTaskClass().getName());
+        }
+
         // iterate over all sub tasks
-        for (TaskContextMetadata subContext : getSubtasks()) {
-            // but only test tasks are important
-            if (subContext.getLabel().startsWith(getTestTaskClass().getSimpleName())) {
-                // locate CSV file with outcomes (gold, predicted, token, etc.)
-                File csvFile = storageService.getStorageFolder(subContext.getId(),
-                        Constants.TEST_TASK_OUTPUT_KEY + File.separator
-                                + SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
+        for (TaskContextMetadata subContext : testTasks) {
+            // locate CSV file with outcomes (gold, predicted, token, etc.)
+            File csvFile = storageService.getStorageFolder(subContext.getId(),
+                    Constants.TEST_TASK_OUTPUT_KEY + File.separator
+                            + SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
 
-                // load the CSV
-                CSVParser csvParser = new CSVParser(new FileReader(csvFile),
-                        CSVFormat.DEFAULT.withCommentMarker('#'));
+            // load the CSV
+            CSVParser csvParser = new CSVParser(new FileReader(csvFile),
+                    CSVFormat.DEFAULT.withCommentMarker('#'));
 
-                // and add the all rows
-                for (CSVRecord csvRecord : csvParser) {
-                    // row for particular instance
-                    List<String> row = new ArrayList<>();
-                    for (String value : csvRecord) {
-                        row.add(value);
-                    }
-                    allOutcomes.add(row);
+            // and add the all rows
+            for (CSVRecord csvRecord : csvParser) {
+                // row for particular instance
+                List<String> row = new ArrayList<>();
+                for (String value : csvRecord) {
+                    row.add(value);
                 }
-
-                IOUtils.closeQuietly(csvParser);
+                allOutcomes.add(row);
             }
+
+            IOUtils.closeQuietly(csvParser);
         }
 
         // store aggregated outcomes again to CSV
@@ -117,6 +124,30 @@ public class SVMHMMBatchCrossValidationReport
         log.info(cm.printLabelPrecRecFm());
     }
 
+    /**
+     * Collects all sub-tasks that correspond to the test task
+     *
+     * @return list of test tasks
+     */
+    protected List<TaskContextMetadata> collectTestTasks()
+    {
+        List<TaskContextMetadata> result = new ArrayList<>();
+        for (TaskContextMetadata subContext : getSubtasks()) {
+            // but only test tasks are important
+            if (subContext.getLabel().startsWith(getTestTaskClass().getSimpleName())) {
+                result.add(subContext);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns class implementing the test tasks in this scenario (required for determining
+     * directory names for collecting results from test tasks)
+     *
+     * @return class
+     */
     protected Class<? extends ExecutableTaskBase> getTestTaskClass()
     {
         return SVMHMMTestTask.class;

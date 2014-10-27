@@ -126,7 +126,7 @@ public class SVMHMMDataWriterTest
     public void testMetDataFeatures()
             throws Exception
     {
-        String longText = " some long text xxx \n with multi lines";
+        String longText = "rO0ABXNyABNqYXZhLnV0aWwuQXJyYXlMaXN0eIHSHZnHYZ0DAAFJAARzaXpleHAAAAAedwQAAAAedAABT3EAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJ4";
 
         featureStore = new SparseFeatureStore();
         Feature f1 = new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
