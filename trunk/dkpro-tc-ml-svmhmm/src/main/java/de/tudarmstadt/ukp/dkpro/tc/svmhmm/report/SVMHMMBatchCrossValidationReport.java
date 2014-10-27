@@ -48,11 +48,9 @@ public class SVMHMMBatchCrossValidationReport
 {
     static Log log = LogFactory.getLog(SVMHMMBatchCrossValidationReport.class);
 
-    @Override
-    public void execute()
+    protected void aggregateResults(String testTaskCSVFile, String outputPrefix)
             throws Exception
     {
-
         StorageService storageService = getContext().getStorageService();
 
         // aggregate rows from all CSVs from all folds
@@ -72,7 +70,7 @@ public class SVMHMMBatchCrossValidationReport
             // locate CSV file with outcomes (gold, predicted, token, etc.)
             File csvFile = storageService.getStorageFolder(subContext.getId(),
                     Constants.TEST_TASK_OUTPUT_KEY + File.separator
-                            + SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
+                            + testTaskCSVFile);
 
             // load the CSV
             CSVParser csvParser = new CSVParser(new FileReader(csvFile),
@@ -95,7 +93,7 @@ public class SVMHMMBatchCrossValidationReport
         File evaluationFile = new File(
                 getContext().getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY,
                         StorageService.AccessMode.READWRITE),
-                SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
+                testTaskCSVFile);
         log.debug("Evaluation file: " + evaluationFile.getAbsolutePath());
 
         CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(evaluationFile),
@@ -117,11 +115,18 @@ public class SVMHMMBatchCrossValidationReport
         }
 
         // and write all reports
-        SVMHMMUtils.writeOutputResults(getContext(), cm);
+        SVMHMMUtils.writeOutputResults(getContext(), cm, outputPrefix);
 
         // and print detailed results
-        log.info(cm.printNiceResults());
-        log.info(cm.printLabelPrecRecFm());
+        log.info(outputPrefix + "; " + cm.printNiceResults());
+        log.info(outputPrefix + "; " + cm.printLabelPrecRecFm());
+    }
+
+    @Override
+    public void execute()
+            throws Exception
+    {
+        aggregateResults(SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV, "seq");
     }
 
     /**
