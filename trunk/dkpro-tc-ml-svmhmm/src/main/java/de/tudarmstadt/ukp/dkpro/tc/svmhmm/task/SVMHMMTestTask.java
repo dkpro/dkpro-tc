@@ -56,7 +56,7 @@ public class SVMHMMTestTask
     /*
     for svm_hmm debugging purposes
      */
-    private static final boolean PRINT_STDOUT = false;
+    public static boolean PRINT_STD_OUT = false;
 
     private static final String BINARIES_BASE_LOCATION = "classpath:/de/tudarmstadt/ukp/dkpro/tc/svmhmm/";
 
@@ -353,7 +353,7 @@ public class SVMHMMTestTask
     {
         log.info(command.toString());
 
-        if (PRINT_STDOUT) {
+        if (PRINT_STD_OUT) {
             Process process = new ProcessBuilder().inheritIO().command(command).start();
             process.waitFor();
         }

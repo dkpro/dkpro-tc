@@ -110,7 +110,8 @@ public class SVMHMMDataWriter
 
                 // get original token stored in OriginalToken feature
                 if (OriginalTokenHolderFeatureExtractor.ORIGINAL_TOKEN.equals(featureName)) {
-                    originalToken = (String) featureValue;
+                    // if original token/text was multi line, join it to a single line
+                    originalToken = ((String) featureValue).replaceAll("\\n", " ");
                     continue;
                 }
 
