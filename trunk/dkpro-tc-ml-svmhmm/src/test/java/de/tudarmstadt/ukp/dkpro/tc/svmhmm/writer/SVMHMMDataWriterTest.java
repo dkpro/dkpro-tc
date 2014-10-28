@@ -159,4 +159,26 @@ public class SVMHMMDataWriterTest
         assertEquals(longText, metaDataFeatures.get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
 
     }
+
+    @Test
+    public void testDoubleFeatures()
+            throws Exception
+    {
+        featureStore = new SparseFeatureStore();
+        featureStore.addInstance(new Instance(Arrays.asList(
+                new Feature("doubleFeature", 0.123456789))));
+
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
+        System.out.println(featureStore.size());
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+
+        List<String> lines = IOUtils.readLines(
+                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        System.out.println(lines);
+
+        // each instance must be on one line!
+        assertEquals(1, lines.size());
+        assertTrue(lines.get(0).contains(" 1:0.12345679 "));
+
+    }
 }

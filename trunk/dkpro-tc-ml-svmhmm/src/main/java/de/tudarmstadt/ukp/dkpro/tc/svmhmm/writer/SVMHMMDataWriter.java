@@ -37,7 +37,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Converts features to the internal format for SVM HMM
@@ -98,7 +101,7 @@ public class SVMHMMDataWriter
             String originalToken = null;
 
             // other "features" - meta data features that will be stored in the comment
-            SortedMap<String, String> metaDataFeatures  = new TreeMap<>();
+            SortedMap<String, String> metaDataFeatures = new TreeMap<>();
 
             // feature values
             SortedMap<Integer, Number> featureValues = new TreeMap<>();
@@ -152,8 +155,8 @@ public class SVMHMMDataWriter
             // print sorted features
             for (Map.Entry<Integer, Number> entry : featureValues.entrySet()) {
                 if (entry.getValue() instanceof Double) {
-                    // format double on 4 decimal places
-                    pw.printf(Locale.ENGLISH, "%d:%f.4 ", entry.getKey(),
+                    // format double on 8 decimal places
+                    pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(),
                             entry.getValue().doubleValue());
                 }
                 else {
@@ -166,7 +169,7 @@ public class SVMHMMDataWriter
             // print original token and label as comment
             pw.printf(Locale.ENGLISH, "# %s %d %s ",
                     instance.getOutcome(), instance.getSequenceId(),
-                    URLEncoder.encode(originalToken, "utf-8"));
+                    (originalToken != null) ? (URLEncoder.encode(originalToken, "utf-8")) : "");
 
             // print meta-data features at the end
             for (Map.Entry<String, String> entry : metaDataFeatures.entrySet()) {
@@ -178,6 +181,10 @@ public class SVMHMMDataWriter
         }
 
         IOUtils.closeQuietly(pw);
+
+        // writing feature mapping
+        File mappingFile = new File(aOutputDirectory, "featuresIntToNames_forDebug.txt");
+        SVMHMMUtils.saveMappingTextFormat(featureNameToFeatureNumberMapping, mappingFile);
 
         log.info("Finished writing features to file " + outputFile.getAbsolutePath());
     }
