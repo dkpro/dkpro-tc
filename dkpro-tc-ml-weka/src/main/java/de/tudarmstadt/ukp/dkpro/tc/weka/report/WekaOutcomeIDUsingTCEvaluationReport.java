@@ -81,10 +81,8 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
         
         /*
-         * FIXME: 
-         * 1) WekaUtils.getClassLabels(...) - "Only works for single-label outcome" - check it
-         * 2) check if variable "labels" should be updated due to "empty prediction":
-         * all predictions are under threshold value (in case of multilable)
+         * FIXME: 1) WekaUtils.getClassLabels(...) - "Only works for single-label outcome" - check
+         * it
          */
         List<String> labels = WekaUtils.getClassLabels(predictions, multiLabel);
         class2number = SmallContingencyTables.classNamesToMapping(labels);
@@ -123,11 +121,8 @@ public class WekaOutcomeIDUsingTCEvaluationReport
                     }
                 }
                 /*
-                 * FIXME: 
-                 * 1) add threshold 
-                 * 2) check if class2number should be updated due to "empty prediction": 
-                 * all predictions are under threshold value
-                 * 3) map predictionOutcomes and goldOutcomes to Integer values
+                 * FIXME: 1) add threshold 2) map predictionOutcomes and goldOutcomes to Integer
+                 * values
                  */
                 String s = (StringUtils.join(predictionOutcomes, ",") + SEPARATOR_CHAR + StringUtils
                         .join(goldOutcomes, ","));
