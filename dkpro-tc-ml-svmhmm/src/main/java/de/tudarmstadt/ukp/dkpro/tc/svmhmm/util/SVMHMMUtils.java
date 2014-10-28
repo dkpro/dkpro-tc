@@ -61,11 +61,6 @@ public final class SVMHMMUtils
      */
     public static final String GOLD_PREDICTED_OUTCOMES_CSV = "outcomesGoldPredicted.csv";
 
-    /**
-     * How many fields are in comment for each instance -- currently 3: "token", "TAG", "4"
-     */
-    private static final int NUMBER_OF_FIELDS_IN_COMMENT = 3;
-
     private SVMHMMUtils()
     {
         // empty
@@ -163,6 +158,30 @@ public final class SVMHMMUtils
     }
 
     /**
+     * Saves the feature mapping to readable format, each line is a feature id and feature name,
+     * sorted by feature id
+     *
+     * @param mapping    mapping (name:id)
+     * @param outputFile output file
+     * @throws IOException
+     */
+    public static void saveMappingTextFormat(BidiMap mapping, File outputFile)
+            throws IOException
+    {
+        PrintWriter pw = new PrintWriter(new FileOutputStream(outputFile));
+
+        // sort values (feature indexes)
+        SortedSet<Object> featureIndexes = new TreeSet<Object>(mapping.values());
+
+        for (Object featureIndex : featureIndexes) {
+            pw.printf(Locale.ENGLISH, "%5d %s%n", (int) featureIndex,
+                    mapping.getKey(featureIndex).toString());
+        }
+
+        IOUtils.closeQuietly(pw);
+    }
+
+    /**
      * Loads a serialized BidiMap from file
      *
      * @param inputFile input file
@@ -239,12 +258,6 @@ public final class SVMHMMUtils
                 }
             }
 
-            //            if (list.size() != expectedFieldsCount) {
-            //                throw new IllegalArgumentException(
-            //                        "Expected " + expectedFieldsCount + " fields in comment on line '" + line
-            //                                + "' but only " + list.size() + " (" + list + ") found.");
-            //            }
-            //
             result.add(list);
         }
         return result;
