@@ -93,7 +93,7 @@ public class SVMHMMDataWriterTest
         }
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.size());
+        System.out.println(featureStore.getNumberOfInstances());
         svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
 
         List<String> lines = IOUtils.readLines(
@@ -111,7 +111,7 @@ public class SVMHMMDataWriterTest
                         "multi line \n text"))));
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.size());
+        System.out.println(featureStore.getNumberOfInstances());
         svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
 
         List<String> lines = IOUtils.readLines(
@@ -138,7 +138,7 @@ public class SVMHMMDataWriterTest
         featureStore.addInstance(instance);
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.size());
+        System.out.println(featureStore.getNumberOfInstances());
         svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
 
         File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
@@ -169,7 +169,7 @@ public class SVMHMMDataWriterTest
                 new Feature("doubleFeature", 0.123456789))));
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.size());
+        System.out.println(featureStore.getNumberOfInstances());
         svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
 
         List<String> lines = IOUtils.readLines(
