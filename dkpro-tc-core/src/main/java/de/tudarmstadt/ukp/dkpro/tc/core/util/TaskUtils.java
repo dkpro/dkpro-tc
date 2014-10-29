@@ -220,20 +220,37 @@ public class TaskUtils
     }
 
     /**
-     * @param parameters
-     * @param outputPath
-     * @param dataWriter
-     * @param learningMode
-     * @param featureMode
-     * @param featureStore
-     * @param addInstanceId
-     * @param developerMode
      * @param featureExtractorClassNames @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
     public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
-            String featureStore, boolean addInstanceId, boolean developerMode,
+            String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
+            String... featureExtractorClassNames)
+            throws ResourceInitializationException
+    {
+    	return getFeatureExtractorConnector(
+    			parameters, 
+    			outputPath, 
+    			dataWriter, 
+    			learningMode, 
+    			featureMode, 
+    			featureStore, 
+    			addInstanceId, 
+    			developerMode, 
+    			isTesting, 
+    			Collections.<String>emptyList(), 
+    			featureExtractorClassNames
+    	);
+    }
+    
+    /**
+     * @param featureExtractorClassNames @return A fully configured feature extractor connector
+     * @throws ResourceInitializationException
+     */
+    public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
+            String outputPath, String dataWriter, String learningMode, String featureMode,
+            String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting, List<String> filters,
             String... featureExtractorClassNames)
             throws ResourceInitializationException
     {
@@ -265,9 +282,11 @@ public class TaskUtils
                 outputPath, ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(),
                 ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
                 ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
                 ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
+                ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
                 ExtractFeaturesConnector.PARAM_FEATURE_STORE_CLASS, featureStore
         ));
 

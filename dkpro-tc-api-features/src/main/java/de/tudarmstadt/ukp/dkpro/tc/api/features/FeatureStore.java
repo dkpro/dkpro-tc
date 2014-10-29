@@ -28,11 +28,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
  */
 public interface FeatureStore
 {
-
-    /**
-     * @return The number of instances in the store.
-     */
-    public int size();
     
     /**
      * @return The number of instances in the store.
@@ -59,6 +54,11 @@ public interface FeatureStore
      * @return The i-th instance in the store
      */
     public Instance getInstance(int i);
+    
+    /**
+     * Deletes the i-th instance from the store.
+     */
+    public void deleteInstance(int i);
     
     /**
      * @return A set of unique classification outcomes from all stored instances

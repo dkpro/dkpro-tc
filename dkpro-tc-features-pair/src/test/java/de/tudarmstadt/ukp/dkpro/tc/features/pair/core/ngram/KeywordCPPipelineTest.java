@@ -170,7 +170,7 @@ public class KeywordCPPipelineTest
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, SimpleFeatureStore.class.getName(),
-                false, false,
+                false, false, false,
                 LuceneKeywordCPFE.class.getName());
     }
 

@@ -17,15 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -34,9 +29,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.FeatureStoreFilter;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
@@ -66,6 +67,9 @@ public class ExtractFeaturesConnector
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
+    @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
+    private String[] featureFilters;
+    
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
@@ -80,7 +84,10 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
 
-    protected FeatureStore featureStoreImpl;
+    @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
+    private boolean isTesting;
+    
+    protected FeatureStore featureStore;
 
     /*
      * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
@@ -98,7 +105,7 @@ public class ExtractFeaturesConnector
         super.initialize(context);
 
         try {
-            featureStoreImpl = (FeatureStore) Class.forName(featureStoreClass).newInstance();
+            featureStore = (FeatureStore) Class.forName(featureStoreClass).newInstance();
         }
         catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new ResourceInitializationException(e);
@@ -130,7 +137,7 @@ public class ExtractFeaturesConnector
 
         for (Instance instance : instances) {
             try {
-                this.featureStoreImpl.addInstance(instance);
+                this.featureStore.addInstance(instance);
             }
             catch (TextClassificationException e) {
                 throw new AnalysisEngineProcessException(e);
@@ -143,11 +150,26 @@ public class ExtractFeaturesConnector
             throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
+        
+        // apply filters that influence the whole feature store
+        // filters are applied in the order that they appear as parameters
+        for (String filterString : featureFilters) {
+        	FeatureStoreFilter filter = null;
+			try {
+				filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				throw new AnalysisEngineProcessException(e);
+			}
+			
+        	if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
+                filter.applyFilter(featureStore);
+            }
+        }
 
         // addInstanceId requires dense instances
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, featureStoreImpl, true, learningMode);
+            writer.write(outputDirectory, featureStore, true, learningMode);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
