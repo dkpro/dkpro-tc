@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -67,6 +66,8 @@ public class ExtractFeaturesTask
 
     @Discriminator
     protected List<String> featureSet;
+    @Discriminator
+    protected List<String> featureFilters;
     @Discriminator
     protected List<Object> pipelineParameters;
     @Discriminator
@@ -158,10 +159,10 @@ public class ExtractFeaturesTask
                     entry.getValue());
             parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
-
+        
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 parametersCopy, outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
-                featureStore, true, developerMode, featureSet.toArray(new String[0]));
+                featureStore, true, developerMode, isTesting, featureFilters, featureSet.toArray(new String[0]));
 
         return connector;
     }

@@ -17,13 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
+import java.util.Collection;
+
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
-
-import java.util.Collection;
 
 /**
  * Interface for machine learning frameworks in TC

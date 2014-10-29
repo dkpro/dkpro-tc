@@ -20,7 +20,8 @@ package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 
 /**
- * Defines names of parameters that are defined in more than one task should be defined here
+ * Defines names of parameters.
+ * Names that are defined in more than one task should be defined here
  */
 public abstract class ConnectorBase
     extends JCasAnnotator_ImplBase
@@ -30,6 +31,11 @@ public abstract class ConnectorBase
      */
     public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
 
+    /**
+     * Array of feature filters to be used
+     */
+    public static final String PARAM_FEATURE_FILTERS = "featureFilters";
+    
     /**
      * The data writer class to be used for writing features
      */
@@ -51,6 +57,11 @@ public abstract class ConnectorBase
      */
     public static final String PARAM_DEVELOPER_MODE = "developerMode";
 
+    /**
+     * Whether we are extracting for training or testing. May e.g. have consequences when applying filters.
+     */
+    public static final String PARAM_IS_TESTING = "isTesting";
+    
     /**
      * Name of the class implementing {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}
      */

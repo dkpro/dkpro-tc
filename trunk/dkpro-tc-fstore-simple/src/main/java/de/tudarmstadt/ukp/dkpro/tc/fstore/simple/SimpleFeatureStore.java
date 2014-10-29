@@ -160,12 +160,6 @@ public class SimpleFeatureStore
     // }
 
     @Override
-    public int size()
-    {
-        return getNumberOfInstances();
-    }
-
-    @Override
     public int getNumberOfInstances()
     {
         return this.instanceList.size();
@@ -182,4 +176,9 @@ public class SimpleFeatureStore
     {
         return featureNames;
     }
+
+	@Override
+	public void deleteInstance(int i) {
+		instanceList.remove(i);
+	}
 }

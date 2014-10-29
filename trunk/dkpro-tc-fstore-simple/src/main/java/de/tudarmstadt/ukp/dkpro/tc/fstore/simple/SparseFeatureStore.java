@@ -57,12 +57,6 @@ public class SparseFeatureStore
     private TreeSet<String> allFeatureNames = new TreeSet<>();
 
     @Override
-    public int size()
-    {
-        return getNumberOfInstances();
-    }
-
-    @Override
     public int getNumberOfInstances()
     {
         return instanceList.size();
@@ -247,4 +241,9 @@ public class SparseFeatureStore
                 ", totalNonNullFeaturesCount=" + totalNonNullFeaturesCount +
                 '}';
     }
+
+	@Override
+	public void deleteInstance(int i) {
+		instanceList.remove(i);
+	}
 }

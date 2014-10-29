@@ -52,6 +52,7 @@ public class PreprocessConnector
         throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
+        
         // no documents?
         if (nrofProcessCalls == 0) {
             throw new AnalysisEngineProcessException(new TextClassificationException(

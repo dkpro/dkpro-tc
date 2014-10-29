@@ -133,6 +133,11 @@ public interface Constants
     public static final String DIM_NUM_LABELS_TO_KEEP = "numLabelsToKeep";
 
     /**
+     * Name of the discriminator that stores the feature filters that are applied on the feature store
+     */
+    public static final String DIM_FEATURE_FILTERS = "featureFilters";
+    
+    /**
      * Name of the discriminator that stores whether the feature selection should be applied to
      * learning task or not
      */

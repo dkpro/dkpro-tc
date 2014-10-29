@@ -283,7 +283,7 @@ public class WekaUtils
         attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
 
         Instances wekaInstances = new Instances(RELATION_NAME, attributeStore.getAttributes(),
-                instanceList.size());
+                instanceList.getNumberOfInstances());
         wekaInstances.setClass(outcomeAttribute);
 
         if (!outputFile.exists()) {
@@ -298,7 +298,7 @@ public class WekaUtils
         saver.setCompressOutput(true);
         saver.setInstances(wekaInstances);
 
-        for (int i = 0; i < instanceList.size(); i++) {
+        for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {
             Instance instance = instanceList.getInstance(i);
 
             double[] featureValues = getFeatureValues(attributeStore, instance);
@@ -360,7 +360,7 @@ public class WekaUtils
 
         // for Meka-internal use
         Instances wekaInstances = new Instances(RELATION_NAME + ": -C " + outcomeAttributes.size()
-                + " ", attributeStore.getAttributes(), featureStore.size());
+                + " ", attributeStore.getAttributes(), featureStore.getNumberOfInstances());
         wekaInstances.setClassIndex(outcomeAttributes.size());
 
         if (!outputFile.exists()) {
@@ -375,7 +375,7 @@ public class WekaUtils
         saver.setCompressOutput(true);
         saver.setInstances(wekaInstances);
 
-        for (int i = 0; i < featureStore.size(); i++) {
+        for (int i = 0; i < featureStore.getNumberOfInstances(); i++) {
             Instance instance = featureStore.getInstance(i);
 
             double[] featureValues = getFeatureValues(attributeStore, instance);

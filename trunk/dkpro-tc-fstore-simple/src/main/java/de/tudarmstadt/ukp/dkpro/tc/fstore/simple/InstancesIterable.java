@@ -54,7 +54,7 @@ public class InstancesIterable
         @Override
         public boolean hasNext()
         {
-            return instanceCounter < featureStore.size();
+            return instanceCounter < featureStore.getNumberOfInstances();
         }
     
         @Override

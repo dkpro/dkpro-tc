@@ -77,7 +77,7 @@ public class MalletUtils
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(
                 new FileOutputStream(outputFile)), "UTF-8"));
         HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
-        for (int i = 0; i < instanceList.size(); i++) {
+        for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {
             Instance instance = instanceList.getInstance(i);
             for (Feature feature : instance.getFeatures()) {
                 String featureName = feature.getName();
@@ -119,7 +119,7 @@ public class MalletUtils
     public static HashMap<String, Integer> getFeatureOffsetIndex(FeatureStore instanceList)
     {
         HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
-        for (int i = 0; i < instanceList.size(); i++) {
+        for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {
             Instance instance = instanceList.getInstance(i);
             for (Feature feature : instance.getFeatures()) {
                 String featureName = feature.getName();
@@ -178,7 +178,7 @@ public class MalletUtils
 
         List<Instance> instanceArrayList = new ArrayList<Instance>();
 
-        for (int i = 0; i < instanceList.size(); i++) {
+        for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {
             instanceArrayList.add(instanceList.getInstance(i));
         }
 
