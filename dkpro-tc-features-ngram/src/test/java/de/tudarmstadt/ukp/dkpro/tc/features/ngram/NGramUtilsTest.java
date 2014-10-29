@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.fit.factory.JCasBuilder;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
@@ -34,75 +35,100 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class NGramUtilsTest
 {
 
     @Test
-    public void passesNGramFilterTest() {
+    public void passesNGramFilterTest()
+    {
         Set<String> stopwords = new HashSet<String>();
         stopwords.add("a");
         stopwords.add("the");
-        
+
         List<String> list1 = Arrays.asList("a", "house");
-        
-        assertTrue(NGramUtils.passesNgramFilter(
-                list1, stopwords, false));
-        assertFalse(NGramUtils.passesNgramFilter(
-                list1, stopwords, true));
+
+        assertTrue(NGramUtils.passesNgramFilter(list1, stopwords, false));
+        assertFalse(NGramUtils.passesNgramFilter(list1, stopwords, true));
 
         List<String> list2 = Arrays.asList("a", "the");
-        
-        assertFalse(NGramUtils.passesNgramFilter(
-                list2, stopwords, false));
-        assertFalse(NGramUtils.passesNgramFilter(
-                list2, stopwords, true));
-        
+
+        assertFalse(NGramUtils.passesNgramFilter(list2, stopwords, false));
+        assertFalse(NGramUtils.passesNgramFilter(list2, stopwords, true));
+
         List<String> list3 = Arrays.asList("green", "house");
-        
-        assertTrue(NGramUtils.passesNgramFilter(
-                list3, stopwords, false));
-        assertTrue(NGramUtils.passesNgramFilter(
-                list3, stopwords, true));
+
+        assertTrue(NGramUtils.passesNgramFilter(list3, stopwords, false));
+        assertTrue(NGramUtils.passesNgramFilter(list3, stopwords, true));
     }
-    
+
     @Test
-    public void passesNGramFilterTest_emptyStopwords() {
+    public void passesNGramFilterTest_emptyStopwords()
+    {
         Set<String> stopwords = new HashSet<String>();
-        
+
         List<String> list1 = Arrays.asList("A", "house");
-        
-        assertTrue(NGramUtils.passesNgramFilter(
-                list1, stopwords, false));
-        assertTrue(NGramUtils.passesNgramFilter(
-                list1, stopwords, true));
-        
+
+        assertTrue(NGramUtils.passesNgramFilter(list1, stopwords, false));
+        assertTrue(NGramUtils.passesNgramFilter(list1, stopwords, true));
+
         List<String> list2 = Arrays.asList("a", "the");
-        
-        assertTrue(NGramUtils.passesNgramFilter(
-                list2, stopwords, false));
-        assertTrue(NGramUtils.passesNgramFilter(
-                list2, stopwords, true));
-        
+
+        assertTrue(NGramUtils.passesNgramFilter(list2, stopwords, false));
+        assertTrue(NGramUtils.passesNgramFilter(list2, stopwords, true));
+
     }
-    
+
     @Test
-    public void phoneticNgramsTest() throws Exception {
-    	String text = "This is a big house";
-    	JCas jcas = JCasFactory.createJCas();
-    	jcas.setDocumentLanguage("en");
-    	jcas.setDocumentText(text);
+    public void phoneticNgramsTest()
+        throws Exception
+    {
+        String text = "This is a big house";
+        JCas jcas = JCasFactory.createJCas();
+        jcas.setDocumentLanguage("en");
+        jcas.setDocumentText(text);
         JCasBuilder cb = new JCasBuilder(jcas);
         for (String token : text.split(" ")) {
             cb.add(token, Token.class);
         }
         cb.add(0, Sentence.class);
-                
+
         FrequencyDistribution<String> ngrams = NGramUtils.getDocumentPhoneticNgrams(jcas, 1, 3);
 
         assertEquals(12, ngrams.getN());
         assertTrue(ngrams.contains("I000"));
         assertTrue(ngrams.contains("T200"));
+    }
+
+    @Test
+    public void characterBiGrams()
+        throws Exception
+    {
+        String text = "A house";
+        JCas jcas = JCasFactory.createJCas();
+        jcas.setDocumentLanguage("en");
+        jcas.setDocumentText(text);
+        JCasBuilder cb = new JCasBuilder(jcas);
+        for (String token : text.split(" ")) {
+            cb.add(token, Token.class);
+        }
+        TextClassificationUnit tu = new TextClassificationUnit(jcas, 2, 7);
+        tu.addToIndexes();
+
+        FrequencyDistribution<String> ngrams = NGramUtils.getAnnotationCharacterNgrams(tu, false,
+                2, 3);
+        for (String s : ngrams.getKeys()) {
+            System.out.println(s);
+        }
+        assertEquals(7, ngrams.getN());
+        assertTrue(ngrams.contains("ous"));
+        assertTrue(ngrams.contains("us"));
+        assertTrue(ngrams.contains("ou"));
+        assertTrue(ngrams.contains("ho"));
+        assertTrue(ngrams.contains("se"));
+        assertTrue(ngrams.contains("use"));
+        assertTrue(ngrams.contains("hou"));
     }
 }
