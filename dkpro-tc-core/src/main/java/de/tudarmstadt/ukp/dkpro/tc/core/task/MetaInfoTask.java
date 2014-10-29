@@ -45,6 +45,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.UnitContextMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
@@ -69,6 +71,9 @@ public class MetaInfoTask
 
     @Discriminator
     protected List<String> featureSet;
+    
+    @Discriminator
+    private String featureMode;
 
     @Discriminator
     protected List<Object> pipelineParameters;
@@ -123,6 +128,12 @@ public class MetaInfoTask
         }
         catch (IllegalAccessException e) {
             throw new ResourceInitializationException(e);
+        }
+        
+        if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
+            // add additional unit context meta collector that extracts the context around text classification units
+            // mainly used for error analysis purposes
+            metaCollectorClasses.add(UnitContextMetaCollector.class);        	
         }
 
         // collect parameter/key pairs that need to be set
