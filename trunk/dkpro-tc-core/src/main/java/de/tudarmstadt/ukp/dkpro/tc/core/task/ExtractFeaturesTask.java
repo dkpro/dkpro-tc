@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +159,11 @@ public class ExtractFeaturesTask
             File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
                     entry.getValue());
             parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
+        }
+        
+        // as feature filters are optional, check for null
+        if (featureFilters == null) {
+        	featureFilters = Collections.<String>emptyList();
         }
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
