@@ -48,26 +48,23 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
 public class NGramUtils
 {
-	/**
-	 * This is the character for joining strings for pair ngrams.
-	 */
+    /**
+     * This is the character for joining strings for pair ngrams.
+     */
     public static final String NGRAM_GLUE = "_";
-    
-    public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas, Annotation focusAnnotation,
-            boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
+
+    public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas,
+            Annotation focusAnnotation, boolean lowerCaseNGrams, boolean filterPartialMatches,
+            int minN, int maxN)
     {
         Set<String> empty = Collections.emptySet();
-        return getAnnotationNgrams(jcas, focusAnnotation, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
+        return getAnnotationNgrams(jcas, focusAnnotation, lowerCaseNGrams, filterPartialMatches,
+                minN, maxN, empty);
     }
 
-    public static FrequencyDistribution<String> getAnnotationNgrams(
-            JCas jcas,
-            Annotation focusAnnotation,
-            boolean lowerCaseNGrams,
-            boolean filterPartialMatches,
-            int minN,
-            int maxN,
-            Set<String> stopwords)
+    public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas,
+            Annotation focusAnnotation, boolean lowerCaseNGrams, boolean filterPartialMatches,
+            int minN, int maxN, Set<String> stopwords)
     {
         FrequencyDistribution<String> annoNgrams = new FrequencyDistribution<String>();
 
@@ -77,10 +74,10 @@ public class NGramUtils
             for (Sentence s : selectCovered(jcas, Sentence.class, focusAnnotation)) {
                 for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(
                         Token.class, s)), minN, maxN)) {
-                	
-                	if(lowerCaseNGrams){
-                		ngram = lower(ngram);
-                	}
+
+                    if (lowerCaseNGrams) {
+                        ngram = lower(ngram);
+                    }
 
                     if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                         String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
@@ -93,10 +90,10 @@ public class NGramUtils
         else {
             for (List<String> ngram : new NGramStringListIterable(toText(selectCovered(Token.class,
                     focusAnnotation)), minN, maxN)) {
-            	
-            	if(lowerCaseNGrams){
-            		ngram = lower(ngram);
-            	}
+
+                if (lowerCaseNGrams) {
+                    ngram = lower(ngram);
+                }
 
                 if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                     String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
@@ -107,26 +104,26 @@ public class NGramUtils
         return annoNgrams;
     }
 
-/**
- * Convenience method to return document ngrams when there's no stopword list.
- * 
- * @param jcas
- * @param lowerCaseNGrams
- * @param filterPartialMatches
- * @param minN
- * @param maxN
- * @return
- */
+    /**
+     * Convenience method to return document ngrams when there's no stopword list.
+     * 
+     * @param jcas
+     * @param lowerCaseNGrams
+     * @param filterPartialMatches
+     * @param minN
+     * @param maxN
+     * @return
+     */
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
-            throws TextClassificationException
+        throws TextClassificationException
     {
         Set<String> empty = Collections.emptySet();
         return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
     }
-    
+
     /**
-     * Convenience method to return document ngrams over Tokens.  
+     * Convenience method to return document ngrams over Tokens.
      * 
      * @param jcas
      * @param lowerCaseNGrams
@@ -139,13 +136,15 @@ public class NGramUtils
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords)
-            throws TextClassificationException
+        throws TextClassificationException
     {
-        return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, stopwords, Token.class);
+        return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN,
+                stopwords, Token.class);
     }
 
     /**
-     * Returns document ngrams over any annotation type that extends Annotation.  Intended use is Lemma, Stem, etc.
+     * Returns document ngrams over any annotation type that extends Annotation. Intended use is
+     * Lemma, Stem, etc.
      * 
      * @param jcas
      * @param lowerCaseNGrams
@@ -153,26 +152,22 @@ public class NGramUtils
      * @param minN
      * @param maxN
      * @param stopwords
-     * @param annotationClass annotation type of the ngram
+     * @param annotationClass
+     *            annotation type of the ngram
      * @return
      */
-    public static FrequencyDistribution<String> getDocumentNgrams(
-            JCas jcas,
-            boolean lowerCaseNGrams,
-            boolean filterPartialMatches,
-            int minN,
-            int maxN,
-            Set<String> stopwords,
-            Class<? extends Annotation> annotationClass)
-            		throws TextClassificationException
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
+            boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
+            Set<String> stopwords, Class<? extends Annotation> annotationClass)
+        throws TextClassificationException
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
-        	List<String> strings = valuesToText(jcas, s, annotationClass.getName());
+            List<String> strings = valuesToText(jcas, s, annotationClass.getName());
             for (List<String> ngram : new NGramStringListIterable(strings, minN, maxN)) {
-            	if (lowerCaseNGrams) {
-            		ngram = lower(ngram);
-            	}
+                if (lowerCaseNGrams) {
+                    ngram = lower(ngram);
+                }
 
                 if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                     String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
@@ -183,10 +178,11 @@ public class NGramUtils
         return documentNgrams;
     }
 
-    public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, int minN, int maxN, boolean useCanonical)
+    public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, int minN, int maxN,
+            boolean useCanonical)
     {
         FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : select(jcas, Sentence.class)) {        
+        for (Sentence s : select(jcas, Sentence.class)) {
             List<String> postagstrings = new ArrayList<String>();
             for (POS p : JCasUtil.selectCovered(jcas, POS.class, s)) {
                 if (useCanonical) {
@@ -197,7 +193,7 @@ public class NGramUtils
                 }
             }
             String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
-    
+
             for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
                 posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
 
@@ -205,75 +201,101 @@ public class NGramUtils
         }
         return posNgrams;
     }
-    
-    public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas, int minN, int maxN)
-    		throws TextClassificationException
+
+    public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas, int minN,
+            int maxN)
+        throws TextClassificationException
     {
-    	StringEncoder encoder;
-    	String languageCode = jcas.getDocumentLanguage();
-    	
-    	if (languageCode.equals("en")) {
-    		encoder = new Soundex();
-    	}
-    	else if (languageCode.equals("de")) {
-    		encoder = new ColognePhonetic();
-    	}
-    	else {
-    		throw new TextClassificationException("Language code '" + languageCode + "' not supported by phonetic ngrams FE.");
-    	}
-    	
+        StringEncoder encoder;
+        String languageCode = jcas.getDocumentLanguage();
+
+        if (languageCode.equals("en")) {
+            encoder = new Soundex();
+        }
+        else if (languageCode.equals("de")) {
+            encoder = new ColognePhonetic();
+        }
+        else {
+            throw new TextClassificationException("Language code '" + languageCode
+                    + "' not supported by phonetic ngrams FE.");
+        }
+
         FrequencyDistribution<String> phoneticNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : select(jcas, Sentence.class)) {        
+        for (Sentence s : select(jcas, Sentence.class)) {
             List<String> phoneticStrings = new ArrayList<String>();
             for (Token t : JCasUtil.selectCovered(jcas, Token.class, s)) {
                 try {
-					phoneticStrings.add(encoder.encode(t.getCoveredText()));
-				} catch (EncoderException e) {
-					throw new TextClassificationException(e);
-				}
+                    phoneticStrings.add(encoder.encode(t.getCoveredText()));
+                }
+                catch (EncoderException e) {
+                    throw new TextClassificationException(e);
+                }
             }
             String[] array = phoneticStrings.toArray(new String[phoneticStrings.size()]);
-    
+
             for (List<String> ngram : new NGramStringListIterable(array, minN, maxN)) {
-            	phoneticNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+                phoneticNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
 
             }
         }
         return phoneticNgrams;
     }
-    
-    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas, boolean lowerCaseNgrams, int minN, int maxN)
+
+    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas,
+            boolean lowerCaseNgrams, int minN, int maxN)
     {
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
         for (String charNgram : new CharacterNGramStringIterable(jcas.getDocumentText(), minN, maxN)) {
             if (lowerCaseNgrams) {
                 charNgram = charNgram.toLowerCase();
             }
-            charNgrams.inc(charNgram);         
+            charNgrams.inc(charNgram);
         }
-        
+
+        return charNgrams;
+    }
+
+    public static FrequencyDistribution<String> getAnnotationCharacterNgrams(
+            Annotation focusAnnotation, boolean lowerCaseNgrams, int minN, int maxN)
+    {
+        FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
+        for (String charNgram : new CharacterNGramStringIterable(focusAnnotation.getCoveredText(),
+                minN, maxN)) {
+            if (lowerCaseNgrams) {
+                charNgram = charNgram.toLowerCase();
+            }
+            charNgrams.inc(charNgram);
+        }
+
         return charNgrams;
     }
 
     /**
-     * An ngram (represented by the list of tokens) does not pass the stopword filter:
-     * a) filterPartialMatches=true - if it contains any stopwords
-     * b) filterPartialMatches=false - if it entirely consists of stopwords
+     * An ngram (represented by the list of tokens) does not pass the stopword filter: a)
+     * filterPartialMatches=true - if it contains any stopwords b) filterPartialMatches=false - if
+     * it entirely consists of stopwords
      * 
-     * @param tokenList The list of tokens in a single ngram
-     * @param stopwords The set of stopwords used for filtering
-     * @param filterPartialMatches Whether ngrams where only parts are stopwords should also be filtered. For example, "United States of America" would be filtered, as it contains the stopword "of".
-     * @return Whether the ngram (represented by the list of tokens) passes the stopword filter or not. 
+     * @param tokenList
+     *            The list of tokens in a single ngram
+     * @param stopwords
+     *            The set of stopwords used for filtering
+     * @param filterPartialMatches
+     *            Whether ngrams where only parts are stopwords should also be filtered. For
+     *            example, "United States of America" would be filtered, as it contains the stopword
+     *            "of".
+     * @return Whether the ngram (represented by the list of tokens) passes the stopword filter or
+     *         not.
      */
-    public static boolean passesNgramFilter(List<String> tokenList, Set<String> stopwords, boolean filterPartialMatches)
+    public static boolean passesNgramFilter(List<String> tokenList, Set<String> stopwords,
+            boolean filterPartialMatches)
     {
-    	List<String> filteredList = new ArrayList<String>();
+        List<String> filteredList = new ArrayList<String>();
         for (String ngram : tokenList) {
             if (!stopwords.contains(ngram)) {
                 filteredList.add(ngram);
             }
         }
-        
+
         if (filterPartialMatches) {
             return filteredList.size() == tokenList.size();
         }
@@ -282,23 +304,17 @@ public class NGramUtils
         }
     }
 
-    public static FrequencyDistribution<String> getDocumentSkipNgrams(
-            JCas jcas,
-            boolean lowerCaseNGrams,
-            boolean filterPartialMatches,
-            int minN,
-            int maxN,
-            int skipN,
+    public static FrequencyDistribution<String> getDocumentSkipNgrams(JCas jcas,
+            boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN, int skipN,
             Set<String> stopwords)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : select(jcas, Sentence.class)) {
-            for (List<String> ngram : new SkipNgramStringListIterable(
-                    toText(selectCovered(Token.class, s)), minN, maxN, skipN))
-            {
-            	if(lowerCaseNGrams){
-            		ngram = lower(ngram);
-            	}
+            for (List<String> ngram : new SkipNgramStringListIterable(toText(selectCovered(
+                    Token.class, s)), minN, maxN, skipN)) {
+                if (lowerCaseNGrams) {
+                    ngram = lower(ngram);
+                }
 
                 if (passesNgramFilter(ngram, stopwords, filterPartialMatches)) {
                     String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
@@ -308,13 +324,9 @@ public class NGramUtils
         }
         return documentNgrams;
     }
-    
-    public static FrequencyDistribution<String> getCharacterSkipNgrams(
-            JCas jcas,
-            boolean lowerCaseNGrams,
-            int minN,
-            int maxN,
-            int skipN)
+
+    public static FrequencyDistribution<String> getCharacterSkipNgrams(JCas jcas,
+            boolean lowerCaseNGrams, int minN, int maxN, int skipN)
     {
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
         for (Token t : select(jcas, Token.class)) {
@@ -324,45 +336,49 @@ public class NGramUtils
             for (int i = 0; i < charsTemp.length; i++) {
                 chars[i] = charsTemp[i];
             }
-            
+
             chars[0] = "^";
             chars[charsTemp.length] = "$";
 
-            for (List<String> ngram : new SkipNgramStringListIterable(chars, minN, maxN, skipN))
-            {
-                if(lowerCaseNGrams){
+            for (List<String> ngram : new SkipNgramStringListIterable(chars, minN, maxN, skipN)) {
+                if (lowerCaseNGrams) {
                     ngram = lower(ngram);
                 }
 
                 String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
-                charNgrams.inc(ngramString);           
+                charNgrams.inc(ngramString);
             }
         }
         return charNgrams;
     }
-    
-    public static List<String> lower(List<String> ngram){
-    	List<String> newNgram = new ArrayList<String>();
-    	for (String token: ngram) {
-    		newNgram.add(token.toLowerCase());
-    	}
-    	return newNgram;
+
+    public static List<String> lower(List<String> ngram)
+    {
+        List<String> newNgram = new ArrayList<String>();
+        for (String token : ngram) {
+            newNgram.add(token.toLowerCase());
+        }
+        return newNgram;
     }
 
-    public static <T extends Annotation> List<String> valuesToText(JCas jcas, Sentence s, String annotationClassName)
-    		throws TextClassificationException
+    public static <T extends Annotation> List<String> valuesToText(JCas jcas, Sentence s,
+            String annotationClassName)
+        throws TextClassificationException
     {
         List<String> texts = new ArrayList<String>();
-        
+
         try {
-			for (Entry<AnnotationFS, String> entry : FeaturePathFactory.select(jcas.getCas(), annotationClassName)) {
-				if (entry.getKey().getBegin() >= s.getBegin() && entry.getKey().getEnd() <= s.getEnd()) {
-				     texts.add(entry.getValue());					
-				}
-			}
-		} catch (FeaturePathException e) {
-			throw new TextClassificationException(e);
-		}
+            for (Entry<AnnotationFS, String> entry : FeaturePathFactory.select(jcas.getCas(),
+                    annotationClassName)) {
+                if (entry.getKey().getBegin() >= s.getBegin()
+                        && entry.getKey().getEnd() <= s.getEnd()) {
+                    texts.add(entry.getValue());
+                }
+            }
+        }
+        catch (FeaturePathException e) {
+            throw new TextClassificationException(e);
+        }
         return texts;
     }
 }
