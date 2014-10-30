@@ -34,11 +34,13 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.io.TCReaderSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -73,7 +75,7 @@ import static org.junit.Assert.assertEquals;
  * @author Ivan Habernal
  */
 @RunWith(JUnit4.class)
-public class UnitClassificationTest
+public class SequenceClassificationTest
 {
     private static final int NUM_FOLDS = 2;
     @Rule
@@ -129,6 +131,12 @@ public class UnitClassificationTest
             // make sure there are 4 tokens
             Collection<Token> tokens = JCasUtil.select(jCas, Token.class);
             assertEquals(4, tokens.size());
+
+            // create text classification sequence
+            TextClassificationSequence textClassificationSequence = new TextClassificationSequence(jCas);
+            textClassificationSequence.setBegin(0);
+            textClassificationSequence.setEnd(jCas.getDocumentText().length());
+            textClassificationSequence.addToIndexes();
 
             for (Token token : tokens) {
                 List<ROOT> roots = JCasUtil.selectCovering(ROOT.class, token);
@@ -202,14 +210,6 @@ public class UnitClassificationTest
         batch.setParameterSpace(getParamSpace());
         batch.setExecutionPolicy(BatchTask.ExecutionPolicy.RUN_AGAIN);
 
-        // Run -- will fail on
-//        java.lang.IllegalArgumentException: CAS does not contain any [de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus]
-//        at org.apache.uima.fit.util.CasUtil.selectSingle(CasUtil.java:748)
-//        at org.apache.uima.fit.util.JCasUtil.selectSingle(JCasUtil.java:507)
-//        at de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getMultipleInstances(TaskUtils.java:439)
-//        at de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector.process(ExtractFeaturesConnector.java:129)
-//        at org.apache.uima.analysis_component.JCasAnnotator_ImplBase.process(JCasAnnotator_ImplBase.java:48)
-//        at org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl.callAnalysisComponentProcess(PrimitiveAnalysisEngine_impl.java:385)
         Lab.getInstance().run(batch);
     }
 
@@ -226,7 +226,9 @@ public class UnitClassificationTest
                         TestingSequenceReader.INCLUDE_PREFIX + "*.xmi"));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                Arrays.asList(TestingFeature.class.getName())
+                Arrays.asList(
+                        OriginalTextHolderFeatureExtractor.class.getName(),
+                        TestingFeature.class.getName())
         );
 
         return new ParameterSpace(
