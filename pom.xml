@@ -29,7 +29,7 @@
 		<url>http://www.ukp.tu-darmstadt.de/</url>
 	</organization>
 	<properties>
-		<dkpro.core.version>1.6.1</dkpro.core.version>
+		<dkpro.core.version>1.6.2</dkpro.core.version>
 		<lucene.version>4.4.0</lucene.version>
 		<uima.version>2.6.0</uima.version>
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
