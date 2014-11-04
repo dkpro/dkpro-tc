@@ -18,9 +18,12 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -126,8 +129,7 @@ public class ExtractFeaturesConnector
 
         List<Instance> instances = new ArrayList<Instance>();
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId,
-                    sequenceId);
+            instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId, sequenceId);
             sequenceId++;
         }
         else {
@@ -165,7 +167,19 @@ public class ExtractFeaturesConnector
                 filter.applyFilter(featureStore);
             }
         }
+        
+        // write feature names file if in training m ode
+        if (!isTesting) {
+        	String featureNames = StringUtils.join(featureStore.getFeatureNames(), "\n");
+        	try {
+				FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), featureNames);
+			} catch (IOException e) {
+				throw new AnalysisEngineProcessException(e);
+			}
+        }
 
+        // FIXME if the feature store now determines whether to use dense or sparse instances, 
+        // we might get rid of the corresponding parameter here
         // addInstanceId requires dense instances
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();

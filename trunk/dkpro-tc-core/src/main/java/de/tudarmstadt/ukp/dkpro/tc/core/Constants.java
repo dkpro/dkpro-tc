@@ -244,6 +244,10 @@ public interface Constants
      */
     public static final String RESULTS_FILENAME = "results.prop";
     /**
+     * Name of the file which holds evaluation results from the machine learning framework
+     */
+    public static final String FILENAME_FEATURES = "feature.names";
+    /**
      * Name of the attribute/label which stores the prediction values
      */
     public static final String PREDICTION_CLASS_LABEL_NAME = "prediction";
