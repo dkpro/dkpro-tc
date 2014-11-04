@@ -28,9 +28,38 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 public class ExperimentUtil {
 
+    private static final String SINGLE_FE = "SINGLE_FEATURE_";
     private static final String LEFTOUT_FE = "ABLATION_TEST_LEFTOUT_FEATURE_";
 
-	        /**
+	/**
+	 * Returns a pre-defined dimension with feature extractor sets. Each set
+	 * consists only of an individual feature. For example, if you specify four
+	 * feature extractors A, B, C, and D, you will get [A], [B], [C] and [D]
+	 * 
+	 * @param featureExtractorClassNames
+	 *            All the feature extractors that should be tested.
+	 * @return a dimension with a list of feature extractor sets; named after
+	 *         the selected single feature
+	 */
+	public static Dimension<List<String>> getSingleFeatures(
+			String... featureExtractorClassNames) {
+		@SuppressWarnings("unchecked")
+		List<String>[] featureSets = (ArrayList<String>[]) new ArrayList[featureExtractorClassNames.length];
+
+		for (int i = 0; i < featureExtractorClassNames.length; i++) {
+			NamedArrayList<String> singleFE = new NamedArrayList<String>(
+					Arrays.asList(featureExtractorClassNames[i]));
+			singleFE.setName(SINGLE_FE + featureExtractorClassNames[i]);
+			featureSets[i] = singleFE;
+		}
+
+		Dimension<List<String>> dimFeatureSets = Dimension.create(
+				Constants.DIM_FEATURE_SET, featureSets);
+
+		return dimFeatureSets;
+	}
+	
+	/**
      * Returns a pre-defined dimension with feature extractor sets configured for an ablation test.
      * For example, if you specify four feature extractors A, B, C, and D, you will get [A,B,C,D],
      * [A,B,C], [A,B,D], [A,C,D], [B,C,D],
