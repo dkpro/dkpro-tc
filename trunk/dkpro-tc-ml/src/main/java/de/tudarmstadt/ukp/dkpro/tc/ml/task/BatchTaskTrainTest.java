@@ -151,6 +151,7 @@ public class BatchTaskTrainTest
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
+        featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
 
         // test task operating on the models of the feature extraction train and test tasks
         testTask = mlAdapter.getTestTask();
