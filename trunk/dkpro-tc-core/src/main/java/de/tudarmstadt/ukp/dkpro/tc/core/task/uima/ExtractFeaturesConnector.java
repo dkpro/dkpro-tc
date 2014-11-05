@@ -17,6 +17,21 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.UimaContext;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
+
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -27,20 +42,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.AdaptTestToTrainingFeaturesFilter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.FeatureStoreFilter;
-import org.apache.commons.io.FileUtils;
-import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
@@ -193,7 +194,7 @@ public class ExtractFeaturesConnector
             }
 
             // if feature space from training set and test set differs, apply the filter
-            // to keep only features seen during testing
+            // to keep only features seen during training
             if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
                 AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
                 filter.setFeatureNames(trainFeatureNames);
