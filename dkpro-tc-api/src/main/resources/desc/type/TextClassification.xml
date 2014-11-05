@@ -33,8 +33,10 @@
       <supertypeName>uima.tcas.Annotation</supertypeName>
     <features>
         <featureDescription>
-          <name>id</name>
-          <description/>
+          <name>suffix</name>
+          <description>A customizable suffix that will be attached to the instance id.
+
+This can be used to add additional information e.g. for identifying the unit.</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>

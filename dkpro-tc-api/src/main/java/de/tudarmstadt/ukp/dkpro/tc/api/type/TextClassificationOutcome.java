@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Oct 10 14:31:03 CEST 2014
+ * Updated by JCasGen Thu Oct 30 14:04:23 CET 2014
  * XML source: /Users/zesch/Documents/workspace/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationOutcome extends Annotation {
