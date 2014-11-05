@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -40,6 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.AdaptTestToTrainFeaturesFilter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.FeatureStoreFilter;
 
 /**
@@ -168,7 +170,7 @@ public class ExtractFeaturesConnector
             }
         }
         
-        // write feature names file if in training m ode
+        // write feature names file if in training mode
         if (!isTesting) {
         	String featureNames = StringUtils.join(featureStore.getFeatureNames(), "\n");
         	try {
@@ -176,6 +178,22 @@ public class ExtractFeaturesConnector
 			} catch (IOException e) {
 				throw new AnalysisEngineProcessException(e);
 			}
+        }
+        // apply the feature names filter
+        else {
+        	File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+        	TreeSet<String> trainFeatureNames;
+			try {
+				trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
+			} catch (IOException e) {
+				throw new AnalysisEngineProcessException(e);
+			}
+        	
+        	if (setsNotEqual(trainFeatureNames, featureStore.getFeatureNames())) {
+	        	AdaptTestToTrainFeaturesFilter filter = new AdaptTestToTrainFeaturesFilter();
+	        	filter.setFeatureNames(trainFeatureNames);
+	        	filter.applyFilter(featureStore);
+        	}
         }
 
         // FIXME if the feature store now determines whether to use dense or sparse instances, 
@@ -188,5 +206,19 @@ public class ExtractFeaturesConnector
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
+    }
+    
+    private boolean setsNotEqual(TreeSet<String> set1, TreeSet<String> set2) {
+    	if (set1.size() != set2.size()) {
+    		return true;
+    	}
+    	
+    	for (int i=0; i<set1.size(); i++) {
+    		if (!set1.pollFirst().equals(set2.pollFirst())) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
     }
 }
