@@ -278,8 +278,9 @@ public class TaskUtils
         }
 
         // add the rest of the necessary parameters with the correct types
-        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
-                outputPath, ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+        parameters.addAll(Arrays.asList(
+        		ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath, 
+                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
                 ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(),
@@ -387,15 +388,15 @@ public class TaskUtils
             try {
                 List<Feature> instanceId = addIdFeatureExtractor.extract(jcas);
 
-                // add optional unit id
+                // add optional unit suffix
                 if (featureMode.equals(Constants.FM_UNIT)) {
                     TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
                             TextClassificationFocus.class);
                     TextClassificationUnit classificationUnit = JCasUtil.selectCovered(jcas,
                             TextClassificationUnit.class, focus).get(0);
-                    String id = classificationUnit.getId();
-                    if (id != null && id.length() > 0) {
-                        instanceId.get(0).setValue(instanceId.get(0).getValue() + "_" + id);
+                    String suffix = classificationUnit.getSuffix();
+                    if (suffix != null && suffix.length() > 0) {
+                        instanceId.get(0).setValue(instanceId.get(0).getValue() + "_" + suffix);
                     }
                 }
 
@@ -433,35 +434,35 @@ public class TaskUtils
         int sequencePosition = 0;
         for (TextClassificationUnit unit : units) {
 
-            List<Feature> instanceId;
-            String instanceIdString;
-            try {
-                instanceId = addIdFeatureExtractor.extract(jcas);
-                instanceIdString = (String) instanceId.get(0).getValue();
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-
             Instance instance = new Instance();
+            
+            // add instance id if requested
             if (addInstanceId) {
-                // add sequence position and optional unit id to instanceID
-                String focusUnitId = unit.getId();
-                if (focusUnitId == null || focusUnitId.length() == 0) {
-                    instanceId.get(0).setValue(
-                            instanceIdString + "_" + sequenceId + "_" + sequencePosition);
+                List<Feature> instanceId;
+                String instanceIdString;
+                try {
+                    instanceId = addIdFeatureExtractor.extract(jcas);
+                    instanceIdString = (String) instanceId.get(0).getValue();
                 }
-                else {
-                    instanceId.get(0).setValue(
-                            instanceIdString + "_" + sequenceId + "_" + sequencePosition + "_"
-                                    + focusUnitId);
+                catch (TextClassificationException e) {
+                    throw new AnalysisEngineProcessException(e);
                 }
+                
+                // add sequence position and optional unit suffix to instanceID
+                String focusUnitSuffix = unit.getSuffix();
+                if (focusUnitSuffix == null || focusUnitSuffix.length() == 0) {
+                	focusUnitSuffix = "";
+                }
+                
+                instanceId.get(0).setValue(
+                        instanceIdString + "_" + sequenceId + "_" + sequencePosition + "_" + focusUnitSuffix);        
 
                 instance.addFeatures(instanceId);
             }
 
+            
+            // execute feature extractors and add features to instance
             try {
-
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
                         throw new TextClassificationException(

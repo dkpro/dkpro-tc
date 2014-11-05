@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Oct 10 14:31:03 CEST 2014
+ * Updated by JCasGen Thu Oct 30 14:04:23 CET 2014
  * XML source: /Users/zesch/Documents/workspace/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationUnit extends Annotation {
@@ -91,25 +91,29 @@ public class TextClassificationUnit extends Annotation {
   private void readObject() {/*default - does nothing empty block */}
      
   //*--------------*
-  //* Feature: id
+  //* Feature: suffix
 
-  /** getter for id - gets 
+  /** getter for suffix - gets A customizable suffix that will be attached to the instance id.
+
+This can be used to add additional information e.g. for identifying the unit.
    * @generated
    * @return value of the feature 
    */
-  public String getId() {
-    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
-      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id);}
+  public String getSuffix() {
+    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_suffix == null)
+      jcasType.jcas.throwFeatMissing("suffix", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_suffix);}
     
-  /** setter for id - sets  
+  /** setter for suffix - sets A customizable suffix that will be attached to the instance id.
+
+This can be used to add additional information e.g. for identifying the unit. 
    * @generated
    * @param v value to set into the feature 
    */
-  public void setId(String v) {
-    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
-      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
-    jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id, v);}    
+  public void setSuffix(String v) {
+    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_suffix == null)
+      jcasType.jcas.throwFeatMissing("suffix", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_suffix, v);}    
   }
 
     
