@@ -170,7 +170,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         ]
 
         WekaTestTask testTask = [
-            type:"TestTask.TwentyNewsgroups",
+            type:"TestTask-TwentyNewsgroups",
             reports: [
                 WekaClassificationReport,
                 WekaOutcomeIDReport]
@@ -185,6 +185,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
+        featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY)
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA)
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TEST_DATA)
 
