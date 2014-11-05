@@ -181,4 +181,16 @@ public class SimpleFeatureStore
 	public void deleteInstance(int i) {
 		instanceList.remove(i);
 	}
+
+    @Override
+    public boolean isSettingFeatureNamesAllowed()
+    {
+        return false;
+    }
+
+    @Override
+    public void setFeatureNames(TreeSet<String> featureNames)
+    {
+        throw new IllegalStateException("Method not allowed in this feature store");
+    }
 }

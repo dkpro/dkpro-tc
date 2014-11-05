@@ -22,6 +22,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -68,30 +69,6 @@ public class SparseFeatureStore
         return new InstancesIterable(this);
     }
 
-    /**
-     * Checks validity of this instance and if two features have the same name, throws an
-     * exception
-     *
-     * @param instance instance
-     * @throws TextClassificationException if instance contains duplicate features
-     */
-    private static void checkDuplicateFeatures(Instance instance)
-            throws TextClassificationException
-    {
-        Set<String> featureNamesOfCurrentInstance = new HashSet<>();
-
-        for (Feature feature : instance.getFeatures()) {
-            String featureName = feature.getName();
-
-            if (featureNamesOfCurrentInstance.contains(featureName)) {
-                throw new TextClassificationException("Feature with name '" + featureName
-                        + "' is defined in multiple times in one instance.");
-            }
-
-            featureNamesOfCurrentInstance.add(featureName);
-        }
-    }
-
     @Override
     public void addInstance(Instance instance)
             throws TextClassificationException
@@ -102,21 +79,27 @@ public class SparseFeatureStore
                     "feature store; getInstance() has been called already.");
         }
 
-        // check for duplicate features
-        checkDuplicateFeatures(instance);
-
-        // adds all features to the global feature mapping
-        for (Feature feature : instance.getFeatures()) {
-            this.allFeatureNames.add(feature.getName());
-        }
-
         // convert from List<Feature> to Map<name, value>
         Map<String, Object> currentInstanceFeatures = new HashMap<>();
         for (Feature feature : instance.getFeatures()) {
-            currentInstanceFeatures.put(feature.getName(), feature.getValue());
+            String name = feature.getName();
+            Object value = feature.getValue();
 
-            // increase statistics
-            totalNonNullFeaturesCount++;
+            // check for duplicate features
+            if (currentInstanceFeatures.containsKey(name)) {
+                throw new TextClassificationException("Feature with name '" + name
+                        + "' is defined in multiple times in one instance.");
+            }
+
+            // add all feature to the global feature mapping
+            this.allFeatureNames.add(name);
+
+            if (value != null) {
+                currentInstanceFeatures.put(name, value);
+
+                // increase statistics
+                totalNonNullFeaturesCount++;
+            }
         }
 
         this.instanceList.add(currentInstanceFeatures);
@@ -221,6 +204,7 @@ public class SparseFeatureStore
     @Override
     public TreeSet<String> getFeatureNames()
     {
+        log.debug("Returning " + this.allFeatureNames.size() + " features");
         return this.allFeatureNames;
     }
 
@@ -242,8 +226,50 @@ public class SparseFeatureStore
                 '}';
     }
 
-	@Override
-	public void deleteInstance(int i) {
-		instanceList.remove(i);
-	}
+    @Override
+    public void deleteInstance(int i)
+    {
+        instanceList.remove(i);
+    }
+
+    @Override
+    public boolean isSettingFeatureNamesAllowed()
+    {
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setFeatureNames(TreeSet<String> featureNames)
+    {
+        if (featureNames == null) {
+            throw new IllegalArgumentException("param featureNames is null");
+        }
+
+        if (featureNames.isEmpty()) {
+            throw new IllegalStateException("Cannot set empty feature space");
+        }
+
+        if (!isSettingFeatureNamesAllowed()) {
+            throw new IllegalStateException("Setting feature names is not allowed.");
+        }
+
+        Set<String> deletedFeatures = new HashSet<>((Collection<String>) CollectionUtils
+                .subtract(this.allFeatureNames, featureNames));
+
+        log.debug(deletedFeatures.size() + " features from test data not seen in training data, " +
+                "removing features from the store.");
+
+        this.allFeatureNames = featureNames;
+
+        // update all instances to they do not contain old features
+        for (Map<String, Object> instance : this.instanceList) {
+            for (String deletedFeature : deletedFeatures) {
+                if (instance.containsKey(deletedFeature)) {
+                    instance.remove(deletedFeature);
+                }
+            }
+        }
+    }
+
 }
