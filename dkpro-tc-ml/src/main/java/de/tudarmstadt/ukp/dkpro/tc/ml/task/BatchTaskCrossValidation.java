@@ -183,7 +183,8 @@ public class BatchTaskCrossValidation
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
-
+        extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
+        
         // classification (numFolds times)
         testTask = mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
