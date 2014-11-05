@@ -58,10 +58,7 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -88,7 +85,7 @@ public class SequenceClassificationTest
         System.setProperty("org.apache.uima.logger.class",
                 "org.apache.uima.util.impl.Log4jLogger_impl");
         BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+        Logger.getRootLogger().setLevel(Level.WARN);
     }
 
     @Before
@@ -133,7 +130,8 @@ public class SequenceClassificationTest
             assertEquals(4, tokens.size());
 
             // create text classification sequence
-            TextClassificationSequence textClassificationSequence = new TextClassificationSequence(jCas);
+            TextClassificationSequence textClassificationSequence = new TextClassificationSequence(
+                    jCas);
             textClassificationSequence.setBegin(0);
             textClassificationSequence.setEnd(jCas.getDocumentText().length());
             textClassificationSequence.addToIndexes();
@@ -191,8 +189,8 @@ public class SequenceClassificationTest
             // make sure the ROOT annotation is still there
             assertEquals(1, roots.size());
 
-            return Arrays.asList(new Feature("randomFeature",
-                    new Random(System.currentTimeMillis()).nextInt(5)));
+            return Arrays.asList(new Feature(
+                    "randomBinaryFeatureName" + new Random(System.currentTimeMillis()).nextInt(20), 1));
         }
     }
 
@@ -303,6 +301,7 @@ public class SequenceClassificationTest
      *
      * @throws Exception
      */
+    @Ignore
     @Test
     public void testReaderSanity()
             throws Exception

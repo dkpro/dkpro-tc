@@ -17,22 +17,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
-
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -41,8 +25,22 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.AdaptTestToTrainFeaturesFilter;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.AdaptTestToTrainingFeaturesFilter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.filter.FeatureStoreFilter;
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.UimaContext;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
@@ -74,7 +72,7 @@ public class ExtractFeaturesConnector
 
     @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
     private String[] featureFilters;
-    
+
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
@@ -91,7 +89,7 @@ public class ExtractFeaturesConnector
 
     @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
     private boolean isTesting;
-    
+
     protected FeatureStore featureStore;
 
     /*
@@ -131,7 +129,8 @@ public class ExtractFeaturesConnector
 
         List<Instance> instances = new ArrayList<Instance>();
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId, sequenceId);
+            instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId,
+                    sequenceId);
             sequenceId++;
         }
         else {
@@ -154,46 +153,52 @@ public class ExtractFeaturesConnector
             throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
-        
+
         // apply filters that influence the whole feature store
         // filters are applied in the order that they appear as parameters
         for (String filterString : featureFilters) {
-        	FeatureStoreFilter filter = null;
-			try {
-				filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-			
-        	if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
+            FeatureStoreFilter filter;
+            try {
+                filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
+            }
+            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+
+            if (filter.isApplicableForTraining() && !isTesting
+                    || filter.isApplicableForTesting() && isTesting) {
                 filter.applyFilter(featureStore);
             }
         }
-        
+
         // write feature names file if in training mode
         if (!isTesting) {
-        	String featureNames = StringUtils.join(featureStore.getFeatureNames(), "\n");
-        	try {
-				FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), featureNames);
-			} catch (IOException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
+            try {
+                FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
+                        featureStore.getFeatureNames());
+            }
+            catch (IOException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
         }
         // apply the feature names filter
         else {
-        	File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-        	TreeSet<String> trainFeatureNames;
-			try {
-				trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
-			} catch (IOException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-        	
-        	if (setsNotEqual(trainFeatureNames, featureStore.getFeatureNames())) {
-	        	AdaptTestToTrainFeaturesFilter filter = new AdaptTestToTrainFeaturesFilter();
-	        	filter.setFeatureNames(trainFeatureNames);
-	        	filter.applyFilter(featureStore);
-        	}
+            File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+            TreeSet<String> trainFeatureNames;
+            try {
+                trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
+            }
+            catch (IOException e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+
+            // if feature space from training set and test set differs, apply the filter
+            // to keep only features seen during testing
+            if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
+                AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
+                filter.setFeatureNames(trainFeatureNames);
+                filter.applyFilter(featureStore);
+            }
         }
 
         // FIXME if the feature store now determines whether to use dense or sparse instances, 
@@ -206,22 +211,5 @@ public class ExtractFeaturesConnector
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
-    }
-    
-    private boolean setsNotEqual(TreeSet<String> set1, TreeSet<String> set2) {
-    	TreeSet<String> tmpSet1 = new TreeSet<>(set1);
-    	TreeSet<String> tmpSet2 = new TreeSet<>(set2);
-    	
-    	if (tmpSet1.size() != tmpSet2.size()) {
-    		return true;
-    	}
-    	
-    	for (int i=0; i<tmpSet1.size(); i++) {
-    		if (!tmpSet1.pollFirst().equals(tmpSet2.pollFirst())) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
     }
 }
