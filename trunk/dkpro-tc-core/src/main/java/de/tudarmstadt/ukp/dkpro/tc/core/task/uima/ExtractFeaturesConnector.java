@@ -209,12 +209,15 @@ public class ExtractFeaturesConnector
     }
     
     private boolean setsNotEqual(TreeSet<String> set1, TreeSet<String> set2) {
-    	if (set1.size() != set2.size()) {
+    	TreeSet<String> tmpSet1 = new TreeSet<>(set1);
+    	TreeSet<String> tmpSet2 = new TreeSet<>(set2);
+    	
+    	if (tmpSet1.size() != tmpSet2.size()) {
     		return true;
     	}
     	
-    	for (int i=0; i<set1.size(); i++) {
-    		if (!set1.pollFirst().equals(set2.pollFirst())) {
+    	for (int i=0; i<tmpSet1.size(); i++) {
+    		if (!tmpSet1.pollFirst().equals(tmpSet2.pollFirst())) {
     			return true;
     		}
     	}
