@@ -29,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
@@ -51,7 +51,7 @@ public class CRFSuiteOutcomeIDReport
      */
     public static final String SEPARATOR_CHAR = ";";
 
-    private static final String ID_CONSTANT_VALUE = AddIdFeatureExtractor.ID_FEATURE_NAME + "=";
+    private static final String ID_CONSTANT_VALUE = Constants.ID_FEATURE_NAME + "=";
 
     @Override
     public void execute()

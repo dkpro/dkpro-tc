@@ -58,8 +58,6 @@ public class ClassificationUnitCasMultiplier
     @ConfigurationParameter(name = PARAM_USE_SEQUENCES, mandatory = true, defaultValue = "false")
     private boolean useSequences;
 
-    private final static String UNIT_ID_PREFIX = "_unit";
-
     // For each TextClassificationUnit stored in this collection one corresponding JCas is created.
     private Collection<? extends AnnotationFS> annotations;
     private Iterator<? extends AnnotationFS> iterator;
@@ -67,6 +65,8 @@ public class ClassificationUnitCasMultiplier
     private JCas jCas;
 
     private int subCASCounter;
+    private Integer sequenceCounter;
+    private Integer unitCounter;
 
     @Override
     public void process(JCas aJCas)
@@ -74,6 +74,8 @@ public class ClassificationUnitCasMultiplier
     {
         this.jCas = aJCas;
         this.subCASCounter = 0;
+        this.sequenceCounter = 0;
+        this.unitCounter = 0;
 
         if (useSequences) {
             this.annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
@@ -124,15 +126,34 @@ public class ClassificationUnitCasMultiplier
         // contains only a single sequence this counter would be zero in all cases - this is not a
         // bug, but a cosmetic flaw
         DocumentMetaData.get(copyJCas).setDocumentId(
-                DocumentMetaData.get(jCas).getDocumentId() + UNIT_ID_PREFIX + subCASCounter);
+                DocumentMetaData.get(jCas).getDocumentId() + "_" + subCASCounter);
         DocumentMetaData.get(copyJCas).setDocumentUri(
-                DocumentMetaData.get(jCas).getDocumentUri() + UNIT_ID_PREFIX + subCASCounter);
+                DocumentMetaData.get(jCas).getDocumentUri() + "_" + subCASCounter);
 
         // set the focus annotation
         AnnotationFS focusUnit = this.iterator.next();
         TextClassificationFocus focus = new TextClassificationFocus(copyJCas, focusUnit.getBegin(),
                 focusUnit.getEnd());
         focus.addToIndexes();
+        
+        // set sequence and unit ids
+        if (useSequences) {
+        	TextClassificationSequence sequence = JCasUtil.selectCovered(copyJCas,  TextClassificationSequence.class, focus).get(0);
+        	sequence.setId(sequenceCounter);
+        	sequenceCounter++;
+        	for (TextClassificationUnit unit : JCasUtil.selectCovered(copyJCas, TextClassificationUnit.class, focus)) {
+        		unit.setId(unitCounter);
+        		unitCounter++;
+        	}
+        	
+        	// reset counter - we want to make the unit id relative to the sequence
+        	unitCounter=0;
+        }
+        else  {
+        	TextClassificationUnit unit = JCasUtil.selectCovered(copyJCas,  TextClassificationUnit.class, focus).get(0);
+        	unit.setId(unitCounter);
+        	unitCounter++;
+        }
 
         subCASCounter++;
         getLogger().debug("Creating CAS " + subCASCounter + " of " + annotations.size());

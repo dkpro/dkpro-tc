@@ -42,7 +42,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaSerializedModel;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
@@ -94,11 +93,11 @@ public class GenerateModelTask
 
         Instances filteredTrainData;
 
-        if (trainData.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
+        if (trainData.attribute(Constants.ID_FEATURE_NAME) != null) {
 
             int instanceIdOffset = // TaskUtils.getInstanceIdAttributeOffset(trainData);
 
-            trainData.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index() + 1;
+            trainData.attribute(Constants.ID_FEATURE_NAME).index() + 1;
 
             Remove remove = new Remove();
             remove.setAttributeIndices(Integer.toString(instanceIdOffset));

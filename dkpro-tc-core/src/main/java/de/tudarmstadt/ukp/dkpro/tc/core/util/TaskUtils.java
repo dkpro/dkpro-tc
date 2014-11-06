@@ -17,18 +17,29 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.*;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
@@ -46,10 +57,21 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.InstanceIdFeature;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -309,12 +331,15 @@ public class TaskUtils
             boolean developerMode, boolean addInstanceId)
             throws AnalysisEngineProcessException
     {
-        AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
 
         Instance instance = new Instance();
-
+        
         if (featureMode.equals(Constants.FM_DOCUMENT)) {
             try {
+                if (addInstanceId) {
+                    instance.addFeature(InstanceIdFeature.retrieve(jcas));
+                }
+                
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof DocumentFeatureExtractor)) {
                         throw new TextClassificationException(
@@ -331,6 +356,10 @@ public class TaskUtils
         }
         else if (featureMode.equals(Constants.FM_PAIR)) {
             try {
+                if (addInstanceId) {
+                    instance.addFeature(InstanceIdFeature.retrieve(jcas));
+                }
+                
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof PairFeatureExtractor)) {
                         throw new TextClassificationException("Using non-pair FE in pair mode: "
@@ -374,6 +403,11 @@ public class TaskUtils
                     }
 
                     TextClassificationUnit unit = classificationUnits.iterator().next();
+
+                    if (addInstanceId) {
+                        instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
+                    }
+                    
                     instance.setOutcomes(getOutcomes(jcas, unit));
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, unit));
@@ -383,29 +417,7 @@ public class TaskUtils
                 throw new AnalysisEngineProcessException(e);
             }
         }
-
-        if (addInstanceId) {
-            try {
-                List<Feature> instanceId = addIdFeatureExtractor.extract(jcas);
-
-                // add optional unit suffix
-                if (featureMode.equals(Constants.FM_UNIT)) {
-                    TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
-                            TextClassificationFocus.class);
-                    TextClassificationUnit classificationUnit = JCasUtil.selectCovered(jcas,
-                            TextClassificationUnit.class, focus).get(0);
-                    String suffix = classificationUnit.getSuffix();
-                    if (suffix != null && suffix.length() > 0) {
-                        instanceId.get(0).setValue(instanceId.get(0).getValue() + "_" + suffix);
-                    }
-                }
-
-                instance.addFeatures(instanceId);
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
+  
         return instance;
     }
 
@@ -425,41 +437,16 @@ public class TaskUtils
             throws AnalysisEngineProcessException
     {
         List<Instance> instances = new ArrayList<Instance>();
-        AddIdFeatureExtractor addIdFeatureExtractor = new AddIdFeatureExtractor();
 
         TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        Collection<TextClassificationUnit> units = JCasUtil.selectCovered(jcas,
-                TextClassificationUnit.class, focus);
 
-        int sequencePosition = 0;
-        for (TextClassificationUnit unit : units) {
+        for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus)) {
 
             Instance instance = new Instance();
-            
-            // add instance id if requested
+                   
             if (addInstanceId) {
-                List<Feature> instanceId;
-                String instanceIdString;
-                try {
-                    instanceId = addIdFeatureExtractor.extract(jcas);
-                    instanceIdString = (String) instanceId.get(0).getValue();
-                }
-                catch (TextClassificationException e) {
-                    throw new AnalysisEngineProcessException(e);
-                }
-                
-                // add sequence position and optional unit suffix to instanceID
-                String focusUnitSuffix = unit.getSuffix();
-                if (focusUnitSuffix == null || focusUnitSuffix.length() == 0) {
-                	focusUnitSuffix = "";
-                }
-                
-                instanceId.get(0).setValue(
-                        instanceIdString + "_" + sequenceId + "_" + sequencePosition + "_" + focusUnitSuffix);        
-
-                instance.addFeatures(instanceId);
+                instance.addFeature(InstanceIdFeature.retrieve(jcas, unit, sequenceId));
             }
-
             
             // execute feature extractors and add features to instance
             try {
@@ -479,8 +466,7 @@ public class TaskUtils
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(jcas, unit));
             instance.setSequenceId(sequenceId);
-            instance.setSequencePosition(sequencePosition);
-            sequencePosition++;
+            instance.setSequencePosition(unit.getId());
 
             instances.add(instance);
         }

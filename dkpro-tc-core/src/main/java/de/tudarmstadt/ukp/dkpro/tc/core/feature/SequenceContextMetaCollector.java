@@ -32,9 +32,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class UnitContextMetaCollector 
+/**
+ * Extract the context of each unit in a sequence and write it to a special file.
+ *
+ */
+public class SequenceContextMetaCollector 
 	extends MetaCollector
 {
 	
@@ -45,9 +51,7 @@ public class UnitContextMetaCollector
 	public static final String UNIT_CONTEXT_KEY = "unitContext.txt";
 	
 	public static final int CONTEXT_WIDTH = 30;
-	
-	public static final String CONTEXT_SEPARATOR = " ___ ";
-	
+		
 	private StringBuilder sb;
 
 	@Override
@@ -69,13 +73,17 @@ public class UnitContextMetaCollector
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
   
-        for (TextClassificationUnit unit : JCasUtil.select(jcas, TextClassificationUnit.class)) {
-            String[] context = new String[4];
-            context[0] = (String) InstanceIdFeature.retrieve(jcas, unit).getValue();
-        	context[1] = getLeftContext(jcas, unit);
-        	context[2] = unit.getCoveredText();
-        	context[3] = getRightContext(jcas, unit);
-            sb.append(StringUtils.join(context, CONTEXT_SEPARATOR));
+		TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
+		TextClassificationSequence sequence = JCasUtil.selectCovered(jcas, TextClassificationSequence.class, focus).get(0);
+		int id = sequence.getId();
+        for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas, TextClassificationUnit.class, sequence)) {
+            sb.append((String) InstanceIdFeature.retrieve(jcas, unit, id).getValue());
+            sb.append("\t");
+            sb.append(getLeftContext(jcas, unit));
+        	sb.append("[[");
+        	sb.append(unit.getCoveredText());
+        	sb.append("]]");
+        	sb.append(getRightContext(jcas, unit));
             sb.append("\n");
         }
 	}
@@ -100,7 +108,10 @@ public class UnitContextMetaCollector
 			leftOffset = 0;
 		}
 		
-		return jcas.getDocumentText().substring(leftOffset, unit.getBegin());
+		String context = jcas.getDocumentText().substring(leftOffset, unit.getBegin());
+		context = context.replaceAll("\n", " ");
+		
+		return context;
 	}
 	
 	private String getRightContext(JCas jcas, TextClassificationUnit unit) {
@@ -110,6 +121,9 @@ public class UnitContextMetaCollector
 			rightOffset = jcas.getDocumentText().length();
 		}
 		
-		return jcas.getDocumentText().substring(unit.getEnd(), rightOffset);
+		String context = jcas.getDocumentText().substring(unit.getEnd(), rightOffset);
+		context = context.replaceAll("\n", " ");
+		
+		return context;
 	}
 }

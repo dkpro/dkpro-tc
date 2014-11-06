@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Oct 30 14:04:23 CET 2014
+ * Updated by JCasGen Wed Nov 05 14:39:52 CET 2014
  * XML source: /Users/zesch/Documents/workspace/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationSequence extends Annotation {
@@ -90,6 +90,26 @@ public class TextClassificationSequence extends Annotation {
    */
   private void readObject() {/*default - does nothing empty block */}
      
-}
+  //*--------------*
+  //* Feature: id
+
+  /** getter for id - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getId() {
+    if (TextClassificationSequence_Type.featOkTst && ((TextClassificationSequence_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence");
+    return jcasType.ll_cas.ll_getIntValue(addr, ((TextClassificationSequence_Type)jcasType).casFeatCode_id);}
+    
+  /** setter for id - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setId(int v) {
+    if (TextClassificationSequence_Type.featOkTst && ((TextClassificationSequence_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence");
+    jcasType.ll_cas.ll_setIntValue(addr, ((TextClassificationSequence_Type)jcasType).casFeatCode_id, v);}    
+  }
 
     
