@@ -381,6 +381,23 @@ public class TaskUtils
         }
         else if (featureMode.equals(Constants.FM_UNIT)) {
             try {
+            	TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
+                        TextClassificationFocus.class);
+                Collection<TextClassificationUnit> classificationUnits = JCasUtil
+                        .selectCovered(jcas, TextClassificationUnit.class, focus);
+
+                if (classificationUnits.size() != 1) {
+                    throw new AnalysisEngineProcessException(
+                            "There is more than one TextClassificationUnit annotation in the JCas.",
+                            null);
+                }
+
+                TextClassificationUnit unit = classificationUnits.iterator().next();
+
+                if (addInstanceId) {
+                    instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
+                }
+                
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
                         if (featExt instanceof DocumentFeatureExtractor && developerMode) {
@@ -390,22 +407,6 @@ public class TaskUtils
                             throw new TextClassificationException(
                                     "Using non-unit FE in unit mode: " + featExt.getResourceName());
                         }
-                    }
-                    TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
-                            TextClassificationFocus.class);
-                    Collection<TextClassificationUnit> classificationUnits = JCasUtil
-                            .selectCovered(jcas, TextClassificationUnit.class, focus);
-
-                    if (classificationUnits.size() != 1) {
-                        throw new AnalysisEngineProcessException(
-                                "There is more than one TextClassificationUnit annotation in the JCas.",
-                                null);
-                    }
-
-                    TextClassificationUnit unit = classificationUnits.iterator().next();
-
-                    if (addInstanceId) {
-                        instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
                     }
                     
                     instance.setOutcomes(getOutcomes(jcas, unit));
