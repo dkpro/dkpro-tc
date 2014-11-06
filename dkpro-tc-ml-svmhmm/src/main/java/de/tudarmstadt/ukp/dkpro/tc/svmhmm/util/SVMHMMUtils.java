@@ -384,6 +384,7 @@ public final class SVMHMMUtils
         PrintWriter pw = new PrintWriter(evaluationFile);
         pw.println(confusionMatrix.printNiceResults());
         pw.println(confusionMatrix.printLabelPrecRecFm());
+        pw.println(confusionMatrix.printClassDistributionGold());
         IOUtils.closeQuietly(pw);
     }
 

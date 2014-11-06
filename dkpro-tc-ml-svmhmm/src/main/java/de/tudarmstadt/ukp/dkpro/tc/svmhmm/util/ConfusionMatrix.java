@@ -682,4 +682,29 @@ public class ConfusionMatrix
             throw new IllegalArgumentException("Wrong input format", e);
         }
     }
+
+    /**
+     * Returns a distribution of classes in gold data and predicted data (absolute
+     * and relative)
+     *
+     * @return string
+     */
+    public String printClassDistributionGold()
+    {
+        StringBuilder sb = new StringBuilder("Gold data distribution\t\t");
+        sb.append("Predicted data distribution\n");
+        for (String goldLabel : this.allGoldLabels) {
+            int rowSum = getRowSum(goldLabel);
+            int colSum = getColSum(goldLabel);
+
+            sb.append(String.format(Locale.ENGLISH, "%s\t%d\t%.1f",
+                    goldLabel, rowSum, (double) rowSum / (double) getTotalSum() * 100.0));
+            sb.append("%\t");
+            sb.append(String.format(Locale.ENGLISH, "%d\t%.1f",
+                    colSum, (double) colSum / (double) getTotalSum() * 100.0));
+            sb.append("%\n");
+        }
+        sb.append(String.format(Locale.ENGLISH, "Sum\t%d%n", getTotalSum()));
+        return sb.toString().trim();
+    }
 }
