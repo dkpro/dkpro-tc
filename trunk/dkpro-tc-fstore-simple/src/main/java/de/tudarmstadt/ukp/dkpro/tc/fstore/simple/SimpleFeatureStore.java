@@ -72,7 +72,7 @@ public class SimpleFeatureStore
                 String name = feature.getName();
                 if (featureNames.contains(name)) {
                     throw new TextClassificationException("Feature with name '" + name
-                            + "' is defined in multiple times.");
+                            + "' is defined multiple times.");
                 }
                 featureNames.add(name);
             }
