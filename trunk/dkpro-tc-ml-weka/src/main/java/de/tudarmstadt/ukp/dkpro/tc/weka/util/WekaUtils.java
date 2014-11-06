@@ -74,7 +74,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
@@ -741,8 +740,8 @@ public class WekaUtils
         Instances filteredData;
         int classIndex = data.classIndex();
 
-        if (data.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
-            int instanceIdOffset = data.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
+        if (data.attribute(Constants.ID_FEATURE_NAME) != null) {
+            int instanceIdOffset = data.attribute(Constants.ID_FEATURE_NAME).index();
 
             Remove remove = new Remove();
             remove.setAttributeIndices(Integer.toString(instanceIdOffset + 1));
@@ -776,11 +775,11 @@ public class WekaUtils
     {
         Instances filteredData;
 
-        if (oldData.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
-            int instanceIdOffset = oldData.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
+        if (oldData.attribute(Constants.ID_FEATURE_NAME) != null) {
+            int instanceIdOffset = oldData.attribute(Constants.ID_FEATURE_NAME).index();
 
             Add add = new Add();
-            add.setAttributeName(AddIdFeatureExtractor.ID_FEATURE_NAME);
+            add.setAttributeName(Constants.ID_FEATURE_NAME);
             // for multi-label setups, id attribute goes to the end of the header, and vice verse
             // for single-label
             if (isMultilabel) {
@@ -872,7 +871,7 @@ public class WekaUtils
         while (enumeration.hasMoreElements()) {
             Attribute att = enumeration.nextElement();
             // System.out.println(att.name());
-            if (att.name().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
+            if (att.name().equals(Constants.ID_FEATURE_NAME)) {
                 return attOffset;
             }
             attOffset++;

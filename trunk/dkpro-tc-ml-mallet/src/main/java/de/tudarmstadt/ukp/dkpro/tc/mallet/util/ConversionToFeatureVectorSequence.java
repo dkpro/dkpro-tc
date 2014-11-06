@@ -26,7 +26,7 @@ import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /*
  * Modification of SimpleTagger2FeatureVectorSequence from Mallet
@@ -64,7 +64,7 @@ public class ConversionToFeatureVectorSequence extends Pipe
 		if (lines[0].matches("^[A-Za-z]+.*$")) { //parsing first line group containing feature names
 			String[] featureNames = lines[0].split(" ");
 			for (int i = 0; i < featureNames.length; i++) {
-				if (featureNames[i].equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
+				if (featureNames[i].equals(Constants.ID_FEATURE_NAME)) {
 					idFeatureIndex = i;
 				}
 			}

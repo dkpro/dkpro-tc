@@ -33,7 +33,6 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
@@ -107,7 +106,7 @@ public class WekaOutcomeIDUsingTCEvaluationReport
             classValues[i] = predictions.classAttribute().value(i);
         }
 
-        int attOffset = predictions.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index();
+        int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
         for (Instance inst : predictions) {
             if (isMultiLabel) {
                 List<String> predictionOutcomes = new ArrayList<String>();

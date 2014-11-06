@@ -17,18 +17,14 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
-import com.google.gson.Gson;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderMultiLabel;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderRegression;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderSingleLabel;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -41,13 +37,19 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import com.google.gson.Gson;
 
-import static org.junit.Assert.assertEquals;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.NoopFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderMultiLabel;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderRegression;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderSingleLabel;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 
 @RunWith(Parameterized.class)
 public class ExtractFeaturesConnectorTest
@@ -92,8 +94,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                featureStoreClass.getName(), false, false, false,
-                AddIdFeatureExtractor.class.getName());
+                featureStoreClass.getName(), true, false, false, NoopFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -131,8 +132,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                false, false, false, 
-                AddIdFeatureExtractor.class.getName());
+                true, false, false, NoopFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -170,8 +170,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                false, false, false,
-                AddIdFeatureExtractor.class.getName());
+                true, false, false, NoopFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 

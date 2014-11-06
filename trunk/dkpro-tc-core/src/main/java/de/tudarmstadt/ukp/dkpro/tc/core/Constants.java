@@ -263,5 +263,10 @@ public interface Constants
      * Name of the output input key in the TestTask
      */
     public static final String TEST_TASK_OUTPUT_KEY = "output";
+    /**
+     * Name of the instance ID feature
+     */    
+    public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
+
 
 }

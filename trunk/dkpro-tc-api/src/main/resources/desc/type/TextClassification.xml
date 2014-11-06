@@ -39,6 +39,11 @@
 This can be used to add additional information e.g. for identifying the unit.</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>id</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -50,6 +55,13 @@ This can be used to add additional information e.g. for identifying the unit.</d
       <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
+    <features>
+        <featureDescription>
+          <name>id</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
     </typeDescription>
   </types>
 </typeSystemDescription>

@@ -31,7 +31,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Oct 30 14:04:23 CET 2014
+ * Updated by JCasGen Wed Nov 05 14:39:52 CET 2014
  * @generated */
 public class TextClassificationUnit_Type extends Annotation_Type {
   /** @generated 
@@ -88,6 +88,30 @@ public class TextClassificationUnit_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_suffix, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_id;
+  /** @generated */
+  final int     casFeatCode_id;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public int getId(int addr) {
+        if (featOkTst && casFeat_id == null)
+      jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_id);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setId(int addr, int v) {
+        if (featOkTst && casFeat_id == null)
+      jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    ll_cas.ll_setIntValue(addr, casFeatCode_id, v);}
+    
+  
 
 
 
@@ -103,6 +127,10 @@ public class TextClassificationUnit_Type extends Annotation_Type {
  
     casFeat_suffix = jcas.getRequiredFeatureDE(casType, "suffix", "uima.cas.String", featOkTst);
     casFeatCode_suffix  = (null == casFeat_suffix) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_suffix).getCode();
+
+ 
+    casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.Integer", featOkTst);
+    casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
 
   }
 }

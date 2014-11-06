@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Oct 30 14:04:23 CET 2014
+ * Updated by JCasGen Wed Nov 05 14:39:52 CET 2014
  * XML source: /Users/zesch/Documents/workspace/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationUnit extends Annotation {
@@ -114,6 +114,28 @@ This can be used to add additional information e.g. for identifying the unit.
     if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_suffix == null)
       jcasType.jcas.throwFeatMissing("suffix", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
     jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_suffix, v);}    
+   
+    
+  //*--------------*
+  //* Feature: id
+
+  /** getter for id - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getId() {
+    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    return jcasType.ll_cas.ll_getIntValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id);}
+    
+  /** setter for id - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setId(int v) {
+    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit");
+    jcasType.ll_cas.ll_setIntValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id, v);}    
   }
 
     

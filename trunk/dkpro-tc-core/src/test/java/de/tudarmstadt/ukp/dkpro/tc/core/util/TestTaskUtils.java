@@ -82,19 +82,19 @@ public class TestTaskUtils
         assertEquals(3, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_0_", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().get(0).getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1_", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_1", multipleInstances.get(idx).getFeatures().get(0).getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2_", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_2", multipleInstances.get(idx).getFeatures().get(0).getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
@@ -121,6 +121,7 @@ public class TestTaskUtils
             if (setUnitIdAsPartOfTheInstanceId){
             	unit.setSuffix(tokens[i][0]);
             }
+            unit.setId(i);
             unit.addToIndexes();
 
             TextClassificationOutcome outcome = new TextClassificationOutcome(jCas, start, end);
@@ -136,7 +137,7 @@ public class TestTaskUtils
         jCas.setDocumentLanguage(text);
         TextClassificationFocus focus = new TextClassificationFocus(jCas, 0, text.length());
         focus.addToIndexes();
-
+        
         return jCas;
     }
 

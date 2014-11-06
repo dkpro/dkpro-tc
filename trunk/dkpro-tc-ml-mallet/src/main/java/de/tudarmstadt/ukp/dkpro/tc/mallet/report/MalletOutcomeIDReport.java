@@ -29,7 +29,6 @@ import java.util.zip.GZIPInputStream;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 
 /**
@@ -68,7 +67,7 @@ public class MalletOutcomeIDReport
         			else if (featureNames[i].equals(MalletTestTask.PREDICTION_CLASS_LABEL_NAME)) {
         				predictedOutcomeIndex = i;
         			}
-        			else if (featureNames[i].equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
+        			else if (featureNames[i].equals(Constants.ID_FEATURE_NAME)) {
         				instanceIdIndex = i;
         			}
         		}

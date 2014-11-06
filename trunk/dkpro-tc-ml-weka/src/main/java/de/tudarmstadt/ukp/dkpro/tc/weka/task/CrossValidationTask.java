@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.AddIdFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 @Deprecated
@@ -111,10 +111,10 @@ public class CrossValidationTask
             Instances filteredTrainData;
             Instances filteredTestData;
 
-            if (train.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME) != null) {
+            if (train.attribute(Constants.ID_FEATURE_NAME) != null) {
 
                 int instanceIdOffset = // TaskUtils.getInstanceIdAttributeOffset(trainData);
-                train.attribute(AddIdFeatureExtractor.ID_FEATURE_NAME).index() + 1;
+                train.attribute(Constants.ID_FEATURE_NAME).index() + 1;
 
                 Remove remove = new Remove();
                 remove.setAttributeIndices(Integer.toString(instanceIdOffset));
