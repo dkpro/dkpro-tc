@@ -108,7 +108,7 @@ public class TestTaskUtils
 
         DocumentMetaData meta = new DocumentMetaData(jCas);
         meta.setDocumentTitle("title");
-        meta.setDocumentId("4711");
+        meta.setDocumentId("4711_0");
         meta.addToIndexes();
 
         String[][] tokens = { { "a", "DT" }, { "car", "NN" }, { "drives", "VBZ" } };
