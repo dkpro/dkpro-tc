@@ -35,14 +35,14 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 
 /**
@@ -76,12 +76,12 @@ public class NERSequenceDemo
         throws Exception
     {
         BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NamedEntitySequenceDemoCV",
-        		MalletAdapter.getInstance(),
+        		CRFSuiteAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(MalletClassificationReport.class);
+        batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(MalletBatchCrossValidationReport.class);
+        batch.addReport(CRFSuiteBatchCrossValidationReport.class);
                 
         // Run
         Lab.getInstance().run(batch);
@@ -106,7 +106,7 @@ public class NERSequenceDemo
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
+                Dimension.create(DIM_DATA_WRITER, CRFSuiteDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets);
 
