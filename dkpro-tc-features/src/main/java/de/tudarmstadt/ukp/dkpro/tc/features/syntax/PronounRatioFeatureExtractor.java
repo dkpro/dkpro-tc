@@ -44,7 +44,8 @@ public class PronounRatioFeatureExtractor
     public static final String FN_WE_RATIO = "PronounRatioWe";
     public static final String FN_THEY_RATIO = "PronounRatioThey";
     public static final String FN_US_RATIO = "PronounRatioUs";
-
+    public static final String FN_YOU_RATIO = "PronounRatioYou";
+    
     @Override
     public List<Feature> extract(JCas jcas)
         throws TextClassificationException
@@ -56,6 +57,7 @@ public class PronounRatioFeatureExtractor
         int weCount = 0;
         int theyCount = 0;
         int usCount = 0;
+        int youCount = 0;
 
         int n = 0;
         for (PR pronoun : JCasUtil.select(jcas, PR.class)) {
@@ -80,6 +82,9 @@ public class PronounRatioFeatureExtractor
             else if (text.equals("us")) {
                 usCount++;
             }
+            else if (text.equals("you")) {
+                youCount++;
+            }
         }
 
         List<Feature> featList = new ArrayList<Feature>();
@@ -90,6 +95,7 @@ public class PronounRatioFeatureExtractor
             featList.add(new Feature(FN_WE_RATIO, (double) weCount / n));
             featList.add(new Feature(FN_THEY_RATIO, (double) theyCount / n));
             featList.add(new Feature(FN_US_RATIO, (double) usCount / n));
+            featList.add(new Feature(FN_YOU_RATIO, (double) youCount / n));
         }
 
         return featList;
