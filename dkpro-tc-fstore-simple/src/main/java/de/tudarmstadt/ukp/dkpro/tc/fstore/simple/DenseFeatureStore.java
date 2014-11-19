@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
  * @author zesch
  * 
  */
-public class SimpleFeatureStore
+public class DenseFeatureStore
     implements FeatureStore
 {
     private List<List<Object>> instanceList;
@@ -53,7 +53,7 @@ public class SimpleFeatureStore
     /**
      * Creates an empty feature store
      */
-    public SimpleFeatureStore()
+    public DenseFeatureStore()
     {
         this.instanceList = new ArrayList<List<Object>>();
         this.outcomeList = new ArrayList<List<String>>();

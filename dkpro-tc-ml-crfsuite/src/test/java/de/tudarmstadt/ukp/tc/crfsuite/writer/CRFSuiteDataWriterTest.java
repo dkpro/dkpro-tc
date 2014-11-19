@@ -36,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 public class CRFSuiteDataWriterTest
@@ -59,7 +59,7 @@ public class CRFSuiteDataWriterTest
     private void buildFeatureStore()
         throws Exception
     {
-        fs = new SimpleFeatureStore();
+        fs = new DenseFeatureStore();
 
         List<Feature> features1 = new ArrayList<Feature>();
         features1.add(new Feature("feature1", 1.0));

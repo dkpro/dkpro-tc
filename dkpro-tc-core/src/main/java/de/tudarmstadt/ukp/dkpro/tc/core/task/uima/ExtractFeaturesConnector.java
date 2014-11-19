@@ -97,7 +97,7 @@ public class ExtractFeaturesConnector
      * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
      */
     @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true,
-            defaultValue = "de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore")
+            defaultValue = "de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore")
     private String featureStoreClass;
 
     private int sequenceId;

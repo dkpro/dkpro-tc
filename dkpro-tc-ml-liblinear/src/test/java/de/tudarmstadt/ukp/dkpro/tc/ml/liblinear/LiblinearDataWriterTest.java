@@ -32,7 +32,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 public class LiblinearDataWriterTest {
@@ -43,7 +43,7 @@ public class LiblinearDataWriterTest {
 	@Test
 	public void dataWriterTest() throws Exception {
 		
-		FeatureStore fs = new SimpleFeatureStore();
+		FeatureStore fs = new DenseFeatureStore();
 		
 		List<Feature> features1 = new ArrayList<>();
 		features1.add(new Feature("feature1", 1.0));

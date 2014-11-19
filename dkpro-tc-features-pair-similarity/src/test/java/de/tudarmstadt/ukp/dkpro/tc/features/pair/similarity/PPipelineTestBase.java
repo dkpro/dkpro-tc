@@ -45,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.testing.TestPairReader;
 
 
@@ -110,7 +110,7 @@ public abstract class PPipelineTestBase
         SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)), SimpleFeatureStore.class);
+        FeatureStore fs = gson.fromJson(FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
         assertEquals(1, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
         

@@ -47,7 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.KeywordNGramUtils;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class KeywordNGramFeatureExtractorTest
 {
@@ -91,7 +91,7 @@ public class KeywordNGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                SimpleFeatureStore.class.getName(), false, false, false,
+                DenseFeatureStore.class.getName(), false, false, false,
                 KeywordNGramDFE.class.getName());
 
         // run meta collector
@@ -103,7 +103,7 @@ public class KeywordNGramFeatureExtractorTest
         Gson gson = new Gson();
         fs = gson.fromJson(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                SimpleFeatureStore.class);
+                DenseFeatureStore.class);
         assertEquals(1, fs.getNumberOfInstances());
     }
 

@@ -27,7 +27,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class UniformClassDistributionFilterTest {
 
@@ -35,7 +35,7 @@ public class UniformClassDistributionFilterTest {
 	public void uniformFilterTest() 
 		throws Exception
 	{
-		FeatureStore fs = new SimpleFeatureStore();
+		FeatureStore fs = new DenseFeatureStore();
 		
 		Feature f1 = new Feature("feature1", "value1");
 		Feature f2 = new Feature("feature2", "value2");
