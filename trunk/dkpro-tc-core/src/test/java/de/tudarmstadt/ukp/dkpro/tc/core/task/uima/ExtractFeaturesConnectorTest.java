@@ -48,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderRegression;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 
 @RunWith(Parameterized.class)
@@ -60,7 +60,7 @@ public class ExtractFeaturesConnectorTest
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { SimpleFeatureStore.class }, {SparseFeatureStore.class}
+                { DenseFeatureStore.class }, {SparseFeatureStore.class}
         });
     }
 

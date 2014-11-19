@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class NGramFeatureExtractorTest
 {
@@ -98,13 +98,13 @@ public class NGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnectorLucene = TaskUtils
                 .getFeatureExtractorConnector(parametersLucene, outputPathLucene.getAbsolutePath(),
                         JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-                        Constants.FM_DOCUMENT, SimpleFeatureStore.class.getName(), false, false, false, LuceneNGramDFE.class.getName());
+                        Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false, false, false, LuceneNGramDFE.class.getName());
 
         AnalysisEngineDescription featExtractorConnectorFrequencyDist = TaskUtils
                 .getFeatureExtractorConnector(parametersFrequencyDist,
                         outputPathFrequencyDist.getAbsolutePath(), JsonDataWriter.class.getName(),
                         Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                        SimpleFeatureStore.class.getName(), false, false, false,
+                        DenseFeatureStore.class.getName(), false, false, false,
                         FrequencyDistributionNGramDFE.class.getName());
 
         // run meta collectors
@@ -117,9 +117,9 @@ public class NGramFeatureExtractorTest
 
         Gson gson = new Gson();
         fsLucene = gson.fromJson(FileUtils.readFileToString(new File(outputPathLucene,
-                JsonDataWriter.JSON_FILE_NAME)), SimpleFeatureStore.class);
+                JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
         fsFrequenceDist = gson.fromJson(FileUtils.readFileToString(new File(
-                outputPathFrequencyDist, JsonDataWriter.JSON_FILE_NAME)), SimpleFeatureStore.class);
+                outputPathFrequencyDist, JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
 
         assertEquals(1, fsLucene.getNumberOfInstances());
         assertEquals(1, fsFrequenceDist.getNumberOfInstances());

@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class WekaUtilTest
 {
@@ -74,7 +74,7 @@ public class WekaUtilTest
         i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
         i4.setOutcomes("2");
 
-        SimpleFeatureStore iList = new SimpleFeatureStore();
+        DenseFeatureStore iList = new DenseFeatureStore();
         iList.addInstance(i1);
         iList.addInstance(i2);
         iList.addInstance(i3);
@@ -124,7 +124,7 @@ public class WekaUtilTest
         i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
         i4.setOutcomes("1", "3");
 
-        SimpleFeatureStore iList = new SimpleFeatureStore();
+        DenseFeatureStore iList = new DenseFeatureStore();
         iList.addInstance(i1);
         iList.addInstance(i2);
         iList.addInstance(i3);

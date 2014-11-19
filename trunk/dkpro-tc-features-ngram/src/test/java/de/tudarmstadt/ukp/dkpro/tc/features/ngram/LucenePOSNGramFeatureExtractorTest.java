@@ -48,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SimpleFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class LucenePOSNGramFeatureExtractorTest
 {
@@ -91,7 +91,7 @@ public class LucenePOSNGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                SimpleFeatureStore.class.getName(), false, false, false,
+                DenseFeatureStore.class.getName(), false, false, false,
                 LucenePOSNGramDFE.class.getName());
 
         // run meta collector
@@ -103,7 +103,7 @@ public class LucenePOSNGramFeatureExtractorTest
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                SimpleFeatureStore.class);
+                DenseFeatureStore.class);
         assertEquals(4, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
 

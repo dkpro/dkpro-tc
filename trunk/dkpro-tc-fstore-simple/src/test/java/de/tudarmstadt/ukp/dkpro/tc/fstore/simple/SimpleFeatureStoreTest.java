@@ -35,7 +35,7 @@ public class SimpleFeatureStoreTest {
 	public void basicTest() 
 		throws Exception
     {
-		FeatureStore fs = new SimpleFeatureStore();
+		FeatureStore fs = new DenseFeatureStore();
 		
 		Feature f1 = new Feature("feature1", "value1");
 		Feature f2 = new Feature("feature2", "value2");
@@ -55,7 +55,7 @@ public class SimpleFeatureStoreTest {
 	public void duplicateFeatureNameTest() 
 		throws Exception
     {
-		FeatureStore fs = new SimpleFeatureStore();
+		FeatureStore fs = new DenseFeatureStore();
 
 		Feature f1 = new Feature("feature", "value");
 		Feature f2 = new Feature("feature", "value");
