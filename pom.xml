@@ -35,9 +35,9 @@
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/branches/0.7.x</connection>
-		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/branches/0.7.x</developerConnection>
-		<url>http://code.google.com/p/dkpro-tc/source/browse/branches/0.7.x</url>
+		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/dkpro-tc/source/browse/</url>
 	</scm>
 	<repositories>
 		<repository>
