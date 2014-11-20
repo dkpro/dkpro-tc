@@ -1,0 +1,10 @@
+Source and license of the files packaged in src/test/resources:
+
+twentynewsgroups: http://qwone.com/~jason/20Newsgroups
+
+Please note that, although the source code in this module is distributed under 
+the GNU GENERAL PUBLIC LICENSE, the data under src/test/resources may be licensed
+under a more restrictive license (e.g. for non-commercial use only). This data is 
+contained only for demonstration / testing purpose. Please make sure that you 
+understand and comply with the respective licenses, listed in this file and along 
+with the individual data files.

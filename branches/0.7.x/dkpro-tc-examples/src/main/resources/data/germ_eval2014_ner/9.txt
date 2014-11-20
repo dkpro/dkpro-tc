@@ -1,0 +1,10 @@
+#	http://de.wikipedia.org/wiki/VW_Lupo_II	[2010-01-12]	
+1	New	O	O
+2	Small	O	O
+3	Family	O	O
+4	mit	O	O
+5	E-Motor	O	O
+6	:	O	O
+7	Studie	O	O
+8	E-Up	O	O
+9	!	O	O

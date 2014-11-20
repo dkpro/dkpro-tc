@@ -1,0 +1,15 @@
+#	handelsblatt.com vom 12.07.2005	[2005-07-12]	
+1	ARD-Programmchef	B-ORGpart	O
+2	Günter	B-PER	O
+3	Struve	I-PER	O
+4	war	O	O
+5	wegen	O	O
+6	eines	O	O
+7	vierwöchigen	O	O
+8	Urlaubs	O	O
+9	für	O	O
+10	eine	O	O
+11	Stellungnahme	O	O
+12	nicht	O	O
+13	erreichbar	O	O
+14	.	O	O

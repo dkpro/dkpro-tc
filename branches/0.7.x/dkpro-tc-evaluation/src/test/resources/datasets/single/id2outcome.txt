@@ -1,0 +1,16 @@
+#Wed Aug 13 19:00:50 CEST 2014
+#labels test emotional neutral
+neutral/2.txt=1;2;0
+neutral/12.txt=1;2;0
+neutral/1.txt=1;2;0
+neutral/11.txt=1;2;0
+emotional/9.txt=2;1;0
+neutral/10.txt=1;2;0
+emotional/8.txt=2;1;0
+emotional/7.txt=1;1;0
+emotional/6.txt=2;1;0
+emotional/5.txt=2;1;0
+emotional/4.txt=2;1;0
+neutral/3.txt=1;2;0
+neutral/3.txt=0;2;0
+neutral/3.txt=0;1;0
