@@ -78,10 +78,20 @@ public class ValidityCheckTask
     {
         CollectionReaderDescription readerDesc;
         if (!isTesting) {
+            if (readerTrain == null) {
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTrain is null"));
+            }
+
             readerDesc = createReaderDescription(readerTrain,
                     readerTrainParams.toArray());
         }
         else {
+            if (readerTest == null) {
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTest is null"));
+            }
+
             readerDesc = createReaderDescription(readerTest,
                     readerTestParams.toArray());
         }
