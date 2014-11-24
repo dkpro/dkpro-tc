@@ -226,17 +226,29 @@ public class SVMHMMTestTask
         File modelFile = taskContext
                 .getStorageLocation(MODEL_NAME, StorageService.AccessMode.READONLY);
 
-        // create tmp test file as workaround to long path bug in svm_hmm
+        // create tmp files as workaround to long path bug in svm_hmm
+        // if java temp dir is not in /tmp but in a long path dir, this won't work
         File tmpTestFile = File.createTempFile("tmp_svm_hmm_test", ".txt");
         FileUtils.copyFile(testFile, tmpTestFile);
 
-        List<String> testCommand = buildTestCommand(tmpTestFile, modelFile.getAbsolutePath(),
-                predictionsFile.getAbsolutePath());
+        File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
+        FileUtils.copyFile(modelFile, tmpModelFile);
+
+        File tmpPredictionsFile = File.createTempFile("tmp_svm_hmm_predictions", ".txt");
+
+        // command
+        List<String> testCommand = buildTestCommand(tmpTestFile, tmpModelFile.getAbsolutePath(),
+                tmpPredictionsFile.getAbsolutePath());
 
         runCommand(testCommand);
 
+        // copy tmp predictions back to the predictions file
+        FileUtils.copyFile(tmpPredictionsFile, predictionsFile);
+
         // clean up
         FileUtils.deleteQuietly(tmpTestFile);
+        FileUtils.deleteQuietly(tmpPredictionsFile);
+        FileUtils.deleteQuietly(tmpModelFile);
     }
 
     /**
