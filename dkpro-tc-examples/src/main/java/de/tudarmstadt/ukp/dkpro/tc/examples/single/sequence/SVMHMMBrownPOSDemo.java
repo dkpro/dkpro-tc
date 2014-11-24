@@ -23,10 +23,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
@@ -57,17 +59,39 @@ public class SVMHMMBrownPOSDemo
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
     private static final int NUM_FOLDS = 10;
 
-    @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static Map<String, Object> getDimReaders(boolean trainTest)
     {
         // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<>();
-        dimReaders.put(Constants.DIM_READER_TRAIN, BrownCorpusReader.class);
-        dimReaders.put(Constants.DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
-                        "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        BrownCorpusReader.PARAM_PATTERNS,
-                        Arrays.asList(INCLUDE_PREFIX + "*.xml")));
+        Map<String, Object> results = new HashMap<>();
+        results.put(Constants.DIM_READER_TRAIN, BrownCorpusReader.class);
+        results.put(Constants.DIM_READER_TEST, BrownCorpusReader.class);
+
+        if (trainTest) {
+            results.put(Constants.DIM_READER_TRAIN_PARAMS,
+                    Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
+                            "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                            BrownCorpusReader.PARAM_PATTERNS, "a01.xml"));
+            results.put(Constants.DIM_READER_TEST_PARAMS,
+                    Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
+                            "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                            BrownCorpusReader.PARAM_PATTERNS, "a02.xml"));
+        }
+        else {
+            results.put(Constants.DIM_READER_TRAIN_PARAMS,
+                    Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
+                            "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                            BrownCorpusReader.PARAM_PATTERNS,
+                            Arrays.asList(INCLUDE_PREFIX + "*.xml")));
+        }
+
+        return results;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ParameterSpace getParameterSpace(boolean trainTest)
+    {
+        // configure training and test data reader dimension
+        Map<String, Object> dimReaders = getDimReaders(trainTest);
 
         // no parameters needed for now... see TwentyNewsgroupDemo for multiple parametrization
         // or pipeline
@@ -120,6 +144,19 @@ public class SVMHMMBrownPOSDemo
         Lab.getInstance().run(batch);
     }
 
+    protected void runTrainTest(ParameterSpace pSpace,
+            TCMachineLearningAdapter machineLearningAdapter)
+            throws Exception
+    {
+        final BatchTaskTrainTest batch = new BatchTaskTrainTest("BrownTrainTestBatchTask",
+                machineLearningAdapter, createEngineDescription(NoOpAnnotator.class));
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(BatchTask.ExecutionPolicy.RUN_AGAIN);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
     public static void main(String[] args)
     {
         System.setProperty("org.apache.uima.logger.class",
@@ -127,14 +164,34 @@ public class SVMHMMBrownPOSDemo
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.INFO);
 
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+        DemoUtils.setDkproHome(SVMHMMBrownPOSDemo.class.getSimpleName());
+
+        // run cross-validation first
         try {
-            ParameterSpace pSpace = getParameterSpace();
+            ParameterSpace pSpace = getParameterSpace(false);
 
             SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
             // run with a random labeler
             experiment.runCrossValidation(pSpace, new RandomSVMHMMAdapter());
             // run with an actual SVMHMM implementation
             experiment.runCrossValidation(pSpace, new SVMHMMAdapter());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // run train test
+        try {
+            ParameterSpace pSpace = getParameterSpace(true);
+
+            SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
+            // run with a random labeler
+            experiment.runTrainTest(pSpace, new RandomSVMHMMAdapter());
+            // run with an actual SVMHMM implementation
+            experiment.runTrainTest(pSpace, new SVMHMMAdapter());
         }
         catch (Exception e) {
             e.printStackTrace();
