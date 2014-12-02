@@ -67,7 +67,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.InstanceIdFeature;
@@ -318,6 +317,8 @@ public class TaskUtils
     }
 
     /**
+     * Should not be called directly, but always from a connector (UIMA context with parameters initialized)
+     * 
      * @param featureMode
      * @param featureExtractors
      * @param jcas
