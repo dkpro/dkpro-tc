@@ -143,14 +143,14 @@ public class CRFSuiteOutcomeIDReport
 
         int maxLines = predictions.size();
 
-        for (int idx = 0; idx < maxLines; idx++) {
+        for (int idx = 1; idx < maxLines; idx++) {
             String entry = predictions.get(idx);
             String[] split = entry.split("\t");
             if (split.length != 2) {
                 continue;
             }
 
-            String id = extractTCId(testFeatures.get(idx));
+            String id = extractTCId(testFeatures.get(idx-1));
             int numPred = aMapping.get(split[1]);
             int numGold = aMapping.get(split[0]);
             String propEntry = numPred + SEPARATOR_CHAR + numGold;
