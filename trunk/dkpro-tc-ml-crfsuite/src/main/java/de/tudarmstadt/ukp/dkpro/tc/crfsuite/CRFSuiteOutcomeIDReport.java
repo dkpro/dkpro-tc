@@ -164,8 +164,13 @@ public class CRFSuiteOutcomeIDReport
     {
         int begin = line.indexOf(ID_CONSTANT_VALUE);
         int end = line.indexOf("\t", begin + ID_CONSTANT_VALUE.length());
-
-        String id = line.substring(begin + ID_CONSTANT_VALUE.length(), end);
+        
+        // Assuming the ID is at the end of the line:
+        String id = line.substring(begin + ID_CONSTANT_VALUE.length(), line.length());
+        // But in case it's not:
+        if(end != -1){
+        	id = line.substring(begin + ID_CONSTANT_VALUE.length(), end);
+        }
         return id;
     }
 }
