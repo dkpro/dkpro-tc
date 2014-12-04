@@ -27,6 +27,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.readability.measure.WordSyllableCounter;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
@@ -45,7 +46,8 @@ public class AvgLengthExtractor
 {
 
     public static final String AVG_SENTENCE_LENGTH = "AvgSentenceLength";
-    public static final String AVG_WORD_LENGTH = "AvgWordLength";
+    public static final String AVG_WORD_LENGTH_IN_CHARACTERS = "AvgWordLengthInCharacters";
+    public static final String AVG_WORD_LENGTH_IN_SYLLABLES = "AvgWordLengthInSyllables";
 
     @Override
     public List<Feature> extract(JCas jcas)
@@ -55,19 +57,30 @@ public class AvgLengthExtractor
 
         int nrOfWords = 0;
         int nrOfCharacters = 0;
+        int nrOfSyllables = 0;
         int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
+
+        WordSyllableCounter counter = new WordSyllableCounter(jcas.getDocumentLanguage());
 
         for (Token t : JCasUtil.select(jcas, Token.class)) {
 
             if (ReadabilityUtils.isWord(t)) {
+                String word = t.getCoveredText();
                 nrOfWords++;
-                nrOfCharacters += t.getCoveredText().length();
+                nrOfCharacters += word.length();
+                nrOfSyllables += counter.countSyllables(word);
             }
         }
+        // avoid division by 0;
 
+        nrOfSentences = Math.max(nrOfSentences, 1);
         featList.addAll(Arrays.asList(new Feature(AVG_SENTENCE_LENGTH, nrOfWords
                 / (double) nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH, nrOfCharacters
+
+        nrOfWords = Math.max(nrOfWords, 1);
+        featList.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_CHARACTERS, nrOfCharacters
+                / (double) nrOfWords)));
+        featList.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_SYLLABLES, nrOfSyllables
                 / (double) nrOfWords)));
 
         return featList;
