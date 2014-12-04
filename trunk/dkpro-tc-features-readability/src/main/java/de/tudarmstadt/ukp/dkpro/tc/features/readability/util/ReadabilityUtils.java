@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.features.readability;
+package de.tudarmstadt.ukp.dkpro.tc.features.readability.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
