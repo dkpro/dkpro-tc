@@ -30,7 +30,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.trees.RandomForest;
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -134,8 +134,8 @@ public class TwitterSentimentPredictionDemo
         throws ResourceInitializationException
     {
         return createEngineDescription(
-                ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
-                ArktweetTagger.PARAM_VARIANT,
+                ArktweetPosTagger.class, ArktweetPosTagger.PARAM_LANGUAGE, "en",
+                ArktweetPosTagger.PARAM_VARIANT,
                 "default");
     }
 }
