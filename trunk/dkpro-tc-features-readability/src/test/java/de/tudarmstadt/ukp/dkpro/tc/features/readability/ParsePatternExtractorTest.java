@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 public class ParsePatternExtractorTest
 {
     @Test
-    public void testPhrasePatternExtractor()
+    public void testParsePatternExtractor()
         throws Exception
     {
         String text = "We use it when a girl in our dorm is acting like a spoiled and nervous child.";
@@ -53,7 +53,7 @@ public class ParsePatternExtractorTest
 
         ParsePatternExtractor extractor = new ParsePatternExtractor();
         List<Feature> features = extractor.extract(jcas);
-        System.out.println(features);
+        Assert.assertEquals(features.size(), 24);
         double[] results = { 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0,
                 69.0, 10.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0,
                 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0, 69.0, 10.0, 2.0, 1.0, 1.0, 2.0, 2.0,
@@ -61,6 +61,7 @@ public class ParsePatternExtractorTest
                 77.0, 69.0, 10.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0 };
         for (int i = 0; i < features.size(); i++) {
             Assert.assertEquals(results[i], (double) features.get(i).getValue(), 0.1);
+
         }
     }
 
