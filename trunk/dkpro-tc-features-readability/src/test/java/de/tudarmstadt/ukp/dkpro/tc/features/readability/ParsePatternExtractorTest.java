@@ -21,51 +21,47 @@ package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
+import de.tudarmstadt.ukp.dkpro.core.berkeleyparser.BerkeleyParser;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
-public class PhrasePatternExtractorTest
+public class ParsePatternExtractorTest
 {
     @Test
     public void testPhrasePatternExtractor()
         throws Exception
     {
-        String text = FileUtils
-                .readFileToString(new File("src/test/resources/test_document_en.txt"));
-
+        String text = "We use it when a girl in our dorm is acting like a spoiled and nervous child.";
         AnalysisEngineDescription desc = createEngineDescription(
                 createEngineDescription(OpenNlpSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class),
-                createEngineDescription(OpenNlpChunker.class));
+                createEngineDescription(BerkeleyParser.class));
         AnalysisEngine engine = createEngine(desc);
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
         engine.process(jcas);
 
-        PhrasePatternExtractor extractor = new PhrasePatternExtractor();
+        ParsePatternExtractor extractor = new ParsePatternExtractor();
         List<Feature> features = extractor.extract(jcas);
-
-        Assert.assertEquals(6, features.size());
         System.out.println(features);
-        Assert.assertEquals((double) features.get(0).getValue(), 4.2, 0.1);
-        Assert.assertEquals((double) features.get(1).getValue(), 1.6, 0.1);
-        Assert.assertEquals((double) features.get(2).getValue(), 0.9, 0.1);
-        Assert.assertEquals((double) features.get(3).getValue(), 3.7, 0.1);
-        Assert.assertEquals((double) features.get(4).getValue(), 0.4, 0.1);
-        Assert.assertEquals((double) features.get(5).getValue(), 0.4, 0.1);
-
+        double[] results = { 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0,
+                69.0, 10.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0,
+                1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0, 69.0, 10.0, 2.0, 1.0, 1.0, 2.0, 2.0,
+                1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5,
+                77.0, 69.0, 10.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0 };
+        for (int i = 0; i < features.size(); i++) {
+            Assert.assertEquals(results[i], (double) features.get(i).getValue(), 0.1);
+        }
     }
+
 }

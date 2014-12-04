@@ -40,6 +40,13 @@ public class PhrasePatternExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
+    /**
+     * This Extractor is inspired by the ParsePatternExtractor but relies only on chunking
+     * information.
+     * 
+     * @author beinborn
+     */
+
     public static final String NCS_PER_SENTENCE = "NCsPerSentence";
     public static final String VCS_PER_SENTENCE = "VCsPerSentence";
     public static final String ADVCS_PER_SENTENCE = "ADVCsPerSentence";
