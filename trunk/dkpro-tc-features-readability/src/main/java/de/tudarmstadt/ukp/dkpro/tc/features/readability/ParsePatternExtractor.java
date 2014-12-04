@@ -84,9 +84,6 @@ public class ParsePatternExtractor
     public static final String COORDS_PER_CLAUSE = "CoordinationsPerClause";
     public static final String COMPLEXNOMINALS_PER_CLAUSE = "ComplexNominalsPerClause";
 
-    // Co-ordinate Phrases per Clause (CP/C)
-    // Complex Nominals per Clause (CN/C)
-
     public List<Feature> extract(JCas jcas)
 
     {
