@@ -22,7 +22,7 @@
 		<artifactId>dkpro-tc</artifactId>
 		<version>0.7.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>dkpro-tc-features-spelling</artifactId>
+	<artifactId>dkpro-tc-features-readability</artifactId>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -34,21 +34,8 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.tokit-asl
-			</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.readability-asl
 			</artifactId>
-			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -59,13 +46,27 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.opennlp-asl
+				de.tudarmstadt.ukp.dkpro.core.berkeleyparser-gpl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.tokit-asl
 			</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.berkeleyparser-gpl
+				de.tudarmstadt.ukp.dkpro.core.opennlp-asl
 			</artifactId>
 		</dependency>
 	</dependencies>

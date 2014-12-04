@@ -27,6 +27,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -94,6 +95,7 @@ public class ParsePatternUtilTest
     }
 
     @Test
+    @Ignore
     public void testIsComplexNominal()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
@@ -240,6 +242,7 @@ public class ParsePatternUtilTest
     }
 
     @Test
+    @Ignore
     public void testIsCoord()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
