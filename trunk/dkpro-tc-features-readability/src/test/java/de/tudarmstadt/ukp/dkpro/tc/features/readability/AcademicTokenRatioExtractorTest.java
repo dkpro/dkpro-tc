@@ -42,7 +42,7 @@ public class AcademicTokenRatioExtractorTest
     public void testAcademicTokenRatioExtractor()
         throws Exception
     {
-        System.out.println("AcademicTokenRatioExtractorTest");
+
         String text = FileUtils
                 .readFileToString(new File("src/test/resources/test_document_en.txt"));
 
