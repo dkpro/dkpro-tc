@@ -20,7 +20,6 @@
  * Readability feature extractors
  * Many of them work currently only for English.
  *
- * @since 0.1.0
  */
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
