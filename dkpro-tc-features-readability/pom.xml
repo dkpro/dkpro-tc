@@ -34,9 +34,18 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.tokit-asl
+				de.tudarmstadt.ukp.dkpro.core.clearnlp-asl
 			</artifactId>
-			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.berkeleyparser-gpl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
@@ -45,16 +54,8 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.readability-asl
+				de.tudarmstadt.ukp.dkpro.core.tokit-asl
 			</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.clearnlp-asl
-			</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -65,9 +66,9 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.berkeleyparser-gpl
+				de.tudarmstadt.ukp.dkpro.core.readability-asl
 			</artifactId>
-			<scope>test</scope>
+			<version>1.7.0</version>
 		</dependency>
 	</dependencies>
 	<build>
