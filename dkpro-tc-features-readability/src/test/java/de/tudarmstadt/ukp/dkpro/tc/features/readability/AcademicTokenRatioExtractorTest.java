@@ -29,27 +29,26 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpSegmenter;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class AcademicTokenRatioExtractorTest
 {
     @Test
-    @Ignore
     public void testAcademicTokenRatioExtractor()
         throws Exception
     {
+        System.out.println("AcademicTokenRatioExtractorTest");
         String text = FileUtils
                 .readFileToString(new File("src/test/resources/test_document_en.txt"));
 
         AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(ClearNlpSegmenter.class),
-                createEngineDescription(ClearNlpPosTagger.class),
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
                 createEngineDescription(ClearNlpLemmatizer.class));
         AnalysisEngine engine = createEngine(desc);
         JCas jcas = engine.newJCas();

@@ -36,8 +36,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class TraditionalReadabilityMeasuresExtractorTest
 {
-    static HashMap<String, Double> correctResult = new HashMap<String, Double>();
-    static {
+
+    @Test
+    public void readabilityFeatureExtractorTest()
+        throws Exception
+    {
+        HashMap<String, Double> correctResult = new HashMap<String, Double>();
         correctResult.put("kincaid", 7.6);
         correctResult.put("ari", 9.1);
         correctResult.put("coleman_liau", 11.6);
@@ -45,14 +49,7 @@ public class TraditionalReadabilityMeasuresExtractorTest
         correctResult.put("lix", 5.0);
         correctResult.put("smog", 9.9);
         correctResult.put("fog", 10.6);
-    }
-    private final static double EPSILON = 0.1;
-
-    @Test
-    public void readabilityFeatureExtractorTest()
-        throws Exception
-    {
-
+        double EPSILON = 0.1;
         String text = FileUtils
                 .readFileToString(new File("src/test/resources/test_document_en.txt"));
 

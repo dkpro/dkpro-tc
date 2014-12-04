@@ -29,7 +29,6 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
@@ -39,7 +38,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 public class AvgLengthExtractorTest
 {
     @Test
-    @Ignore
     public void testAvgLengthExtractor()
         throws Exception
     {
@@ -58,11 +56,13 @@ public class AvgLengthExtractorTest
         AvgLengthExtractor extractor = new AvgLengthExtractor();
         List<Feature> features = extractor.extract(jcas);
 
-        Assert.assertEquals(2, features.size());
+        Assert.assertEquals(3, features.size());
         Assert.assertEquals(features.get(0).getName(), "AvgSentenceLength");
-        Assert.assertEquals(features.get(1).getName(), "AvgWordLength");
+        Assert.assertEquals(features.get(1).getName(), "AvgWordLengthInCharacters");
+        Assert.assertEquals(features.get(2).getName(), "AvgWordLengthInSyllables");
         Assert.assertEquals((double) features.get(0).getValue(), 17.2, 0.1);
         Assert.assertEquals((double) features.get(1).getValue(), 4.7, 0.1);
+        Assert.assertEquals((double) features.get(2).getValue(), 1.4, 0.1);
 
     }
 }
