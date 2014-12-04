@@ -22,7 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.trees.RandomForest
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger
 import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
@@ -64,7 +64,7 @@ public class TwitterSentimentDemo implements Constants {
             type: "Evaluation-Twitter-Sentiment-CV",
             machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             preprocessingPipeline: createEngineDescription(
-            ArktweetTagger, ArktweetTagger.PARAM_LANGUAGE, "en", ArktweetTagger.PARAM_VARIANT, "default"), // Preprocessing
+            ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), // Preprocessing
             parameterSpace: [
                 // parameters in the parameter space with several values in a list will be swept
                 Dimension.createBundle("readers", [
@@ -104,7 +104,7 @@ public class TwitterSentimentDemo implements Constants {
             type: "Evaluation-Twitter-Sentiment-TrainTest",
             machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             preprocessingPipeline: createEngineDescription(
-            ArktweetTagger, ArktweetTagger.PARAM_LANGUAGE, "en", ArktweetTagger.PARAM_VARIANT, "default"), // Preprocessing
+            ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), // Preprocessing
             parameterSpace: [
                 // parameters in the parameter space with several values in a list will be swept
                 Dimension.createBundle("readers", [
