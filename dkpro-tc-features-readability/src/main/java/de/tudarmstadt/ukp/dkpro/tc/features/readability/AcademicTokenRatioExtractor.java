@@ -41,7 +41,7 @@ public class AcademicTokenRatioExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
-    /*
+    /**
      * Calculates the ratio of academic words according to the Coxhead word list (
      * http://simple.wiktionary.org/wiki/Wiktionary:Academic_word_list) as described in: Sowmya
      * Vajjala and Detmar Meurers. 2012. On improving the accuracy of readability classification
@@ -53,7 +53,7 @@ public class AcademicTokenRatioExtractor
      * http://www.academicvocabulary.info/download.asp
      * 
      * @author beinborn
-     */
+     **/
 
     List<String> cocaWords;
     List<String> coxheadWords;
