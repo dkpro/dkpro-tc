@@ -29,6 +29,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
@@ -38,6 +39,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 public class AvgLengthExtractorTest
 {
     @Test
+    @Ignore
     public void testAvgLengthExtractor()
         throws Exception
     {
