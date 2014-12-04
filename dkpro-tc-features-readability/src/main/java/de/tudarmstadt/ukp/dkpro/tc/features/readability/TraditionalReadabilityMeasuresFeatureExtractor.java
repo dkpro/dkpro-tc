@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
@@ -44,6 +45,9 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
+    public static final String PARAM_MEASURES = "measures";
+    @ConfigurationParameter(name = PARAM_MEASURES, mandatory = false)
+    private String[] measures;
 
     @Override
     public List<Feature> extract(JCas jcas)
@@ -62,11 +66,24 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
             words.add(t.getCoveredText());
         }
 
-        for (Measures measure : Measures.values()) {
-            featList.add(new Feature(measure.name(), readability.getReadabilityScore(measure,
-                    words, nrOfSentences)));
+        // per default, add features for all readability measures
+        if (measures == null) {
+            for (Measures measure : Measures.values()) {
+                featList.add(new Feature(measure.name(), readability.getReadabilityScore(measure,
+                        words, nrOfSentences)));
+            }
         }
 
+        // only add features for selected readability measures
+        // The string[] should use the names of the measures: ari,coleman_liau, flesch, fog,
+        // kincaid, lix,smog
+        else {
+            for (String measureName : measures) {
+                Measures measure = Measures.valueOf(measureName);
+                featList.add(new Feature(measureName, readability.getReadabilityScore(measure,
+                        words, nrOfSentences)));
+            }
+        }
         return featList;
     }
 }
