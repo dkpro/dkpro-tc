@@ -27,7 +27,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -40,16 +39,6 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 public class ParsePatternUtilTest
 {
-    private static AnalysisEngine engine;
-
-    private static void initializeEngine()
-        throws ResourceInitializationException
-    {
-        engine = createEngine(createEngineDescription(
-                createEngineDescription(OpenNlpSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class),
-                createEngineDescription(BerkeleyParser.class)));
-    }
 
     @Test
     public void testParseDepth()
@@ -58,7 +47,10 @@ public class ParsePatternUtilTest
         String[] texts = { "Okay.", "Peter eats.", "We see it.", "I use the pen and the paper.",
                 "We use it when a girl in our dorm is acting like a spoiled and nervous child." };
         int[] depths = { 2, 3, 4, 5, 10 };
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
         for (int i = 0; i < texts.length; i++) {
             JCas jcas = engine.newJCas();
             jcas.setDocumentLanguage("en");
@@ -78,7 +70,10 @@ public class ParsePatternUtilTest
                 "The insect, a cockroach, is crawling across the kitchen table." };
         boolean[] results = { true, false, true, true, false, false };
 
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
         int i = 0;
         for (String text : texts) {
             JCas jcas = engine.newJCas();
@@ -92,10 +87,10 @@ public class ParsePatternUtilTest
             }
 
         }
+
     }
 
     @Test
-    @Ignore
     public void testIsComplexNominal()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
@@ -107,7 +102,10 @@ public class ParsePatternUtilTest
                 true, false, false, false, false, false, false, false, false, false, false, true,
                 false, false, false, false, false, false, false, false, false, true, false, false,
                 false, false, false, false, false, true, false, false, false, false, false, false };
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
         int i = 0;
         System.out.println("Complex Nominals: ");
         for (String text : texts) {
@@ -124,6 +122,7 @@ public class ParsePatternUtilTest
             }
 
         }
+
     }
 
     @Test
@@ -132,7 +131,10 @@ public class ParsePatternUtilTest
     {
         String text = "We use it when a girl in our dorm is acting like a spoiled child.";
 
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
         System.out.println("Verb phrases");
 
         JCas jcas = engine.newJCas();
@@ -150,6 +152,7 @@ public class ParsePatternUtilTest
             }
         }
         Assert.assertEquals(verbphrases, 2);
+
     }
 
     @Test
@@ -158,7 +161,10 @@ public class ParsePatternUtilTest
     {
         String text = "We use it when a girl in our dorm is acting like a spoiled child.";
 
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
@@ -175,6 +181,7 @@ public class ParsePatternUtilTest
             }
         }
         Assert.assertEquals(2, clauses);
+
     }
 
     @Test
@@ -183,7 +190,10 @@ public class ParsePatternUtilTest
     {
         String text = "We use it when a girl in our dorm is acting like a spoiled child.";
 
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
@@ -205,7 +215,10 @@ public class ParsePatternUtilTest
     {
         String text = "We use it when a girl in our dorm is acting like a spoiled child.";
 
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
@@ -218,6 +231,7 @@ public class ParsePatternUtilTest
                         .equals(c.getCoveredText()));
             }
         }
+
     }
 
     @Test
@@ -226,7 +240,10 @@ public class ParsePatternUtilTest
     {
         String text = "We use it when a girl in our dorm is acting like a spoiled child.";
 
-        initializeEngine();
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
@@ -242,14 +259,15 @@ public class ParsePatternUtilTest
     }
 
     @Test
-    @Ignore
     public void testIsCoord()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
         String text = "It is a long and dark way home and we want to get there all safe and sound.";
 
-        initializeEngine();
-
+        AnalysisEngine engine = createEngine(createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(BerkeleyParser.class)));
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
