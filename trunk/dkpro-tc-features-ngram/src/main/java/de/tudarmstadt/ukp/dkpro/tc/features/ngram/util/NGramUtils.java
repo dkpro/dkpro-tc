@@ -255,12 +255,20 @@ public class NGramUtils
         return charNgrams;
     }
 
+    /**
+     * Creates a frequency distribution of character ngrams over the span of an annotation. The
+     * boundary* parameter allows it to provide a string that is added additionally at the beginning
+     * and end of the respective annotation span. If for instance the 'begin of sequence' or 'end of
+     * sequence' of a span shall be marked the boundary parameter can be used. Provide an empty
+     * character in case this parameters are not needed
+     */
     public static FrequencyDistribution<String> getAnnotationCharacterNgrams(
-            Annotation focusAnnotation, boolean lowerCaseNgrams, int minN, int maxN)
+            Annotation focusAnnotation, boolean lowerCaseNgrams, int minN, int maxN,
+            char boundaryBegin, char boundaryEnd)
     {
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
-        for (String charNgram : new CharacterNGramStringIterable(focusAnnotation.getCoveredText(),
-                minN, maxN)) {
+        for (String charNgram : new CharacterNGramStringIterable(boundaryBegin
+                + focusAnnotation.getCoveredText() + boundaryEnd, minN, maxN)) {
             if (lowerCaseNgrams) {
                 charNgram = charNgram.toLowerCase();
             }
