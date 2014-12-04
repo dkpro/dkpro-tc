@@ -113,26 +113,34 @@ public class ParsePatternUtils
 
                 return true;
             }
+            try {
+                for (FeatureStructure leftSister : ((Constituent) c.getParent()).getChildren()
+                        .toArray()) {
 
-            for (FeatureStructure leftSister : ((Constituent) c.getParent()).getChildren()
-                    .toArray()) {
-
-                // check the nodes left of the current node
-                if (((Constituent) leftSister).equals(c)) {
-                    break;
-                }
-
-                if (leftSister instanceof S || leftSister instanceof SINV
-                        || leftSister instanceof SQ || leftSister instanceof SBARQ) {
-                    for (Constituent parent : JCasUtil.selectCovering(Constituent.class,
-                            ((Constituent) leftSister))) {
-                        if (parent instanceof SBAR || parent instanceof VP) {
-                            return false;
+                    // check the nodes left of the current node
+                    try {
+                        if (((Constituent) leftSister).equals(c)) {
+                            break;
                         }
                     }
-                    return true;
+                    catch (ClassCastException e) {
+
+                    }
+                    if (leftSister instanceof S || leftSister instanceof SINV
+                            || leftSister instanceof SQ || leftSister instanceof SBARQ) {
+                        for (Constituent parent : JCasUtil.selectCovering(Constituent.class,
+                                ((Constituent) leftSister))) {
+                            if (parent instanceof SBAR || parent instanceof VP) {
+                                return false;
+                            }
+                        }
+                        return true;
+
+                    }
 
                 }
+            }
+            catch (ClassCastException e) {
 
             }
         }
