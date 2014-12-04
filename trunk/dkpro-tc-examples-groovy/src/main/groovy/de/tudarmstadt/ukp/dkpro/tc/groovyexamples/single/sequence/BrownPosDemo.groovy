@@ -78,9 +78,7 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-//			machineLearningAdapter: MalletAdapter.getInstance(),
 			machineLearningAdapter: CRFSuiteAdapter.getInstance(),
-//            innerReports: [MalletClassificationReport],
             innerReports: [CRFSuiteClassificationReport],
             parameterSpace : [
                 dimReaders,
@@ -91,7 +89,6 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-//                MalletBatchCrossValidationReport
 				CRFSuiteBatchCrossValidationReport
             ],
             numFolds: NUM_FOLDS]
