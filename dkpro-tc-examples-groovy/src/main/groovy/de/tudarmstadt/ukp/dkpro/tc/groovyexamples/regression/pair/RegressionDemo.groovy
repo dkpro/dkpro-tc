@@ -32,7 +32,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
@@ -79,7 +79,6 @@ public class RegressionDemo implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
 
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS, [SMOreg.name])
@@ -101,17 +100,16 @@ public class RegressionDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        CrossValidationExperiment batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter.getInstance(),
+            machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],
@@ -137,12 +135,11 @@ public class RegressionDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter.getInstance(),
+            machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],

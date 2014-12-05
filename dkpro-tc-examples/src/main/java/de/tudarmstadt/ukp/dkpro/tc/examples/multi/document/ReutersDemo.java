@@ -44,13 +44,12 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
 public class ReutersDemo
     implements Constants
@@ -136,7 +135,6 @@ public class ReutersDemo
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, MekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), Dimension.create(
                         DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimPipelineParameters,
@@ -151,9 +149,9 @@ public class ReutersDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation(EXPERIMENT_NAME
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME
                 + "-CrossValidation",
-                WekaClassificationAdapter.getInstance(),
+                WekaClassificationAdapter.class,
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.addInnerReport(WekaClassificationReport.class);
@@ -168,8 +166,8 @@ public class ReutersDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		WekaClassificationAdapter.getInstance(),
+        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
+        		WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);

@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 
 /**
@@ -137,7 +137,7 @@ public class WekaBatchTrainTestReport
 
         // this report is reused in CV, and we only want to aggregate confusion matrices from folds
         // in CV, and an aggregated OutcomeIdReport
-        if (getContext().getId().startsWith(BatchTaskCrossValidation.class.getSimpleName())) {
+        if (getContext().getId().startsWith(ExperimentCrossValidation.class.getSimpleName())) {
             // no confusion matrix for regression
             if (confMatrixMap.size() > 0) {
                 FlexTable<String> confMatrix = ReportUtils

@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
@@ -57,7 +57,6 @@ implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
         NrOfCharsUFE.name,
@@ -84,18 +83,17 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        BatchTaskCrossValidation batchTask = [
+        CrossValidationExperiment batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimFeatureSets,
                 dimClassificationArgs
             ],

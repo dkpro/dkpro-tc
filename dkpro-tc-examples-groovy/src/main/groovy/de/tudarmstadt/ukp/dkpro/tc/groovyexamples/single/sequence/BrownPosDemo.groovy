@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
 
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
@@ -63,7 +63,6 @@ implements Constants {
         ]])
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, CRFSuiteDataWriter.name)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
         NrOfTokensUFE.name
@@ -73,18 +72,17 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        BatchTaskCrossValidation batchTask = [
+        CrossValidationExperiment batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:  getPreprocessing(),
-			machineLearningAdapter: CRFSuiteAdapter.getInstance(),
+			machineLearningAdapter: CRFSuiteAdapter,
             innerReports: [CRFSuiteClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
