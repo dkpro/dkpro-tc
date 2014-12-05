@@ -34,11 +34,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification
@@ -83,11 +82,11 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
+            preprocessing:  getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [WekaClassificationReport],
             parameterSpace : [

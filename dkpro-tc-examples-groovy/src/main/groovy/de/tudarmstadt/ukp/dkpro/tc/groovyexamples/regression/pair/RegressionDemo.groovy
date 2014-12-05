@@ -32,13 +32,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * A demo for pair classification with a regression outcome.
@@ -100,11 +99,11 @@ public class RegressionDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
+            preprocessing:  getPreprocessing(),
             machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
@@ -130,11 +129,11 @@ public class RegressionDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        BatchTaskTrainTest batchTask = [
+        ExperimentTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
+            preprocessing:  getPreprocessing(),
             machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,

@@ -35,11 +35,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Testing with many instances.
@@ -96,10 +95,10 @@ public class ManyInstancesExperiment implements Constants {
     public void run() throws Exception
     {
 
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
+            preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
                 WekaClassificationReport

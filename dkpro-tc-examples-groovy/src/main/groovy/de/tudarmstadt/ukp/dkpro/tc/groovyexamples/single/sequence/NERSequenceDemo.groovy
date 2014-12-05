@@ -35,8 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
 import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 
 /**
  * Example for German NER as sequence classification (groovy setup).
@@ -74,11 +73,11 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
+            preprocessing:  getPreprocessing(),
             machineLearningAdapter: MalletAdapter,
             innerReports: [MalletClassificationReport],
             parameterSpace : [

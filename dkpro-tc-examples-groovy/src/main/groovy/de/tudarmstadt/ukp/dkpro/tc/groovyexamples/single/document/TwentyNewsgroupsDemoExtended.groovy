@@ -40,12 +40,12 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
@@ -143,13 +143,13 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          */
 
         PreprocessTask preprocessTaskTrain = [
-            preprocessingPipeline:getPreprocessing(),
+            preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
             isTesting: false
         ]
 
         PreprocessTask preprocessTaskTest = [
-            preprocessingPipeline:getPreprocessing(),
+            preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
             isTesting: true
         ]
@@ -160,12 +160,14 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
         ExtractFeaturesTask featuresTrainTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Train",
-            isTesting: false
+            isTesting: false,
+            mlAdapter: WekaClassificationAdapter.instance
         ]
 
         ExtractFeaturesTask featuresTestTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Test",
-            isTesting: true
+            isTesting: true,
+            mlAdapter: WekaClassificationAdapter.instance
         ]
 
         WekaTestTask testTask = [

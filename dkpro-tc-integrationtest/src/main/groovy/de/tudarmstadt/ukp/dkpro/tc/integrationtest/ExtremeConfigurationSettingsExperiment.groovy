@@ -32,14 +32,13 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.TrainTestExperiment
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
@@ -129,10 +128,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     public void runEmptyPipelineParameters() throws Exception
     {
 
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
+            preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
                 WekaClassificationReport
@@ -153,10 +152,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
         Lab.getInstance().run(batchTask)
 
-        TrainTestExperiment TrainTestExperiment = [
+        ExperimentTrainTest TrainTestExperiment = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline: getPreprocessing(),
+            preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
                 WekaClassificationReport
@@ -182,10 +181,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     public void runEmptyFeatureExtractorSet() throws Exception
     {
 
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
+            preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
                 WekaClassificationReport
@@ -206,10 +205,10 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
         Lab.getInstance().run(batchTask)
 
-        TrainTestExperiment TrainTestExperiment = [
+        ExperimentTrainTest TrainTestExperiment = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline: getPreprocessing(),
+            preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
                 WekaClassificationReport
@@ -236,8 +235,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     throws ResourceInitializationException
     {
         return createEngineDescription(
-            createEngineDescription(BreakIteratorSegmenter.class),
-            createEngineDescription(OpenNlpPosTagger.class)
+        createEngineDescription(BreakIteratorSegmenter.class),
+        createEngineDescription(OpenNlpPosTagger.class)
         )
     }
 }

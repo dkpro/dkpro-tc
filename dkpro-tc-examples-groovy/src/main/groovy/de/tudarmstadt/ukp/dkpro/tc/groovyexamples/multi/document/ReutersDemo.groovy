@@ -38,14 +38,13 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter
 
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
@@ -156,11 +155,11 @@ public class ReutersDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:	getPreprocessing(),
+            preprocessing:	getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [WekaClassificationReport],
             parameterSpace : [
@@ -189,11 +188,11 @@ public class ReutersDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        BatchTaskTrainTest batchTask = [
+        ExperimentTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline:	getPreprocessing(),
+            preprocessing:	getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [WekaClassificationReport],
             parameterSpace : [
