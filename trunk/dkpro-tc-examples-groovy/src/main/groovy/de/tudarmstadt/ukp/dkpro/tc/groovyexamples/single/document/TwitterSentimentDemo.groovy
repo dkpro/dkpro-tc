@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
@@ -59,10 +59,10 @@ public class TwitterSentimentDemo implements Constants {
      */
     protected void runCrossValidation() throws Exception {
 
-        BatchTaskCrossValidation batchTask = [
+        CrossValidationExperiment batchTask = [
             experimentName: "Twitter-Sentiment-CV",
             type: "Evaluation-Twitter-Sentiment-CV",
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter,
             preprocessingPipeline: createEngineDescription(
             ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), // Preprocessing
             parameterSpace: [
@@ -102,7 +102,7 @@ public class TwitterSentimentDemo implements Constants {
         BatchTaskTrainTest batchTask = [
             experimentName: "Twitter-Sentiment-TrainTest",
             type: "Evaluation-Twitter-Sentiment-TrainTest",
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter,
             preprocessingPipeline: createEngineDescription(
             ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), // Preprocessing
             parameterSpace: [

@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.ml;
+package de.tudarmstadt.ukp.dkpro.tc.core.ml;
 
 import java.util.Collection;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 
 /**
  * Interface for machine learning frameworks in TC
@@ -56,17 +57,23 @@ public interface TCMachineLearningAdapter
 
     /**
      * This report is always added to {@code testTask} reports by default in
-     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation}
-     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest}.
+     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}
+     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.TrainTestExperiment}.
      *
      * @return The report that computes the classification results.
      */
     public Class<? extends ReportBase> getClassificationReportClass();
 
+	/**
+	 * @param learningMode which learning mode (single/multi-label or regression) should be used
+     * @return The data writer class that needs to be used with the corresponding ML framework
+	 */
+	public Class<? extends DataWriter> getDataWriterClass(String learningMode);
+
     /**
      * This report is always added to {@code testTask} reports by default in
-     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation}
-     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest}.
+     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}
+     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.TrainTestExperiment}.
      *
      * @return The report that collects the outcomeId to prediction values.
      */
@@ -74,7 +81,7 @@ public interface TCMachineLearningAdapter
 
     /**
      * This report is always added to {@code crossValidationTask} reports
-     * by default in {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation}.
+     * by default in {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}.
      *
      * @return The report that collects the results from the different folds.
      */

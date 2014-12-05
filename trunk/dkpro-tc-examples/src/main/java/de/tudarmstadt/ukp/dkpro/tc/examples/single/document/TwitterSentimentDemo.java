@@ -39,12 +39,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -113,7 +112,6 @@ public class TwitterSentimentDemo
                         NumberOfHashTagsDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
                 dimClassificationArgs);
@@ -125,8 +123,8 @@ public class TwitterSentimentDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwitterSentimentCV",
-        		WekaClassificationAdapter.getInstance(),
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV",
+        		WekaClassificationAdapter.class,
                 getPreprocessing(), 10);
         batch.setParameterSpace(pSpace);
         batch.addReport(WekaBatchCrossValidationReport.class);
@@ -139,8 +137,8 @@ public class TwitterSentimentDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwitterSentimentTrainTest",
-        		WekaClassificationAdapter.getInstance(),
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest",
+        		WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(WekaBatchTrainTestReport.class);

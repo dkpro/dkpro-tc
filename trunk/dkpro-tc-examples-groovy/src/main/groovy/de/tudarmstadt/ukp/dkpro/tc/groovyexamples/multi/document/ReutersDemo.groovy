@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
@@ -98,7 +98,6 @@ public class ReutersDemo implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
     def dimThreshold = Dimension.create(DIM_BIPARTITION_THRESHOLD, threshold)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, MekaDataWriter.name)
 
     def dimClassificationArgs =
     Dimension.create(
@@ -157,18 +156,17 @@ public class ReutersDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        CrossValidationExperiment batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
                 dimFeatureSelection,
@@ -196,13 +194,12 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessingPipeline:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
                 dimFeatureSelection,

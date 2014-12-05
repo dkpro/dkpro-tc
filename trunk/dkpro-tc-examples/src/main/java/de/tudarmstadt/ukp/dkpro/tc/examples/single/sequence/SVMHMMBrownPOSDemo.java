@@ -18,35 +18,35 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
-import de.tudarmstadt.ukp.dkpro.lab.Lab;
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.uima.fit.component.NoOpAnnotator;
+import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.uima.fit.component.NoOpAnnotator;
+
+import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.BrownCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 
 /**
  * Tests SVMhmm on POS tagging of one file in Brown corpus
@@ -119,7 +119,6 @@ public class SVMHMMBrownPOSDemo
                         OriginalTextHolderFeatureExtractor.class.getName() }));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(Constants.DIM_DATA_WRITER, SVMHMMDataWriter.class.getName()),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
                 Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
@@ -131,10 +130,10 @@ public class SVMHMMBrownPOSDemo
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,
-            TCMachineLearningAdapter machineLearningAdapter)
+            Class<? extends TCMachineLearningAdapter> machineLearningAdapter)
             throws Exception
     {
-        final BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownCVBatchTask",
+        final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
                 machineLearningAdapter, createEngineDescription(NoOpAnnotator.class),
                 NUM_FOLDS);
         batch.setParameterSpace(pSpace);
@@ -145,10 +144,10 @@ public class SVMHMMBrownPOSDemo
     }
 
     protected void runTrainTest(ParameterSpace pSpace,
-            TCMachineLearningAdapter machineLearningAdapter)
+            Class<? extends TCMachineLearningAdapter> machineLearningAdapter)
             throws Exception
     {
-        final BatchTaskTrainTest batch = new BatchTaskTrainTest("BrownTrainTestBatchTask",
+        final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter, createEngineDescription(NoOpAnnotator.class));
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(BatchTask.ExecutionPolicy.RUN_AGAIN);
@@ -175,9 +174,9 @@ public class SVMHMMBrownPOSDemo
 
             SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
             // run with a random labeler
-            experiment.runCrossValidation(pSpace, new RandomSVMHMMAdapter());
+            experiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
-            experiment.runCrossValidation(pSpace, new SVMHMMAdapter());
+            experiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -189,9 +188,9 @@ public class SVMHMMBrownPOSDemo
 
             SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
             // run with a random labeler
-            experiment.runTrainTest(pSpace, new RandomSVMHMMAdapter());
+            experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
-            experiment.runTrainTest(pSpace, new SVMHMMAdapter());
+            experiment.runTrainTest(pSpace, SVMHMMAdapter.class);
         }
         catch (Exception e) {
             e.printStackTrace();

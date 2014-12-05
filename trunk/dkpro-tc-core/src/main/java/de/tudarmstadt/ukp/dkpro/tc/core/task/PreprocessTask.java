@@ -84,22 +84,22 @@ public class PreprocessTask
         this.isTesting = isTesting;
     }
 
-    private AnalysisEngineDescription preprocessingPipeline;
+    private AnalysisEngineDescription preprocessing;
 
     /**
      * @return
      */
-    public AnalysisEngineDescription getPreprocessingPipeline()
+    public AnalysisEngineDescription getPreprocessing()
     {
-        return preprocessingPipeline;
+        return preprocessing;
     }
 
     /**
      * @param aAggregate
      */
-    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
+    public void setPreprocessing(AnalysisEngineDescription preprocessing)
     {
-        this.preprocessingPipeline = preprocessingPipeline;
+        this.preprocessing = preprocessing;
     }
 
     @Override
@@ -128,25 +128,25 @@ public class PreprocessTask
         // add a special connector as the first analysis engine that just checks whether there are no instances
         // and outputs a meaningful error message then
         AnalysisEngineDescription emptyProblemChecker = AnalysisEngineFactory.createEngineDescription(PreprocessConnector.class);
-        preprocessingPipeline = AnalysisEngineFactory.createEngineDescription(emptyProblemChecker, preprocessingPipeline);
+        preprocessing = AnalysisEngineFactory.createEngineDescription(emptyProblemChecker, preprocessing);
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
         if (featureMode.equals(Constants.FM_PAIR)) {
             AggregateBuilder builder = new AggregateBuilder();
-            builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
+            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
                     Constants.PART_ONE);
-            builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
+            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
                     Constants.PART_TWO);
-            preprocessingPipeline = builder.createAggregateDescription();
+            preprocessing = builder.createAggregateDescription();
         }
         else if (operativeViews != null) {
             AggregateBuilder builder = new AggregateBuilder();
             for (String viewName : operativeViews) {
-                builder.add(createEngineDescription(preprocessingPipeline), CAS.NAME_DEFAULT_SOFA,
+                builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
                         viewName);
             }
-            preprocessingPipeline = builder.createAggregateDescription();
+            preprocessing = builder.createAggregateDescription();
         }
         // in unit or sequence mode, add cas multiplier
         else if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
@@ -156,9 +156,9 @@ public class PreprocessTask
                     ClassificationUnitCasMultiplier.class,
                     ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences);
 
-            return createEngineDescription(preprocessingPipeline, casMultiplier, xmiWriter);
+            return createEngineDescription(preprocessing, casMultiplier, xmiWriter);
         }
-        return createEngineDescription(preprocessingPipeline, xmiWriter);
+        return createEngineDescription(preprocessing, xmiWriter);
     }
 
     /**

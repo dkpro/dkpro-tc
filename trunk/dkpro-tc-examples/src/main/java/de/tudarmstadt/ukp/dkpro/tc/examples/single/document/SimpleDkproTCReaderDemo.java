@@ -40,12 +40,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.SimpleDkproTCReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This demo uses the {@link SimpleDkproTCReader}.
@@ -75,8 +74,8 @@ public class SimpleDkproTCReaderDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
-                "SimpleReaderDemoCV", WekaClassificationAdapter.getInstance(), getPreprocessing(), NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+                "SimpleReaderDemoCV", WekaClassificationAdapter.class, getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -124,8 +123,7 @@ public class SimpleDkproTCReaderDemo
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(
-                "readers", dimReaders), Dimension.create(DIM_DATA_WRITER,
-                WekaDataWriter.class.getName()), Dimension.create(
+                "readers", dimReaders), Dimension.create(
                 DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                 DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
                 dimFeatureSets, dimClassificationArgs);

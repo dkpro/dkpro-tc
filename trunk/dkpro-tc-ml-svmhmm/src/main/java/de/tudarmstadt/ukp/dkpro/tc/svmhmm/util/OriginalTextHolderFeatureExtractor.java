@@ -18,15 +18,16 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.util;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.uima.jcas.JCas;
+
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
-import org.apache.uima.jcas.JCas;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Stores the original token (text content) of the unit

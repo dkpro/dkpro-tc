@@ -53,7 +53,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
  * The TwentyNewsgroupsGroovyExtendedExperiment does the same as TwentyNewsgroupsGroovyExperiment,
  * but it manually sets up the sub-tasks and builds a generic batch task.
  *
- * In TwentyNewsgroupsGroovyExperiment, this is done automatically in the BatchTaskCV and BatchTaskTrainTest,
+ * In TwentyNewsgroupsGroovyExperiment, this is done automatically in the {@link CrossValidationExperiment} and {@link TrainTestExperiment},
  * which is more convenient, but less flexible.
  *
  * Currently only supports train-test setup.
@@ -94,7 +94,6 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -199,7 +198,6 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.ml.task;
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,12 +34,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 
 /**
  * Crossvalidation setup
@@ -48,12 +49,12 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
  * @author zesch
  * 
  */
-public class BatchTaskCrossValidation
+public class ExperimentCrossValidation
     extends BatchTask
 {
 
     protected String experimentName;
-    protected AnalysisEngineDescription preprocessingPipeline;
+    protected AnalysisEngineDescription preprocessing;
     protected List<String> operativeViews;
     protected int numFolds = 10;
     protected List<Class<? extends Report>> innerReports;
@@ -66,7 +67,7 @@ public class BatchTaskCrossValidation
     protected ExtractFeaturesTask extractFeaturesTestTask;
     protected ExecutableTaskBase testTask;
 
-    public BatchTaskCrossValidation()
+    public ExperimentCrossValidation()
     {/* needed for Groovy */
     }
 
@@ -75,23 +76,23 @@ public class BatchTaskCrossValidation
      * 
      * @param aExperimentName
      *            name of the experiment
-     * @param preprocessingPipeline
+     * @param preprocessing
      *            preprocessing analysis engine aggregate
      * @param aNumFolds
      *            the number of folds for crossvalidation (default 10)
      */
-    public BatchTaskCrossValidation(String aExperimentName,
-            TCMachineLearningAdapter mlAdapter,
-            AnalysisEngineDescription preprocessingPipeline,
-            int aNumFolds)
-    {
-        setExperimentName(aExperimentName);
-        setMachineLearningAdapter(mlAdapter);
-        setPreprocessingPipeline(preprocessingPipeline);
-        setNumFolds(aNumFolds);
-        // set name of overall batch task
-        setType("Evaluation-" + experimentName);
-    }
+	public ExperimentCrossValidation(String aExperimentName,
+			Class<? extends TCMachineLearningAdapter> mlAdapter,
+			AnalysisEngineDescription preprocessing, int aNumFolds)
+			throws TextClassificationException
+	{
+		setExperimentName(aExperimentName);
+		setMachineLearningAdapter(mlAdapter);
+		setPreprocessing(preprocessing);
+		setNumFolds(aNumFolds);
+		// set name of overall batch task
+		setType("Evaluation-" + experimentName);
+	}
 
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
@@ -109,7 +110,7 @@ public class BatchTaskCrossValidation
         ClassNotFoundException
     {
 
-        if (experimentName == null || preprocessingPipeline == null) {
+        if (experimentName == null || preprocessing == null) {
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and preprocessing aggregate.");
         }
@@ -122,10 +123,11 @@ public class BatchTaskCrossValidation
 
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
+        checkTask.setMlAdapter(mlAdapter);
 
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
-        preprocessTask.setPreprocessingPipeline(preprocessingPipeline);
+        preprocessTask.setPreprocessing(preprocessing);
         preprocessTask.setOperativeViews(operativeViews);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
 
@@ -175,6 +177,7 @@ public class BatchTaskCrossValidation
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
                 + experimentName);
+        extractFeaturesTrainTask.setMlAdapter(mlAdapter);
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
 
         // extracting features from test data (numFolds times)
@@ -182,6 +185,7 @@ public class BatchTaskCrossValidation
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
+        extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
         
@@ -242,14 +246,21 @@ public class BatchTaskCrossValidation
         this.experimentName = experimentName;
     }
 
-    public void setMachineLearningAdapter(TCMachineLearningAdapter mlAdapter)
+    public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
+    	throws TextClassificationException
     {
-        this.mlAdapter = mlAdapter;
+        try {
+			this.mlAdapter = mlAdapter.newInstance();
+		} catch (InstantiationException e) {
+			throw new TextClassificationException(e);
+		} catch (IllegalAccessException e) {
+			throw new TextClassificationException(e);
+		}
     }
 
-    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
+    public void setPreprocessing(AnalysisEngineDescription preprocessing)
     {
-        this.preprocessingPipeline = preprocessingPipeline;
+        this.preprocessing = preprocessing;
     }
 
     public void setOperativeViews(List<String> operativeViews)

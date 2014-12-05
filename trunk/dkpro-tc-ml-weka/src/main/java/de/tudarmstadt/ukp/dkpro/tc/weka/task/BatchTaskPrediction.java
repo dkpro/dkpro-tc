@@ -98,14 +98,14 @@ public class BatchTaskPrediction
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setPreprocessingPipeline(preprocessingPipeline);
+        preprocessTaskTrain.setPreprocessing(preprocessingPipeline);
         preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setPreprocessingPipeline(preprocessingPipeline);
+        preprocessTaskTest.setPreprocessing(preprocessingPipeline);
         preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
