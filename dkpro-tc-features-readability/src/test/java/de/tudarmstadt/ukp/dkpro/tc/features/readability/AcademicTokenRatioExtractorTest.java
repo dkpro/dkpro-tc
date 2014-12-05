@@ -18,49 +18,33 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
-import java.io.File;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.jcas.JCas;
-import org.junit.Assert;
-import org.junit.Test;
-
-import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class AcademicTokenRatioExtractorTest
 {
-    @Test
-    public void testAcademicTokenRatioExtractor()
-        throws Exception
-    {
-
-        String text = FileUtils
-                .readFileToString(new File("src/test/resources/test_document_en.txt"));
-
-        AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(OpenNlpSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class),
-                createEngineDescription(ClearNlpLemmatizer.class));
-        AnalysisEngine engine = createEngine(desc);
-        JCas jcas = engine.newJCas();
-        jcas.setDocumentLanguage("en");
-        jcas.setDocumentText(text);
-        engine.process(jcas);
-
-        AcademicTokenRatioExtractor extractor = new AcademicTokenRatioExtractor();
-        List<Feature> features = extractor.extract(jcas);
-
-        Assert.assertEquals(2, features.size());
-        Assert.assertEquals((double) features.get(0).getValue(), 0.08, 0.1);
-        Assert.assertEquals((double) features.get(1).getValue(), 0.16, 0.1);
-    }
+    // Need to check the licenses of the lists
+    // @Test
+    // public void testAcademicTokenRatioExtractor()
+    // throws Exception
+    // {
+    //
+    // String text = FileUtils
+    // .readFileToString(new File("src/test/resources/test_document_en.txt"));
+    //
+    // AnalysisEngineDescription desc = createEngineDescription(
+    // createEngineDescription(OpenNlpSegmenter.class),
+    // createEngineDescription(OpenNlpPosTagger.class),
+    // createEngineDescription(ClearNlpLemmatizer.class));
+    // AnalysisEngine engine = createEngine(desc);
+    // JCas jcas = engine.newJCas();
+    // jcas.setDocumentLanguage("en");
+    // jcas.setDocumentText(text);
+    // engine.process(jcas);
+    //
+    // AcademicTokenRatioExtractor extractor = new AcademicTokenRatioExtractor();
+    // List<Feature> features = extractor.extract(jcas);
+    //
+    // Assert.assertEquals(2, features.size());
+    // Assert.assertEquals((double) features.get(0).getValue(), 0.08, 0.1);
+    // Assert.assertEquals((double) features.get(1).getValue(), 0.16, 0.1);
+    // }
 }
