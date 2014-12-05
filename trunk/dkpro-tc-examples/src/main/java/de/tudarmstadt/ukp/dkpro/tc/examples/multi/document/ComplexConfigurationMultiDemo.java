@@ -48,6 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGra
 import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
 /**
@@ -174,6 +175,7 @@ public class ComplexConfigurationMultiDemo
         		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
+        batch.addInnerReport(WekaClassificationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchTrainTestReport.class);
 

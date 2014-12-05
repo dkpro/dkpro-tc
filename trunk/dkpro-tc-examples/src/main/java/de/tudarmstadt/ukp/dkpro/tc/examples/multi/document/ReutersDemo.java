@@ -49,6 +49,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
 public class ReutersDemo
@@ -155,6 +156,7 @@ public class ReutersDemo
                 WekaClassificationAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
+        batch.addInnerReport(WekaClassificationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchCrossValidationReport.class);
 
@@ -169,6 +171,7 @@ public class ReutersDemo
         BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME + "-TrainTest",
         		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
+        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchTrainTestReport.class);
