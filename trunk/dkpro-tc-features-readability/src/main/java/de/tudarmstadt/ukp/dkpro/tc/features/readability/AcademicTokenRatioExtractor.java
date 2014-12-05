@@ -56,9 +56,9 @@ public class AcademicTokenRatioExtractor
      * @author beinborn
      **/
 
-    List<String> cocaWords;
-    List<String> coxheadWords;
-    boolean listsInitialized;
+    private List<String> cocaWords;
+    private List<String> coxheadWords;
+    private boolean listsInitialized;
 
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
