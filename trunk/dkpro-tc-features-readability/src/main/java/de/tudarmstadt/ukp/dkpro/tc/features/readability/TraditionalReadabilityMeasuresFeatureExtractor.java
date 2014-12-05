@@ -33,21 +33,47 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
-/**
- * Computes the readability measures ari, coleman_liau, flesch, fog, kincaid, lix and smog as
- * implemented in de.tudarmstadt.ukp.dkpro.core.readability-asl
- * 
- * @TODO add parameter to select the readability measures
- * @author beinborn
- * 
- */
 public class TraditionalReadabilityMeasuresFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
-    public static final String PARAM_MEASURES = "measures";
-    @ConfigurationParameter(name = PARAM_MEASURES, mandatory = false)
-    private String[] measures;
+    /**
+     * Computes the readability measures ari, coleman_liau, flesch, fog, kincaid, lix and smog as
+     * implemented in de.tudarmstadt.ukp.dkpro.core.readability-asl
+     * 
+     * @TODO add parameter to select the readability measures
+     * @author beinborn
+     * 
+     */
+    // having all these parameters is not nice
+    // better: several instances of extractor with measure as resource
+    public static final String PARAM_ADD_KINCAID = "kincaid";
+    @ConfigurationParameter(name = PARAM_ADD_KINCAID, mandatory = false, defaultValue = "true")
+    protected boolean kincaid;
+
+    public static final String PARAM_ADD_ARI = "ari";
+    @ConfigurationParameter(name = PARAM_ADD_ARI, mandatory = false)
+    protected boolean ari;
+
+    public static final String PARAM_ADD_COLEMANLIAU = "coleman_liau";
+    @ConfigurationParameter(name = PARAM_ADD_ARI, mandatory = true, defaultValue = "true")
+    protected boolean colemanLiau;
+
+    public static final String PARAM_ADD_FLESH = "flesch";
+    @ConfigurationParameter(name = PARAM_ADD_FLESH, mandatory = false)
+    protected boolean flesh;
+
+    public static final String PARAM_ADD_FOG = "fog";
+    @ConfigurationParameter(name = PARAM_ADD_FOG, mandatory = false)
+    protected boolean fog;
+
+    public static final String PARAM_ADD_LIX = "lix";
+    @ConfigurationParameter(name = PARAM_ADD_LIX, mandatory = false)
+    protected boolean lix;
+
+    public static final String PARAM_ADD_SMOG = "smog";
+    @ConfigurationParameter(name = PARAM_ADD_ARI, mandatory = false)
+    protected boolean smog;
 
     @Override
     public List<Feature> extract(JCas jcas)
@@ -66,31 +92,42 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
             words.add(t.getCoveredText());
         }
 
-        // per default, add features for all readability measures
-        if (measures == null) {
-            for (Measures measure : Measures.values()) {
-                featList.add(new Feature(measure.name(), readability.getReadabilityScore(measure,
-                        words, nrOfSentences)));
-            }
-        }
-
         // only add features for selected readability measures
-        // The string[] should use the names of the measures: ari,coleman_liau, flesch, fog,
-        // kincaid, lix,smog
-        else {
-            System.out.println(measures.length);
-            for (String measureName : measures) {
-                System.out.println(measureName.toString());
-                try {
-                    Measures measure = Measures.valueOf(measureName);
-                    featList.add(new Feature(measureName, readability.getReadabilityScore(measure,
-                            words, nrOfSentences)));
-                }
-                catch (IllegalArgumentException e) {
-                    throw new TextClassificationException("wrong name for measures");
-                }
-
-            }
+        Measures measure;
+        if (ari) {
+            measure = Measures.valueOf(PARAM_ADD_ARI);
+            featList.add(new Feature(PARAM_ADD_ARI, readability.getReadabilityScore(measure, words,
+                    nrOfSentences)));
+        }
+        if (kincaid) {
+            measure = Measures.valueOf(PARAM_ADD_KINCAID);
+            featList.add(new Feature(PARAM_ADD_KINCAID, readability.getReadabilityScore(measure,
+                    words, nrOfSentences)));
+        }
+        if (colemanLiau) {
+            measure = Measures.valueOf(PARAM_ADD_COLEMANLIAU);
+            featList.add(new Feature(PARAM_ADD_COLEMANLIAU, readability.getReadabilityScore(
+                    measure, words, nrOfSentences)));
+        }
+        if (flesh) {
+            measure = Measures.valueOf(PARAM_ADD_FLESH);
+            featList.add(new Feature(PARAM_ADD_FLESH, readability.getReadabilityScore(measure,
+                    words, nrOfSentences)));
+        }
+        if (fog) {
+            measure = Measures.valueOf(PARAM_ADD_FOG);
+            featList.add(new Feature(PARAM_ADD_FOG, readability.getReadabilityScore(measure, words,
+                    nrOfSentences)));
+        }
+        if (smog) {
+            measure = Measures.valueOf(PARAM_ADD_SMOG);
+            featList.add(new Feature(PARAM_ADD_SMOG, readability.getReadabilityScore(measure,
+                    words, nrOfSentences)));
+        }
+        if (lix) {
+            measure = Measures.valueOf(PARAM_ADD_LIX);
+            featList.add(new Feature(PARAM_ADD_LIX, readability.getReadabilityScore(measure, words,
+                    nrOfSentences)));
         }
         return featList;
     }
