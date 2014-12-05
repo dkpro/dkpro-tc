@@ -34,11 +34,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.
@@ -81,10 +80,10 @@ public class NumberOfFoldsSetting implements Constants {
     public void run() throws Exception
     {
 
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
+            preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
                 WekaClassificationReport
@@ -109,7 +108,7 @@ public class NumberOfFoldsSetting implements Constants {
     throws ResourceInitializationException
     {
         return createEngineDescription(
-            createEngineDescription(BreakIteratorSegmenter.class)
+        createEngineDescription(BreakIteratorSegmenter.class)
         )
     }
 

@@ -29,13 +29,12 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
-import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment
+import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
@@ -72,12 +71,12 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        CrossValidationExperiment batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
-			machineLearningAdapter: CRFSuiteAdapter,
+            preprocessing:  getPreprocessing(),
+            machineLearningAdapter: CRFSuiteAdapter,
             innerReports: [CRFSuiteClassificationReport],
             parameterSpace : [
                 dimReaders,
@@ -87,7 +86,7 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-				CRFSuiteBatchCrossValidationReport
+                CRFSuiteBatchCrossValidationReport
             ],
             numFolds: NUM_FOLDS]
 
