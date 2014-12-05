@@ -78,10 +78,18 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
         // The string[] should use the names of the measures: ari,coleman_liau, flesch, fog,
         // kincaid, lix,smog
         else {
+            System.out.println(measures.length);
             for (String measureName : measures) {
-                Measures measure = Measures.valueOf(measureName);
-                featList.add(new Feature(measureName, readability.getReadabilityScore(measure,
-                        words, nrOfSentences)));
+                System.out.println(measureName.toString());
+                try {
+                    Measures measure = Measures.valueOf(measureName);
+                    featList.add(new Feature(measureName, readability.getReadabilityScore(measure,
+                            words, nrOfSentences)));
+                }
+                catch (IllegalArgumentException e) {
+                    throw new TextClassificationException("wrong name for measures");
+                }
+
             }
         }
         return featList;

@@ -42,7 +42,6 @@ public class TypeTokenRatioExtractorTest
     public void testTypeTokenRatioExtractor()
         throws Exception
     {
-        System.out.println("TypeTokenRatioExtractorTest");
         String text = FileUtils
                 .readFileToString(new File("src/test/resources/test_document_en.txt"));
 
