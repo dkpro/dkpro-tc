@@ -94,14 +94,16 @@ public class ParsePatternUtilTest
     public void testIsComplexNominal()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
-        String[] texts = { "A girl in our dorm acts like a spoiled child.", "I know what I like",
-                "Everybody knows that you like to read", "I know you like to read.",
-                "Going to school is important.", "To be or not to be is the question." };
+        String[] texts = { "A girl in our dorm behaves like a spoiled child.",
+                "I know what I like", "Everybody knows that you like to read",
+                "I know you like to read.", "Going to school is important.",
+                "To be or not to be is the question." };
         boolean[] results = { false, false, true, false, false, false, false, false, true, false,
                 false, false, false, true, false, false, false, false, false, false, false, false,
-                true, false, false, false, false, false, false, false, false, false, false, true,
-                false, false, false, false, false, false, false, false, false, true, false, false,
-                false, false, false, false, false, true, false, false, false, false, false, false };
+                true, false, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, false, false, false, false, true, false, false, false, false,
+                false, false, false, true, false, false, false, false, false, false };
+
         AnalysisEngine engine = createEngine(createEngineDescription(
                 createEngineDescription(OpenNlpSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class),
@@ -114,6 +116,7 @@ public class ParsePatternUtilTest
             jcas.setDocumentText(text);
             engine.process(jcas);
             for (Constituent c : JCasUtil.select(jcas, Constituent.class)) {
+                // System.out.println(ParsePatternUtils.isComplexNominal(c));
                 if (ParsePatternUtils.isComplexNominal(c)) {
                     System.out.println(c.getCoveredText());
                 }
@@ -262,7 +265,7 @@ public class ParsePatternUtilTest
     public void testIsCoord()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
-        String text = "It is a long and dark way home and we want to get there all safe and sound.";
+        String text = "It is a long and dark way home and we want to get there safe and sound.";
 
         AnalysisEngine engine = createEngine(createEngineDescription(
                 createEngineDescription(OpenNlpSegmenter.class),

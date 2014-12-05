@@ -153,9 +153,14 @@ public class ParsePatternUtils
 
     public static int getParseDepth(Sentence s)
     {
-
-        Constituent root = JCasUtil.selectCovered(ROOT.class, s).get(0);
-        return getDepth(root) - 1;
+        try {
+            Constituent root = JCasUtil.selectCovered(ROOT.class, s).get(0);
+            return getDepth(root) - 1;
+        }
+        catch (IndexOutOfBoundsException e) {
+            // in this case parsing failed
+            return 1;
+        }
     }
 
     public static boolean isComplexNominal(Constituent c)
@@ -206,7 +211,6 @@ public class ParsePatternUtils
         else if (c instanceof S) {
             boolean dominatesToOrGerundVP = false;
             for (VP vp : JCasUtil.selectCovered(VP.class, c)) {
-
                 String headPos = JCasUtil.selectCovered(Token.class, vp).get(0).getPos()
                         .getPosValue();
                 if (headPos.equals("VBG") || headPos.equals("TO")) {
