@@ -69,7 +69,7 @@ public class TypeTokenRatioExtractor
 
     public static final String FULL_FACTOR_SCORE = "ThresholdForMTLD";
     @ConfigurationParameter(name = FULL_FACTOR_SCORE, defaultValue = "0.72")
-    private static double mtldThreshold;
+    protected double mtldThreshold;
 
     public static final String TYPE_TOKEN_RATIO = "Type_Token_Ratio";
 
@@ -109,7 +109,7 @@ public class TypeTokenRatioExtractor
 
             featList.addAll(Arrays.asList(new Feature("RootTTR", rootTtr)));
             featList.addAll(Arrays.asList(new Feature("CorrectedTTR", correctedTtr)));
-            featList.addAll(Arrays.asList(new Feature("Bilogarithmic TTR", bilog)));
+            featList.addAll(Arrays.asList(new Feature("BilogarithmicTTR", bilog)));
             featList.addAll(Arrays.asList(new Feature("UberIndex", uberIndex)));
             featList.addAll(Arrays.asList(new Feature("MTLD", mtld)));
 

@@ -180,19 +180,21 @@ public class ParsePatternExtractor
         nrOfNPs = Math.max(1, nrOfNPs);
         nrOfVPs = Math.max(1, nrOfVPs);
         nrOfPPs = Math.max(1, nrOfPPs);
-        nrOfClauses = Math.max(1, nrOfClauses);
         nrOfTunits = Math.max(1, nrOfTunits);
 
         featList.addAll(Arrays.asList(new Feature(AVG_NP_LENGTH, lengthSumNPs / nrOfNPs)));
         featList.addAll(Arrays.asList(new Feature(AVG_VP_LENGTH, lengthSumVPs / nrOfVPs)));
         featList.addAll(Arrays.asList(new Feature(AVG_PP_LENGTH, lengthSumPPs / nrOfPPs)));
         featList.addAll(Arrays.asList(new Feature(AVG_TUNIT_LENGTH, lengthSumTunits / nrOfTunits)));
-        featList.addAll(Arrays
-                .asList(new Feature(AVG_CLAUSE_LENGTH, lengthSumClauses / nrOfClauses)));
+
         featList.addAll(Arrays
                 .asList(new Feature(AVG_TREE_DEPTH, parseTreeDepthSum / nrOfSentences)));
 
         featList.addAll(Arrays.asList(new Feature(CLAUSES_PER_TUNIT, nrOfClauses / nrOfTunits)));
+
+        nrOfClauses = Math.max(1, nrOfClauses);
+        featList.addAll(Arrays
+                .asList(new Feature(AVG_CLAUSE_LENGTH, lengthSumClauses / nrOfClauses)));
         featList.addAll(Arrays.asList(new Feature(COMPLEX_TUNITS_PER_TUNIT, nrOfComplexTunits
                 / nrOfTunits)));
         featList.addAll(Arrays.asList(new Feature(COORDS_PER_TUNIT, nrOfCoords / nrOfTunits)));

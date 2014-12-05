@@ -337,7 +337,7 @@ public class ParsePatternUtils
                         return false;
                     }
                 }
-                System.out.println("Is a clause: " + c.getCoveredText());
+
                 return true;
             }
         }
