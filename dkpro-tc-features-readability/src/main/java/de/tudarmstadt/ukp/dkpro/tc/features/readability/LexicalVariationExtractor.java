@@ -77,13 +77,16 @@ public class LexicalVariationExtractor
     public static final String ADJ_VARIATION = "AdjectiveVariation";
     public static final String ADV_VARIATION = "AdverbVariation";
     public static final String MODIFIER_VARIATION = "ModifierVariation";
+    public static final String LEXICAL_DENSITY = "LexicalDensity";
+    public static final String LEXICAL_VARIATION = "LexicalVariation";
 
     public List<Feature> extract(JCas jcas)
 
     {
 
         double nrOfLexicalWords = 0.0;
-
+        double nrOfNonLexicalWords = 0.0;
+        Set<String> lexicalTokens = new HashSet<String>();
         int nrOfVerbs = 0;
         int nrOfAdverbs = 0;
         int nrOfAdjectives = 0;
@@ -96,7 +99,9 @@ public class LexicalVariationExtractor
             POS p = t.getPos();
 
             if (ReadabilityUtils.isLexicalWord(t)) {
+
                 nrOfLexicalWords++;
+                lexicalTokens.add(t.getLemma().getValue());
                 if (p instanceof N) {
                     nrOfNouns++;
                 }
@@ -113,6 +118,11 @@ public class LexicalVariationExtractor
                     verbTypes.add(t.getLemma().getValue());
                 }
             }
+            else if (ReadabilityUtils.isWord(t)) {
+
+                nrOfNonLexicalWords++;
+            }
+
         }
 
         List<Feature> featList = new ArrayList<Feature>();
@@ -135,9 +145,7 @@ public class LexicalVariationExtractor
                     .asList(new Feature(VERB_VARIATION, nrOfVerbs / nrOfLexicalWords)));
             featList.addAll(Arrays.asList(new Feature(VERB_VARIATION1, nrOfVerbs
                     / (double) verbTypes.size())));
-            // // the value is so high, it does not seem to make sense to compare it with the others
-            // featList.addAll(Arrays.asList(new Feature(SQUARED_VERB_VARIATION,
-            // (nrOfVerbs * nrOfVerbs) / (double) verbTypes.size())));
+
             featList.addAll(Arrays.asList(new Feature(CORRECTED_VERB_VARIATION, nrOfVerbs
                     / Math.sqrt((2 * ((double) verbTypes.size()))))));
             featList.addAll(Arrays.asList(new Feature(ADJ_VARIATION, nrOfAdjectives
@@ -146,6 +154,13 @@ public class LexicalVariationExtractor
                     .asList(new Feature(ADV_VARIATION, nrOfAdverbs / nrOfLexicalWords)));
             featList.addAll(Arrays.asList(new Feature(MODIFIER_VARIATION, nrOfModifiers
                     / nrOfLexicalWords)));
+            featList.addAll(Arrays.asList(new Feature(LEXICAL_DENSITY, nrOfLexicalWords
+                    / (nrOfLexicalWords + nrOfNonLexicalWords))));
+            featList.addAll(Arrays.asList(new Feature(LEXICAL_VARIATION, nrOfLexicalWords
+                    / lexicalTokens.size())));
+            // the value is so high, it does not seem to make sense to compare it with the others
+            featList.addAll(Arrays.asList(new Feature(SQUARED_VERB_VARIATION,
+                    (nrOfVerbs * nrOfVerbs) / (double) verbTypes.size())));
         }
         return featList;
     }

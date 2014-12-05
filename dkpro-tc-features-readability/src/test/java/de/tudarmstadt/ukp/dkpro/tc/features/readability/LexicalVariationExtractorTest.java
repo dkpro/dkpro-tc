@@ -58,7 +58,8 @@ public class LexicalVariationExtractorTest
         LexicalVariationExtractor extractor = new LexicalVariationExtractor();
         List<Feature> features = extractor.extract(jcas);
 
-        Assert.assertEquals(11, features.size());
+        Assert.assertEquals(14, features.size());
+
         Assert.assertEquals((double) features.get(0).getValue(), 4.2, 0.1);
         Assert.assertEquals((double) features.get(1).getValue(), 1.6, 0.1);
         Assert.assertEquals((double) features.get(2).getValue(), 0.9, 0.1);
@@ -70,6 +71,8 @@ public class LexicalVariationExtractorTest
         Assert.assertEquals((double) features.get(8).getValue(), 0.15, 0.1);
         Assert.assertEquals((double) features.get(9).getValue(), 0.1, 0.1);
         Assert.assertEquals((double) features.get(10).getValue(), 0.2, 0.1);
-
+        Assert.assertEquals((double) features.get(11).getValue(), 0.6, 0.1);
+        Assert.assertEquals((double) features.get(12).getValue(), 1.5, 0.1);
+        Assert.assertEquals((double) features.get(13).getValue(), 110.3, 0.1);
     }
 }
