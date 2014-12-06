@@ -45,7 +45,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestUsingTCEvaluationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -136,7 +135,6 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.class,
                 getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchTrainTestUsingTCEvaluationReport.class);
