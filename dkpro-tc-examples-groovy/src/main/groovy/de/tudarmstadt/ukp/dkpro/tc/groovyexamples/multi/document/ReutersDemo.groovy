@@ -35,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
@@ -226,6 +227,8 @@ public class ReutersDemo implements Constants {
 
     public static void main(String[] args)
     {
+		DemoUtils.setDkproHome(ReutersDemo.name);
+		
         new ReutersDemo().runTrainTest()
         new ReutersDemo().runCrossValidation()
     }

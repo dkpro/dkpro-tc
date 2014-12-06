@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.svmhmm;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,6 +51,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -86,6 +88,8 @@ public class SequenceClassificationTest
     private static final int NUM_FOLDS = 2;
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
+    @Rule
+    public TestName name = new TestName();
 
     @BeforeClass
     public static void setUpBeforeClass()
@@ -208,6 +212,9 @@ public class SequenceClassificationTest
             throws Exception
 
     {
+        String path = "target/repository/" + getClass().getSimpleName() + "/"
+                + name.getMethodName();
+        System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
         ExperimentCrossValidation batch = new ExperimentCrossValidation("SequenceLabelingCV",
                 // random classifier
                 RandomSVMHMMAdapter.class,
