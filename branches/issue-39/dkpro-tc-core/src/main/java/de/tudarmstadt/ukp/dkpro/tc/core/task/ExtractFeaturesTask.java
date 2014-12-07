@@ -43,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
@@ -65,12 +66,12 @@ public class ExtractFeaturesTask
      */
     public static final String INPUT_KEY = "input";
 
-    @Discriminator
-    protected List<String> featureSet;
+//    @Discriminator
+//    protected List<String> featureSet;
     @Discriminator
     protected List<String> featureFilters;
-    @Discriminator
-    protected List<Object> pipelineParameters;
+//    @Discriminator
+//    protected List<Object> pipelineParameters;
     @Discriminator
     private File filesRoot;
     @Discriminator
@@ -87,6 +88,8 @@ public class ExtractFeaturesTask
     private String dataWriter;
     @Discriminator
     private boolean developerMode;
+    @Discriminator
+    private List<DynamicDiscriminableFunctionBase> featureExtractors;
 
     private boolean isTesting = false;
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
@@ -148,18 +151,18 @@ public class ExtractFeaturesTask
             }
         }
 
-        // the following file location is specific to the FE task, so it cannot be added to the
-        // global parameter space
-        List<Object> parametersCopy = new ArrayList<Object>();
-        if (pipelineParameters != null) {
-            parametersCopy.addAll(pipelineParameters);
-        }
+//        // the following file location is specific to the FE task, so it cannot be added to the
+//        // global parameter space
+//        List<Object> parametersCopy = new ArrayList<Object>();
+//        if (pipelineParameters != null) {
+//            parametersCopy.addAll(pipelineParameters);
+//        }
 
-        for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
-                    entry.getValue());
-            parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
-        }
+//        for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
+//            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
+//                    entry.getValue());
+//            parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
+//        }
         
         // as feature filters are optional, check for null
         if (featureFilters == null) {
@@ -167,8 +170,8 @@ public class ExtractFeaturesTask
         }
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                parametersCopy, outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
-                featureStore, true, developerMode, isTesting, featureFilters, featureSet.toArray(new String[0]));
+                outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
+                featureStore, true, developerMode, isTesting, featureFilters, featureExtractors, aContext);
 
         return connector;
     }
