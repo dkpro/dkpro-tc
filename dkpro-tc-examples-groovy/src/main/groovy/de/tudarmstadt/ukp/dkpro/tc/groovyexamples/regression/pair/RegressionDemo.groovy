@@ -32,12 +32,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * A demo for pair classification with a regression outcome.
@@ -78,6 +79,7 @@ public class RegressionDemo implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
 
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS, [SMOreg.name])
@@ -99,16 +101,17 @@ public class RegressionDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        ExperimentCrossValidation batchTask = [
+        BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter,
+            preprocessingPipeline:  getPreprocessing(),
+            machineLearningAdapter: WekaRegressionAdapter.getInstance(),
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],
@@ -129,16 +132,17 @@ public class RegressionDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        ExperimentTrainTest batchTask = [
+        BatchTaskTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter,
+            preprocessingPipeline:  getPreprocessing(),
+            machineLearningAdapter: WekaRegressionAdapter.getInstance(),
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],

@@ -18,43 +18,6 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.collection.CollectionException;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.component.CasDumpWriter;
-import org.apache.uima.fit.component.NoOpAnnotator;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.factory.JCasFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.apache.uima.fit.util.JCasUtil;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -75,9 +38,35 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.collection.CollectionException;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.component.CasDumpWriter;
+import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.junit.*;
+import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Ivan Habernal
@@ -88,8 +77,6 @@ public class SequenceClassificationTest
     private static final int NUM_FOLDS = 2;
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    @Rule
-    public TestName name = new TestName();
 
     @BeforeClass
     public static void setUpBeforeClass()
@@ -212,12 +199,9 @@ public class SequenceClassificationTest
             throws Exception
 
     {
-        String path = "target/repository/" + getClass().getSimpleName() + "/"
-                + name.getMethodName();
-        System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("SequenceLabelingCV",
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("SequenceLabelingCV",
                 // random classifier
-                RandomSVMHMMAdapter.class,
+                new RandomSVMHMMAdapter(),
                 // no additional annotations
                 AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class),
                 NUM_FOLDS);
@@ -247,6 +231,7 @@ public class SequenceClassificationTest
 
         return new ParameterSpace(
                 Dimension.createBundle("readers", dimReaders),
+                Dimension.create(Constants.DIM_DATA_WRITER, SVMHMMDataWriter.class.getName()),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
                 Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),

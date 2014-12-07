@@ -38,10 +38,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -95,6 +96,7 @@ public class BrownPosDemoCRFSuite
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, CRFSuiteDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
                         DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets);
 
@@ -106,8 +108,8 @@ public class BrownPosDemoCRFSuite
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite",
-                CRFSuiteAdapter.class, getPreprocessing(), NUM_FOLDS);
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV_CRFSuite",
+                CRFSuiteAdapter.getInstance(), getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

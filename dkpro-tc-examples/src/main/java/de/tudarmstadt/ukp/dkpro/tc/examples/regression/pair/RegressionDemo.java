@@ -39,12 +39,13 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * A demo for pair classification with a regression outcome.
@@ -109,7 +110,8 @@ public class RegressionDemo
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readerTrain", dimReaders), Dimension.create(
                         Constants.DIM_FEATURE_MODE, Constants.FM_PAIR), Dimension.create(
-                        Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION), dimFeatureSets,
+                        Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION), Dimension.create(
+                        Constants.DIM_DATA_WRITER, WekaDataWriter.class.getName()), dimFeatureSets,
                 dimClassificationArgs);
         return pSpace;
     }
@@ -118,8 +120,8 @@ public class RegressionDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("RegressionExampleCV",
-                WekaRegressionAdapter.class,
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("RegressionExampleCV",
+                WekaRegressionAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -134,8 +136,8 @@ public class RegressionDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("RegressionExampleTrainTest",
-                WekaRegressionAdapter.class,
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("RegressionExampleTrainTest",
+                WekaRegressionAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

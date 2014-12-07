@@ -30,7 +30,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.trees.RandomForest;
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -39,11 +39,12 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -112,6 +113,7 @@ public class TwitterSentimentDemo
                         NumberOfHashTagsDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
                 dimClassificationArgs);
@@ -123,8 +125,8 @@ public class TwitterSentimentDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV",
-        		WekaClassificationAdapter.class,
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwitterSentimentCV",
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing(), 10);
         batch.setParameterSpace(pSpace);
         batch.addReport(WekaBatchCrossValidationReport.class);
@@ -137,8 +139,8 @@ public class TwitterSentimentDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest",
-        		WekaClassificationAdapter.class,
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwitterSentimentTrainTest",
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(WekaBatchTrainTestReport.class);
@@ -151,8 +153,8 @@ public class TwitterSentimentDemo
         throws ResourceInitializationException
     {
         return createEngineDescription(
-                ArktweetPosTagger.class, ArktweetPosTagger.PARAM_LANGUAGE, "en",
-                ArktweetPosTagger.PARAM_VARIANT,
+                ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
+                ArktweetTagger.PARAM_VARIANT,
                 "default");
     }
 }

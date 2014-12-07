@@ -18,21 +18,21 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.report;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.IOUtils;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Ivan Habernal

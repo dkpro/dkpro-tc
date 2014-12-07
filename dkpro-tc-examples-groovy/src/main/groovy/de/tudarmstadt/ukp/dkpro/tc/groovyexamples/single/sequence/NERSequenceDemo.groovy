@@ -35,7 +35,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
 import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
 
 /**
  * Example for German NER as sequence classification (groovy setup).
@@ -50,6 +51,7 @@ implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, MalletDataWriter.name)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
         NrOfCharsUFE.name,
@@ -73,17 +75,18 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        ExperimentCrossValidation batchTask = [
+        BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessing:  getPreprocessing(),
-            machineLearningAdapter: MalletAdapter,
+            preprocessingPipeline:  getPreprocessing(),
+            machineLearningAdapter: MalletAdapter.getInstance(),
             innerReports: [MalletClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,

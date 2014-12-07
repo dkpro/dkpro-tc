@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013
+ * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -17,9 +17,9 @@
  ******************************************************************************/
 
 /**
- * Readability feature extractors
- * Many of them work currently only for English.
+ * Contains high-level machine learning functionality (mostly predefined classification scenarios).
  *
+ * @since 0.7.0
  */
-package de.tudarmstadt.ukp.dkpro.tc.features.readability;
+package de.tudarmstadt.ukp.dkpro.tc.ml.task;
 

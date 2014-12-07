@@ -863,6 +863,7 @@ public class WekaUtils
     /**
      * @return The offset of the instanceId attribute within the weka instance
      */
+    @SuppressWarnings("unchecked")
     public static int getInstanceIdAttributeOffset(Instances data)
     {
         int attOffset = 1;
@@ -884,13 +885,14 @@ public class WekaUtils
      * @param eval
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static List<String> getClassLabels(Instances data, boolean isMultilabel)
     {
         List<String> classLabelList = new ArrayList<String>();
         if (!isMultilabel) {
-            Enumeration<Object> classLabels = data.classAttribute().enumerateValues();
+            Enumeration<String> classLabels = data.classAttribute().enumerateValues();
             while (classLabels.hasMoreElements()) {
-                classLabelList.add((String) classLabels.nextElement());
+                classLabelList.add(classLabels.nextElement());
             }
         }
         else {

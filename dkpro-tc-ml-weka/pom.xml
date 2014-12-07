@@ -53,6 +53,7 @@
         <dependency>
             <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
             <artifactId>dkpro-tc-fstore-simple</artifactId>
+            <scope>test</scope>
         </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -130,20 +131,6 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-evaluation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features-ngram</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.tokit-asl
-			</artifactId>
 		</dependency>
 	</dependencies>
 </project>

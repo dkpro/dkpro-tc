@@ -45,10 +45,10 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a multi-label experiment,
@@ -156,6 +156,7 @@ public class ComplexConfigurationMultiDemo
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, MekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), Dimension.create(
                         DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimPipelineParameters,
@@ -169,11 +170,10 @@ public class ComplexConfigurationMultiDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		WekaClassificationAdapter.class,
+        BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME + "-TrainTest",
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchTrainTestReport.class);
 

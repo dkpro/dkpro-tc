@@ -41,7 +41,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -95,6 +96,7 @@ public class BrownPosDemoMallet
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, MalletDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
                         DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets);
 
@@ -106,8 +108,8 @@ public class BrownPosDemoMallet
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_Mallet",
-        		MalletAdapter.class,
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV_Mallet",
+        		MalletAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(MalletClassificationReport.class);
         batch.setParameterSpace(pSpace);

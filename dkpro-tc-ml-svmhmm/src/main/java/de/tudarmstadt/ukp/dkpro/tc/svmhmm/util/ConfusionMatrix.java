@@ -17,14 +17,7 @@ package de.tudarmstadt.ukp.dkpro.tc.svmhmm.util;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Implementation of confusion matrix for evaluating learning algorithms; computes macro F-measure,

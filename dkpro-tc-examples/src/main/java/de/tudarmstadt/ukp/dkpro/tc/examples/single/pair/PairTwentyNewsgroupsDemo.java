@@ -40,10 +40,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * PairTwentyNewsgroupsExperiment, using Java
@@ -53,7 +54,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
  * file: see the files in src/main/resources/lists/ as examples.
  * <p>
  * PairTwentyNewsgroupsExperiment uses similar architecture as TwentyNewsgroupsGroovyExperiment (
- * {@link ExperimentTrainTest}) to automatically wire the standard tasks for a basic TrainTest setup.
+ * {@link BatchTaskTrainTest}) to automatically wire the standard tasks for a basic TrainTest setup.
  * To remind the user to be careful of information leak when training and testing on pairs of data
  * from similar sources, we do not provide a demo Cross Validation setup here. (Our sample train and
  * test datasets are from separate newsgroups.) Please see TwentyNewsgroupsGroovyExperiment for a
@@ -123,6 +124,7 @@ public class PairTwentyNewsgroupsDemo
                 Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_PAIR), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
@@ -135,8 +137,8 @@ public class PairTwentyNewsgroupsDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-        		WekaClassificationAdapter.class,
+        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest",
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

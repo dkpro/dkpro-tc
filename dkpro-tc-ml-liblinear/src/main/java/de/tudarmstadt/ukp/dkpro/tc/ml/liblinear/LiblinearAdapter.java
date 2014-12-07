@@ -24,8 +24,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 
 public class LiblinearAdapter 
 	implements TCMachineLearningAdapter
@@ -77,10 +76,5 @@ public class LiblinearAdapter
         }
         
         return null;
-	}
-
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
-		return LiblinearDataWriter.class;
 	}
 }

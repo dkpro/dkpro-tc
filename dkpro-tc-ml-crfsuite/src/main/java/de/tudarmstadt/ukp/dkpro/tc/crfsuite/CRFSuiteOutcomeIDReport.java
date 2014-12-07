@@ -30,8 +30,8 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
@@ -143,14 +143,14 @@ public class CRFSuiteOutcomeIDReport
 
         int maxLines = predictions.size();
 
-        for (int idx = 1; idx < maxLines; idx++) {
+        for (int idx = 0; idx < maxLines; idx++) {
             String entry = predictions.get(idx);
             String[] split = entry.split("\t");
             if (split.length != 2) {
                 continue;
             }
 
-            String id = extractTCId(testFeatures.get(idx-1));
+            String id = extractTCId(testFeatures.get(idx));
             int numPred = aMapping.get(split[1]);
             int numGold = aMapping.get(split[0]);
             String propEntry = numPred + SEPARATOR_CHAR + numGold;
@@ -164,13 +164,8 @@ public class CRFSuiteOutcomeIDReport
     {
         int begin = line.indexOf(ID_CONSTANT_VALUE);
         int end = line.indexOf("\t", begin + ID_CONSTANT_VALUE.length());
-        
-        // Assuming the ID is at the end of the line:
-        String id = line.substring(begin + ID_CONSTANT_VALUE.length(), line.length());
-        // But in case it's not:
-        if(end != -1){
-        	id = line.substring(begin + ID_CONSTANT_VALUE.length(), end);
-        }
+
+        String id = line.substring(begin + ID_CONSTANT_VALUE.length(), end);
         return id;
     }
 }

@@ -40,10 +40,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This is an example for POS tagging as unit classification. Each POS is treated as a
@@ -77,8 +78,8 @@ public class BrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV",
-        		WekaClassificationAdapter.class,
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("BrownPosDemoCV",
+        		WekaClassificationAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
@@ -118,6 +119,7 @@ public class BrownUnitPosDemo
 
         @SuppressWarnings("unchecked")
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);

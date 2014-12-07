@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.evaluation;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.AVERAGE_THRESHOLD;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.EMPTY_VECTORS;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.FMEASURE;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_PRED;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_REAL;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.NUMBER_EXAMPLES;
@@ -48,8 +49,6 @@ import org.apache.commons.math.stat.descriptive.moment.Mean;
 public class MekaEvaluationUtils
     extends MLEvalUtils
 {
-
-    public static final String HAMMING_ACCURACY = "Hemming Accuracy";
 
     /**
      * Calculates a number of evaluation measures for multi-label classification.
@@ -86,8 +85,8 @@ public class MekaEvaluationUtils
 
         // class-wise measures
         for (int j = 0; j < L; j++) {
-            results.put(HAMMING_ACCURACY + " [" + classNames[j] + "]",
-                    Metrics.P_Hamming(goldStandard, Ypred, j));
+            results.put(FMEASURE + " [" + classNames[j] + "]",
+                    Metrics.P_FmicroAvg(goldStandard, Ypred));
             results.put(PRECISION + " [" + classNames[j] + "]",
                     Metrics.P_Precision(goldStandard, Ypred, j));
             results.put(RECALL + " [" + classNames[j] + "]",

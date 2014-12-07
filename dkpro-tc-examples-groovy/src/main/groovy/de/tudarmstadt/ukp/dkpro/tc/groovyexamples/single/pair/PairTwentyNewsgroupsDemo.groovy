@@ -33,11 +33,12 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 
 /**
@@ -49,7 +50,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
  * examples.
  * <p>
  * PairTwentyNewsgroupsExperiment uses similar architecture as TwentyNewsgroupsGroovyExperiment
- * ({@link TrainTestExperiment}) to automatically wire the standard tasks for
+ * ({@link BatchTaskTrainTest}) to automatically wire the standard tasks for
  * a basic TrainTest setup.  To remind the user to be careful of information leak when
  * training and testing on pairs of data from similar sources, we do not provide
  * a demo Cross Validation setup here.  (Our sample train and test datasets are from separate
@@ -89,6 +90,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     //	[NaiveBayes.name],
@@ -116,17 +118,18 @@ class PairTwentyNewsgroupsDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        ExperimentTrainTest batchTask = [
+        BatchTaskTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            preprocessingPipeline:	getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],

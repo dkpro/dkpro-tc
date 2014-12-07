@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.svmhmm.random;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.SVMHMMRandomTestTask;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter

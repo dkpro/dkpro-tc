@@ -40,12 +40,12 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
@@ -53,7 +53,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask
  * The TwentyNewsgroupsGroovyExtendedExperiment does the same as TwentyNewsgroupsGroovyExperiment,
  * but it manually sets up the sub-tasks and builds a generic batch task.
  *
- * In TwentyNewsgroupsGroovyExperiment, this is done automatically in the {@link CrossValidationExperiment} and {@link TrainTestExperiment},
+ * In TwentyNewsgroupsGroovyExperiment, this is done automatically in the BatchTaskCV and BatchTaskTrainTest,
  * which is more convenient, but less flexible.
  *
  * Currently only supports train-test setup.
@@ -94,6 +94,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -143,13 +144,13 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          */
 
         PreprocessTask preprocessTaskTrain = [
-            preprocessing:getPreprocessing(),
+            preprocessingPipeline:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
             isTesting: false
         ]
 
         PreprocessTask preprocessTaskTest = [
-            preprocessing:getPreprocessing(),
+            preprocessingPipeline:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
             isTesting: true
         ]
@@ -160,14 +161,12 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
         ExtractFeaturesTask featuresTrainTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Train",
-            isTesting: false,
-            mlAdapter: WekaClassificationAdapter.instance
+            isTesting: false
         ]
 
         ExtractFeaturesTask featuresTestTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Test",
-            isTesting: true,
-            mlAdapter: WekaClassificationAdapter.instance
+            isTesting: true
         ]
 
         WekaTestTask testTask = [
@@ -200,6 +199,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters

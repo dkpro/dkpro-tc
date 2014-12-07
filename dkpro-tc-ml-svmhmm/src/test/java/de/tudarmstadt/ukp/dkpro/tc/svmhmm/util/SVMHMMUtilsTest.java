@@ -18,15 +18,15 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.util;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class SVMHMMUtilsTest
 {

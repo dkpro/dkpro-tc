@@ -38,11 +38,12 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 
 /**
  * Example for NER as sequence classification.
@@ -74,8 +75,8 @@ public class NERSequenceDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
-        		CRFSuiteAdapter.class,
+        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("NamedEntitySequenceDemoCV",
+        		CRFSuiteAdapter.getInstance(),
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
@@ -105,6 +106,7 @@ public class NERSequenceDemo
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_DATA_WRITER, CRFSuiteDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets);
 

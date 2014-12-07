@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
@@ -51,13 +51,13 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
  * @author jamison
  * 
  */
-public class CrossValidationExperimentWithFoldControl
-    extends ExperimentCrossValidation
+public class BatchTaskCrossValidationWithFoldControl
+    extends BatchTaskCrossValidation
 {
 
     protected Comparator<String> comparator;// EJ
 
-    public CrossValidationExperimentWithFoldControl()
+    public BatchTaskCrossValidationWithFoldControl()
     {/* needed for Groovy */
     }
 
@@ -65,16 +65,16 @@ public class CrossValidationExperimentWithFoldControl
      * EJ added
      * 
      * @param aExperimentName
-     * @param preprocessing
+     * @param preprocessingPipeline
      * @param aNumFolds
      * @param comparator
      */
-    public CrossValidationExperimentWithFoldControl(String aExperimentName,
-            AnalysisEngineDescription preprocessing,
+    public BatchTaskCrossValidationWithFoldControl(String aExperimentName,
+            AnalysisEngineDescription preprocessingPipeline,
             int aNumFolds, Comparator<String> aComparator)
     {
         setExperimentName(aExperimentName);
-        setPreprocessing(preprocessing);
+        setPreprocessingPipeline(preprocessingPipeline);
         setNumFolds(aNumFolds);
         setComparator(aComparator);
         // set name of overall batch task
@@ -102,7 +102,7 @@ public class CrossValidationExperimentWithFoldControl
         ClassNotFoundException
     {
 
-        if (experimentName == null || preprocessing == null) {
+        if (experimentName == null || preprocessingPipeline == null) {
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and aggregate.");
         }
@@ -117,7 +117,7 @@ public class CrossValidationExperimentWithFoldControl
 
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
-        preprocessTask.setPreprocessing(preprocessing);
+        preprocessTask.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTask.setOperativeViews(operativeViews);
         preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
 

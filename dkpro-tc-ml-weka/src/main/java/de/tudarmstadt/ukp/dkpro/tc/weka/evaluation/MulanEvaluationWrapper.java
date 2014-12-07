@@ -36,11 +36,13 @@ import mulan.evaluation.measure.ExampleBasedPrecision;
 import mulan.evaluation.measure.ExampleBasedRecall;
 import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.IsError;
+import mulan.evaluation.measure.MacroAUC;
 import mulan.evaluation.measure.MacroFMeasure;
 import mulan.evaluation.measure.MacroPrecision;
 import mulan.evaluation.measure.MacroRecall;
 import mulan.evaluation.measure.MeanAveragePrecision;
 import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.MicroAUC;
 import mulan.evaluation.measure.MicroFMeasure;
 import mulan.evaluation.measure.MicroPrecision;
 import mulan.evaluation.measure.MicroRecall;
@@ -150,8 +152,8 @@ public class MulanEvaluationWrapper
         // add confidence measures if applicable
         if (prediction.hasConfidences()) {
             measures.add(new MeanAveragePrecision(numOfLabels));
-            // measures.add(new MicroAUC(numOfLabels));
-            // measures.add(new MacroAUC(numOfLabels));
+            measures.add(new MicroAUC(numOfLabels));
+            measures.add(new MacroAUC(numOfLabels));
         }
         return measures;
     }

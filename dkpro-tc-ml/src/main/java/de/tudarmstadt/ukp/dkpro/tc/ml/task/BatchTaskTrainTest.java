@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.ml;
+package de.tudarmstadt.ukp.dkpro.tc.ml.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +26,12 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 
 /**
  * Train-Test setup
@@ -41,12 +40,12 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
  * @author zesch
  * 
  */
-public class ExperimentTrainTest
+public class BatchTaskTrainTest
     extends BatchTask
 {
 
     private String experimentName;
-    private AnalysisEngineDescription preprocessing;
+    private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
     private List<Class<? extends Report>> innerReports;
     private TCMachineLearningAdapter mlAdapter;
@@ -60,7 +59,7 @@ public class ExperimentTrainTest
     private ExtractFeaturesTask featuresTestTask;
     private ExecutableTaskBase testTask;
 
-    public ExperimentTrainTest()
+    public BatchTaskTrainTest()
     {/* needed for Groovy */
     }
 
@@ -69,16 +68,15 @@ public class ExperimentTrainTest
      * 
      * @param aExperimentName
      *            name of the experiment
-     * @param preprocessing
+     * @param preprocessingPipeline
      *            preprocessing analysis engine aggregate
      */
-    public ExperimentTrainTest(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessing)
-            throws TextClassificationException
+    public BatchTaskTrainTest(String aExperimentName, TCMachineLearningAdapter mlAdapter,
+            AnalysisEngineDescription preprocessingPipeline)
     {
         setExperimentName(aExperimentName);
         setMachineLearningAdapter(mlAdapter);
-        setPreprocessing(preprocessing);
+        setPreprocessingPipeline(preprocessingPipeline);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
     }
@@ -104,7 +102,7 @@ public class ExperimentTrainTest
      */
     private void init()
     {
-        if (experimentName == null || preprocessing == null)
+        if (experimentName == null || preprocessingPipeline == null)
 
         {
             throw new IllegalStateException(
@@ -114,22 +112,20 @@ public class ExperimentTrainTest
         // check the validity of the experiment setup first
         checkTaskTrain = new ValidityCheckTask();
         checkTaskTrain.setType(checkTaskTrain.getType() + "-Train-" + experimentName);
-        checkTaskTrain.setMlAdapter(mlAdapter);
         checkTaskTest = new ValidityCheckTask();
         checkTaskTest.setTesting(true);
         checkTaskTest.setType(checkTaskTest.getType() + "-Test-" + experimentName);
-        checkTaskTest.setMlAdapter(mlAdapter);
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setPreprocessing(preprocessing);
+        preprocessTaskTrain.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setPreprocessing(preprocessing);
+        preprocessTaskTest.setPreprocessingPipeline(preprocessingPipeline);
         preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
@@ -145,7 +141,6 @@ public class ExperimentTrainTest
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
-        featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
@@ -153,7 +148,6 @@ public class ExperimentTrainTest
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
-        featuresTestTask.setMlAdapter(mlAdapter);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
@@ -190,16 +184,9 @@ public class ExperimentTrainTest
         addTask(testTask);
     }
 
-    public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
-    	throws TextClassificationException
+    public void setMachineLearningAdapter(TCMachineLearningAdapter mlAdapter)
     {
-        try {
-			this.mlAdapter = mlAdapter.newInstance();
-		} catch (InstantiationException e) {
-			throw new TextClassificationException(e);
-		} catch (IllegalAccessException e) {
-			throw new TextClassificationException(e);
-		}
+        this.mlAdapter = mlAdapter;
     }
 
     public void setExperimentName(String experimentName)
@@ -207,9 +194,9 @@ public class ExperimentTrainTest
         this.experimentName = experimentName;
     }
 
-    public void setPreprocessing(AnalysisEngineDescription preprocessing)
+    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
-        this.preprocessing = preprocessing;
+        this.preprocessingPipeline = preprocessingPipeline;
     }
 
     public void setOperativeViews(List<String> operativeViews)

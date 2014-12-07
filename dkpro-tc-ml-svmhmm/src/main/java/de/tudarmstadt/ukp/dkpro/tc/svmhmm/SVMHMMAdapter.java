@@ -18,26 +18,24 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm;
 
-import java.util.Collection;
-
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
-import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
+
+import java.util.Collection;
 
 /**
  * @author Ivan Habernal
  */
 public class SVMHMMAdapter
-	implements TCMachineLearningAdapter
+        implements TCMachineLearningAdapter
 {
 
     @Override
@@ -91,10 +89,5 @@ public class SVMHMMAdapter
         }
         return null;
     }
-
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
-		return SVMHMMDataWriter.class;
-	}
 }
 

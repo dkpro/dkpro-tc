@@ -17,9 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
-import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.CORRELATION;
-import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PCT_CORRECT;
-import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.PCT_INCORRECT;
+import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +38,7 @@ import java.util.regex.Pattern;
 //import meka.core.Result;
 //import mulan.evaluation.measure.MicroPrecision;
 //import mulan.evaluation.measure.MicroRecall;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.jfree.chart.ChartFactory;

@@ -43,7 +43,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
@@ -85,6 +84,8 @@ public class ExtractFeaturesTask
     @Discriminator
     private String featureStore;
     @Discriminator
+    private String dataWriter;
+    @Discriminator
     private boolean developerMode;
 
     private boolean isTesting = false;
@@ -94,14 +95,16 @@ public class ExtractFeaturesTask
     // each FE)
     // could be used to automatically configure preprocessing
     private Set<String> requiredTypes;
-    
-    private TCMachineLearningAdapter mlAdapter;
 
-	public void setMlAdapter(TCMachineLearningAdapter mlAdapter) {
-		this.mlAdapter = mlAdapter;
-	}
+    /**
+     * @return
+     */
+    public String getDataWriter()
+    {
+        return dataWriter;
+    }
 
-	/**
+    /**
      * @param isTesting
      */
     public void setTesting(boolean isTesting)
@@ -164,7 +167,7 @@ public class ExtractFeaturesTask
         }
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass(learningMode).getName() , learningMode, featureMode,
+                parametersCopy, outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
                 featureStore, true, developerMode, isTesting, featureFilters, featureSet.toArray(new String[0]));
 
         return connector;

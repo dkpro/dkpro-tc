@@ -16,8 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.unit
-
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 
@@ -33,10 +31,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * This is an example for POS tagging as unit classification (groovy setup). Each POS is treated as a
@@ -67,6 +66,7 @@ implements Constants {
         ]])
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
         NrOfTokensUFE.name
@@ -78,17 +78,18 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        ExperimentCrossValidation batchTask = [
+        BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            preprocessingPipeline:  getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimFeatureSets,
                 dimClassificationArgs
             ],

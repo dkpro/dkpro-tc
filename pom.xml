@@ -29,15 +29,15 @@
 		<url>http://www.ukp.tu-darmstadt.de/</url>
 	</organization>
 	<properties>
-		<dkpro.core.version>1.7.0</dkpro.core.version>
+		<dkpro.core.version>1.6.2</dkpro.core.version>
 		<lucene.version>4.4.0</lucene.version>
 		<uima.version>2.6.0</uima.version>
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/trunk</developerConnection>
-		<url>http://code.google.com/p/dkpro-tc/source/browse/</url>
+		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/branches/0.7.x</connection>
+		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/branches/0.7.x</developerConnection>
+		<url>http://code.google.com/p/dkpro-tc/source/browse/branches/0.7.x</url>
 	</scm>
 	<repositories>
 		<repository>
@@ -93,7 +93,6 @@
 		<module>dkpro-tc-features-ngram</module>
 		<module>dkpro-tc-features-pair</module>
 		<module>dkpro-tc-features-pair-similarity</module>
-		<module>dkpro-tc-features-readability</module>
 		<module>dkpro-tc-features-spelling</module>
 		<module>dkpro-tc-fstore-simple</module>
 		<module>dkpro-tc-integrationtest</module>
@@ -161,11 +160,6 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-pair-similarity</artifactId>
-				<version>0.7.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>dkpro-tc-features-readability</artifactId>
 				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -243,13 +237,14 @@
 			<dependency>
 				<groupId>nz.ac.waikato.cms.weka</groupId>
 				<artifactId>weka-dev</artifactId>
-				<version>3.7.11</version>
+				<version>3.7.9</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.meka</groupId>
 				<artifactId>meka</artifactId>
 				<version>1.6.2</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>

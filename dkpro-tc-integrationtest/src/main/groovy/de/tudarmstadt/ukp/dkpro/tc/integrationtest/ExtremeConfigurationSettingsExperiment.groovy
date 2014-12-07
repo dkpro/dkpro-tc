@@ -32,13 +32,14 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
@@ -83,6 +84,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -128,18 +130,19 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     public void runEmptyPipelineParameters() throws Exception
     {
 
-        ExperimentCrossValidation batchTask = [
+        BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessing: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            preprocessingPipeline: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [
-                WekaClassificationReport
+                WekaClassificationReport.class
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParametersEmpty
@@ -152,18 +155,19 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
         Lab.getInstance().run(batchTask)
 
-        ExperimentTrainTest TrainTestExperiment = [
+        BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessing: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            preprocessingPipeline: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [
-                WekaClassificationReport
+                WekaClassificationReport.class
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParametersEmpty
@@ -175,24 +179,25 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
         ]
 
         // Run
-        Lab.getInstance().run(TrainTestExperiment)
+        Lab.getInstance().run(batchTaskTrainTest)
     }
 
     public void runEmptyFeatureExtractorSet() throws Exception
     {
 
-        ExperimentCrossValidation batchTask = [
+        BatchTaskCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessing: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            preprocessingPipeline: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [
-                WekaClassificationReport
+                WekaClassificationReport.class
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
@@ -205,18 +210,19 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
         Lab.getInstance().run(batchTask)
 
-        ExperimentTrainTest TrainTestExperiment = [
+        BatchTaskTrainTest batchTaskTrainTest = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessing: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            preprocessingPipeline: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
             innerReports: [
-                WekaClassificationReport
+                WekaClassificationReport.class
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
+                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
@@ -228,7 +234,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
         ]
 
         // Run
-        Lab.getInstance().run(TrainTestExperiment)
+        Lab.getInstance().run(batchTaskTrainTest)
     }
 
     private AnalysisEngineDescription getPreprocessing()
