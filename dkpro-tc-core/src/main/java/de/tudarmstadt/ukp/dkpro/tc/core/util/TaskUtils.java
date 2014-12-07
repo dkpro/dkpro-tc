@@ -49,14 +49,13 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
@@ -67,10 +66,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.InstanceIdFeature;
+import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 /**
@@ -245,14 +244,14 @@ public class TaskUtils
      * @param featureExtractorClassNames @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
+    public static AnalysisEngineDescription getFeatureExtractorConnector(
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            String... featureExtractorClassNames)
+            List<DynamicDiscriminableFunctionBase> aFeatureExtractors,
+            TaskContext aContext)
             throws ResourceInitializationException
     {
     	return getFeatureExtractorConnector(
-    			parameters, 
     			outputPath, 
     			dataWriter, 
     			learningMode, 
@@ -261,8 +260,9 @@ public class TaskUtils
     			addInstanceId, 
     			developerMode, 
     			isTesting, 
-    			Collections.<String>emptyList(), 
-    			featureExtractorClassNames
+    			Collections.<String>emptyList(),
+    			aFeatureExtractors,
+    			aContext
     	);
     }
     
@@ -270,36 +270,42 @@ public class TaskUtils
      * @param featureExtractorClassNames @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
+    public static AnalysisEngineDescription getFeatureExtractorConnector(
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting, List<String> filters,
-            String... featureExtractorClassNames)
+            List<DynamicDiscriminableFunctionBase> aFeatureExtractors,
+            TaskContext aContext)
             throws ResourceInitializationException
     {
-        // convert parameters to string as external resources only take string parameters
-        List<Object> convertedParameters = new ArrayList<Object>();
-        if (parameters != null) {
-            for (Object parameter : parameters) {
-                convertedParameters.add(parameter.toString());
-            }
-        }
-        else {
-            parameters = new ArrayList<Object>();
-        }
+//        // convert parameters to string as external resources only take string parameters
+//        List<Object> convertedParameters = new ArrayList<Object>();
+//        if (parameters != null) {
+//            for (Object parameter : parameters) {
+//                convertedParameters.add(parameter.toString());
+//            }
+//        }
+//        else {
+//            parameters = new ArrayList<Object>();
+//        }
 
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
-        for (String featureExtractor : featureExtractorClassNames) {
-            try {
-                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
-                        Class.forName(featureExtractor).asSubclass(Resource.class),
-                        convertedParameters.toArray()));
-            }
-            catch (ClassNotFoundException e) {
-                throw new ResourceInitializationException(e);
-            }
+//        for (String featureExtractor : featureExtractorClassNames) {
+//            try {
+//                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
+//                        Class.forName(featureExtractor).asSubclass(Resource.class),
+//                        convertedParameters.toArray()));
+//            }
+//            catch (ClassNotFoundException e) {
+//                throw new ResourceInitializationException(e);
+//            }
+//        }
+        
+        for (DynamicDiscriminableFunctionBase featureExtractor : aFeatureExtractors) {
+            extractorResources.add((ExternalResourceDescription) featureExtractor.getActualValue(aContext));
         }
 
         // add the rest of the necessary parameters with the correct types
+        List<Object> parameters = new ArrayList<>();
         parameters.addAll(Arrays.asList(
         		ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath, 
                 ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
