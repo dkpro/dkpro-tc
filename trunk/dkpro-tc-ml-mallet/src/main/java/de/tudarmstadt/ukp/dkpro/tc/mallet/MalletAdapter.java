@@ -24,6 +24,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
@@ -82,5 +83,11 @@ public class MalletAdapter
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
 		return MalletDataWriter.class;
+	}
+	
+	@Override
+	public Class<? extends SaveModelConnector_ImplBase> getSaveModelConnectorClass() {
+		// FIXME to be implemented
+		throw new UnsupportedOperationException();
 	}
 }

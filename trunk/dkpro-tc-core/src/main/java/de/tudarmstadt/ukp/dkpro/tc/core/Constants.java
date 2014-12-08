@@ -263,5 +263,33 @@ public interface Constants
      */    
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
 
+    
+    /*
+     * Machine Learning (Model)
+     */
+    /**
+     * Name of the file which holds the model meta data
+     */
+    public static final String MODEL_META = "model.meta";
+    /**
+     * Name of the file which holds the feature names
+     */
+    public static final String MODEL_FEATURE_NAMES = "featureNames.txt";
+    /**
+     * Name of the file which holds the class labels
+     */
+    public static final String MODEL_CLASS_LABELS = "classLabels.txt";
+    /**
+     * Name of the file which holds the feature extractors
+     */
+    public static final String MODEL_FEATURE_EXTRACTORS = "featureExtractors.txt";
+    /**
+     * Name of the file which holds the global UIMA parameters
+     */
+    public static final String MODEL_PARAMETERS = "parameters.txt";
+    /**
+     * Name of the file which holds the classifier
+     */
+    public static final String MODEL_CLASSIFIER = "classifier.ser";
 
 }

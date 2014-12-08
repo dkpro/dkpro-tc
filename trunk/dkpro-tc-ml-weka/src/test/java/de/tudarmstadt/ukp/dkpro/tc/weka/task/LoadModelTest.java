@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.TcAnnotator;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 
 public class LoadModelTest {
 	

@@ -18,6 +18,10 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.weka.task.uima;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,19 +41,16 @@ import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
-public class SaveModelConnector
-    extends ConnectorBase
+public class WekaSaveModelConnector
+    extends SaveModelConnector_ImplBase
 {
 
     @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
-    
-    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
-    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-    private File outputDirectory;
     
     public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
     @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
@@ -75,14 +76,14 @@ public class SaveModelConnector
         super.initialize(context);
 
 		try {
-			cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation, "classifier.ser").getAbsolutePath());
+			cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
 		
         attributes = new ArrayList<>();
         try {
-			for (String attributeName : FileUtils.readLines(new File(tcModelLocation, "attributes.txt"))) {
+			for (String attributeName : FileUtils.readLines(new File(tcModelLocation, MODEL_FEATURE_NAMES))) {
 				attributes.add(new Attribute(attributeName));
 			}
 		} catch (IOException e) {
@@ -91,7 +92,7 @@ public class SaveModelConnector
         
         classLabels = new ArrayList<>();
         try {
-			for (String classLabel : FileUtils.readLines(new File(tcModelLocation, "classLabels.txt"))) {
+			for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
 				classLabels.add(classLabel);
 			}
 		} catch (IOException e) {
