@@ -25,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
@@ -93,5 +94,11 @@ public class CRFSuiteAdapter
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
 		return CRFSuiteDataWriter.class;
+	}
+	
+	@Override
+	public Class<? extends SaveModelConnector_ImplBase> getSaveModelConnectorClass() {
+		// FIXME to be implemented
+		throw new UnsupportedOperationException();
 	}
 }

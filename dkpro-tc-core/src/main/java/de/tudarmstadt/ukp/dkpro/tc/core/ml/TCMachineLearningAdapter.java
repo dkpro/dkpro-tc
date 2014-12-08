@@ -70,6 +70,12 @@ public interface TCMachineLearningAdapter
 	 */
 	public Class<? extends DataWriter> getDataWriterClass(String learningMode);
 
+	/**
+     * @return The class of the save model connector to be used with this ML framework
+   	 */
+	public Class<? extends SaveModelConnector_ImplBase> getSaveModelConnectorClass();
+
+	
     /**
      * This report is always added to {@code testTask} reports by default in
      * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}

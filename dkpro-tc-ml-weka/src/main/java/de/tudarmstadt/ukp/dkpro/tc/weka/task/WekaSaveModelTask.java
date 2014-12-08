@@ -89,7 +89,7 @@ public class WekaSaveModelTask
         // write model file
         Classifier cl = getClassifier();
         cl.buildClassifier(trainData);
-        weka.core.SerializationHelper.write(new File(outputFolder, "classifier.ser").getAbsolutePath(), cl);
+        weka.core.SerializationHelper.write(new File(outputFolder, MODEL_CLASSIFIER).getAbsolutePath(), cl);
         
         // write attribute file
         StringBuilder attributes = new StringBuilder();
@@ -101,19 +101,19 @@ public class WekaSaveModelTask
         attributes.append(trainData.classAttribute().name());
         attributes.append("\n");
                 
-        FileUtils.writeStringToFile(new File(outputFolder, "attributes.txt"), attributes.toString());
+        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_NAMES), attributes.toString());
         
         // write class labels file
         List<String> classLabels;
         if (!isRegression) {
             classLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);       
             String classLabelsString = StringUtils.join(classLabels, "\n");
-            FileUtils.writeStringToFile(new File(outputFolder, "classLabels.txt"), classLabelsString);        
+            FileUtils.writeStringToFile(new File(outputFolder, MODEL_CLASS_LABELS), classLabelsString);        
         }
         
         // write feature extractors
         String featureExtractorString = StringUtils.join(featureSet, "\n");
-        FileUtils.writeStringToFile(new File(outputFolder, "features.txt"), featureExtractorString);        
+        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_EXTRACTORS), featureExtractorString);        
 
         // write meta collector data
         // automatically determine the required metaCollector classes from the provided feature
@@ -154,15 +154,24 @@ public class WekaSaveModelTask
                     entry.getValue());
             parameterProperties.put(entry.getKey(), file.getAbsolutePath());
         }
-        
+ 
+////
+// FIXME this needs to be fixed!
+////
+ 
         // TODO re-add also the other parameters. Otherwise feature extractors might e.g. work in default mode and produce different results
 //        // add all other pipeline parameters
 //        for (int i=0; i<pipelineParameters.size(); i=i+2) {
 //            parameterProperties.put((String) pipelineParameters.get(i), pipelineParameters.get(i+1));	
 //        }
 
-        FileWriter writer = new FileWriter(new File(outputFolder, "parameter.txt"));
+        FileWriter writer = new FileWriter(new File(outputFolder, MODEL_PARAMETERS));
         parameterProperties.store(writer, "");
         writer.close();
+        
+        // as a marker for the type, write the name of the ml adapter class
+        // write feature extractors
+        FileUtils.writeStringToFile(new File(outputFolder, MODEL_META), WekaClassificationAdapter.class.getName());        
+
     }
 }

@@ -16,7 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task.uima;
+package de.tudarmstadt.ukp.dkpro.tc.ml.uima;
+
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_EXTRACTORS;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_META;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_PARAMETERS;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +45,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 public class TcAnnotator
 	extends JCasAnnotator_ImplBase
@@ -58,6 +63,8 @@ public class TcAnnotator
 //    private List<FeatureExtractorResource_ImplBase> featureExtractors;
     private List<String> featureExtractors;
     private List<Object> parameters;
+    
+    private TCMachineLearningAdapter mlAdapter;
 
 	@Override
 	public void initialize(UimaContext context)
@@ -65,9 +72,21 @@ public class TcAnnotator
 	{		
 		super.initialize(context);
         
+		try {
+			mlAdapter = (TCMachineLearningAdapter) Class.forName(FileUtils.readFileToString(new File(tcModelLocation, MODEL_META))).newInstance();
+		} catch (InstantiationException e) {
+			throw new ResourceInitializationException(e);
+		} catch (IllegalAccessException e) {
+			throw new ResourceInitializationException(e);
+		} catch (ClassNotFoundException e) {
+			throw new ResourceInitializationException(e);
+		} catch (IOException e) {
+			throw new ResourceInitializationException(e);
+		}
+		
         parameters = new ArrayList<>();
         try {
-			for (String parameter : FileUtils.readLines(new File(tcModelLocation, "parameter.txt"))) {
+			for (String parameter : FileUtils.readLines(new File(tcModelLocation, MODEL_PARAMETERS))) {
 				if (!parameter.startsWith("#")) {
 					String[] parts = parameter.split("=");
 					parameters.add(parts[0]);					
@@ -79,7 +98,7 @@ public class TcAnnotator
 		}
         featureExtractors = new ArrayList<>();
         try {
-            for (String featureExtractor : FileUtils.readLines(new File(tcModelLocation, "features.txt"))) {
+            for (String featureExtractor : FileUtils.readLines(new File(tcModelLocation, MODEL_FEATURE_EXTRACTORS))) {
     			featureExtractors.add(featureExtractor);
     		}
         } catch (IOException e) {
@@ -113,14 +132,11 @@ public class TcAnnotator
 		outcome.setOutcome("");
 		outcome.addToIndexes();
 		
-		// actually it would be better to directly extract features and create the instance,
-		// but we need to set the global UIMA parameters
-		// I haven't found a way how to do that without creating a new annotator yet
-		
-		// on the other hand, this way we can separate the parameter spaces! 
+		// create new UIMA annotator in order to separate the parameter spaces
+		// this annotator will get initialized with its own set of parameters loaded from the model
 		try {
 			AnalysisEngineDescription connector = getSaveModelConnector(
-			        parameters, tcModelLocation.getAbsolutePath(), WekaDataWriter.class.toString(), learningMode, featureMode,
+			        parameters, tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass(learningMode).toString(), learningMode, featureMode,
 			        DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
 			AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
 			
@@ -168,17 +184,18 @@ public class TcAnnotator
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(
         		TcAnnotator.PARAM_TC_MODEL_LOCATION, tcModelLocation, 
-        		SaveModelConnector.PARAM_OUTPUT_DIRECTORY, outputPath, 
-        		SaveModelConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
-        		SaveModelConnector.PARAM_LEARNING_MODE, learningMode,
-        		SaveModelConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
-        		SaveModelConnector.PARAM_FEATURE_FILTERS, null,
-        		SaveModelConnector.PARAM_IS_TESTING, true,
-        		SaveModelConnector.PARAM_FEATURE_MODE, featureMode,
-        		SaveModelConnector.PARAM_FEATURE_STORE_CLASS, featureStore
+        		SaveModelConnector_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath, 
+        		SaveModelConnector_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
+        		SaveModelConnector_ImplBase.PARAM_LEARNING_MODE, learningMode,
+        		SaveModelConnector_ImplBase.PARAM_FEATURE_EXTRACTORS, extractorResources,
+        		SaveModelConnector_ImplBase.PARAM_FEATURE_FILTERS, null,
+        		SaveModelConnector_ImplBase.PARAM_IS_TESTING, true,
+        		SaveModelConnector_ImplBase.PARAM_FEATURE_MODE, featureMode,
+        		SaveModelConnector_ImplBase.PARAM_FEATURE_STORE_CLASS, featureStore
         ));
 
-        return AnalysisEngineFactory.createEngineDescription(SaveModelConnector.class,
+        return AnalysisEngineFactory.createEngineDescription(
+        		mlAdapter.getSaveModelConnectorClass(),
                 parameters.toArray());
     }
 
