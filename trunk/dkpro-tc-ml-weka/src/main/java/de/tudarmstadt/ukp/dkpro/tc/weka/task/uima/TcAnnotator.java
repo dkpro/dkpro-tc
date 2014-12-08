@@ -116,6 +116,8 @@ public class TcAnnotator
 		// actually it would be better to directly extract features and create the instance,
 		// but we need to set the global UIMA parameters
 		// I haven't found a way how to do that without creating a new annotator yet
+		
+		// on the other hand, this way we can separate the parameter spaces! 
 		try {
 			AnalysisEngineDescription connector = getSaveModelConnector(
 			        parameters, tcModelLocation.getAbsolutePath(), WekaDataWriter.class.toString(), learningMode, featureMode,

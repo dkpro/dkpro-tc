@@ -38,17 +38,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.ExtractFeaturesAndPredictTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
-/**
- * 
- * UIMA analysis engine that is used in the {@link ExtractFeaturesAndPredictTask} to apply the
- * feature extractors on each CAS, and classify them using a previously trained model.
- * 
- * @author daxenberger
- * 
- */
 public class SaveModelConnector
     extends ConnectorBase
 {

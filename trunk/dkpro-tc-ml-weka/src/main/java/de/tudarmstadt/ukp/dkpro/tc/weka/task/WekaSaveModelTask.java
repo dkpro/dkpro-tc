@@ -59,6 +59,12 @@ public class WekaSaveModelTask
     @Discriminator
     protected List<Object> pipelineParameters;
     
+    private File outputFolder;
+    
+    public void setOutputFolder(File outputFolder) {
+    	this.outputFolder = outputFolder;
+    }
+    
     @Override
     public void execute(TaskContext aContext)
         throws Exception
@@ -76,9 +82,9 @@ public class WekaSaveModelTask
 
         featureSelection(aContext, trainData);
 
-        File outputFolder = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE)
-                .getPath());
+//        File outputFolder = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+//                AccessMode.READWRITE)
+//                .getPath());
         
         // write model file
         Classifier cl = getClassifier();
