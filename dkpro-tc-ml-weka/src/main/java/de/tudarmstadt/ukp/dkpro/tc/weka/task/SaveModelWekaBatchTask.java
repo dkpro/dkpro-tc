@@ -18,6 +18,7 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -31,13 +32,12 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchPredictionReport;
 
 /**
  * Save model batch
  * 
  */
-public class BatchTaskSaveModel
+public class SaveModelWekaBatchTask
     extends BatchTask
 {
 
@@ -45,18 +45,20 @@ public class BatchTaskSaveModel
     private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
     private TCMachineLearningAdapter mlAdapter;
+    private File outputFolder;
 
+    // tasks
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTaskTrain;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private WekaSaveModelTask saveModelTask;
 
-    public BatchTaskSaveModel()
+    public SaveModelWekaBatchTask()
     {/* needed for Groovy */
     }
 
-    public BatchTaskSaveModel(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter,
+    public SaveModelWekaBatchTask(String aExperimentName, File outputFolder, Class<? extends TCMachineLearningAdapter> mlAdapter,
             AnalysisEngineDescription preprocessingPipeline)
             throws TextClassificationException
     {
@@ -65,6 +67,7 @@ public class BatchTaskSaveModel
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
         setTcMachineLearningAdapter(mlAdapter);
+        setOutputFolder(outputFolder);
     }
 
     @Override
@@ -127,8 +130,7 @@ public class BatchTaskSaveModel
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-
-        addReport(WekaBatchPredictionReport.class);
+        saveModelTask.setOutputFolder(outputFolder);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);
@@ -163,5 +165,10 @@ public class BatchTaskSaveModel
 		} catch (IllegalAccessException e) {
 			throw new TextClassificationException(e);
 		}
+    }
+    
+    
+    public void setOutputFolder(File outputFolder) {
+    	this.outputFolder = outputFolder;
     }
 }
