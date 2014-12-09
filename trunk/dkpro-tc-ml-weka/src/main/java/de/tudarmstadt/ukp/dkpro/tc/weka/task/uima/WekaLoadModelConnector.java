@@ -45,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
-public class WekaSaveModelConnector
+public class WekaLoadModelConnector
     extends SaveModelConnector_ImplBase
 {
 

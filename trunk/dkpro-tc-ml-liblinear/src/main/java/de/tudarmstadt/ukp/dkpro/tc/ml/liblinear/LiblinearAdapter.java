@@ -86,7 +86,7 @@ public class LiblinearAdapter
 	}
 	
 	@Override
-	public Class<? extends SaveModelConnector_ImplBase> getSaveModelConnectorClass() {
+	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass() {
 		// FIXME to be implemented
 		throw new UnsupportedOperationException();
 	}

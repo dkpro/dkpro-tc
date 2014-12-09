@@ -194,7 +194,7 @@ public class TcAnnotator
         ));
 
         return AnalysisEngineFactory.createEngineDescription(
-        		mlAdapter.getSaveModelConnectorClass(),
+        		mlAdapter.getLoadModelConnectorClass(),
                 parameters.toArray());
     }
 

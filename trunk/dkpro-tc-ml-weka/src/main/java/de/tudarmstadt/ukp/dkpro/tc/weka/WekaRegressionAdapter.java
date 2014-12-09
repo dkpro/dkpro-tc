@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.WekaSaveModelConnector;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.WekaLoadModelConnector;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
@@ -106,7 +106,7 @@ public class WekaRegressionAdapter
 	}
 	
 	@Override
-	public Class<? extends SaveModelConnector_ImplBase> getSaveModelConnectorClass() {
-		return WekaSaveModelConnector.class;
+	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass() {
+		return WekaLoadModelConnector.class;
 	}
 }
