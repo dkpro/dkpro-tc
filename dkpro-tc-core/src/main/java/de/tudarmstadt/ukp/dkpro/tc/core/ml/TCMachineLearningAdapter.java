@@ -71,9 +71,9 @@ public interface TCMachineLearningAdapter
 	public Class<? extends DataWriter> getDataWriterClass(String learningMode);
 
 	/**
-     * @return The class of the save model connector to be used with this ML framework
+     * @return The class of the load model connector to be used with this ML framework
    	 */
-	public Class<? extends SaveModelConnector_ImplBase> getSaveModelConnectorClass();
+	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass();
 
 	
     /**
