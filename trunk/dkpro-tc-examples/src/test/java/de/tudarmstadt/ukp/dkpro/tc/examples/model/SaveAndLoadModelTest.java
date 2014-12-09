@@ -62,12 +62,12 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.SaveModelWekaBatchTask;
 
 public class SaveAndLoadModelTest {
 
-	 @Rule
-	  public TemporaryFolder folder= new TemporaryFolder();
+	@Rule
+	public TemporaryFolder folder= new TemporaryFolder();
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void roundTrip() 
+	public void roundTripWeka() 
 			throws Exception
 	{
     	DemoUtils.setDkproHome(ComplexConfigurationSingleDemo.class.getSimpleName());
