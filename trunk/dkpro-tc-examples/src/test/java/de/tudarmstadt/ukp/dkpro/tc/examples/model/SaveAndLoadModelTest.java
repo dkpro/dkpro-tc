@@ -51,6 +51,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import de.tudarmstadt.ukp.dkpro.tc.examples.single.document.ComplexConfigurationSingleDemo;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
@@ -68,6 +70,7 @@ public class SaveAndLoadModelTest {
 	public void roundTrip() 
 			throws Exception
 	{
+    	DemoUtils.setDkproHome(ComplexConfigurationSingleDemo.class.getSimpleName());
 		
 	    String trainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
 	    File modelFolder = folder.newFolder();
