@@ -43,13 +43,7 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 
 public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 	@Discriminator
-	private List<String> classificationArguments;
-	@Discriminator
-	private String featureMode;
-	@Discriminator
 	private String learningMode;
-	@Discriminator
-	String threshold;
 
 	public static final String MODELNAME = "model.crfsuite";
 	public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
@@ -262,7 +256,6 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private void runTrain(List<String> aModelTrainCommand) throws Exception {
-		System.out.println("aModelTrainCommand: " + aModelTrainCommand);
 		Process process = new ProcessBuilder().inheritIO()
 				.command(aModelTrainCommand).start();
 		process.waitFor();
