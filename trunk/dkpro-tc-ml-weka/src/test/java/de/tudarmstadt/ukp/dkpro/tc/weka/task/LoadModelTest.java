@@ -21,6 +21,7 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
@@ -29,6 +30,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 
 public class LoadModelTest {
 	
+	@Ignore
 	@Test
 	public void loadModelTest()  throws Exception {
 		
