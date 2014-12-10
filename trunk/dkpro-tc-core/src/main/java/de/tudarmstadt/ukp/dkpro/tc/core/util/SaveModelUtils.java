@@ -1,9 +1,10 @@
-package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
+package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +20,12 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 
-public class SaveModelUtils implements Constants
+public class SaveModelUtils
+    implements Constants
 {
-    public static void writeFeatureInformation(File outputFolder, List<String> featureSet) throws Exception
+    public static void writeFeatureInformation(File outputFolder, List<String> featureSet)
+        throws Exception
     {
         String featureExtractorString = StringUtils.join(featureSet, "\n");
         FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_EXTRACTORS),
@@ -32,9 +33,10 @@ public class SaveModelUtils implements Constants
     }
 
     public static void writeMetaCollectorInformation(TaskContext aContext, File aOutputFolder,
-            List<String> aFeatureSet) throws Exception
+            List<String> aFeatureSet)
+        throws Exception
     {
-     // write meta collector data
+        // write meta collector data
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         Set<Class<? extends MetaCollector>> metaCollectorClasses;
@@ -55,7 +57,8 @@ public class SaveModelUtils implements Constants
         Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
             try {
-                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
+                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
+                        .getParameterKeyPairs());
             }
             catch (InstantiationException e) {
                 throw new ResourceInitializationException(e);
@@ -71,29 +74,38 @@ public class SaveModelUtils implements Constants
                     entry.getValue());
             parameterProperties.put(entry.getKey(), file.getAbsolutePath());
         }
-        
-        
- 
-////
-// FIXME this needs to be fixed!
-////
- 
-        // TODO re-add also the other parameters. Otherwise feature extractors might e.g. work in default mode and produce different results
-//        // add all other pipeline parameters
-//        for (int i=0; i<pipelineParameters.size(); i=i+2) {
-//            parameterProperties.put((String) pipelineParameters.get(i), pipelineParameters.get(i+1)); 
-//        }
+
+        // //
+        // FIXME this needs to be fixed!
+        // //
+
+        // TODO re-add also the other parameters. Otherwise feature extractors might e.g. work in
+        // default mode and produce different results
+        // // add all other pipeline parameters
+        // for (int i=0; i<pipelineParameters.size(); i=i+2) {
+        // parameterProperties.put((String) pipelineParameters.get(i), pipelineParameters.get(i+1));
+        // }
 
         FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_META));
         parameterProperties.store(writer, "");
         writer.close();
     }
 
-    public static void writeModelAdapterInformation(File aOutputFolder, String aModelMeta) throws Exception
+    public static void writeModelAdapterInformation(File aOutputFolder, String aModelMeta)
+        throws Exception
     {
         // as a marker for the type, write the name of the ml adapter class
         // write feature extractors
-        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), CRFSuiteAdapter.class.getName()); 
+        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta);
+    }
+
+    public static void writeModelParameters(File aOutputFolder, String content)
+        throws Exception
+    {
+        Properties parameterProperties = new Properties();
+        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
+        parameterProperties.store(writer, content);
+        writer.close();
     }
 
 }

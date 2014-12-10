@@ -56,9 +56,9 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.SaveModelWekaBatchTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
 public class WekaSaveAndLoadModelTest {
 
@@ -138,8 +138,8 @@ public class WekaSaveAndLoadModelTest {
 				),
 				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
 				AnalysisEngineFactory.createEngineDescription(
-						TcAnnotator.class,
-						TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath()
+						TcAnnotatorDocument.class,
+						TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath()
 				)
 		);
 	}

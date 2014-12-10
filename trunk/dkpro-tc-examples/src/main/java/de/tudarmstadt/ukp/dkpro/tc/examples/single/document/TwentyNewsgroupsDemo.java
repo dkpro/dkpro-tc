@@ -51,7 +51,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.SaveModelWekaBatchTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
