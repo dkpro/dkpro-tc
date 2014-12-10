@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 public class CRFSuiteDataWriter
     implements DataWriter
 {
-    Log logger = null;
+    private static Log logger = null;
 
     @Override
     public void write(File aOutputDirectory, FeatureStore aFeatureStore,
@@ -50,7 +51,17 @@ public class CRFSuiteDataWriter
     {
         Iterable<Instance> instances = aFeatureStore.getInstances();
 
-        int totalCountOfInstances = getTotalCountOfInstances(instances);
+        writeFeatureFile(instances, aOutputDirectory);
+
+        Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
+        File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
+        FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
+    }
+
+    public static File writeFeatureFile(Iterable<Instance> aInstances, File aOutputDirectory) throws Exception
+    {
+        List<Instance> instanceList = getListOfInstances(aInstances);
+        int totalCountOfInstances = instanceList.size();
 
         File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -60,7 +71,7 @@ public class CRFSuiteDataWriter
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
         for (int ins = 0; ins < totalCountOfInstances; ins++) {
-            Instance i = aFeatureStore.getInstance(ins);
+            Instance i = instanceList.get(ins);
 
             if (i.getSequenceId() != lastSeenSeqId) {
                 seqIdChanged = true;
@@ -88,7 +99,7 @@ public class CRFSuiteDataWriter
 
             // Peak ahead - seqEnd reached?
             if (ins + 1 < totalCountOfInstances) {
-                Instance next = aFeatureStore.getInstance(ins + 1);
+                Instance next = instanceList.get(ins + 1);
                 if (next.getSequenceId() != lastSeenSeqId) {
                     appendEOS(bf);
                     continue;
@@ -102,13 +113,11 @@ public class CRFSuiteDataWriter
         }
         bf.close();
         log("Finished writing features to file " + outputFile.getAbsolutePath());
-
-        Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
-        File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
-        FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
+        
+        return outputFile;
     }
 
-    private void appendEOS(BufferedWriter bf) throws Exception
+    private static void appendEOS(BufferedWriter bf) throws Exception
     {
         bf.write("\t");
         bf.write("__EOS__");
@@ -116,15 +125,14 @@ public class CRFSuiteDataWriter
         bf.write("\n");
     }
 
-    private int getTotalCountOfInstances(Iterable<Instance> aInstances)
+    private static List<Instance> getListOfInstances(Iterable<Instance> aInstances)
     {
-        int totalCountOfInstances = 0;
+        List<Instance> instanceList = new ArrayList<Instance>();
         Iterator<Instance> iterator = aInstances.iterator();
         while (iterator.hasNext()) {
-            totalCountOfInstances++;
-            iterator.next();
+            instanceList.add(iterator.next());
         }
-        return totalCountOfInstances;
+        return instanceList;
     }
 
     public static String outcomeMap2String(Map<String, Integer> map)
@@ -151,10 +159,10 @@ public class CRFSuiteDataWriter
         return outcomeMapping;
     }
 
-    private void log(String text)
+    private static void log(String text)
     {
         if (logger == null) {
-            logger = LogFactory.getLog(getClass());
+            logger = LogFactory.getLog(CRFSuiteDataWriter.class.getName());
         }
         logger.info(text);
     }

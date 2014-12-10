@@ -71,7 +71,7 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 
 	}
 
-	private String getExecutablePath() throws Exception {
+	public static String getExecutablePath() throws Exception {
 		return new RuntimeProvider(
 				"classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
 				"crfsuite").getAbsolutePath();
@@ -196,7 +196,7 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 		return output;
 	}
 
-	private String runTest(List<String> aTestModelCommand) throws Exception {
+	public static String runTest(List<String> aTestModelCommand) throws Exception {
 		Process process = new ProcessBuilder().command(aTestModelCommand)
 				.start();
 
@@ -206,7 +206,7 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 
 	}
 
-	private String captureProcessOutput(Process aProcess) {
+	private static String captureProcessOutput(Process aProcess) {
 		InputStream src = aProcess.getInputStream();
 		Scanner sc = new Scanner(src);
 		StringBuilder dest = new StringBuilder();
@@ -227,18 +227,22 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 						AdapterNameEntries.featureVectorsFile));
 		testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
-		// Evaluate model against test data
-		List<String> commandTestModel = new ArrayList<String>();
-		commandTestModel.add(executablePath);
-		commandTestModel.add("tag");
-		commandTestModel.add("-r");
-		commandTestModel.add("-m");
-		commandTestModel.add(modelLocation);
-		commandTestModel.add(testFile.getAbsolutePath());
-		return commandTestModel;
+		return wrapTestCommandAsList(testFile,executablePath, modelLocation);
 	}
 
-	private String trainModel(TaskContext aContext) throws Exception {
+	public static List<String> wrapTestCommandAsList(File aTestFile, String aExecutablePath, String aModelLocation)
+    {
+        List<String> commandTestModel = new ArrayList<String>();
+        commandTestModel.add(aExecutablePath);
+        commandTestModel.add("tag");
+        commandTestModel.add("-r");
+        commandTestModel.add("-m");
+        commandTestModel.add(aModelLocation);
+        commandTestModel.add(aTestFile.getAbsolutePath());
+        return commandTestModel;
+    }
+
+    private String trainModel(TaskContext aContext) throws Exception {
 		String tmpModelLocation = System.getProperty("java.io.tmpdir")
 				+ File.separator + MODELNAME;
 		List<String> modelTrainCommand = buildTrainCommand(aContext,
