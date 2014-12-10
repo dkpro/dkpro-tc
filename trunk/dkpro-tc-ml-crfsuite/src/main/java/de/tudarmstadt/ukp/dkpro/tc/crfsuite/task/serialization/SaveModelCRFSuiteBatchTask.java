@@ -208,8 +208,7 @@ class ModelSerializationDescription
         trainAndStoreModel(aContext);
 
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-        SaveModelUtils.writeMetaCollectorInformation(aContext, outputFolder, featureSet);
-        SaveModelUtils.writeModelParameters(outputFolder, "");
+        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
 
     }

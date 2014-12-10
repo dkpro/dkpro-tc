@@ -4,7 +4,6 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +31,8 @@ public class SaveModelUtils
                 featureExtractorString);
     }
 
-    public static void writeMetaCollectorInformation(TaskContext aContext, File aOutputFolder,
-            List<String> aFeatureSet)
+    public static void writeModelParameters(TaskContext aContext, File aOutputFolder,
+            List<String> aFeatureSet, List<Object> aFeatureParameters)
         throws Exception
     {
         // write meta collector data
@@ -75,18 +74,12 @@ public class SaveModelUtils
             parameterProperties.put(entry.getKey(), file.getAbsolutePath());
         }
 
-        // //
-        // FIXME this needs to be fixed!
-        // //
+        for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
+            parameterProperties.put((String) aFeatureParameters.get(i).toString(),
+                    aFeatureParameters.get(i + 1).toString());
+        }
 
-        // TODO re-add also the other parameters. Otherwise feature extractors might e.g. work in
-        // default mode and produce different results
-        // // add all other pipeline parameters
-        // for (int i=0; i<pipelineParameters.size(); i=i+2) {
-        // parameterProperties.put((String) pipelineParameters.get(i), pipelineParameters.get(i+1));
-        // }
-
-        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_META));
+        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
         parameterProperties.store(writer, "");
         writer.close();
     }
@@ -97,15 +90,6 @@ public class SaveModelUtils
         // as a marker for the type, write the name of the ml adapter class
         // write feature extractors
         FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta);
-    }
-
-    public static void writeModelParameters(File aOutputFolder, String content)
-        throws Exception
-    {
-        Properties parameterProperties = new Properties();
-        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
-        parameterProperties.store(writer, content);
-        writer.close();
     }
 
 }
