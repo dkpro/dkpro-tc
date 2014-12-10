@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task.uima;
+package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
-import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
-import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -35,27 +32,24 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.junit.rules.TemporaryFolder;
 
-import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
-public class WekaLoadModelConnector
+public class LoadModelCRFSuiteConnector
     extends ModelSerialization_ImplBase
 {
 
     @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
-    
-    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
-    @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
-    private String bipartitionThreshold;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -66,9 +60,9 @@ public class WekaLoadModelConnector
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
 
-    private Classifier cls;
-    private List<Attribute> attributes;
-    private List<String> classLabels;
+    private static File model = null;
+
+    private TemporaryFolder tmpFolder = new TemporaryFolder();
 
     @Override
     public void initialize(UimaContext context)
@@ -76,49 +70,50 @@ public class WekaLoadModelConnector
     {
         super.initialize(context);
 
-		try {
-			cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-		
-        attributes = new ArrayList<>();
         try {
-			for (String attributeName : FileUtils.readLines(new File(tcModelLocation, MODEL_FEATURE_NAMES))) {
-				attributes.add(new Attribute(attributeName));
-			}
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
-        
-        classLabels = new ArrayList<>();
-        try {
-			for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
-				classLabels.add(classLabel);
-			}
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
+            model = new File(tcModelLocation, MODEL_CLASSIFIER);
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
 
     }
 
-	@Override
-	public void process(JCas jcas)
-			throws AnalysisEngineProcessException
-	{
-		Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
-				.getSingleInstance(featureMode, featureExtractors, jcas, false,	false);
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+        List<Instance> allInstances = new ArrayList<Instance>();
 
-		try {
-			weka.core.Instance wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes,
-					classLabels, false);
+        try {
+            for (TextClassificationSequence seq : JCasUtil.select(jcas,
+                    TextClassificationSequence.class)) {
 
-			String val = classLabels.get(new Double(cls.classifyInstance(wekaInstance)).intValue());
+                List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
+                        jcas, seq, true, new Random().nextInt());
+                allInstances.addAll(instances);
+            }
 
-			TextClassificationOutcome outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
-			outcome.setOutcome(val);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+            File tmpFolderForFeatureFile = tmpFolder.newFolder();
+            File featureFile = CRFSuiteDataWriter.writeFeatureFile(allInstances,
+                    tmpFolderForFeatureFile);
+            classify(featureFile);
+
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+    }
+
+    private static void classify(File featureFile)
+        throws Exception
+    {
+        List<String> command = CRFSuiteTestTask.wrapTestCommandAsList(featureFile,
+                CRFSuiteTestTask.getExecutablePath(), model.getAbsolutePath());
+
+        String output = CRFSuiteTestTask.runTest(command);
+        System.out.println(output);
+        int a=0;
     }
 }

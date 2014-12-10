@@ -23,7 +23,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 
-public abstract class SaveModelConnector_ImplBase
+public abstract class ModelSerialization_ImplBase
 	extends ConnectorBase
 {
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";

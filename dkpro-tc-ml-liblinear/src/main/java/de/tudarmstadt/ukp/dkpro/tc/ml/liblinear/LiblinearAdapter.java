@@ -25,7 +25,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 
 public class LiblinearAdapter 
@@ -86,7 +86,7 @@ public class LiblinearAdapter
 	}
 	
 	@Override
-	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass() {
+	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		// FIXME to be implemented
 		throw new UnsupportedOperationException();
 	}

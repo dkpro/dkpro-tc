@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.savemodel;
+package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import java.io.File;
 import java.util.List;
@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
  * Save model batch
  * 
  */
-public class SaveModelCRFSuite
+public class SaveModelCRFSuiteTask
     extends BatchTask
 {
 
@@ -52,13 +52,13 @@ public class SaveModelCRFSuite
     private PreprocessTask preprocessTaskTrain;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
-    private CRFSuiteModelSerializationDescription saveModelTask;
+    private ModelSerializationDescription saveModelTask;
 
-    public SaveModelCRFSuite()
+    public SaveModelCRFSuiteTask()
     {/* needed for Groovy */
     }
 
-    public SaveModelCRFSuite(String aExperimentName, File outputFolder, Class<? extends TCMachineLearningAdapter> mlAdapter,
+    public SaveModelCRFSuiteTask(String aExperimentName, File outputFolder, Class<? extends TCMachineLearningAdapter> mlAdapter,
             AnalysisEngineDescription preprocessingPipeline)
             throws TextClassificationException
     {
@@ -126,7 +126,7 @@ public class SaveModelCRFSuite
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
-        saveModelTask = new CRFSuiteModelSerializationDescription();
+        saveModelTask = new ModelSerializationDescription();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);

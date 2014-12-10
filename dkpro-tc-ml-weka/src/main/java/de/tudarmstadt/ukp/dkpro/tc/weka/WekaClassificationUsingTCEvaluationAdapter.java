@@ -27,7 +27,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
@@ -95,7 +95,7 @@ public class WekaClassificationUsingTCEvaluationAdapter
 	}
 	
 	@Override
-	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass() {
+	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		return WekaLoadModelConnector.class;
 	}
 }

@@ -73,7 +73,7 @@ public interface TCMachineLearningAdapter
 	/**
      * @return The class of the load model connector to be used with this ML framework
    	 */
-	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass();
+	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass();
 
 	
     /**
