@@ -46,10 +46,9 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 
 public class ReutersDemo
     implements Constants
@@ -151,10 +150,9 @@ public class ReutersDemo
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME
                 + "-CrossValidation",
-                WekaClassificationAdapter.class,
+                MekaClassificationAdapter.class,
                 getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchCrossValidationReport.class);
 
@@ -167,9 +165,8 @@ public class ReutersDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		WekaClassificationAdapter.class,
+        		MekaClassificationAdapter.class,
                 getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(WekaBatchTrainTestReport.class);
