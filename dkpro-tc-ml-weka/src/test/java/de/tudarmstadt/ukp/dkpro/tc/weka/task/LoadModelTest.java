@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 
 public class LoadModelTest {
 	
@@ -42,8 +42,8 @@ public class LoadModelTest {
 				),
 				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
 				AnalysisEngineFactory.createEngineDescription(
-						TcAnnotator.class,
-						TcAnnotator.PARAM_TC_MODEL_LOCATION,
+						TcAnnotatorDocument.class,
+						TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION,
 						"src/test/resources/model/"
 				)
 		);

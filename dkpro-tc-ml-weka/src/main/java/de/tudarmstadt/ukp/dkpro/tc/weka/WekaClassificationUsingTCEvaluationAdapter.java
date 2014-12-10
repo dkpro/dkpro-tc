@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.WekaLoadModelConnector;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
@@ -65,7 +65,8 @@ public class WekaClassificationUsingTCEvaluationAdapter
 		return WekaBatchTrainTestReport.class;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
 			String[] files, int folds) {
 		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
@@ -96,6 +97,6 @@ public class WekaClassificationUsingTCEvaluationAdapter
 	
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return WekaLoadModelConnector.class;
+		return LoadModelConnectorWeka.class;
 	}
 }

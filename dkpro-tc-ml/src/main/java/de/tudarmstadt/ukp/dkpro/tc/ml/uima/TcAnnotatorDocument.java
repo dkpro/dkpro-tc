@@ -49,17 +49,13 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
-public class TcAnnotator
+public class TcAnnotatorDocument
 	extends JCasAnnotator_ImplBase
 {
 	
     public static final String PARAM_TC_MODEL_LOCATION = "tcModel";
     @ConfigurationParameter(name = PARAM_TC_MODEL_LOCATION, mandatory = true)
     protected File tcModelLocation;
-    
-    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
-    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-    private File outputDirectory;
     
     private String learningMode = Constants.LM_SINGLE_LABEL;
     private String featureMode = Constants.FM_DOCUMENT;
@@ -187,7 +183,7 @@ public class TcAnnotator
 
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(
-        		TcAnnotator.PARAM_TC_MODEL_LOCATION, tcModelLocation, 
+        		TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, tcModelLocation, 
         		ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath, 
         		ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
         		ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task.uima;
+package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
@@ -42,15 +42,14 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
-public class WekaLoadModelConnector
+public class LoadModelConnectorWeka
     extends ModelSerialization_ImplBase
 {
 
-    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
+    @ConfigurationParameter(name = TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
     
     public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";

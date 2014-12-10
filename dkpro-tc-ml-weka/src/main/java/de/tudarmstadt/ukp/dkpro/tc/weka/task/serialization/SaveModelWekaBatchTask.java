@@ -16,20 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
+package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
+import weka.classifiers.Classifier;
+import weka.core.Attribute;
+import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -38,13 +41,16 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Save model batch
  * 
  */
-public class SaveModelCRFSuiteTask
+public class SaveModelWekaBatchTask
     extends BatchTask
 {
 
@@ -61,11 +67,11 @@ public class SaveModelCRFSuiteTask
     private ExtractFeaturesTask featuresTrainTask;
     private ModelSerializationDescription saveModelTask;
 
-    public SaveModelCRFSuiteTask()
+    public SaveModelWekaBatchTask()
     {/* needed for Groovy */
     }
 
-    public SaveModelCRFSuiteTask(String aExperimentName, File outputFolder,
+    public SaveModelWekaBatchTask(String aExperimentName, File outputFolder,
             Class<? extends TCMachineLearningAdapter> mlAdapter,
             AnalysisEngineDescription preprocessingPipeline)
         throws TextClassificationException
@@ -183,15 +189,16 @@ public class SaveModelCRFSuiteTask
     }
 }
 
+/**
+ * Knows what to do in order to serialize a model - is called as task by the main class
+ */
 class ModelSerializationDescription
-    extends ExecutableTaskBase
+    extends WekaTestTask_ImplBase
     implements Constants
 {
 
     @Discriminator
     protected List<Object> pipelineParameters;
-    @Discriminator
-    protected List<String> featureSet;
 
     private File outputFolder;
 
@@ -204,38 +211,124 @@ class ModelSerializationDescription
     public void execute(TaskContext aContext)
         throws Exception
     {
-        trainAndStoreModel(aContext);
+        
+        
+//        
+//        
+//        SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
+        boolean isMultiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
 
-        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-        SaveModelUtils.writeMetaCollectorInformation(aContext, outputFolder, featureSet);
-        SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
-
-    }
-
-    private void trainAndStoreModel(TaskContext aContext)
-        throws Exception
-    {
-        File train = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY).getPath()
+        File arffFileTrain = new File(aContext.getStorageLocation(
+                TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY).getPath()
                 + "/"
-                + CRFSuiteAdapter.getInstance().getFrameworkFilename(
+                + WekaClassificationAdapter.getInstance().getFrameworkFilename(
                         AdapterNameEntries.featureVectorsFile));
 
-        List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(getExecutablePath());
-        commandTrainModel.add("learn");
-        commandTrainModel.add("-m");
-        commandTrainModel.add(outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        commandTrainModel.add(train.getAbsolutePath());
+        Instances trainData = WekaUtils.getInstances(arffFileTrain, isMultiLabel);
+        trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
 
-        Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
-        process.waitFor();
-    }
+        featureSelection(aContext, trainData);
 
-    private String getExecutablePath()
-        throws Exception
-    {
-        return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
-                "crfsuite").getAbsolutePath();
+        // File outputFolder = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+        // AccessMode.READWRITE)
+        // .getPath());
+
+        // write model file
+        Classifier cl = getClassifier();
+        cl.buildClassifier(trainData);
+        weka.core.SerializationHelper.write(
+                new File(outputFolder, MODEL_CLASSIFIER).getAbsolutePath(), cl);
+
+        // write attribute file
+        StringBuilder attributes = new StringBuilder();
+        Enumeration<Attribute> atts = trainData.enumerateAttributes();
+        while (atts.hasMoreElements()) {
+            attributes.append(atts.nextElement().name());
+            attributes.append("\n");
+        }
+        attributes.append(trainData.classAttribute().name());
+        attributes.append("\n");
+
+        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_NAMES),
+                attributes.toString());
+
+        // write class labels file
+        List<String> classLabels;
+        if (!isRegression) {
+            classLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);
+            String classLabelsString = StringUtils.join(classLabels, "\n");
+            FileUtils.writeStringToFile(new File(outputFolder, MODEL_CLASS_LABELS),
+                    classLabelsString);
+        }
+
+        // write feature extractors
+        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
+
+//        String featureExtractorString = StringUtils.join(featureSet, "\n");
+//        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_EXTRACTORS),
+//                featureExtractorString);
+
+        // write meta collector data
+        // automatically determine the required metaCollector classes from the provided feature
+        // extractors
+        SaveModelUtils.writeMetaCollectorInformation(aContext, outputFolder, featureSet);
+//        Set<Class<? extends MetaCollector>> metaCollectorClasses;
+//        Set<String> requiredTypes;
+//        try {
+//            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
+//            requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
+//        }
+//        catch (ClassNotFoundException e) {
+//            throw new ResourceInitializationException(e);
+//        }
+//        catch (InstantiationException e) {
+//            throw new ResourceInitializationException(e);
+//        }
+//        catch (IllegalAccessException e) {
+//            throw new ResourceInitializationException(e);
+//        }
+//
+//        // collect parameter/key pairs that need to be set
+//        Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
+//        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+//            try {
+//                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
+//                        .getParameterKeyPairs());
+//            }
+//            catch (InstantiationException e) {
+//                throw new ResourceInitializationException(e);
+//            }
+//            catch (IllegalAccessException e) {
+//                throw new ResourceInitializationException(e);
+//            }
+//        }
+//
+//        Properties parameterProperties = new Properties();
+//        for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
+//            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+//                    entry.getValue());
+//            parameterProperties.put(entry.getKey(), file.getAbsolutePath());
+//        }
+
+        // //
+        // FIXME this needs to be fixed!
+        // //
+
+        // TODO re-add also the other parameters. Otherwise feature extractors might e.g. work in
+        // default mode and produce different results
+        // // add all other pipeline parameters
+        // for (int i=0; i<pipelineParameters.size(); i=i+2) {
+        // parameterProperties.put((String) pipelineParameters.get(i), pipelineParameters.get(i+1));
+        // }
+
+        SaveModelUtils.writeModelParameters(outputFolder, "");
+//        FileWriter writer = new FileWriter(new File(outputFolder, MODEL_PARAMETERS));
+//        parameterProperties.store(writer, "");
+//        writer.close();
+
+        // as a marker for the type, write the name of the ml adapter class
+        // write feature extractors
+        SaveModelUtils.writeModelAdapterInformation(outputFolder, WekaClassificationAdapter.class.getName());
     }
 }
