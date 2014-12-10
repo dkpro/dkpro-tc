@@ -41,7 +41,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.util.CasUtil;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
@@ -149,11 +148,6 @@ public class TcAnnotatorSequence
 	    addTCSequenceAnnotation(jcas);
 	    addTCUnitAndOutcomeAnnotation(jcas);
 	     		
-		// we need an outcome annotation present
-//		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-//		outcome.setOutcome("");
-//		outcome.addToIndexes();
-		
 		// create new UIMA annotator in order to separate the parameter spaces
 		// this annotator will get initialized with its own set of parameters loaded from the model
 		try {

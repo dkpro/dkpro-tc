@@ -60,7 +60,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.SaveModelWekaBatchTask;
 
-public class SaveAndLoadModelTest {
+public class WekaSaveAndLoadModelTest {
 
 	@Rule
 	public TemporaryFolder folder= new TemporaryFolder();

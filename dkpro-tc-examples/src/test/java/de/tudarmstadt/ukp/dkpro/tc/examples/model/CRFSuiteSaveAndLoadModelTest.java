@@ -128,7 +128,7 @@ public class CRFSuiteSaveAndLoadModelTest
     
     @Test
     public void loadModel() throws Exception {
-        
+               //create a model
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace();
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
@@ -146,6 +146,6 @@ public class CRFSuiteSaveAndLoadModelTest
                         TcAnnotatorSequence.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
                         TcAnnotatorSequence.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName()
                 )
-        );
+        );        
     }
 }
