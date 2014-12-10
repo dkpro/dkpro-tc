@@ -22,9 +22,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -879,7 +882,7 @@ public class WekaUtils
     }
 
     /**
-     * Returns a list with names of the class attribute values. Only works for single-label outcome.
+     * Returns a list with names of the class attribute values.
      * 
      * @param eval
      * @return
@@ -1095,4 +1098,36 @@ public class WekaUtils
 
         return filtered;
     }
+
+
+	/**
+	 * Writes a file with all necessary information for evaluation.
+	 * 
+	 * @param result the result file
+	 * @param file the file to write to
+	 * @throws IOException i/o error
+	 * @throws FileNotFoundException file not found
+	 */
+	public static void writeMlResultToFile(MultilabelResult result, File file) throws FileNotFoundException, IOException {
+		//file.mkdirs();
+		//file.createNewFile();
+		ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file));
+		stream.writeObject(result);
+		stream.close();
+	}
+	
+	/**
+	 * Reads a file serialized with {@link WekaUtils#writeMlResultToFile(MultilabelResult, File)}. 
+	 * 
+	 * @param file the file to read from 
+	 * @return an object holding the results
+	 * @throws IOException i/o error
+	 * @throws ClassNotFoundException file not found
+	 */
+	public static MultilabelResult readMlResultFromFile(File file) throws IOException, ClassNotFoundException{
+		ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
+		MultilabelResult result = (MultilabelResult)stream.readObject();
+		stream.close();
+		return result;
+	}
 }

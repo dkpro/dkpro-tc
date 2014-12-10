@@ -29,6 +29,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -78,12 +79,11 @@ public class WekaTestTask
 
         // evaluation & prediction generation
         if (multiLabel) {
-            // we don't need to build the classifier - multi label evaluation does this
-            // automatically
+            // we don't need to build the classifier - meka does this
+            // internally
             Result r = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, threshold);
-            Result.writeResultToFile(r, evalOutput.getAbsolutePath());
-            double[] t = WekaUtils.getMekaThreshold(threshold, r, trainData);
-            testData = WekaUtils.getPredictionInstancesMultiLabel(testData, cl, t);
+            WekaUtils.writeMlResultToFile(new MultilabelResult(r.allActuals(), r.allPredictions(), threshold), evalOutput);
+            testData = WekaUtils.getPredictionInstancesMultiLabel(testData, cl, WekaUtils.getMekaThreshold(threshold, r, trainData));
             testData = WekaUtils.addInstanceId(testData, copyTestData, true);
         }
         else {
