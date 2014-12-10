@@ -19,6 +19,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -211,11 +213,27 @@ class ModelSerializationDescription
     public void execute(TaskContext aContext)
         throws Exception
     {
-        
-        
-//        
-//        
-//        SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
+
+        serializeWekaModel(aContext);
+
+        // write feature extractors
+        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
+
+        // write meta collector data
+        // automatically determine the required metaCollector classes from the provided feature
+        // extractors
+        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet,
+                pipelineParameters);
+
+        // as a marker for the type, write the name of the ml adapter class
+        // write feature extractors
+        SaveModelUtils.writeModelAdapterInformation(outputFolder,
+                WekaClassificationAdapter.class.getName());
+    }
+
+    private void serializeWekaModel(TaskContext aContext)
+        throws Exception
+    {
         boolean isMultiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
         boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
 
@@ -262,73 +280,5 @@ class ModelSerializationDescription
                     classLabelsString);
         }
 
-        // write feature extractors
-        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-
-//        String featureExtractorString = StringUtils.join(featureSet, "\n");
-//        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_EXTRACTORS),
-//                featureExtractorString);
-
-        // write meta collector data
-        // automatically determine the required metaCollector classes from the provided feature
-        // extractors
-        SaveModelUtils.writeMetaCollectorInformation(aContext, outputFolder, featureSet);
-//        Set<Class<? extends MetaCollector>> metaCollectorClasses;
-//        Set<String> requiredTypes;
-//        try {
-//            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-//            requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
-//        }
-//        catch (ClassNotFoundException e) {
-//            throw new ResourceInitializationException(e);
-//        }
-//        catch (InstantiationException e) {
-//            throw new ResourceInitializationException(e);
-//        }
-//        catch (IllegalAccessException e) {
-//            throw new ResourceInitializationException(e);
-//        }
-//
-//        // collect parameter/key pairs that need to be set
-//        Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
-//        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-//            try {
-//                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
-//                        .getParameterKeyPairs());
-//            }
-//            catch (InstantiationException e) {
-//                throw new ResourceInitializationException(e);
-//            }
-//            catch (IllegalAccessException e) {
-//                throw new ResourceInitializationException(e);
-//            }
-//        }
-//
-//        Properties parameterProperties = new Properties();
-//        for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-//            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
-//                    entry.getValue());
-//            parameterProperties.put(entry.getKey(), file.getAbsolutePath());
-//        }
-
-        // //
-        // FIXME this needs to be fixed!
-        // //
-
-        // TODO re-add also the other parameters. Otherwise feature extractors might e.g. work in
-        // default mode and produce different results
-        // // add all other pipeline parameters
-        // for (int i=0; i<pipelineParameters.size(); i=i+2) {
-        // parameterProperties.put((String) pipelineParameters.get(i), pipelineParameters.get(i+1));
-        // }
-
-        SaveModelUtils.writeModelParameters(outputFolder, "");
-//        FileWriter writer = new FileWriter(new File(outputFolder, MODEL_PARAMETERS));
-//        parameterProperties.store(writer, "");
-//        writer.close();
-
-        // as a marker for the type, write the name of the ml adapter class
-        // write feature extractors
-        SaveModelUtils.writeModelAdapterInformation(outputFolder, WekaClassificationAdapter.class.getName());
     }
 }
