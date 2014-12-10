@@ -65,10 +65,9 @@ public interface TCMachineLearningAdapter
     public Class<? extends ReportBase> getClassificationReportClass();
 
 	/**
-	 * @param learningMode which learning mode (single/multi-label or regression) should be used
      * @return The data writer class that needs to be used with the corresponding ML framework
 	 */
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode);
+	public Class<? extends DataWriter> getDataWriterClass();
 
 	/**
      * @return The class of the load model connector to be used with this ML framework

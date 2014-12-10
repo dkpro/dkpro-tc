@@ -81,7 +81,7 @@ public class MalletAdapter
 	}
 
 	@Override
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
+	public Class<? extends DataWriter> getDataWriterClass() {
 		return MalletDataWriter.class;
 	}
 	

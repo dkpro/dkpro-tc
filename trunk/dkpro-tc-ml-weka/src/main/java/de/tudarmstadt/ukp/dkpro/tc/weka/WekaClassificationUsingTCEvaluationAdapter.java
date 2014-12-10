@@ -25,7 +25,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -34,7 +33,6 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 public class WekaClassificationUsingTCEvaluationAdapter 
@@ -86,13 +84,8 @@ public class WekaClassificationUsingTCEvaluationAdapter
 	}
 	
 	@Override
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
-		if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
-			return MekaDataWriter.class;
-		}
-		else {
-			return WekaDataWriter.class;
-		}
+	public Class<? extends DataWriter> getDataWriterClass() {
+		return WekaDataWriter.class;
 	}
 	
 	@Override

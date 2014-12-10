@@ -164,7 +164,7 @@ public class ExtractFeaturesTask
         }
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass(learningMode).getName() , learningMode, featureMode,
+                parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName() , learningMode, featureMode,
                 featureStore, true, developerMode, isTesting, featureFilters, featureSet.toArray(new String[0]));
 
         return connector;

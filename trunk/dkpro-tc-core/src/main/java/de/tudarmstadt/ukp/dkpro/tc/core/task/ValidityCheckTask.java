@@ -134,7 +134,7 @@ public class ValidityCheckTask
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
         parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
-        parameters.add(mlAdapter.getDataWriterClass(learningMode).getName());
+        parameters.add(mlAdapter.getDataWriterClass().getName());
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(featureMode);
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);

@@ -94,7 +94,7 @@ public class SVMHMMAdapter
     }
 
 	@Override
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
+	public Class<? extends DataWriter> getDataWriterClass() {
 		return SVMHMMDataWriter.class;
 	}
 

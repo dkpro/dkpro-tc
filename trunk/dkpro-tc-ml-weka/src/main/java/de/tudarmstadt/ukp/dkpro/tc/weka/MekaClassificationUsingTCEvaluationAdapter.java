@@ -29,73 +29,63 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
-public class WekaRegressionAdapter
-    implements TCMachineLearningAdapter
+public class MekaClassificationUsingTCEvaluationAdapter 
+	implements TCMachineLearningAdapter
 {
 
-    public static TCMachineLearningAdapter getInstance()
-    {
-        return new WekaRegressionAdapter();
-    }
+	public static TCMachineLearningAdapter getInstance() {
+		return new MekaClassificationUsingTCEvaluationAdapter();
+	}
+	
+	@Override
+	public ExecutableTaskBase getTestTask() {
+		return new WekaTestTask();
+	}
 
-    @Override
-    public ExecutableTaskBase getTestTask()
-    {
-        return new WekaTestTask();
-    }
+	@Override
+	public Class<? extends ReportBase> getClassificationReportClass() {		
+		return WekaClassificationReport.class;
+	}
 
-    @Override
-    public Class<? extends ReportBase> getClassificationReportClass()
-    {
-        return WekaRegressionReport.class;
-    }
+	@Override
+	public Class<? extends ReportBase> getOutcomeIdReportClass() {
+		return WekaOutcomeIDUsingTCEvaluationReport.class;
+	}
 
-    @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
-    {
-        return WekaOutcomeIDReport.class;
-    }
+	@Override
+	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
+		return WekaBatchTrainTestReport.class;
+	}
 
+	@SuppressWarnings("unchecked")
     @Override
-    public Class<? extends ReportBase> getBatchTrainTestReportClass()
-    {
-        return WekaBatchTrainTestReport.class;
-    }
+	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
+			String[] files, int folds) {
+		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
+	}
 
-    @Override
-    public DimensionBundle<Collection<String>> getFoldDimensionBundle(
-            String[] files, int folds)
-    {
-        return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
-    }
-
-    @Override
-    public String getFrameworkFilename(AdapterNameEntries name)
-    {
+	@Override
+	public String getFrameworkFilename(AdapterNameEntries name) {
 
         switch (name) {
-        case featureVectorsFile:
-            return "training-data.arff.gz";
-        case predictionsFile:
-            return "predictions.arff";
-        case evaluationFile:
-            return "evaluation.bin";
-        case featureSelectionFile:
-            return "attributeEvaluationResults.txt";
+            case featureVectorsFile:  return "training-data.arff.gz";
+            case predictionsFile      :  return "predictions.arff";
+            case evaluationFile       :  return "evaluation.bin";
+            case featureSelectionFile :  return "attributeEvaluationResults.txt";
         }
-
+        
         return null;
-    }
-    
+	}
+	
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return WekaDataWriter.class;
+		return MekaDataWriter.class;
 	}
 	
 	@Override

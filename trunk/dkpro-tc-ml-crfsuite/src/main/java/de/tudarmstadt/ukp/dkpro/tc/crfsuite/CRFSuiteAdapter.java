@@ -93,7 +93,7 @@ public class CRFSuiteAdapter
     }
 
 	@Override
-	public Class<? extends DataWriter> getDataWriterClass(String learningMode) {
+	public Class<? extends DataWriter> getDataWriterClass() {
 		return CRFSuiteDataWriter.class;
 	}
 	

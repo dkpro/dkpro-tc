@@ -35,17 +35,15 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
+import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestUsingTCEvaluationReport
 
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
@@ -161,8 +159,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [WekaClassificationReport],
+            machineLearningAdapter: MekaClassificationUsingTCEvaluationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -194,8 +191,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [WekaClassificationReport],
+            machineLearningAdapter: MekaClassificationUsingTCEvaluationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -208,8 +204,7 @@ public class ReutersDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                WekaBatchTrainTestUsingTCEvaluationReport]
         ]
 
         // Run
