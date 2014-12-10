@@ -26,7 +26,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.SaveModelConnector_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMClassificationReport;
@@ -99,7 +99,7 @@ public class SVMHMMAdapter
 	}
 
 	@Override
-	public Class<? extends SaveModelConnector_ImplBase> getLoadModelConnectorClass() {
+	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		// FIXME to be implemented
 		throw new UnsupportedOperationException();
 	}

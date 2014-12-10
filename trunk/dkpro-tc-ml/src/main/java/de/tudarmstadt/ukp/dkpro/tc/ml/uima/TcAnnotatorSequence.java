@@ -22,9 +22,11 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_META;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_PARAMETERS;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -32,10 +34,13 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -43,13 +48,14 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
-public class TcAnnotator
+public class TcAnnotatorSequence
 	extends JCasAnnotator_ImplBase
 {
 	
@@ -57,12 +63,16 @@ public class TcAnnotator
     @ConfigurationParameter(name = PARAM_TC_MODEL_LOCATION, mandatory = true)
     protected File tcModelLocation;
     
-    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
-    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-    private File outputDirectory;
+    public static final String PARAM_NAME_SEQUENCE_ANNOTATION = "sequenceAnnotation";
+    @ConfigurationParameter(name = PARAM_NAME_SEQUENCE_ANNOTATION, mandatory = true)
+    private String nameSequence;
+    
+    public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";
+    @ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = true)
+    private String nameUnit;
     
     private String learningMode = Constants.LM_SINGLE_LABEL;
-    private String featureMode = Constants.FM_DOCUMENT;
+    private String featureMode = Constants.FM_SEQUENCE;
     
 //    private List<FeatureExtractorResource_ImplBase> featureExtractors;
     private List<String> featureExtractors;
@@ -97,8 +107,12 @@ public class TcAnnotator
 					parameters.add(parts[1]);					
 				}
 			}
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
+		} catch (Exception e) {
+		    
+		    if (!(e instanceof FileNotFoundException)){
+		        throw new ResourceInitializationException(e);
+		    }
+			
 		}
         featureExtractors = new ArrayList<>();
         try {
@@ -127,14 +141,18 @@ public class TcAnnotator
 //			throw new ResourceInitializationException(e);
 //		}
 	}
+	
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		
+	    
+	    addTCSequenceAnnotation(jcas);
+	    addTCUnitAndOutcomeAnnotation(jcas);
+	     		
 		// we need an outcome annotation present
-		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-		outcome.setOutcome("");
-		outcome.addToIndexes();
+//		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+//		outcome.setOutcome("");
+//		outcome.addToIndexes();
 		
 		// create new UIMA annotator in order to separate the parameter spaces
 		// this annotator will get initialized with its own set of parameters loaded from the model
@@ -150,10 +168,36 @@ public class TcAnnotator
 			throw new AnalysisEngineProcessException(e);
 		}
 		
-		System.out.println(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class).getOutcome());
 	}
 	
-	   /**
+	   private void addTCUnitAndOutcomeAnnotation(JCas jcas)
+    {
+	       Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
+           
+           Collection<AnnotationFS> unitAnnotation = CasUtil.select(jcas.getCas(), type);
+           for (AnnotationFS unit : unitAnnotation){
+               TextClassificationUnit tcs = new TextClassificationUnit(jcas, unit.getBegin(), unit.getEnd());
+               tcs.addToIndexes();
+               TextClassificationOutcome tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
+               tco.setOutcome("dummyValue");
+               tco.addToIndexes();
+           }      
+    }
+
+
+    private void addTCSequenceAnnotation(JCas jcas)
+    {
+	       Type type = jcas.getCas().getTypeSystem().getType(nameSequence);
+	        
+	        Collection<AnnotationFS> sequenceAnnotation = CasUtil.select(jcas.getCas(), type);
+	        for (AnnotationFS seq : sequenceAnnotation){
+	            TextClassificationSequence tcs = new TextClassificationSequence(jcas, seq.getBegin(), seq.getEnd());
+	            tcs.addToIndexes();
+	        }        
+    }
+
+
+    /**
      * @param featureExtractorClassNames @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
@@ -187,7 +231,7 @@ public class TcAnnotator
 
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(
-        		TcAnnotator.PARAM_TC_MODEL_LOCATION, tcModelLocation, 
+        		TcAnnotatorSequence.PARAM_TC_MODEL_LOCATION, tcModelLocation, 
         		ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath, 
         		ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
         		ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,

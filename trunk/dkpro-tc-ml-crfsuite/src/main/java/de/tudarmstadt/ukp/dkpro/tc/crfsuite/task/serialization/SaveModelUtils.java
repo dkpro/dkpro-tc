@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.savemodel;
+package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 

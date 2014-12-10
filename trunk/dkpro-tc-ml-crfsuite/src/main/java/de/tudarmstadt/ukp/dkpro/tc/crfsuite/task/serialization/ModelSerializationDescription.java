@@ -16,45 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.savemodel;
-
-import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
+package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 
 /**
  * Writes the model
  * 
  */
-public class CRFSuiteModelSerializationDescription
+public class ModelSerializationDescription
     extends ExecutableTaskBase
     implements Constants
 {
-
-    private static final String CRFSUITE_MODEL = "crfsuite.model";
 
     @Discriminator
     protected List<Object> pipelineParameters;
@@ -91,7 +75,7 @@ public class CRFSuiteModelSerializationDescription
         commandTrainModel.add(getExecutablePath());
         commandTrainModel.add("learn");
         commandTrainModel.add("-m");
-        commandTrainModel.add(outputFolder.getAbsolutePath()+"/" + CRFSUITE_MODEL);
+        commandTrainModel.add(outputFolder.getAbsolutePath()+"/" + MODEL_CLASSIFIER);
         commandTrainModel.add(train.getAbsolutePath());
         
         Process process = new ProcessBuilder().inheritIO()
