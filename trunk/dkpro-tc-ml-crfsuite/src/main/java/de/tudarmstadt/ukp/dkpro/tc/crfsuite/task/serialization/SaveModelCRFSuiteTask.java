@@ -19,19 +19,26 @@
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 
 /**
  * Save model batch
@@ -58,9 +65,10 @@ public class SaveModelCRFSuiteTask
     {/* needed for Groovy */
     }
 
-    public SaveModelCRFSuiteTask(String aExperimentName, File outputFolder, Class<? extends TCMachineLearningAdapter> mlAdapter,
+    public SaveModelCRFSuiteTask(String aExperimentName, File outputFolder,
+            Class<? extends TCMachineLearningAdapter> mlAdapter,
             AnalysisEngineDescription preprocessingPipeline)
-            throws TextClassificationException
+        throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         setPreprocessingPipeline(preprocessingPipeline);
@@ -94,8 +102,7 @@ public class SaveModelCRFSuiteTask
         if (experimentName == null || preprocessingPipeline == null)
 
         {
-            throw new IllegalStateException(
-                    "You must set Experiment Name and Aggregate.");
+            throw new IllegalStateException("You must set Experiment Name and Aggregate.");
         }
 
         // check the validity of the experiment setup first
@@ -129,7 +136,8 @@ public class SaveModelCRFSuiteTask
         saveModelTask = new ModelSerializationDescription();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         saveModelTask.setOutputFolder(outputFolder);
 
         // DKPro Lab issue 38: must be added as *first* task
@@ -154,21 +162,80 @@ public class SaveModelCRFSuiteTask
     {
         this.operativeViews = operativeViews;
     }
-    
-    public void setTcMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter) 
-    	throws TextClassificationException
+
+    public void setTcMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
+        throws TextClassificationException
     {
         try {
-			this.mlAdapter = mlAdapter.newInstance();
-		} catch (InstantiationException e) {
-			throw new TextClassificationException(e);
-		} catch (IllegalAccessException e) {
-			throw new TextClassificationException(e);
-		}
+            this.mlAdapter = mlAdapter.newInstance();
+        }
+        catch (InstantiationException e) {
+            throw new TextClassificationException(e);
+        }
+        catch (IllegalAccessException e) {
+            throw new TextClassificationException(e);
+        }
     }
-    
-    
-    public void setOutputFolder(File outputFolder) {
-    	this.outputFolder = outputFolder;
+
+    public void setOutputFolder(File outputFolder)
+    {
+        this.outputFolder = outputFolder;
+    }
+}
+
+class ModelSerializationDescription
+    extends ExecutableTaskBase
+    implements Constants
+{
+
+    @Discriminator
+    protected List<Object> pipelineParameters;
+    @Discriminator
+    protected List<String> featureSet;
+
+    private File outputFolder;
+
+    public void setOutputFolder(File outputFolder)
+    {
+        this.outputFolder = outputFolder;
+    }
+
+    @Override
+    public void execute(TaskContext aContext)
+        throws Exception
+    {
+        trainAndStoreModel(aContext);
+
+        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
+        SaveModelUtils.writeMetaCollectorInformation(aContext, outputFolder, featureSet);
+        SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
+
+    }
+
+    private void trainAndStoreModel(TaskContext aContext)
+        throws Exception
+    {
+        File train = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY).getPath()
+                + "/"
+                + CRFSuiteAdapter.getInstance().getFrameworkFilename(
+                        AdapterNameEntries.featureVectorsFile));
+
+        List<String> commandTrainModel = new ArrayList<String>();
+        commandTrainModel.add(getExecutablePath());
+        commandTrainModel.add("learn");
+        commandTrainModel.add("-m");
+        commandTrainModel.add(outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+        commandTrainModel.add(train.getAbsolutePath());
+
+        Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
+        process.waitFor();
+    }
+
+    private String getExecutablePath()
+        throws Exception
+    {
+        return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
+                "crfsuite").getAbsolutePath();
     }
 }

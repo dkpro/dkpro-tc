@@ -97,8 +97,9 @@ public class LoadModelCRFSuiteConnector
             File tmpFolderForFeatureFile = tmpFolder.newFolder();
             File featureFile = CRFSuiteDataWriter.writeFeatureFile(allInstances,
                     tmpFolderForFeatureFile);
-            classify(featureFile);
-
+            
+            String labels = classify(featureFile);
+            setPredictedOutcome(jcas, labels);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
@@ -106,14 +107,42 @@ public class LoadModelCRFSuiteConnector
 
     }
 
-    private static void classify(File featureFile)
+    private void setPredictedOutcome(JCas jcas, String aLabels)
+    {
+        List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+        String[] labels = aLabels.split("\n");
+
+        for (int i = 0; i < outcomes.size(); i++) {
+            TextClassificationOutcome o = outcomes.get(i);
+            o.setOutcome(labels[i]);
+        }
+
+    }
+
+    private static String classify(File featureFile)
         throws Exception
     {
-        List<String> command = CRFSuiteTestTask.wrapTestCommandAsList(featureFile,
-                CRFSuiteTestTask.getExecutablePath(), model.getAbsolutePath());
+        List<String> commandGoldPredictionOutput = CRFSuiteTestTask.wrapTestCommandAsList(
+                featureFile, CRFSuiteTestTask.getExecutablePath(), model.getAbsolutePath());
 
-        String output = CRFSuiteTestTask.runTest(command);
-        System.out.println(output);
-        int a=0;
+        // remove 'print gold label' parameter
+        List<String> commandPredictionOutput = deleteGoldOutputFromParameterList(commandGoldPredictionOutput);
+
+        return CRFSuiteTestTask.runTest(commandPredictionOutput);
+    }
+
+    private static List<String> deleteGoldOutputFromParameterList(
+            List<String> aCommandGoldPredictionOutput)
+    {
+        List<String> command = new ArrayList<String>();
+        for (String parameter : aCommandGoldPredictionOutput) {
+            if (parameter.equals("-r")) {
+                continue;
+            }
+            command.add(parameter);
+        }
+
+        return command;
     }
 }
