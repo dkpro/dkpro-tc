@@ -71,12 +71,12 @@ public class MulanEvaluationWrapper
      *            a threshold to create bipartitions from rankings
      * @return measures as defined in {@link #getMeasures(MultiLabelOutput, int, boolean)}
      */
-    public static List<Measure> getMulanEvals(ArrayList<double[]> predictions, boolean[][] actuals,
+    public static List<Measure> getMulanEvals(double[][] predictions, boolean[][] actuals,
             double threshold)
     {
 
-        MultiLabelOutput pre_prediction = new MultiLabelOutput(predictions.get(0), threshold);
-        int numInstances = predictions.size();
+        MultiLabelOutput pre_prediction = new MultiLabelOutput(predictions[0], threshold);
+        int numInstances = predictions.length;
         double[] thresholds = new double[numInstances];
         Arrays.fill(thresholds, threshold);
         int numOfLabels = actuals[0].length;
@@ -88,7 +88,7 @@ public class MulanEvaluationWrapper
 
         Set<Measure> failed = new HashSet<Measure>();
         for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
-            MultiLabelOutput prediction = new MultiLabelOutput(predictions.get(instanceIndex),
+            MultiLabelOutput prediction = new MultiLabelOutput(predictions[instanceIndex],
                     thresholds[instanceIndex]);
 
             Iterator<Measure> it = measures.iterator();
@@ -163,12 +163,12 @@ public class MulanEvaluationWrapper
      *            a list of {0,1}-integer arrays
      * @return a matrix holding only boolean values
      */
-    public static boolean[][] getBooleanArrayFromList(ArrayList<int[]> actuals)
+    public static boolean[][] getBooleanMatrix(int[][] actuals)
     {
-        boolean[][] booleanA = new boolean[actuals.size()][actuals.get(0).length];
+        boolean[][] booleanA = new boolean[actuals.length][actuals[0].length];
         for (int i = 0; i < booleanA.length; i++) {
             for (int j = 0; j < booleanA[0].length; j++) {
-                booleanA[i][j] = actuals.get(i)[j] == 1 ? true : false;
+                booleanA[i][j] = actuals[i][j] == 1 ? true : false;
             }
         }
         return booleanA;
@@ -190,14 +190,14 @@ public class MulanEvaluationWrapper
      * @return the updated measure
      * @throws IOException
      */
-    public static Measure getMulanMeasure(ArrayList<double[]> predictions, boolean[][] actuals,
+    public static Measure getMulanMeasure(double[][] predictions, boolean[][] actuals,
             double[] thresholds, Measure m)
         throws IOException
     {
         m.reset();
         try {
-            for (int instanceIndex = 0; instanceIndex < predictions.size(); instanceIndex++) {
-                MultiLabelOutput prediction = new MultiLabelOutput(predictions.get(instanceIndex),
+            for (int instanceIndex = 0; instanceIndex < predictions.length; instanceIndex++) {
+                MultiLabelOutput prediction = new MultiLabelOutput(predictions[instanceIndex],
                         thresholds[instanceIndex]);
 
                 m.update(prediction, actuals[instanceIndex]);

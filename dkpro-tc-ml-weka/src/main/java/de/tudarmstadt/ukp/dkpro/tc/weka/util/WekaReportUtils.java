@@ -53,13 +53,13 @@ public class WekaReportUtils
      * @param tempM
      *            not null
      */
-    public static void updateTempMLConfusionMatrix(Result r, String[] classNames,
+    public static void updateTempMLConfusionMatrix(MultilabelResult r, String[] classNames,
             List<String> actualLabelsList, List<String> predictedLabelsList,
             HashMap<String, Map<String, Integer>> tempM)
     {
-        for (int i = 0; i < r.size(); i++) {
-            int[] prediction = r.rowPrediction(i, Double.parseDouble(r.getInfo("Threshold")));
-            int[] actual = r.rowActual(i);
+        for (int i = 0; i < r.getGoldstandard().length; i++) {
+            int[] prediction = r.getPredictionsBipartition()[i];
+            int[] actual = r.getGoldstandard()[i];
 
             // in ML mode, we build the confusion matrix over the Label Power Set of all
             // actuals/predictions
@@ -106,14 +106,14 @@ public class WekaReportUtils
      * @return
      * @throws IOException
      */
-    public static double[][] createPRData(boolean[][] actualsArray, ArrayList<double[]> predictions)
+    public static double[][] createPRData(boolean[][] actualsArray, double[][] predictions)
         throws IOException
     {
         double[][] data = new double[2][11];
         double t = 0;
 
         for (int j = 0; j <= 10; j++) {
-            double[] thresholds = new double[predictions.size()];
+            double[] thresholds = new double[predictions.length];
             Arrays.fill(thresholds, t / 10);
 
             double precision = MulanEvaluationWrapper.getMulanMeasure(predictions, actualsArray,

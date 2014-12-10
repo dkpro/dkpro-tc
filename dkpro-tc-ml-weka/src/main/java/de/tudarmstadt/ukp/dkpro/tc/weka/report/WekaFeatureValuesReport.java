@@ -85,6 +85,7 @@ public class WekaFeatureValuesReport
 
         // -----MULTI LABEL-----------
         if (multiLabel) {
+        	// FIXME get rid of this method replace with new 
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
             classValues = new String[predictions.classIndex()];
             for (int i = 0; i < predictions.classIndex(); i++) {
