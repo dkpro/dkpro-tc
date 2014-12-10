@@ -46,7 +46,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class TcAnnotatorDocument
@@ -136,7 +135,7 @@ public class TcAnnotatorDocument
 		// this annotator will get initialized with its own set of parameters loaded from the model
 		try {
 			AnalysisEngineDescription connector = getSaveModelConnector(
-			        parameters, tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass(learningMode).toString(), learningMode, featureMode,
+			        parameters, tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(), learningMode, featureMode,
 			        DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
 			AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
 			

@@ -50,9 +50,41 @@ public class MekaEvaluationUtils
 {
 
     public static final String HAMMING_ACCURACY = "Hemming Accuracy";
+    
+    /**
+     * Calculates a number of evaluation measures for multi-label classification, without class-wise measures.
+     * 
+     * @param predictions
+     *            predictions by the classifier (ranking)
+     * @param goldStandard
+     *            gold standard (bipartition)
+     * @param t
+     *            a threshold to create bipartitions from rankings
+     * @return the evaluation statistics
+     */
+    public static HashMap<String, Double> calcMLStats(double predictions[][], int goldStandard[][],
+            double t[])
+    {
+        int N = goldStandard.length;
+        int L = goldStandard[0].length;
+        int Ypred[][] = ThresholdUtils.threshold(predictions, t);
+
+        HashMap<String, Double> results = new LinkedHashMap<String, Double>();
+        Mean mean = new Mean();
+
+        results.put(NUMBER_LABELS, (double) L);
+        results.put(NUMBER_EXAMPLES, (double) N);
+        results.put(ZERO_ONE_LOSS, Metrics.L_ZeroOne(goldStandard, Ypred));
+        results.put(LABEL_CARDINALITY_PRED, MLUtils.labelCardinality(Ypred));
+        results.put(LABEL_CARDINALITY_REAL, MLUtils.labelCardinality(goldStandard));
+        results.put(AVERAGE_THRESHOLD, mean.evaluate(t, 0, t.length)); // average
+        results.put(EMPTY_VECTORS, MLUtils.emptyVectors(Ypred));
+
+        return results;
+    }
 
     /**
-     * Calculates a number of evaluation measures for multi-label classification.
+     * Calculates a number of evaluation measures for multi-label classification, including class-wise measures.
      * 
      * @param predictions
      *            predictions by the classifier (ranking)
@@ -68,21 +100,9 @@ public class MekaEvaluationUtils
             double t[],
             String[] classNames)
     {
-
-        int N = goldStandard.length;
+        HashMap<String, Double> results = calcMLStats(predictions, goldStandard, t);
         int L = goldStandard[0].length;
         int Ypred[][] = ThresholdUtils.threshold(predictions, t);
-
-        HashMap<String, Double> results = new LinkedHashMap<String, Double>();
-        Mean mean = new Mean();
-
-        results.put(NUMBER_LABELS, (double) L);
-        results.put(NUMBER_EXAMPLES, (double) N);
-        results.put(ZERO_ONE_LOSS, Metrics.L_ZeroOne(goldStandard, Ypred));
-        results.put(LABEL_CARDINALITY_PRED, MLUtils.labelCardinality(Ypred));
-        results.put(LABEL_CARDINALITY_REAL, MLUtils.labelCardinality(goldStandard));
-        results.put(AVERAGE_THRESHOLD, mean.evaluate(t, 0, t.length)); // average
-        results.put(EMPTY_VECTORS, MLUtils.emptyVectors(Ypred));
 
         // class-wise measures
         for (int j = 0; j < L; j++) {

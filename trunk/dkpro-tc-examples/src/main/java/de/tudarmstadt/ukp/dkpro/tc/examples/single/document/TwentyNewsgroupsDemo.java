@@ -44,14 +44,13 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -85,6 +84,7 @@ public class TwentyNewsgroupsDemo
 
         TwentyNewsgroupsDemo experiment = new TwentyNewsgroupsDemo();
         experiment.runCrossValidation(pSpace);
+        experiment.runCrossValidationWithStatsEval(pSpace);
         experiment.runTrainTest(pSpace);
     }
 
@@ -134,11 +134,23 @@ public class TwentyNewsgroupsDemo
                 		LuceneNGramDFE.class.getName()
                 }
         ));
+        
+        Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(DIM_BASELINE_CLASSIFICATION_ARGS,
+        		Arrays.asList(new String[]{NaiveBayes.class.getName()}));
+        
+        Dimension<List<String>> dimBaselinePipelineParameters = Dimension.create(DIM_BASELINE_FEATURE_SET,
+        		Arrays.asList(new String[]{NrOfTokensDFE.class.getName(),LuceneNGramDFE.class.getName()}));
+
+        Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(DIM_BASELINE_PIPELINE_PARAMS, 
+        		Arrays.asList(new Object[]{
+        				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3}));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs);
+                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets, dimBaselinePipelineParameters);
 
         return pSpace;
     }
@@ -150,14 +162,27 @@ public class TwentyNewsgroupsDemo
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
                 getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(WekaBatchCrossValidationReport.class);
-        batch.addReport(WekaBatchRuntimeReport.class);
+        batch.addReport(WekaBatchTrainTestReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+    
+    // ##### CV with STATS EVAL #####
+    protected void runCrossValidationWithStatsEval(ParameterSpace pSpace)
+        throws Exception
+    {
+    	// demo for the statistical evaluation reports
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaStatisticsClassificationAdapter.class,
+                getPreprocessing(), NUM_FOLDS);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchStatisticsCVReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -170,7 +195,6 @@ public class TwentyNewsgroupsDemo
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class,
                 getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.addInnerReport(WekaFeatureValuesReport.class);

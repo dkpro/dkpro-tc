@@ -153,6 +153,21 @@ public interface Constants
      * Name of the class that implements {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}
      */
     public static final String DIM_FEATURE_STORE = "featureStore";
+    
+    /**
+     * Name of the discriminator which holds the classifier and arguments which serve as baseline
+     */
+    public static final String DIM_BASELINE_CLASSIFICATION_ARGS = "baselineClassificationArgs";
+   
+    /**
+     * Name of the discriminator which holds the feature set which serves as base
+     */
+    public static final String DIM_BASELINE_FEATURE_SET = "baselineFeatureSet";
+    
+    /**
+     * Name of the discriminator which holds the feature parameters which serve as base
+     */
+    public static final String DIM_BASELINE_PIPELINE_PARAMS = "baselinePipelineParams";
 
     /*
      * Learning modes
@@ -229,7 +244,16 @@ public interface Constants
      * Name of the confusion matrix dimension showing the predicted values
      */
     public static final String CM_PREDICTED = " (pred.)";
+    /**
+     * Name of the file that holds information for the R connect report on test task level
+     */
+    public static final String R_CONNECT_REPORT_TEST_TASK_FILENAME = "r_connect_report.txt";
+    /**
+     * Name of the file that holds information for the R connect report on cv level
+     */
+    public static final String CV_R_CONNECT_REPORT_FILE = "r_connect_cv.csv";
 
+    
     
     /*
      * Machine Learning (General)

@@ -70,6 +70,12 @@ public abstract class WekaTestTask_ImplBase
     protected String learningMode;
     @Discriminator
     protected String threshold;
+    @Discriminator
+    protected List<String> baselineClassificationArgs;
+    @Discriminator
+    protected List<String> baselineFeatureSet;
+    @Discriminator
+    protected List<Object> baselinePipelineParams;
     
     protected Classifier getClassifier()
     		throws Exception
