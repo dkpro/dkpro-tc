@@ -22,7 +22,6 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_META;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_PARAMETERS;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,7 +158,7 @@ public class TcAnnotatorSequence
         // this annotator will get initialized with its own set of parameters loaded from the model
         try {
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
-                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass(learningMode)
+                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass()
                             .toString(), learningMode, featureMode,
                     DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
             AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
