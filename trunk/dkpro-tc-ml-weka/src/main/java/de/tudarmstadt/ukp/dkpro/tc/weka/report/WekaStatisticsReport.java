@@ -120,7 +120,7 @@ public class WekaStatisticsReport
         props.setProperty(MEASURES, StringUtils.join(buffer, ";"));
 
         // Write out properties
-        getContext().storeBinary(R_CONNECT_REPORT_TEST_TASK_FILENAME, new PropertiesAdapter(props));
+        getContext().storeBinary(STATISTICS_REPORT_TEST_TASK_FILENAME, new PropertiesAdapter(props));
 
     }
 }

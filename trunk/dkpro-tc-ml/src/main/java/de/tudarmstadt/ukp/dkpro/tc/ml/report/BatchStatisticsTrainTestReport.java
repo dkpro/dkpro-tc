@@ -59,7 +59,7 @@ public class BatchStatisticsTrainTestReport
                 Map<String, String> discriminatorsMap = getContext().getStorageService().retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 Map<String, String> rConnectReport = getContext().getStorageService().retrieveBinary(subcontext.getId(),
-                        R_CONNECT_REPORT_TEST_TASK_FILENAME, new PropertiesAdapter()).getMap();
+                        STATISTICS_REPORT_TEST_TASK_FILENAME, new PropertiesAdapter()).getMap();
 
                                 
                 String blCl = rConnectReport.get(DIM_BASELINE_CLASSIFICATION_ARGS);
@@ -67,8 +67,12 @@ public class BatchStatisticsTrainTestReport
                 String blPp = rConnectReport.get(DIM_BASELINE_PIPELINE_PARAMS);
                 
                 // these are from DKPro Lab
-                String train = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_training").hashCode());
-                String test = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_validation").hashCode());
+                String trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_training").hashCode());
+                String testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_validation").hashCode());
+                
+                String experimentName = subcontext.getType().split("\\-")[1];
+                String train = experimentName + "." + trainFiles;
+                String test = experimentName + "." + testFiles;
                 
                 String cl = getDiscriminatorValue(discriminatorsMap, DIM_CLASSIFICATION_ARGS);
                 String fs = getDiscriminatorValue(discriminatorsMap, DIM_FEATURE_SET); 
@@ -85,15 +89,19 @@ public class BatchStatisticsTrainTestReport
                 	String mName = mString.split(":")[0];
                 	String mValue = mString.split(":")[1];		
                     // expected format: Train;Test;Classifier;FeatureSet;Measure;Value;IsBaseline
-                    csv.writeNext(Arrays.asList(train, test, cl, fs + "_" + pp, mName, mValue,String.valueOf(isBaseline)).toArray(new String[]{}));
+                    csv.writeNext(Arrays.asList(train, test, cl,
+                            fs + "$" + pp, mName, mValue,
+                            String.valueOf(isBaseline)).toArray(new String[] {}));
                 }
             }
         }
-        getContext().storeBinary(CV_R_CONNECT_REPORT_FILE, new StringAdapter(sWriter.toString()));
+        getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(sWriter.toString()));
         csv.close();
     }
     
-    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName) throws TextClassificationException{
+    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
+        throws TextClassificationException
+    {
     	for (String key : discriminatorsMap.keySet()) {
 			if(key.split("\\|")[1].equals(discriminatorName)){
 				return discriminatorsMap.get(key);
@@ -101,4 +109,9 @@ public class BatchStatisticsTrainTestReport
 		}
     	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
     }
+
+    // private String escapeWhitespace(String text) {
+    // String escaped = text.replaceAll("\\s", "_");
+    // return escaped;
+    // }
 }

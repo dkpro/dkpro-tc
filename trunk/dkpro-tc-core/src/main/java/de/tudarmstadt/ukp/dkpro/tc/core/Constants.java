@@ -247,11 +247,11 @@ public interface Constants
     /**
      * Name of the file that holds information for the R connect report on test task level
      */
-    public static final String R_CONNECT_REPORT_TEST_TASK_FILENAME = "r_connect_report.txt";
+    public static final String STATISTICS_REPORT_TEST_TASK_FILENAME = "statistics_eval_task.txt";
     /**
      * Name of the file that holds information for the R connect report on cv level
      */
-    public static final String CV_R_CONNECT_REPORT_FILE = "r_connect_cv.csv";
+    public static final String STATISTICS_REPORT_FILENAME = "statistics_eval.csv";
 
     
     
