@@ -22,6 +22,9 @@ import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue.MissingValueType;
 
+/**
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
+ */
 public class MalletFeatureEncoder
 {
 

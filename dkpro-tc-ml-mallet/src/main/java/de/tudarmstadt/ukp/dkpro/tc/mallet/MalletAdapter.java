@@ -33,6 +33,9 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletFoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletDataWriter;
 
+/**
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
+ */
 public class MalletAdapter 
 	implements TCMachineLearningAdapter
 {

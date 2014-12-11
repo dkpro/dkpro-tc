@@ -34,6 +34,7 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 /**
  * Writes a instanceId / outcome pair for each classification instance.
  * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * @author krishperumal11
  * 
  */
