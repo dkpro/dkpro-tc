@@ -43,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.ngrams.util.CharacterNGramStringIterable;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
