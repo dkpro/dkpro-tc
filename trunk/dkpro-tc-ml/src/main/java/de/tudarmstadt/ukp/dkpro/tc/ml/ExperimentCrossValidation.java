@@ -124,6 +124,7 @@ public class ExperimentCrossValidation
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
         checkTask.setMlAdapter(mlAdapter);
+        checkTask.setType(checkTask.getType() + "-" + experimentName);
 
         // preprocessing on the entire data set and only once
         preprocessTask = new PreprocessTask();
@@ -170,7 +171,7 @@ public class ExperimentCrossValidation
         // collecting meta features only on the training data (numFolds times)
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
-        metaTask.setType(metaTask.getType() + experimentName);
+        metaTask.setType(metaTask.getType() + "-" + experimentName);
 
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
