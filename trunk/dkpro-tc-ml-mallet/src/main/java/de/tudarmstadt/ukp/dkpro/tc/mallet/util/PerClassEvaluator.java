@@ -35,6 +35,7 @@ import cc.mallet.util.MalletLogger;
 /**
  * Determines the precision, recall and F1 on a per-class basis.
  * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * @author Krish Perumal
  */
 

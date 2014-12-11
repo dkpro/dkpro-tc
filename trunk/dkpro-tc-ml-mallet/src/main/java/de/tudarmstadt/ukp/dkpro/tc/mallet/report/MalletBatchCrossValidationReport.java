@@ -47,6 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 /**
  * Collects the final evaluation results in a cross validation setting.
  * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * @author zesch
  * @author daxenberger
  * 

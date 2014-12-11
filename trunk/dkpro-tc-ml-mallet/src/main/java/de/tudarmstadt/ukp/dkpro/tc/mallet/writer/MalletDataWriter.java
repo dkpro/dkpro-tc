@@ -29,6 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletUtils;
 /**
  * {@link DataWriter} for the Mallet machine learning tool.
  * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * @author Oliver Ferschke
  * 
  */

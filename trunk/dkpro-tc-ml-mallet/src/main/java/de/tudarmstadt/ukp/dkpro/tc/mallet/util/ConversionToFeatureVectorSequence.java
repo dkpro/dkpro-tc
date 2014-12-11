@@ -33,6 +33,9 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
  * @author Krish Perumal
  */
 
+/**
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
+ */
 public class ConversionToFeatureVectorSequence extends Pipe
 {
 

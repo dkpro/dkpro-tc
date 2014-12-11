@@ -19,6 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.mallet.report;
 
 /**
  * Constants that are used in reports
+ * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  */
 public interface MalletReportConstants
 {
