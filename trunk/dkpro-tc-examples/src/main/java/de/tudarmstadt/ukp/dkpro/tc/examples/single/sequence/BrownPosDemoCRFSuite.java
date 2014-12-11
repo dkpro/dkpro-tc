@@ -19,6 +19,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
@@ -90,13 +91,19 @@ public class BrownPosDemoCRFSuite
                 Arrays.asList(new Object[] { "something2", "something2" }));
 
         @SuppressWarnings("unchecked")
+        /* If no algorithm is provided, CRFSuite takes lbfgs*/
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON}));
+
+        
+        @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensUFE.class.getName() }));
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
-                        DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets);
+                        DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
