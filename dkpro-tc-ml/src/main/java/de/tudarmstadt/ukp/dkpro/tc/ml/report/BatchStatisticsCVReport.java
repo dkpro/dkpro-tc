@@ -51,15 +51,15 @@ public class BatchStatisticsCVReport
         	// FIXME this is a really bad hack
             if (subcontext.getType().contains("$1")) {
             	String csvText = getContext().getStorageService().retrieveBinary(subcontext.getId(), 
-            			CV_R_CONNECT_REPORT_FILE, new StringAdapter()).getString();
-            	CSVReader csvReader = new CSVReader(new StringReader(csvText),';');
+            			STATISTICS_REPORT_FILENAME, new StringAdapter()).getString();
+                CSVReader csvReader = new CSVReader(new StringReader(csvText), ';');
             	for (String[] line : csvReader.readAll()) {
             		csvWriter.writeNext(line);
 				}
                 csvReader.close();
             }
         }
-        getContext().storeBinary(CV_R_CONNECT_REPORT_FILE, new StringAdapter(sWriter.toString()));
+        getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(sWriter.toString()));
         csvWriter.close();
     }
 }
