@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -31,6 +32,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.util.PrettyPrintUtils;
 
 
 /**
@@ -51,6 +53,13 @@ public class BatchStatisticsTrainTestReport
     {
         StringWriter sWriter = new StringWriter();
         CSVWriter csv = new CSVWriter(sWriter, ';');
+
+        HashSet<String> variableClassifier = new HashSet<String>();
+        HashSet<String> variableFeature = new HashSet<String>();
+
+        boolean experimentHasClassifierBaseline = false;
+        boolean experimentHasFeatureBaseline = false;
+
         for (TaskContextMetadata subcontext : getSubtasks()) {
         	// FIXME this is a bad hack
             if (subcontext.getType().contains("TestTask")) {
@@ -79,24 +88,42 @@ public class BatchStatisticsTrainTestReport
         		String pp = getDiscriminatorValue(discriminatorsMap, DIM_PIPELINE_PARAMS);
         		
         		int isBaseline = 0;
-        		if(blCl.equals(cl) && blFs.equals(fs) && blPp.equals(pp)){
-        			isBaseline = 1;
-        		}
-                
+                if (blCl.equals(cl)) {
+                    experimentHasClassifierBaseline = true;
+                }
+                if (blFs.equals(fs) && blPp.equals(pp)) {
+                    experimentHasFeatureBaseline = true;
+                }
+                if (blCl.equals(cl) && blFs.equals(fs) && blPp.equals(pp)) {
+                    isBaseline = 1;
+                }
                 
                 String measuresString = rConnectReport.get(MEASURES);
                 for(String mString : measuresString.split(";")){
                 	String mName = mString.split(":")[0];
-                	String mValue = mString.split(":")[1];		
+                    String mValue = mString.split(":")[1];
+                    String clShort = PrettyPrintUtils.prettyPrintClassifier(cl);
+                    String fsShort = PrettyPrintUtils.prettyPrintFeatureSet(fs, true);
+                    String ppShort = PrettyPrintUtils.prettyPrintFeatureArgs(pp);
+                    String fAllShort = fsShort + "," + ppShort;
                     // expected format: Train;Test;Classifier;FeatureSet;Measure;Value;IsBaseline
-                    csv.writeNext(Arrays.asList(train, test, cl,
-                            fs + "$" + pp, mName, mValue,
+                    csv.writeNext(Arrays.asList(train, test, clShort, fAllShort, mName, mValue,
                             String.valueOf(isBaseline)).toArray(new String[] {}));
+                    variableClassifier.add(clShort);
+                    variableFeature.add(fAllShort);
                 }
             }
         }
-        getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(sWriter.toString()));
+        String s = sWriter.toString();
         csv.close();
+        if (variableClassifier.size() > 1 && experimentHasFeatureBaseline) {
+            throw new TextClassificationException("If you configure a baseline for your feature set, you may not test more than one classifier (argument).");
+        }
+        if (variableFeature.size() > 1 && experimentHasClassifierBaseline) {
+            throw new TextClassificationException("If you configure a baseline for your classifier, you may not test more than one feature sets (or feature arguments).");
+        }
+
+        getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(s));
     }
     
     private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
@@ -109,9 +136,5 @@ public class BatchStatisticsTrainTestReport
 		}
     	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
     }
-
-    // private String escapeWhitespace(String text) {
-    // String escaped = text.replaceAll("\\s", "_");
-    // return escaped;
-    // }
 }
+
