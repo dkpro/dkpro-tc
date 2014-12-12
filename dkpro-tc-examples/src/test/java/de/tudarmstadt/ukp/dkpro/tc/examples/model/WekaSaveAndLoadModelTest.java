@@ -52,7 +52,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
-import de.tudarmstadt.ukp.dkpro.tc.examples.single.document.ComplexConfigurationSingleDemo;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -66,16 +65,26 @@ public class WekaSaveAndLoadModelTest {
 	@Rule
 	public TemporaryFolder folder= new TemporaryFolder();
 
-	@SuppressWarnings("unchecked")
 	@Test
 	@Ignore
 	public void roundTripWeka() 
 			throws Exception
 	{
-    	DemoUtils.setDkproHome(ComplexConfigurationSingleDemo.class.getSimpleName());
+
+    	DemoUtils.setDkproHome(WekaSaveAndLoadModelTest.class.getSimpleName());
+	    File modelFolder = folder.newFolder();
+
+	    writeModel(modelFolder);
+	    loadModel(modelFolder);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void writeModel(File modelFolder)
+		throws Exception
+	{
+    	DemoUtils.setDkproHome(WekaSaveAndLoadModelTest.class.getSimpleName());
 		
 	    String trainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
-	    File modelFolder = folder.newFolder();
 	    
 	    // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
@@ -130,8 +139,11 @@ public class WekaSaveAndLoadModelTest {
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
-	    
+	}
 	
+	private static void loadModel(File modelFolder)
+		throws Exception
+	{
 		SimplePipeline.runPipeline(
 				CollectionReaderFactory.createReader(
 						StringReader.class,
@@ -143,6 +155,6 @@ public class WekaSaveAndLoadModelTest {
 						TcAnnotatorDocument.class,
 						TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath()
 				)
-		);
+		);	
 	}
 }
