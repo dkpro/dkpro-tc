@@ -74,9 +74,20 @@ public class BatchStatisticsTrainTestReport
                 String blFs = rConnectReport.get(DIM_BASELINE_FEATURE_SET);
                 String blPp = rConnectReport.get(DIM_BASELINE_PIPELINE_PARAMS);
                 
-                // these are from DKPro Lab
-                String trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_training").hashCode());
-                String testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_validation").hashCode());
+                String trainFiles;
+                String testFiles;
+                
+                // CV
+                if(!getDiscriminatorValue(discriminatorsMap, "files_training").equals("null") &&
+                        !getDiscriminatorValue(discriminatorsMap, "files_validation").equals("null")){
+                     trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_training").hashCode());
+                     testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_validation").hashCode());
+                }
+                // TrainTest
+                else{
+                    trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_READER_TRAIN_PARAMS).hashCode());
+                    testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_READER_TEST_PARAMS).hashCode());
+                }
                 
                 String experimentName = subcontext.getType().split("\\-")[1];
                 String train = experimentName + "." + trainFiles;
