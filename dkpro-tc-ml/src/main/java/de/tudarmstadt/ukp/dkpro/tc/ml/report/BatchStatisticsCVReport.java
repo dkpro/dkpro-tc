@@ -76,6 +76,9 @@ public class BatchStatisticsCVReport
         if (variableClassifier.size() > 1 && variableFeature.size() > 1 && experimentHasBaseline) {
             throw new TextClassificationException("If you configure a baseline, you may test either only one classifier (arguments) or one feature set (arguments).");
         }
+        if (experimentHasBaseline && (variableClassifier.size() <= 2 || variableClassifier.size() <=2)) {
+            throw new TextClassificationException("If you configure a baseline, you need to test more than two different classifier (argument) configurations or feature set (argument) configurations.");
+        }
         getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(s));
     }
 }

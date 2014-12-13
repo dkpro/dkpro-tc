@@ -57,8 +57,7 @@ public class BatchStatisticsTrainTestReport
         HashSet<String> variableClassifier = new HashSet<String>();
         HashSet<String> variableFeature = new HashSet<String>();
 
-        boolean experimentHasClassifierBaseline = false;
-        boolean experimentHasFeatureBaseline = false;
+        boolean experimentHasBaseline = false;
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
         	// FIXME this is a bad hack
@@ -88,14 +87,9 @@ public class BatchStatisticsTrainTestReport
         		String pp = getDiscriminatorValue(discriminatorsMap, DIM_PIPELINE_PARAMS);
         		
         		int isBaseline = 0;
-                if (blCl.equals(cl)) {
-                    experimentHasClassifierBaseline = true;
-                }
-                if (blFs.equals(fs) && blPp.equals(pp)) {
-                    experimentHasFeatureBaseline = true;
-                }
                 if (blCl.equals(cl) && blFs.equals(fs) && blPp.equals(pp)) {
                     isBaseline = 1;
+                    experimentHasBaseline = true;
                 }
                 
                 String measuresString = rConnectReport.get(MEASURES);
@@ -105,7 +99,7 @@ public class BatchStatisticsTrainTestReport
                     String clShort = PrettyPrintUtils.prettyPrintClassifier(cl);
                     String fsShort = PrettyPrintUtils.prettyPrintFeatureSet(fs, true);
                     String ppShort = PrettyPrintUtils.prettyPrintFeatureArgs(pp);
-                    String fAllShort = fsShort + "," + ppShort;
+                    String fAllShort = fsShort + ", " + ppShort;
                     // expected format: Train;Test;Classifier;FeatureSet;Measure;Value;IsBaseline
                     csv.writeNext(Arrays.asList(train, test, clShort, fAllShort, mName, mValue,
                             String.valueOf(isBaseline)).toArray(new String[] {}));
@@ -116,11 +110,8 @@ public class BatchStatisticsTrainTestReport
         }
         String s = sWriter.toString();
         csv.close();
-        if (variableClassifier.size() > 1 && experimentHasFeatureBaseline) {
-            throw new TextClassificationException("If you configure a baseline for your feature set, you may not test more than one classifier (argument).");
-        }
-        if (variableFeature.size() > 1 && experimentHasClassifierBaseline) {
-            throw new TextClassificationException("If you configure a baseline for your classifier, you may not test more than one feature sets (or feature arguments).");
+        if (variableClassifier.size() > 1 && variableFeature.size() > 1 && experimentHasBaseline) {
+            throw new TextClassificationException("If you configure a baseline, you may test either only one classifier (arguments) or one feature set (arguments).");
         }
 
         getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(s));

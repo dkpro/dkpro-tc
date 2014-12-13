@@ -66,7 +66,7 @@ public class PrettyPrintUtils
                 buffer.add(fullFeatureName.trim());
             }
         }
-        return StringUtils.join(buffer, ",");
+        return StringUtils.join(buffer, ", ");
     }
 
     private static String cutPackageNames(String splittedArg)
@@ -95,6 +95,6 @@ public class PrettyPrintUtils
             String fullArg = argName + ":" + argVal;
             names.add(fullArg);
         }
-        return StringUtils.join(names, ",");
+        return StringUtils.join(names, ", ");
     }
 }
