@@ -30,6 +30,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -45,6 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchStatisticsCVReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport;
@@ -66,7 +69,7 @@ public class TwentyNewsgroupsDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 3;
+    public static final int NUM_FOLDS = 10;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
@@ -84,8 +87,9 @@ public class TwentyNewsgroupsDemo
 
         TwentyNewsgroupsDemo experiment = new TwentyNewsgroupsDemo();
         experiment.runCrossValidation(pSpace);
-        experiment.runCrossValidationWithStatsEval(pSpace);
+//        experiment.runCrossValidationWithStatsEval(pSpace);
         experiment.runTrainTest(pSpace);
+//        experiment.runTrainTestWithStatsEval(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -114,18 +118,22 @@ public class TwentyNewsgroupsDemo
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }),
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+                Arrays.asList(new String[] { NaiveBayes.class.getName() }),
+                Arrays.asList(new String[] { J48.class.getName() }),
+                Arrays.asList(new String[] { RandomForest.class.getName(), "-I", "200" }));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
+                        ,
                 Arrays.asList(new Object[] {
                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
+                		);
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -150,7 +158,8 @@ public class TwentyNewsgroupsDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets, dimBaselinePipelineParameters);
+                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets, dimBaselinePipelineParameters
+                );
 
         return pSpace;
     }
@@ -203,6 +212,21 @@ public class TwentyNewsgroupsDemo
         batch.addReport(WekaBatchTrainTestReport.class);
         batch.addReport(WekaBatchOutcomeIDReport.class);
         batch.addReport(WekaBatchRuntimeReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+    
+    // ##### TRAIN-TEST with STATS EVAL #####
+    protected void runTrainTestWithStatsEval(ParameterSpace pSpace)
+        throws Exception
+    {
+
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaStatisticsClassificationAdapter.class,
+                getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchStatisticsTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);
