@@ -38,7 +38,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
@@ -59,14 +58,10 @@ public class BrownPosDemoCRFSuite
     public static void main(String[] args)
         throws Exception
     {
-        // Suppress mallet logging output
-        System.setProperty("java.util.logging.config.file", "src/main/resources/logging.properties");
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
         DemoUtils.setDkproHome(BrownPosDemoCRFSuite.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
@@ -80,15 +75,15 @@ public class BrownPosDemoCRFSuite
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
+        dimReaders.put(DIM_READER_TRAIN_PARAMS, asList(BrownCorpusReader.PARAM_LANGUAGE,
                 "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
                 Arrays.asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz")));
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { "something", "something" }),
-                Arrays.asList(new Object[] { "something2", "something2" }));
+                asList(new Object[] { "something", "something" }),
+                asList(new Object[] { "something2", "something2" }));
 
         @SuppressWarnings("unchecked")
         /* If no algorithm is provided, CRFSuite takes lbfgs*/
@@ -98,7 +93,7 @@ public class BrownPosDemoCRFSuite
         
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensUFE.class.getName() }));
+                asList(new String[] { NrOfTokensUFE.class.getName() }));
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -115,11 +110,9 @@ public class BrownPosDemoCRFSuite
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite",
                 CRFSuiteAdapter.class, getPreprocessing(), NUM_FOLDS);
-        batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(CRFSuiteBatchCrossValidationReport.class);
-        // batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);
