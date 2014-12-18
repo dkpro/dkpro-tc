@@ -26,8 +26,8 @@ import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiLargeContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
@@ -47,7 +47,8 @@ public class MultiEvaluator
 		super(class2number, readData, softEvaluation, individualLabelMeasures);
 	}
 
-	public AbstractLargeContingencyTable<Map<String, Map<String, Double>>> buildLargeContingencyTable()
+    @Override
+    public AbstractLargeContingencyTable<Map<String, Map<String, Double>>> buildLargeContingencyTable()
     {
         Set<String> labelCombinations = getSetOfLabelCombinations();
 
@@ -150,6 +151,16 @@ public class MultiEvaluator
         results.putAll(microResults);
         results.putAll(accuracyResult);
         return results;
+    }
+
+    @Override
+    public Map<String, Double> calculateMicroEvaluationMeasures()
+    {
+        MultiLargeContingencyTable largeConfMatr = (MultiLargeContingencyTable) buildLargeContingencyTable();
+        SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+        CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
+
+        return calculateMicroMeasures(combinedSmallConfMatr);
     }
 
 }

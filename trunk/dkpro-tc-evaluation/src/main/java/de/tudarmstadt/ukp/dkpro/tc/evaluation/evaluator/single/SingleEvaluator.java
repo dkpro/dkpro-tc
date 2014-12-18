@@ -24,8 +24,8 @@ import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SingleLargeContingencyTable;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
@@ -45,6 +45,7 @@ public class SingleEvaluator
 		super(class2number, readData, softEvaluation, individualLabelMeasures);
 	}
 
+    @Override
 	public AbstractLargeContingencyTable<List<List<Double>>> buildLargeContingencyTable()
     {
         int number = class2number.keySet().size();
@@ -75,7 +76,7 @@ public class SingleEvaluator
     {
         SingleLargeContingencyTable largeConfMatr = (SingleLargeContingencyTable) buildLargeContingencyTable();
         SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
-        CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();        
+        CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
 
         Map<String, Double> results = new HashMap<String, Double>();
         Map<String, Double> macroResults = calculateMacroMeasures(smallConfMatrices);
@@ -88,6 +89,16 @@ public class SingleEvaluator
         results.putAll(microResults);
         results.putAll(accuracyResult);
         return results;
+    }
+
+    @Override
+    public Map<String, Double> calculateMicroEvaluationMeasures()
+    {
+        SingleLargeContingencyTable largeConfMatr = (SingleLargeContingencyTable) buildLargeContingencyTable();
+        SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+        CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
+
+        return calculateMicroMeasures(combinedSmallConfMatr);
     }
 
 }
