@@ -67,11 +67,11 @@ public class ExtractFeaturesTask
     public static final String INPUT_KEY = "input";
 
     @Discriminator
-    protected List<String> featureSet;
+    private List<String> featureSet;
     @Discriminator
-    protected List<String> featureFilters;
+    private List<String> featureFilters;
     @Discriminator
-    protected List<Object> pipelineParameters;
+    private List<Object> pipelineParameters;
     @Discriminator
     private File filesRoot;
     @Discriminator
