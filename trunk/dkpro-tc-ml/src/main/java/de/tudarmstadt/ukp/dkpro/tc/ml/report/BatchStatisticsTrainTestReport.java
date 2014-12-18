@@ -18,6 +18,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 
 
+import java.io.File;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,6 +33,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.util.PrettyPrintUtils;
 
 
@@ -66,13 +69,13 @@ public class BatchStatisticsTrainTestReport
 
                 Map<String, String> discriminatorsMap = getContext().getStorageService().retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                Map<String, String> rConnectReport = getContext().getStorageService().retrieveBinary(subcontext.getId(),
-                        STATISTICS_REPORT_TEST_TASK_FILENAME, new PropertiesAdapter()).getMap();
+                File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
+                String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
 
                                 
-                String blCl = rConnectReport.get(DIM_BASELINE_CLASSIFICATION_ARGS);
-                String blFs = rConnectReport.get(DIM_BASELINE_FEATURE_SET);
-                String blPp = rConnectReport.get(DIM_BASELINE_PIPELINE_PARAMS);
+                String blCl = getDiscriminatorValue(discriminatorsMap, DIM_BASELINE_CLASSIFICATION_ARGS);
+                String blFs = getDiscriminatorValue(discriminatorsMap, DIM_BASELINE_FEATURE_SET);
+                String blPp = getDiscriminatorValue(discriminatorsMap, DIM_BASELINE_PIPELINE_PARAMS);
                 
                 String trainFiles;
                 String testFiles;
@@ -103,10 +106,13 @@ public class BatchStatisticsTrainTestReport
                     experimentHasBaseline = true;
                 }
                 
-                String measuresString = rConnectReport.get(MEASURES);
-                for(String mString : measuresString.split(";")){
-                	String mName = mString.split(":")[0];
-                    String mValue = mString.split(":")[1];
+                EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(id2outcomeFile,
+                        mode, true, false);
+                Map<String, Double> resultMap = evaluator.calculateMicroEvaluationMeasures();
+
+                for (String mString : resultMap.keySet()) {
+                    String mName = mString;
+                    String mValue = String.valueOf(resultMap.get(mString));
                     String clShort = PrettyPrintUtils.prettyPrintClassifier(cl);
                     String fsShort = PrettyPrintUtils.prettyPrintFeatureSet(fs, true);
                     String ppShort = PrettyPrintUtils.prettyPrintFeatureArgs(pp);
