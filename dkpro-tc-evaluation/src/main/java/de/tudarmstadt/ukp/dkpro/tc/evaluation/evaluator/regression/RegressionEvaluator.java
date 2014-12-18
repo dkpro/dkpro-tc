@@ -43,4 +43,11 @@ public class RegressionEvaluator
         return null;
     }
 
+    @Override
+    public Map<String, Double> calculateMicroEvaluationMeasures()
+    {
+        // TODO add measures
+        return null;
+    }
+
 }

@@ -52,7 +52,9 @@ public abstract class EvaluatorBase {
 		this.individualLabelMeasures = individualLabelMeasures;
 	}
 	
-	public abstract Map<String, Double> calculateEvaluationMeasures();		
+    public abstract Map<String, Double> calculateEvaluationMeasures();
+
+    public abstract Map<String, Double> calculateMicroEvaluationMeasures();
 	
 	/**
 	 * calculation of label based macro measures 
