@@ -69,7 +69,7 @@ public class CRFSuiteOutcomeIDReport
         StringBuilder sb = new StringBuilder();
         sb.append("labels");
         for (String label : mapping.keySet()) {
-            sb.append(" " + label);
+            sb.append(" " + mapping.get(label) + "=" + label);
         }
 
         getContext().storeBinary(
@@ -82,7 +82,13 @@ public class CRFSuiteOutcomeIDReport
     {
         HashSet<String> labels = new HashSet<String>();
 
-        for (String line : aLabelGoldVsActual) {
+        int maxLines = aLabelGoldVsActual.size();
+        for (int i = 0; i < maxLines; i++) {
+            if (i == 0) {
+                // skip the headline row
+                continue;
+            }
+            String line = aLabelGoldVsActual.get(i);
             String[] split = line.split("\t");
             if (split.length == 0) {
                 continue;
@@ -150,9 +156,9 @@ public class CRFSuiteOutcomeIDReport
                 continue;
             }
 
-            String id = extractTCId(testFeatures.get(idx-1));
-            int numPred = aMapping.get(split[1]);
+            String id = extractTCId(testFeatures.get(idx - 1));
             int numGold = aMapping.get(split[0]);
+            int numPred = aMapping.get(split[1]);
             String propEntry = numPred + SEPARATOR_CHAR + numGold;
             props.setProperty(id, propEntry);
         }
@@ -164,12 +170,12 @@ public class CRFSuiteOutcomeIDReport
     {
         int begin = line.indexOf(ID_CONSTANT_VALUE);
         int end = line.indexOf("\t", begin + ID_CONSTANT_VALUE.length());
-        
+
         // Assuming the ID is at the end of the line:
         String id = line.substring(begin + ID_CONSTANT_VALUE.length(), line.length());
         // But in case it's not:
-        if(end != -1){
-        	id = line.substring(begin + ID_CONSTANT_VALUE.length(), end);
+        if (end != -1) {
+            id = line.substring(begin + ID_CONSTANT_VALUE.length(), end);
         }
         return id;
     }
