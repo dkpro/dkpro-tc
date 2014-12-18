@@ -252,6 +252,11 @@ public interface Constants
      * Name of the file that holds information for the R connect report on cv level
      */
     public static final String STATISTICS_REPORT_FILENAME = "statistics_eval.csv";
+    /**
+     * Name of the global file which folds the classifier predictions and gold standard for all test
+     * instances.
+     */
+    public static final String ID_OUTCOME_KEY = "id2outcome.txt";
 
     
     
