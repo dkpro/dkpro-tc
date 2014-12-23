@@ -20,9 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,19 +47,16 @@ public class CRFSuiteDataWriter
             boolean aUseDenseInstances, String aLearningMode)
         throws Exception
     {
-        Iterable<Instance> instances = aFeatureStore.getInstances();
-
-        writeFeatureFile(instances, aOutputDirectory);
+        writeFeatureFile(aFeatureStore, aOutputDirectory);
 
         Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
         File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
     }
 
-    public static File writeFeatureFile(Iterable<Instance> aInstances, File aOutputDirectory) throws Exception
+    public static File writeFeatureFile(FeatureStore featureStore, File aOutputDirectory) throws Exception
     {
-        List<Instance> instanceList = getListOfInstances(aInstances);
-        int totalCountOfInstances = instanceList.size();
+        int totalCountOfInstances = featureStore.getNumberOfInstances();
 
         File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -71,7 +66,7 @@ public class CRFSuiteDataWriter
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
         for (int ins = 0; ins < totalCountOfInstances; ins++) {
-            Instance i = instanceList.get(ins);
+            Instance i = featureStore.getInstance(ins);
 
             if (i.getSequenceId() != lastSeenSeqId) {
                 seqIdChanged = true;
@@ -99,7 +94,7 @@ public class CRFSuiteDataWriter
 
             // Peak ahead - seqEnd reached?
             if (ins + 1 < totalCountOfInstances) {
-                Instance next = instanceList.get(ins + 1);
+                Instance next = featureStore.getInstance(ins + 1);
                 if (next.getSequenceId() != lastSeenSeqId) {
                     appendEOS(bf);
                     continue;
@@ -123,16 +118,6 @@ public class CRFSuiteDataWriter
         bf.write("__EOS__");
         bf.write("\n");
         bf.write("\n");
-    }
-
-    private static List<Instance> getListOfInstances(Iterable<Instance> aInstances)
-    {
-        List<Instance> instanceList = new ArrayList<Instance>();
-        Iterator<Instance> iterator = aInstances.iterator();
-        while (iterator.hasNext()) {
-            instanceList.add(iterator.next());
-        }
-        return instanceList;
     }
 
     public static String outcomeMap2String(Map<String, Integer> map)

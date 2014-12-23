@@ -35,6 +35,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
@@ -42,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 
 public class LoadModelConnectorCRFSuite
@@ -84,6 +86,7 @@ public class LoadModelConnectorCRFSuite
         throws AnalysisEngineProcessException
     {
         List<Instance> allInstances = new ArrayList<Instance>();
+        FeatureStore featureStore = new SparseFeatureStore();
 
         try {
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
@@ -91,11 +94,13 @@ public class LoadModelConnectorCRFSuite
 
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
                         jcas, seq, true, new Random().nextInt());
-                allInstances.addAll(instances);
+                for (Instance instance : instances){
+                	featureStore.addInstance(instance);
+                }
             }
 
             File tmpFolderForFeatureFile = tmpFolder.newFolder();
-            File featureFile = CRFSuiteDataWriter.writeFeatureFile(allInstances,
+            File featureFile = CRFSuiteDataWriter.writeFeatureFile(featureStore,
                     tmpFolderForFeatureFile);
             
             String labels = classify(featureFile);

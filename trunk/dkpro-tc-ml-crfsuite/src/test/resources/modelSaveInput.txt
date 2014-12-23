@@ -1,2 +1,0 @@
-This is a text file with text in it.
-I am the input for testing the save model feature.
