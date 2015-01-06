@@ -40,6 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 
 /**
  * Save model batch
@@ -48,7 +49,6 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 public class SaveModelCRFSuiteBatchTask
     extends BatchTask
 {
-
     private String experimentName;
     private AnalysisEngineDescription preprocessingPipeline;
     private List<String> operativeViews;
@@ -193,6 +193,8 @@ class ModelSerializationDescription
     protected List<Object> pipelineParameters;
     @Discriminator
     protected List<String> featureSet;
+    @Discriminator
+    private String[] classificationArguments;
 
     private File outputFolder;
 
@@ -221,22 +223,12 @@ class ModelSerializationDescription
                 + "/"
                 + CRFSuiteAdapter.getInstance().getFrameworkFilename(
                         AdapterNameEntries.featureVectorsFile));
-
-        List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(getExecutablePath());
-        commandTrainModel.add("learn");
-        commandTrainModel.add("-m");
-        commandTrainModel.add(outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        commandTrainModel.add(train.getAbsolutePath());
+        
+        List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER, train.getAbsolutePath(), classificationArguments != null ? classificationArguments[0] : null);
 
         Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
         process.waitFor();
     }
 
-    private String getExecutablePath()
-        throws Exception
-    {
-        return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
-                "crfsuite").getAbsolutePath();
-    }
+  
 }
