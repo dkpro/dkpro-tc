@@ -327,25 +327,28 @@ public class CRFSuiteTestTask
 
         trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 
-        List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(executablePath);
-        commandTrainModel.add("learn");
-        commandTrainModel.add("-m");
-        commandTrainModel.add(aTmpModelLocation);
-
-        // add algorithm if provided
-        if (ifAlgorithmProvidedByUser()) {
-            commandTrainModel.add("-a");
-            commandTrainModel.add(classificationArguments[0]);
-        }
-
-        commandTrainModel.add(trainFile.getAbsolutePath());
-        return commandTrainModel;
+        return getTrainCommand(aTmpModelLocation, trainFile.getAbsolutePath(),
+                classificationArguments != null ? classificationArguments[0] : null);
     }
 
-    private boolean ifAlgorithmProvidedByUser()
+    public static List<String> getTrainCommand(String modelOutputLocation, String trainingFile,
+            String algorithm)
+        throws Exception
     {
-        return classificationArguments != null && classificationArguments.length == 1;
+        List<String> commandTrainModel = new ArrayList<String>();
+        commandTrainModel.add(getExecutablePath());
+        commandTrainModel.add("learn");
+        commandTrainModel.add("-m");
+        commandTrainModel.add(modelOutputLocation);
+
+        // add algorithm if provided
+        if (algorithm != null) {
+            commandTrainModel.add("-a");
+            commandTrainModel.add(algorithm);
+        }
+
+        commandTrainModel.add(trainingFile);
+        return commandTrainModel;
     }
 
     private void log(String text)
