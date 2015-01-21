@@ -176,15 +176,20 @@ public class WekaClassificationReport
         // ================================================
 
         if (multiLabel) {
-            // store ML confusion matrix
-            confusionMatrix = createConfusionMatrix(tempM);
-            // create PR curve diagram
-            ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
-                    ReportUtils.createXYDataset(prcData));
-            FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
-                    WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                    + "/" + PR_CURVE_KEY));
-            renderer.write(fos);
+                // store ML confusion matrix
+                confusionMatrix = createConfusionMatrix(tempM);
+                // create PR curve diagram
+            try {
+                ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
+                        ReportUtils.createXYDataset(prcData));
+                FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
+                        WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
+                        + "/" + PR_CURVE_KEY));
+                renderer.write(fos);
+            }
+            catch (Exception e) {
+                // ignore in case of errors
+            }
         }
 
         for (String s : results.keySet()) {
