@@ -218,6 +218,7 @@ public class ExperimentCrossValidation
         crossValidationTask.addTask(extractFeaturesTrainTask);
         crossValidationTask.addTask(extractFeaturesTestTask);
         crossValidationTask.addTask(testTask);
+        crossValidationTask.setExecutionPolicy(ExecutionPolicy.USE_EXISTING);
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
