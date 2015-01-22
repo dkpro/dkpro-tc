@@ -1,5 +1,5 @@
 #Wed Aug 13 19:00:50 CEST 2014
-#labels test emotional neutral
+#labels 0=test 1=emotional 2=neutral
 neutral/2.txt=1;2;0
 neutral/12.txt=1;2;0
 neutral/1.txt=1;2;0

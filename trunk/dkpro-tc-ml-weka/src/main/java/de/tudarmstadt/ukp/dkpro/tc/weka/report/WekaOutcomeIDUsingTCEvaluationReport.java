@@ -20,12 +20,9 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -95,9 +92,12 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         StringBuilder comment = new StringBuilder();
         comment.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + 
 				SEPARATOR_CHAR + "THRESHOLD" + "\n" + "labels");
-        for (String label : labels) {
-        	comment.append(" " + label);			
-		}        
+        
+        // add numbered indexing of labels: e.g. 0=NPg, 1=JJ
+        for (int i = 0; i < labels.size(); i++) {
+        	comment.append(" " + String.valueOf(i) + "=" + labels.get(i));	
+		}
+    
         Properties props = generateProperties(predictions, multiLabel, regression, labels);
         getContext().storeBinary(ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, comment.toString()));
