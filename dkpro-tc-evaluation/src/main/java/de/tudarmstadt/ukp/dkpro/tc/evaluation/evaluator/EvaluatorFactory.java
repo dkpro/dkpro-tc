@@ -64,11 +64,14 @@ public class EvaluatorFactory
         String line = "";
         while ((line = br.readLine()) != null) {
             if (line.startsWith("#labels")) {
-                String[] classes = line.split(" ");
+                String[] numberedClasses = line.split(" ");
 
                 // filter #labels out and collect labels
-                for (int i = 1; i < classes.length; i++) {
-                    labels.add(classes[i]);
+                for (int i = 1; i < numberedClasses.length; i++) {    	
+                	// split one more time and take just the part with class name
+                	// e.g. 1=NPg, so take just right site
+                	String className = numberedClasses[i].split("=")[1];
+                    labels.add(className);
                 }
             }
             else if (!line.startsWith("#")) {
