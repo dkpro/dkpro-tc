@@ -104,6 +104,9 @@ public class CRFSuiteOutcomeIDReport
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         int i = 0;
         for (String label : labels) {
+        	if (label.isEmpty()){
+        		continue;
+        	}
             map.put(label, i);
             i++;
         }
