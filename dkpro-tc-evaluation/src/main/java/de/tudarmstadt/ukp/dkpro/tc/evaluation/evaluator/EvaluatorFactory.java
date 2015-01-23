@@ -70,15 +70,7 @@ public class EvaluatorFactory
                 for (int i = 1; i < numberedClasses.length; i++) {    	
                 	// split one more time and take just the part with class name
                 	// e.g. 1=NPg, so take just right site
-                	String className;
-                    try {
-                        className = numberedClasses[i].split("=")[1];
-                    }
-                    catch (ArrayIndexOutOfBoundsException e) {
-                        // FIXME: I guess this happens when there is no prediction for an instance.
-                        // not exactly sure when and why this happens, and whether we should catch it or not
-                        className = "";
-                    }
+                    String className = numberedClasses[i].split("=")[1];
                     labels.add(className);
                 }
             }
