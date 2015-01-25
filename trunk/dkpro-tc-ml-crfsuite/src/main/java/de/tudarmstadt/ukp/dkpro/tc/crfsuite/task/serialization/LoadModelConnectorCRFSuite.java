@@ -85,16 +85,16 @@ public class LoadModelConnectorCRFSuite
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        List<Instance> allInstances = new ArrayList<Instance>();
         FeatureStore featureStore = new SparseFeatureStore();
 
         try {
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
+            	// TODO TZ@TH: why the random sequence id?
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
                         jcas, seq, true, new Random().nextInt());
-                for (Instance instance : instances){
+                for (Instance instance : instances) {
                 	featureStore.addInstance(instance);
                 }
             }
