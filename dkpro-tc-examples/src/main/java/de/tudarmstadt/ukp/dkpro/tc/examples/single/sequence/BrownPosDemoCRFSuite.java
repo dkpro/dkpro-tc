@@ -41,6 +41,8 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
@@ -81,9 +83,15 @@ public class BrownPosDemoCRFSuite
                 Arrays.asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz")));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { "something", "something" }),
-                asList(new Object[] { "something2", "something2" }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension
+        .create(DIM_PIPELINE_PARAMS,
+                        Arrays.asList(new Object[] {
+                                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N,
+                                        2,
+                                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N,
+                                        4,
+                                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K,
+                                        1000 }));
 
         @SuppressWarnings("unchecked")
         /* If no algorithm is provided, CRFSuite takes lbfgs*/
@@ -93,12 +101,21 @@ public class BrownPosDemoCRFSuite
         
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensUFE.class.getName() }));
+                asList(new String[] { 
+                		NrOfTokensUFE.class.getName(),
+                		LuceneCharacterNGramUFE.class.getName()
+                		}));
 
         @SuppressWarnings("unchecked")
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(
-                        DIM_FEATURE_MODE, featureMode), dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
+        ParameterSpace pSpace = new ParameterSpace(
+        		Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, learningMode),
+                Dimension.create(DIM_FEATURE_MODE, featureMode),
+                Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
+                dimPipelineParameters,
+                dimFeatureSets,
+                dimClassificationArgs
+        );
 
         return pSpace;
     }
