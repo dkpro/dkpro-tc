@@ -73,7 +73,7 @@ public class CRFSuiteDataWriter
                 lastSeenSeqId = i.getSequenceId();
             }
 
-            bf.write(i.getOutcome());
+            bf.write(LabelSubstitutor.labelReplacement(i.getOutcome()));
             bf.write("\t");
 
             List<Feature> features = i.getFeatures();

@@ -40,6 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.LabelSubstitutor;
 
 public class CRFSuiteTestTask
     extends ExecutableTaskBase
@@ -129,15 +130,11 @@ public class CRFSuiteTestTask
         StringBuilder sb = new StringBuilder();
         sb.append("#Gold\tPrediction\n");
         for (String p : predictionValues) {
-            sb.append(p + "\n");
-            // FIXME: CRFSuite has a bug when the label is ':' (as in
+            sb.append(LabelSubstitutor.undoLabelReplacement(p) + "\n");
+            // NOTE: CRFSuite has a bug when the label is ':' (as in
             // PennTreeBank Part-of-speech tagset for instance)
-            // In this case an empty line is returned - empty lines also mark
-            // the end of a sequence
-            // To avoid this ambiguity we write gold and prediction label to
-            // this file
-            // The gold label is always written, thus the sequence is not
-            // accidentally split up by a missing prediction-label
+            // We perform a substitutions to something crfsuite can handle correctly, see class
+            // LabelSubstitutor for more details
         }
         FileUtils.writeStringToFile(predictionsFile, sb.toString());
 
