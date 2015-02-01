@@ -1,0 +1,16 @@
+// created on 01.02.2015
+// id2outcome were built using ReutersUsingTCEvaluationDemo with in the following Train-Test changed setup:
+
+public static final String FILEPATH_TRAIN = "src/test/resources/datasets/reuters/training";
+public static final String FILEPATH_TEST = "src/test/resources/datasets/reuters/test";
+public static final String FILEPATH_GOLD_LABELS = "src/test/resources/datasets/reuters/cats.txt";
+...
+...
+...
+// will produce just one id2outcome file
+Dimension<List<Object>> dimPipelineParameters = Dimension.create(
+                DIM_PIPELINE_PARAMS,
+                Arrays.asList(new Object[] {
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
+                        "500", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));

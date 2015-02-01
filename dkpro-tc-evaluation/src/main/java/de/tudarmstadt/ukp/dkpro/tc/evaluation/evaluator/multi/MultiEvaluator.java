@@ -67,25 +67,41 @@ public class MultiEvaluator
             // consists of: prediction, gold label, threshold
             String[] splittedEvaluationData = line.split(";");
             String predictionValues = splittedEvaluationData[0];
-            String gold = splittedEvaluationData[1];
+            String goldValues = splittedEvaluationData[1];
             Double threshold = Double.valueOf(splittedEvaluationData[2]);
 
             String[] predictionValue = predictionValues.split(",");
-            String accumulatedLabelCombination = "";
+            String accumulatedPredictionLabelCombination = "";
             for (int i = 0; i < predictionValue.length; i++) {
                 if (Double.valueOf(predictionValue[i]) >= threshold) {
-                    if (!accumulatedLabelCombination.equals(""))
-                        accumulatedLabelCombination += ",";
-                    accumulatedLabelCombination += i;
+                    if (! accumulatedPredictionLabelCombination.equals(""))
+                        accumulatedPredictionLabelCombination += ",";
+                    accumulatedPredictionLabelCombination += i;
                 }
             }
-
-            if (accumulatedLabelCombination.equals("")) {
+            if (accumulatedPredictionLabelCombination.equals("")) {
                 // replace with appropriate label
-            	accumulatedLabelCombination = String.valueOf(class2number.get(""));
+            	accumulatedPredictionLabelCombination = String.valueOf(class2number.get(""));
             }
-            Double updatedValue = largeContingencyTable.get(gold).get(accumulatedLabelCombination) + 1;
-            largeContingencyTable.get(gold).put(accumulatedLabelCombination, updatedValue);
+            
+            String[] goldValue = goldValues.split(",");
+            String accumulatedGoldLabelCombination = "";
+            for (int i = 0; i < goldValue.length; i++) {
+                if (Double.valueOf(goldValue[i]) >= threshold) {
+                    if (! accumulatedGoldLabelCombination.equals(""))
+                        accumulatedGoldLabelCombination += ",";
+                    accumulatedGoldLabelCombination += i;
+                }
+            }
+            if (accumulatedGoldLabelCombination.equals("")) {
+                // replace with appropriate label
+            	accumulatedGoldLabelCombination = String.valueOf(class2number.get(""));
+            }
+            
+            Double updatedValue = largeContingencyTable.get(accumulatedGoldLabelCombination).
+            		get(accumulatedPredictionLabelCombination) + 1;
+            largeContingencyTable.get(accumulatedGoldLabelCombination).
+            		put(accumulatedPredictionLabelCombination, updatedValue);
         }
         return new MultiLargeContingencyTable(largeContingencyTable, class2number);
     }
@@ -104,21 +120,31 @@ public class MultiEvaluator
             // consists of: prediction, gold label, threshold
             String[] splittedEvaluationData = line.split(";");
             String predictionValues = splittedEvaluationData[0];
-            String gold = splittedEvaluationData[1];
+            String goldValues = splittedEvaluationData[1];
             Double threshold = Double.valueOf(splittedEvaluationData[2]);
 
             String[] predictionValue = predictionValues.split(",");
-            String accumulatedLabelCombination = "";
+            String accumulatedPredictionLabelCombination = "";
             for (int i = 0; i < predictionValue.length; i++) {
                 if (Double.valueOf(predictionValue[i]) >= threshold) {
-                    if (!accumulatedLabelCombination.equals(""))
-                        accumulatedLabelCombination += ",";
-                    accumulatedLabelCombination += i;
+                    if (! accumulatedPredictionLabelCombination.equals(""))
+                        accumulatedPredictionLabelCombination += ",";
+                    accumulatedPredictionLabelCombination += i;
+                }
+            }
+            
+            String[] goldValue = goldValues.split(",");
+            String accumulatedGoldLabelCombination = "";
+            for (int i = 0; i < goldValue.length; i++) {
+                if (Double.valueOf(goldValue[i]) >= threshold) {
+                    if (! accumulatedGoldLabelCombination.equals(""))
+                        accumulatedGoldLabelCombination += ",";
+                    accumulatedGoldLabelCombination += i;
                 }
             }
 
-            labelCombinations.add(accumulatedLabelCombination);
-            labelCombinations.add(gold);
+            labelCombinations.add(accumulatedPredictionLabelCombination);
+            labelCombinations.add(accumulatedGoldLabelCombination);
         }
          
         if (labelCombinations.contains("")) {

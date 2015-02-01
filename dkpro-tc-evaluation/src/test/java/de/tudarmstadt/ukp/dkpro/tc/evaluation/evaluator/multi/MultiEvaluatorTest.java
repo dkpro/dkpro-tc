@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +29,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroFScore;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroPrecision;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroRecall;
 
 /**
  * @author Andriy Nadolskyy
@@ -38,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 public class MultiEvaluatorTest
 {
 
-    static File file = new File("src/test/resources/datasets/multi/id2outcome.txt");
+    static File file = new File("src/test/resources/datasets/multi/reuters/id2outcome.txt");
     Map<String, Double> results;
 
     public void setup(boolean softEvaluation, boolean individualLabelMeasures)
@@ -54,13 +58,24 @@ public class MultiEvaluatorTest
         throws IOException
     {
         setup(true, false);
-        // TODO: hand-calculate measures and test
-        // for (String key : results.keySet()) {
-        // System.out.println(key + "\t" + results.get(key));
-        // }
-        assertNotSame(results.get(MacroFScore.class.getSimpleName()),
-                Double.NaN);
 
+        Double macroPr = results.get(MacroPrecision.class.getSimpleName());
+        assertEquals(0.367, macroPr, 0.001);
+
+        Double macroRe = results.get(MacroRecall.class.getSimpleName());
+        assertEquals(0.274, macroRe, 0.001);
+
+        Double macroFSc = results.get(MacroFScore.class.getSimpleName());
+        assertEquals(0.275325, macroFSc, 0.000001);
+        
+        Double microPr = results.get(MicroPrecision.class.getSimpleName());
+        assertEquals(0.45, microPr, 0.01);
+        
+        Double microRe = results.get(MicroRecall.class.getSimpleName());
+        assertEquals(0.45, microRe, 0.01);
+        
+        Double microFSc = results.get(MicroFScore.class.getSimpleName());
+        assertEquals(0.45, microFSc, 0.01);
     }
 
     @Test
@@ -68,11 +83,23 @@ public class MultiEvaluatorTest
         throws IOException
     {
         setup(false, false);
-        // TODO: hand-calculate measures and test
-        // for (String key : results.keySet()) {
-        // System.out.println(key + "\t" + results.get(key));
-        // }
-        assertEquals(results.get(MacroFScore.class.getSimpleName()),
-                Double.NaN, 0.01);
+
+        Double macroPr = results.get(MacroPrecision.class.getSimpleName());
+        assertEquals(macroPr, Double.NaN, 0.01);
+        
+        Double macroRe = results.get(MacroRecall.class.getSimpleName());
+        assertEquals(macroRe, Double.NaN, 0.01);
+        
+        Double macroFSc = results.get(MacroFScore.class.getSimpleName());
+        assertEquals(macroFSc, Double.NaN, 0.01);
+        
+        Double microPr = results.get(MicroPrecision.class.getSimpleName());
+        assertEquals(0.45, microPr, 0.01);
+        
+        Double microRe = results.get(MicroRecall.class.getSimpleName());
+        assertEquals(0.45, microRe, 0.01);
+        
+        Double microFSc = results.get(MicroFScore.class.getSimpleName());
+        assertEquals(0.45, microFSc, 0.01);
     }
 }
