@@ -152,11 +152,6 @@ public class CRFSuiteOutcomeIDReport extends ReportBase {
 			if (split.length != 2) {
 				continue;
 			}
-			if (idx-1 >= testFeatures.size()) {
-				// trailing whitespaces at the end of the file could become a
-				// problem otherwise
-				break;
-			}
 			String featureEntry = testFeatures.get(idx - 1);
 			String id = extractTCId(featureEntry);
 			int numGold = aMapping.get(split[0]);
