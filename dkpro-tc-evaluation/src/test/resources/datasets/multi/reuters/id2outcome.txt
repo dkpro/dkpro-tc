@@ -1,3 +1,21 @@
+# // created on 01.02.2015
+# // id2outcome were built using ReutersUsingTCEvaluationDemo with in the following Train-Test changed setup:
+# 
+# public static final String FILEPATH_TRAIN = "src/test/resources/datasets/reuters/training";
+# public static final String FILEPATH_TEST = "src/test/resources/datasets/reuters/test";
+# public static final String FILEPATH_GOLD_LABELS = "src/test/resources/datasets/reuters/cats.txt";
+# ...
+# ...
+# ...
+# // will produce just one id2outcome file
+# Dimension<List<Object>> dimPipelineParameters = Dimension.create(
+#                DIM_PIPELINE_PARAMS,
+#                Arrays.asList(new Object[] {
+#                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
+#                        "500", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+#                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+#
+#
 #ID=PREDICTION;GOLDSTANDARD;THRESHOLD
 #labels 0=__oat_Comp 1=__grain_Comp 2=__earn_Comp 3=__crude_Comp 4=__corn_Comp 5=__acq_Comp
 #Sun Feb 01 22:26:19 CET 2015
