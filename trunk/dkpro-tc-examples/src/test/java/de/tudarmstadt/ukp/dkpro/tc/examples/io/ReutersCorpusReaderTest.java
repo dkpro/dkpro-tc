@@ -60,7 +60,7 @@ public class ReutersCorpusReaderTest
 //                System.out.println(outcome);
 //            }
         }
-        assertEquals(7, i);
+        assertEquals(26, i);
     }
 
     private void dumpMetaData(final DocumentMetaData aMetaData)
