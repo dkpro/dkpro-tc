@@ -28,8 +28,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.uima.util.Level;
-import org.chasen.mecab.Tagger;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
