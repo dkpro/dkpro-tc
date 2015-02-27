@@ -28,7 +28,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.uima.util.Level;
+import org.chasen.mecab.Tagger;
 
+import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -104,6 +107,15 @@ public class CRFSuiteTestTask
     public static String getExecutablePath()
         throws Exception
     {
+        PlatformDetector pd = new PlatformDetector();
+        String platform = pd.getPlatformId();
+
+        // we load a 32 bit binary, 64 bit windows should be able to deal with it too
+        if (platform.startsWith("windows")) {
+            return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
+                    "crfsuite.exe").getAbsolutePath();
+        }
+
         return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
                 "crfsuite").getAbsolutePath();
     }
