@@ -43,328 +43,311 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.LabelSubstitutor;
 
-public class CRFSuiteTestTask
-    extends ExecutableTaskBase
-    implements Constants
-{
-    @Discriminator
-    private String learningMode;
-    @Discriminator
-    private String[] classificationArguments;
+public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
+	@Discriminator
+	private String learningMode;
+	@Discriminator
+	private String[] classificationArguments;
 
-    public static final String MODELNAME = "model.crfsuite";
-    public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
-    Log logger = null;
+	public static final String MODELNAME = "model.crfsuite";
+	public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
+	Log logger = null;
 
-    private String executablePath = null;
-    private String modelLocation = null;
-    private File trainFile = null;
-    private File testFile = null;
+	private String executablePath = null;
+	private String modelLocation = null;
+	private File trainFile = null;
+	private File testFile = null;
 
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+	@Override
+	public void execute(TaskContext aContext) throws Exception {
+		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
-        if (multiLabel) {
-            throw new TextClassificationException(
-                    "Multi-label requested, but CRFSuite only supports single label setups.");
-        }
+		if (multiLabel) {
+			throw new TextClassificationException(
+					"Multi-label requested, but CRFSuite only supports single label setups.");
+		}
 
-        sanityCheckOnClassificationArguments();
+		sanityCheckOnClassificationArguments();
 
-        executablePath = getExecutablePath();
-        modelLocation = trainModel(aContext);
-        String rawTextOutput = testModel(aContext);
+		executablePath = getExecutablePath();
+		modelLocation = trainModel(aContext);
+		String rawTextOutput = testModel(aContext);
 
-        writePredictions2File(aContext, rawTextOutput);
+		writePredictions2File(aContext, rawTextOutput);
 
-    }
+	}
 
-    private void sanityCheckOnClassificationArguments()
-        throws Exception
-    {
-        if (classificationArguments == null || classificationArguments.length == 0) {
-            log("No algorithm has been provided - will use CRFsuite default (lbfgs)");
-            return;
-        }
+	private void sanityCheckOnClassificationArguments() throws Exception {
+		if (classificationArguments == null
+				|| classificationArguments.length == 0) {
+			log("No algorithm has been provided - will use CRFsuite default (lbfgs)");
+			return;
+		}
 
-        if (classificationArguments.length == 1) {
-            return;
-        }
+		if (classificationArguments.length == 1) {
+			return;
+		}
 
-        /*
-         * At the moment only a pair of parameters is expected for provide the algorithm CRFsuite
-         * uses
-         */
-        throw new Exception("Unexpected amount of classification arguments: " + "["
-                + classificationArguments.length + "] expected either zero or one");
-    }
+		/*
+		 * At the moment only a pair of parameters is expected for provide the
+		 * algorithm CRFsuite uses
+		 */
+		throw new Exception("Unexpected amount of classification arguments: "
+				+ "[" + classificationArguments.length
+				+ "] expected either zero or one");
+	}
 
-    public static String getExecutablePath()
-        throws Exception
-    {
-        PlatformDetector pd = new PlatformDetector();
-        String platform = pd.getPlatformId();
-        LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
-                "Load binary for platform: [" + platform + "]");
-        // we load a 32 bit binary, 64 bit windows should be able to deal with it too
-        if (platform.startsWith("windows")) {
-            String path =  new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
-                    "crfsuite.exe").getAbsolutePath();
-            return path;
-        }
+	public static String getExecutablePath() throws Exception {
+		PlatformDetector pd = new PlatformDetector();
+		String platform = pd.getPlatformId();
+		LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
+				"Load binary for platform: [" + platform + "]");
 
-        return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
-                "crfsuite").getAbsolutePath();
-    }
+		String executablePath = new RuntimeProvider(
+				"classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
+				"crfsuite").getAbsolutePath();
 
-    private void writePredictions2File(TaskContext aContext, String aRawTextOutput)
-        throws Exception
-    {
+		LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
+				"Will use binary: [" + executablePath + "]");
 
-        writeCRFSuiteGeneratedReports2File(aContext);
+		return executablePath;
+	}
 
-        List<String> predictionValues = writeSelfGeneratedAccuracyReport2File(aContext,
-                aRawTextOutput);
+	private void writePredictions2File(TaskContext aContext,
+			String aRawTextOutput) throws Exception {
 
-        writeFileWithPredictedLabels(aContext, predictionValues);
-    }
+		writeCRFSuiteGeneratedReports2File(aContext);
 
-    private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
-        throws Exception
-    {
-        File predictionsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE), CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.predictionsFile));
+		List<String> predictionValues = writeSelfGeneratedAccuracyReport2File(
+				aContext, aRawTextOutput);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("#Gold\tPrediction\n");
-        for (String p : predictionValues) {
-            sb.append(LabelSubstitutor.undoLabelReplacement(p) + "\n");
-            // NOTE: CRFSuite has a bug when the label is ':' (as in
-            // PennTreeBank Part-of-speech tagset for instance)
-            // We perform a substitutions to something crfsuite can handle correctly, see class
-            // LabelSubstitutor for more details
-        }
-        FileUtils.writeStringToFile(predictionsFile, sb.toString());
+		writeFileWithPredictedLabels(aContext, predictionValues);
+	}
 
-    }
+	private void writeFileWithPredictedLabels(TaskContext aContext,
+			List<String> predictionValues) throws Exception {
+		File predictionsFile = new File(aContext.getStorageLocation(
+				TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE), CRFSuiteAdapter
+				.getInstance().getFrameworkFilename(
+						AdapterNameEntries.predictionsFile));
 
-    private List<String> writeSelfGeneratedAccuracyReport2File(TaskContext aContext,
-            String aRawTextOutput)
-        throws Exception
-    {
-        String[] lines = aRawTextOutput.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("#Gold\tPrediction\n");
+		for (String p : predictionValues) {
+			sb.append(LabelSubstitutor.undoLabelReplacement(p) + "\n");
+			// NOTE: CRFSuite has a bug when the label is ':' (as in
+			// PennTreeBank Part-of-speech tagset for instance)
+			// We perform a substitutions to something crfsuite can handle
+			// correctly, see class
+			// LabelSubstitutor for more details
+		}
+		FileUtils.writeStringToFile(predictionsFile, sb.toString());
 
-        int correct = 0;
-        int incorrect = 0;
+	}
 
-        List<String> predictionValues = new ArrayList<String>();
-        for (String line : lines) {
-            predictionValues.add(line);
+	private List<String> writeSelfGeneratedAccuracyReport2File(
+			TaskContext aContext, String aRawTextOutput) throws Exception {
+		String[] lines = aRawTextOutput.split("\n");
 
-            String[] split = line.split("\t");
-            if (split.length < 2) {
-                continue;
-            }
-            String actual = split[0];
-            String prediction = split[1];
+		int correct = 0;
+		int incorrect = 0;
 
-            if (actual.equals(prediction)) {
-                correct++;
-            }
-            else {
-                incorrect++;
-            }
-        }
+		List<String> predictionValues = new ArrayList<String>();
+		for (String line : lines) {
+			predictionValues.add(line);
 
-        double denominator = correct + incorrect;
-        double numerator = correct;
-        double accuracy = 0;
-        if (denominator > 0) {
-            accuracy = numerator / denominator;
-        }
-        log("Accuracy: " + accuracy * 100 + " (" + correct + " correct, " + incorrect
-                + " incorrect)");
+			String[] split = line.split("\t");
+			if (split.length < 2) {
+				continue;
+			}
+			String actual = split[0];
+			String prediction = split[1];
 
-        // file to hold prediction results
-        File evalFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE), CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.evaluationFile));
-        StringBuilder sb = new StringBuilder();
-        sb.append(ReportConstants.CORRECT + "=" + correct + "\n");
-        sb.append(ReportConstants.INCORRECT + "=" + incorrect + "\n");
-        sb.append(ReportConstants.PCT_CORRECT + "=" + accuracy + "\n");
-        FileUtils.writeStringToFile(evalFile, sb.toString());
+			if (actual.equals(prediction)) {
+				correct++;
+			} else {
+				incorrect++;
+			}
+		}
 
-        return predictionValues;
-    }
+		double denominator = correct + incorrect;
+		double numerator = correct;
+		double accuracy = 0;
+		if (denominator > 0) {
+			accuracy = numerator / denominator;
+		}
+		log("Accuracy: " + accuracy * 100 + " (" + correct + " correct, "
+				+ incorrect + " incorrect)");
 
-    private void writeCRFSuiteGeneratedReports2File(TaskContext aContext)
-        throws Exception
-    {
-        String precRecF1perClass = getPrecisionRecallF1PerClass();
-        log(precRecF1perClass);
-        File precRecF1File = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE), FILE_PER_CLASS_PRECISION_RECALL_F1);
-        FileUtils.write(precRecF1File, "\n" + precRecF1perClass);
-    }
+		// file to hold prediction results
+		File evalFile = new File(aContext.getStorageLocation(
+				TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE), CRFSuiteAdapter
+				.getInstance().getFrameworkFilename(
+						AdapterNameEntries.evaluationFile));
+		StringBuilder sb = new StringBuilder();
+		sb.append(ReportConstants.CORRECT + "=" + correct + "\n");
+		sb.append(ReportConstants.INCORRECT + "=" + incorrect + "\n");
+		sb.append(ReportConstants.PCT_CORRECT + "=" + accuracy + "\n");
+		FileUtils.writeStringToFile(evalFile, sb.toString());
 
-    private String getPrecisionRecallF1PerClass()
-        throws Exception
-    {
-        String executablePath = getExecutablePath();
-        List<String> evalCommand = new ArrayList<String>();
-        evalCommand.add(executablePath);
-        evalCommand.add("tag");
-        evalCommand.add("-qt");
-        evalCommand.add("-m");
-        evalCommand.add(modelLocation);
-        evalCommand.add(testFile.getAbsolutePath());
+		return predictionValues;
+	}
 
-        Process process = new ProcessBuilder().command(evalCommand).start();
-        String output = captureProcessOutput(process);
+	private void writeCRFSuiteGeneratedReports2File(TaskContext aContext)
+			throws Exception {
+		String precRecF1perClass = getPrecisionRecallF1PerClass();
+		log(precRecF1perClass);
+		File precRecF1File = new File(aContext.getStorageLocation(
+				TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE),
+				FILE_PER_CLASS_PRECISION_RECALL_F1);
+		FileUtils.write(precRecF1File, "\n" + precRecF1perClass);
+	}
 
-        return output;
-    }
+	private String getPrecisionRecallF1PerClass() throws Exception {
+		String executablePath = getExecutablePath();
+		List<String> evalCommand = new ArrayList<String>();
+		evalCommand.add(executablePath);
+		evalCommand.add("tag");
+		evalCommand.add("-qt");
+		evalCommand.add("-m");
+		evalCommand.add(modelLocation);
+		evalCommand.add(testFile.getAbsolutePath());
 
-    private String testModel(TaskContext aContext)
-        throws Exception
-    {
+		Process process = new ProcessBuilder().command(evalCommand).start();
+		String output = captureProcessOutput(process);
 
-        List<String> testModelCommand = buildTestCommand(aContext);
-        log("Testing model");
-        String output = runTest(testModelCommand);
-        log("Testing model finished");
+		return output;
+	}
 
-        return output;
-    }
+	private String testModel(TaskContext aContext) throws Exception {
 
-    public static String runTest(List<String> aTestModelCommand)
-        throws Exception
-    {
-        Process process = new ProcessBuilder().command(aTestModelCommand).start();
+		List<String> testModelCommand = buildTestCommand(aContext);
+		log("Testing model");
+		String output = runTest(testModelCommand);
+		log("Testing model finished");
 
-        String output = captureProcessOutput(process);
+		return output;
+	}
 
-        return output;
+	public static String runTest(List<String> aTestModelCommand)
+			throws Exception {
+		Process process = new ProcessBuilder().command(aTestModelCommand)
+				.start();
 
-    }
+		String output = captureProcessOutput(process);
 
-    private static String captureProcessOutput(Process aProcess)
-    {
-        InputStream src = aProcess.getInputStream();
-        Scanner sc = new Scanner(src);
-        StringBuilder dest = new StringBuilder();
-        while (sc.hasNextLine()) {
-            String l = sc.nextLine();
-            dest.append(l + "\n");
-        }
-        sc.close();
-        return dest.toString();
-    }
+		return output;
 
-    private List<String> buildTestCommand(TaskContext aContext)
-        throws Exception
-    {
-        File tmpTest = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
-                AccessMode.READONLY).getPath()
-                + "/"
-                + CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.featureVectorsFile));
-        testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
+	}
 
-        return wrapTestCommandAsList(testFile, executablePath, modelLocation);
-    }
+	private static String captureProcessOutput(Process aProcess) {
+		InputStream src = aProcess.getInputStream();
+		Scanner sc = new Scanner(src);
+		StringBuilder dest = new StringBuilder();
+		while (sc.hasNextLine()) {
+			String l = sc.nextLine();
+			dest.append(l + "\n");
+		}
+		sc.close();
+		return dest.toString();
+	}
 
-    public static List<String> wrapTestCommandAsList(File aTestFile, String aExecutablePath,
-            String aModelLocation)
-    {
-        List<String> commandTestModel = new ArrayList<String>();
-        commandTestModel.add(aExecutablePath);
-        commandTestModel.add("tag");
-        commandTestModel.add("-r");
-        commandTestModel.add("-m");
-        commandTestModel.add(aModelLocation);
-        commandTestModel.add(aTestFile.getAbsolutePath());
-        return commandTestModel;
-    }
+	private List<String> buildTestCommand(TaskContext aContext)
+			throws Exception {
+		File tmpTest = new File(aContext.getStorageLocation(
+				TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY).getPath()
+				+ "/"
+				+ CRFSuiteAdapter.getInstance().getFrameworkFilename(
+						AdapterNameEntries.featureVectorsFile));
+		testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
-    private String trainModel(TaskContext aContext)
-        throws Exception
-    {
-        String tmpModelLocation = System.getProperty("java.io.tmpdir") + File.separator + MODELNAME;
-        List<String> modelTrainCommand = buildTrainCommand(aContext, tmpModelLocation);
+		return wrapTestCommandAsList(testFile, executablePath, modelLocation);
+	}
 
-        log("Start training model");
-        long time = System.currentTimeMillis();
-        runTrain(modelTrainCommand);
-        long completedIn = System.currentTimeMillis() - time;
-        String formattedDuration = DurationFormatUtils.formatDuration(completedIn, "HH:mm:ss:SS");
-        log("Training finished after " + formattedDuration);
+	public static List<String> wrapTestCommandAsList(File aTestFile,
+			String aExecutablePath, String aModelLocation) {
+		List<String> commandTestModel = new ArrayList<String>();
+		commandTestModel.add(aExecutablePath);
+		commandTestModel.add("tag");
+		commandTestModel.add("-r");
+		commandTestModel.add("-m");
+		commandTestModel.add(aModelLocation);
+		commandTestModel.add(aTestFile.getAbsolutePath());
+		return commandTestModel;
+	}
 
-        return writeModel(aContext, tmpModelLocation);
-    }
+	private String trainModel(TaskContext aContext) throws Exception {
+		String tmpModelLocation = System.getProperty("java.io.tmpdir")
+				+ File.separator + MODELNAME;
+		List<String> modelTrainCommand = buildTrainCommand(aContext,
+				tmpModelLocation);
 
-    private void runTrain(List<String> aModelTrainCommand)
-        throws Exception
-    {
-        Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand).start();
-        process.waitFor();
-    }
+		log("Start training model");
+		long time = System.currentTimeMillis();
+		runTrain(modelTrainCommand);
+		long completedIn = System.currentTimeMillis() - time;
+		String formattedDuration = DurationFormatUtils.formatDuration(
+				completedIn, "HH:mm:ss:SS");
+		log("Training finished after " + formattedDuration);
 
-    private String writeModel(TaskContext aContext, String aTmpModelLocation)
-        throws Exception
-    {
-        aContext.storeBinary(MODELNAME, new FileInputStream(new File(aTmpModelLocation)));
+		return writeModel(aContext, tmpModelLocation);
+	}
 
-        File modelLocation = aContext.getStorageLocation(MODELNAME, AccessMode.READONLY);
+	private void runTrain(List<String> aModelTrainCommand) throws Exception {
+		Process process = new ProcessBuilder().inheritIO()
+				.command(aModelTrainCommand).start();
+		process.waitFor();
+	}
 
-        return modelLocation.getAbsolutePath();
-    }
+	private String writeModel(TaskContext aContext, String aTmpModelLocation)
+			throws Exception {
+		aContext.storeBinary(MODELNAME, new FileInputStream(new File(
+				aTmpModelLocation)));
 
-    private List<String> buildTrainCommand(TaskContext aContext, String aTmpModelLocation)
-        throws Exception
-    {
-        File tmpTrain = new File(aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY).getPath()
-                + "/"
-                + CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.featureVectorsFile));
+		File modelLocation = aContext.getStorageLocation(MODELNAME,
+				AccessMode.READONLY);
 
-        trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
+		return modelLocation.getAbsolutePath();
+	}
 
-        return getTrainCommand(aTmpModelLocation, trainFile.getAbsolutePath(),
-                classificationArguments != null ? classificationArguments[0] : null);
-    }
+	private List<String> buildTrainCommand(TaskContext aContext,
+			String aTmpModelLocation) throws Exception {
+		File tmpTrain = new File(aContext.getStorageLocation(
+				TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY)
+				.getPath()
+				+ "/"
+				+ CRFSuiteAdapter.getInstance().getFrameworkFilename(
+						AdapterNameEntries.featureVectorsFile));
 
-    public static List<String> getTrainCommand(String modelOutputLocation, String trainingFile,
-            String algorithm)
-        throws Exception
-    {
-        List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(getExecutablePath());
-        commandTrainModel.add("learn");
-        commandTrainModel.add("-m");
-        commandTrainModel.add(modelOutputLocation);
+		trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 
-        // add algorithm if provided
-        if (algorithm != null) {
-            commandTrainModel.add("-a");
-            commandTrainModel.add(algorithm);
-        }
+		return getTrainCommand(aTmpModelLocation, trainFile.getAbsolutePath(),
+				classificationArguments != null ? classificationArguments[0]
+						: null);
+	}
 
-        commandTrainModel.add(trainingFile);
-        return commandTrainModel;
-    }
+	public static List<String> getTrainCommand(String modelOutputLocation,
+			String trainingFile, String algorithm) throws Exception {
+		List<String> commandTrainModel = new ArrayList<String>();
+		commandTrainModel.add(getExecutablePath());
+		commandTrainModel.add("learn");
+		commandTrainModel.add("-m");
+		commandTrainModel.add(modelOutputLocation);
 
-    private void log(String text)
-    {
-        if (logger == null) {
-            logger = LogFactory.getLog(getClass());
-        }
-        logger.info(text);
-    }
+		// add algorithm if provided
+		if (algorithm != null) {
+			commandTrainModel.add("-a");
+			commandTrainModel.add(algorithm);
+		}
+
+		commandTrainModel.add(trainingFile);
+		return commandTrainModel;
+	}
+
+	private void log(String text) {
+		if (logger == null) {
+			logger = LogFactory.getLog(getClass());
+		}
+		logger.info(text);
+	}
 }
