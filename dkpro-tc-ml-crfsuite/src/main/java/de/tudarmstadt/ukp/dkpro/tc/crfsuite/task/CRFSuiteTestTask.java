@@ -107,11 +107,13 @@ public class CRFSuiteTestTask
     {
         PlatformDetector pd = new PlatformDetector();
         String platform = pd.getPlatformId();
-
+        LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
+                "Load binary for platform: [" + platform + "]");
         // we load a 32 bit binary, 64 bit windows should be able to deal with it too
         if (platform.startsWith("windows")) {
-            return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
+            String path =  new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
                     "crfsuite.exe").getAbsolutePath();
+            return path;
         }
 
         return new RuntimeProvider("classpath:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/").getFile(
