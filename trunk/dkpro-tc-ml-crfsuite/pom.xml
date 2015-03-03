@@ -70,6 +70,10 @@
 				de.tudarmstadt.ukp.dkpro.core.api.frequency-asl
 			</artifactId>
 		</dependency>
+		  	  <dependency>
+	<groupId>log4j</groupId>
+	<artifactId>log4j</artifactId>
+</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-evaluation</artifactId>
