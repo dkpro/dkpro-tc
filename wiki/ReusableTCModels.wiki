@@ -1,0 +1,27 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+Models trained with DKPro TC are not usable as independent components in pipelines, yet.
+We thus can't take advantage of once created models.
+In order to make trained TC models reusable, the necessary TC related components have to be deployed together with the model wrapped into a prediction-mode component.
+
+I see essentially 3 stages of TC model reusability
+
+= Stage 1 (TC reusable) =
+Trained models can be used within a TC pipeline in a developing environment.
+This is largely achieved.
+Open points are:
+  * User defined features have to be provided (loop-hole here: copy user-defined features into TC project that loads model - ugly code redundants, but works)
+  * Implicit requirement that features that are part of the TC feature package are present in the classpath somewhere
+  * No version awareness if feature XY is needed and it is found in the classpath/workspace it is taken (feature might have changed between TC versions ...,0.6, 0.7) this might lead to unintended side-effects / different results which are extremely hard to track from the user perspective
+
+= Stage 2 (DKProCore / UIMA reusable) = 
+
+= Stage 3 (standalone application ) = 
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
