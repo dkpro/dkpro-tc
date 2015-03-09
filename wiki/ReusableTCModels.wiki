@@ -8,6 +8,8 @@ In order to make trained TC models reusable, the necessary TC related components
 I see essentially 3 stages of TC model reusability
 
 = Stage 1 (TC reusable) =
+Progress: 80%
+
 Trained models can be used within a TC pipeline in a developing environment.
 This is largely achieved.
 Open points are:
@@ -16,6 +18,13 @@ Open points are:
   * No version awareness if feature XY is needed and it is found in the classpath/workspace it is taken (feature might have changed between TC versions ...,0.6, 0.7) this might lead to unintended side-effects / different results which are extremely hard to track from the user perspective
 
 = Stage 2 (DKProCore / UIMA reusable) = 
+Progress: 0%
+Models, including all machine learning adapter related preprocessing such as feature extraction and so on, are usable in a DKPro Core environment as modules.
+This requires that everything TC-related is provided without the need to have the TC project in your workspace/developer environment 
+Probably main challenge here (assumed stage 1 is cleared):
+  * dealing with absolute file paths
+  * Knowing which parameter takes an external resources and which is just a constant
+  * How to package stuff in an at least semi-automatical way
 
 = Stage 3 (standalone application ) = 
 
