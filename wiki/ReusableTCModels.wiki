@@ -19,6 +19,7 @@ Open points are:
 
 = Stage 2 (DKProCore / UIMA reusable) = 
 Progress: 0%
+
 Models, including all machine learning adapter related preprocessing such as feature extraction and so on, are usable in a DKPro Core environment as modules.
 This requires that everything TC-related is provided without the need to have the TC project in your workspace/developer environment 
 Probably main challenge here (assumed stage 1 is cleared):
@@ -27,10 +28,10 @@ Probably main challenge here (assumed stage 1 is cleared):
   * How to package stuff in an at least semi-automatical way
 
 = Stage 3 (standalone application ) = 
+Progress: 0%
 
-= Details =
+It is possible to create a standalone component that can be provided free of any developer environment to 3rd parties to release an actual product of something
+e.g. 
+{{{java -jar myExperiment.jar 'param1' 'param2' }}}
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+This one might become trivial once stage 2 is cleared
