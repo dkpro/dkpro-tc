@@ -49,113 +49,128 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class TcAnnotatorDocument
-	extends JCasAnnotator_ImplBase
+    extends JCasAnnotator_ImplBase
 {
-	
+
     public static final String PARAM_TC_MODEL_LOCATION = "tcModel";
     @ConfigurationParameter(name = PARAM_TC_MODEL_LOCATION, mandatory = true)
     protected File tcModelLocation;
-    
+
     private String learningMode = Constants.LM_SINGLE_LABEL;
     private String featureMode = Constants.FM_DOCUMENT;
-    
-//    private List<FeatureExtractorResource_ImplBase> featureExtractors;
+
+    // private List<FeatureExtractorResource_ImplBase> featureExtractors;
     private List<String> featureExtractors;
     private List<Object> parameters;
-    
+
     private TCMachineLearningAdapter mlAdapter;
 
-	@Override
-	public void initialize(UimaContext context)
-			throws ResourceInitializationException
-	{		
-		super.initialize(context);
-        
-		try {
-			mlAdapter = (TCMachineLearningAdapter) Class.forName(FileUtils.readFileToString(new File(tcModelLocation, MODEL_META))).newInstance();
-		} catch (InstantiationException e) {
-			throw new ResourceInitializationException(e);
-		} catch (IllegalAccessException e) {
-			throw new ResourceInitializationException(e);
-		} catch (ClassNotFoundException e) {
-			throw new ResourceInitializationException(e);
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
-		
-        parameters = new ArrayList<>();
-        try {
-			for (String parameter : FileUtils.readLines(new File(tcModelLocation, MODEL_PARAMETERS))) {
-				if (!parameter.startsWith("#")) {
-					String[] parts = parameter.split("=");
-					parameters.add(parts[0]);					
-					parameters.add(parts[1]);					
-				}
-			}
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
-        featureExtractors = new ArrayList<>();
-        try {
-            for (String featureExtractor : FileUtils.readLines(new File(tcModelLocation, MODEL_FEATURE_EXTRACTORS))) {
-    			featureExtractors.add(featureExtractor);
-    		}
-        } catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
+    private AnalysisEngine initalizedEngine;
 
-        
-//        featureExtractors = new ArrayList<>();
-//        try {
-//			for (String featureExtractor : FileUtils.readLines(new File(tcModelLocation, "features.txt"))) {
-//				featureExtractors.add(
-//						(FeatureExtractorResource_ImplBase) Class.forName(featureExtractor).newInstance()
-//				);
-//			}
-//		} catch (InstantiationException e) {
-//			throw new ResourceInitializationException(e);
-//		} catch (IllegalAccessException e) {
-//			throw new ResourceInitializationException(e);
-//		} catch (ClassNotFoundException e) {
-//			throw new ResourceInitializationException(e);
-//		} catch (IOException e) {
-//			throw new ResourceInitializationException(e);
-//		}
-	}
+    @Override
+    public void initialize(UimaContext context)
+        throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		
-		// we need an outcome annotation present
-		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-		outcome.setOutcome("");
-		outcome.addToIndexes();
-		
-		// create new UIMA annotator in order to separate the parameter spaces
-		// this annotator will get initialized with its own set of parameters loaded from the model
-		try {
-			AnalysisEngineDescription connector = getSaveModelConnector(
-			        parameters, tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(), learningMode, featureMode,
-			        DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
-			AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
-			
-			// process and classify
-			engine.process(jcas);
-		} catch (ResourceInitializationException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-		
-		System.out.println(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class).getOutcome());
-	}
-	
-	   /**
-     * @param featureExtractorClassNames @return A fully configured feature extractor connector
+        try {
+            mlAdapter = initMachineLearningAdapter();
+            parameters = initializeParameters();
+            featureExtractors = initFeatureExtractors();
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+
+    }
+
+    private TCMachineLearningAdapter initMachineLearningAdapter()
+        throws Exception
+    {
+        String modelMetaData = FileUtils.readFileToString(new File(tcModelLocation, MODEL_META));
+
+        Object mlAdapterClass = Class.forName(modelMetaData).newInstance();
+
+        return (TCMachineLearningAdapter) mlAdapterClass;
+    }
+
+    private List<String> initFeatureExtractors()
+        throws Exception
+    {
+        List<String> featureExtractors = new ArrayList<>();
+        List<String> featureConfiguration = FileUtils.readLines(new File(tcModelLocation,
+                MODEL_FEATURE_EXTRACTORS));
+        for (String featureExtractor : featureConfiguration) {
+            featureExtractors.add(featureExtractor);
+        }
+        return featureExtractors;
+    }
+
+    private List<Object> initializeParameters()
+        throws Exception
+    {
+        List<Object> parameters = new ArrayList<>();
+        List<String> modelParameters = FileUtils.readLines(new File(tcModelLocation,
+                MODEL_PARAMETERS));
+        for (String parameter : modelParameters) {
+            if (!parameter.startsWith("#")) {
+                String[] parts = parameter.split("=");
+                parameters.add(parts[0]);
+                parameters.add(parts[1]);
+            }
+        }
+
+        return parameters;
+    }
+
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+
+        // we need an outcome annotation present
+        TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+        outcome.setOutcome("");
+        outcome.addToIndexes();
+
+        // create new UIMA annotator in order to separate the parameter spaces
+        // this annotator will get initialized with its own set of parameters loaded from the model
+        try {
+            AnalysisEngine engine = getAnalysisEngine();
+            engine.process(jcas);
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+        // System.out.println(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class)
+        // .getOutcome());
+    }
+
+    private AnalysisEngine getAnalysisEngine()
+        throws Exception
+    {
+        if (initalizedEngine == null) {
+
+            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
+                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
+                    learningMode, featureMode, DenseFeatureStore.class.getName(),
+                    featureExtractors.toArray(new String[0]));
+            initalizedEngine = AnalysisEngineFactory.createEngine(connector);
+
+        }
+        return initalizedEngine;
+    }
+
+    /**
+     * @param featureExtractorClassNames
+     * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
     private AnalysisEngineDescription getSaveModelConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, String... featureExtractorClassNames)
-            throws ResourceInitializationException
+        throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
         List<Object> convertedParameters = new ArrayList<Object>();
@@ -181,21 +196,18 @@ public class TcAnnotatorDocument
         }
 
         // add the rest of the necessary parameters with the correct types
-        parameters.addAll(Arrays.asList(
-        		TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, tcModelLocation, 
-        		ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath, 
-        		ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
-        		ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
-        		ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, extractorResources,
-        		ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,
-        		ModelSerialization_ImplBase.PARAM_IS_TESTING, true,
-        		ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode,
-        		ModelSerialization_ImplBase.PARAM_FEATURE_STORE_CLASS, featureStore
-        ));
+        parameters.addAll(Arrays.asList(TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION,
+                tcModelLocation, ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
+                ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
+                ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,
+                ModelSerialization_ImplBase.PARAM_IS_TESTING, true,
+                ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode,
+                ModelSerialization_ImplBase.PARAM_FEATURE_STORE_CLASS, featureStore));
 
         return AnalysisEngineFactory.createEngineDescription(
-        		mlAdapter.getLoadModelConnectorClass(),
-                parameters.toArray());
+                mlAdapter.getLoadModelConnectorClass(), parameters.toArray());
     }
 
 }
