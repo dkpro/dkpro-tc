@@ -98,7 +98,7 @@ public class LexicalVariationExtractor
 
             POS p = t.getPos();
 
-            if (ReadabilityUtils.isLexicalWord(t)) {
+            if (ReadabilityUtils.isLexicalWord(t, jcas.getDocumentLanguage())) {
 
                 nrOfLexicalWords++;
                 lexicalTokens.add(t.getLemma().getValue());

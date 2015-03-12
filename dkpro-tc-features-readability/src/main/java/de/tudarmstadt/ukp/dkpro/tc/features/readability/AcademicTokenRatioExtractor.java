@@ -94,7 +94,7 @@ public class AcademicTokenRatioExtractor
         int nrOfWords = 0;
         for (Token tok : JCasUtil.select(jcas, Token.class)) {
 
-            if (ReadabilityUtils.isLexicalWordEn(tok)) {
+            if (ReadabilityUtils.isLexicalWord(tok, jcas.getDocumentLanguage())) {
                 nrOfWords++;
 
                 String lemma = tok.getLemma().getValue().toLowerCase();
