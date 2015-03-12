@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -39,23 +40,42 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 public class ReadabilityUtils
 
 {
-    public static boolean isAuxiliaryVerbEn(String verb)
+    public static boolean isAuxiliaryVerb(Token token, String documentLanguage)
+        throws MissingResourceException
     {
         // following the list at http://en.wikipedia.org/wiki/Auxiliary_verb
+        POS pos = token.getPos();
+        if (documentLanguage.equals("en")) {
+            String[] auxVerbs = new String[] { "be", "am", "are", "is", "was", "were", "being",
+                    "been", "can", "could", "dare", "do", "does", "did", "have", "has", "had",
+                    "having", "may", "might", "must", "need", "ought", "shall", "should", "will",
+                    "would" };
 
-        String[] auxVerbs = new String[] { "be", "am", "are", "is", "was", "were", "being", "been",
-                "can", "could", "dare", "do", "does", "did", "have", "has", "had", "having", "may",
-                "might", "must", "need", "ought", "shall", "should", "will", "would"
-
-        };
-        return Arrays.asList(auxVerbs).contains(verb);
+            return ((pos instanceof V) && Arrays.asList(auxVerbs).contains(token.getCoveredText()));
+        }
+        else {
+            throw new MissingResourceException(
+                    "List not yet available for the requested language. Do you want to add it?",
+                    "auxiliary verbs", documentLanguage);
+        }
     }
 
-    public static boolean isModalVerbEn(String verb)
-    { // following the list at http://en.wikipedia.org/wiki/English_modal_verbs
-        String[] modalVerbs = new String[] { "can", "could", "might", "may", "must", "should",
-                "will", "would", "shall" };
-        return Arrays.asList(modalVerbs).contains(verb);
+    public static boolean isModalVerb(Token token, String documentLanguage)
+        throws MissingResourceException
+    {
+        // following the list at http://en.wikipedia.org/wiki/English_modal_verbs
+        POS pos = token.getPos();
+        if (documentLanguage.equals("en")) {
+            String[] modalVerbs = new String[] { "can", "could", "might", "may", "must", "should",
+                    "will", "would", "shall" };
+            return ((pos instanceof V) && Arrays.asList(modalVerbs)
+                    .contains(token.getCoveredText()));
+        }
+        else {
+            throw new MissingResourceException(
+                    "Information not yet available for the requested language. Do you want to add it?",
+                    "modal verbs", documentLanguage);
+        }
     }
 
     // This is the same check for words as in the readability measures but it also includes hyphens
@@ -65,15 +85,14 @@ public class ReadabilityUtils
         for (int i = 0; i < strWord.length(); ++i) {
             char ch = strWord.charAt(i);
             if (!Character.isLetterOrDigit(ch)) {
-                if (strWord.length() == 1) {
-                    return false;
-                }
-                else {
-                    if (ch != '-') {
-                        return true;
+                if (ch == '-') {
+                    if (strWord.length() == 1) {
+                        return false;
                     }
                 }
-                return false;
+                else {
+                    return false;
+                }
             }
         }
         return true;
@@ -84,22 +103,21 @@ public class ReadabilityUtils
         return isWord(tok.getCoveredText());
     }
 
-    public static boolean isLexicalWordEn(Token token)
+    public static boolean isLexicalWord(Token token, String documentLanguage)
     {
         POS p = token.getPos();
         boolean rightPos = (p instanceof N || p instanceof V || p instanceof ADJ || p instanceof ADV);
-        return (rightPos && !isModalVerbEn(token.getCoveredText()) && !isAuxiliaryVerbEn(token
-                .getCoveredText()));
-    }
-
-    public static boolean isLexicalWord(Token token)
-    {
-        POS p = token.getPos();
-        return (p instanceof N || p instanceof V || p instanceof ADJ || p instanceof ADV);
-
+        if (documentLanguage.equals("en")) {
+            return (rightPos && !isModalVerb(token, documentLanguage) && !isAuxiliaryVerb(token,
+                    documentLanguage));
+        }
+        else {
+            return rightPos;
+        }
     }
 
     public static String[] getAdjectiveEndings(String documentLanguage)
+        throws MissingResourceException
     {
 
         if (documentLanguage.equals("en")) {
@@ -121,26 +139,17 @@ public class ReadabilityUtils
                     "ueux", "ueuse ", "ique ", "atique ", "ier", "ière ", "escent", "escente ",
                     "in", "ine" };
         }
-        else {
-            return new String[] {};
-        }
-    }
 
-    public static String[] getInflectedHelpverbs(String documentLanguage)
-    {
-        if (documentLanguage.equals("en")) {
-            return new String[] { "am", "are", "is", "was", "were", "be", "have", "has" };
-        }
-        if (documentLanguage.equals("de")) {
-            return new String[] { "bin", "bist", "ist", "seid", "sind", "habe", "hast", "hat",
-                    "haben", "habt" };
-        }
         else {
-            return new String[] {};
+            throw new MissingResourceException(
+                    "Information not yet available for the requested language. Do you want to add it?",
+                    "adjective endings", documentLanguage);
         }
+
     }
 
     public static String[] getHelpverbs(String documentLanguage)
+        throws MissingResourceException
     {
         if (documentLanguage.equals("en")) {
             return new String[] { "am", "are", "is", "was", "were", "be", "been", "have", "has",
@@ -165,7 +174,10 @@ public class ReadabilityUtils
                     "fussiez", "fussent", "serais", "serait", "serions", "seriez", "seraient" };
         }
         else {
-            return new String[] {};
+            throw new MissingResourceException(
+                    "Information not yet available for the requested language. Do you want to add it?",
+                    "help verbs", documentLanguage);
+
         }
     }
 
