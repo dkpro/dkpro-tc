@@ -109,7 +109,7 @@ public class ParsePatternUtilTest
                 createEngineDescription(OpenNlpPosTagger.class),
                 createEngineDescription(BerkeleyParser.class)));
         int i = 0;
-        System.out.println("Complex Nominals: ");
+        // System.out.println("Complex Nominals: ");
         for (String text : texts) {
             JCas jcas = engine.newJCas();
             jcas.setDocumentLanguage("en");
@@ -118,7 +118,7 @@ public class ParsePatternUtilTest
             for (Constituent c : JCasUtil.select(jcas, Constituent.class)) {
                 // System.out.println(ParsePatternUtils.isComplexNominal(c));
                 if (ParsePatternUtils.isComplexNominal(c)) {
-                    System.out.println(c.getCoveredText());
+                    // System.out.println(c.getCoveredText());
                 }
                 Assert.assertEquals(results[i], ParsePatternUtils.isComplexNominal(c));
                 i++;
@@ -138,7 +138,7 @@ public class ParsePatternUtilTest
                 createEngineDescription(OpenNlpSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class),
                 createEngineDescription(BerkeleyParser.class)));
-        System.out.println("Verb phrases");
+        // System.out.println("Verb phrases");
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
@@ -147,7 +147,7 @@ public class ParsePatternUtilTest
         int verbphrases = 0;
         for (VP c : JCasUtil.select(jcas, VP.class)) {
             if (ParsePatternUtils.isVerbPhrase(c)) {
-                System.out.println(c.getCoveredText());
+                // System.out.println(c.getCoveredText());
                 verbphrases++;
                 Assert.assertTrue(c.getCoveredText().equals(
                         "use it when a girl in our dorm is acting like a spoiled child")
@@ -280,7 +280,7 @@ public class ParsePatternUtilTest
 
             if (ParsePatternUtils.isCoordinate(c)) {
                 coordinates++;
-                System.out.println(c.getCoveredText());
+                // System.out.println(c.getCoveredText());
                 Assert.assertTrue("long and dark".equals(c.getCoveredText())
                         || "safe and sound".equals(c.getCoveredText()));
             }

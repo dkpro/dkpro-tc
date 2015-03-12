@@ -59,7 +59,7 @@ public class PhrasePatternExtractorTest
         List<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(6, features.size());
-        System.out.println(features);
+        // System.out.println(features);
         // Assert.assertEquals((double) features.get(0).getValue(), 4.2, 0.1);
         // Assert.assertEquals((double) features.get(1).getValue(), 1.6, 0.1);
         // Assert.assertEquals((double) features.get(2).getValue(), 0.9, 0.1);

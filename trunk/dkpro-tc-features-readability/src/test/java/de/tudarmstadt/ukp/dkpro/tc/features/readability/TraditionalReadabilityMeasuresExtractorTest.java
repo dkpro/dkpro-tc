@@ -51,12 +51,12 @@ public class TraditionalReadabilityMeasuresExtractorTest
         public void process(JCas aJCas)
             throws AnalysisEngineProcessException
         {
-            System.out.println(model.getClass().getName());
+            // System.out.println(model.getClass().getName());
             List<Feature> features;
 
             try {
                 features = model.extract(aJCas);
-                System.out.println(features);
+                // System.out.println(features);
                 Assert.assertEquals(7.7, (double) features.get(0).getValue(), 0.1);
                 Assert.assertEquals(11.6, (double) features.get(1).getValue(), 0.1);
             }
