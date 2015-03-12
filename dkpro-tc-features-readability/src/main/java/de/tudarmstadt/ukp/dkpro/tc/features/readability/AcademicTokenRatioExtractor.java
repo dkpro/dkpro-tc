@@ -77,8 +77,8 @@ public class AcademicTokenRatioExtractor
             try {
                 cocaWords = new ArrayList<String>();
                 coxheadWords = new ArrayList<String>();
-                cocaWords.addAll(FileUtils.readLines(new File(new DkproContext().getWorkspace()
-                        .getAbsolutePath() + "/acadCore-coca.txt"), "utf-8"));
+                cocaWords.addAll(FileUtils.readLines(new File(
+                        "src/main/resources/academicVocabularyList_coca.txt"), "utf-8"));
 
                 coxheadWords.addAll(FileUtils.readLines(new File(new DkproContext().getWorkspace()
                         .getAbsolutePath() + "/Coxhead_academicWords_en.txt"), "utf-8"));
