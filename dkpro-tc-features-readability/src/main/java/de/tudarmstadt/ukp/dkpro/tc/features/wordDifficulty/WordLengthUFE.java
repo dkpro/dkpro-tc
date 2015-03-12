@@ -33,7 +33,7 @@ public class WordLengthUFE
     extends FeatureExtractorResource_ImplBase
     implements ClassificationUnitFeatureExtractor
 {
-    public static final String LENGTH = "LenghtOfWord";
+    public static final String LENGTH = "LengthOfWord";
 
     @Override
     public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
