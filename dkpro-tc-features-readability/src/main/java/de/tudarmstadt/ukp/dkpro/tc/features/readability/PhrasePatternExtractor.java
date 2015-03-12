@@ -80,7 +80,7 @@ public class PhrasePatternExtractor
 
             Collection<Chunk> chunks = JCasUtil.selectCovered(Chunk.class, s);
             for (Chunk c : chunks) {
-                System.out.println(c.getChunkValue() + ": " + c.getCoveredText());
+                // System.out.println(c.getChunkValue() + ": " + c.getCoveredText());
                 if (c instanceof NC) {
 
                     nrOfNCs++;
