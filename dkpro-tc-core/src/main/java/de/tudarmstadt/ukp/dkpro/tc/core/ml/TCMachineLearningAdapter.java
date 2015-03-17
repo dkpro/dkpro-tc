@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 
 /**
@@ -53,7 +53,7 @@ public interface TCMachineLearningAdapter
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the test results.
      */
-    public ExecutableTaskBase getTestTask();
+    public TaskBase getTestTask();
 
     /**
      * This report is always added to {@code testTask} reports by default in

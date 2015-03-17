@@ -320,5 +320,9 @@ public interface Constants
      * Name of the file which holds the classifier
      */
     public static final String MODEL_CLASSIFIER = "classifier.ser";
+    /**
+     * Public name of the prediction map file
+     */
+    public static final String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
 
 }
