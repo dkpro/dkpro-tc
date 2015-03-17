@@ -18,13 +18,10 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 
 public class SmallContingencyTables {
 
@@ -36,7 +33,7 @@ public class SmallContingencyTables {
 		if (classNames.length == 0) {
 			throw new IllegalArgumentException("Must at least specify on class name.");
 		}
-		this.class2Number = classNamesToMapping(Arrays.asList(classNames));
+        this.class2Number = EvaluatorFactory.classNamesToMapping(Arrays.asList(classNames));
 		this.smallContingencyTables = new double[class2Number.size()][2][2];
 	}
 	
@@ -111,19 +108,6 @@ public class SmallContingencyTables {
 
 	public double getFalseNegatives(int classId) {
 		return smallContingencyTables[classId][0][1];
-	}
-	
-	public static Map<String, Integer> classNamesToMapping(Collection<String> collection)
-	{
-		List<String> classNames = new ArrayList<>(collection);
-		Collections.sort(classNames);
-		
-		Map<String, Integer> mapping = new HashMap<String, Integer>();
-		for (int i=0; i<classNames.size(); i++) {
-			mapping.put(classNames.get(i), i);
-		}
-		
-		return mapping;
 	}
 	
 	/**
