@@ -36,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
@@ -122,7 +122,7 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
         
         if (isMultiLabel) {
-            Map<String, Integer> class2number = EvaluatorFactory.classNamesToMapping(labels);
+            Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
         	MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
         	int[][] goldmatrix = r.getGoldstandard();
         	double[][] predictionsmatrix = r.getPredictions();
@@ -158,12 +158,12 @@ public class WekaOutcomeIDUsingTCEvaluationReport
                 Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
                 Double prediction = new Double(inst.value(gsAtt));
                 if (!isRegression) {
-                    Map<String, Integer> class2number = EvaluatorFactory.classNamesToMapping(labels);
+                    Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
                 	Integer predictionAsNumber = class2number.get(gsAtt.value(prediction.intValue()));
                 	Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                     props.setProperty(
                             inst.stringValue(attOffset), predictionAsNumber + SEPARATOR_CHAR 
-                            + goldAsNumber + SEPARATOR_CHAR + String.valueOf(0));
+                                    + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
                 }
                 else {
                     // the outcome is numeric

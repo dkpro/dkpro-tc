@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import weka.core.Instances;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -84,15 +84,15 @@ public class OutcomeIDReportUsingTCEvaluationTest
         List<String> labels = WekaUtils.getClassLabels(singleLabelData, false);
         Properties props = WekaOutcomeIDUsingTCEvaluationReport.generateProperties(singleLabelData, false, false, labels, null);
         String header = WekaOutcomeIDUsingTCEvaluationReport.generateHeader(labels);
-        List<String> labelsFromProps = EvaluatorFactory.getLabels(header);
+        List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
         assertTrue(header.split("\n")[1].startsWith("labels"));
         assertEquals(labels, labelsFromProps);
         assertEquals(16, props.size());
 
-        assertEquals(0, EvaluatorFactory.classNamesToMapping(labelsFromProps).get("alt.atheism").intValue());
-        assertEquals(3, EvaluatorFactory.classNamesToMapping(labelsFromProps).get("comp.sys.ibm.pc.hardware").intValue());
-        assertEquals(2, EvaluatorFactory.classNamesToMapping(labelsFromProps).get("comp.os.ms-windows.misc").intValue());
+        assertEquals(0, Id2Outcome.classNamesToMapping(labelsFromProps).get("alt.atheism").intValue());
+        assertEquals(3, Id2Outcome.classNamesToMapping(labelsFromProps).get("comp.sys.ibm.pc.hardware").intValue());
+        assertEquals(2, Id2Outcome.classNamesToMapping(labelsFromProps).get("comp.os.ms-windows.misc").intValue());
 
         assertEquals(Arrays.asList(1.),
                 getPrediction(props.getProperty("alt.atheism/53261.txt")));
@@ -116,15 +116,15 @@ public class OutcomeIDReportUsingTCEvaluationTest
         List<String> labels = WekaUtils.getClassLabels(multiLabelData, true);
         Properties props = WekaOutcomeIDUsingTCEvaluationReport.generateProperties(multiLabelData, true, false, labels, mlResults);
         String header = WekaOutcomeIDUsingTCEvaluationReport.generateHeader(labels);
-        List<String> labelsFromProps = EvaluatorFactory.getLabels(header);
+        List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
         assertTrue(header.split("\n")[1].startsWith("labels"));
         assertEquals(labels, labelsFromProps);
         assertEquals(8, props.size());
 
-        assertEquals(0, EvaluatorFactory.classNamesToMapping(labelsFromProps).get("__oat_Comp").intValue());
-        assertEquals(2, EvaluatorFactory.classNamesToMapping(labelsFromProps).get("__crude_Comp").intValue());
-        assertEquals(4, EvaluatorFactory.classNamesToMapping(labelsFromProps).get("__acq_Comp").intValue());
+        assertEquals(0, Id2Outcome.classNamesToMapping(labelsFromProps).get("__oat_Comp").intValue());
+        assertEquals(2, Id2Outcome.classNamesToMapping(labelsFromProps).get("__crude_Comp").intValue());
+        assertEquals(4, Id2Outcome.classNamesToMapping(labelsFromProps).get("__acq_Comp").intValue());
 
         assertEquals(1., getPrediction(props.getProperty("138.txt")).get(1), 0.1);
         assertEquals(Arrays.asList(0, 1, 0, 1, 0), getGoldStandard(props.getProperty("138.txt")));

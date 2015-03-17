@@ -17,13 +17,13 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 
-import java.util.Properties;
+import java.io.File;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 
 /**
  * Collects the final evaluation results in a train/test setting.
@@ -36,27 +36,21 @@ public class BatchTrainTestUsingTCEvaluationReport
     extends BatchReportBase
     implements Constants
 {
-
-
     @Override
     public void execute()
         throws Exception
     {
-        StorageService store = getContext().getStorageService();
-        Properties outcomeIdProps = new Properties();
-
-        // Map<>
+        Id2Outcome overallOutcome = new Id2Outcome();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             // FIXME this is a bad hack
             if (subcontext.getType().contains("TestTask")) {
-                // TODO: Id2Outcome einlesen, eindeutiges Mapping genieren; updaten unabhängig von
-                // id
-
-                outcomeIdProps.putAll(store.retrieveBinary(subcontext.getId(),
-                        Constants.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
+                File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
+                Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile);
+                overallOutcome.addAll(id2outcome.getOutcomes());
             }
         }
-        getContext().storeBinary(Constants.ID_OUTCOME_KEY, new PropertiesAdapter(outcomeIdProps));
+
+        getContext().storeBinary(Constants.ID_OUTCOME_KEY, new PropertiesAdapter(overallOutcome.getProperties()));
     }
 }
