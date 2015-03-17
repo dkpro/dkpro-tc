@@ -44,9 +44,10 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestUsingTCEvaluationReport;
 
 public class ReutersUsingTCEvaluationDemo
     implements Constants
@@ -58,6 +59,7 @@ public class ReutersUsingTCEvaluationDemo
     public static final String FILEPATH_GOLD_LABELS = "src/main/resources/data/reuters/cats.txt";
     public static final String LANGUAGE_CODE = "en";
     public static final String BIPARTITION_THRESHOLD = "0.5";
+    public static final int NUM_FOLDS = 3;
 
     public static void main(String[] args)
         throws Exception
@@ -69,7 +71,8 @@ public class ReutersUsingTCEvaluationDemo
     	
         ParameterSpace pSpace = getParameterSpace();
         ReutersUsingTCEvaluationDemo experiment = new ReutersUsingTCEvaluationDemo();
-        experiment.runTrainTest(pSpace);
+        // experiment.runTrainTest(pSpace);
+        experiment.runCrossvalidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,20 +125,18 @@ public class ReutersUsingTCEvaluationDemo
                         LuceneNGramDFE.class.getName() }));
 
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
-        dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD,
-                "BinaryRelevanceAttributeEvaluator");
-        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS,
-                Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
+        dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD, "BinaryRelevanceAttributeEvaluator");
+        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS, Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
         dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 100);
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), Dimension.create(
-                        DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimPipelineParameters,
-                dimFeatureSets,
-                dimClassificationArgs, Dimension.createBundle("featureSelection",
-                        dimFeatureSelection));
+        ParameterSpace pSpace = new ParameterSpace(
+                Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD),
+                dimPipelineParameters, dimFeatureSets, dimClassificationArgs,
+                Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;
     }
@@ -149,7 +150,21 @@ public class ReutersUsingTCEvaluationDemo
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(WekaBatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
+    // ##### CV #####
+    protected void runCrossvalidation(ParameterSpace pSpace)
+        throws Exception
+    {
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME + "-CV",
+                MekaClassificationUsingTCEvaluationAdapter.class, getPreprocessing(), NUM_FOLDS);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);

@@ -43,9 +43,9 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.style.IsSurroundedByCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 
 /**
@@ -85,8 +85,8 @@ public class NERUnitDemo
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(WekaBatchCrossValidationReport.class);
-        batch.addReport(WekaBatchRuntimeReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

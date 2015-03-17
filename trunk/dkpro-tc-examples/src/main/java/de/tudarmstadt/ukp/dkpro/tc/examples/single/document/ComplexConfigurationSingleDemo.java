@@ -48,8 +48,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a single-label experiment,
@@ -161,7 +161,7 @@ public class ComplexConfigurationSingleDemo
         		WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);
