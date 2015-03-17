@@ -21,14 +21,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
@@ -57,22 +58,14 @@ public class EvaluatorFactory
             boolean softEvaluation, boolean individualLabelMeasures)
         throws IOException
     {
-        Set<String> labels = new HashSet<String>();
         List<String> readData = new LinkedList<String>();
 
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line = "";
+        List<String> labels = null;
         while ((line = br.readLine()) != null) {
             if (line.startsWith("#labels")) {
-                String[] numberedClasses = line.split(" ");
-
-                // filter #labels out and collect labels
-                for (int i = 1; i < numberedClasses.length; i++) {    	
-                	// split one more time and take just the part with class name
-                	// e.g. 1=NPg, so take just right site
-                    String className = numberedClasses[i].split("=")[1];
-                    labels.add(className);
-                }
+                labels = getLabels(line);
             }
             else if (!line.startsWith("#")) {
                 // line might contain several '=', split at the last one
@@ -82,8 +75,11 @@ public class EvaluatorFactory
             }
         }
         br.close();
+        if (labels == null) {
+            throw new IOException("Wrong file format.");
+        }
 
-        Map<String, Integer> class2number = SmallContingencyTables.classNamesToMapping(labels);
+        Map<String, Integer> class2number = classNamesToMapping(labels);
 
         EvaluatorBase evaluator = null;
         if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
@@ -103,5 +99,31 @@ public class EvaluatorFactory
         }
 
         return evaluator;
+    }
+
+    public static List<String> getLabels(String line) throws UnsupportedEncodingException
+    {
+        String[] numberedClasses = line.split(" ");
+        List<String> labels = new ArrayList<String>();
+
+        // filter #labels out and collect labels
+        for (int i = 1; i < numberedClasses.length; i++) {
+            // split one more time and take just the part with class name
+            // e.g. 1=NPg, so take just right site
+            String className = numberedClasses[i].split("=")[1];
+            labels.add(URLDecoder.decode(className, "UTF-8"));
+        }
+        return labels;
+    }
+
+    public static Map<String, Integer> classNamesToMapping(List<String> labels)
+    {
+
+        Map<String, Integer> mapping = new HashMap<String, Integer>();
+        for (int i = 0; i < labels.size(); i++) {
+            mapping.put(labels.get(i), i);
+        }
+
+        return mapping;
     }
 }
