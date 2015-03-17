@@ -86,10 +86,10 @@ public class OutcomeIDReportTest
     {
         Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false);
 
-        assertEquals(6, props.size());
-        assertEquals(";__grain", props.getProperty("14828.txt"));
-        assertEquals("__wheat,__sorghum,__grain,__corn,__acq;", props.getProperty("14829.txt"));
-        assertEquals("__acq;__grain,__corn", props.getProperty("14832.txt"));
+        assertEquals(8, props.size());
+        assertEquals("__grain_Comp,__corn_Comp;__grain_Comp,__corn_Comp", props.getProperty("138.txt"));
+        assertEquals(";__crude_Comp", props.getProperty("151.txt"));
+        assertEquals(";__acq_Comp", props.getProperty("212.txt"));
     }
 
     @Test
