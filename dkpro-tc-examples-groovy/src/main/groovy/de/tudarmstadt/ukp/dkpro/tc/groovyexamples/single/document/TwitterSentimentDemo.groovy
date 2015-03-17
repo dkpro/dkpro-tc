@@ -31,9 +31,9 @@ import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 
 /**
  * Running example as described in the paper:
@@ -81,7 +81,7 @@ public class TwitterSentimentDemo implements Constants {
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
             reports: [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ], // collects results from folds
             numFolds: 10]
 
@@ -125,7 +125,7 @@ public class TwitterSentimentDemo implements Constants {
                 ]),
                 Dimension.create(DIM_CLASSIFICATION_ARGS, [NaiveBayes.name], [RandomForest.name])
             ],
-            reports: [WekaBatchTrainTestReport], // collects results from folds
+            reports: [BatchTrainTestReport], // collects results from folds
         ]
 
         // Run

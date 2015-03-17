@@ -41,9 +41,9 @@ import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -127,7 +127,7 @@ public class TwitterSentimentDemo
         		WekaClassificationAdapter.class,
                 getPreprocessing(), 10);
         batch.setParameterSpace(pSpace);
-        batch.addReport(WekaBatchCrossValidationReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -141,7 +141,7 @@ public class TwitterSentimentDemo
         		WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

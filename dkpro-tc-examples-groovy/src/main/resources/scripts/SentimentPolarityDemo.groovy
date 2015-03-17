@@ -20,13 +20,12 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Groovy-Version of the SentimentPolarityExperiment
@@ -122,7 +121,6 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [WekaClassificationReport.class],            
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -132,7 +130,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [WekaBatchCrossValidationReport],
+            reports:         [BatchCrossValidationReport],
             numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);
@@ -151,7 +149,6 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [WekaClassificationReport.class],            
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -162,8 +159,8 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                BatchTrainTestReport,
+                BatchOutcomeIDReport]
         ];
 
         // Run

@@ -40,7 +40,8 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.UnlabeledTweetReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskPrediction;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentPrediction;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaPredictionAdapter;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -120,8 +121,8 @@ public class TwitterSentimentPredictionDemo
     protected void runPrediction(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskPrediction batch = new BatchTaskPrediction("TwitterSentimentPrediction",
-                getPreprocessing());
+        ExperimentPrediction batch = new ExperimentPrediction("TwitterSentimentPrediction",
+                WekaPredictionAdapter.class, getPreprocessing());
         batch.setParameterSpace(pSpace);
 
         // Run
