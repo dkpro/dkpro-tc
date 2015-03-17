@@ -32,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -65,7 +65,7 @@ public class ExperimentCrossValidation
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask extractFeaturesTrainTask;
     protected ExtractFeaturesTask extractFeaturesTestTask;
-    protected ExecutableTaskBase testTask;
+    protected TaskBase testTask;
 
     public ExperimentCrossValidation()
     {/* needed for Groovy */

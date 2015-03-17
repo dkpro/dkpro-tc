@@ -20,6 +20,8 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.report;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
@@ -59,8 +61,7 @@ public class WekaOutcomeIDUsingTCEvaluationReport
      */
     public static final String SEPARATOR_CHAR = ";";
     
-    private static Map<String, Integer> class2number;
-    private static File mlResults;
+    private File mlResults;
 
     @Override
     public void execute()
@@ -88,23 +89,28 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         
        
         List<String> labels = WekaUtils.getClassLabels(predictions, multiLabel);
-        class2number = SmallContingencyTables.classNamesToMapping(labels);
+
+        Properties props = generateProperties(predictions, multiLabel, regression, labels, mlResults);
+        getContext().storeBinary(ID_OUTCOME_KEY,
+                new PropertiesAdapter(props, generateHeader(labels)));
+    }
+
+    protected static String generateHeader(List<String> labels) throws UnsupportedEncodingException
+    {
         StringBuilder comment = new StringBuilder();
         comment.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + 
-				SEPARATOR_CHAR + "THRESHOLD" + "\n" + "labels");
+                SEPARATOR_CHAR + "THRESHOLD" + "\n" + "labels");
         
         // add numbered indexing of labels: e.g. 0=NPg, 1=JJ
         for (int i = 0; i < labels.size(); i++) {
-        	comment.append(" " + String.valueOf(i) + "=" + labels.get(i));	
-		}
-    
-        Properties props = generateProperties(predictions, multiLabel, regression, labels);
-        getContext().storeBinary(ID_OUTCOME_KEY,
-                new PropertiesAdapter(props, comment.toString()));
+            comment.append(" " + String.valueOf(i) + "="
+                    + URLEncoder.encode(labels.get(i), "UTF-8"));
+        }
+        return comment.toString();
     }
 
     protected static Properties generateProperties(Instances predictions, boolean isMultiLabel, 
-    		boolean isRegression, List<String> labels) throws ClassNotFoundException, IOException
+            boolean isRegression, List<String> labels, File mlResults) throws ClassNotFoundException, IOException
     {
         Properties props = new Properties();
         String[] classValues = new String[predictions.numClasses()];
@@ -116,6 +122,7 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
         
         if (isMultiLabel) {
+            Map<String, Integer> class2number = EvaluatorFactory.classNamesToMapping(labels);
         	MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
         	int[][] goldmatrix = r.getGoldstandard();
         	double[][] predictionsmatrix = r.getPredictions();
@@ -151,6 +158,7 @@ public class WekaOutcomeIDUsingTCEvaluationReport
                 Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
                 Double prediction = new Double(inst.value(gsAtt));
                 if (!isRegression) {
+                    Map<String, Integer> class2number = EvaluatorFactory.classNamesToMapping(labels);
                 	Integer predictionAsNumber = class2number.get(gsAtt.value(prediction.intValue()));
                 	Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                     props.setProperty(

@@ -23,81 +23,70 @@ import java.util.Collection;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchPredictionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaExtractFeaturesAndPredictTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
-public class WekaRegressionAdapter
-    implements TCMachineLearningAdapter
+public class MekaPredictionAdapter 
+	implements TCMachineLearningAdapter
 {
 
-    public static TCMachineLearningAdapter getInstance()
-    {
-        return new WekaRegressionAdapter();
-    }
-
-    @Override
-    public ExecutableTaskBase getTestTask()
-    {
-        return new WekaTestTask();
-    }
-
-    @Override
-    public Class<? extends ReportBase> getClassificationReportClass()
-    {
-        return WekaRegressionReport.class;
-    }
-
-    @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
-    {
-        return WekaOutcomeIDReport.class;
-    }
-
-    @Override
-    public Class<? extends ReportBase> getBatchTrainTestReportClass()
-    {
-        return BatchTrainTestReport.class;
-    }
-
-    @Override
-    public DimensionBundle<Collection<String>> getFoldDimensionBundle(
-            String[] files, int folds)
-    {
-        return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
-    }
-
-    @Override
-    public String getFrameworkFilename(AdapterNameEntries name)
-    {
-
-        switch (name) {
-        case featureVectorsFile:
-            return "training-data.arff.gz";
-        case predictionsFile:
-            return "predictions.arff";
-        case evaluationFile:
-            return "evaluation.bin";
-        case featureSelectionFile:
-            return "attributeEvaluationResults.txt";
-        }
-
-        return null;
-    }
-    
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return WekaDataWriter.class;
+	public static TCMachineLearningAdapter getInstance() {
+		return new MekaPredictionAdapter();
 	}
 	
+	@Override
+    public TaskBase getTestTask()
+    {
+        return new WekaExtractFeaturesAndPredictTask();
+	}
+
+	@Override
+	public Class<? extends ReportBase> getClassificationReportClass() {
+        return null;
+	}
+
+	@Override
+	public Class<? extends ReportBase> getOutcomeIdReportClass() {
+		return WekaOutcomeIDReport.class;
+	}
+
+	@Override
+	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
+        return BatchPredictionReport.class;
+	}
+
+	@Override
+	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
+			String[] files, int folds) {
+		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
+	}
+
+	@Override
+	public String getFrameworkFilename(AdapterNameEntries name) {
+
+        switch (name) {
+            case featureVectorsFile:  return "training-data.arff.gz";
+            case predictionsFile      :  return "predictions.arff";
+            case evaluationFile       :  return "evaluation.bin";
+            case featureSelectionFile :  return "attributeEvaluationResults.txt";
+        }
+        
+        return null;
+	}
+	
+	@Override
+	public Class<? extends DataWriter> getDataWriterClass() {
+		return MekaDataWriter.class;
+	}
+
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		return LoadModelConnectorWeka.class;

@@ -45,26 +45,21 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.ExtractFeaturesAndPredictTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaExtractFeaturesAndPredictTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * 
- * UIMA analysis engine that is used in the {@link ExtractFeaturesAndPredictTask} to apply the
+ * UIMA analysis engine that is used in the {@link WekaExtractFeaturesAndPredictTask} to apply the
  * feature extractors on each CAS, and classify them using a previously trained model.
  * 
  * @author daxenberger
  * 
  */
-public class ExtractFeaturesAndPredictConnector
+public class WekaExtractFeaturesAndPredictConnector
     extends ConnectorBase
 {
-
-    /**
-     * Public name of the prediction map file
-     */
-    public static final String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
 
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
     @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
@@ -219,7 +214,7 @@ public class ExtractFeaturesAndPredictConnector
     {
         super.collectionProcessComplete();
 
-        File file = new File(outputDirectory, PREDICTION_MAP_FILE_NAME);
+        File file = new File(outputDirectory, Constants.PREDICTION_MAP_FILE_NAME);
         try {
             FileOutputStream f = new FileOutputStream(file);
             ObjectOutputStream s = new ObjectOutputStream(f);

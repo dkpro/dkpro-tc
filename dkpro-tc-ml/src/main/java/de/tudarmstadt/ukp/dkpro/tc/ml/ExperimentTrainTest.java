@@ -25,7 +25,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -58,7 +58,7 @@ public class ExperimentTrainTest
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private ExtractFeaturesTask featuresTestTask;
-    private ExecutableTaskBase testTask;
+    private TaskBase testTask;
 
     public ExperimentTrainTest()
     {/* needed for Groovy */
