@@ -1,22 +1,21 @@
-/**
+/*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see http://www.gnu.org/licenses/.
- */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task;
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.util.List;
 
@@ -24,11 +23,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchPredictionReport;
 
 /**
  * Pre-configured Prediction setup
@@ -37,30 +39,33 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchPredictionReport;
  * @author zesch
  * 
  */
-public class BatchTaskPrediction
+public class ExperimentPrediction
     extends BatchTask
 {
 
     private String experimentName;
-    private AnalysisEngineDescription preprocessingPipeline;
+    private AnalysisEngineDescription preprocessing;
     private List<String> operativeViews;
+    protected TCMachineLearningAdapter mlAdapter;
 
     private ValidityCheckTask checkTask;
     private PreprocessTask preprocessTaskTrain;
     private PreprocessTask preprocessTaskTest;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
-    private ExtractFeaturesAndPredictTask featuresExtractAndPredictTask;
+    private TaskBase featuresExtractAndPredictTask;
 
-    public BatchTaskPrediction()
+    public ExperimentPrediction()
     {/* needed for Groovy */
     }
 
-    public BatchTaskPrediction(String aExperimentName,
-            AnalysisEngineDescription preprocessingPipeline)
+    public ExperimentPrediction(String aExperimentName,
+            Class<? extends TCMachineLearningAdapter> mlAdapter,
+            AnalysisEngineDescription preprocessinge) throws TextClassificationException
     {
         setExperimentName(aExperimentName);
-        setPreprocessingPipeline(preprocessingPipeline);
+        setMachineLearningAdapter(mlAdapter);
+        setPreprocessing(preprocessing);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
     }
@@ -86,7 +91,7 @@ public class BatchTaskPrediction
      */
     private void init()
     {
-        if (experimentName == null || preprocessingPipeline == null)
+        if (experimentName == null || preprocessing == null)
 
         {
             throw new IllegalStateException(
@@ -98,14 +103,14 @@ public class BatchTaskPrediction
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setPreprocessing(preprocessingPipeline);
+        preprocessTaskTrain.setPreprocessing(preprocessing);
         preprocessTaskTrain.setOperativeViews(operativeViews);
         preprocessTaskTrain.setTesting(false);
         preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
 
         // preprocessing on test data
         preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setPreprocessing(preprocessingPipeline);
+        preprocessTaskTest.setPreprocessing(preprocessing);
         preprocessTaskTest.setOperativeViews(operativeViews);
         preprocessTaskTest.setTesting(true);
         preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
@@ -126,16 +131,17 @@ public class BatchTaskPrediction
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
-        featuresExtractAndPredictTask = new ExtractFeaturesAndPredictTask();
+        featuresExtractAndPredictTask = mlAdapter.getTestTask();
         featuresExtractAndPredictTask.setType(featuresExtractAndPredictTask.getType() + "-Test-"
                 + experimentName);
+
         featuresExtractAndPredictTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresExtractAndPredictTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresExtractAndPredictTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                ExtractFeaturesAndPredictTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-        addReport(WekaBatchPredictionReport.class);
+        addReport(mlAdapter.getBatchTrainTestReportClass());
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);
@@ -151,13 +157,28 @@ public class BatchTaskPrediction
         this.experimentName = experimentName;
     }
 
-    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
+    public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
+        throws TextClassificationException
     {
-        this.preprocessingPipeline = preprocessingPipeline;
+        try {
+            this.mlAdapter = mlAdapter.newInstance();
+        }
+        catch (InstantiationException e) {
+            throw new TextClassificationException(e);
+        }
+        catch (IllegalAccessException e) {
+            throw new TextClassificationException(e);
+        }
+    }
+
+    public void setPreprocessing(AnalysisEngineDescription preprocessing)
+    {
+        this.preprocessing = preprocessing;
     }
 
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;
     }
+
 }

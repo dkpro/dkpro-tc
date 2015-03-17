@@ -1,22 +1,21 @@
-/**
+/*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see http://www.gnu.org/licenses/.
- */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task;
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.io.File;
 import java.util.Arrays;
@@ -38,10 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Crossvalidation setup
@@ -51,13 +47,13 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
  * @author jamison
  * 
  */
-public class CrossValidationExperimentWithFoldControl
+public class ExperimentCrossValidationWithFoldControl
     extends ExperimentCrossValidation
 {
 
     protected Comparator<String> comparator;// EJ
 
-    public CrossValidationExperimentWithFoldControl()
+    public ExperimentCrossValidationWithFoldControl()
     {/* needed for Groovy */
     }
 
@@ -69,7 +65,7 @@ public class CrossValidationExperimentWithFoldControl
      * @param aNumFolds
      * @param comparator
      */
-    public CrossValidationExperimentWithFoldControl(String aExperimentName,
+    public ExperimentCrossValidationWithFoldControl(String aExperimentName,
             AnalysisEngineDescription preprocessing,
             int aNumFolds, Comparator<String> aComparator)
     {
@@ -177,7 +173,7 @@ public class CrossValidationExperimentWithFoldControl
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
 
         // classification (numFolds times)
-        testTask = new WekaTestTask();
+        testTask = mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
 
         if (innerReports != null) {
@@ -187,15 +183,15 @@ public class CrossValidationExperimentWithFoldControl
         }
         else {
             // add default report
-            testTask.addReport(WekaClassificationReport.class);
+            testTask.addReport(mlAdapter.getClassificationReportClass());
         }
         // always add OutcomeIdReport
-        testTask.addReport(WekaOutcomeIDReport.class);
+        testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                WekaTestTask.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                WekaTestTask.TEST_TASK_INPUT_KEY_TEST_DATA);
+                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
@@ -208,7 +204,7 @@ public class CrossValidationExperimentWithFoldControl
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        crossValidationTask.addReport(WekaBatchTrainTestReport.class);
+        crossValidationTask.addReport(BatchTrainTestReport.class);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);

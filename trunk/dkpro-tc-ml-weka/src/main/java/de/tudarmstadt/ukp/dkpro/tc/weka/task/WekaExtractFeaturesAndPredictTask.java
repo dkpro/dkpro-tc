@@ -51,7 +51,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.ExtractFeaturesAndPredictConnector;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.WekaExtractFeaturesAndPredictConnector;
 
 /**
  * Executes all feature extractors and classifies instances with a previously trained model.
@@ -59,7 +59,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.ExtractFeaturesAndPredictConne
  * @author daxenberger
  * 
  */
-public class ExtractFeaturesAndPredictTask
+public class WekaExtractFeaturesAndPredictTask
     extends UimaTaskBase
     implements Constants
 {
@@ -165,18 +165,18 @@ public class ExtractFeaturesAndPredictTask
 
         // add the rest of the necessary parameters with the correct types
         parametersCopy.addAll(Arrays.asList(
-                ExtractFeaturesAndPredictConnector.PARAM_FEATURE_MODE, featureMode,
-                ExtractFeaturesAndPredictConnector.PARAM_LEARNING_MODE, learningMode,
-                ExtractFeaturesAndPredictConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
-                ExtractFeaturesAndPredictConnector.PARAM_ARFF_FILE_TRAINING, arffFileTrain,
-                ExtractFeaturesAndPredictConnector.PARAM_BIPARTITION_THRESHOLD, threshold,
-                ExtractFeaturesAndPredictConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
-                ExtractFeaturesAndPredictConnector.PARAM_DEVELOPER_MODE, developerMode,
-                ExtractFeaturesAndPredictConnector.PARAM_CLASSIFICATION_ARGUMENTS,
+                WekaExtractFeaturesAndPredictConnector.PARAM_FEATURE_MODE, featureMode,
+                WekaExtractFeaturesAndPredictConnector.PARAM_LEARNING_MODE, learningMode,
+                WekaExtractFeaturesAndPredictConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                WekaExtractFeaturesAndPredictConnector.PARAM_ARFF_FILE_TRAINING, arffFileTrain,
+                WekaExtractFeaturesAndPredictConnector.PARAM_BIPARTITION_THRESHOLD, threshold,
+                WekaExtractFeaturesAndPredictConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
+                WekaExtractFeaturesAndPredictConnector.PARAM_DEVELOPER_MODE, developerMode,
+                WekaExtractFeaturesAndPredictConnector.PARAM_CLASSIFICATION_ARGUMENTS,
                 classificationArguments));
 
         return AnalysisEngineFactory.createEngineDescription(
-                ExtractFeaturesAndPredictConnector.class, parametersCopy.toArray());
+                WekaExtractFeaturesAndPredictConnector.class, parametersCopy.toArray());
 
     }
 
