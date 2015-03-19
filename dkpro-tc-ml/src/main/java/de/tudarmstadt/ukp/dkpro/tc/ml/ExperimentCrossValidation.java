@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -47,6 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
  * 
  * @author daxenberger
  * @author zesch
+ * @author jamison
  * 
  */
 public class ExperimentCrossValidation
@@ -56,6 +58,7 @@ public class ExperimentCrossValidation
     protected String experimentName;
     protected AnalysisEngineDescription preprocessing;
     protected List<String> operativeViews;
+    protected Comparator<String> comparator;
     protected int numFolds = 10;
     protected List<Class<? extends Report>> innerReports;
     protected TCMachineLearningAdapter mlAdapter;
@@ -72,7 +75,8 @@ public class ExperimentCrossValidation
     }
 
     /**
-     * Preconfigured crossvalidation setup.
+     * Preconfigured crossvalidation setup.  Pseudo-random assignment of 
+     * instances to folds.
      * 
      * @param aExperimentName
      *            name of the experiment
@@ -86,10 +90,36 @@ public class ExperimentCrossValidation
 			AnalysisEngineDescription preprocessing, int aNumFolds)
 			throws TextClassificationException
 	{
+		this(aExperimentName,
+				mlAdapter,
+				preprocessing,
+				aNumFolds, 
+				null
+				);
+	}
+	/**
+	 * Use this constructor for CV fold control.  The Comparator is
+	 * used to determine which instances must occur together in the same 
+	 * CV fold.
+	 * 
+	 * @param aExperimentName
+	 * @param mlAdapter
+	 * @param preprocessing
+	 * @param aNumFolds
+	 * @param aComparator
+	 * @throws TextClassificationException
+	 */
+	public ExperimentCrossValidation(String aExperimentName,
+			Class<? extends TCMachineLearningAdapter> mlAdapter,
+			AnalysisEngineDescription preprocessing, int aNumFolds, 
+			Comparator<String> aComparator)
+			throws TextClassificationException
+	{
 		setExperimentName(aExperimentName);
 		setMachineLearningAdapter(mlAdapter);
 		setPreprocessing(preprocessing);
 		setNumFolds(aNumFolds);
+		setComparator(aComparator);
 		// set name of overall batch task
 		setType("Evaluation-" + experimentName);
 	}
@@ -155,8 +185,7 @@ public class ExperimentCrossValidation
                     numFolds = fileNames.length;
                 }
                 // don't change any names!!
-                FoldDimensionBundle<String> foldDim = new FoldDimensionBundle<String>("files",
-                        Dimension.create("", fileNames), numFolds);
+                FoldDimensionBundle<String> foldDim = getFoldDim(fileNames);
                 Dimension<File> filesRootDim = Dimension.create("filesRoot", xmiPathRoot);
 
                 ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
@@ -240,6 +269,10 @@ public class ExperimentCrossValidation
 
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
     {
+    	if(comparator != null){
+    		return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds,
+                    comparator);
+    	}
         return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
     }
 
@@ -273,6 +306,10 @@ public class ExperimentCrossValidation
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
+    }
+    public void setComparator(Comparator<String> aComparator)
+    {
+        this.comparator = aComparator;
     }
 
     /**
