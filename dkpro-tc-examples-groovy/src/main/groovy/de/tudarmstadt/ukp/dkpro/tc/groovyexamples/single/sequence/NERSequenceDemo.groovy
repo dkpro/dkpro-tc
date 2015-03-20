@@ -30,6 +30,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE
 import de.tudarmstadt.ukp.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
 import de.tudarmstadt.ukp.dkpro.tc.mallet.MalletAdapter
@@ -67,6 +68,12 @@ implements Constants {
         ]])
 
     public static void main(String[] args){
+		
+		// This is used to ensure that the required DKPRO_HOME environment variable is set.
+		// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
+		// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+		DemoUtils.setDkproHome(NERSequenceDemo.class.getSimpleName());
+		
         new NERSequenceDemo().runCrossValidation() }
 
     // ##### CV #####

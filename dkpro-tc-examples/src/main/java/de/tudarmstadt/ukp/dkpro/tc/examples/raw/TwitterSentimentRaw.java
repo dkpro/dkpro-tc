@@ -65,6 +65,8 @@ public class TwitterSentimentRaw
                         ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
                         ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
+                        ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[]{},
+                        ExtractFeaturesConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
                                 createExternalResourceDescription(EmoticonRatioDFE.class),
                                 createExternalResourceDescription(NumberOfHashTagsDFE.class))));
