@@ -61,7 +61,7 @@ public class ExperimentPrediction
 
     public ExperimentPrediction(String aExperimentName,
             Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessinge) throws TextClassificationException
+            AnalysisEngineDescription preprocessing) throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         setMachineLearningAdapter(mlAdapter);
@@ -100,6 +100,7 @@ public class ExperimentPrediction
 
         // check the validity of the experiment setup first
         checkTask = new ValidityCheckTask();
+        checkTask.setMlAdapter(mlAdapter);
 
         // preprocessing on training data
         preprocessTaskTrain = new PreprocessTask();
@@ -126,6 +127,7 @@ public class ExperimentPrediction
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
+        featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);

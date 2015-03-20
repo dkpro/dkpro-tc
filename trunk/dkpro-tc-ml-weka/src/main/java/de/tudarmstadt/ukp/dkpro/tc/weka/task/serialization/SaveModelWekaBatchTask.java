@@ -253,8 +253,8 @@ class ModelSerializationDescription
         // write model file
         Classifier cl = getClassifier();
         cl.buildClassifier(trainData);
-        weka.core.SerializationHelper.write(
-                new File(outputFolder, MODEL_CLASSIFIER).getAbsolutePath(), cl);
+        String modelName = new File(outputFolder, MODEL_CLASSIFIER).getAbsolutePath();
+        weka.core.SerializationHelper.write(modelName, cl);
 
         // write attribute file
         StringBuilder attributes = new StringBuilder();
