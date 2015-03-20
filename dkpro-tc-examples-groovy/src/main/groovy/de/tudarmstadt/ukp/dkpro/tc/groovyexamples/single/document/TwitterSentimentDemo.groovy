@@ -23,6 +23,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.trees.RandomForest
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
@@ -31,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 
 /**
@@ -62,8 +63,8 @@ public class TwitterSentimentDemo implements Constants {
             experimentName: "Twitter-Sentiment-CV",
             type: "Evaluation-Twitter-Sentiment-CV",
             machineLearningAdapter: WekaClassificationAdapter,
-            preprocessing: createEngineDescription(
-            ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), // Preprocessing
+            preprocessing: createEngineDescription(createEngineDescription(BreakIteratorSegmenter),createEngineDescription(
+            ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default")), // Preprocessing
             parameterSpace: [
                 // parameters in the parameter space with several values in a list will be swept
                 Dimension.createBundle("readers", [
@@ -83,7 +84,7 @@ public class TwitterSentimentDemo implements Constants {
             reports: [
                 BatchCrossValidationReport
             ], // collects results from folds
-            numFolds: 10]
+            numFolds: 3]
 
         // Run
         Lab.getInstance().run(batchTask)
@@ -101,8 +102,8 @@ public class TwitterSentimentDemo implements Constants {
             experimentName: "Twitter-Sentiment-TrainTest",
             type: "Evaluation-Twitter-Sentiment-TrainTest",
             machineLearningAdapter: WekaClassificationAdapter,
-            preprocessing: createEngineDescription(
-            ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), // Preprocessing
+            preprocessing: createEngineDescription(createEngineDescription(BreakIteratorSegmenter),createEngineDescription(
+            ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default")), // Preprocessing
             parameterSpace: [
                 // parameters in the parameter space with several values in a list will be swept
                 Dimension.createBundle("readers", [

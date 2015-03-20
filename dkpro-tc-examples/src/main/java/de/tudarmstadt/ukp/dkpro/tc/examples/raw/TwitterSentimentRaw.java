@@ -24,6 +24,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
@@ -54,8 +55,9 @@ public class TwitterSentimentRaw
                         LabeledTweetReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                         LabeledTweetReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
-                createEngineDescription(
-                        ArktweetPosTagger.class, ArktweetPosTagger.PARAM_LANGUAGE, "en",
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(ArktweetPosTagger.class,
+                        ArktweetPosTagger.PARAM_LANGUAGE, "en",
                         ArktweetPosTagger.PARAM_VARIANT, "default"),
                 // Feature extraction
                 createEngineDescription(
