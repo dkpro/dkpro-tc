@@ -282,14 +282,14 @@ public class ExperimentCrossValidation
     }
 
     public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
-    	throws TextClassificationException
+        throws IllegalArgumentException
     {
         try {
 			this.mlAdapter = mlAdapter.newInstance();
 		} catch (InstantiationException e) {
-			throw new TextClassificationException(e);
+            throw new IllegalArgumentException(e);
 		} catch (IllegalAccessException e) {
-			throw new TextClassificationException(e);
+            throw new IllegalArgumentException(e);
 		}
     }
 
