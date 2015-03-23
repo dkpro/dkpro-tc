@@ -31,8 +31,8 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpSegmenter;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 
 public class AvgLengthExtractorTest
@@ -45,8 +45,8 @@ public class AvgLengthExtractorTest
                 .readFileToString(new File("src/test/resources/test_document_en.txt"));
 
         AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(ClearNlpSegmenter.class),
-                createEngineDescription(ClearNlpPosTagger.class));
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class));
         AnalysisEngine engine = createEngine(desc);
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
