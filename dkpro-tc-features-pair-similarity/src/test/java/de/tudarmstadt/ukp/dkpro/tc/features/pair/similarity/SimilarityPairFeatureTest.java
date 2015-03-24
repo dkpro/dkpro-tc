@@ -33,7 +33,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -49,7 +48,6 @@ public class SimilarityPairFeatureTest
     private static final String VIEW1 = "view1";
     private static final String VIEW2 = "view2";
 
-    @Ignore
     @Test
     public void similarityPairFeatureTest()
         throws Exception
