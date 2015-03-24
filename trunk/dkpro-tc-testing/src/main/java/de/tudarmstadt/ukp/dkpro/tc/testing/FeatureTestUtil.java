@@ -58,11 +58,12 @@ public class FeatureTestUtil
     }
 
     /**
-     * Shortcut for JUnit assert that test whether a feature has the correct name and value
+     * Shortcut for JUnit assert that test whether a feature has the correct name and double value (compared using the epsilon)
      * 
      * @param expectedName
      * @param expectedValue
      * @param actualFeature
+     * @param epsilon
      */
     public static void assertFeature(String expectedName, double expectedValue,
             Feature actualFeature, double epsilon)
