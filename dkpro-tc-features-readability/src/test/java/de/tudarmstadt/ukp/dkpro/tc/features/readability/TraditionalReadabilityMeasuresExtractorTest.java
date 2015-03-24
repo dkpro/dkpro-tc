@@ -17,58 +17,29 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
+import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
+import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 
 public class TraditionalReadabilityMeasuresExtractorTest
 {
-    public static class Annotator
-        extends JCasAnnotator_ImplBase
-    {
-        final static String MODEL_KEY = "ReadabilityMeasureExtractorResource";
-        @ExternalResource(key = MODEL_KEY)
-        private TraditionalReadabilityMeasuresFeatureExtractor model;
 
-        @Override
-        public void process(JCas aJCas)
-            throws AnalysisEngineProcessException
-        {
-            // System.out.println(model.getClass().getName());
-            List<Feature> features;
-
-            try {
-                features = model.extract(aJCas);
-                // System.out.println(features);
-                Assert.assertEquals(7.7, (double) features.get(0).getValue(), 0.1);
-                Assert.assertEquals(11.6, (double) features.get(1).getValue(), 0.1);
-            }
-            catch (TextClassificationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    @Ignore
+    @Test
     public void readabilityFeatureExtractorTest()
         throws Exception
     {
@@ -81,19 +52,26 @@ public class TraditionalReadabilityMeasuresExtractorTest
         // correctResult.put("smog", 9.9);
         // correctResult.put("fog", 10.6);
 
-        CollectionReaderDescription reader = createReaderDescription(TextReader.class,
-                TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/test_document_en.txt");
+        String testDocument = FileUtils.readFileToString(new File("src/test/resources/test_document_en.txt"));
+
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-        AnalysisEngineDescription extractor = createEngineDescription(
-                Annotator.class,
-                Annotator.MODEL_KEY,
-                createExternalResourceDescription(TraditionalReadabilityMeasuresFeatureExtractor.class),
-                TraditionalReadabilityMeasuresFeatureExtractor.PARAM_ADD_COLEMANLIAU, "true");
-        JCasIterable pipeline = new JCasIterable(reader, desc, extractor);
+        AnalysisEngine engine = createEngine(desc);
 
-        for (JCas jcas : pipeline) {
+        JCas jcas = engine.newJCas();
+        jcas.setDocumentLanguage("en");
+        jcas.setDocumentText(testDocument);
+        engine.process(jcas);
 
-        }
+        TraditionalReadabilityMeasuresFeatureExtractor extractor = FeatureUtil.createResource(
+        		TraditionalReadabilityMeasuresFeatureExtractor.class,
+        		TraditionalReadabilityMeasuresFeatureExtractor.PARAM_ADD_COLEMANLIAU, "true");
+
+        List<Feature> features = extractor.extract(jcas);
+
+        Assert.assertEquals(2, features.size());
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(TraditionalReadabilityMeasuresFeatureExtractor.PARAM_ADD_KINCAID, 7.6, iter.next(), 0.1);
+        assertFeature(TraditionalReadabilityMeasuresFeatureExtractor.PARAM_ADD_COLEMANLIAU, 11.6, iter.next(), 0.1);
 
     }
 }
