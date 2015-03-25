@@ -33,13 +33,14 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 
@@ -225,6 +226,7 @@ public class TwentyNewsgroupsDemo implements Constants {
 
     public static void main(String[] args)
     {
+		DemoUtils.setDkproHome(TwentyNewsgroupsDemo.getSimpleName());
         new TwentyNewsgroupsDemo().runTrainTest()
         new TwentyNewsgroupsDemo().runCrossValidation()
     }

@@ -28,6 +28,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
@@ -140,5 +141,6 @@ public class TwitterSentimentDemo implements Constants {
      * @param args
      */
     public static void main(String[] args) {
+		DemoUtils.setDkproHome(TwitterSentimentDemo.getSimpleName());
         new TwitterSentimentDemo().runCrossValidation()
         new TwitterSentimentDemo().runTrainTest() } }
