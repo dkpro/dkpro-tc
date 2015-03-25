@@ -44,12 +44,12 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import dkpro.similarity.algorithms.lexical.uima.string.GreedyStringTilingMeasureResource;
+import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
+import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
 
 
 /**
  * Demonstrates the usage of external resources within feature extractors, i.e. nested resources in uimaFit.
- * Currently broken.
  * 
  */
 public class ExternalResourceDemo
@@ -97,8 +97,8 @@ public class ExternalResourceDemo
                 Arrays.asList(new String[] { SMO.class.getName() }));
         
         ExternalResourceDescription gstResource = ExternalResourceFactory
-                .createExternalResourceDescription(GreedyStringTilingMeasureResource.class,
-                        GreedyStringTilingMeasureResource.PARAM_MIN_MATCH_LENGTH, "3");
+                .createExternalResourceDescription(CosineSimilarityResource.class,
+                		CosineSimilarityResource.PARAM_NORMALIZATION, NormalizationMode.L2.toString());
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
