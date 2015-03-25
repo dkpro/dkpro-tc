@@ -33,6 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 
@@ -102,6 +103,7 @@ implements Constants {
 
     public static void main(String[] args)
     {
+		DemoUtils.setDkproHome(BrownPosDemo.getSimpleName());
         new BrownPosDemo().runCrossValidation()
     }
 }
