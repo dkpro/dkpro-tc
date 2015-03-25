@@ -275,7 +275,12 @@ public class TaskUtils
         List<Object> convertedParameters = new ArrayList<Object>();
         if (parameters != null) {
             for (Object parameter : parameters) {
-                convertedParameters.add(parameter.toString());
+            	if(parameter instanceof ExternalResourceDescription){
+            		convertedParameters.add(parameter);
+            	}
+            	else{
+                    convertedParameters.add(parameter.toString());
+            	}
             }
         }
         else {
