@@ -50,6 +50,8 @@ import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
 
 /**
  * Demonstrates the usage of external resources within feature extractors, i.e. nested resources in uimaFit.
+ * Resource is created with {@link ExternalResourceFactory#createExternalResourceDescription} and then passed
+ * to the feature extractor(s) via the parameter space.
  * 
  */
 public class ExternalResourceDemo
@@ -96,15 +98,18 @@ public class ExternalResourceDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));
         
+        // Create the External Resource here:
         ExternalResourceDescription gstResource = ExternalResourceFactory
                 .createExternalResourceDescription(CosineSimilarityResource.class,
                 		CosineSimilarityResource.PARAM_NORMALIZATION, NormalizationMode.L2.toString());
-
+        
+        // Pass the External Resource to the feature extractor(s) here:
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource}));
+                Arrays.asList(new Object[] {
+                		SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource
+                		}));
 
-        // This feature is sensible and fast, but gives bad results on the demo data
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(new String[] {SimilarityPairFeatureExtractor.class.getName()}));
