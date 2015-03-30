@@ -48,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class BrownPosDemoCRFSuite
+public class BrownPosCRFSuiteDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -64,11 +64,11 @@ public class BrownPosDemoCRFSuite
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
-        DemoUtils.setDkproHome(BrownPosDemoCRFSuite.class.getSimpleName());
+        DemoUtils.setDkproHome(BrownPosCRFSuiteDemo.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
 
-        BrownPosDemoCRFSuite experiment = new BrownPosDemoCRFSuite();
+        BrownPosCRFSuiteDemo experiment = new BrownPosCRFSuiteDemo();
         experiment.runCrossValidation(pSpace);
     }
 

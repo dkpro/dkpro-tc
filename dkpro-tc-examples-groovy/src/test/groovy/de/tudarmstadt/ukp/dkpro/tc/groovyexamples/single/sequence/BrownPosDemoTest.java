@@ -26,17 +26,16 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.sequence.BrownPosDemo;
+import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
 
 /**
- * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
- * any exception. Additional unit tests should test the inner workings of the experiments
- * 
- * Sadly, there's alot of stdout printouts from CRFSuite.  It would be nice to suppress these for Jenkins.
+ * This test just ensures that the experiment runs without throwing
+ * any exception.
  * 
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-public class BrownPosDemoTest
+public class BrownPosDemoTest extends GroovyDemosTest_Base
 {
 	BrownPosDemo groovyExperiment;
 
@@ -44,9 +43,7 @@ public class BrownPosDemoTest
     public void setup()
         throws Exception
     {
-        String path = "target/repository/" + getClass().getSimpleName() + "/"
-                + name.getMethodName();
-        System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+        super.setup();
 
         groovyExperiment = new BrownPosDemo();
     }
@@ -55,17 +52,7 @@ public class BrownPosDemoTest
     public void testGroovyCrossValidation()
         throws Exception
     {
-        // Groovy setup with automatic task wiring
         groovyExperiment.runCrossValidation();
-    }
-
-    @Rule
-    public TestName name = new TestName();
-
-    @Before
-    public void printSeparator()
-    {
-        System.out.println("\n=== " + name.getMethodName() + " =====================");
     }
 }
 

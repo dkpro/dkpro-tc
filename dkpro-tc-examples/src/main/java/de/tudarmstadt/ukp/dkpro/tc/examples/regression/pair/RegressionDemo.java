@@ -75,11 +75,11 @@ public class RegressionDemo
         DemoUtils.setDkproHome(RegressionDemo.class.getSimpleName());
 
         RegressionDemo experiment = new RegressionDemo();
-        experiment.runCrossValidation(setup());
-        experiment.runTrainTest(setup());
+        experiment.runCrossValidation(getParameterSpace());
+        experiment.runTrainTest(getParameterSpace());
     }
 
-    public static ParameterSpace setup()
+    public static ParameterSpace getParameterSpace()
     {
         // configure training data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();

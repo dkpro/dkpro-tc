@@ -34,23 +34,17 @@ import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
+public class TwitterSentimentDemoTest extends GroovyDemosTest_Base
 {
-    TwentyNewsgroupsDemo groovyExperiment;
+    TwitterSentimentDemo groovyExperiment;
 
     @Before
     public void setup()
         throws Exception
     {
         super.setup();
-        groovyExperiment = new TwentyNewsgroupsDemo();
-    }
 
-    @Test
-    public void testGroovyCrossValidation()
-        throws Exception
-    {
-        groovyExperiment.runCrossValidation();
+        groovyExperiment = new TwitterSentimentDemo();
     }
 
     @Test
@@ -58,5 +52,12 @@ public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
         throws Exception
     {
         groovyExperiment.runTrainTest();
+    }
+    
+    @Test
+    public void testGroovyCV()
+        throws Exception
+    {
+        groovyExperiment.runCrossValidation();
     }
 }

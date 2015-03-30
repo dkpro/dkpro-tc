@@ -53,7 +53,7 @@ import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtracto
  *
  * @author Ivan Habernal
  */
-public class SVMHMMBrownPOSDemo
+public class BrownPosSVMHMMDemo
 {
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
@@ -166,13 +166,13 @@ public class SVMHMMBrownPOSDemo
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-        DemoUtils.setDkproHome(SVMHMMBrownPOSDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(BrownPosSVMHMMDemo.class.getSimpleName());
 
         // run cross-validation first
         try {
             ParameterSpace pSpace = getParameterSpace(false);
 
-            SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
+            BrownPosSVMHMMDemo experiment = new BrownPosSVMHMMDemo();
             // run with a random labeler
             experiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
@@ -186,7 +186,7 @@ public class SVMHMMBrownPOSDemo
         try {
             ParameterSpace pSpace = getParameterSpace(true);
 
-            SVMHMMBrownPOSDemo experiment = new SVMHMMBrownPOSDemo();
+            BrownPosSVMHMMDemo experiment = new BrownPosSVMHMMDemo();
             // run with a random labeler
             experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
