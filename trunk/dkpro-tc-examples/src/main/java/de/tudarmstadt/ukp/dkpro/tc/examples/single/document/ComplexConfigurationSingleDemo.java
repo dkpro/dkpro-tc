@@ -85,7 +85,7 @@ public class ComplexConfigurationSingleDemo
     }
 
     @SuppressWarnings("unchecked")
-    private static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();

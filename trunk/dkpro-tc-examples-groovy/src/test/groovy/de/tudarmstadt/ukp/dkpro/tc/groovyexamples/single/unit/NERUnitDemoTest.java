@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.unit;
 
 import java.io.File;
 
@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.unit.BrownUnitPosDemo;
 import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
 
 /**
@@ -34,16 +35,17 @@ import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
+public class NERUnitDemoTest extends GroovyDemosTest_Base
 {
-    TwentyNewsgroupsDemo groovyExperiment;
+    NERUnitDemo groovyExperiment;
 
     @Before
     public void setup()
         throws Exception
     {
         super.setup();
-        groovyExperiment = new TwentyNewsgroupsDemo();
+        
+        groovyExperiment = new NERUnitDemo();
     }
 
     @Test
@@ -51,12 +53,5 @@ public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
         throws Exception
     {
         groovyExperiment.runCrossValidation();
-    }
-
-    @Test
-    public void testGroovyTrainTest()
-        throws Exception
-    {
-        groovyExperiment.runTrainTest();
     }
 }

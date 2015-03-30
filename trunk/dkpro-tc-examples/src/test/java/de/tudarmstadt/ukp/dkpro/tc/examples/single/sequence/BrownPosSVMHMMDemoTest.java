@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
 import java.io.File;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -28,52 +29,45 @@ import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 
 /**
- * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
- * any exception. Additional unit tests should test the inner workings of the experiments
+ * This test just ensures that the experiment runs without throwing
+ * any exception.
+ * 
+ * @author Oliver Ferschke, Emily Jamison
  * 
  */
-// FIXME issue 115: ignoring this for now due to extensive logging output
 @Ignore
-public class BrownPosDemoTest
+public class BrownPosSVMHMMDemoTest extends JavaDemosTest_Base
 {
-    BrownPosDemoMallet javaExperiment;
+    BrownPosSVMHMMDemo javaExperiment;
     ParameterSpace pSpace;
-
-    @Before
-    public void setupLogging()
-    {
-        System.setProperty("org.apache.uima.logger.class",
-                "org.apache.uima.util.impl.Log4jLogger_impl");
-    }
 
     @Before
     public void setup()
         throws Exception
     {
-        String path = "target/repository/" + getClass().getSimpleName() + "/"
-                + name.getMethodName();
-        System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
-
-        javaExperiment = new BrownPosDemoMallet();
-        pSpace = BrownPosDemoMallet.getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
+        super.setup();
+        
+        javaExperiment = new BrownPosSVMHMMDemo();
     }
 
     @Test
     public void testJavaCrossValidation()
         throws Exception
     {
-        // Java setup with automatic task wiring
-        javaExperiment.runCrossValidation(pSpace);
+        pSpace = BrownPosSVMHMMDemo.getParameterSpace(false);
+        javaExperiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
     }
 
-    @Rule
-    public TestName name = new TestName();
-
-    @Before
-    public void printSeparator()
+    @Test
+    public void testJavaTrainTest()
+        throws Exception
     {
-        System.out.println("\n=== " + name.getMethodName() + " =====================");
+        pSpace = BrownPosSVMHMMDemo.getParameterSpace(false);
+        javaExperiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
     }
 }

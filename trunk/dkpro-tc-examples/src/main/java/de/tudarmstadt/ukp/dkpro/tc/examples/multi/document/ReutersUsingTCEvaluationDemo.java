@@ -72,7 +72,7 @@ public class ReutersUsingTCEvaluationDemo
         ParameterSpace pSpace = getParameterSpace();
         ReutersUsingTCEvaluationDemo experiment = new ReutersUsingTCEvaluationDemo();
         // experiment.runTrainTest(pSpace);
-        experiment.runCrossvalidation(pSpace);
+        experiment.runCrossValidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -157,7 +157,7 @@ public class ReutersUsingTCEvaluationDemo
     }
 
     // ##### CV #####
-    protected void runCrossvalidation(ParameterSpace pSpace)
+    protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME + "-CV",

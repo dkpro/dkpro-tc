@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document;
+package de.tudarmstadt.ukp.dkpro.tc.groovyexamples.regression.pair;
 
 import java.io.File;
 
@@ -34,23 +34,17 @@ import de.tudarmstadt.ukp.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
+public class RegressionDemoTest extends GroovyDemosTest_Base
 {
-    TwentyNewsgroupsDemo groovyExperiment;
+    RegressionDemo groovyExperiment;
 
     @Before
     public void setup()
         throws Exception
     {
         super.setup();
-        groovyExperiment = new TwentyNewsgroupsDemo();
-    }
 
-    @Test
-    public void testGroovyCrossValidation()
-        throws Exception
-    {
-        groovyExperiment.runCrossValidation();
+        groovyExperiment = new RegressionDemo();
     }
 
     @Test
@@ -58,5 +52,12 @@ public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
         throws Exception
     {
         groovyExperiment.runTrainTest();
+    }
+    
+    @Test
+    public void testGroovyCrossValidation()
+        throws Exception
+    {
+        groovyExperiment.runCrossValidation();
     }
 }

@@ -57,7 +57,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
 /**
  * Shows how to use the ablation test feature sets.
  */
-public class AblationTestDemo
+public class AblationDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -74,11 +74,11 @@ public class AblationTestDemo
     	// This is used to ensure that the required DKPRO_HOME environment variable is set.
     	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
     	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(AblationTestDemo.class.getSimpleName());
+    	DemoUtils.setDkproHome(AblationDemo.class.getSimpleName());
     	
         ParameterSpace pSpace = getParameterSpace();
 
-        AblationTestDemo experiment = new AblationTestDemo();
+        AblationDemo experiment = new AblationDemo();
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
