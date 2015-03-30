@@ -109,7 +109,13 @@ public class TcAnnotatorSequence
                 if (!parameter.startsWith("#")) {
                     String[] parts = parameter.split("=");
                     parameters.add(parts[0]);
-                    parameters.add(parts[1]);
+
+                    if (isExistingFilePath(parts[1])) {
+                        parameters.add(tcModelLocation + "/" + parts[1]);
+                    }
+                    else {
+                        parameters.add(parts[1]);
+                    }
                 }
             }
         }
@@ -146,6 +152,11 @@ public class TcAnnotatorSequence
         // }
     }
 
+    private boolean isExistingFilePath(String name)
+    {
+        return new File(tcModelLocation + "/" + name).exists();
+    }
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
@@ -158,9 +169,9 @@ public class TcAnnotatorSequence
         // this annotator will get initialized with its own set of parameters loaded from the model
         try {
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
-                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass()
-                            .toString(), learningMode, featureMode,
-                    DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
+                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
+                    learningMode, featureMode, DenseFeatureStore.class.getName(),
+                    featureExtractors.toArray(new String[0]));
             AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
 
             // process and classify
@@ -202,7 +213,7 @@ public class TcAnnotatorSequence
 
     /**
      * @param featureExtractorClassNames
-     *            @return A fully configured feature extractor connector
+     * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
     private AnalysisEngineDescription getSaveModelConnector(List<Object> parameters,
