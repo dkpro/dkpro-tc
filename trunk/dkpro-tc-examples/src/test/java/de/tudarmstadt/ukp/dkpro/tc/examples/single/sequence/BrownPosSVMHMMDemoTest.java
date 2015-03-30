@@ -40,7 +40,6 @@ import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-@Ignore
 public class BrownPosSVMHMMDemoTest extends JavaDemosTest_Base
 {
     BrownPosSVMHMMDemo javaExperiment;

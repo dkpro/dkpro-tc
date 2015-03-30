@@ -66,7 +66,6 @@ public class WekaSaveAndLoadModelTest {
 	public TemporaryFolder folder= new TemporaryFolder();
 
 	@Test
-	@Ignore
 	public void roundTripWeka() 
 			throws Exception
 	{
