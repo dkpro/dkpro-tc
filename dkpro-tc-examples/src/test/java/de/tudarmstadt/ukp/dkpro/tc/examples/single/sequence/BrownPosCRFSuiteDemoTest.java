@@ -38,7 +38,6 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-@Ignore
 public class BrownPosCRFSuiteDemoTest extends JavaDemosTest_Base
 {
     BrownPosCRFSuiteDemo javaExperiment;
