@@ -47,6 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.ml.modelpersist.ModelPersistUtil;
 
 public class TcAnnotatorDocument
     extends JCasAnnotator_ImplBase
@@ -74,53 +75,14 @@ public class TcAnnotatorDocument
         super.initialize(context);
 
         try {
-            mlAdapter = initMachineLearningAdapter();
-            parameters = initializeParameters();
-            featureExtractors = initFeatureExtractors();
+            mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
+            parameters = ModelPersistUtil.initParameters(tcModelLocation);
+            featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
 
-    }
-
-    private TCMachineLearningAdapter initMachineLearningAdapter()
-        throws Exception
-    {
-        String modelMetaData = FileUtils.readFileToString(new File(tcModelLocation, MODEL_META));
-
-        Object mlAdapterClass = Class.forName(modelMetaData).newInstance();
-
-        return (TCMachineLearningAdapter) mlAdapterClass;
-    }
-
-    private List<String> initFeatureExtractors()
-        throws Exception
-    {
-        List<String> featureExtractors = new ArrayList<>();
-        List<String> featureConfiguration = FileUtils.readLines(new File(tcModelLocation,
-                MODEL_FEATURE_EXTRACTORS));
-        for (String featureExtractor : featureConfiguration) {
-            featureExtractors.add(featureExtractor);
-        }
-        return featureExtractors;
-    }
-
-    private List<Object> initializeParameters()
-        throws Exception
-    {
-        List<Object> parameters = new ArrayList<>();
-        List<String> modelParameters = FileUtils.readLines(new File(tcModelLocation,
-                MODEL_PARAMETERS));
-        for (String parameter : modelParameters) {
-            if (!parameter.startsWith("#")) {
-                String[] parts = parameter.split("=");
-                parameters.add(parts[0]);
-                parameters.add(parts[1]);
-            }
-        }
-
-        return parameters;
     }
 
     @Override

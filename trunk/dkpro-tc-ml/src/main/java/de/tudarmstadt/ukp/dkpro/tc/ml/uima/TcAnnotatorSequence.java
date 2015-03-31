@@ -52,6 +52,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.ml.modelpersist.ModelPersistUtil;
 
 public class TcAnnotatorSequence
     extends JCasAnnotator_ImplBase
@@ -85,76 +86,14 @@ public class TcAnnotatorSequence
         super.initialize(context);
 
         try {
-            mlAdapter = (TCMachineLearningAdapter) Class.forName(
-                    FileUtils.readFileToString(new File(tcModelLocation, MODEL_META)))
-                    .newInstance();
-        }
-        catch (InstantiationException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (ClassNotFoundException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
-
-        parameters = new ArrayList<>();
-        try {
-            for (String parameter : FileUtils
-                    .readLines(new File(tcModelLocation, MODEL_PARAMETERS))) {
-                if (!parameter.startsWith("#")) {
-                    String[] parts = parameter.split("=");
-                    parameters.add(parts[0]);
-
-                    if (isExistingFilePath(parts[1])) {
-                        parameters.add(tcModelLocation + "/" + parts[1]);
-                    }
-                    else {
-                        parameters.add(parts[1]);
-                    }
-                }
-            }
+            mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
+            parameters = ModelPersistUtil.initParameters(tcModelLocation);
+            featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-        featureExtractors = new ArrayList<>();
-        try {
-            for (String featureExtractor : FileUtils.readLines(new File(tcModelLocation,
-                    MODEL_FEATURE_EXTRACTORS))) {
-                featureExtractors.add(featureExtractor);
-            }
-        }
-        catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
 
-        // featureExtractors = new ArrayList<>();
-        // try {
-        // for (String featureExtractor : FileUtils.readLines(new File(tcModelLocation,
-        // "features.txt"))) {
-        // featureExtractors.add(
-        // (FeatureExtractorResource_ImplBase) Class.forName(featureExtractor).newInstance()
-        // );
-        // }
-        // } catch (InstantiationException e) {
-        // throw new ResourceInitializationException(e);
-        // } catch (IllegalAccessException e) {
-        // throw new ResourceInitializationException(e);
-        // } catch (ClassNotFoundException e) {
-        // throw new ResourceInitializationException(e);
-        // } catch (IOException e) {
-        // throw new ResourceInitializationException(e);
-        // }
-    }
-
-    private boolean isExistingFilePath(String name)
-    {
-        return new File(tcModelLocation + "/" + name).exists();
     }
 
     @Override
