@@ -65,11 +65,11 @@ public interface Constants
     /*
      * Readers
      */
-
     /**
      * Name of the outcome value for instances in prediction mode
      */
     public static String UNKNOWN_OUTCOME = "UNKNOWN_OUTCOME";
+	
 
     /*
      * Discriminators
@@ -291,6 +291,10 @@ public interface Constants
      * Name of the instance ID feature
      */    
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
+    /**
+     * For empty predictions (no label value above the bipartition threshold)
+     */
+    public static String EMPTY_PREDICTION = "$NO_PREDICTION$";
 
     
     /*
