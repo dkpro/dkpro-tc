@@ -58,10 +58,15 @@ public class Id2Outcome
         String line = "";
         List<String> labelList = null;
         while ((line = br.readLine()) != null) {
+        	// this needs to happen at the beginning of the loop
             if (line.startsWith("#labels")) {
                 labelList = getLabels(line);
             }
             else if (!line.startsWith("#")) {
+                if (labelList == null) {
+                    br.close();
+                    throw new IOException("Wrong file format.");
+                }
                 // line might contain several '=', split at the last one
                 int idxMostRightHandEqual = line.lastIndexOf("=");
                 String evaluationData = line.substring(idxMostRightHandEqual + 1);
@@ -69,26 +74,39 @@ public class Id2Outcome
                 String[] splittedEvaluationData = evaluationData.split(";");
                 String[] predictionS = splittedEvaluationData[0].split(",");
                 String[] goldS = splittedEvaluationData[1].split(",");
-                double bipartitionThreshold = Double.valueOf(splittedEvaluationData[2]);
+                double bipartitionThreshold;
+				try {
+					bipartitionThreshold = Double.valueOf(splittedEvaluationData[2]);
+				} catch (ArrayIndexOutOfBoundsException e) {
+					bipartitionThreshold = -1;
+				}
 
-                int[] goldstandard = new int[goldS.length];
-                double[] predictions = new double[predictionS.length];
-                for (int i = 0; i < predictions.length; i++) {
-                    predictions[i] = Double.parseDouble(predictionS[i]);
+                double[] goldstandard = new double[labelList.size()];
+                double[] predictions = new double[labelList.size()];
+                
+                if(predictionS.length == 1 && predictionS.length == 1){
+                	// singleLabel
+                	goldstandard[Integer.parseInt(goldS[0])] = 1.;
+                	predictions[Integer.parseInt(predictionS[0])] = 1.;
                 }
-                for (int i = 0; i < goldstandard.length; i++) {
-                    goldstandard[i] = Integer.parseInt(goldS[i]);
+                
+                else{
+                	// multiLabel
+                	for (int i = 0; i < predictions.length; i++) {
+                		predictions[i] = Double.parseDouble(predictionS[i]);
+                	}
+	                for (int i = 0; i < goldstandard.length; i++) {
+	                    goldstandard[i] = Double.parseDouble(goldS[i]);
+	                }
                 }
+	            
                 SingleOutcome outcome;
-                if (labelList == null) {
-                    br.close();
-                    throw new IOException("Wrong file format.");
-                }
+        
                 if (bipartitionThreshold == -1) {
-                    outcome = new SingleOutcome(goldstandard, predictions, labelList.toArray(new String[] {}));
+                    outcome = new SingleOutcome(goldstandard, predictions, labelList);
                 }
                 else {
-                    outcome = new SingleOutcome(goldstandard, predictions, bipartitionThreshold, labelList.toArray(new String[] {}));
+                    outcome = new SingleOutcome(goldstandard, predictions, bipartitionThreshold, labelList);
                 }
                 outcomes.add(outcome);
             }

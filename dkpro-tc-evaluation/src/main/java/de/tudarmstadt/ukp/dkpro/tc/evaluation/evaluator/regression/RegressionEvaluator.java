@@ -17,9 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression;
 
-import java.util.List;
 import java.util.Map;
 
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
 /**
@@ -30,10 +30,9 @@ public class RegressionEvaluator
     extends EvaluatorBase
 {
 
-    public RegressionEvaluator(Map<String, Integer> class2number,
-			List<String> readData, boolean softEvaluation,
+    public RegressionEvaluator(Id2Outcome id2Outcome, boolean softEvaluation,
 			boolean individualLabelMeasures) {
-		super(class2number, readData, softEvaluation, individualLabelMeasures);	
+		super(id2Outcome, softEvaluation, individualLabelMeasures);	
 	}
 
 	@Override

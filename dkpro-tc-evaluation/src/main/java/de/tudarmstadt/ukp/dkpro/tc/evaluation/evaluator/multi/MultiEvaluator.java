@@ -18,12 +18,17 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.SingleOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiLargeContingencyTable;
@@ -41,18 +46,16 @@ public class MultiEvaluator
     implements BipartitionBased
 {
 
-    public MultiEvaluator(Map<String, Integer> class2number,
-			List<String> readData, boolean softEvaluation,
+    public MultiEvaluator(Id2Outcome id2Outcome, boolean softEvaluation,
 			boolean individualLabelMeasures) {
-		super(class2number, readData, softEvaluation, individualLabelMeasures);
+		super(id2Outcome, softEvaluation, individualLabelMeasures);
 	}
 
     @Override
     public AbstractLargeContingencyTable<Map<String, Map<String, Double>>> buildLargeContingencyTable()
     {
-        Set<String> labelCombinations = getSetOfLabelCombinations();
+        List<String> labelCombinations = getLabelCombinations();
 
-        // gold - prediction - value
         Map<String, Map<String, Double>> largeContingencyTable =
                 new HashMap<String, Map<String, Double>>();
         HashMap<String, Double> tempDimension = new HashMap<String, Double>();
@@ -63,47 +66,28 @@ public class MultiEvaluator
             largeContingencyTable.put(labelCombination, (HashMap<String, Double>) tempDimension.clone());
         }
 
-        for (String line : readData) {
-            // consists of: prediction, gold label, threshold
-            String[] splittedEvaluationData = line.split(";");
-            String predictionValues = splittedEvaluationData[0];
-            String goldValues = splittedEvaluationData[1];
-            Double threshold = Double.valueOf(splittedEvaluationData[2]);
+        for (SingleOutcome outcome : id2Outcome.getOutcomes()) {
 
-            String[] predictionValue = predictionValues.split(",");
-            String accumulatedPredictionLabelCombination = "";
-            for (int i = 0; i < predictionValue.length; i++) {
-                if (Double.valueOf(predictionValue[i]) >= threshold) {
-                    if (! accumulatedPredictionLabelCombination.equals(""))
-                        accumulatedPredictionLabelCombination += ",";
-                    accumulatedPredictionLabelCombination += i;
-                }
-            }
-            if (accumulatedPredictionLabelCombination.equals("")) {
-                // replace with appropriate label
-            	accumulatedPredictionLabelCombination = String.valueOf(class2number.get(""));
+            double[] predictionArray = outcome.getPrediction();
+            double[] goldstandardArray = outcome.getGoldstandard();
+                        
+            List<String> predictionLabels = accumulateLabels(predictionArray, outcome.getBipartitionThreshold(), outcome.getLabels());
+            List<String> goldStandardLabels = accumulateLabels(goldstandardArray, outcome.getBipartitionThreshold(), outcome.getLabels());
+            
+            // update CV per label
+            for(String goldStandardLabel : goldStandardLabels){
+            	for(String predictionLabel : predictionLabels){
+            		Double updatedValue = largeContingencyTable.get(goldStandardLabel).
+                    		get(predictionLabel) + 1;
+                    largeContingencyTable.get(goldStandardLabel).
+                    		put(predictionLabel, updatedValue);
+            	}
             }
             
-            String[] goldValue = goldValues.split(",");
-            String accumulatedGoldLabelCombination = "";
-            for (int i = 0; i < goldValue.length; i++) {
-                if (Double.valueOf(goldValue[i]) >= threshold) {
-                    if (! accumulatedGoldLabelCombination.equals(""))
-                        accumulatedGoldLabelCombination += ",";
-                    accumulatedGoldLabelCombination += i;
-                }
-            }
-            if (accumulatedGoldLabelCombination.equals("")) {
-                // replace with appropriate label
-            	accumulatedGoldLabelCombination = String.valueOf(class2number.get(""));
-            }
             
-            Double updatedValue = largeContingencyTable.get(accumulatedGoldLabelCombination).
-            		get(accumulatedPredictionLabelCombination) + 1;
-            largeContingencyTable.get(accumulatedGoldLabelCombination).
-            		put(accumulatedPredictionLabelCombination, updatedValue);
+            
         }
-        return new MultiLargeContingencyTable(largeContingencyTable, class2number);
+        return new MultiLargeContingencyTable(largeContingencyTable, labelCombinations);
     }
 
     /**
@@ -113,49 +97,26 @@ public class MultiEvaluator
      * @return set of label combinations
      * @throws IOException
      */
-    public HashSet<String> getSetOfLabelCombinations()
+    public List<String> getLabelCombinations()
     {
         HashSet<String> labelCombinations = new HashSet<String>();
-        for (String line : readData) {
-            // consists of: prediction, gold label, threshold
-            String[] splittedEvaluationData = line.split(";");
-            String predictionValues = splittedEvaluationData[0];
-            String goldValues = splittedEvaluationData[1];
-            Double threshold = Double.valueOf(splittedEvaluationData[2]);
+        for (SingleOutcome outcome : id2Outcome.getOutcomes()) {
 
-            String[] predictionValue = predictionValues.split(",");
-            String accumulatedPredictionLabelCombination = "";
-            for (int i = 0; i < predictionValue.length; i++) {
-                if (Double.valueOf(predictionValue[i]) >= threshold) {
-                    if (! accumulatedPredictionLabelCombination.equals(""))
-                        accumulatedPredictionLabelCombination += ",";
-                    accumulatedPredictionLabelCombination += i;
-                }
-            }
-            
-            String[] goldValue = goldValues.split(",");
-            String accumulatedGoldLabelCombination = "";
-            for (int i = 0; i < goldValue.length; i++) {
-                if (Double.valueOf(goldValue[i]) >= threshold) {
-                    if (! accumulatedGoldLabelCombination.equals(""))
-                        accumulatedGoldLabelCombination += ",";
-                    accumulatedGoldLabelCombination += i;
-                }
-            }
+            double[] predictionArray = outcome.getPrediction();
+            double[] goldstandardArray = outcome.getGoldstandard();
+                        
+            List<String> predictionLabels = accumulateLabels(predictionArray, outcome.getBipartitionThreshold(), outcome.getLabels());
+            List<String> goldstandardLabels = accumulateLabels(goldstandardArray, outcome.getBipartitionThreshold(), outcome.getLabels());
 
-            labelCombinations.add(accumulatedPredictionLabelCombination);
-            labelCombinations.add(accumulatedGoldLabelCombination);
+            System.out.println("gold"+predictionLabels);
+            System.out.println("pred"+goldstandardLabels);
+
+
+            labelCombinations.addAll(predictionLabels);
+            labelCombinations.addAll(goldstandardLabels);
         }
          
-        if (labelCombinations.contains("")) {
-        	// add "" label to class2number and replace it in list of labelCombinations
-        	// with the next free number from class2number
-        	int additionalLabelNumber = class2number.size();
-        	class2number.put("", additionalLabelNumber);
-        	labelCombinations.remove("");
-        	labelCombinations.add(String.valueOf(additionalLabelNumber));
-        }
-        return labelCombinations;
+        return new ArrayList<String>(labelCombinations);
     }
 
     @Override
@@ -169,9 +130,8 @@ public class MultiEvaluator
         Map<String, Double> results = new HashMap<String, Double>();
         Map<String, Double> macroResults = calculateMacroMeasures(smallConfMatrices);
         Map<String, Double> microResults = calculateMicroMeasures(combinedSmallConfMatr);
-        int numberOfContingencyTables = class2number.size();
 		Map<String, Double> accuracyResult = Accuracy.calculate(combinedSmallConfMatr, 
-				numberOfContingencyTables, softEvaluation);
+				smallConfMatrices.getClass2Number().size(), softEvaluation);
 		
 		results.putAll(macroResults);
         results.putAll(microResults);
@@ -187,6 +147,22 @@ public class MultiEvaluator
         CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
 
         return calculateMicroMeasures(combinedSmallConfMatr);
+    }
+    
+    private List<String> accumulateLabels(double[] values, double bipartitionThreshold, List<String> labels){
+    	List<String> accumulatedLabelCombination = new ArrayList<String>();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] >= bipartitionThreshold) {
+                try {
+                	accumulatedLabelCombination.add(URLEncoder.encode(labels.get(i), "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+				}
+            }
+        }
+        if(accumulatedLabelCombination.isEmpty()){
+        	accumulatedLabelCombination.add(Constants.EMPTY_PREDICTION);
+        }
+		return accumulatedLabelCombination;
     }
 
 }

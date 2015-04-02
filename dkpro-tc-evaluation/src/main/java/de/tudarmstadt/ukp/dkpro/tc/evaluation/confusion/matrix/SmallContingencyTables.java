@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
@@ -25,14 +25,15 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 public class SmallContingencyTables {
 
 	private Map<String, Integer> class2Number;
+
 	private double[][][] smallContingencyTables;
 	
-	public SmallContingencyTables(String ... classNames)
+	public SmallContingencyTables(List<String> labels)
 	{
-		if (classNames.length == 0) {
-			throw new IllegalArgumentException("Must at least specify on class name.");
+		if (labels.size() == 0) {
+			throw new IllegalArgumentException("Must at least specify one class name.");
 		}
-        this.class2Number = Id2Outcome.classNamesToMapping(Arrays.asList(classNames));
+        this.class2Number = Id2Outcome.classNamesToMapping(labels);
 		this.smallContingencyTables = new double[class2Number.size()][2][2];
 	}
 	
@@ -124,5 +125,9 @@ public class SmallContingencyTables {
 			}
 		}
 		return new CombinedSmallContingencyTable(combinedMatrix);
+	}
+	
+	public Map<String, Integer> getClass2Number() {
+		return class2Number;
 	}
 }
