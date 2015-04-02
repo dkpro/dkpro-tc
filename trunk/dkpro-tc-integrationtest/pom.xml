@@ -85,10 +85,6 @@
 			<artifactId>commons-lang</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>dkpro-lab-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>nz.ac.waikato.cms.weka</groupId>
 			<artifactId>weka-dev</artifactId>
 		</dependency>
@@ -97,10 +93,12 @@
 			<artifactId>uimaj-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.parameter-asl
-			</artifactId>
+			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>
