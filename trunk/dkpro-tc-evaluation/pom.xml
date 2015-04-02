@@ -39,7 +39,6 @@
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-core</artifactId>
-  		<scope>test</scope>
   	</dependency>
   </dependencies>
 </project>
