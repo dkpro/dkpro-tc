@@ -57,6 +57,7 @@
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-fstore-simple</artifactId>
+  		<scope>test</scope>
   	</dependency>
   	<dependency>
   		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
