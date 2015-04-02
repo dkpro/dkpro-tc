@@ -17,6 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A single entry from an id2outcome file (i.e. at least goldstandard and prediction)
  * 
@@ -28,8 +32,8 @@ public class SingleOutcome
 
     private double bipartitionThreshold;
     private double[] prediction;
-    private int[] goldstandard;
-    private String[] labels;
+    private double[] goldstandard;
+    private List<String> labels;
 
 
     /**
@@ -37,7 +41,7 @@ public class SingleOutcome
      * @param prediction
      * @param labels
      */
-    public SingleOutcome(int[] goldstandard, double[] prediction, String[] labels)
+    public SingleOutcome(double[] goldstandard, double[] prediction, List<String> labels)
     {
         this.goldstandard = goldstandard;
         this.prediction = prediction;
@@ -51,7 +55,7 @@ public class SingleOutcome
      * @param bipartitionThreshold
      * @param labels
      */
-    public SingleOutcome(int[] goldstandard, double[] prediction, double bipartitionThreshold, String[] labels)
+    public SingleOutcome(double[] goldstandard, double[] prediction, double bipartitionThreshold, List<String> labels)
     {
         this.goldstandard = goldstandard;
         this.prediction = prediction;
@@ -78,7 +82,7 @@ public class SingleOutcome
     /**
      * @return
      */
-    public int[] getGoldstandard()
+    public double[] getGoldstandard()
     {
         return goldstandard;
     }
@@ -86,8 +90,19 @@ public class SingleOutcome
     /**
      * @return
      */
-    public String[] getLabels()
+    public List<String> getLabels()
     {
         return labels;
+    }
+    
+    
+    // key: index given outcome - value: index in labels parameter
+    public Map<Integer, Integer> getLabelMapping(List<String> allLabels){
+    	
+    	Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+    	for (String label : allLabels) {
+			map.put(labels.indexOf(label), allLabels.indexOf(label));
+		}
+    	return map;
     }
 }

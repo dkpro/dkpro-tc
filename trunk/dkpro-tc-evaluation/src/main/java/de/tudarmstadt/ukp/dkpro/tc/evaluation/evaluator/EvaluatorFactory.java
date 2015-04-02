@@ -17,13 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
@@ -55,40 +50,19 @@ public class EvaluatorFactory
             boolean softEvaluation, boolean individualLabelMeasures)
         throws IOException
     {
-        List<String> readData = new LinkedList<String>();
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line = "";
-        List<String> labels = null;
-        while ((line = br.readLine()) != null) {
-            if (line.startsWith("#labels")) {
-                labels = Id2Outcome.getLabels(line);
-            }
-            else if (!line.startsWith("#")) {
-                // line might contain several '=', split at the last one
-                int idxMostRightHandEqual = line.lastIndexOf("=");
-                String evaluationData = line.substring(idxMostRightHandEqual + 1);
-                readData.add(evaluationData);
-            }
-        }
-        br.close();
-        if (labels == null) {
-            throw new IOException("Wrong file format.");
-        }
-
-        Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
-
+        Id2Outcome id2outcome = new Id2Outcome(file);
         EvaluatorBase evaluator = null;
+        
         if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
-            evaluator = new SingleEvaluator(class2number, readData, softEvaluation,
+            evaluator = new SingleEvaluator(id2outcome, softEvaluation,
                     individualLabelMeasures);
         }
         else if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
-            evaluator = new MultiEvaluator(class2number, readData, softEvaluation,
+            evaluator = new MultiEvaluator(id2outcome,softEvaluation,
                     individualLabelMeasures);
         }
         else if (learningMode.equals(Constants.LM_REGRESSION)) {
-            evaluator = new RegressionEvaluator(class2number, readData, softEvaluation,
+            evaluator = new RegressionEvaluator(id2outcome, softEvaluation,
                     individualLabelMeasures);
         }
         else {

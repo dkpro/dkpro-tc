@@ -18,9 +18,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
@@ -37,24 +38,21 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MicroRecall;
  */
 public abstract class EvaluatorBase {
 	
-	protected Map<String, Integer> class2number;
-	protected List<String> readData;
+	protected Id2Outcome id2Outcome;
 	protected boolean softEvaluation;
 	protected boolean individualLabelMeasures;
 	
-	public EvaluatorBase(Map<String, Integer> class2number,
-			List<String> readData, boolean softEvaluation,
+	public EvaluatorBase(Id2Outcome id2Outcome, boolean softEvaluation,
 			boolean individualLabelMeasures) {
 		super();
-		this.class2number = class2number;
-		this.readData = readData;
+		this.id2Outcome = id2Outcome;
 		this.softEvaluation = softEvaluation;
 		this.individualLabelMeasures = individualLabelMeasures;
 	}
 	
-    public abstract Map<String, Double> calculateEvaluationMeasures();
+    public abstract Map<String, Double> calculateEvaluationMeasures() throws TextClassificationException;
 
-    public abstract Map<String, Double> calculateMicroEvaluationMeasures();
+    public abstract Map<String, Double> calculateMicroEvaluationMeasures() throws TextClassificationException;
 	
 	/**
 	 * calculation of label based macro measures 
@@ -71,8 +69,8 @@ public abstract class EvaluatorBase {
 
 		if (individualLabelMeasures) {
 			Map<Integer, String> number2class = new  HashMap<Integer, String>();
-			for (String classValue : class2number.keySet()) {
-				Integer number = class2number.get(classValue);
+			for (String classValue : cTable.getClass2Number().keySet()) {
+				Integer number = cTable.getClass2Number().get(classValue);
 				number2class.put(number, classValue);
 			}
 
