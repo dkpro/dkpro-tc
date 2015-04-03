@@ -18,17 +18,11 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
-import java.io.File;
 
-import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
@@ -55,18 +49,18 @@ public class BrownPosSVMHMMDemoTest extends JavaDemosTest_Base
     }
 
     @Test
-    public void testJavaCrossValidation()
+    public void testRandomSVMHMM()
         throws Exception
     {
         pSpace = BrownPosSVMHMMDemo.getParameterSpace(false);
-        javaExperiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
+        javaExperiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
     }
 
     @Test
-    public void testJavaTrainTest()
+    public void testActualSVMHMM()
         throws Exception
     {
         pSpace = BrownPosSVMHMMDemo.getParameterSpace(false);
-        javaExperiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
+        javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
     }
 }
