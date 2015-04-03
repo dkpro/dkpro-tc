@@ -21,16 +21,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
+
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
 /**
  * Container for id2outcome files.
@@ -38,21 +39,36 @@ import java.util.Set;
  * @author daxenberger
  * 
  */
-public class Id2Outcome
+public class Id2Outcome implements Serializable
 {
-    private Set<SingleOutcome> outcomes;
+    
+	private static final long serialVersionUID = -1273352385064025736L;
+	private Set<SingleOutcome> outcomes;
+	private String learningMode;
+    
 
     /**
+     * Retrieve learning mode
+     * 
+     * @return the learning mode 
+     */
+    public String getLearningMode() {
+		return learningMode;
+	}
+
+	/**
      * Creates an empty id2outcome container.
      */
     public Id2Outcome()
     {
         this.outcomes = new HashSet<SingleOutcome>();
+//        this.learningMode = learningMode;
     }
 
-    public Id2Outcome(File id2outcomeFile) throws IOException
+    public Id2Outcome(File id2outcomeFile, String learningMode) throws IOException
     {
-        outcomes = new HashSet<SingleOutcome>();
+        this.outcomes = new HashSet<SingleOutcome>();
+        this.learningMode = learningMode;
 
         BufferedReader br = new BufferedReader(new FileReader(id2outcomeFile));
         String line = "";
@@ -166,15 +182,16 @@ public class Id2Outcome
         return outcomes;
     }
 
-    public void addAll(Collection<SingleOutcome> outcomes)
+    public void add(Id2Outcome id2outcome) throws TextClassificationException
     {
-        outcomes.addAll(outcomes);
-    }
-
-    public Properties getProperties()
-    {
-        Properties prop = new Properties();
-        // TODO
-        return prop;
+    	if(this.learningMode == null){
+    		this.learningMode = id2outcome.getLearningMode();
+    	}
+    	else{
+    		if(!this.learningMode.equals(id2outcome.getLearningMode())){
+    			throw new TextClassificationException("Learning modes do not match");
+    		}
+    	}
+        outcomes.addAll(id2outcome.getOutcomes());
     }
 }

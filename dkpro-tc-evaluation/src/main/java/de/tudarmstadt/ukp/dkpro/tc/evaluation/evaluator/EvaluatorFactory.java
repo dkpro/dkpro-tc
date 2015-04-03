@@ -50,23 +50,43 @@ public class EvaluatorFactory
             boolean softEvaluation, boolean individualLabelMeasures)
         throws IOException
     {
-        Id2Outcome id2outcome = new Id2Outcome(file);
-        EvaluatorBase evaluator = null;
+        Id2Outcome id2outcome = new Id2Outcome(file, learningMode);
+        return createEvaluator(id2outcome, softEvaluation, individualLabelMeasures);
+       
+    }
+    
+    /***
+     * 
+     * @param id2outcome
+     * @param mode
+     * @param softEvaluation
+     *            Controls how division by zero is treated. Soft: returns 0; Hard: returns NaN
+     * @param individualLabelMeasures
+     *            Controls calculation of measures for individual labels. individual: returns
+     *            measures for each label and composite measures; not individual: returns just
+     *            composite measures
+     * @throws IOException
+     */
+    public static EvaluatorBase createEvaluator(Id2Outcome id2outcome,
+            boolean softEvaluation, boolean individualLabelMeasures)
+        throws IOException
+    {
+    	EvaluatorBase evaluator = null;
         
-        if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
+        if (id2outcome.getLearningMode().equals(Constants.LM_SINGLE_LABEL)) {
             evaluator = new SingleEvaluator(id2outcome, softEvaluation,
                     individualLabelMeasures);
         }
-        else if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
+        else if (id2outcome.getLearningMode().equals(Constants.LM_MULTI_LABEL)) {
             evaluator = new MultiEvaluator(id2outcome,softEvaluation,
                     individualLabelMeasures);
         }
-        else if (learningMode.equals(Constants.LM_REGRESSION)) {
+        else if (id2outcome.getLearningMode().equals(Constants.LM_REGRESSION)) {
             evaluator = new RegressionEvaluator(id2outcome, softEvaluation,
                     individualLabelMeasures);
         }
         else {
-            throw new IllegalArgumentException("Invalid value for learning mode: " + learningMode);
+            throw new IllegalArgumentException("Invalid value for learning mode: " + id2outcome.getLearningMode());
         }
 
         return evaluator;

@@ -42,7 +42,9 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
@@ -62,6 +64,7 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
 
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    public static final int NUM_FOLDS = 3;
 
     public static void main(String[] args)
         throws Exception
@@ -75,6 +78,7 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
 
         TwentyNewsgroupsUsingTCEvaluationDemo experiment = new TwentyNewsgroupsUsingTCEvaluationDemo();
         experiment.runTrainTest(pSpace);
+        experiment.runCrossvalidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -138,6 +142,20 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+    
+    // ##### CV #####
+    protected void runCrossvalidation(ParameterSpace pSpace)
+        throws Exception
+    {
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationUsingTCEvaluationAdapter.class,
+                getPreprocessing(), NUM_FOLDS);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
