@@ -18,6 +18,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,46 +31,54 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
- * Collects the final evaluation results in a train/test setting.
+ * Collects the final evaluation results in a cross validation setting.
  * 
+ * @author zesch
  * @author daxenberger
- * @author Andriy Nadolskyy
  * 
  */
-public class BatchTrainTestUsingTCEvaluationReport
+public class BatchCrossValidationUsingTCEvaluationReport
     extends BatchReportBase
     implements Constants
 {
-    private final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
+    private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             "files_validation", "files_training" });
-  	private boolean softEvaluation = true;
-	private boolean individualLabelMeasures = false;
+  	boolean softEvaluation = true;
+	boolean individualLabelMeasures = false;
 
-	
+
     @Override
     public void execute()
         throws Exception
     {
+     	
         StorageService store = getContext().getStorageService();
+
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            // FIXME this is a bad hack
-            if (subcontext.getType().contains("TestTask")) {
+            String name = ExperimentCrossValidation.class.getSimpleName();
+            // one CV batch (which internally ran numFolds times)
+            if (subcontext.getLabel().startsWith(name)) {
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-                File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
-                Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
-                EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(id2outcome, softEvaluation, individualLabelMeasures);
+                
+                File fileToEvaluate = store.getStorageFolder(subcontext.getId(), 
+                		Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
+                
+                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileToEvaluate));
+                Id2Outcome id2Outcome = (Id2Outcome) inputStream.readObject();
+                inputStream.close();
+                
+                EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(id2Outcome, softEvaluation, individualLabelMeasures);
                 Map<String, Double> resultTempMap = evaluator.calculateEvaluationMeasures();
                 Map<String, String> resultMap = new HashMap<String, String>();
                 for (String key : resultTempMap.keySet()) {
@@ -90,6 +100,12 @@ public class BatchTrainTestUsingTCEvaluationReport
                 table.addRow(subcontext.getLabel(), values);
             }
         }
+
+        /*
+         * TODO: make rows to columns 
+         * e.g. create a new table and set columns to rows of old table and rows to columns
+         * but than must be class FlexTable in this case adapted accordingly: enable setting
+         */
         
         getContext().getLoggingService().message(getContextLabel(),
                 ReportUtils.getPerformanceOverview(table));
@@ -114,15 +130,4 @@ public class BatchTrainTestUsingTCEvaluationReport
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
         dummyFolder.delete();
     }
-    
-    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
-            throws TextClassificationException
-        {
-        	for (String key : discriminatorsMap.keySet()) {
-    			if(key.split("\\|")[1].equals(discriminatorName)){
-    				return discriminatorsMap.get(key);
-    			}
-    		}
-        	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
-        }
 }

@@ -257,6 +257,10 @@ public interface Constants
      * instances.
      */
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";
+    /**
+     * Name of a serialized version of the id2outcome object.
+     */
+    public static final String SERIALIZED_ID_OUTCOME_KEY = "id2outcome.ser";
 
     
     

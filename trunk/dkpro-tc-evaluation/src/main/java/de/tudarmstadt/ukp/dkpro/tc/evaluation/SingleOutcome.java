@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,11 @@ import java.util.Map;
  * @author daxenberger
  * 
  */
-public class SingleOutcome
+public class SingleOutcome implements Serializable
 {
 
-    private double bipartitionThreshold;
+	private static final long serialVersionUID = 2067854918511850890L;
+	private double bipartitionThreshold;
     private double[] prediction;
     private double[] goldstandard;
     private List<String> labels;

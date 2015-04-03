@@ -28,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
@@ -60,7 +60,7 @@ public class WekaClassificationUsingTCEvaluationAdapter
 
 	@Override
 	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
-		return BatchTrainTestReport.class;
+		return InnerBatchUsingTCEvaluationReport.class;
 	}
 
 	@SuppressWarnings("unchecked")
