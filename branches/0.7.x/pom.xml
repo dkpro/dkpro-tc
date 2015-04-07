@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -41,15 +42,24 @@
 	</scm>
 	<repositories>
 		<repository>
+			<id>ukp-oss-model-releases</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-model-releases-local</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<!-- - Required for internal releases
+			<repository>
 			<id>ukp-oss</id>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
-		</repository>
+			</repository>
+		-->
 		<!--
 			- Required when using snapshot versions of DKPro Core
-		<repository>
+			<repository>
 			<id>ukp-oss-snapshots</id>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local/</url>
-		</repository>
+			</repository>
 		-->
 		<!--
 			- Required when using snapshot versions of UIMA or uimaFIT
@@ -92,18 +102,17 @@
 		<module>dkpro-tc-features</module>
 		<module>dkpro-tc-features-ngram</module>
 		<module>dkpro-tc-features-pair</module>
-		<module>dkpro-tc-features-pair-similarity</module>
 		<module>dkpro-tc-features-readability</module>
 		<module>dkpro-tc-features-spelling</module>
 		<module>dkpro-tc-fstore-simple</module>
 		<module>dkpro-tc-integrationtest</module>
 		<module>dkpro-tc-ml</module>
-        <module>dkpro-tc-ml-crfsuite</module>
-        <module>dkpro-tc-ml-liblinear</module>
-        <module>dkpro-tc-ml-mallet</module>
-        <module>dkpro-tc-ml-svmhmm</module>
-        <module>dkpro-tc-ml-weka</module>
-        <module>dkpro-tc-testing</module>
+		<module>dkpro-tc-ml-crfsuite</module>
+		<module>dkpro-tc-ml-liblinear</module>
+		<module>dkpro-tc-ml-mallet</module>
+		<module>dkpro-tc-ml-svmhmm</module>
+		<module>dkpro-tc-ml-weka</module>
+		<module>dkpro-tc-testing</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -160,11 +169,6 @@
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-				<artifactId>dkpro-tc-features-pair-similarity</artifactId>
-				<version>0.7.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-readability</artifactId>
 				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
@@ -179,45 +183,45 @@
 				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-integrationtest</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-integrationtest</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-crfsuite</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-liblinear</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-mallet</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-ml</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-svmhmm</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-weka</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-testing</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-            </dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-ml-crfsuite</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-ml-liblinear</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-ml-mallet</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-ml-svmhmm</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-ml-weka</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<artifactId>dkpro-tc-testing</artifactId>
+				<version>0.7.0-SNAPSHOT</version>
+			</dependency>
 			<!-- Other dependencies -->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -276,13 +280,6 @@
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimafit-core</artifactId>
 				<version>2.1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>dkpro.similarity</groupId>
-				<artifactId>dkpro.similarity-asl</artifactId>
-				<version>2.2.0-SNAPSHOT</version>
-				<type>pom</type>
-				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>cc.mallet</groupId>
