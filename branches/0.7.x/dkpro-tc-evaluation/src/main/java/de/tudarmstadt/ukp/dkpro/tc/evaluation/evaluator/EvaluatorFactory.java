@@ -20,10 +20,10 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
 
 /**
@@ -78,12 +78,12 @@ public class EvaluatorFactory
                     individualLabelMeasures);
         }
         else if (id2outcome.getLearningMode().equals(Constants.LM_MULTI_LABEL)) {
-            evaluator = new MultiEvaluator(id2outcome,softEvaluation,
-                    individualLabelMeasures);
+            throw new NotImplementedException("This module does not yet support multi-label classification evaluation. "
+                    + "Please use the evaluation functionality of your machine learning framework instead.");
         }
         else if (id2outcome.getLearningMode().equals(Constants.LM_REGRESSION)) {
-            evaluator = new RegressionEvaluator(id2outcome, softEvaluation,
-                    individualLabelMeasures);
+            throw new NotImplementedException("This module does not yet support regression evaluation. "
+                    + "Please use the evaluation functionality of your machine learning framework instead.");
         }
         else {
             throw new IllegalArgumentException("Invalid value for learning mode: " + id2outcome.getLearningMode());
