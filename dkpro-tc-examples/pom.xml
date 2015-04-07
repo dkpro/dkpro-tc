@@ -164,12 +164,14 @@
 			<artifactId>dkpro-tc-ml-svmhmm</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features-pair-similarity</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.parameter-asl
+			</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
