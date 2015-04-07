@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
  * Container for id2outcome files.
@@ -62,9 +63,17 @@ public class Id2Outcome implements Serializable
     public Id2Outcome()
     {
         this.outcomes = new HashSet<SingleOutcome>();
-//        this.learningMode = learningMode;
     }
 
+    /**
+     * Creates an {@link Id2Outcome} object from a file.
+     * 
+     * @param id2outcomeFile
+     *            a file formatted according to the Id2Outcome layout
+     * @param learningMode
+     *            the learning mode, i.e. the value of {@link Constants#DIM_LEARNING_MODE}
+     * @throws IOException
+     */
     public Id2Outcome(File id2outcomeFile, String learningMode) throws IOException
     {
         this.outcomes = new HashSet<SingleOutcome>();
@@ -175,13 +184,23 @@ public class Id2Outcome implements Serializable
     }
 
     /**
-     * @return
+     * Retrieve single outcomes from this {@link Id2Outcome} object.
+     * 
+     * @return the outcomes contained in this {@link Id2Outcome} object
      */
     public Set<SingleOutcome> getOutcomes()
     {
         return outcomes;
     }
 
+    /**
+     * Adds another {@link Id2Outcome} object to this {@link Id2Outcome}, effectively adding the
+     * individual outcomes and setting the learning mode.
+     * 
+     * @param id2outcome
+     *            an {@link Id2Outcome} object
+     * @throws TextClassificationException
+     */
     public void add(Id2Outcome id2outcome) throws TextClassificationException
     {
     	if(this.learningMode == null){
