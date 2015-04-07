@@ -20,7 +20,10 @@ package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
@@ -33,10 +36,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 
 /**
- * Collects the final evaluation results in a train/test setting.
+ * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
+ * level task context.
  * 
  * @author daxenberger
- * @author Andriy Nadolskyy
  * 
  */
 public class InnerBatchUsingTCEvaluationReport
@@ -49,7 +52,8 @@ public class InnerBatchUsingTCEvaluationReport
     {
         StorageService store = getContext().getStorageService();
         Id2Outcome overallOutcome = new Id2Outcome();
-        
+        Properties prop = new Properties();
+        Set<Object> discriminatorsToExclude = new HashSet<Object>();
         for (TaskContextMetadata subcontext : getSubtasks()) {
             // FIXME this is a bad hack
             if (subcontext.getType().contains("TestTask")) {
@@ -59,8 +63,21 @@ public class InnerBatchUsingTCEvaluationReport
                 File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
                 Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
                 overallOutcome.add(id2outcome);
+                for (Object key : discriminatorsMap.keySet()) {
+                    if (prop.containsKey(key)
+                            && !((String) prop.get(key)).equals(discriminatorsMap.get(key))) {
+                        discriminatorsToExclude.add(key);
+                    }
+                    prop.setProperty((String) key, discriminatorsMap.get((String) key));
+                }
             }
         }
+
+        // remove keys with altering values
+        for (Object key : discriminatorsToExclude) {
+            prop.remove(key);
+        }
+        getContext().storeBinary(Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter(prop));
 
         FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
                 Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)

@@ -20,16 +20,13 @@ package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
@@ -49,8 +46,6 @@ public class BatchCrossValidationUsingTCEvaluationReport
     extends BatchReportBase
     implements Constants
 {
-    private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
-            "files_validation", "files_training" });
   	boolean softEvaluation = true;
 	boolean individualLabelMeasures = false;
 
@@ -65,11 +60,11 @@ public class BatchCrossValidationUsingTCEvaluationReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
+            // FIXME this is a hack
             String name = ExperimentCrossValidation.class.getSimpleName();
             // one CV batch (which internally ran numFolds times)
             if (subcontext.getLabel().startsWith(name)) {
-                Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
-                        Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+                Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(), Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter()).getMap();
                 
                 File fileToEvaluate = store.getStorageFolder(subcontext.getId(), 
                 		Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
@@ -87,14 +82,7 @@ public class BatchCrossValidationUsingTCEvaluationReport
 				}
 
                 Map<String, String> values = new HashMap<String, String>();
-                Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
-
-                for (String disc : discriminatorsMap.keySet()) {
-                    if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
-                        cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
-                    }
-                }
-                values.putAll(cleanedDiscriminatorsMap);
+                values.putAll(discriminatorsMap);
                 values.putAll(resultMap);
 
                 table.addRow(subcontext.getLabel(), values);

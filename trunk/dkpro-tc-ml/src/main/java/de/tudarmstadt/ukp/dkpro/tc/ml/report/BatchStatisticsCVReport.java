@@ -32,10 +32,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
  * 
- * Collects statistical evaluation results from CV BatchTasks. Needs to be run on top level of CV setups.
- *
+ * Collects statistical evaluation results from CV BatchTasks. Needs to be run on top level of CV
+ * setups.
+ * 
  * @author Johannes Daxenberger
- *
+ * 
  */
 public class BatchStatisticsCVReport
     extends BatchReportBase

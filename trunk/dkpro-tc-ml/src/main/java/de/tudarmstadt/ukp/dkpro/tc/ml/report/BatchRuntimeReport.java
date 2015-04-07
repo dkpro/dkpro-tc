@@ -30,7 +30,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 
 /**
- * Collects the final evaluation results in a train/test setting.
+ * Collects the final runtime results in a train/test setting.
  * 
  * @author zesch
  * 

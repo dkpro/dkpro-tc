@@ -27,10 +27,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 
 /**
- * Collects all files written by the {@link WekaOutcomeIDReport} and writes a merged file.
+ * Collects all files written by the OutcomeIdReports of machine learning frameworks and writes a
+ * merged file.
  * 
  * @author zesch
- *
+ * 
  */
 public class BatchOutcomeIDReport
 	extends BatchReportBase

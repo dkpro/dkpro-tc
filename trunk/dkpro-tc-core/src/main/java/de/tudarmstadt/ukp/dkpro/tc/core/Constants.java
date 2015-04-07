@@ -19,6 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.core;
 
 import org.apache.uima.cas.CAS;
 
+import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+
 /**
  * Basic constants that are used throughout the project
  * 
@@ -261,6 +263,10 @@ public interface Constants
      * Name of a serialized version of the id2outcome object.
      */
     public static final String SERIALIZED_ID_OUTCOME_KEY = "id2outcome.ser";
+    /**
+     * Name of a file which holds a copy of the discriminators keys and values.
+     */
+    public static final String DISCRIMINATORS_KEY_TEMP = Task.DISCRIMINATORS_KEY + "_Temp.txt";
 
     
     
