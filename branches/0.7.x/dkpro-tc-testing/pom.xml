@@ -66,4 +66,8 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
+		<properties>
+	  	<!-- This module should not be deployed to the repository -->
+    	<maven.deploy.skip>true</maven.deploy.skip>
+  	</properties>
 </project>
