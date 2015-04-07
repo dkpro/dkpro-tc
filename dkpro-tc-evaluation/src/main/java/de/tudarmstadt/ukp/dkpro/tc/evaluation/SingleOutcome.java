@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A single entry from an id2outcome file (i.e. at least goldstandard and prediction)
+ * Container for single entries from a {link {@link Id2Outcome}s, i.e. at least gold standard value
+ * and prediction value
  * 
  * @author daxenberger
  * 
@@ -39,9 +40,14 @@ public class SingleOutcome implements Serializable
 
 
     /**
+     * Creates a single outcome (single-label classification).
+     * 
      * @param goldstandard
+     *            the gold standard values, in the order specified by {@code labels}
      * @param prediction
+     *            the prediction value, in the order specified by {@code labels}
      * @param labels
+     *            a list with the class labels
      */
     public SingleOutcome(double[] goldstandard, double[] prediction, List<String> labels)
     {
@@ -52,10 +58,16 @@ public class SingleOutcome implements Serializable
     }
 
     /**
+     * Creates a single outcome (multi-label classification).
+     * 
      * @param goldstandard
+     *            the gold standard values, in the order specified by {@code labels}
      * @param prediction
+     *            the prediction value, in the order specified by {@code labels}
      * @param bipartitionThreshold
+     *            the bipartition threshold
      * @param labels
+     *            a list with the class labels
      */
     public SingleOutcome(double[] goldstandard, double[] prediction, double bipartitionThreshold, List<String> labels)
     {
@@ -66,7 +78,9 @@ public class SingleOutcome implements Serializable
     }
 
     /**
-     * @return
+     * Retrieves the bipartition threshold.
+     * 
+     * @return the bipartition threshold
      */
     public double getBipartitionThreshold()
     {
@@ -74,7 +88,10 @@ public class SingleOutcome implements Serializable
     }
 
     /**
-     * @return
+     * Retrieves the prediction.
+     * 
+     * @return the prediction, as array ordered according to @link {@link SingleOutcome#getLabels()}
+     *         .
      */
     public double[] getPrediction()
     {
@@ -82,7 +99,10 @@ public class SingleOutcome implements Serializable
     }
 
     /**
-     * @return
+     * Retrieves the gold standard.
+     * 
+     * @return the gold standard, as array ordered according to @link
+     *         {@link SingleOutcome#getLabels()}.
      */
     public double[] getGoldstandard()
     {
@@ -90,15 +110,24 @@ public class SingleOutcome implements Serializable
     }
 
     /**
-     * @return
+     * Retrieves the class labels.
+     * 
+     * @return the class labels
      */
     public List<String> getLabels()
     {
         return labels;
     }
-    
-    
-    // key: index given outcome - value: index in labels parameter
+
+    /**
+     * Retrieves a mapping of class label indices, given an external list of class labels.
+     * 
+     * @param allLabels
+     *            a list of class labels from another @link {@link SingleOutcome}
+     * @return a map with corresponding class label indices, the keys are indices of the class
+     *         labels in this @link {@link SingleOutcome}, the values are indices of the class
+     *         labels from {@code allLabels}
+     */
     public Map<Integer, Integer> getLabelMapping(List<String> allLabels){
     	
     	Map<Integer, Integer> map = new HashMap<Integer, Integer>();
