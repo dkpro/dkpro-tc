@@ -52,7 +52,7 @@ public class BrownPosSVMHMMDemoTest extends JavaDemosTest_Base
     public void testRandomSVMHMM()
         throws Exception
     {
-        pSpace = BrownPosSVMHMMDemo.getParameterSpace(false);
+        pSpace = BrownPosSVMHMMDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
     }
 
@@ -60,7 +60,7 @@ public class BrownPosSVMHMMDemoTest extends JavaDemosTest_Base
     public void testActualSVMHMM()
         throws Exception
     {
-        pSpace = BrownPosSVMHMMDemo.getParameterSpace(false);
+        pSpace = BrownPosSVMHMMDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
     }
 }
