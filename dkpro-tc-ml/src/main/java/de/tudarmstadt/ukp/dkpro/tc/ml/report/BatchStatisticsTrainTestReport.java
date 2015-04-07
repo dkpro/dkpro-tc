@@ -39,11 +39,11 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.report.util.PrettyPrintUtils;
 
 
 /**
- * Collects statistical evaluation results from TestTasks. Can be run on BatchTask level in TrainTest setups,
- * or on CV BatchTask level in CV setups.
- *
+ * Collects statistical evaluation results from TestTasks. Can be run on BatchTask level in
+ * TrainTest setups, or on CV BatchTask level in CV setups.
+ * 
  * @author Johannes Daxenberger
- *
+ * 
  */
 public class BatchStatisticsTrainTestReport
     extends BatchReportBase
