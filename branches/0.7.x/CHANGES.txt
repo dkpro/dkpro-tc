@@ -1,0 +1,102 @@
+DKPro-TC 0.7.0 Release
+
+== Highlights ==
+Issue 183: support for CRFsuite machine learning framework
+Issue 190: Support for SVMhmm machine learning framework
+Issue 126: new generic machine learning module dkpro-tc-ml, new functionality to set a machine learning adapter
+Issues 199, 200: New functionality to set the feature store, new sparse feature store
+
+== Enhancements ==
+Additional demos for new machine learning frameworks and other experiment setups
+New module dkpro-tc-evaluation for cross-framework evaluation functionality (not fully supported yet, only works for single-label learning mode)
+
+== Major Version Enhancements ==
+Upgrade to DKPro Core 1.7.0 / DKPro parent pom 10
+Upgrade to Weka 3.7.11
+Upgrade to Meka 1.7.3
+
+== Other Issues Fixed ==
+Issue 220: Fixed wrong calculation of label-wise scores in multi-label learning mode
+Issue 163: SimpleDkproTCReader does not allow to set language
+Issue 139: Experiments should fail with a meaningful exception if no data are found
+Issue 160: Invalid column index in reports which produce XLS files
+Issue 175: ValidityCheckTask only verifies the experiment setup based on training data
+
+== Other ==
+Module de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central. 
+All demos in dkpro-tc-examples and dkpro-tc-examples-groovy now have unit tests.
+dkpro-tc-ml-mallet is deprecated and will be removed from the next release due to a lack of support.
+
+************************************************
+
+DKPro-TC 0.6.0 Release
+
+== Highlights ==
+Release on Maven Central
+Issue 107: Support sequence labeling (with Mallet)
+Issue 97: Enable Modes for Learning and Feature Types
+NGram and PairNGram modules have been entirely re-written
+Demo modules have been re-ordered: separated modules for Groovy and Java setup
+Upgrade to Java 7
+
+== Enhancements ==
+Support for SkipNGrams
+Issue 117: Coverage of source code comments has been increased
+Issue 79: Support for Missing Values in Feature Extractors
+Issue 24: Bag of sounds feature extractor
+Issue 90: Add data writers for testing
+Issue 104: Add PerformanceBatchReport
+Increased number of demos (e.g. for unit classification )
+Added BatchTaskCrossValidationWithFoldControl
+
+== Major Version Enhancements ==
+Upgrade to DKPro Lab 0.11.0
+Upgrade to DKPro Core 1.6.1
+Upgrade to Apache uimafit 2.1.0
+Upgrade to Meka 1.6.2
+Upgrade to Groovy 2.2.2
+
+== Other Issues Fixed ==
+Issue 80: Feature extractors returning empty lists can cause errors 
+Issue 84: DocumentFeatureExtractor and ClassificationUnitFeatureExtractor are used inconsistently 
+Issue 94: Setting number of folds accidentally to 1 causes exception 
+Issue 105: FeatureValuesReport broken
+Issue 106: Throw Exception when mode-incompatible FE is encountered
+Issue 116 Improve format of the output by OutcomeIDReport 
+Issue 118: Rename preprocessing aggregate 
+Issue 131: NrOfTokensFEs cause an exception in FeatureExtractionTask when at least one but not all documents contain valid sentence annotations 
+Issue 133: Phonetic ngrams in POS ngram DFE can't be turned off? Crash on some characters 
+Issue 142: Some lucene ngram Meta Collectors don't record term counts in a document 
+Issue 152: Naming scheme of ArtifactIds changed to the simpler, dashed Maven standard. Furtermore, license suffixes have been removed from ArtifactIDs; e.g. "dkpro-tc-core" instead of "de.tudarmstadt.ukp.dkpro.tc.core-asl". GroupIDs and class names remain unchanged.
+Issue 156: Adding license headers to all classes
+
+== Other ==
+Module de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity-asl has been excluded from the Maven Central release, since the "DKPro Similarity" dependency is not yet available on Central. 
+
+************************************************
+
+DKPro-TC 0.5.0 Release
+
+== Highlights ==
+Re-Implementation of crossvalidation setup to do a better job
+Major reduction of the memory footprint during feature extraction (issue 75)
+Several new modules (de.tudarmstadt.ukp.dkpro.tc.features.ngram-asl, de.tudarmstadt.ukp.dkpro.tc.fstore.simple-asl, de.tudarmstadt.ukp.dkpro.tc.demo.pairtwentynewsgroups-gpl)
+
+== Enhancements ==
+Feature Selection with Weka is now possible (issue 49)
+A show case for pair classification has been added (issue 61), along with several improvements and bugfixes for the pair mode (issue 76, 81)
+A show case for running DKPro-TC experiments on a server has been added (issue 52), see http://code.google.com/p/dkpro-tc/wiki/ServerSetup
+A skip ngram feature extractor has been added (issue 74)
+Added Lucene-based ngram extractor (related issues: 85)
+Added several parameters to make behaviour of ngram stopword filtering configurable (issues 82, 86, 87)
+
+== Fixed Issues ==
+Issue 27 (CrossValidation setup is now properly separating training and test data)
+Issue 30 (ConfigurationParameters are now used according to best practice)
+Issue 66 (BatchTasks are more verbose)
+Issue 71 (TrainTestReport was renamed to ClassificationReport)
+Issue 67 (Evaluation measure names in reports are now constants)
+Issue 64 and 65 (Fixed problems in the instantiation/readers of Meta- and ExtractFeaturesTask)
+Issue 54: Fixed regular expression resulting in document multiplication in the MetaTask (crossvalidation setup)
+Issue 70: Fixed DocumentID setup in the Regression demo (70) 
+Several minor issues (53, 78, 72)
