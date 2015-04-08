@@ -42,8 +42,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGra
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationAdapter
 
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
@@ -159,7 +159,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: MekaClassificationUsingTCEvaluationAdapter,
+            machineLearningAdapter: MekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -191,7 +191,7 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: MekaClassificationUsingTCEvaluationAdapter,
+            machineLearningAdapter: MekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -204,7 +204,7 @@ public class ReutersDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestUsingTCEvaluationReport]
+                BatchTrainTestReport]
         ]
 
         // Run
