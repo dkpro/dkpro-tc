@@ -1,0 +1,4 @@
+alt.atheism
+comp.graphics
+comp.os.ms-windows.misc
+comp.sys.ibm.pc.hardware

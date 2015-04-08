@@ -1,0 +1,51 @@
+http://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html
+
+SVMhmm Sequence Tagging with Structural Support Vector Machines
+Version V3.10
+14. August 2008
+
+Author: Thorsten Joachims <thorsten@joachims.org>
+Cornell University
+Department of Computer Science
+
+[...]
+
+Source Code and Binaries
+
+The program is free for scientific use. Please contact me, if you are planning to use the software
+for commercial purposes. The software must not be further distributed without prior permission
+of the author. The implementation was developed on Linux with gcc, but compiles also on Cygwin,
+Windows (using the MinGW option of Cygwin), and Mac (after small modifications, see FAQ). The
+source code of SVMhmm is available at the following location:
+
+http://download.joachims.org/svm_hmm/current/svm_hmm.tar.gz
+
+If you just want the binaries, you can download them for the following systems:
+
+    Linux (32-bit): http://download.joachims.org/svm_hmm/current/svm_hmm_linux32.tar.gz
+    Linux (64-bit): http://download.joachims.org/svm_hmm/current/svm_hmm_linux64.tar.gz
+    Cygwin: http://download.joachims.org/svm_hmm/current/svm_hmm_cygwin.tar.gz
+    Windows: http://download.joachims.org/svm_hmm/current/svm_hmm_windows.zip
+[...]
+
+Explicit permission of the author to distribute the binaries in DKPro-TC project:
+
+-----Original Message-----
+From: Thorsten Joachims [mailto:thorsten@joachims.org]
+Sent: Friday, October 10, 2014 1:54 PM
+To: habernal@ukp.informatik.tu-darmstadt.de
+Subject: Re: SVMhmm - distribution of binaries in our Java framework
+
+Hi Ivan,
+
+Absolutely, feel free to include the binaries in your distribution. Thanks for putting my software
+to such good use...
+
+Cheers
+Thorsten
+---
+Thorsten Joachims
+Professor
+Department of Computer Science
+Cornell University
+http://www.joachims.org/
