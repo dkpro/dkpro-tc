@@ -1,2 +1,0 @@
-de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
-de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
