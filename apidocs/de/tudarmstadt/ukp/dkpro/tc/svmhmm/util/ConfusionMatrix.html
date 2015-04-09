@@ -1,0 +1,857 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+<title>ConfusionMatrix (dkpro-tc 0.7.0 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="ConfusionMatrix (dkpro-tc 0.7.0 API)";
+    }
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/ConfusionMatrix.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li>Prev Class</li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/OriginalTextHolderFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" target="_top">Frames</a></li>
+<li><a href="ConfusionMatrix.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="subTitle">de.tudarmstadt.ukp.dkpro.tc.svmhmm.util</div>
+<h2 title="Class ConfusionMatrix" class="title">Class ConfusionMatrix</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.ConfusionMatrix</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public class <span class="strong">ConfusionMatrix</span>
+extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
+<div class="block">Implementation of confusion matrix for evaluating learning algorithms; computes macro F-measure,
+ accuracy, confidence intervals, Cohen's Kappa
+ <p/>
+ (c) 2013 Ivan Habernal</div>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#ConfusionMatrix()">ConfusionMatrix</a></strong>()</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- ========== METHOD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ConfusionMatrix</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#createCumulativeMatrix(de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.ConfusionMatrix...)">createCumulativeMatrix</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ConfusionMatrix</a>...&nbsp;matrices)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getAccuracy()">getAccuracy</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getAvgPrecision()">getAvgPrecision</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getAvgRecall()">getAvgRecall</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getCohensKappa()">getCohensKappa</a></strong>()</code>
+<div class="block">Computes Cohen's Kappa</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getColSum(java.lang.String)">getColSum</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence90Accuracy()">getConfidence90Accuracy</a></strong>()</code>
+<div class="block">Returns the half of the confidence interval on accuracy on alpha = 90</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence90AccuracyHigh()">getConfidence90AccuracyHigh</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence90AccuracyLow()">getConfidence90AccuracyLow</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence90MacroFM()">getConfidence90MacroFM</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence95Accuracy()">getConfidence95Accuracy</a></strong>()</code>
+<div class="block">Returns the half of the confidence interval on accuracy on alpha = 95</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence95AccuracyHigh()">getConfidence95AccuracyHigh</a></strong>()</code>
+<div class="block">Returns the upper bound of the accuracy with alpha = 95</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence95AccuracyLow()">getConfidence95AccuracyLow</a></strong>()</code>
+<div class="block">Returns the lower bound of the accuracy with alpha = 95</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence95MacroFM()">getConfidence95MacroFM</a></strong>()</code>
+<div class="block">Returns the half of confidence interval on alpha = 95 (see
+ http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/ConfusionMatrix.html#confidence95%28%29)</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence95MacroFMHigh()">getConfidence95MacroFMHigh</a></strong>()</code>
+<div class="block">Returns the upper bound of the macro F-measure with alpha = 95</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getConfidence95MacroFMLow()">getConfidence95MacroFMLow</a></strong>()</code>
+<div class="block">Returns the lower bound of the macro F-measure with alpha = 95</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getFMeasureForLabels()">getFMeasureForLabels</a></strong>()</code>
+<div class="block">Returns F-measure for categories; see See http://en.wikipedia.org/wiki/F1_score</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getFMeasureForLabels(double)">getFMeasureForLabels</a></strong>(double&nbsp;beta)</code>
+<div class="block">See http://en.wikipedia.org/wiki/F1_score</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getLabelSeries()">getLabelSeries</a></strong>()</code>
+<div class="block">Returns the series of actual labels</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getMacroFMeasure()">getMacroFMeasure</a></strong>()</code>
+<div class="block">Macro-averaged F-measure gives equal
+ weight to each category, regardless of its frequency.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getMacroFMeasure(double)">getMacroFMeasure</a></strong>(double&nbsp;beta)</code>
+<div class="block">Macro-averaged F-measure with beta parameter.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getMicroFMeasure()">getMicroFMeasure</a></strong>()</code>
+<div class="block">Micro-averaged F-measure gives equal weight to each document and is therefore
+ considered as an average over all the document/category pairs.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getPrecisionForLabel(java.lang.String)">getPrecisionForLabel</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getPrecisionForLabels()">getPrecisionForLabels</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getRecallForLabel(java.lang.String)">getRecallForLabel</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</code>
+<div class="block">Return recall for single label</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getRecallForLabels()">getRecallForLabels</a></strong>()</code>
+<div class="block">Return recall for labels</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getRowSum(java.lang.String)">getRowSum</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#getTotalSum()">getTotalSum</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#increaseValue(java.lang.String,%20java.lang.String)">increaseValue</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;goldValue,
+             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;predictedValue)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#increaseValue(java.lang.String,%20java.lang.String,%20int)">increaseValue</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;goldValue,
+             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;predictedValue,
+             int&nbsp;times)</code>
+<div class="block">Increases value of goldValue x predictedValue n times</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ConfusionMatrix</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#parseFromText(java.lang.String)">parseFromText</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;text)</code>
+<div class="block">Confusion matrix printed to text by toString can be parsed back</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#printClassDistributionGold()">printClassDistributionGold</a></strong>()</code>
+<div class="block">Returns a distribution of classes in gold data and predicted data (absolute
+ and relative)</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#printLabelPrecRecFm()">printLabelPrecRecFm</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#printNiceResults()">printNiceResults</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#setNumberOfDecimalPlaces(int)">setNumberOfDecimalPlaces</a></strong>(int&nbsp;numberOfDecimalPlaces)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#toString()">toString</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#toStringLatex()">toStringLatex</a></strong>()</code>
+<div class="block">Prints in LaTeX format</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html#toStringMatrix()">toStringMatrix</a></strong>()</code>
+<div class="block">Returns confusion matrix as list of rows with values including headers</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="ConfusionMatrix()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ConfusionMatrix</h4>
+<pre>public&nbsp;ConfusionMatrix()</pre>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="setNumberOfDecimalPlaces(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setNumberOfDecimalPlaces</h4>
+<pre>public&nbsp;void&nbsp;setNumberOfDecimalPlaces(int&nbsp;numberOfDecimalPlaces)
+                              throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a></pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a></code></dd></dl>
+</li>
+</ul>
+<a name="increaseValue(java.lang.String, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>increaseValue</h4>
+<pre>public&nbsp;void&nbsp;increaseValue(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;goldValue,
+                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;predictedValue)</pre>
+</li>
+</ul>
+<a name="getLabelSeries()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLabelSeries</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;getLabelSeries()</pre>
+<div class="block">Returns the series of actual labels</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>list of labels</dd></dl>
+</li>
+</ul>
+<a name="increaseValue(java.lang.String, java.lang.String, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>increaseValue</h4>
+<pre>public&nbsp;void&nbsp;increaseValue(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;goldValue,
+                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;predictedValue,
+                 int&nbsp;times)</pre>
+<div class="block">Increases value of goldValue x predictedValue n times</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>goldValue</code> - exp</dd><dd><code>predictedValue</code> - ac</dd><dd><code>times</code> - n-times</dd></dl>
+</li>
+</ul>
+<a name="getAccuracy()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAccuracy</h4>
+<pre>public&nbsp;double&nbsp;getAccuracy()</pre>
+</li>
+</ul>
+<a name="getTotalSum()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getTotalSum</h4>
+<pre>public&nbsp;int&nbsp;getTotalSum()</pre>
+</li>
+</ul>
+<a name="getRowSum(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRowSum</h4>
+<pre>public&nbsp;int&nbsp;getRowSum(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</pre>
+</li>
+</ul>
+<a name="getColSum(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getColSum</h4>
+<pre>public&nbsp;int&nbsp;getColSum(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</pre>
+</li>
+</ul>
+<a name="getPrecisionForLabels()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPrecisionForLabels</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getPrecisionForLabels()</pre>
+</li>
+</ul>
+<a name="getPrecisionForLabel(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPrecisionForLabel</h4>
+<pre>public&nbsp;double&nbsp;getPrecisionForLabel(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</pre>
+</li>
+</ul>
+<a name="getMicroFMeasure()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMicroFMeasure</h4>
+<pre>public&nbsp;double&nbsp;getMicroFMeasure()</pre>
+<div class="block">Micro-averaged F-measure gives equal weight to each document and is therefore
+ considered as an average over all the document/category pairs. It tends to be
+ dominated by the classifierâ€™s performance on common categories. (It's actually the accuracy).
+ <p/>
+ (from Ozgur et al., 2005. Text Categorization with Class-Based and Corpus-Based Keyword Selection.)</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getMacroFMeasure()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMacroFMeasure</h4>
+<pre>public&nbsp;double&nbsp;getMacroFMeasure()</pre>
+<div class="block">Macro-averaged F-measure gives equal
+ weight to each category, regardless of its frequency. It is influenced more by the
+ classifier performance on rare categories.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getMacroFMeasure(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMacroFMeasure</h4>
+<pre>public&nbsp;double&nbsp;getMacroFMeasure(double&nbsp;beta)</pre>
+<div class="block">Macro-averaged F-measure with beta parameter.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>beta</code> - beta parameter</dd>
+<dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getFMeasureForLabels()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFMeasureForLabels</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getFMeasureForLabels()</pre>
+<div class="block">Returns F-measure for categories; see See http://en.wikipedia.org/wiki/F1_score</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getFMeasureForLabels(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFMeasureForLabels</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getFMeasureForLabels(double&nbsp;beta)</pre>
+<div class="block">See http://en.wikipedia.org/wiki/F1_score</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>beta</code> - beta paremeter; higher than 1 prefers recall, lower than 1 prefers precision</dd>
+<dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getRecallForLabels()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRecallForLabels</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getRecallForLabels()</pre>
+<div class="block">Return recall for labels</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getRecallForLabel(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRecallForLabel</h4>
+<pre>public&nbsp;double&nbsp;getRecallForLabel(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;label)</pre>
+<div class="block">Return recall for single label</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>label</code> - label</dd>
+<dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="getConfidence95Accuracy()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence95Accuracy</h4>
+<pre>public&nbsp;double&nbsp;getConfidence95Accuracy()</pre>
+<div class="block">Returns the half of the confidence interval on accuracy on alpha = 95</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>conf. int</dd></dl>
+</li>
+</ul>
+<a name="getConfidence90Accuracy()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence90Accuracy</h4>
+<pre>public&nbsp;double&nbsp;getConfidence90Accuracy()</pre>
+<div class="block">Returns the half of the confidence interval on accuracy on alpha = 90</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>conf. int</dd></dl>
+</li>
+</ul>
+<a name="getConfidence90AccuracyLow()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence90AccuracyLow</h4>
+<pre>public&nbsp;double&nbsp;getConfidence90AccuracyLow()</pre>
+</li>
+</ul>
+<a name="getConfidence90AccuracyHigh()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence90AccuracyHigh</h4>
+<pre>public&nbsp;double&nbsp;getConfidence90AccuracyHigh()</pre>
+</li>
+</ul>
+<a name="getConfidence95AccuracyLow()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence95AccuracyLow</h4>
+<pre>public&nbsp;double&nbsp;getConfidence95AccuracyLow()</pre>
+<div class="block">Returns the lower bound of the accuracy with alpha = 95</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>accuracy minus half of the confidence interval</dd></dl>
+</li>
+</ul>
+<a name="getConfidence95AccuracyHigh()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence95AccuracyHigh</h4>
+<pre>public&nbsp;double&nbsp;getConfidence95AccuracyHigh()</pre>
+<div class="block">Returns the upper bound of the accuracy with alpha = 95</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>accuracy plus half of the confidence interval</dd></dl>
+</li>
+</ul>
+<a name="getConfidence95MacroFM()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence95MacroFM</h4>
+<pre>public&nbsp;double&nbsp;getConfidence95MacroFM()</pre>
+<div class="block">Returns the half of confidence interval on alpha = 95 (see
+ http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/ConfusionMatrix.html#confidence95%28%29)</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>conf</dd></dl>
+</li>
+</ul>
+<a name="getConfidence90MacroFM()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence90MacroFM</h4>
+<pre>public&nbsp;double&nbsp;getConfidence90MacroFM()</pre>
+</li>
+</ul>
+<a name="getConfidence95MacroFMLow()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence95MacroFMLow</h4>
+<pre>public&nbsp;double&nbsp;getConfidence95MacroFMLow()</pre>
+<div class="block">Returns the lower bound of the macro F-measure with alpha = 95</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>macro F-measure minus half of the confidence interval</dd></dl>
+</li>
+</ul>
+<a name="getConfidence95MacroFMHigh()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConfidence95MacroFMHigh</h4>
+<pre>public&nbsp;double&nbsp;getConfidence95MacroFMHigh()</pre>
+<div class="block">Returns the upper bound of the macro F-measure with alpha = 95</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>macro F-measure plus half of the confidence interval</dd></dl>
+</li>
+</ul>
+<a name="getCohensKappa()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCohensKappa</h4>
+<pre>public&nbsp;double&nbsp;getCohensKappa()</pre>
+<div class="block">Computes Cohen's Kappa</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="toStringMatrix()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toStringMatrix</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;toStringMatrix()</pre>
+<div class="block">Returns confusion matrix as list of rows with values including headers</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>matrix</dd></dl>
+</li>
+</ul>
+<a name="toString()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toString()</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="toStringLatex()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toStringLatex</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toStringLatex()</pre>
+<div class="block">Prints in LaTeX format</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>string</dd></dl>
+</li>
+</ul>
+<a name="printNiceResults()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>printNiceResults</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;printNiceResults()</pre>
+</li>
+</ul>
+<a name="printLabelPrecRecFm()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>printLabelPrecRecFm</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;printLabelPrecRecFm()</pre>
+</li>
+</ul>
+<a name="getAvgPrecision()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAvgPrecision</h4>
+<pre>public&nbsp;double&nbsp;getAvgPrecision()</pre>
+</li>
+</ul>
+<a name="getAvgRecall()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAvgRecall</h4>
+<pre>public&nbsp;double&nbsp;getAvgRecall()</pre>
+</li>
+</ul>
+<a name="createCumulativeMatrix(de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.ConfusionMatrix...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createCumulativeMatrix</h4>
+<pre>public static&nbsp;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ConfusionMatrix</a>&nbsp;createCumulativeMatrix(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ConfusionMatrix</a>...&nbsp;matrices)</pre>
+</li>
+</ul>
+<a name="parseFromText(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parseFromText</h4>
+<pre>public static&nbsp;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ConfusionMatrix</a>&nbsp;parseFromText(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;text)
+                                     throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a></pre>
+<div class="block">Confusion matrix printed to text by toString can be parsed back</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>text</code> - input text</dd>
+<dt><span class="strong">Returns:</span></dt><dd>confusion matrix</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a></code> - if input is malformed</dd></dl>
+</li>
+</ul>
+<a name="printClassDistributionGold()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>printClassDistributionGold</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;printClassDistributionGold()</pre>
+<div class="block">Returns a distribution of classes in gold data and predicted data (absolute
+ and relative)</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>string</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/ConfusionMatrix.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li>Prev Class</li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/OriginalTextHolderFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.svmhmm.util"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/ConfusionMatrix.html" target="_top">Frames</a></li>
+<li><a href="ConfusionMatrix.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+</body>
+</html>
