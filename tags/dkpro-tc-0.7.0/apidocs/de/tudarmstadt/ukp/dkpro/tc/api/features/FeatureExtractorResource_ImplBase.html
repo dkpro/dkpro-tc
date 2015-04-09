@@ -1,0 +1,346 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+<title>FeatureExtractorResource_ImplBase (dkpro-tc 0.6.0 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="FeatureExtractorResource_ImplBase (dkpro-tc 0.6.0 API)";
+    }
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/FeatureExtractorResource_ImplBase.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Feature.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" target="_top">Frames</a></li>
+<li><a href="FeatureExtractorResource_ImplBase.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="subTitle">de.tudarmstadt.ukp.dkpro.tc.api.features</div>
+<h2 title="Class FeatureExtractorResource_ImplBase" class="title">Class FeatureExtractorResource_ImplBase</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.uima.resource.Resource_ImplBase</li>
+<li>
+<ul class="inheritance">
+<li>org.apache.uima.fit.component.Resource_ImplBase</li>
+<li>
+<ul class="inheritance">
+<li>de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd>org.apache.uima.fit.component.ExternalResourceAware, org.apache.uima.resource.Resource</dd>
+</dl>
+<dl>
+<dt>Direct Known Subclasses:</dt>
+<dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/feature/AddIdFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.feature">AddIdFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/AdjectiveEndingFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">AdjectiveEndingFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/AlwaysZeroPairFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core">AlwaysZeroPairFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/ngram/ChunkTripleDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.ngram">ChunkTripleDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/ContextualityMeasureFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">ContextualityMeasureFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/ngram/DependencyDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.ngram">DependencyDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/chunk/DiffNounChunkCharacterLength.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk">DiffNounChunkCharacterLength</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/chunk/DiffNounChunkTokenLength.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk">DiffNounChunkTokenLength</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/length/DiffNrOfCharactersPairFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length">DiffNrOfCharactersPairFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/length/DiffNrOfSentencesPairFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length">DiffNrOfSentencesPairFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/length/DiffNrOfTokensPairFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length">DiffNrOfTokensPairFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/twitter/EmoticonRatioDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.twitter">EmoticonRatioDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/ExclamationFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">ExclamationFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/ngram/base/FrequencyDistributionPosNGramFeatureExtractorBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.ngram.base">FrequencyDistributionPosNGramFeatureExtractorBase</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/InitialCharacterUpperCaseUFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">InitialCharacterUpperCaseUFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/IsSurroundedByCharsUFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">IsSurroundedByCharsUFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/LongWordsFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">LongWordsFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/ModalVerbsFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">ModalVerbsFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/entityrecognition/NEFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.entityrecognition">NEFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/ngram/base/NGramFeatureExtractorBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.ngram.base">NGramFeatureExtractorBase</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfCharsDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfCharsDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfCharsUFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfCharsUFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfSentencesDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfSentencesDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfSentencesUFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfSentencesUFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfTokensDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfTokensDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfTokensPerSentenceDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfTokensPerSentenceDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfTokensPerSentenceUFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfTokensPerSentenceUFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/length/NrOfTokensUFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.length">NrOfTokensUFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/twitter/NumberOfHashTagsDFE.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.twitter">NumberOfHashTagsDFE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/NumberWordsFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">NumberWordsFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/syntax/PastVsFutureFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.syntax">PastVsFutureFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/syntax/PluralRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.syntax">PluralRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/syntax/POSRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.syntax">POSRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/syntax/PronounRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.syntax">PronounRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/syntax/QuestionsRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.syntax">QuestionsRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/ne/SharedNEsFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne">SharedNEsFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/chunk/SharedNounChunks.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk">SharedNounChunks</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/spelling/SpellingErrorPOSRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.spelling">SpellingErrorPOSRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/spelling/SpellingErrorRatioExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.spelling">SpellingErrorRatioExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/syntax/SuperlativeRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.syntax">SuperlativeRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/TokenRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">TokenRatioFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/TopicWordsFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">TopicWordsFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/pair/core/style/TypeTokenPairFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.pair.core.style">TypeTokenPairFeatureExtractor</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/features/style/TypeTokenRatioFeatureExtractor.html" title="class in de.tudarmstadt.ukp.dkpro.tc.features.style">TypeTokenRatioFeatureExtractor</a></dd>
+</dl>
+<hr>
+<br>
+<pre>public abstract class <span class="strong">FeatureExtractorResource_ImplBase</span>
+extends org.apache.uima.fit.component.Resource_ImplBase</pre>
+<div class="block">Abstract base class for all feature extractors.
+ 
+ Feature extractors are implemented as UIMA external resources.</div>
+<dl><dt><span class="strong">Author:</span></dt>
+  <dd>zesch</dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html#requiredTypes">requiredTypes</a></strong></code>&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="fields_inherited_from_class_org.apache.uima.resource.Resource">
+<!--   -->
+</a>
+<h3>Fields inherited from interface&nbsp;org.apache.uima.resource.Resource</h3>
+<code>PARAM_AGGREGATE_SOFA_MAPPINGS, PARAM_CONFIG_MANAGER, PARAM_CONFIG_PARAM_SETTINGS, PARAM_EXTERNAL_OVERRIDE_SETTINGS, PARAM_PERFORMANCE_TUNING_SETTINGS, PARAM_RESOURCE_MANAGER, PARAM_UIMA_CONTEXT</code></li>
+</ul>
+</li>
+</ul>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html#FeatureExtractorResource_ImplBase()">FeatureExtractorResource_ImplBase</a></strong>()</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- ========== METHOD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)">initialize</a></strong>(org.apache.uima.resource.ResourceSpecifier&nbsp;aSpecifier,
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;aAdditionalParams)</code>&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.uima.fit.component.Resource_ImplBase">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.apache.uima.fit.component.Resource_ImplBase</h3>
+<code>afterResourcesInitialized, getLogger, getResourceName</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.uima.resource.Resource_ImplBase">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.apache.uima.resource.Resource_ImplBase</h3>
+<code>destroy, getCasManager, getMetaData, getResourceManager, getUimaContext, getUimaContextAdmin, setLogger, setMetaData</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="requiredTypes">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>requiredTypes</h4>
+<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] requiredTypes</pre>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="FeatureExtractorResource_ImplBase()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>FeatureExtractorResource_ImplBase</h4>
+<pre>public&nbsp;FeatureExtractorResource_ImplBase()</pre>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>initialize</h4>
+<pre>public&nbsp;boolean&nbsp;initialize(org.apache.uima.resource.ResourceSpecifier&nbsp;aSpecifier,
+                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;aAdditionalParams)
+                   throws org.apache.uima.resource.ResourceInitializationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code>initialize</code>&nbsp;in interface&nbsp;<code>org.apache.uima.resource.Resource</code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code>initialize</code>&nbsp;in class&nbsp;<code>org.apache.uima.fit.component.Resource_ImplBase</code></dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>org.apache.uima.resource.ResourceInitializationException</code></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/FeatureExtractorResource_ImplBase.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Feature.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" target="_top">Frames</a></li>
+<li><a href="FeatureExtractorResource_ImplBase.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+</body>
+</html>
