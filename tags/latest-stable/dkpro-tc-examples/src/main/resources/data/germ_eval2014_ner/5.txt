@@ -1,0 +1,15 @@
+#	http://www.fr-online.de/in_und_ausland/sport/aktuell/1618625_Frings-schaut-finster-in-die-Zukunft.html	[2008-10-24]	
+1	Dabei	O	O
+2	hätte	O	O
+3	der	O	O
+4	tapfere	O	O
+5	Schlussmann	O	O
+6	allen	O	O
+7	Grund	O	O
+8	gehabt	O	O
+9	,	O	O
+10	sich	O	O
+11	viel	O	O
+12	früher	O	O
+13	aufzuregen	O	O
+14	.	O	O

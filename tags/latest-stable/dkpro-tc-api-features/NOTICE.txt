@@ -1,0 +1,5 @@
+de.tudarmstadt.ukp.dkpro.tc.api.features.Feature
+
+This class comes from the ClearTK software package: https://code.google.com/p/cleartk/
+Copyright (c) 2007-2008, Regents of the University of Colorado, All rights reserved.
+ClearTK is licensed under the new BSD license.
