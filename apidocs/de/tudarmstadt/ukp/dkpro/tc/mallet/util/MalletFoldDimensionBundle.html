@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>MalletFoldDimensionBundle (dkpro-tc 0.6.0 API)</title>
+<title>MalletFoldDimensionBundle (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="MalletFoldDimensionBundle (dkpro-tc 0.6.0 API)";
+        parent.document.title="MalletFoldDimensionBundle (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -79,7 +79,7 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">de.tudarmstadt.ukp.dkpro.tc.mallet.util</div>
-<h2 title="Class MalletFoldDimensionBundle" class="title">Class MalletFoldDimensionBundle&lt;T&gt;</h2>
+<h2 title="Class MalletFoldDimensionBundle" class="title">Class MalletFoldDimensionBundle</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -89,10 +89,10 @@
 <li>de.tudarmstadt.ukp.dkpro.lab.task.Dimension&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;&gt;</li>
 <li>
 <ul class="inheritance">
-<li>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;T&gt;&gt;</li>
+<li>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</li>
 <li>
 <ul class="inheritance">
-<li>de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletFoldDimensionBundle&lt;T&gt;</li>
+<li>de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletFoldDimensionBundle</li>
 </ul>
 </li>
 </ul>
@@ -105,14 +105,18 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd>de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware, de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension, de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension, <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;T&gt;&gt;&gt;</dd>
+<dd>de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware, de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension, de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension, <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&gt;</dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported</i></div>
+</div>
 <br>
-<pre>public class <span class="strong">MalletFoldDimensionBundle&lt;T&gt;</span>
-extends de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;T&gt;&gt;
+<pre>public class <span class="strong">MalletFoldDimensionBundle</span>
+extends de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;
 implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
-<div class="block">Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in the same fold</div>
+<div class="block">Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in
+ the same fold</div>
 <dl><dt><span class="strong">Author:</span></dt>
   <dd>perumal</dd></dl>
 </li>
@@ -148,9 +152,11 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#MalletFoldDimensionBundle(java.lang.String, de.tudarmstadt.ukp.dkpro.lab.task.Dimension, int)">MalletFoldDimensionBundle</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aName,
-                         de.tudarmstadt.ukp.dkpro.lab.task.Dimension&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&nbsp;aFoldedDimension,
-                         int&nbsp;aFolds)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#MalletFoldDimensionBundle(java.lang.String,%20de.tudarmstadt.ukp.dkpro.lab.task.Dimension,%20int)">MalletFoldDimensionBundle</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aName,
+                         de.tudarmstadt.ukp.dkpro.lab.task.Dimension&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;aFoldedDimension,
+                         int&nbsp;aFolds)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -168,24 +174,34 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#current()">current</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#current()">current</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#hasNext()">hasNext</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#hasNext()">hasNext</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#next()">next</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#next()">next</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#rewind()">rewind</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#rewind()">rewind</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#setConfiguration(java.util.Map)">setConfiguration</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;aConfig)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html#setConfiguration(java.util.Map)">setConfiguration</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;aConfig)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -207,7 +223,7 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -230,8 +246,9 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <li class="blockList">
 <h4>MalletFoldDimensionBundle</h4>
 <pre>public&nbsp;MalletFoldDimensionBundle(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aName,
-                         de.tudarmstadt.ukp.dkpro.lab.task.Dimension&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&nbsp;aFoldedDimension,
+                         de.tudarmstadt.ukp.dkpro.lab.task.Dimension&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;aFoldedDimension,
                          int&nbsp;aFolds)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -249,11 +266,12 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <li class="blockList">
 <h4>hasNext</h4>
 <pre>public&nbsp;boolean&nbsp;hasNext()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true#hasNext()" title="class or interface in java.util">hasNext</a></code>&nbsp;in interface&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;&gt;</code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true#hasNext()" title="class or interface in java.util">hasNext</a></code>&nbsp;in interface&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&gt;</code></dd>
 <dt><strong>Overrides:</strong></dt>
-<dd><code>hasNext</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;</code></dd>
+<dd><code>hasNext</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -264,9 +282,10 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <li class="blockList">
 <h4>rewind</h4>
 <pre>public&nbsp;void&nbsp;rewind()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code>rewind</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;</code></dd>
+<dd><code>rewind</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -276,12 +295,13 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>next</h4>
-<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;&nbsp;next()</pre>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;next()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true#next()" title="class or interface in java.util">next</a></code>&nbsp;in interface&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;&gt;</code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true#next()" title="class or interface in java.util">next</a></code>&nbsp;in interface&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&gt;</code></dd>
 <dt><strong>Overrides:</strong></dt>
-<dd><code>next</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;</code></dd>
+<dd><code>next</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -291,10 +311,11 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>current</h4>
-<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;&nbsp;current()</pre>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;current()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code>current</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletFoldDimensionBundle.html" title="type parameter in MalletFoldDimensionBundle">T</a>&gt;&gt;</code></dd>
+<dd><code>current</code>&nbsp;in class&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -305,6 +326,7 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <li class="blockList">
 <h4>setConfiguration</h4>
 <pre>public&nbsp;void&nbsp;setConfiguration(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;aConfig)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code>setConfiguration</code>&nbsp;in interface&nbsp;<code>de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware</code></dd>
@@ -378,6 +400,6 @@ implements de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension</pre>
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>

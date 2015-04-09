@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>FeatureStore (dkpro-tc 0.6.0 API)</title>
+<title>FeatureStore (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="FeatureStore (dkpro-tc 0.6.0 API)";
+        parent.document.title="FeatureStore (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -87,7 +87,7 @@
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/SimpleFeatureStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.fstore.simple">SimpleFeatureStore</a></dd>
+<dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/DenseFeatureStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.fstore.simple">DenseFeatureStore</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/SparseFeatureStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.fstore.simple">SparseFeatureStore</a></dd>
 </dl>
 <hr>
 <br>
@@ -118,34 +118,49 @@
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#deleteInstance(int)">deleteInstance</a></strong>(int&nbsp;i)</code>
+<div class="block">Deletes the i-th instance from the store.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/TreeSet.html?is-external=true" title="class or interface in java.util">TreeSet</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#getFeatureNames()">getFeatureNames</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#getInstance(int)">getInstance</a></strong>(int&nbsp;i)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#getInstances()">getInstances</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#getNumberOfInstances()">getNumberOfInstances</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#getOutcomes(int)">getOutcomes</a></strong>(int&nbsp;i)</code>
 <div class="block">Always returns a list of outcomes, even for single label classification where only the first element of the list will be filled.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/SortedSet.html?is-external=true" title="class or interface in java.util">SortedSet</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#getUniqueOutcomes()">getUniqueOutcomes</a></strong>()</code>&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#isSettingFeatureNamesAllowed()">isSettingFeatureNamesAllowed</a></strong>()</code>
+<div class="block">Returns true, if feature names can be injected to the feature store by
+ calling <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#setFeatureNames(java.util.TreeSet)"><code>setFeatureNames(java.util.TreeSet)</code></a>, false otherwise.</div>
+</td>
+</tr>
 <tr class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#size()">size</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#setFeatureNames(java.util.TreeSet)">setFeatureNames</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/TreeSet.html?is-external=true" title="class or interface in java.util">TreeSet</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;featureNames)</code>
+<div class="block">Sets the feature names.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -162,16 +177,6 @@
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="size()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>size</h4>
-<pre>int&nbsp;size()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>The number of instances in the store.</dd></dl>
-</li>
-</ul>
 <a name="getNumberOfInstances()">
 <!--   -->
 </a>
@@ -217,6 +222,16 @@
 <dt><span class="strong">Returns:</span></dt><dd>The i-th instance in the store</dd></dl>
 </li>
 </ul>
+<a name="deleteInstance(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>deleteInstance</h4>
+<pre>void&nbsp;deleteInstance(int&nbsp;i)</pre>
+<div class="block">Deletes the i-th instance from the store.</div>
+</li>
+</ul>
 <a name="getUniqueOutcomes()">
 <!--   -->
 </a>
@@ -242,11 +257,40 @@
 <a name="getFeatureNames()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getFeatureNames</h4>
 <pre><a href="http://docs.oracle.com/javase/7/docs/api/java/util/TreeSet.html?is-external=true" title="class or interface in java.util">TreeSet</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;getFeatureNames()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>An ordered set of all feature names recorded in the store</dd></dl>
+</li>
+</ul>
+<a name="isSettingFeatureNamesAllowed()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isSettingFeatureNamesAllowed</h4>
+<pre>boolean&nbsp;isSettingFeatureNamesAllowed()</pre>
+<div class="block">Returns true, if feature names can be injected to the feature store by
+ calling <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#setFeatureNames(java.util.TreeSet)"><code>setFeatureNames(java.util.TreeSet)</code></a>, false otherwise.
+ This might be used for sparse feature stores that creates their feature
+ space from features observed during training.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>boolean value</dd></dl>
+</li>
+</ul>
+<a name="setFeatureNames(java.util.TreeSet)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setFeatureNames</h4>
+<pre>void&nbsp;setFeatureNames(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/TreeSet.html?is-external=true" title="class or interface in java.util">TreeSet</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;featureNames)
+                     throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</a></pre>
+<div class="block">Sets the feature names. If <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html#isSettingFeatureNamesAllowed()"><code>isSettingFeatureNamesAllowed()</code></a> returns false,
+ throws an exception, otherwise injects the feature names to the store</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>featureNames</code> - feature names</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</a></code> - if setting feature names is not allowed</dd></dl>
 </li>
 </ul>
 </li>
@@ -316,6 +360,6 @@
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>

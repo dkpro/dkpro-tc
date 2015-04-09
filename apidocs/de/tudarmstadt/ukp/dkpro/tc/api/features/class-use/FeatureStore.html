@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>Uses of Interface de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore (dkpro-tc 0.6.0 API)</title>
+<title>Uses of Interface de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Uses of Interface de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore (dkpro-tc 0.6.0 API)";
+        parent.document.title="Uses of Interface de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -87,6 +87,14 @@
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer">de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.fstore.filter">de.tudarmstadt.ukp.dkpro.tc.fstore.filter</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.fstore.simple">de.tudarmstadt.ukp.dkpro.tc.fstore.simple</a></td>
 <td class="colLast">
 <div class="block">A simple feature store.</div>
@@ -98,6 +106,16 @@
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.mallet.writer">de.tudarmstadt.ukp.dkpro.tc.mallet.writer</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.ml.liblinear">de.tudarmstadt.ukp.dkpro.tc.ml.liblinear</a></td>
+<td class="colLast">
+<div class="block">Support for LIBLINEAR machine learning framework.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer">de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -126,21 +144,21 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="strong">DumpDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/DumpDataWriter.html#write(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+<td class="colLast"><span class="strong">DumpDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/DumpDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
      <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
      boolean&nbsp;useDenseInstances,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="strong">JsonDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/JsonDataWriter.html#write(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+<td class="colLast"><span class="strong">JsonDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/JsonDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
      <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
      boolean&nbsp;useDenseInstances,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="strong">DataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/DataWriter.html#write(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+<td class="colLast"><span class="strong">DataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/DataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
      <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
      boolean&nbsp;useDenseInstances,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>
@@ -168,6 +186,60 @@
 </tbody>
 </table>
 </li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a> in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/crfsuite/writer/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/crfsuite/writer/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer</a> with parameters of type <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">CRFSuiteDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/crfsuite/writer/CRFSuiteDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;aOutputDirectory,
+     <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;aFeatureStore,
+     boolean&nbsp;aUseDenseInstances,
+     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aLearningMode)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
+<td class="colLast"><span class="strong">CRFSuiteDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/crfsuite/writer/CRFSuiteDataWriter.html#writeFeatureFile(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20java.io.File)">writeFeatureFile</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
+                <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;aOutputDirectory)</code>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.fstore.filter">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a> in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/filter/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.fstore.filter</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/filter/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.fstore.filter</a> with parameters of type <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">FeatureStoreFilter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/filter/FeatureStoreFilter.html#applyFilter(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">applyFilter</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;store)</code>
+<div class="block">Applies the filter to the given feature store</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">UniformClassDistributionFilter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/filter/UniformClassDistributionFilter.html#applyFilter(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">applyFilter</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;store)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">AdaptTestToTrainingFeaturesFilter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/filter/AdaptTestToTrainingFeaturesFilter.html#applyFilter(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">applyFilter</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;store)</code>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</li>
 <li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.fstore.simple">
 <!--   -->
 </a>
@@ -181,8 +253,27 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/SimpleFeatureStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.fstore.simple">SimpleFeatureStore</a></strong></code>
+<td class="colLast"><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/DenseFeatureStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.fstore.simple">DenseFeatureStore</a></strong></code>
 <div class="block">Data structure that holds instances.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/SparseFeatureStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.fstore.simple">SparseFeatureStore</a></strong></code>
+<div class="block">Feature store that internally uses hash maps instead of arrays to store sparse features.</div>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.fstore.simple</a> with parameters of type <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/simple/InstancesIterable.html#InstancesIterable(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">InstancesIterable</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore)</code>
+<div class="block">Creates a new instance iterable from a feature store</div>
 </td>
 </tr>
 </tbody>
@@ -201,18 +292,24 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&gt;</code></td>
-<td class="colLast"><span class="strong">MalletUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletUtils.html#getFeatureOffsetIndex(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">getFeatureOffsetIndex</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList)</code>&nbsp;</td>
+<td class="colLast"><span class="strong">MalletUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletUtils.html#getFeatureOffsetIndex(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">getFeatureOffsetIndex</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><span class="strong">MalletUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletUtils.html#instanceListToMalletFormatFile(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean)">instanceListToMalletFormatFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><span class="strong">MalletUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletUtils.html#instanceListToMalletFormatFile(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean)">instanceListToMalletFormatFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                               <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList,
-                              boolean&nbsp;useDenseInstances)</code>&nbsp;</td>
+                              boolean&nbsp;useDenseInstances)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><span class="strong">MalletUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletUtils.html#writeFeatureNamesToFile(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, java.io.File)">writeFeatureNamesToFile</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList,
-                       <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile)</code>&nbsp;</td>
+<td class="colLast"><span class="strong">MalletUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/util/MalletUtils.html#writeFeatureNamesToFile(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20java.io.File)">writeFeatureNamesToFile</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList,
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -230,10 +327,58 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="strong">MalletDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/writer/MalletDataWriter.html#write(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+<td class="colLast"><span class="strong">MalletDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/mallet/writer/MalletDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+     <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
+     boolean&nbsp;useDenseInstances,
+     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.ml.liblinear">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a> in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/ml/liblinear/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.ml.liblinear</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/ml/liblinear/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.ml.liblinear</a> with parameters of type <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>de.bwaldvogel.liblinear.FeatureNode[][]</code></td>
+<td class="colLast"><span class="strong">FeatureNodeArrayEncoder.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/ml/liblinear/FeatureNodeArrayEncoder.html#featueStore2FeatureNode(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">featueStore2FeatureNode</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;store)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">LiblinearDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/ml/liblinear/LiblinearDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
      <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
      boolean&nbsp;useDenseInstances,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a> in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/writer/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/writer/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer</a> with parameters of type <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">SVMHMMDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/writer/SVMHMMDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;aOutputDirectory,
+     <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
+     boolean&nbsp;aUseDenseInstances,
+     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aLearningMode)</code>&nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -251,14 +396,14 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><span class="strong">WekaUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><span class="strong">WekaUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                       <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList)</code>
 <div class="block">Converts a feature store to a list of instances.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><span class="strong">WekaUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, boolean)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><span class="strong">WekaUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20boolean)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                       <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList,
                       boolean&nbsp;useDenseInstances,
                       boolean&nbsp;isRegressionExperiment)</code>
@@ -267,7 +412,7 @@
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><span class="strong">WekaUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFileMultiLabel(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean)">instanceListToArffFileMultiLabel</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><span class="strong">WekaUtils.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFileMultiLabel(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean)">instanceListToArffFileMultiLabel</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                                 <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
                                 boolean&nbsp;useDenseInstances)</code>
 <div class="block">/** Converts a feature store to a list of instances.</div>
@@ -288,19 +433,19 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/AttributeStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka">AttributeStore</a></code></td>
+<td class="colFirst"><code>static <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/AttributeStore.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util">AttributeStore</a></code></td>
 <td class="colLast"><span class="strong">WekaFeatureEncoder.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/writer/WekaFeatureEncoder.html#getAttributeStore(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">getAttributeStore</a></strong>(<a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="strong">MekaDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/writer/MekaDataWriter.html#write(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+<td class="colLast"><span class="strong">MekaDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/writer/MekaDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
      <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
      boolean&nbsp;useDenseInstances,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="strong">WekaDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/writer/WekaDataWriter.html#write(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
+<td class="colLast"><span class="strong">WekaDataWriter.</span><code><strong><a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/writer/WekaDataWriter.html#write(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20java.lang.String)">write</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputDirectory,
      <a href="../../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
      boolean&nbsp;useDenseInstances,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode)</code>&nbsp;</td>
@@ -357,6 +502,6 @@
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>

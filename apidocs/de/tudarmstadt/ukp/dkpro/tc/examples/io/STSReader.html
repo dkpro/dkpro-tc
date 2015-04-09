@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>STSReader (dkpro-tc 0.6.0 API)</title>
+<title>STSReader (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="STSReader (dkpro-tc 0.6.0 API)";
+        parent.document.title="STSReader (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -98,7 +98,7 @@
 <li>org.apache.uima.fit.component.JCasCollectionReader_ImplBase</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader</a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">de.tudarmstadt.ukp.dkpro.tc.core.io.PairReader_ImplBase</a></li>
 <li>
 <ul class="inheritance">
 <li>de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader</li>
@@ -120,12 +120,12 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCReaderSingleLabel.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.io">TCReaderSingleLabel</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core">Constants</a>, org.apache.uima.collection.base_cpm.BaseCollectionReader, org.apache.uima.collection.CollectionReader, org.apache.uima.resource.ConfigurableResource, org.apache.uima.resource.Resource</dd>
+<dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCReaderSingleLabel.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.io">TCReaderSingleLabel</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core">Constants</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a>, org.apache.uima.collection.base_cpm.BaseCollectionReader, org.apache.uima.collection.CollectionReader, org.apache.uima.resource.ConfigurableResource, org.apache.uima.resource.Resource</dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="strong">STSReader</span>
-extends <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a>
+extends <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader_ImplBase</a>
 implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCReaderSingleLabel.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.io">TCReaderSingleLabel</a></pre>
 <div class="block">Reads the Semantic Text Similarity (STS) SemEval format.</div>
 </li>
@@ -172,7 +172,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 <!--   -->
 </a>
 <h3>Fields inherited from interface&nbsp;de.tudarmstadt.ukp.dkpro.tc.core.<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core">Constants</a></h3>
-<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#ARFF_FILENAME">ARFF_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_NAME">CLASS_ATTRIBUTE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_PREFIX">CLASS_ATTRIBUTE_PREFIX</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_ACTUAL">CM_ACTUAL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_PREDICTED">CM_PREDICTED</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CONFUSIONMATRIX_KEY">CONFUSIONMATRIX_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_APPLY_FEATURE_SELECTION">DIM_APPLY_FEATURE_SELECTION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_ATTRIBUTE_EVALUATOR_ARGS">DIM_ATTRIBUTE_EVALUATOR_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BIPARTITION_THRESHOLD">DIM_BIPARTITION_THRESHOLD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_CLASSIFICATION_ARGS">DIM_CLASSIFICATION_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_DATA_WRITER">DIM_DATA_WRITER</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_MODE">DIM_FEATURE_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SEARCHER_ARGS">DIM_FEATURE_SEARCHER_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SET">DIM_FEATURE_SET</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LABEL_TRANSFORMATION_METHOD">DIM_LABEL_TRANSFORMATION_METHOD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LEARNING_MODE">DIM_LEARNING_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_NUM_LABELS_TO_KEEP">DIM_NUM_LABELS_TO_KEEP</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_PIPELINE_PARAMS">DIM_PIPELINE_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST">DIM_READER_TEST</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST_PARAMS">DIM_READER_TEST_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN">DIM_READER_TRAIN</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN_PARAMS">DIM_READER_TRAIN_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EVAL_FILE_NAME">EVAL_FILE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EVALUATION_DATA_FILENAME">EVALUATION_DATA_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FEATURE_SELECTION_DATA_FILENAME">FEATURE_SELECTION_DATA_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_DOCUMENT">FM_DOCUMENT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_PAIR">FM_PAIR</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_SEQUENCE">FM_SEQUENCE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_UNIT">FM_UNIT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#INITIAL_VIEW">INITIAL_VIEW</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LEAVE_ONE_OUT">LEAVE_ONE_OUT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_MULTI_LABEL">LM_MULTI_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_REGRESSION">LM_REGRESSION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_SINGLE_LABEL">LM_SINGLE_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MALLET_FILE">MALLET_FILE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MEKA_DATA_WRITER_NAME">MEKA_DATA_WRITER_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_ONE">PART_ONE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_TWO">PART_TWO</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PR_CURVE_KEY">PR_CURVE_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTION_CLASS_LABEL_NAME">PREDICTION_CLASS_LABEL_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTIONS_FILENAME">PREDICTIONS_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#RESULTS_FILENAME">RESULTS_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_CSV">SUFFIX_CSV</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_EXCEL">SUFFIX_EXCEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TEST_DATA">TEST_TASK_INPUT_KEY_TEST_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TRAINING_DATA">TEST_TASK_INPUT_KEY_TRAINING_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_OUTPUT_KEY">TEST_TASK_OUTPUT_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TRAINING_DATA_FILENAME">TRAINING_DATA_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#UNKNOWN_OUTCOME">UNKNOWN_OUTCOME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#WEKA_DATA_WRITER_NAME">WEKA_DATA_WRITER_NAME</a></code></li>
+<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_NAME">CLASS_ATTRIBUTE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_PREFIX">CLASS_ATTRIBUTE_PREFIX</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_ACTUAL">CM_ACTUAL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_PREDICTED">CM_PREDICTED</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CONFUSIONMATRIX_KEY">CONFUSIONMATRIX_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_APPLY_FEATURE_SELECTION">DIM_APPLY_FEATURE_SELECTION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_ATTRIBUTE_EVALUATOR_ARGS">DIM_ATTRIBUTE_EVALUATOR_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BASELINE_CLASSIFICATION_ARGS">DIM_BASELINE_CLASSIFICATION_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BASELINE_FEATURE_SET">DIM_BASELINE_FEATURE_SET</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BASELINE_PIPELINE_PARAMS">DIM_BASELINE_PIPELINE_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BIPARTITION_THRESHOLD">DIM_BIPARTITION_THRESHOLD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_CLASSIFICATION_ARGS">DIM_CLASSIFICATION_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_FILTERS">DIM_FEATURE_FILTERS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_MODE">DIM_FEATURE_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SEARCHER_ARGS">DIM_FEATURE_SEARCHER_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SET">DIM_FEATURE_SET</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_STORE">DIM_FEATURE_STORE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LABEL_TRANSFORMATION_METHOD">DIM_LABEL_TRANSFORMATION_METHOD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LEARNING_MODE">DIM_LEARNING_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_NUM_LABELS_TO_KEEP">DIM_NUM_LABELS_TO_KEEP</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_PIPELINE_PARAMS">DIM_PIPELINE_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST">DIM_READER_TEST</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST_PARAMS">DIM_READER_TEST_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN">DIM_READER_TRAIN</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN_PARAMS">DIM_READER_TRAIN_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DISCRIMINATORS_KEY_TEMP">DISCRIMINATORS_KEY_TEMP</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EMPTY_PREDICTION">EMPTY_PREDICTION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EVAL_FILE_NAME">EVAL_FILE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FILENAME_FEATURES">FILENAME_FEATURES</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_DOCUMENT">FM_DOCUMENT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_PAIR">FM_PAIR</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_SEQUENCE">FM_SEQUENCE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_UNIT">FM_UNIT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#ID_FEATURE_NAME">ID_FEATURE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#ID_OUTCOME_KEY">ID_OUTCOME_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#INITIAL_VIEW">INITIAL_VIEW</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LEAVE_ONE_OUT">LEAVE_ONE_OUT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_MULTI_LABEL">LM_MULTI_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_REGRESSION">LM_REGRESSION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_SINGLE_LABEL">LM_SINGLE_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_CLASS_LABELS">MODEL_CLASS_LABELS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_CLASSIFIER">MODEL_CLASSIFIER</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_FEATURE_EXTRACTORS">MODEL_FEATURE_EXTRACTORS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_FEATURE_NAMES">MODEL_FEATURE_NAMES</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_META">MODEL_META</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_PARAMETERS">MODEL_PARAMETERS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_ONE">PART_ONE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_TWO">PART_TWO</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PR_CURVE_KEY">PR_CURVE_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTION_CLASS_LABEL_NAME">PREDICTION_CLASS_LABEL_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTION_MAP_FILE_NAME">PREDICTION_MAP_FILE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#RESULTS_FILENAME">RESULTS_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SERIALIZED_ID_OUTCOME_KEY">SERIALIZED_ID_OUTCOME_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#STATISTICS_REPORT_FILENAME">STATISTICS_REPORT_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#STATISTICS_REPORT_TEST_TASK_FILENAME">STATISTICS_REPORT_TEST_TASK_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_CSV">SUFFIX_CSV</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_EXCEL">SUFFIX_EXCEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TEST_DATA">TEST_TASK_INPUT_KEY_TEST_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TRAINING_DATA">TEST_TASK_INPUT_KEY_TRAINING_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_OUTPUT_KEY">TEST_TASK_OUTPUT_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#UNKNOWN_OUTCOME">UNKNOWN_OUTCOME</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="fields_inherited_from_class_org.apache.uima.resource.Resource">
@@ -213,39 +213,28 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getBaseUri()">getBaseUri</a></strong>()</code>
-<div class="block">If the pair of texts come from one document, set this to the document's original pathname,
- without the final filename.</div>
-</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getCollectionId1()">getCollectionId1</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getCollectionId()">getCollectionId</a></strong>()</code>
-<div class="block">Generic corpus name.</div>
-</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getCollectionId2()">getCollectionId2</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getInitialViewDocId()">getInitialViewDocId</a></strong>()</code>
-<div class="block">This is for the ID of <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewText()"><code>AbstractPairReader.getInitialViewText()</code></a>.</div>
-</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getDocumentId1()">getDocumentId1</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getInitialViewText()">getInitialViewText</a></strong>()</code>
-<div class="block">This is for text common to both texts of the text pair being classified.</div>
-</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getDocumentId2()">getDocumentId2</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getInitialViewTitle()">getInitialViewTitle</a></strong>()</code>
-<div class="block">This is a human-readable title of <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewText()"><code>AbstractPairReader.getInitialViewText()</code></a>.</div>
-</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getLanguage1()">getLanguage1</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getLanguage()">getLanguage</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getLanguage2()">getLanguage2</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -256,32 +245,42 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getProgress()">getProgress</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getText(java.lang.String)">getText</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;part)</code>
-<div class="block">Sets the text for each of the two views (representing the pair of texts).</div>
-</td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getText1()">getText1</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getText2()">getText2</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getTextClassificationOutcome(org.apache.uima.jcas.JCas)">getTextClassificationOutcome</a></strong>(org.apache.uima.jcas.JCas&nbsp;jcas)</code>
 <div class="block">Returns the text classification outcome for the current single-label instance</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getTitle1()">getTitle1</a></strong>()</code>&nbsp;</td>
+</tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#getTitle2()">getTitle2</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#hasNext()">hasNext</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/examples/io/STSReader.html#initialize(org.apache.uima.UimaContext)">initialize</a></strong>(org.apache.uima.UimaContext&nbsp;context)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods_inherited_from_class_de.tudarmstadt.ukp.dkpro.tc.core.io.AbstractPairReader">
+<li class="blockList"><a name="methods_inherited_from_class_de.tudarmstadt.ukp.dkpro.tc.core.io.PairReader_ImplBase">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;de.tudarmstadt.ukp.dkpro.tc.core.io.<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></h3>
-<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#createMetaData(org.apache.uima.jcas.JCas, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)">createMetaData</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#createView(java.lang.String, org.apache.uima.jcas.JCas, java.lang.String, java.lang.String, java.lang.String, java.lang.String)">createView</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#fillInitialView(org.apache.uima.jcas.JCas, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)">fillInitialView</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getId(java.lang.String)">getId</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getTitle(java.lang.String)">getTitle</a></code></li>
+<h3>Methods inherited from class&nbsp;de.tudarmstadt.ukp.dkpro.tc.core.io.<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader_ImplBase</a></h3>
+<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html#createMetaData(org.apache.uima.jcas.JCas,%20java.lang.String,%20java.lang.String,%20java.lang.String)">createMetaData</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html#createView(java.lang.String,%20org.apache.uima.jcas.JCas,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)">createView</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_org.apache.uima.fit.component.JCasCollectionReader_ImplBase">
@@ -316,7 +315,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_org.apache.uima.resource.ConfigurableResource">
@@ -454,7 +453,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
                     org.apache.uima.collection.CollectionException</pre>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getNext(org.apache.uima.jcas.JCas)">getNext</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html#getNext(org.apache.uima.jcas.JCas)">getNext</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader_ImplBase</a></code></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
 <dd><code>org.apache.uima.collection.CollectionException</code></dd></dl>
@@ -473,146 +472,10 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 </dl>
 </li>
 </ul>
-<a name="getCollectionId()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCollectionId</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getCollectionId()</pre>
-<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getCollectionId()">AbstractPairReader</a></code></strong></div>
-<div class="block">Generic corpus name.
- 
- Example: "Reuters-21578"</div>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getCollectionId()">getCollectionId</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>corpus</dd></dl>
-</li>
-</ul>
-<a name="getLanguage()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLanguage</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getLanguage()</pre>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getLanguage()">getLanguage</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getInitialViewText()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInitialViewText</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getInitialViewText()</pre>
-<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewText()">AbstractPairReader</a></code></strong></div>
-<div class="block">This is for text common to both texts of the text pair being classified.
- 
- Example: The original text that the pair texts are extracted from.</div>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewText()">getInitialViewText</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>commonText</dd></dl>
-</li>
-</ul>
-<a name="getInitialViewDocId()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInitialViewDocId</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getInitialViewDocId()</pre>
-<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewDocId()">AbstractPairReader</a></code></strong></div>
-<div class="block">This is for the ID of <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewText()"><code>AbstractPairReader.getInitialViewText()</code></a>.
- <p />
- 
- The docID, combined with the <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getBaseUri()"><code>BaseURI</code></a> should be unique for each
- instance.
- <p />
- 
- Note: If each of your data instances doesn't have its own source file, then we recommend just
- using some instance-unique name here, <b>without</b> any directories or special characters!
- Otherwise, DKPro Lab may lose some of your data without loudly notifying you.
- <p />
- To check for lost data, look in "Evaluation[...]" file and add up the experiment's
- "Correctly Classified Examples" and "Incorrectly Classified Examples".</div>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewDocId()">getInitialViewDocId</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>iD</dd></dl>
-</li>
-</ul>
-<a name="getInitialViewTitle()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInitialViewTitle</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getInitialViewTitle()</pre>
-<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewTitle()">AbstractPairReader</a></code></strong></div>
-<div class="block">This is a human-readable title of <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewText()"><code>AbstractPairReader.getInitialViewText()</code></a>.</div>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getInitialViewTitle()">getInitialViewTitle</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>title</dd></dl>
-</li>
-</ul>
-<a name="getBaseUri()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBaseUri</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getBaseUri()</pre>
-<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getBaseUri()">AbstractPairReader</a></code></strong></div>
-<div class="block">If the pair of texts come from one document, set this to the document's original pathname,
- without the final filename. It is used if the CAS is written to file. The <code>pathname</code>
- does not need to actually exist.
- <p />
- 
- The docID, combined with the <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getBaseUri()"><code>BaseURI</code></a> should be unique for each
- instance.
- <p />
- 
- Note: If each of your data instances doesn't have its own source file, then we recommend
- using an empty string here, or a very simple directory name. Otherwise, DKPro Lab may lose
- some of your data without loudly notifying you.
- <p />
- To check for lost data, look in "Evaluation[...]" file and add up the experiment's
- "Correctly Classified Examples" and "Incorrectly Classified Examples".</div>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getBaseUri()">getBaseUri</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>pathname</dd></dl>
-</li>
-</ul>
-<a name="getText(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getText</h4>
-<pre>protected&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getText(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;part)</pre>
-<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getText(java.lang.String)">AbstractPairReader</a></code></strong></div>
-<div class="block">Sets the text for each of the two views (representing the pair of texts). Intended to contain
- a case/part or if/else statement depending on which of the two views is the argument
- <code>part</code>, when overridden.</div>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html#getText(java.lang.String)">getText</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/AbstractPairReader.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.io">AbstractPairReader</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>part</code> - Either <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_ONE"><code>Constants.PART_ONE</code></a> or <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_TWO"><code>Constants.PART_TWO</code></a></dd>
-<dt><span class="strong">Returns:</span></dt><dd>text</dd></dl>
-</li>
-</ul>
 <a name="getTextClassificationOutcome(org.apache.uima.jcas.JCas)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getTextClassificationOutcome</h4>
 <pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getTextClassificationOutcome(org.apache.uima.jcas.JCas&nbsp;jcas)</pre>
@@ -622,6 +485,166 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCReaderSingleLabel.html#getTextClassificationOutcome(org.apache.uima.jcas.JCas)">getTextClassificationOutcome</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCReaderSingleLabel.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.io">TCReaderSingleLabel</a></code></dd>
 <dt><span class="strong">Returns:</span></dt><dd></dd></dl>
+</li>
+</ul>
+<a name="getCollectionId1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCollectionId1</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getCollectionId1()
+                        throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getCollectionId1()">getCollectionId1</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>ID of the collection the first document was sampled from</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getCollectionId2()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCollectionId2</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getCollectionId2()
+                        throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getCollectionId2()">getCollectionId2</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>ID of the collection the second document was sampled from</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getDocumentId1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDocumentId1</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getDocumentId1()
+                      throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getDocumentId1()">getDocumentId1</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>ID of the first document</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getDocumentId2()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDocumentId2</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getDocumentId2()
+                      throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getDocumentId2()">getDocumentId2</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>ID of the second document</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getTitle1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getTitle1</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getTitle1()
+                 throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getTitle1()">getTitle1</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>Title of the first document</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getTitle2()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getTitle2</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getTitle2()
+                 throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getTitle2()">getTitle2</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>Title of the second document</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getLanguage1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLanguage1</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getLanguage1()
+                    throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getLanguage1()">getLanguage1</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>Language of the first document</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getLanguage2()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLanguage2</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getLanguage2()
+                    throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getLanguage2()">getLanguage2</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>Language of the second document</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getText1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getText1</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getText1()
+                throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getText1()">getText1</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>The text of the first document in the pair</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="getText2()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getText2</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getText2()
+                throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html#getText2()">getText2</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/io/PairReader.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core.io">PairReader</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>The text of the second document in the pair</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
 </li>
 </ul>
 </li>
@@ -691,6 +714,6 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/io/TCRe
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>
