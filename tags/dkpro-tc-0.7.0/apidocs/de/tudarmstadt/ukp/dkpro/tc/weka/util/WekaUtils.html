@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>WekaUtils (dkpro-tc 0.6.0 API)</title>
+<title>WekaUtils (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="WekaUtils (dkpro-tc 0.6.0 API)";
+        parent.document.title="WekaUtils (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -35,7 +35,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaReportUtils.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaSerializedModel.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util"><span class="strong">Prev Class</span></a></li>
 <li>Next Class</li>
 </ul>
 <ul class="navList">
@@ -140,7 +140,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 <!--   -->
 </a>
 <h3>Fields inherited from interface&nbsp;de.tudarmstadt.ukp.dkpro.tc.core.<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.core">Constants</a></h3>
-<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#ARFF_FILENAME">ARFF_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_NAME">CLASS_ATTRIBUTE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_PREFIX">CLASS_ATTRIBUTE_PREFIX</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_ACTUAL">CM_ACTUAL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_PREDICTED">CM_PREDICTED</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CONFUSIONMATRIX_KEY">CONFUSIONMATRIX_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_APPLY_FEATURE_SELECTION">DIM_APPLY_FEATURE_SELECTION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_ATTRIBUTE_EVALUATOR_ARGS">DIM_ATTRIBUTE_EVALUATOR_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BIPARTITION_THRESHOLD">DIM_BIPARTITION_THRESHOLD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_CLASSIFICATION_ARGS">DIM_CLASSIFICATION_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_DATA_WRITER">DIM_DATA_WRITER</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_MODE">DIM_FEATURE_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SEARCHER_ARGS">DIM_FEATURE_SEARCHER_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SET">DIM_FEATURE_SET</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LABEL_TRANSFORMATION_METHOD">DIM_LABEL_TRANSFORMATION_METHOD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LEARNING_MODE">DIM_LEARNING_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_NUM_LABELS_TO_KEEP">DIM_NUM_LABELS_TO_KEEP</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_PIPELINE_PARAMS">DIM_PIPELINE_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST">DIM_READER_TEST</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST_PARAMS">DIM_READER_TEST_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN">DIM_READER_TRAIN</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN_PARAMS">DIM_READER_TRAIN_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EVAL_FILE_NAME">EVAL_FILE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EVALUATION_DATA_FILENAME">EVALUATION_DATA_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FEATURE_SELECTION_DATA_FILENAME">FEATURE_SELECTION_DATA_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_DOCUMENT">FM_DOCUMENT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_PAIR">FM_PAIR</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_SEQUENCE">FM_SEQUENCE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_UNIT">FM_UNIT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#INITIAL_VIEW">INITIAL_VIEW</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LEAVE_ONE_OUT">LEAVE_ONE_OUT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_MULTI_LABEL">LM_MULTI_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_REGRESSION">LM_REGRESSION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_SINGLE_LABEL">LM_SINGLE_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MALLET_FILE">MALLET_FILE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MEKA_DATA_WRITER_NAME">MEKA_DATA_WRITER_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_ONE">PART_ONE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_TWO">PART_TWO</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PR_CURVE_KEY">PR_CURVE_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTION_CLASS_LABEL_NAME">PREDICTION_CLASS_LABEL_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTIONS_FILENAME">PREDICTIONS_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#RESULTS_FILENAME">RESULTS_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_CSV">SUFFIX_CSV</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_EXCEL">SUFFIX_EXCEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TEST_DATA">TEST_TASK_INPUT_KEY_TEST_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TRAINING_DATA">TEST_TASK_INPUT_KEY_TRAINING_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_OUTPUT_KEY">TEST_TASK_OUTPUT_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TRAINING_DATA_FILENAME">TRAINING_DATA_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#UNKNOWN_OUTCOME">UNKNOWN_OUTCOME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#WEKA_DATA_WRITER_NAME">WEKA_DATA_WRITER_NAME</a></code></li>
+<code><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_NAME">CLASS_ATTRIBUTE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CLASS_ATTRIBUTE_PREFIX">CLASS_ATTRIBUTE_PREFIX</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_ACTUAL">CM_ACTUAL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CM_PREDICTED">CM_PREDICTED</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#CONFUSIONMATRIX_KEY">CONFUSIONMATRIX_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_APPLY_FEATURE_SELECTION">DIM_APPLY_FEATURE_SELECTION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_ATTRIBUTE_EVALUATOR_ARGS">DIM_ATTRIBUTE_EVALUATOR_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BASELINE_CLASSIFICATION_ARGS">DIM_BASELINE_CLASSIFICATION_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BASELINE_FEATURE_SET">DIM_BASELINE_FEATURE_SET</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BASELINE_PIPELINE_PARAMS">DIM_BASELINE_PIPELINE_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_BIPARTITION_THRESHOLD">DIM_BIPARTITION_THRESHOLD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_CLASSIFICATION_ARGS">DIM_CLASSIFICATION_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_FILTERS">DIM_FEATURE_FILTERS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_MODE">DIM_FEATURE_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SEARCHER_ARGS">DIM_FEATURE_SEARCHER_ARGS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_SET">DIM_FEATURE_SET</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_FEATURE_STORE">DIM_FEATURE_STORE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LABEL_TRANSFORMATION_METHOD">DIM_LABEL_TRANSFORMATION_METHOD</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_LEARNING_MODE">DIM_LEARNING_MODE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_NUM_LABELS_TO_KEEP">DIM_NUM_LABELS_TO_KEEP</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_PIPELINE_PARAMS">DIM_PIPELINE_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST">DIM_READER_TEST</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TEST_PARAMS">DIM_READER_TEST_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN">DIM_READER_TRAIN</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DIM_READER_TRAIN_PARAMS">DIM_READER_TRAIN_PARAMS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#DISCRIMINATORS_KEY_TEMP">DISCRIMINATORS_KEY_TEMP</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EMPTY_PREDICTION">EMPTY_PREDICTION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#EVAL_FILE_NAME">EVAL_FILE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FILENAME_FEATURES">FILENAME_FEATURES</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_DOCUMENT">FM_DOCUMENT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_PAIR">FM_PAIR</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_SEQUENCE">FM_SEQUENCE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#FM_UNIT">FM_UNIT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#ID_FEATURE_NAME">ID_FEATURE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#ID_OUTCOME_KEY">ID_OUTCOME_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#INITIAL_VIEW">INITIAL_VIEW</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LEAVE_ONE_OUT">LEAVE_ONE_OUT</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_MULTI_LABEL">LM_MULTI_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_REGRESSION">LM_REGRESSION</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#LM_SINGLE_LABEL">LM_SINGLE_LABEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_CLASS_LABELS">MODEL_CLASS_LABELS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_CLASSIFIER">MODEL_CLASSIFIER</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_FEATURE_EXTRACTORS">MODEL_FEATURE_EXTRACTORS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_FEATURE_NAMES">MODEL_FEATURE_NAMES</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_META">MODEL_META</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#MODEL_PARAMETERS">MODEL_PARAMETERS</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_ONE">PART_ONE</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PART_TWO">PART_TWO</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PR_CURVE_KEY">PR_CURVE_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTION_CLASS_LABEL_NAME">PREDICTION_CLASS_LABEL_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#PREDICTION_MAP_FILE_NAME">PREDICTION_MAP_FILE_NAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#RESULTS_FILENAME">RESULTS_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SERIALIZED_ID_OUTCOME_KEY">SERIALIZED_ID_OUTCOME_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#STATISTICS_REPORT_FILENAME">STATISTICS_REPORT_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#STATISTICS_REPORT_TEST_TASK_FILENAME">STATISTICS_REPORT_TEST_TASK_FILENAME</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_CSV">SUFFIX_CSV</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#SUFFIX_EXCEL">SUFFIX_EXCEL</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TEST_DATA">TEST_TASK_INPUT_KEY_TEST_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_INPUT_KEY_TRAINING_DATA">TEST_TASK_INPUT_KEY_TRAINING_DATA</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#TEST_TASK_OUTPUT_KEY">TEST_TASK_OUTPUT_KEY</a>, <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Constants.html#UNKNOWN_OUTCOME">UNKNOWN_OUTCOME</a></code></li>
 </ul>
 </li>
 </ul>
@@ -175,32 +175,73 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static weka.core.Instances</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#addOutcomeId(weka.core.Instances, weka.core.Instances, boolean)">addOutcomeId</a></strong>(weka.core.Instances&nbsp;newData,
-            weka.core.Instances&nbsp;oldData,
-            boolean&nbsp;isMultilabel)</code>
-<div class="block">Copies the OutcomeId attribute and its values from an existing data set, iff present.</div>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#addInstanceId(weka.core.Instances,%20weka.core.Instances,%20boolean)">addInstanceId</a></strong>(weka.core.Instances&nbsp;newData,
+             weka.core.Instances&nbsp;oldData,
+             boolean&nbsp;isMultilabel)</code>
+<div class="block">Copies the instanceId attribute and its values from an existing data set, iff present.</div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static weka.core.Instances</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#applyAttributeSelectionFilter(weka.core.Instances,%20weka.filters.unsupervised.attribute.Remove)">applyAttributeSelectionFilter</a></strong>(weka.core.Instances&nbsp;trainData,
+                             weka.filters.unsupervised.attribute.Remove&nbsp;removeFilter)</code>
+<div class="block">Applies a filter to reduce the dimension of attributes and reorders them to be used within
+ Meka</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static mulan.data.MultiLabelInstances</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#convertMekaInstancesToMulanInstances(weka.core.Instances)">convertMekaInstancesToMulanInstances</a></strong>(weka.core.Instances&nbsp;instances)</code>
+<div class="block">Converts the Meka-specific instances format to Mulan-specific instances.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getClassLabels(weka.core.Instances,%20boolean)">getClassLabels</a></strong>(weka.core.Instances&nbsp;data,
+              boolean&nbsp;isMultilabel)</code>
+<div class="block">Returns a list with names of the class attribute values.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static meka.core.Result</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getEvaluationMultilabel(weka.classifiers.Classifier, weka.core.Instances, weka.core.Instances, java.lang.String)">getEvaluationMultilabel</a></strong>(weka.classifiers.Classifier&nbsp;cl,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getEvaluationMultilabel(weka.classifiers.Classifier,%20weka.core.Instances,%20weka.core.Instances,%20java.lang.String)">getEvaluationMultilabel</a></strong>(weka.classifiers.Classifier&nbsp;cl,
                        weka.core.Instances&nbsp;trainData,
                        weka.core.Instances&nbsp;testData,
                        <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;threshold)</code>
 <div class="block">Evaluates a given multi-label classifier on given train and test sets.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static weka.classifiers.Evaluation</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getEvaluationSinglelabel(weka.classifiers.Classifier, weka.core.Instances, weka.core.Instances)">getEvaluationSinglelabel</a></strong>(weka.classifiers.Classifier&nbsp;cl,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getEvaluationSinglelabel(weka.classifiers.Classifier,%20weka.core.Instances,%20weka.core.Instances)">getEvaluationSinglelabel</a></strong>(weka.classifiers.Classifier&nbsp;cl,
                         weka.core.Instances&nbsp;trainData,
                         weka.core.Instances&nbsp;testData)</code>
 <div class="block">Evaluates a given single-label classifier on given train and test sets.</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getInstanceIdAttributeOffset(weka.core.Instances)">getInstanceIdAttributeOffset</a></strong>(weka.core.Instances&nbsp;data)</code>&nbsp;</td>
+</tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static weka.core.Instances</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getPredictionInstancesMultiLabel(weka.core.Instances, weka.classifiers.Classifier, double[])">getPredictionInstancesMultiLabel</a></strong>(weka.core.Instances&nbsp;testData,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getInstances(java.io.File,%20boolean)">getInstances</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;instancesFile,
+            boolean&nbsp;multiLabel)</code>
+<div class="block">Read instances from uncompressed or compressed arff files.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getMekaThreshold(java.lang.String,%20meka.core.Result,%20weka.core.Instances)">getMekaThreshold</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;threshold,
+                meka.core.Result&nbsp;r,
+                weka.core.Instances&nbsp;data)</code>
+<div class="block">Calculates the threshold to turn a ranking of label predictions into a bipartition (one
+ threshold for each label)</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static weka.core.Instances</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getPredictionInstancesMultiLabel(weka.core.Instances,%20weka.classifiers.Classifier,%20double[])">getPredictionInstancesMultiLabel</a></strong>(weka.core.Instances&nbsp;testData,
                                 weka.classifiers.Classifier&nbsp;cl,
                                 double[]&nbsp;thresholdArray)</code>
 <div class="block">Generates an instances object containing the predictions of a given multi-label classifier
@@ -209,7 +250,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static weka.core.Instances</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getPredictionInstancesSingleLabel(weka.core.Instances, weka.classifiers.Classifier)">getPredictionInstancesSingleLabel</a></strong>(weka.core.Instances&nbsp;testData,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#getPredictionInstancesSingleLabel(weka.core.Instances,%20weka.classifiers.Classifier)">getPredictionInstancesSingleLabel</a></strong>(weka.core.Instances&nbsp;testData,
                                  weka.classifiers.Classifier&nbsp;cl)</code>
 <div class="block">Generates an instances object containing the predictions of a given single-label classifier
  for a given test set</div>
@@ -217,14 +258,14 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                       <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList)</code>
 <div class="block">Converts a feature store to a list of instances.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean, boolean)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFile(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean,%20boolean)">instanceListToArffFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                       <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;instanceList,
                       boolean&nbsp;useDenseInstances,
                       boolean&nbsp;isRegressionExperiment)</code>
@@ -233,7 +274,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFileMultiLabel(java.io.File, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore, boolean)">instanceListToArffFileMultiLabel</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#instanceListToArffFileMultiLabel(java.io.File,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore,%20boolean)">instanceListToArffFileMultiLabel</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;outputFile,
                                 <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureStore.html" title="interface in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureStore</a>&nbsp;featureStore,
                                 boolean&nbsp;useDenseInstances)</code>
 <div class="block">/** Converts a feature store to a list of instances.</div>
@@ -241,36 +282,67 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static weka.core.Instances</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#makeOutcomeClassesCompatible(weka.core.Instances, weka.core.Instances, boolean)">makeOutcomeClassesCompatible</a></strong>(weka.core.Instances&nbsp;trainData,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#makeOutcomeClassesCompatible(weka.core.Instances,%20weka.core.Instances,%20boolean)">makeOutcomeClassesCompatible</a></strong>(weka.core.Instances&nbsp;trainData,
                             weka.core.Instances&nbsp;testData,
                             boolean&nbsp;multilabel)</code>
 <div class="block">Adapts the test data class labels to the training data.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static weka.core.Instances</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#removeOutcomeId(weka.core.Instances, boolean)">removeOutcomeId</a></strong>(weka.core.Instances&nbsp;data,
-               boolean&nbsp;multilabel)</code>
-<div class="block">Removes the OutcomeId attribute, iff present</div>
+<td class="colFirst"><code>static weka.filters.unsupervised.attribute.Remove</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#multiLabelAttributeSelection(weka.core.Instances,%20java.lang.String,%20java.util.List,%20int,%20java.io.File)">multiLabelAttributeSelection</a></strong>(weka.core.Instances&nbsp;trainData,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;labelTransformationMethod,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;attributeEvaluator,
+                            int&nbsp;numLabelsToKeep,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;featureSelectionResultsFile)</code>
+<div class="block">Feature selection using Mulan.</div>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/MultilabelResult.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util">MultilabelResult</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#readMlResultFromFile(java.io.File)">readMlResultFromFile</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)</code>
+<div class="block">Reads a file serialized with <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#writeMlResultToFile(de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult,%20java.io.File)"><code>writeMlResultToFile(MultilabelResult, File)</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static weka.core.Instances</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#removeInstanceId(weka.core.Instances,%20boolean)">removeInstanceId</a></strong>(weka.core.Instances&nbsp;data,
+                boolean&nbsp;multilabel)</code>
+<div class="block">Removes the instanceId attribute, iff present</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static weka.attributeSelection.AttributeSelection</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#singleLabelAttributeSelection(weka.core.Instances,%20java.util.List,%20java.util.List)">singleLabelAttributeSelection</a></strong>(weka.core.Instances&nbsp;trainData,
+                             <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;featureSearcher,
+                             <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;attributeEvaluator)</code>
+<div class="block">Feature selection using Weka.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>static weka.core.Instance</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#tcInstanceToMekaInstance(de.tudarmstadt.ukp.dkpro.tc.api.features.Instance, java.util.List, java.util.List)">tcInstanceToMekaInstance</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&nbsp;instance,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#tcInstanceToMekaInstance(de.tudarmstadt.ukp.dkpro.tc.api.features.Instance,%20java.util.List,%20java.util.List)">tcInstanceToMekaInstance</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&nbsp;instance,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;weka.core.Attribute&gt;&nbsp;attributes,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;allClassLabels)</code>
 <div class="block">Converts a TC instance object into a Meka instance object, compatible with the given
  attribute set and class labels.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static weka.core.Instance</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#tcInstanceToWekaInstance(de.tudarmstadt.ukp.dkpro.tc.api.features.Instance, java.util.List, java.util.List, boolean)">tcInstanceToWekaInstance</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&nbsp;instance,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#tcInstanceToWekaInstance(de.tudarmstadt.ukp.dkpro.tc.api.features.Instance,%20java.util.List,%20java.util.List,%20boolean)">tcInstanceToWekaInstance</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&nbsp;instance,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;weka.core.Attribute&gt;&nbsp;attributes,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;allClasses,
                         boolean&nbsp;isRegressionExperiment)</code>
 <div class="block">Converts a TC instance object into a Weka instance object, compatible with the given
  attribute set and class labels.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#writeMlResultToFile(de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult,%20java.io.File)">writeMlResultToFile</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/MultilabelResult.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util">MultilabelResult</a>&nbsp;result,
+                   <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)</code>
+<div class="block">Writes a file with all necessary information for evaluation.</div>
 </td>
 </tr>
 </table>
@@ -279,7 +351,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -315,7 +387,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 <pre>public static final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> COMPATIBLE_OUTCOME_CLASS</pre>
 <div class="block">Suffix for class label names in the test data that have been adapted to match the training
  data</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#makeOutcomeClassesCompatible(weka.core.Instances, weka.core.Instances, boolean)"><code>makeOutcomeClassesCompatible(Instances, Instances, boolean)</code></a>, 
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#makeOutcomeClassesCompatible(weka.core.Instances,%20weka.core.Instances,%20boolean)"><code>makeOutcomeClassesCompatible(Instances, Instances, boolean)</code></a>, 
 <a href="../../../../../../../constant-values.html#de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils.COMPATIBLE_OUTCOME_CLASS">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -356,8 +428,8 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
                                                         throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
 <div class="block">Adapts the test data class labels to the training data. Class labels from the test data
  unseen in the training data will be deleted from the test data. Class labels from the
- training data unseen in the test data will be added the test data. If training and test class
- labels are equals, nothing will be done.</div>
+ training data unseen in the test data will be added to the test data. If training and test class
+ labels are equal, nothing will be done.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>trainData</code> - training data</dd><dd><code>testData</code> - test data</dd><dd><code>multilabel</code> - whether this is a multi-label classification problem</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the adapted test data</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -527,38 +599,207 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
 </li>
 </ul>
-<a name="removeOutcomeId(weka.core.Instances, boolean)">
+<a name="removeInstanceId(weka.core.Instances, boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>removeOutcomeId</h4>
-<pre>public static&nbsp;weka.core.Instances&nbsp;removeOutcomeId(weka.core.Instances&nbsp;data,
-                                  boolean&nbsp;multilabel)
-                                           throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
-<div class="block">Removes the OutcomeId attribute, iff present</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - data set with or without OutcomeId attribute</dd>
-<dt><span class="strong">Returns:</span></dt><dd>the data set without OutcomeId attribute</dd>
+<h4>removeInstanceId</h4>
+<pre>public static&nbsp;weka.core.Instances&nbsp;removeInstanceId(weka.core.Instances&nbsp;data,
+                                   boolean&nbsp;multilabel)
+                                            throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Removes the instanceId attribute, iff present</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - data set with or without instanceId attribute</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the data set without instanceId attribute</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
 </li>
 </ul>
-<a name="addOutcomeId(weka.core.Instances, weka.core.Instances, boolean)">
+<a name="addInstanceId(weka.core.Instances, weka.core.Instances, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addInstanceId</h4>
+<pre>public static&nbsp;weka.core.Instances&nbsp;addInstanceId(weka.core.Instances&nbsp;newData,
+                                weka.core.Instances&nbsp;oldData,
+                                boolean&nbsp;isMultilabel)
+                                         throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Copies the instanceId attribute and its values from an existing data set, iff present. It will
+ be indexed right before the class attribute</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>newData</code> - data set without instanceId attribute</dd><dd><code>oldData</code> - data set with or without instanceId attribute</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a data set with or without instanceId attribute</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
+</li>
+</ul>
+<a name="getInstances(java.io.File, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInstances</h4>
+<pre>public static&nbsp;weka.core.Instances&nbsp;getInstances(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;instancesFile,
+                               boolean&nbsp;multiLabel)
+                                        throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/FileNotFoundException.html?is-external=true" title="class or interface in java.io">FileNotFoundException</a>,
+                                               <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Read instances from uncompressed or compressed arff files. Compression is determined by
+ filename suffix. For bz2 files, it is expected that the first two bytes mark the compression
+ types (BZ) - thus, the first bytes of the stream are skipped. <br>
+ For arff files with single-label outcome, the class attribute is expected at the end of the
+ attribute set. For arff files with multi-label outcome, the class attribute is expected at
+ the beginning of the attribute set; additionally the number of class labels must be specified
+ in the relation tag behind a "-C" argument, e.g. "-C 3".</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>instancesFile</code> - arff File</dd><dd><code>multiLabel</code> - whether this arff file contains single- or multi-label outcome</dd>
+<dt><span class="strong">Returns:</span></dt><dd>instances with class attribute set</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/FileNotFoundException.html?is-external=true" title="class or interface in java.io">FileNotFoundException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd></dl>
+</li>
+</ul>
+<a name="getInstanceIdAttributeOffset(weka.core.Instances)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInstanceIdAttributeOffset</h4>
+<pre>public static&nbsp;int&nbsp;getInstanceIdAttributeOffset(weka.core.Instances&nbsp;data)</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The offset of the instanceId attribute within the weka instance</dd></dl>
+</li>
+</ul>
+<a name="getClassLabels(weka.core.Instances, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getClassLabels</h4>
+<pre>public static&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;getClassLabels(weka.core.Instances&nbsp;data,
+                          boolean&nbsp;isMultilabel)</pre>
+<div class="block">Returns a list with names of the class attribute values.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>eval</code> - </dd>
+<dt><span class="strong">Returns:</span></dt><dd></dd></dl>
+</li>
+</ul>
+<a name="getMekaThreshold(java.lang.String, meka.core.Result, weka.core.Instances)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMekaThreshold</h4>
+<pre>public static&nbsp;double[]&nbsp;getMekaThreshold(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;threshold,
+                        meka.core.Result&nbsp;r,
+                        weka.core.Instances&nbsp;data)
+                                 throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Calculates the threshold to turn a ranking of label predictions into a bipartition (one
+ threshold for each label)</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>threshold</code> - PCut1, PCutL, or number between 0 and 1 (see Meka documentation for details on
+            this)</dd><dd><code>r</code> - Results file</dd><dd><code>data</code> - training data to use for automatically determining the threshold</dd>
+<dt><span class="strong">Returns:</span></dt><dd>an array with thresholds for each label</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
+</li>
+</ul>
+<a name="singleLabelAttributeSelection(weka.core.Instances, java.util.List, java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>singleLabelAttributeSelection</h4>
+<pre>public static&nbsp;weka.attributeSelection.AttributeSelection&nbsp;singleLabelAttributeSelection(weka.core.Instances&nbsp;trainData,
+                                                                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;featureSearcher,
+                                                                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;attributeEvaluator)
+                                                                                throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Feature selection using Weka.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>trainData</code> - training data</dd><dd><code>featureSearcher</code> - </dd><dd><code>attributeEvaluator</code> - </dd>
+<dt><span class="strong">Returns:</span></dt><dd>a feature selector</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
+</li>
+</ul>
+<a name="multiLabelAttributeSelection(weka.core.Instances, java.lang.String, java.util.List, int, java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiLabelAttributeSelection</h4>
+<pre>public static&nbsp;weka.filters.unsupervised.attribute.Remove&nbsp;multiLabelAttributeSelection(weka.core.Instances&nbsp;trainData,
+                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;labelTransformationMethod,
+                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;attributeEvaluator,
+                                                                      int&nbsp;numLabelsToKeep,
+                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;featureSelectionResultsFile)
+                                                                               throws de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</pre>
+<div class="block">Feature selection using Mulan.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>trainData</code> - training data</dd><dd><code>labelTransformationMethod</code> - method to transform multi-label data into single-label data</dd><dd><code>attributeEvaluator</code> - </dd><dd><code>numLabelsToKeep</code> - number of labels that should be kept</dd><dd><code>featureSelectionResultsFile</code> - a file to write the evaluated attributes to</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a filter to reduce the attribute dimension</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException</code></dd></dl>
+</li>
+</ul>
+<a name="convertMekaInstancesToMulanInstances(weka.core.Instances)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>convertMekaInstancesToMulanInstances</h4>
+<pre>public static&nbsp;mulan.data.MultiLabelInstances&nbsp;convertMekaInstancesToMulanInstances(weka.core.Instances&nbsp;instances)
+                                                                           throws mulan.data.InvalidDataFormatException</pre>
+<div class="block">Converts the Meka-specific instances format to Mulan-specific instances. Hierarchical
+ relationships among labels cannot be expressed.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>instances</code> - </dd>
+<dt><span class="strong">Returns:</span></dt><dd></dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>mulan.data.InvalidDataFormatException</code></dd></dl>
+</li>
+</ul>
+<a name="applyAttributeSelectionFilter(weka.core.Instances, weka.filters.unsupervised.attribute.Remove)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>applyAttributeSelectionFilter</h4>
+<pre>public static&nbsp;weka.core.Instances&nbsp;applyAttributeSelectionFilter(weka.core.Instances&nbsp;trainData,
+                                                weka.filters.unsupervised.attribute.Remove&nbsp;removeFilter)
+                                                         throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Applies a filter to reduce the dimension of attributes and reorders them to be used within
+ Meka</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>trainData</code> - </dd><dd><code>removeFilter</code> - </dd>
+<dt><span class="strong">Returns:</span></dt><dd>a dataset to be used with Meka</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
+</li>
+</ul>
+<a name="writeMlResultToFile(de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult, java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>writeMlResultToFile</h4>
+<pre>public static&nbsp;void&nbsp;writeMlResultToFile(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/MultilabelResult.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util">MultilabelResult</a>&nbsp;result,
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)
+                                throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/FileNotFoundException.html?is-external=true" title="class or interface in java.io">FileNotFoundException</a>,
+                                       <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Writes a file with all necessary information for evaluation.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>result</code> - the result file</dd><dd><code>file</code> - the file to write to</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - i/o error</dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/FileNotFoundException.html?is-external=true" title="class or interface in java.io">FileNotFoundException</a></code> - file not found</dd></dl>
+</li>
+</ul>
+<a name="readMlResultFromFile(java.io.File)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>addOutcomeId</h4>
-<pre>public static&nbsp;weka.core.Instances&nbsp;addOutcomeId(weka.core.Instances&nbsp;newData,
-                               weka.core.Instances&nbsp;oldData,
-                               boolean&nbsp;isMultilabel)
-                                        throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
-<div class="block">Copies the OutcomeId attribute and its values from an existing data set, iff present. It will
- be indexed right before the class attribute</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>newData</code> - data set without OutcomeId attribute</dd><dd><code>oldData</code> - data set with or without OutcomeId attribute</dd>
-<dt><span class="strong">Returns:</span></dt><dd>a data set with or without OutcomeId attribute</dd>
+<h4>readMlResultFromFile</h4>
+<pre>public static&nbsp;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/MultilabelResult.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util">MultilabelResult</a>&nbsp;readMlResultFromFile(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)
+                                             throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a>,
+                                                    <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/ClassNotFoundException.html?is-external=true" title="class or interface in java.lang">ClassNotFoundException</a></pre>
+<div class="block">Reads a file serialized with <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaUtils.html#writeMlResultToFile(de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult,%20java.io.File)"><code>writeMlResultToFile(MultilabelResult, File)</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>file</code> - the file to read from</dd>
+<dt><span class="strong">Returns:</span></dt><dd>an object holding the results</dd>
 <dt><span class="strong">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - i/o error</dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/ClassNotFoundException.html?is-external=true" title="class or interface in java.lang">ClassNotFoundException</a></code> - file not found</dd></dl>
 </li>
 </ul>
 </li>
@@ -587,7 +828,7 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaReportUtils.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/util/WekaSerializedModel.html" title="class in de.tudarmstadt.ukp.dkpro.tc.weka.util"><span class="strong">Prev Class</span></a></li>
 <li>Next Class</li>
 </ul>
 <ul class="navList">
@@ -628,6 +869,6 @@ implements <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/Consta
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>

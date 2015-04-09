@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>MekaEvaluationUtils (dkpro-tc 0.6.0 API)</title>
+<title>MekaEvaluationUtils (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="MekaEvaluationUtils (dkpro-tc 0.6.0 API)";
+        parent.document.title="MekaEvaluationUtils (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -61,13 +61,13 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -111,6 +111,25 @@ extends meka.core.MLEvalUtils</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/evaluation/MekaEvaluationUtils.html#HAMMING_ACCURACY">HAMMING_ACCURACY</a></strong></code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -142,11 +161,19 @@ extends meka.core.MLEvalUtils</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/evaluation/MekaEvaluationUtils.html#calcMLStats(double[][], int[][], double[], java.lang.String[])">calcMLStats</a></strong>(double[][]&nbsp;predictions,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/evaluation/MekaEvaluationUtils.html#calcMLStats(double[][],%20int[][],%20double[])">calcMLStats</a></strong>(double[][]&nbsp;predictions,
+           int[][]&nbsp;goldStandard,
+           double[]&nbsp;t)</code>
+<div class="block">Calculates a number of evaluation measures for multi-label classification, without class-wise measures.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/evaluation/MekaEvaluationUtils.html#calcMLStats(double[][],%20int[][],%20double[],%20java.lang.String[])">calcMLStats</a></strong>(double[][]&nbsp;predictions,
            int[][]&nbsp;goldStandard,
            double[]&nbsp;t,
            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;classNames)</code>
-<div class="block">Calculates a number of evaluation measures for multi-label classification.</div>
+<div class="block">Calculates a number of evaluation measures for multi-label classification, including class-wise measures.</div>
 </td>
 </tr>
 </table>
@@ -162,7 +189,7 @@ extends meka.core.MLEvalUtils</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -172,6 +199,24 @@ extends meka.core.MLEvalUtils</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="HAMMING_ACCURACY">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>HAMMING_ACCURACY</h4>
+<pre>public static final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> HAMMING_ACCURACY</pre>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../../constant-values.html#de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils.HAMMING_ACCURACY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_detail">
@@ -195,6 +240,20 @@ extends meka.core.MLEvalUtils</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="calcMLStats(double[][], int[][], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>calcMLStats</h4>
+<pre>public static&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;calcMLStats(double[][]&nbsp;predictions,
+                                 int[][]&nbsp;goldStandard,
+                                 double[]&nbsp;t)</pre>
+<div class="block">Calculates a number of evaluation measures for multi-label classification, without class-wise measures.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>predictions</code> - predictions by the classifier (ranking)</dd><dd><code>goldStandard</code> - gold standard (bipartition)</dd><dd><code>t</code> - a threshold to create bipartitions from rankings</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the evaluation statistics</dd></dl>
+</li>
+</ul>
 <a name="calcMLStats(double[][], int[][], double[], java.lang.String[])">
 <!--   -->
 </a>
@@ -205,7 +264,7 @@ extends meka.core.MLEvalUtils</pre>
                                  int[][]&nbsp;goldStandard,
                                  double[]&nbsp;t,
                                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;classNames)</pre>
-<div class="block">Calculates a number of evaluation measures for multi-label classification.</div>
+<div class="block">Calculates a number of evaluation measures for multi-label classification, including class-wise measures.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>predictions</code> - predictions by the classifier (ranking)</dd><dd><code>goldStandard</code> - gold standard (bipartition)</dd><dd><code>t</code> - a threshold to create bipartitions from rankings</dd><dd><code>classNames</code> - the class label names</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the evaluation statistics</dd></dl>
 </li>
@@ -262,13 +321,13 @@ extends meka.core.MLEvalUtils</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -277,6 +336,6 @@ extends meka.core.MLEvalUtils</pre>
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>

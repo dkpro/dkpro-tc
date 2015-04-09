@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>Uses of Package de.tudarmstadt.ukp.dkpro.tc.api.features (dkpro-tc 0.6.0 API)</title>
+<title>Uses of Package de.tudarmstadt.ukp.dkpro.tc.api.features (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Uses of Package de.tudarmstadt.ukp.dkpro.tc.api.features (dkpro-tc 0.6.0 API)";
+        parent.document.title="Uses of Package de.tudarmstadt.ukp.dkpro.tc.api.features (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -105,6 +105,14 @@
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization">de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer">de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.features.entityrecognition">de.tudarmstadt.ukp.dkpro.tc.features.entityrecognition</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -171,17 +179,43 @@
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.fstore.filter">de.tudarmstadt.ukp.dkpro.tc.fstore.filter</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.fstore.simple">de.tudarmstadt.ukp.dkpro.tc.fstore.simple</a></td>
 <td class="colLast">
 <div class="block">A simple feature store.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.mallet.util">de.tudarmstadt.ukp.dkpro.tc.mallet.util</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.mallet.writer">de.tudarmstadt.ukp.dkpro.tc.mallet.writer</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.ml.liblinear">de.tudarmstadt.ukp.dkpro.tc.ml.liblinear</a></td>
+<td class="colLast">
+<div class="block">Support for LIBLINEAR machine learning framework.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">de.tudarmstadt.ukp.dkpro.tc.svmhmm.util</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer">de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.testing">de.tudarmstadt.ukp.dkpro.tc.testing</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization">de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -216,6 +250,16 @@
 <tr class="rowColor">
 <td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/Instance.html#de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>
 <div class="block">Internal representation of an instance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/MissingValue.MissingValueNonNominalType.html#de.tudarmstadt.ukp.dkpro.tc.api.features">MissingValue.MissingValueNonNominalType</a>
+<div class="block">Type of a non-nominal feature: boolean, numeric, or string.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/MissingValue.MissingValueType.html#de.tudarmstadt.ukp.dkpro.tc.api.features">MissingValue.MissingValueType</a>
+<div class="block">Type of a feature: boolean, numeric, nominal, or string.</div>
 </td>
 </tr>
 </tbody>
@@ -298,18 +342,47 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/Feature.html#de.tudarmstadt.ukp.dkpro.tc.core.util">Feature</a>
-<div class="block">Internal representation of a feature.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureExtractorResource_ImplBase.html#de.tudarmstadt.ukp.dkpro.tc.core.util">FeatureExtractorResource_ImplBase</a>
 <div class="block">Abstract base class for all feature extractors.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/Instance.html#de.tudarmstadt.ukp.dkpro.tc.core.util">Instance</a>
 <div class="block">Internal representation of an instance.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/crfsuite/task/serialization/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureExtractorResource_ImplBase.html#de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization">FeatureExtractorResource_ImplBase</a>
+<div class="block">Abstract base class for all feature extractors.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/crfsuite/writer/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureStore.html#de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer">FeatureStore</a>
+<div class="block">Interface for data structures that stores extracted features</div>
 </td>
 </tr>
 </tbody>
@@ -736,6 +809,23 @@
 </tbody>
 </table>
 </li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.fstore.filter">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/fstore/filter/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.fstore.filter</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureStore.html#de.tudarmstadt.ukp.dkpro.tc.fstore.filter">FeatureStore</a>
+<div class="block">Interface for data structures that stores extracted features</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
 <li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.fstore.simple">
 <!--   -->
 </a>
@@ -787,6 +877,112 @@
 <tr class="altColor">
 <td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureStore.html#de.tudarmstadt.ukp.dkpro.tc.mallet.writer">FeatureStore</a>
 <div class="block">Interface for data structures that stores extracted features</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/MissingValue.MissingValueType.html#de.tudarmstadt.ukp.dkpro.tc.mallet.writer">MissingValue.MissingValueType</a>
+<div class="block">Type of a feature: boolean, numeric, nominal, or string.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.ml.liblinear">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/ml/liblinear/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.ml.liblinear</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureStore.html#de.tudarmstadt.ukp.dkpro.tc.ml.liblinear">FeatureStore</a>
+<div class="block">Interface for data structures that stores extracted features</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/util/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.svmhmm.util</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/ClassificationUnitFeatureExtractor.html#de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">ClassificationUnitFeatureExtractor</a>
+<div class="block">Common signature for feature extractors which extract their features from the entire document or
+ from a given classification unit.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/Feature.html#de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">Feature</a>
+<div class="block">Internal representation of a feature.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureExtractorResource_ImplBase.html#de.tudarmstadt.ukp.dkpro.tc.svmhmm.util">FeatureExtractorResource_ImplBase</a>
+<div class="block">Abstract base class for all feature extractors.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/svmhmm/writer/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureStore.html#de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer">FeatureStore</a>
+<div class="block">Interface for data structures that stores extracted features</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.testing">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/testing/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.testing</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/Feature.html#de.tudarmstadt.ukp.dkpro.tc.testing">Feature</a>
+<div class="block">Internal representation of a feature.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/MissingValue.html#de.tudarmstadt.ukp.dkpro.tc.testing">MissingValue</a>
+<div class="block">Base class representing a feature value with a missing value.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization">
+<!--   -->
+</a>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.api.features</a> used by <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/weka/task/serialization/package-summary.html">de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/FeatureExtractorResource_ImplBase.html#de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization">FeatureExtractorResource_ImplBase</a>
+<div class="block">Abstract base class for all feature extractors.</div>
 </td>
 </tr>
 </tbody>
@@ -850,6 +1046,11 @@
 <div class="block">Interface for data structures that stores extracted features</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/class-use/MissingValue.MissingValueType.html#de.tudarmstadt.ukp.dkpro.tc.weka.writer">MissingValue.MissingValueType</a>
+<div class="block">Type of a feature: boolean, numeric, nominal, or string.</div>
+</td>
+</tr>
 </tbody>
 </table>
 </li>
@@ -900,6 +1101,6 @@
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>

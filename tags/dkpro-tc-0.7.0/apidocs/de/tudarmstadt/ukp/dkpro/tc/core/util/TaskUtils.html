@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>TaskUtils (dkpro-tc 0.6.0 API)</title>
+<title>TaskUtils (dkpro-tc 0.7.0 API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="TaskUtils (dkpro-tc 0.6.0 API)";
+        parent.document.title="TaskUtils (dkpro-tc 0.7.0 API)";
     }
 //-->
 </script>
@@ -35,7 +35,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/ReportUtils.PrecisionRecallDiagramRenderer.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/SaveModelUtils.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.util"><span class="strong">Prev Class</span></a></li>
 <li>Next Class</li>
 </ul>
 <ul class="navList">
@@ -150,14 +150,38 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static org.apache.uima.analysis_engine.AnalysisEngineDescription</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getFeatureExtractorConnector(java.util.List, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean, java.lang.String...)">getFeatureExtractorConnector</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getFeatureExtractorConnector(java.util.List,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20boolean,%20boolean,%20boolean,%20java.util.List,%20java.lang.String...)">getFeatureExtractorConnector</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters,
                             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;outputPath,
                             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;dataWriter,
                             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode,
                             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureStore,
                             boolean&nbsp;addInstanceId,
                             boolean&nbsp;developerMode,
+                            boolean&nbsp;isTesting,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;filters,
                             <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;featureExtractorClassNames)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static org.apache.uima.analysis_engine.AnalysisEngineDescription</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getFeatureExtractorConnector(java.util.List,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String,%20boolean,%20boolean,%20boolean,%20java.lang.String...)">getFeatureExtractorConnector</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;outputPath,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;dataWriter,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureStore,
+                            boolean&nbsp;addInstanceId,
+                            boolean&nbsp;developerMode,
+                            boolean&nbsp;isTesting,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;featureExtractorClassNames)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getInstancesInSequence(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[],%20org.apache.uima.jcas.JCas,%20de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence,%20boolean,%20int)">getInstancesInSequence</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
+                      org.apache.uima.jcas.JCas&nbsp;jcas,
+                      de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence&nbsp;sequence,
+                      boolean&nbsp;addInstanceId,
+                      int&nbsp;sequenceId)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;? extends <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/meta/MetaCollector.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features.meta">MetaCollector</a>&gt;&gt;</code></td>
@@ -167,16 +191,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getMultipleInstances(java.lang.String, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[], org.apache.uima.jcas.JCas, boolean, boolean, int)">getMultipleInstances</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
-                    <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getMultipleInstances(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[],%20org.apache.uima.jcas.JCas,%20boolean,%20int)">getMultipleInstances</a></strong>(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
                     org.apache.uima.jcas.JCas&nbsp;jcas,
-                    boolean&nbsp;developerMode,
                     boolean&nbsp;addInstanceId,
                     int&nbsp;sequenceId)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getOutcomes(org.apache.uima.jcas.JCas, org.apache.uima.cas.text.AnnotationFS)">getOutcomes</a></strong>(org.apache.uima.jcas.JCas&nbsp;jcas,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getOutcomes(org.apache.uima.jcas.JCas,%20org.apache.uima.cas.text.AnnotationFS)">getOutcomes</a></strong>(org.apache.uima.jcas.JCas&nbsp;jcas,
            org.apache.uima.cas.text.AnnotationFS&nbsp;unit)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -187,15 +209,18 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getSingleInstance(java.lang.String, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[], org.apache.uima.jcas.JCas, boolean, boolean)">getSingleInstance</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#getSingleInstance(java.lang.String,%20de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[],%20org.apache.uima.jcas.JCas,%20boolean,%20boolean)">getSingleInstance</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
                  <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
                  org.apache.uima.jcas.JCas&nbsp;jcas,
                  boolean&nbsp;developerMode,
-                 boolean&nbsp;addInstanceId)</code>&nbsp;</td>
+                 boolean&nbsp;addInstanceId)</code>
+<div class="block">Should not be called directly, but always from a connector (UIMA context with parameters
+ initialized)</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#serialize(java.io.File, java.lang.Object)">serialize</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;serializedFile,
+<td class="colLast"><code><strong><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/TaskUtils.html#serialize(java.io.File,%20java.lang.Object)">serialize</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;serializedFile,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;serializableObject)</code>
 <div class="block">Saves a serializable object of type <T> to disk.</div>
 </td>
@@ -206,7 +231,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -320,7 +345,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/ClassNotFoundException.html?is-external=true" title="class or interface in java.lang">ClassNotFoundException</a></code></dd></dl>
 </li>
 </ul>
-<a name="getFeatureExtractorConnector(java.util.List, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean, java.lang.String...)">
+<a name="getFeatureExtractorConnector(java.util.List, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean, boolean, java.lang.String...)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -331,11 +356,37 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;dataWriter,
                                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode,
                                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureStore,
                                                                                      boolean&nbsp;addInstanceId,
                                                                                      boolean&nbsp;developerMode,
+                                                                                     boolean&nbsp;isTesting,
                                                                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;featureExtractorClassNames)
                                                                                               throws org.apache.uima.resource.ResourceInitializationException</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>parameters</code> - </dd><dd><code>outputPath</code> - </dd><dd><code>dataWriter</code> - </dd><dd><code>learningMode</code> - </dd><dd><code>featureMode</code> - </dd><dd><code>addInstanceId</code> - </dd><dd><code>developerMode</code> - </dd><dd><code>featureExtractorClassNames</code> - </dd>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>featureExtractorClassNames</code> - </dd>
+<dt><span class="strong">Returns:</span></dt><dd>A fully configured feature extractor connector</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>org.apache.uima.resource.ResourceInitializationException</code></dd></dl>
+</li>
+</ul>
+<a name="getFeatureExtractorConnector(java.util.List, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean, boolean, java.util.List, java.lang.String...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFeatureExtractorConnector</h4>
+<pre>public static&nbsp;org.apache.uima.analysis_engine.AnalysisEngineDescription&nbsp;getFeatureExtractorConnector(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;outputPath,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;dataWriter,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;learningMode,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureStore,
+                                                                                     boolean&nbsp;addInstanceId,
+                                                                                     boolean&nbsp;developerMode,
+                                                                                     boolean&nbsp;isTesting,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;filters,
+                                                                                     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;featureExtractorClassNames)
+                                                                                              throws org.apache.uima.resource.ResourceInitializationException</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>featureExtractorClassNames</code> - </dd>
 <dt><span class="strong">Returns:</span></dt><dd>A fully configured feature extractor connector</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>org.apache.uima.resource.ResourceInitializationException</code></dd></dl>
@@ -353,22 +404,22 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                          boolean&nbsp;developerMode,
                          boolean&nbsp;addInstanceId)
                                   throws org.apache.uima.analysis_engine.AnalysisEngineProcessException</pre>
+<div class="block">Should not be called directly, but always from a connector (UIMA context with parameters
+ initialized)</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>featureMode</code> - </dd><dd><code>featureExtractors</code> - </dd><dd><code>jcas</code> - </dd><dd><code>developerMode</code> - </dd><dd><code>addInstanceId</code> - </dd>
 <dt><span class="strong">Returns:</span></dt><dd></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>org.apache.uima.analysis_engine.AnalysisEngineProcessException</code></dd></dl>
 </li>
 </ul>
-<a name="getMultipleInstances(java.lang.String, de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[], org.apache.uima.jcas.JCas, boolean, boolean, int)">
+<a name="getMultipleInstances(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[], org.apache.uima.jcas.JCas, boolean, int)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getMultipleInstances</h4>
-<pre>public static&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&gt;&nbsp;getMultipleInstances(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;featureMode,
-                                  <a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
+<pre>public static&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&gt;&nbsp;getMultipleInstances(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
                                   org.apache.uima.jcas.JCas&nbsp;jcas,
-                                  boolean&nbsp;developerMode,
                                   boolean&nbsp;addInstanceId,
                                   int&nbsp;sequenceId)
                                            throws org.apache.uima.analysis_engine.AnalysisEngineProcessException</pre>
@@ -376,6 +427,22 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dt><span class="strong">Returns:</span></dt><dd></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>org.apache.uima.analysis_engine.AnalysisEngineProcessException</code></dd></dl>
+</li>
+</ul>
+<a name="getInstancesInSequence(de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase[], org.apache.uima.jcas.JCas, de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence, boolean, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInstancesInSequence</h4>
+<pre>public static&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/Instance.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">Instance</a>&gt;&nbsp;getInstancesInSequence(<a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/api/features/FeatureExtractorResource_ImplBase.html" title="class in de.tudarmstadt.ukp.dkpro.tc.api.features">FeatureExtractorResource_ImplBase</a>[]&nbsp;featureExtractors,
+                                    org.apache.uima.jcas.JCas&nbsp;jcas,
+                                    de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence&nbsp;sequence,
+                                    boolean&nbsp;addInstanceId,
+                                    int&nbsp;sequenceId)
+                                             throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd></dl>
 </li>
 </ul>
 <a name="getOutcomes(org.apache.uima.jcas.JCas, org.apache.uima.cas.text.AnnotationFS)">
@@ -417,7 +484,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/ReportUtils.PrecisionRecallDiagramRenderer.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../de/tudarmstadt/ukp/dkpro/tc/core/util/SaveModelUtils.html" title="class in de.tudarmstadt.ukp.dkpro.tc.core.util"><span class="strong">Prev Class</span></a></li>
 <li>Next Class</li>
 </ul>
 <ul class="navList">
@@ -458,6 +525,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2014 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2015 <a href="http://www.ukp.tu-darmstadt.de/">Ubiquitous Knowledge Processing (UKP) Lab</a>. All rights reserved.</small></p>
 </body>
 </html>
