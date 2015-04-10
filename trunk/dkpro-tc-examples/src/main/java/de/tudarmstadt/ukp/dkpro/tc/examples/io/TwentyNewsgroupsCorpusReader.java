@@ -46,4 +46,5 @@ public class TwentyNewsgroupsCorpusReader
             throw new CollectionException(e);
         }
     }
+
 }
