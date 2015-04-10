@@ -52,6 +52,15 @@ public abstract class SingleLabelReaderBase
 
         TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
         outcome.setOutcome(getTextClassificationOutcome(jcas));
+        outcome.setWeight(getTextClassificationOutcomeWeight(jcas));
         outcome.addToIndexes();
     }
+
+
+	public double getTextClassificationOutcomeWeight(JCas jcas)
+			throws CollectionException {
+		// TODO Auto-generated method stub
+		return 1.0;
+	}
+    
 }
