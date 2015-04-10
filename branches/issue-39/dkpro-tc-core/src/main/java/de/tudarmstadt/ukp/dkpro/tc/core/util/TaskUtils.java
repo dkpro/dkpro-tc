@@ -69,7 +69,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.InstanceIdFeature;
-import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 /**
@@ -203,14 +202,14 @@ public class TaskUtils
      * Get a list of MetaCollector classes from a list of feature extractors.
      */
     public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
-            List<String> featureSet)
+            List<ExternalResourceDescription> featureSet)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
 
-        for (String element : featureSet) {
+        for (ExternalResourceDescription element : featureSet) {
             FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
-                    .forName(element).newInstance();
+                    .forName(element.getImplementationName()).newInstance();
             if (featureExtractor instanceof MetaDependent) {
                 MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
                 metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
@@ -223,14 +222,15 @@ public class TaskUtils
     /**
      * Get a list of required type names.
      */
-    public static Set<String> getRequiredTypesFromFeatureExtractors(List<String> featureSet)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    public static Set<String> getRequiredTypesFromFeatureExtractors(
+            List<ExternalResourceDescription> featureSet)
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<String> requiredTypes = new HashSet<String>();
 
-        for (String element : featureSet) {
-            TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(element),
-                    TypeCapability.class);
+        for (ExternalResourceDescription element : featureSet) {
+            TypeCapability annotation = ReflectionUtil.getAnnotation(
+                    Class.forName(element.getImplementationName()), TypeCapability.class);
 
             if (annotation != null) {
                 requiredTypes.addAll(Arrays.asList(annotation.inputs()));
@@ -247,7 +247,7 @@ public class TaskUtils
     public static AnalysisEngineDescription getFeatureExtractorConnector(
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            List<DynamicDiscriminableFunctionBase> aFeatureExtractors,
+            List<ExternalResourceDescription> aFeatureExtractors,
             TaskContext aContext)
             throws ResourceInitializationException
     {
@@ -270,14 +270,13 @@ public class TaskUtils
      * @param featureExtractorClassNames @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    public static AnalysisEngineDescription getFeatureExtractorConnector(
-            String outputPath, String dataWriter, String learningMode, String featureMode,
-            String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting, List<String> filters,
-            List<DynamicDiscriminableFunctionBase> aFeatureExtractors,
-            TaskContext aContext)
-            throws ResourceInitializationException
+    public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath,
+            String dataWriter, String learningMode, String featureMode, String featureStore,
+            boolean addInstanceId, boolean developerMode, boolean isTesting, List<String> filters,
+            List<ExternalResourceDescription> extractorResources, TaskContext aContext)
+        throws ResourceInitializationException
     {
-//        // convert parameters to string as external resources only take string parameters
+        //        // convert parameters to string as external resources only take string parameters
 //        List<Object> convertedParameters = new ArrayList<Object>();
 //        if (parameters != null) {
 //            for (Object parameter : parameters) {
@@ -288,7 +287,6 @@ public class TaskUtils
 //            parameters = new ArrayList<Object>();
 //        }
 
-        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
 //        for (String featureExtractor : featureExtractorClassNames) {
 //            try {
 //                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
@@ -300,10 +298,6 @@ public class TaskUtils
 //            }
 //        }
         
-        for (DynamicDiscriminableFunctionBase featureExtractor : aFeatureExtractors) {
-            extractorResources.add((ExternalResourceDescription) featureExtractor.getActualValue(aContext));
-        }
-
         // add the rest of the necessary parameters with the correct types
         List<Object> parameters = new ArrayList<>();
         parameters.addAll(Arrays.asList(
