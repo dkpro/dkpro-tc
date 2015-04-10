@@ -19,24 +19,22 @@ package de.tudarmstadt.ukp.dkpro.tc.core.feature;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * Extract the context of each unit (in a sequence) and write it to a special file.
  *
  */public abstract class ContextMetaCollector_ImplBase
-	extends MetaCollector
+	extends JCasAnnotator_ImplBase
 {
 	
     public static final String PARAM_CONTEXT_FILE = "contextFile";
@@ -49,12 +47,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 		
 	protected StringBuilder sb;
 
-	@Override
-	public Map<String, String> getParameterKeyPairs() {	    
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(PARAM_CONTEXT_FILE, CONTEXT_KEY);
-        return mapping;
-	}
+
 
 	@Override
 	public void initialize(UimaContext context)
