@@ -20,7 +20,6 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.evaluation;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.AVERAGE_THRESHOLD;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.EMPTY_VECTORS;
-import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.FMEASURE;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_PRED;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_REAL;
 import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.NUMBER_EXAMPLES;
@@ -50,8 +49,10 @@ public class MekaEvaluationUtils
     extends MLEvalUtils
 {
 
+    public static final String HAMMING_ACCURACY = "Hemming Accuracy";
+    
     /**
-     * Calculates a number of evaluation measures for multi-label classification.
+     * Calculates a number of evaluation measures for multi-label classification, without class-wise measures.
      * 
      * @param predictions
      *            predictions by the classifier (ranking)
@@ -59,15 +60,11 @@ public class MekaEvaluationUtils
      *            gold standard (bipartition)
      * @param t
      *            a threshold to create bipartitions from rankings
-     * @param classNames
-     *            the class label names
      * @return the evaluation statistics
      */
     public static HashMap<String, Double> calcMLStats(double predictions[][], int goldStandard[][],
-            double t[],
-            String[] classNames)
+            double t[])
     {
-
         int N = goldStandard.length;
         int L = goldStandard[0].length;
         int Ypred[][] = ThresholdUtils.threshold(predictions, t);
@@ -83,10 +80,34 @@ public class MekaEvaluationUtils
         results.put(AVERAGE_THRESHOLD, mean.evaluate(t, 0, t.length)); // average
         results.put(EMPTY_VECTORS, MLUtils.emptyVectors(Ypred));
 
+        return results;
+    }
+
+    /**
+     * Calculates a number of evaluation measures for multi-label classification, including class-wise measures.
+     * 
+     * @param predictions
+     *            predictions by the classifier (ranking)
+     * @param goldStandard
+     *            gold standard (bipartition)
+     * @param t
+     *            a threshold to create bipartitions from rankings
+     * @param classNames
+     *            the class label names
+     * @return the evaluation statistics
+     */
+    public static HashMap<String, Double> calcMLStats(double predictions[][], int goldStandard[][],
+            double t[],
+            String[] classNames)
+    {
+        HashMap<String, Double> results = calcMLStats(predictions, goldStandard, t);
+        int L = goldStandard[0].length;
+        int Ypred[][] = ThresholdUtils.threshold(predictions, t);
+
         // class-wise measures
         for (int j = 0; j < L; j++) {
-            results.put(FMEASURE + " [" + classNames[j] + "]",
-                    Metrics.P_FmicroAvg(goldStandard, Ypred));
+            results.put(HAMMING_ACCURACY + " [" + classNames[j] + "]",
+                    Metrics.P_Hamming(goldStandard, Ypred, j));
             results.put(PRECISION + " [" + classNames[j] + "]",
                     Metrics.P_Precision(goldStandard, Ypred, j));
             results.put(RECALL + " [" + classNames[j] + "]",

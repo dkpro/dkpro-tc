@@ -25,11 +25,15 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaRegressionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 public class WekaRegressionAdapter
     implements TCMachineLearningAdapter
@@ -61,7 +65,7 @@ public class WekaRegressionAdapter
     @Override
     public Class<? extends ReportBase> getBatchTrainTestReportClass()
     {
-        return WekaBatchTrainTestReport.class;
+        return BatchTrainTestReport.class;
     }
 
     @Override
@@ -88,4 +92,14 @@ public class WekaRegressionAdapter
 
         return null;
     }
+    
+	@Override
+	public Class<? extends DataWriter> getDataWriterClass() {
+		return WekaDataWriter.class;
+	}
+	
+	@Override
+	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
+		return LoadModelConnectorWeka.class;
+	}
 }

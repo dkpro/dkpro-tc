@@ -42,6 +42,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
@@ -67,7 +68,7 @@ public class ExtractFeaturesTask
 //    @Discriminator
 //    protected List<String> featureSet;
     @Discriminator
-    protected List<String> featureFilters;
+    private List<String> featureFilters;
 //    @Discriminator
 //    protected List<Object> pipelineParameters;
     @Discriminator
@@ -83,8 +84,6 @@ public class ExtractFeaturesTask
     @Discriminator
     private String featureStore;
     @Discriminator
-    private String dataWriter;
-    @Discriminator
     private boolean developerMode;
     @Discriminator
     private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
@@ -96,16 +95,14 @@ public class ExtractFeaturesTask
     // each FE)
     // could be used to automatically configure preprocessing
     private Set<String> requiredTypes;
+    
+    private TCMachineLearningAdapter mlAdapter;
 
-    /**
-     * @return
-     */
-    public String getDataWriter()
-    {
-        return dataWriter;
-    }
+	public void setMlAdapter(TCMachineLearningAdapter mlAdapter) {
+		this.mlAdapter = mlAdapter;
+	}
 
-    /**
+	/**
      * @param isTesting
      */
     public void setTesting(boolean isTesting)
@@ -166,7 +163,7 @@ public class ExtractFeaturesTask
         }
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode, featureStore,
+                outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode, featureMode, featureStore,
                 true, developerMode, isTesting, featureFilters, featureExtractorDescriptions,
                 aContext);
 

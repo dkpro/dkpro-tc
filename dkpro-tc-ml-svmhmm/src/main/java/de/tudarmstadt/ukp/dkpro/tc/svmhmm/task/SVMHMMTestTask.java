@@ -18,6 +18,24 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.task;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.SortedSet;
+
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
@@ -25,22 +43,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
-
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedSet;
 
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters.
@@ -225,10 +230,29 @@ public class SVMHMMTestTask
         File modelFile = taskContext
                 .getStorageLocation(MODEL_NAME, StorageService.AccessMode.READONLY);
 
-        List<String> testCommand = buildTestCommand(testFile, modelFile.getAbsolutePath(),
-                predictionsFile.getAbsolutePath());
+        // create tmp files as workaround to long path bug in svm_hmm
+        // if java temp dir is not in /tmp but in a long path dir, this won't work
+        File tmpTestFile = File.createTempFile("tmp_svm_hmm_test", ".txt");
+        FileUtils.copyFile(testFile, tmpTestFile);
+
+        File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
+        FileUtils.copyFile(modelFile, tmpModelFile);
+
+        File tmpPredictionsFile = File.createTempFile("tmp_svm_hmm_predictions", ".txt");
+
+        // command
+        List<String> testCommand = buildTestCommand(tmpTestFile, tmpModelFile.getAbsolutePath(),
+                tmpPredictionsFile.getAbsolutePath());
 
         runCommand(testCommand);
+
+        // copy tmp predictions back to the predictions file
+        FileUtils.copyFile(tmpPredictionsFile, predictionsFile);
+
+        // clean up
+        FileUtils.deleteQuietly(tmpTestFile);
+        FileUtils.deleteQuietly(tmpPredictionsFile);
+        FileUtils.deleteQuietly(tmpModelFile);
     }
 
     /**
@@ -242,7 +266,12 @@ public class SVMHMMTestTask
     {
 
         File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
-        List<String> modelTrainCommand = buildTrainCommand(trainingFile, tmpModelFile.getPath());
+
+        // we have to copy the training file to tmp to prevent long path issue in svm_hmm
+        File tmpTrainingFile = File.createTempFile("tmp_svm_hmm_training", ".txt");
+        FileUtils.copyFile(trainingFile, tmpTrainingFile);
+
+        List<String> modelTrainCommand = buildTrainCommand(tmpTrainingFile, tmpModelFile.getPath());
 
         log.debug("Start training model");
         long time = System.currentTimeMillis();
@@ -257,6 +286,7 @@ public class SVMHMMTestTask
         // clean-up
         IOUtils.closeQuietly(stream);
         FileUtils.deleteQuietly(tmpModelFile);
+        FileUtils.deleteQuietly(tmpTrainingFile);
     }
 
     /**
@@ -354,7 +384,7 @@ public class SVMHMMTestTask
     private static void runCommand(List<String> command)
             throws Exception
     {
-        log.info(command.toString());
+        log.info(StringUtils.join(command, " "));
 
         if (PRINT_STD_OUT) {
             Process process = new ProcessBuilder().inheritIO().command(command).start();
@@ -374,7 +404,8 @@ public class SVMHMMTestTask
             process.waitFor();
 
             // re-read the output and debug it
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tmpOutLog)));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(tmpOutLog)));
             String line;
             while ((line = br.readLine()) != null) {
                 log.debug(line);

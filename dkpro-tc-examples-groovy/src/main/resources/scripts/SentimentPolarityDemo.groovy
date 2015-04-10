@@ -19,14 +19,13 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.MovieReviewCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Groovy-Version of the SentimentPolarityExperiment
@@ -69,7 +68,6 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name);
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [
@@ -117,24 +115,22 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],            
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [WekaBatchCrossValidationReport],
+            reports:         [BatchCrossValidationReport],
             numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);
@@ -147,26 +143,24 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
     protected void runTrainTest() throws Exception
     {
 
-        BatchTaskTrainTest batchTask = [
+        ExperimentTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport.class],            
+            preprocessing:	getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                BatchTrainTestReport,
+                BatchOutcomeIDReport]
         ];
 
         // Run

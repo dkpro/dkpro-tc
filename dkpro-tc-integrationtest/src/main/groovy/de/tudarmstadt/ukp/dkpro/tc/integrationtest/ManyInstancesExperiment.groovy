@@ -35,11 +35,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Testing with many instances.
@@ -66,7 +65,6 @@ public class ManyInstancesExperiment implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -97,26 +95,25 @@ public class ManyInstancesExperiment implements Constants {
     public void run() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
-                WekaClassificationReport.class
+                WekaClassificationReport
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: numFolds]
 

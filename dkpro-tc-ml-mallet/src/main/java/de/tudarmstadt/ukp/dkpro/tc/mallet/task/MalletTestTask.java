@@ -30,7 +30,10 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletUtils;
 
 /**
  * Builds the classifier from the training data and performs classification on the test data.
- * Currently, this task also generates various results in the form of reports. These need to be moved.
+ * Currently, this task also generates various results in the form of reports. These need to be
+ * moved.
+ * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * 
  * @author krishperumal11
  * 

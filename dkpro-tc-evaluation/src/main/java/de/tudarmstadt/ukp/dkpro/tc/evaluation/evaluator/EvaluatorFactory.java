@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universit�t Darmstadt
+ * Technische Universität Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
@@ -57,46 +50,43 @@ public class EvaluatorFactory
             boolean softEvaluation, boolean individualLabelMeasures)
         throws IOException
     {
-        Set<String> labels = new HashSet<String>();
-        List<String> readData = new LinkedList<String>();
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line = "";
-        while ((line = br.readLine()) != null) {
-            if (line.startsWith("#labels")) {
-                String[] classes = line.split(" ");
-
-                // filter #labels out and collect labels
-                for (int i = 1; i < classes.length; i++) {
-                    labels.add(classes[i]);
-                }
-            }
-            else if (!line.startsWith("#")) {
-                // line might contain several '=', split at the last one
-                int idxMostRightHandEqual = line.lastIndexOf("=");
-                String evaluationData = line.substring(idxMostRightHandEqual + 1);
-                readData.add(evaluationData);
-            }
-        }
-        br.close();
-
-        Map<String, Integer> class2number = SmallContingencyTables.classNamesToMapping(labels);
-
-        EvaluatorBase evaluator = null;
-        if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
-            evaluator = new SingleEvaluator(class2number, readData, softEvaluation,
+        Id2Outcome id2outcome = new Id2Outcome(file, learningMode);
+        return createEvaluator(id2outcome, softEvaluation, individualLabelMeasures);
+       
+    }
+    
+    /***
+     * 
+     * @param id2outcome
+     * @param mode
+     * @param softEvaluation
+     *            Controls how division by zero is treated. Soft: returns 0; Hard: returns NaN
+     * @param individualLabelMeasures
+     *            Controls calculation of measures for individual labels. individual: returns
+     *            measures for each label and composite measures; not individual: returns just
+     *            composite measures
+     * @throws IOException
+     */
+    public static EvaluatorBase createEvaluator(Id2Outcome id2outcome,
+            boolean softEvaluation, boolean individualLabelMeasures)
+        throws IOException
+    {
+    	EvaluatorBase evaluator = null;
+        
+        if (id2outcome.getLearningMode().equals(Constants.LM_SINGLE_LABEL)) {
+            evaluator = new SingleEvaluator(id2outcome, softEvaluation,
                     individualLabelMeasures);
         }
-        else if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
-            evaluator = new MultiEvaluator(class2number, readData, softEvaluation,
+        else if (id2outcome.getLearningMode().equals(Constants.LM_MULTI_LABEL)) {
+            evaluator = new MultiEvaluator(id2outcome,softEvaluation,
                     individualLabelMeasures);
         }
-        else if (learningMode.equals(Constants.LM_REGRESSION)) {
-            evaluator = new RegressionEvaluator(class2number, readData, softEvaluation,
+        else if (id2outcome.getLearningMode().equals(Constants.LM_REGRESSION)) {
+            evaluator = new RegressionEvaluator(id2outcome, softEvaluation,
                     individualLabelMeasures);
         }
         else {
-            throw new IllegalArgumentException("Invalid value for learning mode: " + learningMode);
+            throw new IllegalArgumentException("Invalid value for learning mode: " + id2outcome.getLearningMode());
         }
 
         return evaluator;

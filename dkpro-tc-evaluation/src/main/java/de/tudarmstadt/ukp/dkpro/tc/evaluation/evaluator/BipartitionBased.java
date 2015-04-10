@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universit�t Darmstadt
+ * Technische Universität Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
 
 
@@ -33,5 +34,5 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.AbstractLargeCont
  */
 public interface BipartitionBased {
 	
-	public <T> AbstractLargeContingencyTable<T> buildLargeContingencyTable();
+	public <T> AbstractLargeContingencyTable<T> buildLargeContingencyTable() throws TextClassificationException;
 }

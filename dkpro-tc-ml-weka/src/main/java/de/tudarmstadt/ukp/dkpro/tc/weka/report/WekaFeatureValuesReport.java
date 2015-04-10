@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
@@ -85,6 +85,7 @@ public class WekaFeatureValuesReport
 
         // -----MULTI LABEL-----------
         if (multiLabel) {
+        	// FIXME get rid of this method replace with new 
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
             classValues = new String[predictions.classIndex()];
             for (int i = 0; i < predictions.classIndex(); i++) {
@@ -241,40 +242,38 @@ public class WekaFeatureValuesReport
         getContext().storeBinary(FEATURE_VALUE_KEY, new PropertiesAdapter(props));
     }
 
-}
 
-// FIXME consider adding class as public to a separate file under a relevant package
-
-class PairKey<A, B>
-{
-    public final A a;
-    public final B b;
-
-    PairKey(A a, B b)
+    private static class PairKey<A, B>
     {
-        this.a = a;
-        this.b = b;
-    }
+        public final A a;
+        public final B b;
 
-    public static <A, B> PairKey<A, B> make(A a, B b)
-    {
-        return new PairKey<A, B>(a, b);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o == null || o.getClass() != this.getClass()) {
-            return false;
+        PairKey(A a, B b)
+        {
+            this.a = a;
+            this.b = b;
         }
-        PairKey that = (PairKey) o;
-        return (a == null ? that.a == null : a.equals(that.a))
-                && (b == null ? that.b == null : b.equals(that.b));
+
+        public static <A, B> PairKey<A, B> make(A a, B b)
+        {
+            return new PairKey<A, B>(a, b);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (o == null || o.getClass() != this.getClass()) {
+                return false;
+            }
+            PairKey that = (PairKey) o;
+            return (a == null ? that.a == null : a.equals(that.a))
+                    && (b == null ? that.b == null : b.equals(that.b));
+        }
     }
 }

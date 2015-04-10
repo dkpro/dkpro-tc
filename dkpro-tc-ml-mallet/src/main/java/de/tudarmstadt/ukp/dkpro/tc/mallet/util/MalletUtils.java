@@ -64,6 +64,7 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.writer.MalletFeatureEncoder;
 /**
  * Utility class for the Mallet machine learning toolkit
  * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * @author Krish Perumal
  * 
  */

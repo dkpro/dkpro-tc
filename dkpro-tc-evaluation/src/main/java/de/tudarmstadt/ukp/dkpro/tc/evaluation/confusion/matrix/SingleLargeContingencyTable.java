@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universit�t Darmstadt
+ * Technische Universität Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -29,16 +28,15 @@ public class SingleLargeContingencyTable
 	extends AbstractLargeContingencyTable<List<List<Double>>>
 {
 
-	public SingleLargeContingencyTable(List<List<Double>> largeContingencyTable,
-			Map<String, Integer> class2number)
+	public SingleLargeContingencyTable(List<List<Double>> largeContingencyTable, List<String> labels)
 	{
-		super(largeContingencyTable, class2number);
+		super(largeContingencyTable, labels);
 	}
 
 	@Override
 	public SmallContingencyTables decomposeLargeContingencyTable()
 	{
-		SmallContingencyTables smallContingencyTables = new SmallContingencyTables(class2number);
+		SmallContingencyTables smallContingencyTables = new SmallContingencyTables(labels);
 		
 		for (int x = 0; x < smallContingencyTables.getSize(); x++){
 			for (int y = 0; y < smallContingencyTables.getSize(); y++){

@@ -18,6 +18,9 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.report;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.ConfusionMatrix;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
@@ -29,6 +32,8 @@ public class SVMHMMClassificationReport
         extends SVMHMMOutcomeIDReport
         implements Constants
 {
+    static Log log = LogFactory.getLog(SVMHMMClassificationReport.class);
+
     @Override
     public void execute()
             throws Exception
@@ -41,8 +46,11 @@ public class SVMHMMClassificationReport
             cm.increaseValue(this.goldLabels.get(i), this.predictedLabels.get(i));
         }
 
-        // and write to the output
+        // write to the output
         SVMHMMUtils.writeOutputResults(getContext(), cm);
-    }
 
+        // and print detailed results
+        log.info(cm.printNiceResults());
+        log.info(cm.printLabelPrecRecFm());
+    }
 }

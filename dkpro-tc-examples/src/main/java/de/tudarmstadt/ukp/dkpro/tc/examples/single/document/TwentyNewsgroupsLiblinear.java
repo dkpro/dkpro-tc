@@ -40,12 +40,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.liblinear.LiblinearDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -123,7 +122,6 @@ public class TwentyNewsgroupsLiblinear
                         LuceneNGramDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, LiblinearDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets);
 
@@ -135,7 +133,7 @@ public class TwentyNewsgroupsLiblinear
         throws Exception
     {
 
-        BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV", LiblinearAdapter.getInstance(),
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", LiblinearAdapter.class,
                 getPreprocessing(), NUM_FOLDS);
         batch.addInnerReport(LiblinearClassificationReport.class);
         batch.setParameterSpace(pSpace);
@@ -151,7 +149,7 @@ public class TwentyNewsgroupsLiblinear
         throws Exception
     {
 
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest", LiblinearAdapter.getInstance(),
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", LiblinearAdapter.class,
                 getPreprocessing());
         batch.addInnerReport(LiblinearClassificationReport.class);
         batch.setParameterSpace(pSpace);

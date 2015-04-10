@@ -33,6 +33,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants.WGT_RECALL;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import meka.core.Result;
 import mulan.evaluation.measure.Measure;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
@@ -49,12 +49,13 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaReportUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -96,7 +97,7 @@ public class WekaClassificationReport
 
         if (multiLabel) {
             // ============= multi-label setup ======================
-            Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
+        	MultilabelResult r = WekaUtils.readMlResultFromFile(evaluationFile); 
 
             File dataFile = new File(storage.getAbsolutePath() + "/"
                     + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
@@ -107,14 +108,15 @@ public class WekaClassificationReport
                 classNames[i] = data.attribute(i).name().split(Constants.CLASS_ATTRIBUTE_PREFIX)[1];
             }
 
-            String threshold = r.getInfo("Threshold");
-            double[] t = WekaUtils.getMekaThreshold(threshold, r, data);
+            double t = r.getBipartitionThreshold();
+            double[] thresholdArray = new double[classNames.length];
+            Arrays.fill(thresholdArray, t);
 
             // Mulan Evaluation
-            boolean[][] actualsArray = MulanEvaluationWrapper.getBooleanArrayFromList(r.actuals);
+            boolean[][] actualsArray = MulanEvaluationWrapper.getBooleanMatrix(r.getGoldstandard());
 
-            List<Measure> mulanResults = MulanEvaluationWrapper.getMulanEvals(r.predictions,
-                    actualsArray, t[0]);
+            List<Measure> mulanResults = MulanEvaluationWrapper.getMulanEvals(r.getPredictions(),
+                    actualsArray, t);
 
             for (Measure measure : mulanResults) {
                 results.put(measure.getName(), measure.getValue());
@@ -125,12 +127,12 @@ public class WekaClassificationReport
                     predictedLabelsList, tempM);
 
             // Meka Evaluation
-            Map<String, Double> mekaResults = MekaEvaluationUtils.calcMLStats(r.allPredictions(),
-                    r.allActuals(), t, classNames);
+            Map<String, Double> mekaResults = MekaEvaluationUtils.calcMLStats(r.getPredictions(),
+                    r.getGoldstandard(), thresholdArray, classNames);
             results.putAll(mekaResults);
 
             // average PR curve
-            double[][] prc = WekaReportUtils.createPRData(actualsArray, r.predictions);
+            double[][] prc = WekaReportUtils.createPRData(actualsArray, r.getPredictions());
             prcData.add(prc);
         }
 
@@ -174,15 +176,20 @@ public class WekaClassificationReport
         // ================================================
 
         if (multiLabel) {
-            // store ML confusion matrix
-            confusionMatrix = createConfusionMatrix(tempM);
-            // create PR curve diagram
-            ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
-                    ReportUtils.createXYDataset(prcData));
-            FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
-                    WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                    + "/" + PR_CURVE_KEY));
-            renderer.write(fos);
+                // store ML confusion matrix
+                confusionMatrix = createConfusionMatrix(tempM);
+                // create PR curve diagram
+            try {
+                ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
+                        ReportUtils.createXYDataset(prcData));
+                FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
+                        WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
+                        + "/" + PR_CURVE_KEY));
+                renderer.write(fos);
+            }
+            catch (Exception e) {
+                // ignore in case of errors
+            }
         }
 
         for (String s : results.keySet()) {

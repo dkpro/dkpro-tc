@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,22 +34,29 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 public class CRFSuiteDataWriter
     implements DataWriter
 {
-    Log logger = null;
+    private static Log logger = null;
 
     @Override
     public void write(File aOutputDirectory, FeatureStore aFeatureStore,
             boolean aUseDenseInstances, String aLearningMode)
         throws Exception
     {
-        Iterable<Instance> instances = aFeatureStore.getInstances();
+        writeFeatureFile(aFeatureStore, aOutputDirectory);
 
-        int totalCountOfInstances = getTotalCountOfInstances(instances);
+        Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
+        File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
+        FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
+    }
+
+    public static File writeFeatureFile(FeatureStore featureStore, File aOutputDirectory) throws Exception
+    {
+        int totalCountOfInstances = featureStore.getNumberOfInstances();
 
         File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -60,14 +66,14 @@ public class CRFSuiteDataWriter
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
         for (int ins = 0; ins < totalCountOfInstances; ins++) {
-            Instance i = aFeatureStore.getInstance(ins);
+            Instance i = featureStore.getInstance(ins);
 
             if (i.getSequenceId() != lastSeenSeqId) {
                 seqIdChanged = true;
                 lastSeenSeqId = i.getSequenceId();
             }
 
-            bf.write(i.getOutcome());
+            bf.write(LabelSubstitutor.labelReplacement(i.getOutcome()));
             bf.write("\t");
 
             List<Feature> features = i.getFeatures();
@@ -88,7 +94,7 @@ public class CRFSuiteDataWriter
 
             // Peak ahead - seqEnd reached?
             if (ins + 1 < totalCountOfInstances) {
-                Instance next = aFeatureStore.getInstance(ins + 1);
+                Instance next = featureStore.getInstance(ins + 1);
                 if (next.getSequenceId() != lastSeenSeqId) {
                     appendEOS(bf);
                     continue;
@@ -102,29 +108,16 @@ public class CRFSuiteDataWriter
         }
         bf.close();
         log("Finished writing features to file " + outputFile.getAbsolutePath());
-
-        Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
-        File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
-        FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
+        
+        return outputFile;
     }
 
-    private void appendEOS(BufferedWriter bf) throws Exception
+    private static void appendEOS(BufferedWriter bf) throws Exception
     {
         bf.write("\t");
         bf.write("__EOS__");
         bf.write("\n");
         bf.write("\n");
-    }
-
-    private int getTotalCountOfInstances(Iterable<Instance> aInstances)
-    {
-        int totalCountOfInstances = 0;
-        Iterator<Instance> iterator = aInstances.iterator();
-        while (iterator.hasNext()) {
-            totalCountOfInstances++;
-            iterator.next();
-        }
-        return totalCountOfInstances;
     }
 
     public static String outcomeMap2String(Map<String, Integer> map)
@@ -151,10 +144,10 @@ public class CRFSuiteDataWriter
         return outcomeMapping;
     }
 
-    private void log(String text)
+    private static void log(String text)
     {
         if (logger == null) {
-            logger = LogFactory.getLog(getClass());
+            logger = LogFactory.getLog(CRFSuiteDataWriter.class.getName());
         }
         logger.info(text);
     }

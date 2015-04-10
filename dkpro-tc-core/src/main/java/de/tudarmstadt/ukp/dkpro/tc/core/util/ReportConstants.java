@@ -22,6 +22,9 @@ package de.tudarmstadt.ukp.dkpro.tc.core.util;
  */
 public interface ReportConstants
 {
+	// GENERAL
+    public static final String MEASURES = "Measures";
+	
     // accuracy
     public static final String CORRECT = "Correctly Classified Examples";
     public static final String INCORRECT = "Incorrectly Classified Examples";

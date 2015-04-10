@@ -32,14 +32,13 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
@@ -84,7 +83,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
 
     //UIMA parameters for FE configuration
     def dimPipelineParameters = Dimension.create(
@@ -130,111 +128,107 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     public void runEmptyPipelineParameters() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
-                WekaClassificationReport.class
+                WekaClassificationReport
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParametersEmpty
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
 
-        BatchTaskTrainTest batchTaskTrainTest = [
+        ExperimentTrainTest TrainTestExperiment = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
-                WekaClassificationReport.class
+                WekaClassificationReport
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets,
                 dimPipelineParametersEmpty
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                BatchTrainTestReport,
+                BatchOutcomeIDReport]
         ]
 
         // Run
-        Lab.getInstance().run(batchTaskTrainTest)
+        Lab.getInstance().run(TrainTestExperiment)
     }
 
     public void runEmptyFeatureExtractorSet() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
-                WekaClassificationReport.class
+                WekaClassificationReport
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
 
-        BatchTaskTrainTest batchTaskTrainTest = [
+        ExperimentTrainTest TrainTestExperiment = [
             experimentName: experimentName + "-TrainTest-Groovy",
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
-                WekaClassificationReport.class
+                WekaClassificationReport
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                BatchTrainTestReport,
+                BatchOutcomeIDReport]
         ]
 
         // Run
-        Lab.getInstance().run(batchTaskTrainTest)
+        Lab.getInstance().run(TrainTestExperiment)
     }
 
     private AnalysisEngineDescription getPreprocessing()

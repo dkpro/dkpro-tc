@@ -33,6 +33,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
 
 /**
@@ -64,24 +65,34 @@ public class ValidityCheckTask
     @Discriminator
     private String threshold;
     @Discriminator
-    private String dataWriter;
-    @Discriminator
     protected List<String> featureSet;
     @Discriminator
     protected boolean developerMode;
 
     private boolean isTesting = false;
 
+    private TCMachineLearningAdapter mlAdapter;
+	
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
         CollectionReaderDescription readerDesc;
         if (!isTesting) {
+            if (readerTrain == null) {
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTrain is null"));
+            }
+
             readerDesc = createReaderDescription(readerTrain,
                     readerTrainParams.toArray());
         }
         else {
+            if (readerTest == null) {
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTest is null"));
+            }
+
             readerDesc = createReaderDescription(readerTest,
                     readerTestParams.toArray());
         }
@@ -100,15 +111,15 @@ public class ValidityCheckTask
         this.isTesting = isTesting;
     }
 
+	public void setMlAdapter(TCMachineLearningAdapter mlAdapter) {
+		this.mlAdapter = mlAdapter;
+	}
+	
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
         // check mandatory dimensions
-        if (dataWriter == null) {
-            throw new ResourceInitializationException("You need to set the dataWriter dimension.",
-                    null);
-        }
 
         if (featureSet == null) {
             throw new ResourceInitializationException(new TextClassificationException(
@@ -123,7 +134,7 @@ public class ValidityCheckTask
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
         parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
-        parameters.add(dataWriter);
+        parameters.add(mlAdapter.getDataWriterClass().getName());
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(featureMode);
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);

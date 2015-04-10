@@ -32,7 +32,7 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
@@ -46,10 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 public class WekaOutcomeIDReport
     extends ReportBase
 {
-    /**
-     * Name of the file where the instanceID / outcome pairs are stored
-     */
-    public static final String ID_OUTCOME_KEY = "id2outcome.txt";
+
     /**
      * Character that is used for separating fields in the output file
      */
@@ -74,7 +71,7 @@ public class WekaOutcomeIDReport
                 .equals(Constants.LM_REGRESSION);
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
         Properties props = generateProperties(predictions, multiLabel, regression);
-        getContext().storeBinary(ID_OUTCOME_KEY,
+        getContext().storeBinary(Constants.ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD"));
     }
 

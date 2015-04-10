@@ -18,20 +18,21 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.random;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.tc.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter
