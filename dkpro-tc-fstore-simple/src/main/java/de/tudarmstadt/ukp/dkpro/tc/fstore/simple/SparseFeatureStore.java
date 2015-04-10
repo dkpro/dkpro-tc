@@ -41,6 +41,7 @@ public class SparseFeatureStore
 
     private List<Map<String, Object>> instanceList = new ArrayList<>();
     private List<List<String>> outcomeList = new ArrayList<>();
+    private List<Double> weightList = new ArrayList<>();
     private List<Integer> sequenceIds = new ArrayList<>();
     private List<Integer> sequencePositions = new ArrayList<>();
 
@@ -104,6 +105,7 @@ public class SparseFeatureStore
 
         this.instanceList.add(currentInstanceFeatures);
         this.outcomeList.add(instance.getOutcomes());
+        this.weightList.add(instance.getWeight());
         this.sequenceIds.add(instance.getSequenceId());
         this.sequencePositions.add(instance.getSequencePosition());
     }
@@ -147,6 +149,7 @@ public class SparseFeatureStore
         }
 
         Instance result = new Instance(features, outcomeList.get(i));
+        result.setWeight(weightList.get(i));
         result.setSequenceId(sequenceIds.get(i));
         result.setSequencePosition(sequencePositions.get(i));
 
@@ -177,6 +180,7 @@ public class SparseFeatureStore
         }
 
         Instance result = new Instance(features, outcomeList.get(i));
+        result.setWeight(weightList.get(i));
         result.setSequenceId(sequenceIds.get(i));
         result.setSequencePosition(sequencePositions.get(i));
 
@@ -200,6 +204,12 @@ public class SparseFeatureStore
     {
         return this.outcomeList.get(i);
     }
+    
+    @Override
+    public Double getWeight(int i)
+    {
+        return this.weightList.get(i);
+    }
 
     @Override
     public TreeSet<String> getFeatureNames()
@@ -219,6 +229,7 @@ public class SparseFeatureStore
         return "SparseFeatureStore{" +
                 "instanceList=" + instanceList +
                 ", outcomeList=" + outcomeList +
+                ", weightList=" + weightList +
                 ", sequenceIds=" + sequenceIds +
                 ", sequencePositions=" + sequencePositions +
                 ", addingAnotherInstancesAllowed=" + addingAnotherInstancesAllowed +

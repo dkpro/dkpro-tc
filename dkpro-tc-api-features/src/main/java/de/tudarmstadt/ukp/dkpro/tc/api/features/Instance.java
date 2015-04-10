@@ -33,6 +33,7 @@ public class Instance
 {
     private List<Feature> features;
     private List<String> outcomes;
+    private double weight;
     private int sequenceId;
     private int sequencePosition;
     
@@ -42,6 +43,7 @@ public class Instance
     public Instance() {
         this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
+        this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
@@ -58,6 +60,7 @@ public class Instance
         this.features = features;
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
+        this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
@@ -73,6 +76,7 @@ public class Instance
         super();
         this.features = features;
         this.outcomes = Arrays.asList(outcomes);
+        this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
@@ -88,6 +92,7 @@ public class Instance
         super();
         this.features = features;
         this.outcomes = outcomes;
+        this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
@@ -154,6 +159,24 @@ public class Instance
     {
         this.outcomes.clear();
         this.outcomes.addAll(Arrays.asList(outcomes));
+    }
+    /**
+     * Gets the weight for this instance
+     * 
+     * @return the weight for this instance
+     */
+    public double getWeight()
+    {
+        return this.weight;
+    }
+    /**
+     * Sets the weight for this instance
+     * 
+     * @param weight
+     */
+    public void setWeight(double weight)
+    {
+        this.weight = weight;
     }
 
     /**

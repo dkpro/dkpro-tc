@@ -44,7 +44,7 @@ public class DumpDataWriter
 
     @Override
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode)
+            String learningMode, boolean applyWeighting)
         throws Exception
     {
         StringBuilder sb = new StringBuilder();

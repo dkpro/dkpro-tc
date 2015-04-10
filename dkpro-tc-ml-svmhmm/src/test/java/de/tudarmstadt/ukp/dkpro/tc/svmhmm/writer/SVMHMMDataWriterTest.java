@@ -101,7 +101,7 @@ public class SVMHMMDataWriterTest
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
@@ -119,7 +119,7 @@ public class SVMHMMDataWriterTest
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
@@ -146,7 +146,7 @@ public class SVMHMMDataWriterTest
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
 
         File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
         List<String> lines = IOUtils.readLines(new FileInputStream(featureVectorsFile));
@@ -177,7 +177,7 @@ public class SVMHMMDataWriterTest
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null);
+        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));

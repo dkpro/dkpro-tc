@@ -28,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
- * {@link DataWriter} for the Meka machine learning tool.
+ * {@link DataWriter} for the Weka machine learning tool.
  * 
  * @author zesch
  * 
@@ -39,12 +39,12 @@ public class WekaDataWriter
 
     @Override
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode)
+            String learningMode, boolean applyWeighting)
         throws Exception
     {
         boolean isRegression = learningMode.equals(LM_REGRESSION);
         WekaUtils.instanceListToArffFile(new File(outputDirectory, 
         		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile)), featureStore,
-                useDenseInstances, isRegression);
+                useDenseInstances, isRegression, applyWeighting);
     }
 }

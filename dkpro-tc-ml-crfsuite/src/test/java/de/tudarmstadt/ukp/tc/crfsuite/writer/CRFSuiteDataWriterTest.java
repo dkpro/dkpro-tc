@@ -138,6 +138,6 @@ public class CRFSuiteDataWriterTest
         throws Exception
     {
         CRFSuiteDataWriter writer = new CRFSuiteDataWriter();
-        writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL);
+        writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL, false);
     }
 }

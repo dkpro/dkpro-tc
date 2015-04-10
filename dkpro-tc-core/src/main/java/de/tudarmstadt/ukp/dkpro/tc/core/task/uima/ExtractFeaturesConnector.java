@@ -87,6 +87,9 @@ public class ExtractFeaturesConnector
 
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
+    
+    @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
+    private boolean applyWeighting;
 
     @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
     private boolean isTesting;
@@ -193,10 +196,10 @@ public class ExtractFeaturesConnector
                 throw new AnalysisEngineProcessException(e);
             }
 
+            AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
             // if feature space from training set and test set differs, apply the filter
             // to keep only features seen during training
             if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
-                AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
                 filter.setFeatureNames(trainFeatureNames);
                 filter.applyFilter(featureStore);
             }
@@ -207,7 +210,7 @@ public class ExtractFeaturesConnector
         // addInstanceId requires dense instances
         try {
             DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, featureStore, true, learningMode);
+            writer.write(outputDirectory, featureStore, true, learningMode, applyWeighting);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

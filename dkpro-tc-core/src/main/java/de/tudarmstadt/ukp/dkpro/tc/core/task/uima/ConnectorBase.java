@@ -61,6 +61,11 @@ public abstract class ConnectorBase
      * Whether we are extracting for training or testing. May e.g. have consequences when applying filters.
      */
     public static final String PARAM_IS_TESTING = "isTesting";
+    /**
+     * Whether to turn on instance weighting.  If true, user should override addweight 
+     * in the reader.
+     */
+    public static final String PARAM_APPLY_WEIGHTING = "applyWeights";
     
     /**
      * Name of the class implementing {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}

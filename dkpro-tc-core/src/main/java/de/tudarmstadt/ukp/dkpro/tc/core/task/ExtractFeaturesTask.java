@@ -86,6 +86,8 @@ public class ExtractFeaturesTask
     private String featureStore;
     @Discriminator
     private boolean developerMode;
+    @Discriminator
+    private boolean applyWeighting;
 
     private boolean isTesting = false;
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
@@ -163,9 +165,10 @@ public class ExtractFeaturesTask
         	featureFilters = Collections.<String>emptyList();
         }
         
+        
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName() , learningMode, featureMode,
-                featureStore, true, developerMode, isTesting, featureFilters, featureSet.toArray(new String[0]));
+                featureStore, true, developerMode, isTesting, featureFilters, applyWeighting, featureSet.toArray(new String[0]));
 
         return connector;
     }

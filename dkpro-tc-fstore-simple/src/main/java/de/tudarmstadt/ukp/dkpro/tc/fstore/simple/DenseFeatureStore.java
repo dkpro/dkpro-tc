@@ -46,6 +46,7 @@ public class DenseFeatureStore
 {
     private List<List<Object>> instanceList;
     private List<List<String>> outcomeList;
+    private List<Double> weightList;
     private List<Integer> sequenceIds;
     private List<Integer> sequencePositions;
     private TreeSet<String> featureNames;
@@ -57,6 +58,7 @@ public class DenseFeatureStore
     {
         this.instanceList = new ArrayList<List<Object>>();
         this.outcomeList = new ArrayList<List<String>>();
+        this.weightList = new ArrayList<Double>();
         this.sequenceIds = new ArrayList<Integer>();
         this.sequencePositions = new ArrayList<Integer>();
         this.featureNames = null;
@@ -107,6 +109,7 @@ public class DenseFeatureStore
         }
         this.instanceList.add(Arrays.asList(values));
         this.outcomeList.add(instance.getOutcomes());
+        this.weightList.add(instance.getWeight());
         this.sequenceIds.add(instance.getSequenceId());
         this.sequencePositions.add(instance.getSequencePosition());
     }
@@ -128,6 +131,7 @@ public class DenseFeatureStore
         }
 
         Instance instance = new Instance(features, outcomeList.get(i));
+        instance.setWeight(weightList.get(i));
         instance.setSequenceId(sequenceIds.get(i));
         instance.setSequencePosition(sequencePositions.get(i));
         return instance;
@@ -137,6 +141,12 @@ public class DenseFeatureStore
     public List<String> getOutcomes(int i)
     {
         return this.outcomeList.get(i);
+    }
+    
+    @Override
+    public Double getWeight(int i)
+    {
+        return this.weightList.get(i);
     }
 
     // public List<List<String>> getOutcomeLists()
@@ -175,6 +185,23 @@ public class DenseFeatureStore
     public TreeSet<String> getFeatureNames()
     {
         return featureNames;
+    }
+    
+    /**
+     * Primarily for debug purposes
+     *
+     * @return all instances, features, mapping, internal state, etc.
+     */
+    @Override
+    public String toString()
+    {
+        return "SparseFeatureStore{" +
+                "instanceList=" + instanceList +
+                ", outcomeList=" + outcomeList +
+                ", weightList=" + weightList +
+                ", sequenceIds=" + sequenceIds +
+                ", sequencePositions=" + sequencePositions +
+                '}';
     }
 
 	@Override

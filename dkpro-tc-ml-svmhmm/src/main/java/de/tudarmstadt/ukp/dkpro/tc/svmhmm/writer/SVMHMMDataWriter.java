@@ -61,7 +61,7 @@ public class SVMHMMDataWriter
 
     @Override
     public void write(File aOutputDirectory, FeatureStore featureStore, boolean aUseDenseInstances,
-            String aLearningMode)
+            String aLearningMode, boolean applyWeighting)
             throws Exception
     {
         // map features to feature numbers

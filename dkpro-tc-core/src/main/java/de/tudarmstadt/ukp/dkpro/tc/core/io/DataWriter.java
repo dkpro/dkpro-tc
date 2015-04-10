@@ -40,6 +40,6 @@ public interface DataWriter
      * @throws Exception
      */
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode)
+            String learningMode, boolean applyWeighting)
         throws Exception;
 }

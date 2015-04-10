@@ -51,7 +51,8 @@ public class LiblinearDataWriter
 	
 	@Override
 	public void write(File outputDirectory, FeatureStore featureStore,
-			boolean useDenseInstances, String learningMode) throws Exception 
+			boolean useDenseInstances, String learningMode, boolean applyWeighting) 
+			        throws Exception 
 	{
 		FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
 		FeatureNode[][] nodes = encoder.featueStore2FeatureNode(featureStore);
