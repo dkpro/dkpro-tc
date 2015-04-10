@@ -17,18 +17,20 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 
@@ -109,12 +111,10 @@ public class KeywordNGramFeatureExtractorBase
     }
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+        throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(KeywordNGramMetaCollector.class);
-
-        return metaCollectorClasses;
+        return asList(createEngineDescription(KeywordNGramMetaCollector.class));
     }
 
     @Override

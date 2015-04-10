@@ -17,13 +17,16 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
-import java.util.ArrayList;
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
 import java.util.List;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneCharSkipNgramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
@@ -53,12 +56,10 @@ public class LuceneCharacterSkipNgramFeatureExtractorBase
     protected boolean charSkipToLowerCase;
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+        throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LuceneCharSkipNgramMetaCollector.class);
-
-        return metaCollectorClasses;
+        return asList(createEngineDescription(LuceneCharSkipNgramMetaCollector.class));
     }
 
     @Override

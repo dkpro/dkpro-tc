@@ -19,6 +19,9 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features.meta;
 
 import java.util.List;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.resource.ResourceInitializationException;
+
 
 /**
  * Feature extractors that depend on {@link MetaCollector}s should implemnt this interface.
@@ -32,7 +35,6 @@ public interface MetaDependent
     /**
      * @return A list of meta collector classes that a "meta dependent" collector depdends on
      */
-    // FIXME - This should be changed to return instantiated MetaCollector objects that are already
-    // configured in the way that the FeatureCollector requires them
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses();
+    List<AnalysisEngineDescription> getMetaCollectorClasses()
+        throws ResourceInitializationException;
 }

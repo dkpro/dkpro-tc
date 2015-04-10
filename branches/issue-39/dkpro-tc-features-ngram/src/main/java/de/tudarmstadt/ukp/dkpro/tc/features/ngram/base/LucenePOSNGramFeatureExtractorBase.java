@@ -17,13 +17,16 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
-import java.util.ArrayList;
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
 import java.util.List;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
 
@@ -51,15 +54,6 @@ public class LucenePOSNGramFeatureExtractorBase
     protected boolean useCanonicalTags;
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
-    {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LucenePOSNGramMetaCollector.class);
-        
-        return metaCollectorClasses;
-    }
-
-    @Override
     protected String getFieldName()
     {
         return LUCENE_POS_NGRAM_FIELD;
@@ -75,5 +69,12 @@ public class LucenePOSNGramFeatureExtractorBase
     protected int getTopN()
     {
         return posNgramUseTopK;
+    }
+
+    @Override
+    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+        throws ResourceInitializationException
+    {
+        return asList(createEngineDescription(LucenePOSNGramMetaCollector.class));
     }
 }

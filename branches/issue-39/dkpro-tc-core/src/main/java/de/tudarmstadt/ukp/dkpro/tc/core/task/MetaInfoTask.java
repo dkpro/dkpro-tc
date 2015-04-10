@@ -23,19 +23,17 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
+import org.apache.uima.fit.factory.ConfigurationParameterFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -45,10 +43,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.UnitContextMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 
 /**
  * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
@@ -71,15 +70,10 @@ public class MetaInfoTask
     private List<String> operativeViews;
 
     @Discriminator
-    protected List<String> featureSet;
+    private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
     
     @Discriminator
     private String featureMode;
-
-    @Discriminator
-    protected List<Object> pipelineParameters;
-
-    private Set<Class<? extends MetaCollector>> metaCollectorClasses;
 
     @Discriminator
     private File filesRoot;
@@ -105,87 +99,113 @@ public class MetaInfoTask
         }
     }
 
+    private void configureStorageLocations(AnalysisEngineDescription aDesc, String aExtractorName)
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    {
+        // We assume for the moment that we only have primitive analysis engines for meta
+        // collection, not aggregates. If there were aggregates, we'd have to do this
+        // recursively
+        if (!aDesc.isPrimitive()) {
+            throw new IllegalArgumentException("Only primitive meta collectors currently supported.");
+        }
+        
+        Class<?> metaCollectorImpl = Class.forName(aDesc.getImplementationName());
+        
+        if (!MetaCollector.class.isAssignableFrom(metaCollectorImpl)) {
+            throw new IllegalArgumentException("Meta collectors must inherit from MetaCollector");
+        }
+        
+        // Here we fetch all the parameters that represent storage locations to which the
+        // meta collector would like to write and we override them to point to specific locaions
+        // for the given meta collector instance.
+        MetaCollector metaCollector = (MetaCollector) metaCollectorImpl.newInstance();
+        
+        for (Entry<String, String> e : metaCollector.getParameterKeyPairs().entrySet()) {
+            if (aExtractorName != null) {
+                // We generate a storage location from the feature extractor discriminator value
+                // and the preferred value specified by the meta collector
+                String storageLocation = String.valueOf(aExtractorName)
+                        + "-" + e.getValue();
+                String parameterName = e.getKey();
+                ConfigurationParameterFactory.setParameter(aDesc, parameterName, storageLocation);
+            }
+            else {
+                // If there is no associated feature extractor, then just use the preferred name
+                ConfigurationParameterFactory.setParameter(aDesc, e.getKey(), e.getValue());
+            }
+        }
+    }
+    
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
 
         // check for error conditions
-        if (featureSet == null) {
+        if (featureExtractors == null) {
             throw new ResourceInitializationException(new TextClassificationException(
                     "No feature extractors have been added to the experiment."));
         }
 
-        // automatically determine the required metaCollector classes from the provided feature
-        // extractors
+        // Resolve the feature extractor closures to actual descritors
+        List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
+        for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> fc : featureExtractors) {
+            featureExtractorDescriptions.add(fc.getActualValue(aContext));
+        }
+
+
+        List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-        }
-        catch (ClassNotFoundException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (InstantiationException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new ResourceInitializationException(e);
-        }
-        
-        if (featureMode.equals(Constants.FM_UNIT)) {
-            // add additional unit context meta collector that extracts the context around text classification units
-            // mainly used for error analysis purposes
-            metaCollectorClasses.add(UnitContextMetaCollector.class);        	
-        }
-        
-        if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            metaCollectorClasses.add(SequenceContextMetaCollector.class);        	
-        }
-
-        // collect parameter/key pairs that need to be set
-        Map<String, String> parameterKeyPairs = new HashMap<String, String>();
-        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            try {
-                parameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
+            if (featureMode.equals(Constants.FM_UNIT)) {
+                // add additional unit context meta collector that extracts the context around text classification units
+                // mainly used for error analysis purposes
+                AnalysisEngineDescription desc = createEngineDescription(UnitContextMetaCollector.class);
+                configureStorageLocations(desc, null);
+                metaCollectors.add(desc); 	
             }
-            catch (InstantiationException e) {
-                throw new ResourceInitializationException(e);
+            
+            if (featureMode.equals(Constants.FM_SEQUENCE)) {
+                AnalysisEngineDescription desc = createEngineDescription(SequenceContextMetaCollector.class);
+                configureStorageLocations(desc, null);
+                metaCollectors.add(desc);   
             }
-            catch (IllegalAccessException e) {
-                throw new ResourceInitializationException(e);
+    
+            // Configure the meta collectors for each feature extractor individually
+            for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> feClosure : featureExtractors) {
+                ExternalResourceDescription feDesc = feClosure.getActualValue(aContext);
+                Class<?> feClass = Class.forName(feDesc.getImplementationName());
+                
+                // Skip feature extractors that are not dependent on meta collectors
+                if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                    continue;
+                }
+    
+                MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+                
+                // Tell the meta collectors where to store their data
+                for (AnalysisEngineDescription desc : feInstance.getMetaCollectorClasses()) {
+                    configureStorageLocations(desc, (String) feClosure.getDiscriminatorValue());
+                }
             }
         }
-
-        List<Object> parameters = new ArrayList<Object>();
-        if (pipelineParameters != null) {
-            parameters.addAll(pipelineParameters);
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new ResourceInitializationException(e);
         }
 
         // make sure that the meta key import can be resolved (even when no meta features have been
         // extracted, as in the regression demo)
-        // TODO better way to do this?
-        if (parameterKeyPairs.size() == 0) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY)
-                    .getPath());
-            file.mkdir();
-        }
-
-        for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
-                    entry.getValue());
-            parameters.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
-        }
+        aContext.getFolder(META_KEY, AccessMode.READONLY);
 
         AggregateBuilder builder = new AggregateBuilder();
 
-        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+        for (AnalysisEngineDescription metaCollector : metaCollectors) {
             if (operativeViews != null) {
                 for (String viewName : operativeViews) {
-                    builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()),
-                            CAS.NAME_DEFAULT_SOFA, viewName);
+                    builder.add(metaCollector, CAS.NAME_DEFAULT_SOFA, viewName);
                 }
             }
             else {
-                builder.add(createEngineDescription(metaCollectorClass, parameters.toArray()));
+                builder.add(metaCollector);
             }
         }
         return builder.createAggregateDescription();
