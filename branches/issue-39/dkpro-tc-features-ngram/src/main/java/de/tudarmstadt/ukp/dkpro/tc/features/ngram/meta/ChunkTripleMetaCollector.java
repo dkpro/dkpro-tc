@@ -40,8 +40,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.ChunkTripleDFE;
 public class ChunkTripleMetaCollector
     extends FreqDistBasedMetaCollector
 {
-    public static final String CHUNK_TRIPLE_FD_KEY = "chunkTriple.ser";
-
     @ConfigurationParameter(name = ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
     private File chunkTripleFdFile;
 
@@ -113,14 +111,6 @@ public class ChunkTripleMetaCollector
             // }
         }
         return chunkString;
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY);
-        return mapping;
     }
 
     @Override

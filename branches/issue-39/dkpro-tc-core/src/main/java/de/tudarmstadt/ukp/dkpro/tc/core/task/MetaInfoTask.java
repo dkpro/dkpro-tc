@@ -17,7 +17,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
@@ -43,6 +42,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.SequenceContextMetaCollector;
@@ -99,39 +99,36 @@ public class MetaInfoTask
         }
     }
 
-    private void configureStorageLocations(AnalysisEngineDescription aDesc, String aExtractorName)
+    public static void configureStorageLocations(MetaCollectorConfiguration aConf, String aExtractorName)
         throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         // We assume for the moment that we only have primitive analysis engines for meta
         // collection, not aggregates. If there were aggregates, we'd have to do this
         // recursively
-        if (!aDesc.isPrimitive()) {
+        if (!aConf.descriptor.isPrimitive()) {
             throw new IllegalArgumentException("Only primitive meta collectors currently supported.");
         }
         
-        Class<?> metaCollectorImpl = Class.forName(aDesc.getImplementationName());
+        Class<?> metaCollectorImpl = Class.forName(aConf.descriptor.getImplementationName());
         
         if (!MetaCollector.class.isAssignableFrom(metaCollectorImpl)) {
             throw new IllegalArgumentException("Meta collectors must inherit from MetaCollector");
         }
         
-        // Here we fetch all the parameters that represent storage locations to which the
-        // meta collector would like to write and we override them to point to specific locaions
-        // for the given meta collector instance.
-        MetaCollector metaCollector = (MetaCollector) metaCollectorImpl.newInstance();
-        
-        for (Entry<String, String> e : metaCollector.getParameterKeyPairs().entrySet()) {
+        for (Entry<String, String> e : aConf.storageOverrides.entrySet()) {
             if (aExtractorName != null) {
                 // We generate a storage location from the feature extractor discriminator value
                 // and the preferred value specified by the meta collector
                 String storageLocation = String.valueOf(aExtractorName)
                         + "-" + e.getValue();
                 String parameterName = e.getKey();
-                ConfigurationParameterFactory.setParameter(aDesc, parameterName, storageLocation);
+                ConfigurationParameterFactory.setParameter(aConf.descriptor, parameterName,
+                        storageLocation);
             }
             else {
                 // If there is no associated feature extractor, then just use the preferred name
-                ConfigurationParameterFactory.setParameter(aDesc, e.getKey(), e.getValue());
+                ConfigurationParameterFactory.setParameter(aConf.descriptor, e.getKey(),
+                        e.getValue());
             }
         }
     }
@@ -159,15 +156,15 @@ public class MetaInfoTask
             if (featureMode.equals(Constants.FM_UNIT)) {
                 // add additional unit context meta collector that extracts the context around text classification units
                 // mainly used for error analysis purposes
-                AnalysisEngineDescription desc = createEngineDescription(UnitContextMetaCollector.class);
-                configureStorageLocations(desc, null);
-                metaCollectors.add(desc); 	
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(UnitContextMetaCollector.class);
+                configureStorageLocations(conf, null);
+                metaCollectors.add(conf.descriptor); 	
             }
             
             if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                AnalysisEngineDescription desc = createEngineDescription(SequenceContextMetaCollector.class);
-                configureStorageLocations(desc, null);
-                metaCollectors.add(desc);   
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(SequenceContextMetaCollector.class);
+                configureStorageLocations(conf, null);
+                metaCollectors.add(conf.descriptor);   
             }
     
             // Configure the meta collectors for each feature extractor individually
@@ -183,8 +180,8 @@ public class MetaInfoTask
                 MetaDependent feInstance = (MetaDependent) feClass.newInstance();
                 
                 // Tell the meta collectors where to store their data
-                for (AnalysisEngineDescription desc : feInstance.getMetaCollectorClasses()) {
-                    configureStorageLocations(desc, (String) feClosure.getDiscriminatorValue());
+                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses()) {
+                    configureStorageLocations(conf, (String) feClosure.getDiscriminatorValue());
                 }
             }
         }
