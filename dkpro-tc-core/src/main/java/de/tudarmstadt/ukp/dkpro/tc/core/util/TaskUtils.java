@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
@@ -63,8 +62,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
@@ -202,32 +199,6 @@ public class TaskUtils
     // }
     // return extractors;
     // }
-
-    /**
-     * Get the meta collectors for the given feature extractors
-     */
-    public static Set<MetaCollector> getMetaCollectorsFromFeatureExtractors(
-            List<ExternalResourceDescription> aFeatureExtractorDescriptions)
-        throws InstantiationException, IllegalAccessException, ClassNotFoundException
-    {
-        Set<MetaCollector> metaCollectors = new LinkedHashSet<>();
-
-        // Create one meta-collector per feature extractor
-        for (ExternalResourceDescription fed : aFeatureExtractorDescriptions) {
-            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
-                    .forName(fed.getImplementationName()).newInstance();
-
-            if (featureExtractor instanceof MetaDependent) {
-                MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
-                for (Class<? extends MetaCollector> metaCollectorClass : metaDepFeatureExtractor
-                        .getMetaCollectorClasses()) {
-                    metaCollectors.add(metaCollectorClass.newInstance());
-                }
-            }
-        }
-
-        return metaCollectors;
-    }
 
     /**
      * Get a list of required type names.

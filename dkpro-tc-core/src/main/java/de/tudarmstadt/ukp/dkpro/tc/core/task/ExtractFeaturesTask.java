@@ -38,7 +38,6 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
@@ -89,7 +88,6 @@ public class ExtractFeaturesTask
     private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
 
     private boolean isTesting = false;
-    private Set<MetaCollector> metaCollectors;
     // TODO Issue 121: this is already prepared, but not used
     // collects annotation types required by FEs (source code annotations need to be inserted in
     // each FE)
@@ -148,7 +146,6 @@ public class ExtractFeaturesTask
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
-            metaCollectors = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureExtractorDescriptions);
             requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
         }
         catch (ClassNotFoundException e) {
