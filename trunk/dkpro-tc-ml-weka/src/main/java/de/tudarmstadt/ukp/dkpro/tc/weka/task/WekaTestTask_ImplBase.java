@@ -76,6 +76,8 @@ public abstract class WekaTestTask_ImplBase
     protected List<String> baselineFeatureSet;
     @Discriminator
     protected List<Object> baselinePipelineParams;
+    @Discriminator
+    protected boolean applyWeighting;
     
     protected Classifier getClassifier()
     		throws Exception
@@ -93,6 +95,11 @@ public abstract class WekaTestTask_ImplBase
                     .subList(1, classificationArguments.size()).toArray(new String[0]));
         }
     	return cl;
+    }
+ 
+    protected void instanceWeighting(TaskContext aContext, Instances trainData) {
+
+    	//TODO implement
     }
     
     protected void featureSelection(TaskContext aContext, Instances trainData) {
