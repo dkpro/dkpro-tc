@@ -51,13 +51,6 @@ public class TwentyNewsgroupsInstanceWeightingDemoTest extends JavaDemosTest_Bas
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
-    {
-        javaExperiment.runCrossValidation(pSpace);
-    }
-
-    @Test
     public void testJavaTrainTest()
         throws Exception
     {
