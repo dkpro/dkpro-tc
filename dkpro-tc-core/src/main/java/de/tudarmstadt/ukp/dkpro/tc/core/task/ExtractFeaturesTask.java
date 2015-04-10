@@ -17,24 +17,22 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
-import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -89,7 +87,7 @@ public class ExtractFeaturesTask
     @Discriminator
     private boolean developerMode;
     @Discriminator
-    private List<DynamicDiscriminableFunctionBase> featureExtractors;
+    private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
 
     private boolean isTesting = false;
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
@@ -121,11 +119,17 @@ public class ExtractFeaturesTask
     {
         File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
 
+        // Resolve the feature extractor closures to actual descritors
+        List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
+        for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> fc : featureExtractors) {
+            featureExtractorDescriptions.add(fc.getActualValue(aContext));
+        }
+        
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-            requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureExtractorDescriptions);
+            requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
         }
         catch (ClassNotFoundException e) {
             throw new ResourceInitializationException(e);
@@ -170,8 +174,9 @@ public class ExtractFeaturesTask
         }
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode,
-                featureStore, true, developerMode, isTesting, featureFilters, featureExtractors, aContext);
+                outputDir.getAbsolutePath(), dataWriter, learningMode, featureMode, featureStore,
+                true, developerMode, isTesting, featureFilters, featureExtractorDescriptions,
+                aContext);
 
         return connector;
     }

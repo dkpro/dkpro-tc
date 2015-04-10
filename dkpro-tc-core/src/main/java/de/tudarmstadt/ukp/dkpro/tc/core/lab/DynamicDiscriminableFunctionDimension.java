@@ -6,14 +6,14 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
 
 public class DynamicDiscriminableFunctionDimension<T>
-    extends Dimension<DynamicDiscriminableFunctionBase>
+    extends Dimension<DynamicDiscriminableFunctionBase<T>>
     implements DynamicDimension
 {
-    private DynamicDiscriminableFunctionBase[] closures;
+    private DynamicDiscriminableFunctionBase<T>[] closures;
     private int current = -1;
     private Map<String, Object> config;
 
-    public DynamicDiscriminableFunctionDimension(String aName, DynamicDiscriminableFunctionBase... aClosures)
+    public DynamicDiscriminableFunctionDimension(String aName, DynamicDiscriminableFunctionBase<T>... aClosures)
     {
         super(aName);
         closures = aClosures;
@@ -32,14 +32,14 @@ public class DynamicDiscriminableFunctionDimension<T>
     }
 
     @Override
-    public DynamicDiscriminableFunctionBase next()
+    public DynamicDiscriminableFunctionBase<T> next()
     {
         current++;
         return current();
     }
 
     @Override
-    public DynamicDiscriminableFunctionBase current()
+    public DynamicDiscriminableFunctionBase<T> current()
     {
         // When calling next() after rewind() to position current() at the first
         // dimension value, no config has been set yet. At this point just

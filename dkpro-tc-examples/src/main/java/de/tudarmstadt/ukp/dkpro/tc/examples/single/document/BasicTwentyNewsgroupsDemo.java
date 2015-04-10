@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -102,18 +103,18 @@ public class BasicTwentyNewsgroupsDemo
                 Arrays.asList(NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName()));
 
         Dimension dimFeatureExtractors = Dimension.create("featureExtractors", Arrays.asList(
-                new DynamicDiscriminableFunctionBase("extractNrOfTokens")
+                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("extractNrOfTokens")
                 {
                     @Override
-                    public Object getActualValue(TaskContext aContext)
+                    public ExternalResourceDescription getActualValue(TaskContext aContext)
                     {
                         return createExternalResourceDescription(NrOfTokensDFE.class);
                     }
                 }, 
-                new DynamicDiscriminableFunctionBase("createLuceneNGrams")
+                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("createLuceneNGrams")
                 {
                     @Override
-                    public Object getActualValue(TaskContext aContext)
+                    public ExternalResourceDescription getActualValue(TaskContext aContext)
                     {
                         return createExternalResourceDescription(LuceneNGramDFE.class,
                                 LuceneNGramDFE.PARAM_LUCENE_DIR, 
@@ -124,10 +125,10 @@ public class BasicTwentyNewsgroupsDemo
                                 LuceneNGramDFE.PARAM_NGRAM_MIN_N, "1",
                                 LuceneNGramDFE.PARAM_NGRAM_MAX_N, "3");
                     }
-                    
-                    String[] getDiscriminators() {
-                        return new String[] { "topK" };
-                    }
+//                    
+//                    String[] getDiscriminators() {
+//                        return new String[] { "topK" };
+//                    }
                 }));
 
         ParameterSpace pSpace = new ParameterSpace(
