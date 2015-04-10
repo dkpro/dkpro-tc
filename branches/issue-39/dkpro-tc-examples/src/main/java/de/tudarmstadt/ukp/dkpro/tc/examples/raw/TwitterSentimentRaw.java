@@ -23,7 +23,8 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.LabeledTweetReader;
@@ -54,9 +55,10 @@ public class TwitterSentimentRaw
                         LabeledTweetReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                         LabeledTweetReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
-                createEngineDescription(
-                        ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
-                        ArktweetTagger.PARAM_VARIANT, "default"),
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(ArktweetPosTagger.class,
+                        ArktweetPosTagger.PARAM_LANGUAGE, "en",
+                        ArktweetPosTagger.PARAM_VARIANT, "default"),
                 // Feature extraction
                 createEngineDescription(
                         ExtractFeaturesConnector.class,
@@ -65,6 +67,8 @@ public class TwitterSentimentRaw
                         ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
                         ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
+                        ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[]{},
+                        ExtractFeaturesConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
                                 createExternalResourceDescription(EmoticonRatioDFE.class),
                                 createExternalResourceDescription(NumberOfHashTagsDFE.class))));

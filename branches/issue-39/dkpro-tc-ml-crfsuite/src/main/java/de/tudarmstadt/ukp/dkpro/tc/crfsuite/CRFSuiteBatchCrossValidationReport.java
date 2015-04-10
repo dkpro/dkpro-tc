@@ -45,6 +45,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
@@ -76,7 +77,7 @@ public class CRFSuiteBatchCrossValidationReport
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            String name = BatchTask.class.getSimpleName() + "CrossValidation";
+            String name = ExperimentCrossValidation.class.getSimpleName();
             // one CV batch (which internally ran numFolds times)
             if (subcontext.getLabel().startsWith(name)) {
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
@@ -181,8 +182,8 @@ public class CRFSuiteBatchCrossValidationReport
                 ReportUtils.getPerformanceOverview(table));
         // Excel cannot cope with more than 255 columns
         if (table.getColumnIds().length <= 255) {
-            getContext()
-                    .storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL, table.getExcelWriter());
+            getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_EXCEL,
+                    table.getExcelWriter());
         }
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_CSV, table.getCsvWriter());
 

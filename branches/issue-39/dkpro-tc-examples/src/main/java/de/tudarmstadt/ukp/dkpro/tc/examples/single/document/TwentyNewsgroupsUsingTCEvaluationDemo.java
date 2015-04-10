@@ -42,11 +42,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestUsingTCEvaluationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -64,6 +64,7 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
 
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    public static final int NUM_FOLDS = 3;
 
     public static void main(String[] args)
         throws Exception
@@ -77,6 +78,7 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
 
         TwentyNewsgroupsUsingTCEvaluationDemo experiment = new TwentyNewsgroupsUsingTCEvaluationDemo();
         experiment.runTrainTest(pSpace);
+        experiment.runCrossvalidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,7 +126,6 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
                         LuceneNGramDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
@@ -136,12 +137,25 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.getInstance(),
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.class,
                 getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(WekaBatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+    
+    // ##### CV #####
+    protected void runCrossvalidation(ParameterSpace pSpace)
+        throws Exception
+    {
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationUsingTCEvaluationAdapter.class,
+                getPreprocessing(), NUM_FOLDS);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);

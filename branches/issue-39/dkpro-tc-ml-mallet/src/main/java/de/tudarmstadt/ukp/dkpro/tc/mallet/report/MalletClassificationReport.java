@@ -36,6 +36,8 @@ import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 
 /**
  * Report that computes evaluation results given the classification results.
+ * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  */
 public class MalletClassificationReport
 	extends ReportBase

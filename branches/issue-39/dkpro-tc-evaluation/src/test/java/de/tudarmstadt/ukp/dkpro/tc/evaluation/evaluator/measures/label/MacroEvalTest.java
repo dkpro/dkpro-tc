@@ -20,6 +20,8 @@ package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.measures.label;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
@@ -31,7 +33,7 @@ public class MacroEvalTest {
 
 	@Test
 	public void macroPrecisionTest() {
-		SmallContingencyTables cTable = new SmallContingencyTables("class1");
+		SmallContingencyTables cTable = new SmallContingencyTables(Arrays.asList(new String[]{"class1"}));
 		cTable.addTruePositives("class1", 3);
 		cTable.addFalsePositives("class1", 1);
 		cTable.addFalseNegatives("class1", 2);

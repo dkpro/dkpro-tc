@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.fit.factory.JCasBuilder;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -40,6 +41,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class NGramUtilsTest
 {
+
+    private String[] split;
 
     @Test
     public void passesNGramFilterTest()
@@ -118,17 +121,21 @@ public class NGramUtilsTest
         tu.addToIndexes();
 
         FrequencyDistribution<String> ngrams = NGramUtils.getAnnotationCharacterNgrams(tu, false,
-                2, 3);
+                2, 3,'^', '$');
         for (String s : ngrams.getKeys()) {
             System.out.println(s);
         }
-        assertEquals(7, ngrams.getN());
-        assertTrue(ngrams.contains("ous"));
-        assertTrue(ngrams.contains("us"));
-        assertTrue(ngrams.contains("ou"));
+        assertEquals(11, ngrams.getN());
+        assertTrue(ngrams.contains("^h"));
         assertTrue(ngrams.contains("ho"));
+        assertTrue(ngrams.contains("ou"));
+        assertTrue(ngrams.contains("us"));
         assertTrue(ngrams.contains("se"));
-        assertTrue(ngrams.contains("use"));
+        assertTrue(ngrams.contains("se$"));
+        assertTrue(ngrams.contains("^ho"));
         assertTrue(ngrams.contains("hou"));
+        assertTrue(ngrams.contains("ous"));
+        assertTrue(ngrams.contains("use"));
+        assertTrue(ngrams.contains("se$"));
     }
 }

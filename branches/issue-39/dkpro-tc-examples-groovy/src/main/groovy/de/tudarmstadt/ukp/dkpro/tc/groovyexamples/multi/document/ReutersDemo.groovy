@@ -35,17 +35,15 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport
+import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationAdapter
 
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
@@ -98,7 +96,6 @@ public class ReutersDemo implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
     def dimThreshold = Dimension.create(DIM_BIPARTITION_THRESHOLD, threshold)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, MekaDataWriter.name)
 
     def dimClassificationArgs =
     Dimension.create(
@@ -157,18 +154,16 @@ public class ReutersDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport],
+            preprocessing:	getPreprocessing(),
+            machineLearningAdapter: MekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
                 dimFeatureSelection,
@@ -177,7 +172,7 @@ public class ReutersDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: numFolds]
 
@@ -191,18 +186,16 @@ public class ReutersDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        BatchTaskTrainTest batchTask = [
+        ExperimentTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
-            innerReports: [WekaClassificationReport],
+            preprocessing:	getPreprocessing(),
+            machineLearningAdapter: MekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimThreshold,
                 dimClassificationArgs,
                 dimFeatureSelection,
@@ -211,8 +204,7 @@ public class ReutersDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                BatchTrainTestReport]
         ]
 
         // Run
@@ -230,6 +222,7 @@ public class ReutersDemo implements Constants {
 
     public static void main(String[] args)
     {
+		DemoUtils.setDkproHome(ReutersDemo.name);
         new ReutersDemo().runTrainTest()
         new ReutersDemo().runCrossValidation()
     }

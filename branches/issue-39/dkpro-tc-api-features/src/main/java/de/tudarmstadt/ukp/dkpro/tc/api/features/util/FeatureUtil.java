@@ -26,7 +26,10 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.impl.RootUimaContext_impl;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;
@@ -34,7 +37,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
-
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
 /**
@@ -107,10 +109,22 @@ public class FeatureUtil
 	  ExternalResourceFactory.bindExternalResource(cfg, "rootResource", desc);
 	
 	  // Instantiate resource manager (internally instantiates resources)
-	  ResourceManager manager = new ResourceManager_impl();
-	  manager.initializeExternalResources(cfg, "", null);
-	
+	  final ResourceManager manager = new ResourceManager_impl();
+	  manager.initializeExternalResources(cfg, "/", null);
+	  
+
+	  T res = (T) manager.getResource("/rootResource");
+	  
+	  // Initialize nested resources
+      UimaContextAdmin ctx = new RootUimaContext_impl() {
+          @Override
+        public ResourceManager getResourceManager() {
+              return manager;
+          };
+      };
+      ExternalResourceInitializer.initialize(res, ctx);
+	          
 	  // Get resource instance
-	  return (T) manager.getResource("rootResource");
+	  return res;
 	}
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 		<artifactId>dkpro-tc</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dkpro-tc-ml-svmhmm</artifactId>
 	<licenses>
@@ -19,10 +19,6 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
@@ -45,17 +41,12 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin</artifactId>
-		</dependency>
 		<!-- add CSV support for storing outcomes -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>1.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.syntax-asl</artifactId>
@@ -66,7 +57,74 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimafit-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.resources-asl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-fstore-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.lexmorph-asl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<artifactId>dkpro-lab-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -78,5 +136,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 </project>

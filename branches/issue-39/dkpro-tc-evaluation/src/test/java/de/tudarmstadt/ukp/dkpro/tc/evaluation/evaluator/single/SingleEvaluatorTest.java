@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
@@ -44,7 +45,7 @@ public class SingleEvaluatorTest
     Map<String, Double> results;
 
     public void setup(boolean softEvaluation, boolean individualLabelMeasures)
-        throws IOException
+        throws IOException, TextClassificationException
     {
         EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(file, Constants.LM_SINGLE_LABEL, 
         		softEvaluation, individualLabelMeasures);
@@ -53,7 +54,7 @@ public class SingleEvaluatorTest
 
     @Test
     public void testCalculateSoftEvaluationMeasures()
-        throws IOException
+        throws IOException, TextClassificationException
     {
         setup(true, false);
         
@@ -69,7 +70,7 @@ public class SingleEvaluatorTest
 
     @Test
     public void testCalculateStrictEvaluationMeasures()
-        throws IOException
+        throws IOException, TextClassificationException
     {
         setup(false, false);
 

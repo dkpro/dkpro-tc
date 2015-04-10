@@ -31,14 +31,14 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader
+import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaRegressionAdapter
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchOutcomeIDReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * A demo for pair classification with a regression outcome.
@@ -79,7 +79,6 @@ public class RegressionDemo implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
 
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS, [SMOreg.name])
@@ -101,23 +100,22 @@ public class RegressionDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter.getInstance(),
+            preprocessing:  getPreprocessing(),
+            machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: NUM_FOLDS]
 
@@ -132,24 +130,23 @@ public class RegressionDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        BatchTaskTrainTest batchTask = [
+        ExperimentTrainTest batchTask = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
-            preprocessingPipeline:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter.getInstance(),
+            preprocessing:  getPreprocessing(),
+            machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchTrainTestReport,
-                WekaBatchOutcomeIDReport]
+                BatchTrainTestReport,
+                BatchOutcomeIDReport]
         ]
 
         // Run
@@ -165,6 +162,7 @@ public class RegressionDemo implements Constants {
 
     public static void main(String[] args)
     {
+		DemoUtils.setDkproHome(RegressionDemo.getSimpleName());
         new RegressionDemo().runTrainTest()
         new RegressionDemo().runCrossValidation()
     }

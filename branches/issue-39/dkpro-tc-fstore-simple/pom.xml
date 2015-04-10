@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 		<artifactId>dkpro-tc</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dkpro-tc-fstore-simple</artifactId>
 	<licenses>
@@ -57,6 +57,15 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.4</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 </project>

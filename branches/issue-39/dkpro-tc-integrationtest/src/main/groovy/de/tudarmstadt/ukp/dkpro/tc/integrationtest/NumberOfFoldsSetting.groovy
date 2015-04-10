@@ -34,11 +34,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.integrationtest.io.LineInstanceReader
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchCrossValidationReport
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
 
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.
@@ -65,8 +64,6 @@ public class NumberOfFoldsSetting implements Constants {
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
-    def dimDataWriter = Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.name)
-
 
     def dimClassificationArgs = Dimension.create(
     DIM_CLASSIFICATION_ARGS,
@@ -83,25 +80,24 @@ public class NumberOfFoldsSetting implements Constants {
     public void run() throws Exception
     {
 
-        BatchTaskCrossValidation batchTask = [
+        ExperimentCrossValidation batchTask = [
             experimentName: experimentName + "-CV-Groovy",
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessingPipeline: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter.getInstance(),
+            preprocessing: getPreprocessing(),
+            machineLearningAdapter: WekaClassificationAdapter,
             innerReports: [
-                WekaClassificationReport.class
+                WekaClassificationReport
             ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimDataWriter,
                 dimClassificationArgs,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                WekaBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: numFolds]
 

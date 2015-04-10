@@ -45,10 +45,9 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
+import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationAdapter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a multi-label experiment,
@@ -91,7 +90,7 @@ public class ComplexConfigurationMultiDemo
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -156,7 +155,6 @@ public class ComplexConfigurationMultiDemo
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, MekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), Dimension.create(
                         DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimPipelineParameters,
@@ -170,12 +168,12 @@ public class ComplexConfigurationMultiDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		WekaClassificationAdapter.getInstance(),
+        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
+        		MekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

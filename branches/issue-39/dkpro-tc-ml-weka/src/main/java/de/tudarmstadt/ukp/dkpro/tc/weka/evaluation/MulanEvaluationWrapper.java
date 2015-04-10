@@ -36,13 +36,11 @@ import mulan.evaluation.measure.ExampleBasedPrecision;
 import mulan.evaluation.measure.ExampleBasedRecall;
 import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.IsError;
-import mulan.evaluation.measure.MacroAUC;
 import mulan.evaluation.measure.MacroFMeasure;
 import mulan.evaluation.measure.MacroPrecision;
 import mulan.evaluation.measure.MacroRecall;
 import mulan.evaluation.measure.MeanAveragePrecision;
 import mulan.evaluation.measure.Measure;
-import mulan.evaluation.measure.MicroAUC;
 import mulan.evaluation.measure.MicroFMeasure;
 import mulan.evaluation.measure.MicroPrecision;
 import mulan.evaluation.measure.MicroRecall;
@@ -73,12 +71,12 @@ public class MulanEvaluationWrapper
      *            a threshold to create bipartitions from rankings
      * @return measures as defined in {@link #getMeasures(MultiLabelOutput, int, boolean)}
      */
-    public static List<Measure> getMulanEvals(ArrayList<double[]> predictions, boolean[][] actuals,
+    public static List<Measure> getMulanEvals(double[][] predictions, boolean[][] actuals,
             double threshold)
     {
 
-        MultiLabelOutput pre_prediction = new MultiLabelOutput(predictions.get(0), threshold);
-        int numInstances = predictions.size();
+        MultiLabelOutput pre_prediction = new MultiLabelOutput(predictions[0], threshold);
+        int numInstances = predictions.length;
         double[] thresholds = new double[numInstances];
         Arrays.fill(thresholds, threshold);
         int numOfLabels = actuals[0].length;
@@ -90,7 +88,7 @@ public class MulanEvaluationWrapper
 
         Set<Measure> failed = new HashSet<Measure>();
         for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
-            MultiLabelOutput prediction = new MultiLabelOutput(predictions.get(instanceIndex),
+            MultiLabelOutput prediction = new MultiLabelOutput(predictions[instanceIndex],
                     thresholds[instanceIndex]);
 
             Iterator<Measure> it = measures.iterator();
@@ -152,8 +150,8 @@ public class MulanEvaluationWrapper
         // add confidence measures if applicable
         if (prediction.hasConfidences()) {
             measures.add(new MeanAveragePrecision(numOfLabels));
-            measures.add(new MicroAUC(numOfLabels));
-            measures.add(new MacroAUC(numOfLabels));
+            // measures.add(new MicroAUC(numOfLabels));
+            // measures.add(new MacroAUC(numOfLabels));
         }
         return measures;
     }
@@ -165,12 +163,12 @@ public class MulanEvaluationWrapper
      *            a list of {0,1}-integer arrays
      * @return a matrix holding only boolean values
      */
-    public static boolean[][] getBooleanArrayFromList(ArrayList<int[]> actuals)
+    public static boolean[][] getBooleanMatrix(int[][] actuals)
     {
-        boolean[][] booleanA = new boolean[actuals.size()][actuals.get(0).length];
+        boolean[][] booleanA = new boolean[actuals.length][actuals[0].length];
         for (int i = 0; i < booleanA.length; i++) {
             for (int j = 0; j < booleanA[0].length; j++) {
-                booleanA[i][j] = actuals.get(i)[j] == 1 ? true : false;
+                booleanA[i][j] = actuals[i][j] == 1 ? true : false;
             }
         }
         return booleanA;
@@ -192,14 +190,14 @@ public class MulanEvaluationWrapper
      * @return the updated measure
      * @throws IOException
      */
-    public static Measure getMulanMeasure(ArrayList<double[]> predictions, boolean[][] actuals,
+    public static Measure getMulanMeasure(double[][] predictions, boolean[][] actuals,
             double[] thresholds, Measure m)
         throws IOException
     {
         m.reset();
         try {
-            for (int instanceIndex = 0; instanceIndex < predictions.size(); instanceIndex++) {
-                MultiLabelOutput prediction = new MultiLabelOutput(predictions.get(instanceIndex),
+            for (int instanceIndex = 0; instanceIndex < predictions.length; instanceIndex++) {
+                MultiLabelOutput prediction = new MultiLabelOutput(predictions[instanceIndex],
                         thresholds[instanceIndex]);
 
                 m.update(prediction, actuals[instanceIndex]);

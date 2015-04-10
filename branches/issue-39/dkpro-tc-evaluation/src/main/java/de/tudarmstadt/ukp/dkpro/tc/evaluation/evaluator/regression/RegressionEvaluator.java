@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
- * Technische Universit�t Darmstadt
+ * Technische Universität Darmstadt
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.regression;
 
-import java.util.List;
 import java.util.Map;
 
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
 /**
@@ -30,14 +30,20 @@ public class RegressionEvaluator
     extends EvaluatorBase
 {
 
-    public RegressionEvaluator(Map<String, Integer> class2number,
-			List<String> readData, boolean softEvaluation,
+    public RegressionEvaluator(Id2Outcome id2Outcome, boolean softEvaluation,
 			boolean individualLabelMeasures) {
-		super(class2number, readData, softEvaluation, individualLabelMeasures);	
+		super(id2Outcome, softEvaluation, individualLabelMeasures);	
 	}
 
 	@Override
     public Map<String, Double> calculateEvaluationMeasures()
+    {
+        // TODO add measures
+        return null;
+    }
+
+    @Override
+    public Map<String, Double> calculateMicroEvaluationMeasures()
     {
         // TODO add measures
         return null;

@@ -30,7 +30,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.trees.RandomForest;
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetTagger;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -40,8 +41,8 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.UnlabeledTweetReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskPrediction;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentPrediction;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaPredictionAdapter;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -110,7 +111,6 @@ public class TwitterSentimentPredictionDemo
                         NumberOfHashTagsDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
                 dimClassificationArgs);
@@ -122,8 +122,8 @@ public class TwitterSentimentPredictionDemo
     protected void runPrediction(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskPrediction batch = new BatchTaskPrediction("TwitterSentimentPrediction",
-                getPreprocessing());
+        ExperimentPrediction batch = new ExperimentPrediction("TwitterSentimentPrediction",
+                WekaPredictionAdapter.class, getPreprocessing());
         batch.setParameterSpace(pSpace);
 
         // Run
@@ -133,9 +133,9 @@ public class TwitterSentimentPredictionDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(
-                ArktweetTagger.class, ArktweetTagger.PARAM_LANGUAGE, "en",
-                ArktweetTagger.PARAM_VARIANT,
-                "default");
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(ArktweetPosTagger.class,
+                        ArktweetPosTagger.PARAM_LANGUAGE, "en",
+                        ArktweetPosTagger.PARAM_VARIANT, "default"));
     }
 }

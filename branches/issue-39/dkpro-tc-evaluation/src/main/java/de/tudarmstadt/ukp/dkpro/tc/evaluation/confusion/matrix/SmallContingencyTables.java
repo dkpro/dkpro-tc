@@ -1,42 +1,39 @@
-/*
+/*******************************************************************************
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+ ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
 
 public class SmallContingencyTables {
 
 	private Map<String, Integer> class2Number;
+
 	private double[][][] smallContingencyTables;
 	
-	public SmallContingencyTables(String ... classNames)
+	public SmallContingencyTables(List<String> labels)
 	{
-		if (classNames.length == 0) {
-			throw new IllegalArgumentException("Must at least specify on class name.");
+		if (labels.size() == 0) {
+			throw new IllegalArgumentException("Must at least specify one class name.");
 		}
-		this.class2Number = classNamesToMapping(Arrays.asList(classNames));
+        this.class2Number = Id2Outcome.classNamesToMapping(labels);
 		this.smallContingencyTables = new double[class2Number.size()][2][2];
 	}
 	
@@ -113,19 +110,6 @@ public class SmallContingencyTables {
 		return smallContingencyTables[classId][0][1];
 	}
 	
-	public static Map<String, Integer> classNamesToMapping(Collection<String> collection)
-	{
-		List<String> classNames = new ArrayList<>(collection);
-		Collections.sort(classNames);
-		
-		Map<String, Integer> mapping = new HashMap<String, Integer>();
-		for (int i=0; i<classNames.size(); i++) {
-			mapping.put(classNames.get(i), i);
-		}
-		
-		return mapping;
-	}
-	
 	/**
 	 * combine contingency tables of all labels into one table
 	 * 
@@ -141,5 +125,9 @@ public class SmallContingencyTables {
 			}
 		}
 		return new CombinedSmallContingencyTable(combinedMatrix);
+	}
+	
+	public Map<String, Integer> getClass2Number() {
+		return class2Number;
 	}
 }

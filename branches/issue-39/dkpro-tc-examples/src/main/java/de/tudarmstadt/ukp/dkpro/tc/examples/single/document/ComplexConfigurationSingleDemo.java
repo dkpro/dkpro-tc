@@ -47,10 +47,9 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaBatchTrainTestReport;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a single-label experiment,
@@ -86,7 +85,7 @@ public class ComplexConfigurationSingleDemo
     }
 
     @SuppressWarnings("unchecked")
-    private static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace()
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -146,7 +145,6 @@ public class ComplexConfigurationSingleDemo
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs, Dimension.createBundle("featureSelection",
@@ -159,11 +157,11 @@ public class ComplexConfigurationSingleDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest(EXPERIMENT_NAME,
-        		WekaClassificationAdapter.getInstance(),
+        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME,
+        		WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(WekaBatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

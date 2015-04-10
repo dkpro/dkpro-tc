@@ -30,7 +30,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
 
 // FIXME Issue 128: instanceID should contain sequenceID - so we can easily make sure that sequences are completed moved into folds
 /**
- * Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in the same fold
+ * Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in
+ * the same fold
+ * 
+ * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
  * 
  * @author perumal
  */

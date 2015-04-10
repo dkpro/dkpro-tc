@@ -19,6 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.core;
 
 import org.apache.uima.cas.CAS;
 
+import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+
 /**
  * Basic constants that are used throughout the project
  * 
@@ -65,11 +67,11 @@ public interface Constants
     /*
      * Readers
      */
-
     /**
      * Name of the outcome value for instances in prediction mode
      */
     public static String UNKNOWN_OUTCOME = "UNKNOWN_OUTCOME";
+	
 
     /*
      * Discriminators
@@ -150,14 +152,24 @@ public interface Constants
     public static final String DIM_BIPARTITION_THRESHOLD = "threshold";
 
     /**
-     * Name of the discriminator that stores the data writer class
-     */
-    public static final String DIM_DATA_WRITER = "dataWriter";
-
-    /**
      * Name of the class that implements {@link de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore}
      */
     public static final String DIM_FEATURE_STORE = "featureStore";
+    
+    /**
+     * Name of the discriminator which holds the classifier and arguments which serve as baseline
+     */
+    public static final String DIM_BASELINE_CLASSIFICATION_ARGS = "baselineClassificationArgs";
+   
+    /**
+     * Name of the discriminator which holds the feature set which serves as base
+     */
+    public static final String DIM_BASELINE_FEATURE_SET = "baselineFeatureSet";
+    
+    /**
+     * Name of the discriminator which holds the feature parameters which serve as base
+     */
+    public static final String DIM_BASELINE_PIPELINE_PARAMS = "baselinePipelineParams";
 
     /*
      * Learning modes
@@ -234,7 +246,29 @@ public interface Constants
      * Name of the confusion matrix dimension showing the predicted values
      */
     public static final String CM_PREDICTED = " (pred.)";
+    /**
+     * Name of the file that holds information for the R connect report on test task level
+     */
+    public static final String STATISTICS_REPORT_TEST_TASK_FILENAME = "statistics_eval_task.txt";
+    /**
+     * Name of the file that holds information for the R connect report on cv level
+     */
+    public static final String STATISTICS_REPORT_FILENAME = "statistics_eval.csv";
+    /**
+     * Name of the global file which folds the classifier predictions and gold standard for all test
+     * instances.
+     */
+    public static final String ID_OUTCOME_KEY = "id2outcome.txt";
+    /**
+     * Name of a serialized version of the id2outcome object.
+     */
+    public static final String SERIALIZED_ID_OUTCOME_KEY = "id2outcome.ser";
+    /**
+     * Name of a file which holds a copy of the discriminators keys and values.
+     */
+    public static final String DISCRIMINATORS_KEY_TEMP = Task.DISCRIMINATORS_KEY + "_Temp.txt";
 
+    
     
     /*
      * Machine Learning (General)
@@ -267,6 +301,42 @@ public interface Constants
      * Name of the instance ID feature
      */    
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
+    /**
+     * For empty predictions (no label value above the bipartition threshold)
+     */
+    public static String EMPTY_PREDICTION = "$NO_PREDICTION$";
 
+    
+    /*
+     * Machine Learning (Model)
+     */
+    /**
+     * Name of the file which holds the model meta data
+     */
+    public static final String MODEL_META = "model.meta";
+    /**
+     * Name of the file which holds the feature names
+     */
+    public static final String MODEL_FEATURE_NAMES = "featureNames.txt";
+    /**
+     * Name of the file which holds the class labels
+     */
+    public static final String MODEL_CLASS_LABELS = "classLabels.txt";
+    /**
+     * Name of the file which holds the feature extractors
+     */
+    public static final String MODEL_FEATURE_EXTRACTORS = "featureExtractors.txt";
+    /**
+     * Name of the file which holds the global UIMA parameters
+     */
+    public static final String MODEL_PARAMETERS = "parameters.txt";
+    /**
+     * Name of the file which holds the classifier
+     */
+    public static final String MODEL_CLASSIFIER = "classifier.ser";
+    /**
+     * Public name of the prediction map file
+     */
+    public static final String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
 
 }

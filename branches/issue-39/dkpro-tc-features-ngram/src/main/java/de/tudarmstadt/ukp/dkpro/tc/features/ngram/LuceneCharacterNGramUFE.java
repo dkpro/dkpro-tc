@@ -44,7 +44,7 @@ public class LuceneCharacterNGramUFE
     {
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentCharNgrams = NGramUtils.getAnnotationCharacterNgrams(
-                aClassificationUnit, charNgramLowerCase, charNgramMinN, charNgramMaxN);
+                aClassificationUnit, charNgramLowerCase, charNgramMinN, charNgramMaxN, '^', '$');
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentCharNgrams.getKeys().contains(topNgram)) {

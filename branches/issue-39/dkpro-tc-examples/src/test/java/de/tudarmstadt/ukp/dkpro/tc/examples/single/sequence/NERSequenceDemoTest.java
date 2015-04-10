@@ -27,33 +27,26 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
+import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
- * This is not exactly a unit test (yet). It just ensures that the experiments run without throwing
- * any exception. Additional unit tests should test the inner workings of the experiments
+ * This test just ensures that the experiment runs without throwing
+ * any exception.
  * 
+ * @author Oliver Ferschke, Emily Jamison
  * 
  */
-public class NERSequenceDemoTest
+public class NERSequenceDemoTest extends JavaDemosTest_Base
 {
     NERSequenceDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
-    public void setupLogging()
-    {
-        System.setProperty("org.apache.uima.logger.class",
-                "org.apache.uima.util.impl.Log4jLogger_impl");
-    }
-
-    @Before
     public void setup()
         throws Exception
     {
-        String path = "target/repository/" + getClass().getSimpleName() + "/"
-                + name.getMethodName();
-        System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
-
+        super.setup();
+        
         javaExperiment = new NERSequenceDemo();
         pSpace = NERSequenceDemo.getParameterSpace();
     }
@@ -62,19 +55,7 @@ public class NERSequenceDemoTest
     public void testJavaCrossValidation()
         throws Exception
     {
-    	
-        Assume.assumeTrue(Runtime.getRuntime().maxMemory() >= 2000000000);
-
-        // Java setup with automatic task wiring
+//        Assume.assumeTrue(Runtime.getRuntime().maxMemory() >= 2000000000);
         javaExperiment.runCrossValidation(pSpace);
-    }
-
-    @Rule
-    public TestName name = new TestName();
-
-    @Before
-    public void printSeparator()
-    {
-        System.out.println("\n=== " + name.getMethodName() + " =====================");
     }
 }
