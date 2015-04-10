@@ -90,7 +90,7 @@ public class ExtractFeaturesTask
     private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
 
     private boolean isTesting = false;
-    private Set<Class<? extends MetaCollector>> metaCollectorClasses;
+    private Set<MetaCollector> metaCollectors;
     // TODO Issue 121: this is already prepared, but not used
     // collects annotation types required by FEs (source code annotations need to be inserted in
     // each FE)
@@ -128,7 +128,7 @@ public class ExtractFeaturesTask
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureExtractorDescriptions);
+            metaCollectors = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureExtractorDescriptions);
             requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
         }
         catch (ClassNotFoundException e) {
@@ -143,16 +143,8 @@ public class ExtractFeaturesTask
 
         // collect parameter/key pairs that need to be set
         Map<String, String> parameterKeyPairs = new HashMap<String, String>();
-        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            try {
-                parameterKeyPairs.putAll(metaCollectorClass.newInstance().getParameterKeyPairs());
-            }
-            catch (InstantiationException e) {
-                throw new ResourceInitializationException(e);
-            }
-            catch (IllegalAccessException e) {
-                throw new ResourceInitializationException(e);
-            }
+        for (MetaCollector metaCollector : metaCollectors) {
+                parameterKeyPairs.putAll(metaCollector.getParameterKeyPairs());
         }
 
 //        // the following file location is specific to the FE task, so it cannot be added to the

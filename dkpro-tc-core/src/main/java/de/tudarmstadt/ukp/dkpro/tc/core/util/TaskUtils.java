@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
@@ -199,24 +200,29 @@ public class TaskUtils
     // }
 
     /**
-     * Get a list of MetaCollector classes from a list of feature extractors.
+     * Get the meta collectors for the given feature extractors
      */
-    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
-            List<ExternalResourceDescription> featureSet)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    public static Set<MetaCollector> getMetaCollectorsFromFeatureExtractors(
+            List<ExternalResourceDescription> aFeatureExtractorDescriptions)
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
-        Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
+        Set<MetaCollector> metaCollectors = new LinkedHashSet<>();
 
-        for (ExternalResourceDescription element : featureSet) {
+        // Create one meta-collector per feature extractor
+        for (ExternalResourceDescription fed : aFeatureExtractorDescriptions) {
             FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
-                    .forName(element.getImplementationName()).newInstance();
+                    .forName(fed.getImplementationName()).newInstance();
+
             if (featureExtractor instanceof MetaDependent) {
                 MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
-                metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
+                for (Class<? extends MetaCollector> metaCollectorClass : metaDepFeatureExtractor
+                        .getMetaCollectorClasses()) {
+                    metaCollectors.add(metaCollectorClass.newInstance());
+                }
             }
         }
 
-        return metaCollectorClasses;
+        return metaCollectors;
     }
 
     /**

@@ -31,8 +31,9 @@ public abstract class MetaCollector
     extends JCasAnnotator_ImplBase
 {
     /**
-     * For each entry in this map, the ExtractFeaturesTask will create a corresponding folder/file to store the collected meta information.
-     *  
+     * For each entry in this map, the ExtractFeaturesTask will create a corresponding folder/file
+     * to store the collected meta information.
+     * 
      * @return A map with parameter/key pairs
      */
     public abstract Map<String,String> getParameterKeyPairs();
