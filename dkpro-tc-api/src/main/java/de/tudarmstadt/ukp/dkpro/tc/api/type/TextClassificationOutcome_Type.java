@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-/* First created by JCasGen Tue May 06 17:51:57 CEST 2014 */
+/* First created by JCasGen Fri Apr 10 12:15:52 CEST 2015 */
 package de.tudarmstadt.ukp.dkpro.tc.api.type;
 
 import org.apache.uima.jcas.JCas;
@@ -31,7 +31,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Wed Nov 05 14:39:52 CET 2014
+ * Updated by JCasGen Fri Apr 10 12:15:52 CEST 2015
  * @generated */
 public class TextClassificationOutcome_Type extends Annotation_Type {
   /** @generated 
@@ -112,6 +112,24 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
   
  
   /** @generated */
+  final Feature casFeat_weight;
+  /** @generated */
+  final int     casFeatCode_weight;
+  /** @generated */ 
+  public double getWeight(int addr) {
+        if (featOkTst && casFeat_weight == null)
+      jcas.throwFeatMissing("weight", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
+    return ll_cas.ll_getDoubleValue(addr, casFeatCode_weight);
+  }
+  /** @generated */    
+  public void setWeight(int addr, double v) {
+        if (featOkTst && casFeat_weight == null)
+      jcas.throwFeatMissing("weight", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
+    ll_cas.ll_setDoubleValue(addr, casFeatCode_weight, v);}
+    
+  
+ 
+  /** @generated */
   final Feature casFeat_confidence;
   /** @generated */
   final int     casFeatCode_confidence;
@@ -153,6 +171,10 @@ public class TextClassificationOutcome_Type extends Annotation_Type {
  
     casFeat_prediction = jcas.getRequiredFeatureDE(casType, "prediction", "uima.cas.String", featOkTst);
     casFeatCode_prediction  = (null == casFeat_prediction) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_prediction).getCode();
+
+ 
+    casFeat_weight = jcas.getRequiredFeatureDE(casType, "weight", "uima.cas.Double", featOkTst);
+    casFeatCode_weight  = (null == casFeat_weight) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_weight).getCode();
 
  
     casFeat_confidence = jcas.getRequiredFeatureDE(casType, "confidence", "uima.cas.Double", featOkTst);
