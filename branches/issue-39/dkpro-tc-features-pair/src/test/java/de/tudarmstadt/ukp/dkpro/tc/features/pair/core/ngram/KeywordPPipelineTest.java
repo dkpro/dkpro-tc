@@ -54,7 +54,7 @@ public class KeywordPPipelineTest
                 LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 true, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneKeywordPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 16);
         assertTrue(test.featureNames.contains("keyNG1_peach"));
@@ -81,7 +81,7 @@ public class KeywordPPipelineTest
                 LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 true, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneKeywordPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 12);
         assertTrue(test.featureNames.contains("keyNG1_peach_nectarine_SB"));
