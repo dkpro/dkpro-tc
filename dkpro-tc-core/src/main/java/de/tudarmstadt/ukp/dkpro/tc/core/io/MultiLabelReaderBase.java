@@ -54,7 +54,14 @@ public abstract class MultiLabelReaderBase
         for (String outcomeValue : getTextClassificationOutcomes(jcas)) {
             TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
             outcome.setOutcome(outcomeValue);
+            outcome.setWeight(getTextClassificationOutcomeWeight(jcas));
             outcome.addToIndexes();
         }
     }
+    
+	public double getTextClassificationOutcomeWeight(JCas jcas)
+			throws CollectionException {
+		// TODO Auto-generated method stub
+		return 1.0;
+	}
 }

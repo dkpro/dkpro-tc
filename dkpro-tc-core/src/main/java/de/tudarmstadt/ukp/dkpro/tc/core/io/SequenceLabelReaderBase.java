@@ -56,7 +56,15 @@ public abstract class SequenceLabelReaderBase
         for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas, TextClassificationUnit.class, JCasUtil.selectSingle(jcas, TextClassificationSequence.class))) {
             TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
             outcome.setOutcome(getTextClassificationOutcome(jcas, unit));
+            outcome.setWeight(getTextClassificationOutcomeWeight(jcas, unit));
             outcome.addToIndexes();
         }
     }
+    
+	public double getTextClassificationOutcomeWeight(JCas jcas, TextClassificationUnit unit) {
+    	/**
+    	 * By default, set all the instance outcome weights equally to one
+    	 */
+		return 1.0;
+	}
 }
