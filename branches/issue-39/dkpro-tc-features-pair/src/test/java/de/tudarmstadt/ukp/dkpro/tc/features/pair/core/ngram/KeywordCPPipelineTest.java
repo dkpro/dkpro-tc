@@ -49,7 +49,7 @@ public class KeywordCPPipelineTest
                 LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 116); //this number changed historically when ComboUtils.JOINT changed.
@@ -77,7 +77,7 @@ public class KeywordCPPipelineTest
         		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
@@ -98,7 +98,7 @@ public class KeywordCPPipelineTest
         		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, 6,
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
@@ -122,7 +122,7 @@ public class KeywordCPPipelineTest
         		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
                 false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO,
                 false, LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2,
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_SYMMETRY_COMBO, true };
