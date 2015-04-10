@@ -19,7 +19,6 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features.meta;
 
 import java.util.List;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 
@@ -35,6 +34,6 @@ public interface MetaDependent
     /**
      * @return A list of meta collector classes that a "meta dependent" collector depdends on
      */
-    List<AnalysisEngineDescription> getMetaCollectorClasses()
+    List<MetaCollectorConfiguration> getMetaCollectorClasses()
         throws ResourceInitializationException;
 }
