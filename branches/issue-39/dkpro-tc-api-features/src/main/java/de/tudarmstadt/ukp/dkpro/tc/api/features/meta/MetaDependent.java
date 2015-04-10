@@ -32,5 +32,7 @@ public interface MetaDependent
     /**
      * @return A list of meta collector classes that a "meta dependent" collector depdends on
      */
+    // FIXME - This should be changed to return instantiated MetaCollector objects that are already
+    // configured in the way that the FeatureCollector requires them
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses();
 }
