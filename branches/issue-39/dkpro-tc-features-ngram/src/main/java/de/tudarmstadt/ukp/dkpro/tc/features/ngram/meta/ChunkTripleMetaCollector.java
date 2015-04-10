@@ -19,10 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +38,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.ChunkTripleDFE;
 public class ChunkTripleMetaCollector
     extends FreqDistBasedMetaCollector
 {
-    @ConfigurationParameter(name = ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
+    public static final String PARAM_CHUNK_TRIPLE_FD_FILE = ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE;
+    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
     private File chunkTripleFdFile;
 
     @ConfigurationParameter(name = ChunkTripleDFE.PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")

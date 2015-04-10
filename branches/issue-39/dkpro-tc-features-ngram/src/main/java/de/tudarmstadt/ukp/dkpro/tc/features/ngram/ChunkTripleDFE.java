@@ -137,6 +137,7 @@ public class ChunkTripleDFE
         throws ResourceInitializationException
     {
         return asList(new MetaCollectorConfiguration(ChunkTripleMetaCollector.class)
-                .addStorageMapping(ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY));
+                .addStorageMapping(ChunkTripleMetaCollector.PARAM_CHUNK_TRIPLE_FD_FILE,
+                        ChunkTripleDFE.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY));
     }
 }
