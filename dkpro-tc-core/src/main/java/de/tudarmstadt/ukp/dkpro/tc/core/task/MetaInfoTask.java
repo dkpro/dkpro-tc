@@ -160,13 +160,20 @@ public class MetaInfoTask
             if (featureMode.equals(Constants.FM_UNIT)) {
                 // add additional unit context meta collector that extracts the context around text classification units
                 // mainly used for error analysis purposes
-                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(UnitContextMetaCollector.class);
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                        UnitContextMetaCollector.class).addStorageMapping(
+                        UnitContextMetaCollector.PARAM_CONTEXT_FILE, null,
+                        UnitContextMetaCollector.CONTEXT_KEY);
                 configureStorageLocations(conf.descriptor, null, conf.collectorOverrides);
                 metaCollectors.add(conf.descriptor); 	
             }
             
             if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(SequenceContextMetaCollector.class);
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                        SequenceContextMetaCollector.class).addStorageMapping(
+                        SequenceContextMetaCollector.PARAM_CONTEXT_FILE, null,
+                        SequenceContextMetaCollector.CONTEXT_KEY);
+
                 configureStorageLocations(conf.descriptor, null, conf.collectorOverrides);
                 metaCollectors.add(conf.descriptor);   
             }
