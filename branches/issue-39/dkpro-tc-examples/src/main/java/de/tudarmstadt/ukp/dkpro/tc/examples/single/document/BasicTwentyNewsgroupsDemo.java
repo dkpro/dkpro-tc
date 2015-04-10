@@ -21,7 +21,6 @@ package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -35,22 +34,17 @@ import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -90,22 +84,22 @@ public class BasicTwentyNewsgroupsDemo
                 DIM_CLASSIFICATION_ARGS, 
                 Arrays.asList(NaiveBayes.class.getName() ));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS, 
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET, 
-                Arrays.asList(NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName()));
+//        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
+//                DIM_PIPELINE_PARAMS, 
+//                Arrays.asList(new Object[] {
+//                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+//                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+//                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+//
+//        Dimension<List<String>> dimFeatureSets = Dimension.create(
+//                DIM_FEATURE_SET, 
+//                Arrays.asList(NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName()));
 
         Dimension dimFeatureExtractors = Dimension.create("featureExtractors", Arrays.asList(
                 new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("extractNrOfTokens")
                 {
                     @Override
-                    public ExternalResourceDescription getActualValue(TaskContext aContext)
+                    public ExternalResourceDescription getActualValue()
                     {
                         return createExternalResourceDescription(NrOfTokensDFE.class);
                     }
@@ -113,30 +107,22 @@ public class BasicTwentyNewsgroupsDemo
                 new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("createLuceneNGrams")
                 {
                     @Override
-                    public ExternalResourceDescription getActualValue(TaskContext aContext)
+                    public ExternalResourceDescription getActualValue()
                     {
                         return createExternalResourceDescription(LuceneNGramDFE.class,
-                                LuceneNGramDFE.PARAM_SOURCE_LOCATION, 
-                                new File(aContext.getStorageLocation(MetaInfoTask.META_KEY,
-                                        AccessMode.READONLY), LuceneBasedMetaCollector.LUCENE_DIR)
-                                        .getAbsolutePath(), 
-                                LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, config.get("topK"),                                
+                                LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, "500",                                
                                 LuceneNGramDFE.PARAM_NGRAM_MIN_N, "1",
                                 LuceneNGramDFE.PARAM_NGRAM_MAX_N, "3");
                     }
-//                    
-//                    String[] getDiscriminators() {
-//                        return new String[] { "topK" };
-//                    }
                 }));
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
+//                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
-                dimPipelineParameters, 
-                dimFeatureSets, 
+//                dimPipelineParameters, 
+//                dimFeatureSets, 
                 dimClassificationArgs,
                 dimFeatureExtractors);
 
@@ -147,9 +133,9 @@ public class BasicTwentyNewsgroupsDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        BatchTaskTrainTest batch = new BatchTaskTrainTest(
+        ExperimentTrainTest batch = new ExperimentTrainTest(
                 "TwentyNewsgroupsTrainTest", 
-                WekaClassificationAdapter.getInstance(),
+                WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

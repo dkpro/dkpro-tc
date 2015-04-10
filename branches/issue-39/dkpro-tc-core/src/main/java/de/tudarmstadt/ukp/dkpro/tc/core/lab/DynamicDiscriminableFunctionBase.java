@@ -2,7 +2,6 @@ package de.tudarmstadt.ukp.dkpro.tc.core.lab;
 
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminable;
 
 public abstract class DynamicDiscriminableFunctionBase<T> implements Discriminable
@@ -26,10 +25,8 @@ public abstract class DynamicDiscriminableFunctionBase<T> implements Discriminab
     }
     
     @Override
-    public Object getActualValue()
-    {
-        throw new UnsupportedOperationException("buuuh!");
-    }
+    public abstract T getActualValue();
+
     
-    public abstract T getActualValue(TaskContext aContext);
+//    public abstract T getActualValue(TaskContext aContext);
 }

@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -120,10 +121,18 @@ public class ExtractFeaturesTask
         // Configure the meta collectors for each feature extractor individually
         try {
             for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> feClosure : featureExtractors) {
-                ExternalResourceDescription feDesc = feClosure.getActualValue(aContext);
+                ExternalResourceDescription feDesc = feClosure.getActualValue();
                 featureExtractorDescriptions.add(feDesc);
                 
-                Class<?> feClass = Class.forName(feDesc.getImplementationName());
+				String implName;
+				if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+					implName = ((CustomResourceSpecifier) feDesc
+							.getResourceSpecifier()).getResourceClassName();
+				} else {
+					implName = feDesc.getImplementationName();
+				}
+				Class<?> feClass = Class.forName(implName);
+
                 
                 // Skip feature extractors that are not dependent on meta collectors
                 if (!MetaDependent.class.isAssignableFrom(feClass)) {
@@ -134,8 +143,8 @@ public class ExtractFeaturesTask
                 
                 // Tell the meta collectors where to store their data
                 for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses()) {
-                    MetaInfoTask.configureStorageLocations(feDesc.getResourceSpecifier(), 
-                            (String) feClosure.getDiscriminatorValue(), conf.extractorOverrides);
+                    MetaInfoTask.configureStorageLocations(aContext, feDesc.getResourceSpecifier(), 
+                            (String) feClosure.getDiscriminatorValue(), conf.extractorOverrides, AccessMode.READONLY);
                 }
             }
         }
@@ -165,8 +174,7 @@ public class ExtractFeaturesTask
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode, featureMode, featureStore,
-                true, developerMode, isTesting, featureFilters, featureExtractorDescriptions,
-                aContext);
+                true, developerMode, isTesting, featureFilters, featureExtractorDescriptions);
 
         return connector;
     }
