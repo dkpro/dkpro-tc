@@ -17,25 +17,19 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
-import java.util.ArrayList;
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
 import java.util.List;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.resource.ResourceInitializationException;
+
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 
 public abstract class LuceneNgramFeatureExtractorBase
     extends LuceneFeatureExtractorBase
 {
-
-    @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
-    {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LuceneNGramMetaCollector.class);
-
-        return metaCollectorClasses;
-    }
-
     @Override
     protected String getFieldName()
     {
@@ -52,5 +46,12 @@ public abstract class LuceneNgramFeatureExtractorBase
     protected int getTopN()
     {
         return ngramUseTopK;
+    }
+    
+    @Override
+    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+        throws ResourceInitializationException
+    {
+        return asList(createEngineDescription(LuceneNGramMetaCollector.class));
     }
 }

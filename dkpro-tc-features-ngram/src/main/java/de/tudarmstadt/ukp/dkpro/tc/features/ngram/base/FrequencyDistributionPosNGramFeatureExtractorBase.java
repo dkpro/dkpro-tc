@@ -17,9 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -35,7 +38,6 @@ import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
 
@@ -129,11 +131,9 @@ public class FrequencyDistributionPosNGramFeatureExtractorBase
     }
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+        throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(POSNGramMetaCollector.class);
-
-        return metaCollectorClasses;
+        return asList(createEngineDescription(POSNGramMetaCollector.class));
     }
 }
