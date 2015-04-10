@@ -12,7 +12,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class MetaCollectorConfiguration
 {
     public final AnalysisEngineDescription descriptor;
-    public final Map<String, String> storageOverrides = new HashMap<>();
+    public final Map<String, String> collectorOverrides = new HashMap<>();
+    public final Map<String, String> extractorOverrides = new HashMap<>();
     
     public MetaCollectorConfiguration(AnalysisEngineDescription aDescriptor)
     {
@@ -25,9 +26,11 @@ public class MetaCollectorConfiguration
         descriptor = createEngineDescription(aClass);
     }
 
-    public MetaCollectorConfiguration addStorageMapping(String aParameter, String aPreferredLocation)
+    public MetaCollectorConfiguration addStorageMapping(String aCollectorParameter,
+            String aExtractorParameter, String aPreferredLocation)
     {
-        storageOverrides.put(aParameter, aPreferredLocation);
+        collectorOverrides.put(aCollectorParameter, aPreferredLocation);
+        extractorOverrides.put(aExtractorParameter, aPreferredLocation);
         return this;
     }
 }

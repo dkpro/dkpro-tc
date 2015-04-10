@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -41,6 +39,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
@@ -118,10 +118,33 @@ public class ExtractFeaturesTask
 
         // Resolve the feature extractor closures to actual descritors
         List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
-        for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> fc : featureExtractors) {
-            featureExtractorDescriptions.add(fc.getActualValue(aContext));
-        }
         
+        // Configure the meta collectors for each feature extractor individually
+        try {
+            for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> feClosure : featureExtractors) {
+                ExternalResourceDescription feDesc = feClosure.getActualValue(aContext);
+                featureExtractorDescriptions.add(feDesc);
+                
+                Class<?> feClass = Class.forName(feDesc.getImplementationName());
+                
+                // Skip feature extractors that are not dependent on meta collectors
+                if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                    continue;
+                }
+    
+                MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+                
+                // Tell the meta collectors where to store their data
+                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses()) {
+                    MetaInfoTask.configureStorageLocations(feDesc.getResourceSpecifier(), 
+                            (String) feClosure.getDiscriminatorValue(), conf.extractorOverrides);
+                }
+            }
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new ResourceInitializationException(e);
+        }
+                
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
@@ -137,25 +160,6 @@ public class ExtractFeaturesTask
         catch (IllegalAccessException e) {
             throw new ResourceInitializationException(e);
         }
-
-        // collect parameter/key pairs that need to be set
-        Map<String, String> parameterKeyPairs = new HashMap<String, String>();
-        for (MetaCollector metaCollector : metaCollectors) {
-                parameterKeyPairs.putAll(metaCollector.getParameterKeyPairs());
-        }
-
-//        // the following file location is specific to the FE task, so it cannot be added to the
-//        // global parameter space
-//        List<Object> parametersCopy = new ArrayList<Object>();
-//        if (pipelineParameters != null) {
-//            parametersCopy.addAll(pipelineParameters);
-//        }
-
-//        for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
-//            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
-//                    entry.getValue());
-//            parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
-//        }
         
         // as feature filters are optional, check for null
         if (featureFilters == null) {
