@@ -248,6 +248,14 @@ public class WekaUtils
         instanceListToArffFile(outputFile, instanceList, false, false);
     }
 
+    public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
+            boolean useDenseInstances, boolean isRegressionExperiment)
+        throws Exception
+    {
+        instanceListToArffFile(outputFile, instanceList,
+                useDenseInstances, isRegressionExperiment, false);
+    }
+    
     /**
      * Converts a feature store to a list of instances. Single-label case.
      * 
@@ -257,10 +265,11 @@ public class WekaUtils
      * @param instanceList
      * @param useDenseInstances
      * @param isRegressionExperiment
+     * @param useWeights
      * @throws Exception
      */
     public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
-            boolean useDenseInstances, boolean isRegressionExperiment)
+            boolean useDenseInstances, boolean isRegressionExperiment, boolean useWeights)
         throws Exception
     {
 
@@ -323,6 +332,11 @@ public class WekaUtils
             else {
                 wekaInstance.setClassValue(outcome);
             }
+            
+            Double instanceWeight = instanceList.getWeight(i);
+            if (useWeights) {
+                wekaInstance.setWeight(instanceWeight);
+            }
 
             // preprocessingFilter.input(wekaInstance);
             // saver.writeIncremental(preprocessingFilter.output());
@@ -332,7 +346,14 @@ public class WekaUtils
         // finishes the incremental saving process
         saver.writeIncremental(null);
     }
-
+    
+    public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
+            boolean useDenseInstances)
+        throws Exception
+    {
+        instanceListToArffFileMultiLabel(outputFile, featureStore,
+                useDenseInstances, false);
+    }
     /**
      * /** Converts a feature store to a list of instances. Multi-label case.
      * 
@@ -341,10 +362,11 @@ public class WekaUtils
      * @param outputFile
      * @param featureStore
      * @param useDenseInstances
+     * @param useWeights use instance weights
      * @throws Exception
      */
     public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
-            boolean useDenseInstances)
+            boolean useDenseInstances, boolean useWeights)
         throws Exception
     {
 
@@ -400,6 +422,12 @@ public class WekaUtils
             }
 
             wekaInstance.setDataset(wekaInstances);
+            
+            Double instanceWeight = featureStore.getWeight(i);
+            if (useWeights) {
+                wekaInstance.setWeight(instanceWeight);
+            }
+            
 
             // preprocessingFilter.input(wekaInstance);
             // saver.writeIncremental(preprocessingFilter.output());

@@ -71,6 +71,13 @@ public interface FeatureStore
      * @return The outcomes of the i-th instance in the store
      */
     public List<String> getOutcomes(int i);
+    /**
+     * The weight for the instance.  Only a single weight per instance, even for multilabel classification.
+     * 
+     * @param i the instance number
+     * @return The instance weight
+     */
+    public Double getWeight(int i);
 
     /**
      * @return An ordered set of all feature names recorded in the store

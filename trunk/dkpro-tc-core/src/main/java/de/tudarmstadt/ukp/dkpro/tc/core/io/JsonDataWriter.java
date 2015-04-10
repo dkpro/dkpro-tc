@@ -44,7 +44,7 @@ public class JsonDataWriter
 
     @Override
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode)
+            String learningMode, boolean applyWeighting)
         throws Exception
     {
         FileUtils.writeStringToFile(new File(outputDirectory, JSON_FILE_NAME),

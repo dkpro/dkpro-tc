@@ -252,12 +252,12 @@ public class TaskUtils
     public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            String... featureExtractorClassNames)
+            boolean applyWeighting, String... featureExtractorClassNames)
         throws ResourceInitializationException
     {
         return getFeatureExtractorConnector(parameters, outputPath, dataWriter, learningMode,
                 featureMode, featureStore, addInstanceId, developerMode, isTesting,
-                Collections.<String> emptyList(), featureExtractorClassNames);
+                Collections.<String> emptyList(), applyWeighting, featureExtractorClassNames);
     }
 
     /**
@@ -268,7 +268,7 @@ public class TaskUtils
     public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            List<String> filters, String... featureExtractorClassNames)
+            List<String> filters, boolean applyWeighting, String... featureExtractorClassNames)
         throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
@@ -309,6 +309,7 @@ public class TaskUtils
                 ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
                 ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
                 ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
+                ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
                 ExtractFeaturesConnector.PARAM_FEATURE_STORE_CLASS, featureStore));
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
@@ -348,6 +349,7 @@ public class TaskUtils
                                         + featExt.getResourceName());
                     }
                     instance.setOutcomes(getOutcomes(jcas, null));
+                    instance.setWeight(getWeight(jcas, null));
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
             }
@@ -370,6 +372,7 @@ public class TaskUtils
                     JCas view2 = jcas.getView(Constants.PART_TWO);
 
                     instance.setOutcomes(getOutcomes(jcas, null));
+                    instance.setWeight(getWeight(jcas, null));
                     instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
             }
@@ -411,6 +414,7 @@ public class TaskUtils
                     }
 
                     instance.setOutcomes(getOutcomes(jcas, unit));
+                    instance.setWeight(getWeight(jcas, unit));
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, unit));
                 }
@@ -468,6 +472,7 @@ public class TaskUtils
 
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(jcas, unit));
+            instance.setWeight(getWeight(jcas, unit));
             instance.setSequenceId(sequenceId);
             instance.setSequencePosition(unit.getId());
 
@@ -509,6 +514,7 @@ public class TaskUtils
 
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(jcas, unit));
+            instance.setWeight(getWeight(jcas, unit));
             instance.setSequenceId(sequenceId);
             instance.setSequencePosition(unit.getId());
 
@@ -541,4 +547,34 @@ public class TaskUtils
 
         return stringOutcomes;
     }
+    /**
+     * Gets the instance weight.
+     * @param jcas
+     * @param unit
+     * @return the instance weight
+     * @throws AnalysisEngineProcessException
+     */
+    public static double getWeight(JCas jcas, AnnotationFS unit)
+            throws AnalysisEngineProcessException
+        {
+            Collection<TextClassificationOutcome> outcomes;
+            if (unit == null) {
+                outcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
+            }
+            else {
+                outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, unit);
+            }
+
+            if (outcomes.size() == 0) {
+                throw new AnalysisEngineProcessException(new TextClassificationException(
+                        "No instance weight annotation present in current CAS."));
+            }
+
+            double weight = -1.0;
+            for (TextClassificationOutcome outcome : outcomes) {
+                weight = outcome.getWeight();
+            }
+
+            return weight;
+        }
 }

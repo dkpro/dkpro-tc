@@ -88,10 +88,8 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         ParameterSpace pSpace = getParameterSpace();
 
         TwentyNewsgroupsInstanceWeightingDemo experiment = new TwentyNewsgroupsInstanceWeightingDemo();
-        experiment.runCrossValidation(pSpace);
-//        experiment.runCrossValidationWithStatsEval(pSpace);
+
         experiment.runTrainTest(pSpace);
-//        experiment.runTrainTestWithStatsEval(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -132,12 +130,7 @@ public class TwentyNewsgroupsInstanceWeightingDemo
                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-                        ,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-                		);
+                        );
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -170,38 +163,7 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         return pSpace;
     }
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
-
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
-        // add a second report to TestTask which creates a report about average feature values for
-        // each outcome label
-        batch.addInnerReport(WekaFeatureValuesReport.class);
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
     
-    // ##### CV with STATS EVAL #####
-    protected void runCrossValidationWithStatsEval(ParameterSpace pSpace)
-        throws Exception
-    {
-    	// demo for the statistical evaluation reports
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaStatisticsClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchStatisticsCVReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
 
     // ##### TRAIN-TEST #####
     protected void runTrainTest(ParameterSpace pSpace)
@@ -223,20 +185,6 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         Lab.getInstance().run(batch);
     }
     
-    // ##### TRAIN-TEST with STATS EVAL #####
-    protected void runTrainTestWithStatsEval(ParameterSpace pSpace)
-        throws Exception
-    {
-
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaStatisticsClassificationAdapter.class,
-                getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchStatisticsTrainTestReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
 
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException

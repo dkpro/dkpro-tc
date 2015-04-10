@@ -98,13 +98,13 @@ public class NGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnectorLucene = TaskUtils
                 .getFeatureExtractorConnector(parametersLucene, outputPathLucene.getAbsolutePath(),
                         JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-                        Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false, false, false, LuceneNGramDFE.class.getName());
+                        Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false, false, false, false, LuceneNGramDFE.class.getName());
 
         AnalysisEngineDescription featExtractorConnectorFrequencyDist = TaskUtils
                 .getFeatureExtractorConnector(parametersFrequencyDist,
                         outputPathFrequencyDist.getAbsolutePath(), JsonDataWriter.class.getName(),
                         Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                        DenseFeatureStore.class.getName(), false, false, false,
+                        DenseFeatureStore.class.getName(), false, false, false, false,
                         FrequencyDistributionNGramDFE.class.getName());
 
         // run meta collectors

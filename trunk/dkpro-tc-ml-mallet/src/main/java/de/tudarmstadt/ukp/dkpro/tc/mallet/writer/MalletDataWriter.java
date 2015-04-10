@@ -39,7 +39,7 @@ public class MalletDataWriter
 
     @Override
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode)
+            String learningMode, boolean applyWeighting)
         throws Exception
     {
         MalletUtils.instanceListToMalletFormatFile(new File(outputDirectory + "/"

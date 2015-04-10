@@ -39,11 +39,11 @@ public class MekaDataWriter
 
     @Override
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode)
+            String learningMode, boolean applyWeighting)
         throws Exception
     {
         WekaUtils.instanceListToArffFileMultiLabel(new File(outputDirectory,
         		WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile)),
-                featureStore, useDenseInstances);
+                featureStore, useDenseInstances, applyWeighting);
     }
 }

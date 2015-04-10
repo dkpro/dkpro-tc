@@ -91,7 +91,7 @@ public class LucenePOSNGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false,
+                DenseFeatureStore.class.getName(), false, false, false, false,
                 LucenePOSNGramDFE.class.getName());
 
         // run meta collector

@@ -44,7 +44,7 @@ public class CRFSuiteDataWriter
 
     @Override
     public void write(File aOutputDirectory, FeatureStore aFeatureStore,
-            boolean aUseDenseInstances, String aLearningMode)
+            boolean aUseDenseInstances, String aLearningMode, boolean applyWeighting)
         throws Exception
     {
         writeFeatureFile(aFeatureStore, aOutputDirectory);

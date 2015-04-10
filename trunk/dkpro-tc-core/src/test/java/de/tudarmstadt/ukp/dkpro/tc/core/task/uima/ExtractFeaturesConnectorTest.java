@@ -94,7 +94,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                featureStoreClass.getName(), true, false, false, NoopFeatureExtractor.class.getName());
+                featureStoreClass.getName(), true, false, false, false, NoopFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -132,7 +132,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                true, false, false, NoopFeatureExtractor.class.getName());
+                true, false, false, false, NoopFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -170,7 +170,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                true, false, false, NoopFeatureExtractor.class.getName());
+                true, false, false, false, NoopFeatureExtractor.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
