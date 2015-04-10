@@ -46,7 +46,7 @@ public class NGramCPPipelineTest
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath, };
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath, };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 65);
@@ -71,7 +71,7 @@ public class NGramCPPipelineTest
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
@@ -89,7 +89,7 @@ public class NGramCPPipelineTest
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
@@ -109,7 +109,7 @@ public class NGramCPPipelineTest
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneNGramCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, false,
                 LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 2,
                 LuceneNGramCPFE.PARAM_NGRAM_SYMMETRY_COMBO, true };

@@ -17,7 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
-import java.util.ArrayList;
+import static java.util.Arrays.asList;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.NGramUtils;
 import dkpro.similarity.algorithms.api.SimilarityException;
@@ -81,12 +82,14 @@ public class CosineFeatureExtractor<T extends Annotation>
     private CosineSimilarity measure;
     
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
+        throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(IdfPairMetaCollector.class);
-
-        return metaCollectorClasses;
+        return asList(new MetaCollectorConfiguration(IdfPairMetaCollector.class).
+                addStorageMapping(
+                        IdfPairMetaCollector.PARAM_TARGET_LOCATION, 
+                        PARAM_SOURCE_LOCATION, 
+                        IdfPairMetaCollector.LUCENE_DIR));
     }
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)

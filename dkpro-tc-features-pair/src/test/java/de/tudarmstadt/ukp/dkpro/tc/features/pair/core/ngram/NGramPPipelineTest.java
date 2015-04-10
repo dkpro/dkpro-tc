@@ -50,7 +50,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("view1NG"));
         assertEquals(test.featureNames.size(), 4);
@@ -73,7 +73,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("view2NG"));
         assertEquals(test.featureNames.size(), 4);
@@ -91,7 +91,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, true,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("allNG"));
         assertEquals(test.featureNames.size(), 6);
@@ -111,7 +111,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, true,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("view1allNG")
                 || test.featureNames.first().startsWith("view2allNG"));
@@ -153,7 +153,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, true,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 4);
     }
@@ -175,7 +175,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.contains("view1NG_Cats"));
 
@@ -187,7 +187,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.contains("view1NG_cats"));
     }
@@ -209,7 +209,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, true,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 6);
         assertTrue(test.featureNames.contains("allNG_cats"));
@@ -223,7 +223,7 @@ public class NGramPPipelineTest
                 LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, true,
                 LuceneNGramPFE.PARAM_NGRAM_STOPWORDS_FILE,
                 "src/test/resources/data/stopwords.txt",
-                LuceneNGramPFE.PARAM_LUCENE_DIR, test.lucenePath };
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 5);
         assertTrue(!test.featureNames.contains("allNG_cats"));
