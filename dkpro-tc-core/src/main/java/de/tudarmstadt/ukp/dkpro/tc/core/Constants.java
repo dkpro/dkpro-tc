@@ -170,6 +170,12 @@ public interface Constants
      * Name of the discriminator which holds the feature parameters which serve as base
      */
     public static final String DIM_BASELINE_PIPELINE_PARAMS = "baselinePipelineParams";
+    
+    /**
+     * Name of the discriminator that stores whether the instance weighting should be applied to
+     * learning task or not
+     */
+    public static final String DIM_APPLY_INSTANCE_WEIGHTING = "applyWeighting";
 
     /*
      * Learning modes
