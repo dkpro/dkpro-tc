@@ -34,13 +34,14 @@ import org.apache.uima.util.Level;
 import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.util.TermFreqTuple;
 
 public abstract class LuceneFeatureExtractorBase
     extends NGramFeatureExtractorBase
 {
-    public static final String PARAM_LUCENE_DIR = "luceneDir";
-    @ConfigurationParameter(name = PARAM_LUCENE_DIR, mandatory = true)
+    public static final String PARAM_SOURCE_LOCATION = ComponentParameters.PARAM_SOURCE_LOCATION;
+    @ConfigurationParameter(name = PARAM_SOURCE_LOCATION, mandatory = true)
     protected File luceneDir;
     
     public static final String LUCENE_NGRAM_FIELD = "ngram";

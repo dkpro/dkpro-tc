@@ -18,14 +18,12 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
 import java.util.List;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneCharacterNGramMetaCollector;
 
@@ -68,11 +66,16 @@ public class LuceneCharacterNGramFeatureExtractorBase
     {
         return charNgramUseTopK;
     }
-    
+
     @Override
-    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
         throws ResourceInitializationException
     {
-        return asList(createEngineDescription(LuceneCharacterNGramMetaCollector.class));
+        return asList(new MetaCollectorConfiguration(LuceneCharacterNGramMetaCollector.class)
+                .addStorageMapping(
+                        LuceneCharacterNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        PARAM_SOURCE_LOCATION, 
+                        LuceneCharacterNGramMetaCollector.LUCENE_DIR));
     }
 }
+

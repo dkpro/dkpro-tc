@@ -18,9 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -34,6 +31,7 @@ public class DependencyMetaCollector
 {
     public static final String DEP_FD_KEY = "dep.ser";
 
+    public static final String PARAM_DEP_FD_FILE = DependencyDFE.PARAM_DEP_FD_FILE;
     @ConfigurationParameter(name = DependencyDFE.PARAM_DEP_FD_FILE, mandatory = true)
     private File depFdFile;
 
@@ -63,14 +61,6 @@ public class DependencyMetaCollector
         }
 
         return governor + "-" + type + "-" + dependent;
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(DependencyDFE.PARAM_DEP_FD_FILE, DEP_FD_KEY);
-        return mapping;
     }
 
     @Override

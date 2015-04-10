@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -42,6 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
 
@@ -137,9 +136,11 @@ public class DependencyDFE
     }
 
     @Override
-    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
         throws ResourceInitializationException
     {
-        return asList(createEngineDescription(DependencyMetaCollector.class));
+        return asList(new MetaCollectorConfiguration(DependencyMetaCollector.class)
+                .addStorageMapping(DependencyMetaCollector.PARAM_DEP_FD_FILE,
+                        DependencyDFE.PARAM_DEP_FD_FILE, DependencyMetaCollector.DEP_FD_KEY));
     }
 }

@@ -71,11 +71,11 @@ public class KeywordNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { KeywordNGramDFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt", KeywordNGramDFE.PARAM_LUCENE_DIR,
-                luceneFolder, KeywordNGramDFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
-                markSentenceLocation, KeywordNGramDFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
-                includeComma };
+        Object[] parameters = new Object[] { 
+                KeywordNGramDFE.PARAM_NGRAM_KEYWORDS_FILE, "src/test/resources/data/keywordlist.txt", 
+                KeywordNGramDFE.PARAM_SOURCE_LOCATION, luceneFolder, 
+                KeywordNGramDFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, markSentenceLocation, 
+                KeywordNGramDFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, includeComma };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(

@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,13 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
@@ -42,8 +42,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 public class FrequencyDistributionNGramFeatureExtractorBase
     extends NGramFeatureExtractorBase
 {
-    public static final String PARAM_NGRAM_FD_FILE = "ngramFdFile";
-    @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
+    public static final String PARAM_SOURCE_LOCATION = ComponentParameters.PARAM_SOURCE_LOCATION;
+    @ConfigurationParameter(name = PARAM_SOURCE_LOCATION, mandatory = true)
     private String ngramFdFile;
 
     public static final String FD_NGRAM_FIELD = "ngram";
@@ -51,10 +51,14 @@ public class FrequencyDistributionNGramFeatureExtractorBase
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
         throws ResourceInitializationException
     {
-        return asList(createEngineDescription(NGramMetaCollector.class));
+        return asList(new MetaCollectorConfiguration(NGramMetaCollector.class).
+                addStorageMapping(
+                        NGramMetaCollector.PARAM_TARGET_LOCATION, 
+                        PARAM_SOURCE_LOCATION, 
+                        NGramMetaCollector.NGRAM_FD_KEY));
     }
 
     @Override

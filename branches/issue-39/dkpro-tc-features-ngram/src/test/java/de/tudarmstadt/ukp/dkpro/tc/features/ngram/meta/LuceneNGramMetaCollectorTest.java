@@ -66,7 +66,7 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, tmpDir
+                LuceneNGramDFE.PARAM_SOURCE_LOCATION, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
@@ -127,7 +127,7 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, tmpDir
+                LuceneNGramDFE.PARAM_SOURCE_LOCATION, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {

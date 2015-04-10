@@ -80,13 +80,14 @@ public class NGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         ArrayList<Object> parametersLucene = new ArrayList<Object>(Arrays.asList(new Object[] {
-                LuceneNGramDFE.PARAM_NGRAM_MIN_N, ngramNMin, LuceneNGramDFE.PARAM_NGRAM_MAX_N,
-                ngramNMax, LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder }));
+                LuceneNGramDFE.PARAM_NGRAM_MIN_N, ngramNMin, 
+                LuceneNGramDFE.PARAM_NGRAM_MAX_N, ngramNMax, 
+                LuceneNGramDFE.PARAM_SOURCE_LOCATION, luceneFolder }));
 
         ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
                 Arrays.asList(new Object[] { FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
                         ngramNMin, FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N, ngramNMax,
-                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FD_FILE, frequencyDistFile }));
+                        FrequencyDistributionNGramDFE.PARAM_SOURCE_LOCATION, frequencyDistFile }));
 
         AnalysisEngineDescription metaCollectorLucene = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parametersLucene.toArray());
