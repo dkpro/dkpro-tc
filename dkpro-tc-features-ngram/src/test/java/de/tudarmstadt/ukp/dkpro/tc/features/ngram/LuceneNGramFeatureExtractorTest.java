@@ -69,8 +69,9 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 3,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder };
+        Object[] parameters = new Object[] { 
+                LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 3,
+                LuceneNGramDFE.PARAM_SOURCE_LOCATION, luceneFolder };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(

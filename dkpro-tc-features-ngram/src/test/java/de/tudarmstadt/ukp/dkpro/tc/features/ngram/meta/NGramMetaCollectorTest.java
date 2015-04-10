@@ -65,7 +65,7 @@ public class NGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 NGramMetaCollector.class,
-                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, tmpFdFile
+                FrequencyDistributionNGramFeatureExtractorBase.PARAM_SOURCE_LOCATION, tmpFdFile
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {

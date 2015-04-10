@@ -70,8 +70,9 @@ public class LucenePOSNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LucenePOSNGramDFE.PARAM_POS_NGRAM_USE_TOP_K, 5,
-                LucenePOSNGramDFE.PARAM_LUCENE_DIR, luceneFolder };
+        Object[] parameters = new Object[] { 
+                LucenePOSNGramDFE.PARAM_POS_NGRAM_USE_TOP_K, 5,
+                LucenePOSNGramDFE.PARAM_SOURCE_LOCATION, luceneFolder };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(

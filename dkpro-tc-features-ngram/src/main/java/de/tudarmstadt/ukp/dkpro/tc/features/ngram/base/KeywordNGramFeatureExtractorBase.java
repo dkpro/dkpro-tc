@@ -18,19 +18,17 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 
@@ -111,11 +109,16 @@ public class KeywordNGramFeatureExtractorBase
     }
 
     @Override
-    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
         throws ResourceInitializationException
     {
-        return asList(createEngineDescription(KeywordNGramMetaCollector.class));
+        return asList(new MetaCollectorConfiguration(KeywordNGramMetaCollector.class)
+                .addStorageMapping(
+                        KeywordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        PARAM_SOURCE_LOCATION, 
+                        KeywordNGramMetaCollector.LUCENE_DIR));
     }
+
 
     @Override
     protected String getFieldName()

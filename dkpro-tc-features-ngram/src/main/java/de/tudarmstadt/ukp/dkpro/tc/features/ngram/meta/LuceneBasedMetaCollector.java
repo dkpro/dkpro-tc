@@ -19,9 +19,6 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
@@ -41,10 +38,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 
 public abstract class LuceneBasedMetaCollector
     extends MetaCollector
@@ -53,7 +49,8 @@ public abstract class LuceneBasedMetaCollector
 
     public static final String LUCENE_ID_FIELD = "id";
 
-    @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_LUCENE_DIR, mandatory = true)
+    public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
+    @ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
     private File luceneDir;
 
     // this is a static singleton as different Lucene-based meta collectors will use the same writer
@@ -186,14 +183,6 @@ public abstract class LuceneBasedMetaCollector
             }
         }
 
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(LuceneNGramDFE.PARAM_LUCENE_DIR, LUCENE_DIR);
-        return mapping;
     }
 
     protected String getDocumentId(JCas jcas)

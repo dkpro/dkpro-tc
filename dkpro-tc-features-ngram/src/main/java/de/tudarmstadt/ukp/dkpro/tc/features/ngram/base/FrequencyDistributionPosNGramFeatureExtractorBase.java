@@ -18,8 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.base;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -37,7 +34,9 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.POSNGramMetaCollector;
 
@@ -47,8 +46,10 @@ public class FrequencyDistributionPosNGramFeatureExtractorBase
     implements MetaDependent
 {
 
-    public static final String PARAM_POS_NGRAM_FD_FILE = "posNgramFdFile";
-    @ConfigurationParameter(name = PARAM_POS_NGRAM_FD_FILE, mandatory = true)
+    @Deprecated
+    public static final String PARAM_POS_NGRAM_FD_FILE = ComponentParameters.PARAM_SOURCE_LOCATION;
+    public static final String PARAM_SOURCE_LOCATION = ComponentParameters.PARAM_SOURCE_LOCATION;
+    @ConfigurationParameter(name = PARAM_SOURCE_LOCATION, mandatory = true)
     private String posNgramFdFile;
 
     public static final String PARAM_POS_NGRAM_MIN_N = "posNgramMinN";
@@ -129,11 +130,15 @@ public class FrequencyDistributionPosNGramFeatureExtractorBase
 
         return topNGrams;
     }
-
+    
     @Override
-    public List<AnalysisEngineDescription> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
         throws ResourceInitializationException
     {
-        return asList(createEngineDescription(POSNGramMetaCollector.class));
+        return asList(new MetaCollectorConfiguration(POSNGramMetaCollector.class)
+                .addStorageMapping(
+                        POSNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        PARAM_SOURCE_LOCATION,
+                        POSNGramMetaCollector.POS_NGRAM_FD_KEY));
     }
 }
