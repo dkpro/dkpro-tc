@@ -33,9 +33,11 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.CustomResourceSpecifier_impl;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -100,7 +102,7 @@ public class MetaInfoTask
         }
     }
 
-    public static void configureStorageLocations(ResourceSpecifier aDesc, String aExtractorName, Map<String, String> aOverrides)
+    public static void configureStorageLocations(TaskContext aContext, ResourceSpecifier aDesc, String aExtractorName, Map<String, String> aOverrides, AccessMode aMode)
         throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         // We assume for the moment that we only have primitive analysis engines for meta
@@ -112,7 +114,7 @@ public class MetaInfoTask
                 throw new IllegalArgumentException("Only primitive meta collectors currently supported.");
             }
         }
-        else if (aDesc instanceof ExternalResourceDescription) {
+        else if (aDesc instanceof CustomResourceSpecifier_impl) {
             // Feature extractors are ok
         }
         else {
@@ -127,12 +129,12 @@ public class MetaInfoTask
                         + "-" + e.getValue();
                 String parameterName = e.getKey();
                 ConfigurationParameterFactory.setParameter(aDesc, parameterName,
-                        storageLocation);
+                        new File(aContext.getFolder(MetaInfoTask.META_KEY, aMode), e.getValue()).getAbsolutePath());
             }
             else {
                 // If there is no associated feature extractor, then just use the preferred name
                 ConfigurationParameterFactory.setParameter(aDesc, e.getKey(),
-                        e.getValue());
+                        new File(aContext.getFolder(MetaInfoTask.META_KEY, aMode), e.getValue()).getAbsolutePath());
             }
         }
     }
@@ -151,7 +153,7 @@ public class MetaInfoTask
         // Resolve the feature extractor closures to actual descritors
         List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
         for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> fc : featureExtractors) {
-            featureExtractorDescriptions.add(fc.getActualValue(aContext));
+            featureExtractorDescriptions.add(fc.getActualValue());
         }
 
 
@@ -164,7 +166,7 @@ public class MetaInfoTask
                         UnitContextMetaCollector.class).addStorageMapping(
                         UnitContextMetaCollector.PARAM_CONTEXT_FILE, null,
                         UnitContextMetaCollector.CONTEXT_KEY);
-                configureStorageLocations(conf.descriptor, null, conf.collectorOverrides);
+                configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides, AccessMode.READWRITE);
                 metaCollectors.add(conf.descriptor); 	
             }
             
@@ -174,14 +176,23 @@ public class MetaInfoTask
                         SequenceContextMetaCollector.PARAM_CONTEXT_FILE, null,
                         SequenceContextMetaCollector.CONTEXT_KEY);
 
-                configureStorageLocations(conf.descriptor, null, conf.collectorOverrides);
+                configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides, AccessMode.READWRITE);
                 metaCollectors.add(conf.descriptor);   
             }
     
             // Configure the meta collectors for each feature extractor individually
             for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> feClosure : featureExtractors) {
-                ExternalResourceDescription feDesc = feClosure.getActualValue(aContext);
-                Class<?> feClass = Class.forName(feDesc.getImplementationName());
+                ExternalResourceDescription feDesc = feClosure.getActualValue();
+                
+				String implName;
+				if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+					implName = ((CustomResourceSpecifier) feDesc
+							.getResourceSpecifier()).getResourceClassName();
+				} else {
+					implName = feDesc.getImplementationName();
+				}
+
+				Class<?> feClass = Class.forName(implName);
                 
                 // Skip feature extractors that are not dependent on meta collectors
                 if (!MetaDependent.class.isAssignableFrom(feClass)) {
@@ -192,8 +203,9 @@ public class MetaInfoTask
                 
                 // Tell the meta collectors where to store their data
                 for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses()) {
-                    configureStorageLocations(conf.descriptor,
-                            (String) feClosure.getDiscriminatorValue(), conf.collectorOverrides);
+                    configureStorageLocations(aContext, conf.descriptor,
+                            (String) feClosure.getDiscriminatorValue(), conf.collectorOverrides, AccessMode.READWRITE);
+                    metaCollectors.add(conf.descriptor);
                 }
             }
         }

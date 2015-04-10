@@ -17,10 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.task.uima;
 
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -63,9 +65,11 @@ public class ExtractFeaturesConnectorTest
                 { DenseFeatureStore.class }, {SparseFeatureStore.class}
         });
     }
-
+    
     private Class<? extends FeatureStore> featureStoreClass;
 
+	private final List<ExternalResourceDescription> NOOP = asList(createExternalResourceDescription(NoopFeatureExtractor.class));
+    
     public ExtractFeaturesConnectorTest(Class<? extends FeatureStore> featureStoreClass)
     {
         this.featureStoreClass = featureStoreClass;
@@ -78,11 +82,11 @@ public class ExtractFeaturesConnectorTest
 
         File outputPath = folder.newFolder();
 
-        // we do not need parameters here, but in case we do :)
-        Object[] parameters = new Object[] {
-                // "NAME", "VALUE"
-        };
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+//        // we do not need parameters here, but in case we do :)
+//        Object[] parameters = new Object[] {
+//                // "NAME", "VALUE"
+//        };
+//        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
@@ -91,10 +95,13 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
+        
+
+        
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+        		outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                featureStoreClass.getName(), true, false, false, NoopFeatureExtractor.class.getName());
+                featureStoreClass.getName(), true, false, false, NOOP);
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -117,10 +124,10 @@ public class ExtractFeaturesConnectorTest
         File outputPath = folder.newFolder();
 
         // we do not need parameters here, but in case we do :)
-        Object[] parameters = new Object[] {
-                // "NAME", "VALUE"
-        };
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+//        Object[] parameters = new Object[] {
+//                // "NAME", "VALUE"
+//        };
+//        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderMultiLabel.class, TestReaderMultiLabel.PARAM_SOURCE_LOCATION,
@@ -130,9 +137,9 @@ public class ExtractFeaturesConnectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                true, false, false, NoopFeatureExtractor.class.getName());
+                true, false, false, NOOP);
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -154,11 +161,11 @@ public class ExtractFeaturesConnectorTest
 
         File outputPath = folder.newFolder();
 
-        // we do not need parameters here, but in case we do :)
-        Object[] parameters = new Object[] {
-                // "NAME", "VALUE"
-        };
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+//        // we do not need parameters here, but in case we do :)
+//        Object[] parameters = new Object[] {
+//                // "NAME", "VALUE"
+//        };
+//        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderRegression.class, TestReaderRegression.PARAM_SOURCE_LOCATION,
@@ -168,9 +175,9 @@ public class ExtractFeaturesConnectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                true, false, false, NoopFeatureExtractor.class.getName());
+                true, false, false, NOOP);
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 

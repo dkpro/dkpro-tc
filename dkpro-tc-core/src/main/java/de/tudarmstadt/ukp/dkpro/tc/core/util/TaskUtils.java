@@ -52,10 +52,10 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
@@ -210,8 +210,17 @@ public class TaskUtils
         Set<String> requiredTypes = new HashSet<String>();
 
         for (ExternalResourceDescription element : featureSet) {
+        	
+			String implName;
+			if (element.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+				implName = ((CustomResourceSpecifier) element
+						.getResourceSpecifier()).getResourceClassName();
+			} else {
+				implName = element.getImplementationName();
+			}       	
+        	
             TypeCapability annotation = ReflectionUtil.getAnnotation(
-                    Class.forName(element.getImplementationName()), TypeCapability.class);
+                    Class.forName(implName), TypeCapability.class);
 
             if (annotation != null) {
                 requiredTypes.addAll(Arrays.asList(annotation.inputs()));
@@ -229,8 +238,7 @@ public class TaskUtils
     public static AnalysisEngineDescription getFeatureExtractorConnector(
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            List<ExternalResourceDescription> aFeatureExtractors,
-            TaskContext aContext)
+            List<ExternalResourceDescription> aFeatureExtractors)
         throws ResourceInitializationException
     {
     	return getFeatureExtractorConnector(
@@ -243,8 +251,7 @@ public class TaskUtils
     			developerMode, 
     			isTesting, 
     			Collections.<String>emptyList(),
-    			aFeatureExtractors,
-    			aContext
+    			aFeatureExtractors
     	);
     }
 
@@ -256,7 +263,7 @@ public class TaskUtils
     public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath,
             String dataWriter, String learningMode, String featureMode, String featureStore,
             boolean addInstanceId, boolean developerMode, boolean isTesting, List<String> filters,
-            List<ExternalResourceDescription> extractorResources, TaskContext aContext)
+            List<ExternalResourceDescription> extractorResources)
         throws ResourceInitializationException
     {
         //        // convert parameters to string as external resources only take string parameters
