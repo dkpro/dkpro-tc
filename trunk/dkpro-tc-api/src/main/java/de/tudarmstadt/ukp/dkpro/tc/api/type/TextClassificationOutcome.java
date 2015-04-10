@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-/* First created by JCasGen Tue May 06 17:51:57 CEST 2014 */
+/* First created by JCasGen Fri Apr 10 12:15:52 CEST 2015 */
 package de.tudarmstadt.ukp.dkpro.tc.api.type;
 
 import org.apache.uima.jcas.JCas; 
@@ -27,8 +27,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Nov 05 14:39:52 CET 2014
- * XML source: /Users/zesch/Documents/workspace/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
+ * Updated by JCasGen Fri Apr 10 12:15:52 CEST 2015
+ * XML source: /home/flekova/workspaceTC/dkpro-tc/dkpro-tc-api/target/jcasgen/typesystem.xml
  * @generated */
 public class TextClassificationOutcome extends Annotation {
   /** @generated
@@ -134,6 +134,24 @@ public class TextClassificationOutcome extends Annotation {
     if (TextClassificationOutcome_Type.featOkTst && ((TextClassificationOutcome_Type)jcasType).casFeat_prediction == null)
       jcasType.jcas.throwFeatMissing("prediction", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
     jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationOutcome_Type)jcasType).casFeatCode_prediction, v);}    
+   
+    
+  //*--------------*
+  //* Feature: weight
+
+  /** getter for weight - gets A manually set weight of the outcome, for example the annotator agreement
+   * @generated */
+  public double getWeight() {
+    if (TextClassificationOutcome_Type.featOkTst && ((TextClassificationOutcome_Type)jcasType).casFeat_weight == null)
+      jcasType.jcas.throwFeatMissing("weight", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
+    return jcasType.ll_cas.ll_getDoubleValue(addr, ((TextClassificationOutcome_Type)jcasType).casFeatCode_weight);}
+    
+  /** setter for weight - sets A manually set weight of the outcome, for example the annotator agreement 
+   * @generated */
+  public void setWeight(double v) {
+    if (TextClassificationOutcome_Type.featOkTst && ((TextClassificationOutcome_Type)jcasType).casFeat_weight == null)
+      jcasType.jcas.throwFeatMissing("weight", "de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome");
+    jcasType.ll_cas.ll_setDoubleValue(addr, ((TextClassificationOutcome_Type)jcasType).casFeatCode_weight, v);}    
    
     
   //*--------------*

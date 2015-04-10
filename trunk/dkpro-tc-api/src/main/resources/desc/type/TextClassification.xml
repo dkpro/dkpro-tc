@@ -21,6 +21,11 @@
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
+          <name>weight</name>
+          <description>A manually set weight of the outcome, for example the annotator agreement</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
           <name>confidence</name>
           <description>The confidence for the prediction</description>
           <rangeTypeName>uima.cas.Double</rangeTypeName>
