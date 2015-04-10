@@ -49,7 +49,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.ml.task.BatchTaskTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
@@ -117,7 +116,7 @@ public class BasicTwentyNewsgroupsDemo
                     public ExternalResourceDescription getActualValue(TaskContext aContext)
                     {
                         return createExternalResourceDescription(LuceneNGramDFE.class,
-                                LuceneNGramDFE.PARAM_LUCENE_DIR, 
+                                LuceneNGramDFE.PARAM_SOURCE_LOCATION, 
                                 new File(aContext.getStorageLocation(MetaInfoTask.META_KEY,
                                         AccessMode.READONLY), LuceneBasedMetaCollector.LUCENE_DIR)
                                         .getAbsolutePath(), 

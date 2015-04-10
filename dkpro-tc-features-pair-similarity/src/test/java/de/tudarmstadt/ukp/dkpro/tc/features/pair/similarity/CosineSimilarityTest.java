@@ -57,7 +57,7 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath
+        		CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath
         		};
         test.runPipeline();
         assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
@@ -75,7 +75,7 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+        		CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath,
         		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Stem"
         		};
         test.runPipeline();
@@ -93,7 +93,7 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+        		CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath,
         		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma"
         		};
         test.runPipeline();
@@ -111,7 +111,7 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+        		CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath,
         		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
         		};
         test.runPipeline();
