@@ -41,20 +41,11 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
-/**
- * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
- * 
- * Defining the parameters directly in this class makes on-the-fly changes more difficult when the
- * experiment is run on a server.
- * 
- * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
- * can be changed and then executed without pre-compilation.
- */
 public class BasicTwentyNewsgroupsDemo
     implements Constants
 {
@@ -84,45 +75,34 @@ public class BasicTwentyNewsgroupsDemo
                 DIM_CLASSIFICATION_ARGS, 
                 Arrays.asList(NaiveBayes.class.getName() ));
 
-//        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-//                DIM_PIPELINE_PARAMS, 
-//                Arrays.asList(new Object[] {
-//                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-//                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-//                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-//
-//        Dimension<List<String>> dimFeatureSets = Dimension.create(
-//                DIM_FEATURE_SET, 
-//                Arrays.asList(NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName()));
-
         Dimension dimFeatureExtractors = Dimension.create("featureExtractors", Arrays.asList(
-                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("extractNrOfTokens")
-                {
-                    @Override
-                    public ExternalResourceDescription getActualValue()
-                    {
-                        return createExternalResourceDescription(NrOfTokensDFE.class);
-                    }
-                }, 
-                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("createLuceneNGrams")
+                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("createLuceneTriGrams")
                 {
                     @Override
                     public ExternalResourceDescription getActualValue()
                     {
                         return createExternalResourceDescription(LuceneNGramDFE.class,
-                                LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, "500",                                
-                                LuceneNGramDFE.PARAM_NGRAM_MIN_N, "1",
+                                LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, "100",                                
+                                LuceneNGramDFE.PARAM_NGRAM_MIN_N, "3",
                                 LuceneNGramDFE.PARAM_NGRAM_MAX_N, "3");
+                    }
+                }, 
+                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>("createLuceneUniGrams")
+                {
+                    @Override
+                    public ExternalResourceDescription getActualValue()
+                    {
+                        return createExternalResourceDescription(LuceneNGramDFE.class,
+                                LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, "100",                                
+                                LuceneNGramDFE.PARAM_NGRAM_MIN_N, "1",
+                                LuceneNGramDFE.PARAM_NGRAM_MAX_N, "1");
                     }
                 }));
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readers", dimReaders),
-//                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.class.getName()),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
-//                dimPipelineParameters, 
-//                dimFeatureSets, 
                 dimClassificationArgs,
                 dimFeatureExtractors);
 
@@ -138,6 +118,7 @@ public class BasicTwentyNewsgroupsDemo
                 WekaClassificationAdapter.class,
                 getPreprocessing());
         batch.setParameterSpace(pSpace);
+        batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
