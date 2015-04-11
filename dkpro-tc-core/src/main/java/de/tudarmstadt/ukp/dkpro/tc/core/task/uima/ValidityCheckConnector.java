@@ -32,7 +32,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
@@ -59,7 +58,7 @@ public class ValidityCheckConnector
     private String dataWriter;
 
     @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected String[] featureExtractors;
+    protected String[] featureExtractorNames;
 
     @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
     private String learningMode;
@@ -213,16 +212,17 @@ public class ValidityCheckConnector
             try {
                 switch (featureModeI) {
                 case 1:
-                    for (String featExt : featureExtractors) {
-                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
-                                .forName(featExt).newInstance();
-                        if (!(featExtC instanceof DocumentFeatureExtractor)) {
+                    for (String featExt : featureExtractorNames) {
+ 
+            			Class<?> feClass = Class.forName(featExt);
+
+                        if (!(DocumentFeatureExtractor.class.isAssignableFrom(feClass))) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + " is not a valid Document Feature Extractor."));
                         }
-                        if (featExtC instanceof DocumentFeatureExtractor
-                                && (featExtC instanceof ClassificationUnitFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
+                        if (DocumentFeatureExtractor.class.isAssignableFrom(feClass)
+                                && (ClassificationUnitFeatureExtractor.class.isAssignableFrom(feClass) || PairFeatureExtractor.class.isAssignableFrom(feClass))) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + ": Feature Extractors need to define a unique type."));
@@ -230,19 +230,21 @@ public class ValidityCheckConnector
                     }
                     break;
                 case 2:
-                    testUnitFE(featureExtractors, developerMode);
+                    testUnitFE(featureExtractorNames, developerMode);
                     break;
                 case 3:
-                    for (String featExt : featureExtractors) {
-                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
-                                .forName(featExt).newInstance();
-                        if (!(featExtC instanceof PairFeatureExtractor)) {
+                    for (String featExt : featureExtractorNames) {
+
+            			Class<?> feClass = Class.forName(featExt);
+            			
+                        if (!(PairFeatureExtractor.class.isAssignableFrom(feClass))) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + " is not a valid Pair Feature Extractor."));
                         }
-                        if (featExtC instanceof PairFeatureExtractor
-                                && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof ClassificationUnitFeatureExtractor)) {
+                        if (PairFeatureExtractor.class.isAssignableFrom(feClass)
+                                && (DocumentFeatureExtractor.class.isAssignableFrom(feClass) || 
+                                		ClassificationUnitFeatureExtractor.class.isAssignableFrom(feClass))) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + ": Feature Extractors need to define a unique type."));
@@ -250,7 +252,7 @@ public class ValidityCheckConnector
                     }
                     break;
                 case 4:
-                    testUnitFE(featureExtractors, developerMode);
+                    testUnitFE(featureExtractorNames, developerMode);
                     break;
                 default:
                     throw new AnalysisEngineProcessException("Please set a valid learning mode",
@@ -273,24 +275,28 @@ public class ValidityCheckConnector
     private static void testUnitFE(String[] featureExtractors, boolean developerMode)
         throws AnalysisEngineProcessException, InstantiationException, IllegalAccessException,
         ClassNotFoundException
-    {
-        for (String featExt : featureExtractors) {
-            FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
-                    .forName(featExt).newInstance();
-            if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
-                if (developerMode && featExtC instanceof DocumentFeatureExtractor) {
-                    // we have the user carrying any consequences...
-                }
-                else {
-                    throw new AnalysisEngineProcessException(new TextClassificationException(
-                            featExt + " is not a valid Unit Feature Extractor."));
-                }
-            }
-            if (featExtC instanceof ClassificationUnitFeatureExtractor
-                    && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
-                throw new AnalysisEngineProcessException(new TextClassificationException(featExt
-                        + ": Feature Extractors need to define a unique type."));
-            }
-        }
-    }
+ {
+		for (String featExt : featureExtractors) {
+			Class<?> feClass = Class.forName(featExt);
+
+			if (ClassificationUnitFeatureExtractor.class.isAssignableFrom(feClass)) {
+				if (developerMode
+						&& DocumentFeatureExtractor.class.isAssignableFrom(feClass)) {
+					// we have the user carrying any consequences...
+				} else {
+					throw new AnalysisEngineProcessException(
+							new TextClassificationException(featExt
+									+ " is not a valid Unit Feature Extractor."));
+				}
+			}
+			if (ClassificationUnitFeatureExtractor.class.isAssignableFrom(feClass)
+					&& (DocumentFeatureExtractor.class.isAssignableFrom(feClass) || 
+							PairFeatureExtractor.class.isAssignableFrom(feClass))) {
+				throw new AnalysisEngineProcessException(
+						new TextClassificationException(
+								featExt
+										+ ": Feature Extractors need to define a unique type."));
+			}
+		}
+	}
 }

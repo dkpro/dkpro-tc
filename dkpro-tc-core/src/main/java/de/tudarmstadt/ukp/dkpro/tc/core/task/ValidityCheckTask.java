@@ -27,12 +27,15 @@ import java.util.List;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.resource.CustomResourceSpecifier;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.core.lab.DynamicDiscriminableFunctionBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
 
@@ -57,15 +60,13 @@ public class ValidityCheckTask
     @Discriminator
     protected List<Object> readerTestParams;
     @Discriminator
-    protected List<Object> pipelineParameters;
-    @Discriminator
     private String learningMode;
     @Discriminator
     private String featureMode;
     @Discriminator
     private String threshold;
     @Discriminator
-    protected List<String> featureSet;
+    private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
     @Discriminator
     protected boolean developerMode;
 
@@ -121,15 +122,26 @@ public class ValidityCheckTask
     {
         // check mandatory dimensions
 
-        if (featureSet == null) {
+        if (featureExtractors == null) {
             throw new ResourceInitializationException(new TextClassificationException(
                     "No feature extractors have been added to the experiment."));
         }
+        
+        String[] featureExtractorNames = new String[featureExtractors.size()];
+        
+        for (int i = 0; i < featureExtractorNames.length; i++) {
+        	
+    		String implName;
+			if (featureExtractors.get(i).getActualValue().getResourceSpecifier() instanceof CustomResourceSpecifier) {
+				implName = ((CustomResourceSpecifier) featureExtractors.get(i).getActualValue()
+						.getResourceSpecifier()).getResourceClassName();
+			} else {
+				implName = featureExtractors.get(i).getActualValue().getImplementationName();
+			}
+			featureExtractorNames[i] = (implName);
+        }
 
         List<Object> parameters = new ArrayList<Object>();
-        if (pipelineParameters != null) {
-            parameters.addAll(pipelineParameters);
-        }
 
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
@@ -140,7 +152,7 @@ public class ValidityCheckTask
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);
         parameters.add(threshold);
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_EXTRACTORS);
-        parameters.add(featureSet);
+        parameters.add(featureExtractorNames);
         parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
         parameters.add(developerMode);
 
