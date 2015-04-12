@@ -58,23 +58,42 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
 
 /**
- * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
+ * This is the TwentyNewsgroups demo with instance weighting.  With instance
+ * weighting, some instances are considered by the machine learner/classifier to
+ * be more important than others.  For example, if some instances in your 
+ * training set were annotated by a very reliable annotator, and other instances
+ * were annotated by an unreliable worker, then the instances can be weighted more
+ * and less heavily, respectively. <br />
  * 
- * Defining the parameters directly in this class makes on-the-fly changes more difficult when the
- * experiment is run on a server.
+ * An instance weight is a double value greater than 0. As can be seen in the demo
+ * below, implementing instance weighting in DKPro TC consists of building a Reader
+ * that adds weights, and setting the ParameterSpace dimension DIM_APPLY_INSTANCE_WEIGHTING
+ * to <b>true</b>.<br />
  * 
- * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
- * can be changed and then executed without pre-compilation.
+ * You may wish to weight just your training instances, and not your test instances,
+ * or vice versa.  You can control this in your Reader.  Be careful when using 
+ * cross-validation, if you only want part of your dataset to be weighted. <br />
+ * 
+ * Currently, DKPro TC only supports instance weighting with Weka (see 
+ * {@link weka.core.WeightedInstancesHandler}); a full list of Weka
+ * classifiers that support instance weighting can be found here:
+ * (@link http://weka.sourceforge.net/doc.dev/weka/core/WeightedInstancesHandler.html}.
+ * This list includes such common classifiers as J48, JRip, LinearReression, 
+ * Logistic, MultilayerPerceptron, NaiveBayes, SMO, SMOreg, and ZeroR.
+ * Users should familiarize themselves with the exact classifier and weight
+ * utilization, as this varies per classifier. <br />
+ * 
+ * See also: <br />
+ * {@link https://weka.wikispaces.com/Add+weights+to+dataset}
  */
 public class TwentyNewsgroupsInstanceWeightingDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 3;
-
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    public static final String weightsFile = "/arbitraryWeights.txt";
 
     public static void main(String[] args)
         throws Exception
@@ -99,24 +118,23 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, WeightedTwentyNewsgroupsCorpusReader.class);
-        dimReaders
-                .put(
-                        DIM_READER_TRAIN_PARAMS,
-                        Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                                corpusFilePathTrain,
-                                WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
-                                corpusFilePathTrain + "/arbitraryWeights.txt",
-                                WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                                WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                                Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                        + "*/*.txt")));
+        dimReaders.put(
+                DIM_READER_TRAIN_PARAMS,
+                Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                        corpusFilePathTrain,
+                        WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
+                        corpusFilePathTrain + weightsFile,
+                        WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                        WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                        Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
+                                + "*/*.txt")));
         dimReaders.put(DIM_READER_TEST, WeightedTwentyNewsgroupsCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TEST_PARAMS,
                 Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
                         corpusFilePathTest,
                         WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
-                        corpusFilePathTest + "/arbitraryWeights.txt",
+                        corpusFilePathTest + weightsFile,
                         WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
                         LANGUAGE_CODE, WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
                         WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
