@@ -19,12 +19,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -139,7 +137,7 @@ public class SaveModelCRFSuiteBatchTask
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        saveModelTask.setOutputFolder(outputFolder);
+        saveModelTask.setAndCreateOutputFolder(outputFolder);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(checkTask);
@@ -198,15 +196,17 @@ class ModelSerializationDescription
 
     private File outputFolder;
 
-    public void setOutputFolder(File outputFolder)
+    public void setAndCreateOutputFolder(File outputFolder)
     {
         this.outputFolder = outputFolder;
+        outputFolder.mkdirs();
     }
 
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
+        
         trainAndStoreModel(aContext);
 
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
