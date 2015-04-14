@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.SingleLabelReaderBase;
 
 /**
- * Reads the classical TwentyNewsgroups text classification corpus.
+ * Reads the classical TwentyNewsgroups text classification corpus with instance weights.
  */
 public class WeightedTwentyNewsgroupsCorpusReader
     extends SingleLabelReaderBase
@@ -46,7 +46,7 @@ public class WeightedTwentyNewsgroupsCorpusReader
     @ConfigurationParameter(name = PARAM_WEIGHT_FILE_LOCATION, mandatory = true)
     protected String weightFile;	
 	
-    private String separator = "=";
+    private static final char SEPARATOR_CHAR = '=';
     
     HashMap<String, String> weights;
 	
@@ -73,12 +73,12 @@ public class WeightedTwentyNewsgroupsCorpusReader
 		
 		try {
 			doubleWeight = Double.parseDouble(weights.get((DocumentMetaData.get(jcas).getDocumentId().split("/")[1]).split("\\.")[0]));
-		} catch (NumberFormatException e) {
-			
+        }
+        catch (NumberFormatException e) {
+            throw new CollectionException(e);
 		}			
 		return doubleWeight;
 	}
-	
 	
     @Override
     public void initialize(UimaContext context)
@@ -89,13 +89,12 @@ public class WeightedTwentyNewsgroupsCorpusReader
         try {
 			lines = FileUtils.readLines(new File(weightFile));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            throw new ResourceInitializationException(e);
 		}
         weights = new HashMap<String, String>();
 
         for (String l : lines) {
-        		String[] splitted = l.split(separator);
+            String[] splitted = l.split(String.valueOf(SEPARATOR_CHAR));
         		if (splitted.length==2) 
         			weights.put(splitted[0], splitted[1]);
         	}

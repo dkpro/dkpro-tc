@@ -57,9 +57,17 @@ public abstract class SingleLabelReaderBase
     }
 
 
+    /**
+     * This methods adds a (default) weight to instances. Readers which assign specific weights to
+     * instances need to override this method.
+     * 
+     * @param jcas
+     *            the JCas to add the annotation to
+     * @return a double between zero and one
+     * @throws CollectionException
+     */
 	public double getTextClassificationOutcomeWeight(JCas jcas)
 			throws CollectionException {
-		// TODO Auto-generated method stub
 		return 1.0;
 	}
     
