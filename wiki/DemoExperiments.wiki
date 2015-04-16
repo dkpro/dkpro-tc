@@ -1,8 +1,13 @@
 #summary Getting started with DKPro TC: Demo Experiments
 
 ==Introduction==
-_If you are using version 0.5.0, please change to the following [DemoExperiments_0_5_0 tutorial]._
+
+*This guide refers to the 0.7.0 release version of DKPro TC.*
+
 _If you are using version 0.6.0, please change to the following [DemoExperiments_0_6_0 tutorial]._
+
+_If you are using version 0.5.0, please change to the following [DemoExperiments_0_5_0 tutorial]._
+
 
 In this quick start guide, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
@@ -37,8 +42,8 @@ If you don't know where to start, go with the TwitterSentimentDemo first, as it 
 ==Binary Classification with DKPro-TC: TwitterSentiment Demo==
 
 There are two ways to run the experiment:
-   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl` module)
-   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module)
+   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `dkpro-tc-examples-groovy` module)
+   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
 
 In this tutorial, we will follow the Groovy version of the experiment, which is easier to read. The Java configuration is very similar.
 
@@ -52,17 +57,19 @@ The configuration takes care of
   * evaluating classifiers (either with designated train/test sets or using cross-validation)
   * writing results (which reports to use)
 
-The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation using the Weka Machine Learning framework.
+The Twitter Sentiment Groovy Experiment uses `import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation.
 
 {{{
-     BatchTaskCrossValidation batchTask = [
+     ExperimentCrossValidation batchTask = [
             // identifier for your experiment
             experimentName: "Twitter-Sentiment-CV",
             // the name of the folder to hold the final evaluation results
             type: "Evaluation-Twitter-Sentiment-CV",
+            // the name of the adapter which connects the experiment to a machine learning framework (in this case, Weka)
+            machineLearningAdapter: WekaClassificationAdapter,
             // Preprocessing components and configuration
-            preprocessingPipeline: createEngineDescription(
-            ArktweetTagger, ArktweetTagger.PARAM_LANGUAGE, "en", ArktweetTagger.PARAM_VARIANT, "default"), 
+            preprocessing: createEngineDescription(
+            ArktweetTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), 
             // all parameters in the parameter space with more than one value in a list will be swept
             parameterSpace: [
                 // source data reader
@@ -81,8 +88,6 @@ The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.t
                     EmoticonRatioDFE.name,
                     NumberOfHashTagsDFE.name
                 ]),
-                // this data writer writes the extracted features into ARFF format; must be unique
-                Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name),
                 // machine learning classifiers; two classifiers will be tested
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
@@ -92,12 +97,14 @@ The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.t
             numFolds: 10]
 }}}
 
-`BatchTaskCrossValidation` and `BatchTaskTrainTest` are pre-configured experiment setups. We recommend to re-use these setups.
+`ExperimentCrossValidation` and `ExperimentTrainTest` are pre-configured experiment setups. We recommend to re-use these setups.
 
-The `preprocessingPipeline` expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
+The `machineLearningAdapter` tells the experiment which machine learning framework it should use (e.g. Weka, CRFsuite, SVMhmm). This influences the data output of the feature extraction step and the algorithms available during the learning step.
+
+The `preprocessing` aggregate expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
 
 The `parameterSpace` contains configuration parameters which can be tested for different values. Such parameters are called discriminators.
-You can find a list of all configurable discriminators and their explanantion [Discriminators here]. 
+You can find a list of all configurable discriminators and their explanation [Discriminators here]. 
 
 In short, the above example define:
 
@@ -140,13 +147,6 @@ Any additional configuration parameters for the feature extractors (e.g. uni-, b
 Dimension.create(DIM_PIPELINE_PARAMS, ...)
 }}}
 
-*the data writer*
-{{{
-Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
-}}}
-
-This data writer creates ARFF files which can be consumed by Weka. For multi-label experiments, you have to use `MekaDataWriter` which produces output for Meka.
-
 *the learning algorithm*
 {{{
 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])]
@@ -167,4 +167,4 @@ Once you got this example running as it is, you can start adapting various param
 
   * using different data sets - which are completely up to you (also see [Readers here])
   * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
-  * using different classifiers - please refer to the Weka/Meka-JavaDoc for further information on that.
+  * using different classifiers - please refer to the respective frameworks for further information on that.
