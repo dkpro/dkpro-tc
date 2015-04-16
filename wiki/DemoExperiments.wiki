@@ -2,6 +2,7 @@
 
 ==Introduction==
 _If you are using version 0.5.0, please change to the following [DemoExperiments_0_5_0 tutorial]._
+_If you are using version 0.6.0, please change to the following [DemoExperiments_0_6_0 tutorial]._
 
 In this quick start guide, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
