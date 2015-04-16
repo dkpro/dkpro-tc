@@ -5,6 +5,9 @@ We list each discriminator with the expected type of its value and a short expla
 
 
 == Latest version ==
+
+_if you use DKPro-TC version 0.6.0, see [Discriminators_0_6_0 here]_
+
 _if you use DKPro-TC version 0.5.0, see [Discriminators_0_5_0 here]_
 
 === Mandatory Parameters ===
