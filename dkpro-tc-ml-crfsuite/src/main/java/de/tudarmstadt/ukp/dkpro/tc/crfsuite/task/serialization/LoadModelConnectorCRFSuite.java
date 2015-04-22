@@ -91,18 +91,18 @@ public class LoadModelConnectorCRFSuite
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
-            	// TODO TZ@TH: why the random sequence id?
+                // TODO TZ@TH: why the random sequence id?
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
                         jcas, seq, true, new Random().nextInt());
                 for (Instance instance : instances) {
-                	featureStore.addInstance(instance);
+                    featureStore.addInstance(instance);
                 }
             }
 
             File tmpFolderForFeatureFile = tmpFolder.newFolder();
             File featureFile = CRFSuiteDataWriter.writeFeatureFile(featureStore,
                     tmpFolderForFeatureFile);
-            
+
             String labels = classify(featureFile);
             setPredictedOutcome(jcas, labels);
         }
@@ -118,9 +118,14 @@ public class LoadModelConnectorCRFSuite
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
         String[] labels = aLabels.split("\n");
 
-        for (int i = 0; i < outcomes.size(); i++) {
+        for (int i = 0, labelIdx = 0; i < outcomes.size(); i++) {
+            if (labels[labelIdx].isEmpty()) {
+                // empty lines mark end of sequence
+                // shift label index +1 to begin of next sequence
+                labelIdx++;
+            }
             TextClassificationOutcome o = outcomes.get(i);
-            o.setOutcome(labels[i]);
+            o.setOutcome(labels[labelIdx++]);
         }
 
     }
