@@ -73,6 +73,8 @@ public class TcAnnotatorSequence
 
     private TCMachineLearningAdapter mlAdapter;
 
+    AnalysisEngine engine = null;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -83,6 +85,13 @@ public class TcAnnotatorSequence
             mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
             parameters = ModelPersistUtil.initParameters(tcModelLocation);
             featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
+
+            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
+                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
+                    learningMode, featureMode, DenseFeatureStore.class.getName(),
+                    featureExtractors.toArray(new String[0]));
+            engine = AnalysisEngineFactory.createEngine(connector);
+
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -100,19 +109,14 @@ public class TcAnnotatorSequence
 
         // create new UIMA annotator in order to separate the parameter spaces
         // this annotator will get initialized with its own set of parameters loaded from the model
-        try {
-            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
-                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
-                    learningMode, featureMode, DenseFeatureStore.class.getName(),
-                    featureExtractors.toArray(new String[0]));
-            AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
+        // AnalysisEngineDescription connector = getSaveModelConnector(parameters,
+        // tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
+        // learningMode, featureMode, DenseFeatureStore.class.getName(),
+        // featureExtractors.toArray(new String[0]));
+        // AnalysisEngine engine = AnalysisEngineFactory.createEngine(connector);
 
-            // process and classify
-            engine.process(jcas);
-        }
-        catch (ResourceInitializationException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+        // process and classify
+        engine.process(jcas);
 
     }
 
