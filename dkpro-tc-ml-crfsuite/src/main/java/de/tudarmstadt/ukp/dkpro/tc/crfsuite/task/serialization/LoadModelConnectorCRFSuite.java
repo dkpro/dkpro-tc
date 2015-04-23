@@ -23,7 +23,6 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -34,6 +33,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.rules.TemporaryFolder;
 
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -64,7 +64,6 @@ public class LoadModelConnectorCRFSuite
 
     private static File model = null;
     private static String executablePath = null;
-
     private TemporaryFolder tmpFolder = new TemporaryFolder();
 
     @Override
@@ -74,7 +73,10 @@ public class LoadModelConnectorCRFSuite
         super.initialize(context);
 
         try {
+            
             executablePath = CRFSuiteTestTask.getExecutablePath();
+//            URL resource = getClass().getResource("classpath*:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64/crfsuite");
+//            executablePath = ResourceUtils.getUrlAsExecutable(resource,true).getAbsolutePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
         }
         catch (Exception e) {
@@ -88,7 +90,7 @@ public class LoadModelConnectorCRFSuite
         throws AnalysisEngineProcessException
     {
         FeatureStore featureStore = new SparseFeatureStore();
-
+        
         try {
             int sequenceId = 0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
