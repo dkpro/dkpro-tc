@@ -47,14 +47,17 @@ public class CRFSuiteDataWriter
             boolean aUseDenseInstances, String aLearningMode, boolean applyWeighting)
         throws Exception
     {
+        log("Write feature file to [" + aOutputDirectory.getAbsolutePath() + "]");
         writeFeatureFile(aFeatureStore, aOutputDirectory);
 
         Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
         File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
+        log("Feature file written");
     }
 
-    public static File writeFeatureFile(FeatureStore featureStore, File aOutputDirectory) throws Exception
+    public static File writeFeatureFile(FeatureStore featureStore, File aOutputDirectory)
+        throws Exception
     {
         int totalCountOfInstances = featureStore.getNumberOfInstances();
 
@@ -108,11 +111,12 @@ public class CRFSuiteDataWriter
         }
         bf.close();
         log("Finished writing features to file " + outputFile.getAbsolutePath());
-        
+
         return outputFile;
     }
 
-    private static void appendEOS(BufferedWriter bf) throws Exception
+    private static void appendEOS(BufferedWriter bf)
+        throws Exception
     {
         bf.write("\t");
         bf.write("__EOS__");
