@@ -33,7 +33,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.rules.TemporaryFolder;
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -75,8 +74,6 @@ public class LoadModelConnectorCRFSuite
         try {
             
             executablePath = CRFSuiteTestTask.getExecutablePath();
-//            URL resource = getClass().getResource("classpath*:/de/tudarmstadt/ukp/dkpro/tc/crfsuite/osx-x86_64/crfsuite");
-//            executablePath = ResourceUtils.getUrlAsExecutable(resource,true).getAbsolutePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
         }
         catch (Exception e) {
