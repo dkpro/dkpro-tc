@@ -63,6 +63,7 @@ public class LoadModelConnectorCRFSuite
     private String featureMode;
 
     private static File model = null;
+    private static String executablePath = null;
 
     private TemporaryFolder tmpFolder = new TemporaryFolder();
 
@@ -73,6 +74,7 @@ public class LoadModelConnectorCRFSuite
         super.initialize(context);
 
         try {
+            executablePath = CRFSuiteTestTask.getExecutablePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
         }
         catch (Exception e) {
@@ -88,12 +90,12 @@ public class LoadModelConnectorCRFSuite
         FeatureStore featureStore = new SparseFeatureStore();
 
         try {
+            int sequenceId = 0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
-                // TODO TZ@TH: why the random sequence id?
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
-                        jcas, seq, true, new Random().nextInt());
+                        jcas, seq, true, sequenceId++);
                 for (Instance instance : instances) {
                     featureStore.addInstance(instance);
                 }
@@ -134,7 +136,7 @@ public class LoadModelConnectorCRFSuite
         throws Exception
     {
         List<String> commandGoldPredictionOutput = CRFSuiteTestTask.wrapTestCommandAsList(
-                featureFile, CRFSuiteTestTask.getExecutablePath(), model.getAbsolutePath());
+                featureFile, executablePath, model.getAbsolutePath());
 
         // remove 'print gold label' parameter
         List<String> commandPredictionOutput = deleteGoldOutputFromParameterList(commandGoldPredictionOutput);
