@@ -63,6 +63,8 @@ public class CRFSuiteDataWriter
 
         File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        outputFile.deleteOnExit();
+        
         BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
         log("Start writing features to file " + outputFile.getAbsolutePath());
 
