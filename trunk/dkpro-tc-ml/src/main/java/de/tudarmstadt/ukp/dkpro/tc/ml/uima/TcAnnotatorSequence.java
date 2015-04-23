@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -79,6 +80,7 @@ public class TcAnnotatorSequence
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
+        Logger.getLogger(getClass()).info("START: Initializing AnalysisEngine");
         super.initialize(context);
 
         try {
@@ -96,6 +98,7 @@ public class TcAnnotatorSequence
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
+        Logger.getLogger(getClass()).info("FINISH: Initializing AnalysisEngine");
 
     }
 
@@ -103,7 +106,8 @@ public class TcAnnotatorSequence
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-
+        Logger.getLogger(getClass()).debug("START: process(JCAS)");
+        
         addTCSequenceAnnotation(jcas);
         addTCUnitAndOutcomeAnnotation(jcas);
 
@@ -117,7 +121,7 @@ public class TcAnnotatorSequence
 
         // process and classify
         engine.process(jcas);
-
+        Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
     }
 
     private void addTCUnitAndOutcomeAnnotation(JCas jcas)
