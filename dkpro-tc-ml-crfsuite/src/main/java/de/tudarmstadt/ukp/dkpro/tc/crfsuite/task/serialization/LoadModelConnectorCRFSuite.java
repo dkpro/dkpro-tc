@@ -21,6 +21,8 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,6 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -66,8 +67,7 @@ public class LoadModelConnectorCRFSuite
 
     private static File model = null;
     private static String executablePath = null;
-    private TemporaryFolder tmpFolder = new TemporaryFolder();
-
+    private Path tmpFolderForFeatureFile=null;
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -75,7 +75,7 @@ public class LoadModelConnectorCRFSuite
         super.initialize(context);
 
         try {
-            
+        	tmpFolderForFeatureFile = Files.createTempDirectory("temp"+ System.currentTimeMillis());
             executablePath = CRFSuiteTestTask.getExecutablePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
         }
@@ -93,20 +93,36 @@ public class LoadModelConnectorCRFSuite
         	FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl).newInstance();
             int sequenceId = 0;
             LogFactory.getLog(getClass()).info("START Extract features");
+            long msExtraction=0;
+            long msAdding=0;
+            long s=0,e=0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
+            	 s = System.currentTimeMillis();
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
                         jcas, seq, true, sequenceId++);
+                e = System.currentTimeMillis();
+                msExtraction += (e-s);
+                
+                s = System.currentTimeMillis();
                 for (Instance instance : instances) {
                     featureStore.addInstance(instance);
                 }
+                e = System.currentTimeMillis();
+                msAdding+= (e-s);
+                
             }
             LogFactory.getLog(getClass()).info("FINISHED Extract features");
-            File tmpFolderForFeatureFile = tmpFolder.newFolder();
+            
+            
+            s = System.currentTimeMillis();
             File featureFile = CRFSuiteDataWriter.writeFeatureFile(featureStore,
-                    tmpFolderForFeatureFile);
-
+                    tmpFolderForFeatureFile.toFile());
+            e = System.currentTimeMillis();
+            long msWrite = (e-s);
+            LogFactory.getLog(getClass()).info("Seconds spent in extraction: ["+(double)msExtraction/1000+"] in adding to feature store: ["+(double)msAdding/1000+"] in writing to file: ["+(double)msWrite/1000+"]");
+            
             String labels = classify(featureFile);
             setPredictedOutcome(jcas, labels);
         }
