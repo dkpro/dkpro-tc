@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.modelpersist.ModelPersistUtil;
 
 public class TcAnnotatorSequence
@@ -90,7 +90,7 @@ public class TcAnnotatorSequence
 
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
-                    learningMode, featureMode, DenseFeatureStore.class.getName(),
+                    learningMode, featureMode, SparseFeatureStore.class.getName(),
                     featureExtractors.toArray(new String[0]));
             engine = AnalysisEngineFactory.createEngine(connector);
 
