@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -91,6 +92,7 @@ public class LoadModelConnectorCRFSuite
         try {
         	FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl).newInstance();
             int sequenceId = 0;
+            LogFactory.getLog(getClass()).info("START Extract features");
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
@@ -100,7 +102,7 @@ public class LoadModelConnectorCRFSuite
                     featureStore.addInstance(instance);
                 }
             }
-
+            LogFactory.getLog(getClass()).info("FINISHED Extract features");
             File tmpFolderForFeatureFile = tmpFolder.newFolder();
             File featureFile = CRFSuiteDataWriter.writeFeatureFile(featureStore,
                     tmpFolderForFeatureFile);
