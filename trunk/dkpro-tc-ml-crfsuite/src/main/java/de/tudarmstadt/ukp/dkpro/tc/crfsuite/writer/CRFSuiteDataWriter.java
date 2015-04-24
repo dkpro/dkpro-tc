@@ -47,13 +47,11 @@ public class CRFSuiteDataWriter
             boolean aUseDenseInstances, String aLearningMode, boolean applyWeighting)
         throws Exception
     {
-        log("Write feature file to [" + aOutputDirectory.getAbsolutePath() + "]");
         writeFeatureFile(aFeatureStore, aOutputDirectory);
 
         Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
         File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
-        log("Feature file written");
     }
 
     public static File writeFeatureFile(FeatureStore featureStore, File aOutputDirectory)
@@ -66,7 +64,6 @@ public class CRFSuiteDataWriter
         outputFile.deleteOnExit();
         
         BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
-        log("Start writing features to file " + outputFile.getAbsolutePath());
 
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
@@ -112,7 +109,6 @@ public class CRFSuiteDataWriter
             bf.write("\n");
         }
         bf.close();
-        log("Finished writing features to file " + outputFile.getAbsolutePath());
 
         return outputFile;
     }
@@ -148,14 +144,6 @@ public class CRFSuiteDataWriter
             i++;
         }
         return outcomeMapping;
-    }
-
-    private static void log(String text)
-    {
-        if (logger == null) {
-            logger = LogFactory.getLog(CRFSuiteDataWriter.class.getName());
-        }
-        logger.info(text);
     }
 
 }

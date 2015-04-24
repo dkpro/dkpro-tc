@@ -92,7 +92,6 @@ public class LoadModelConnectorCRFSuite
         try {
         	FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl).newInstance();
             int sequenceId = 0;
-            LogFactory.getLog(getClass()).info("START Extract features");
             long msExtraction=0;
             long msAdding=0;
             long s=0,e=0;
@@ -113,8 +112,6 @@ public class LoadModelConnectorCRFSuite
                 msAdding+= (e-s);
                 
             }
-            LogFactory.getLog(getClass()).info("FINISHED Extract features");
-            
             
             s = System.currentTimeMillis();
             File featureFile = CRFSuiteDataWriter.writeFeatureFile(featureStore,
