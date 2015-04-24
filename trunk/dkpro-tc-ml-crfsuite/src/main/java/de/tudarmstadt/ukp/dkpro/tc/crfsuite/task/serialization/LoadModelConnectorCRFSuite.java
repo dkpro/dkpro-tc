@@ -42,7 +42,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
-import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.SparseFeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 
 public class LoadModelConnectorCRFSuite
@@ -60,6 +59,9 @@ public class LoadModelConnectorCRFSuite
 
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
+    
+    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
+    private String featureStoreImpl;
 
     private static File model = null;
     private static String executablePath = null;
@@ -86,9 +88,8 @@ public class LoadModelConnectorCRFSuite
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        FeatureStore featureStore = new SparseFeatureStore();
-        
         try {
+        	FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl).newInstance();
             int sequenceId = 0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
