@@ -23,13 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.junit.Ignore;
+import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
@@ -55,32 +54,32 @@ public class MultiEvaluatorTest
         results = evaluator.calculateEvaluationMeasures();
     }
 
-    @Ignore
+    @Test
     public void testCalculateSoftEvaluationMeasures()
         throws IOException, TextClassificationException
     {
         setup(true, false);
 
         Double macroPr = results.get(MacroPrecision.class.getSimpleName());
-        assertEquals(0.367, macroPr, 0.001);
+        assertEquals(0.611, macroPr, 0.001);
 
         Double macroRe = results.get(MacroRecall.class.getSimpleName());
-        assertEquals(0.274, macroRe, 0.001);
+        assertEquals(0.375, macroRe, 0.001);
 
         Double macroFSc = results.get(MacroFScore.class.getSimpleName());
-        assertEquals(0.275325, macroFSc, 0.000001);
+        assertEquals(0.422222, macroFSc, 0.000001);
         
         Double microPr = results.get(MicroPrecision.class.getSimpleName());
-        assertEquals(0.45, microPr, 0.01);
+        assertEquals(0.81, microPr, 0.01);
         
         Double microRe = results.get(MicroRecall.class.getSimpleName());
-        assertEquals(0.45, microRe, 0.01);
+        assertEquals(0.56, microRe, 0.01);
         
         Double microFSc = results.get(MicroFScore.class.getSimpleName());
-        assertEquals(0.45, microFSc, 0.01);
+        assertEquals(0.67, microFSc, 0.01);
     }
 
-    @Ignore
+    @Test
     public void testCalculateStrictEvaluationMeasures()
         throws IOException, TextClassificationException
     {
@@ -96,19 +95,13 @@ public class MultiEvaluatorTest
         assertEquals(macroFSc, Double.NaN, 0.01);
         
         Double microPr = results.get(MicroPrecision.class.getSimpleName());
-        assertEquals(0.45, microPr, 0.01);
+        assertEquals(0.81, microPr, 0.01);
         
         Double microRe = results.get(MicroRecall.class.getSimpleName());
-        assertEquals(0.45, microRe, 0.01);
+        assertEquals(0.56, microRe, 0.01);
         
         Double microFSc = results.get(MicroFScore.class.getSimpleName());
-        assertEquals(0.45, microFSc, 0.01);
+        assertEquals(0.67, microFSc, 0.01);
     }
     
-    @Ignore
-    public void testAccurcy() throws IOException, TextClassificationException{
-        setup(true, true);
-        Double acc = results.get(Accuracy.class.getSimpleName());
-        assertEquals(0.0, acc, 0.01);
-    }
 }

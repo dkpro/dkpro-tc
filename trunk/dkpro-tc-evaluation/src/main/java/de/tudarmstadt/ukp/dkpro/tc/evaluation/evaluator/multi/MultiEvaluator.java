@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
@@ -35,7 +37,6 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiLargeConting
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.Accuracy;
 
 /**
  * @author Andriy Nadolskyy
@@ -50,6 +51,54 @@ public class MultiEvaluator
 			boolean individualLabelMeasures) {
 		super(id2Outcome, softEvaluation, individualLabelMeasures);
 	}
+    
+    /***
+     * build small contingency tables (a small contingency table for each label) from id2Outcome 
+     * 
+     * @return built small contingency tables
+     */
+    private SmallContingencyTables buildSmallContingencyTables() {
+
+    	Set<String> allLabelSet = new TreeSet<String>();
+    	for (SingleOutcome outcome : id2Outcome.getOutcomes()) {
+    		allLabelSet.addAll(outcome.getLabels());
+		}
+    	
+    	List<String> labelList = new ArrayList<String>(allLabelSet);	
+        int numberOfLabels = labelList.size();
+        
+        double counterIncreaseValue = 1.0;
+        SmallContingencyTables smallContingencyTables = new SmallContingencyTables(labelList);
+        for (int classId = 0; classId < numberOfLabels; classId++) {
+        	for (SingleOutcome outcome : id2Outcome.getOutcomes()) {
+        		double threshold = outcome.getBipartitionThreshold();
+        		double goldValue = outcome.getGoldstandard()[classId];
+        		double predictionValue = outcome.getPrediction()[classId];
+        		if (goldValue >= threshold) {
+        			// true positive
+        			if (predictionValue >= threshold) {
+        				smallContingencyTables.addTruePositives(classId, counterIncreaseValue);
+        			}
+        			// false negative
+        			else {
+        				smallContingencyTables.addFalseNegatives(classId, counterIncreaseValue);
+        			}
+        		}
+        		else {
+        			// false positive
+        			if (predictionValue >= threshold) {
+        				smallContingencyTables.addFalsePositives(classId, counterIncreaseValue);
+        			}
+        			// true negative
+        			else {
+        				smallContingencyTables.addTrueNegatives(classId, counterIncreaseValue);
+        			}
+        		}
+        	}
+        }
+        return smallContingencyTables;
+    }
+    
 
     @Override
     public AbstractLargeContingencyTable<Map<String, Map<String, Double>>> buildLargeContingencyTable()
@@ -82,9 +131,7 @@ public class MultiEvaluator
                     largeContingencyTable.get(goldStandardLabel).
                     		put(predictionLabel, updatedValue);
             	}
-            }
-            
-            
+            }     
             
         }
         return new MultiLargeContingencyTable(largeContingencyTable, labelCombinations);
@@ -121,29 +168,33 @@ public class MultiEvaluator
 
     @Override
     public Map<String, Double> calculateEvaluationMeasures()
-    {
-        MultiLargeContingencyTable largeConfMatr = (MultiLargeContingencyTable) buildLargeContingencyTable();
-        SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+    {    	
+        // MultiLargeContingencyTable largeConfMatr = (MultiLargeContingencyTable) buildLargeContingencyTable();
+        // SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+        
+    	SmallContingencyTables smallConfMatrices = buildSmallContingencyTables();
         CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
 
         // TODO: add example-based measures
         Map<String, Double> results = new HashMap<String, Double>();
         Map<String, Double> macroResults = calculateMacroMeasures(smallConfMatrices);
         Map<String, Double> microResults = calculateMicroMeasures(combinedSmallConfMatr);
-		Map<String, Double> accuracyResult = Accuracy.calculate(combinedSmallConfMatr, 
-				smallConfMatrices.getClass2Number().size(), softEvaluation);
+		// Map<String, Double> accuracyResult = Accuracy.calculate(combinedSmallConfMatr, 
+		//		smallConfMatrices.getClass2Number().size(), softEvaluation);
 		
 		results.putAll(macroResults);
         results.putAll(microResults);
-        results.putAll(accuracyResult);
+        // results.putAll(accuracyResult);
         return results;
     }
 
     @Override
     public Map<String, Double> calculateMicroEvaluationMeasures()
     {
-        MultiLargeContingencyTable largeConfMatr = (MultiLargeContingencyTable) buildLargeContingencyTable();
-        SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+        // MultiLargeContingencyTable largeConfMatr = (MultiLargeContingencyTable) buildLargeContingencyTable();
+        // SmallContingencyTables smallConfMatrices = largeConfMatr.decomposeLargeContingencyTable();
+    	
+    	SmallContingencyTables smallConfMatrices = buildSmallContingencyTables();
         CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
 
         return calculateMicroMeasures(combinedSmallConfMatr);
