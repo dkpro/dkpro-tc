@@ -24,8 +24,30 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyT
 
 
 /**
- * @author Andriy Nadolskyy
+ * calculation of the measure is based on:
+ * @article{madjarov2012extensive,
+ * title={An extensive experimental comparison of methods for multi-label learning},
+ * author={Madjarov, Gjorgji and Kocev, Dragi and Gjorgjevikj, Dejan and D{\v{z}}eroski, Sa{\v{s}}o},
+ * journal={Pattern Recognition},
+ * volume={45},
+ * number={9},
+ * pages={3095--3096},
+ * year={2012},
+ * publisher={Elsevier}
+ * }
  * 
+ * creating of contingency tables is based on:
+ * @article{van2013macro,
+ * title={Macro-and micro-averaged evaluation measures [[BASIC DRAFT]]},
+ * author={Van Asch, Vincent},
+ * pages = {11--12},
+ * year={2013},
+ * url = {http://www.cnts.ua.ac.be/~vincent/pdf/microaverage.pdf}
+ * }
+ * EMPTY_PREDICTION is not defined as a valid label. 
+ * 
+ * 
+ * @author Andriy Nadolskyy
  */
 // TODO fscore should calculate f_1 as a default but allow to configure other betas
 public class MacroFScore
@@ -54,6 +76,7 @@ public class MacroFScore
 				recall = tp / localSum;
 			}
 			if ((localSum = precision + recall) != 0.0) {
+				double fScore = (2 * precision * recall) / localSum;
 				summedFScore += (2 * precision * recall) / localSum;
 			}
 			else if (! softEvaluation) {

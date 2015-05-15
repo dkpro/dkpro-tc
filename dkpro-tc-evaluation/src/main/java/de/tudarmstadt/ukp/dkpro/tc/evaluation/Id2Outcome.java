@@ -109,7 +109,7 @@ public class Id2Outcome implements Serializable
                 double[] goldstandard = new double[labelList.size()];
                 double[] predictions = new double[labelList.size()];
                 
-                if(predictionS.length == 1 && predictionS.length == 1){
+                if(predictionS.length == 1 && goldS.length == 1){
                 	// singleLabel
                 	goldstandard[Integer.parseInt(goldS[0])] = 1.;
                 	predictions[Integer.parseInt(predictionS[0])] = 1.;
