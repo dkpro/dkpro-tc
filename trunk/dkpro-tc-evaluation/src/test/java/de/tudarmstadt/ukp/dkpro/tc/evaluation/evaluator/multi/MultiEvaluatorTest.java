@@ -29,6 +29,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.example.SubsetAccuracy;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroFScore;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.label.MacroRecall;
@@ -77,6 +78,9 @@ public class MultiEvaluatorTest
         
         Double microFSc = results.get(MicroFScore.class.getSimpleName());
         assertEquals(0.67, microFSc, 0.01);
+        
+        Double subsetAccuracy = results.get(SubsetAccuracy.class.getSimpleName());
+        assertEquals(0.5833, subsetAccuracy, 0.0001);
     }
 
     @Test
@@ -102,6 +106,9 @@ public class MultiEvaluatorTest
         
         Double microFSc = results.get(MicroFScore.class.getSimpleName());
         assertEquals(0.67, microFSc, 0.01);
+        
+        Double subsetAccuracy = results.get(SubsetAccuracy.class.getSimpleName());
+        assertEquals(0.5833, subsetAccuracy, 0.0001);
     }
     
 }
