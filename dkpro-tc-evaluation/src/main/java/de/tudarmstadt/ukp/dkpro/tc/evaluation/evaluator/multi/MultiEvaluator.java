@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.MultiLargeConting
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import de.tudarmstadt.ukp.dkpro.tc.evaluation.measures.example.SubsetAccuracy;
 
 /**
  * @author Andriy Nadolskyy
@@ -175,15 +176,19 @@ public class MultiEvaluator
     	SmallContingencyTables smallConfMatrices = buildSmallContingencyTables();
         CombinedSmallContingencyTable combinedSmallConfMatr = smallConfMatrices.buildCombinedSmallContingencyTable();
 
-        // TODO: add example-based measures
         Map<String, Double> results = new HashMap<String, Double>();
         Map<String, Double> macroResults = calculateMacroMeasures(smallConfMatrices);
         Map<String, Double> microResults = calculateMicroMeasures(combinedSmallConfMatr);
 		// Map<String, Double> accuracyResult = Accuracy.calculate(combinedSmallConfMatr, 
 		//		smallConfMatrices.getClass2Number().size(), softEvaluation);
+        
+        // example-based measures
+        Map<String, Double> subsetAccuracyResult = SubsetAccuracy.calculate(id2Outcome); 
+
 		
 		results.putAll(macroResults);
         results.putAll(microResults);
+        results.putAll(subsetAccuracyResult);
         // results.putAll(accuracyResult);
         return results;
     }

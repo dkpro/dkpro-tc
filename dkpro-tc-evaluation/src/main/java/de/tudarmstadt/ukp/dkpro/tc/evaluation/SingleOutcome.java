@@ -27,6 +27,7 @@ import java.util.Map;
  * and prediction value
  * 
  * @author daxenberger
+ * @author Andriy Nadolskyy
  * 
  */
 public class SingleOutcome implements Serializable
@@ -135,5 +136,25 @@ public class SingleOutcome implements Serializable
 			map.put(labels.indexOf(label), allLabels.indexOf(label));
 		}
     	return map;
+    }
+    
+    /**
+     * checks if predicted and gold labels provide an exact match (regarding to threshold)
+     * 
+     * @return true in the case of an exact match
+     * 		   false otherwise
+     */
+    public boolean isExactMatch(){
+    	int length = goldstandard.length;
+    	if (length != prediction.length)
+    		return false;
+    	
+    	for (int i = 0; i < length; i++) {
+			if (((goldstandard[i] >= bipartitionThreshold) && (prediction[i] < bipartitionThreshold)) ||
+					((goldstandard[i] < bipartitionThreshold) && (prediction[i] >= bipartitionThreshold))){
+				return false;				
+			}
+		}
+    	return true;
     }
 }
