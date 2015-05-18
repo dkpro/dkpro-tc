@@ -46,6 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
 
@@ -71,7 +72,7 @@ public class ReutersUsingTCEvaluationDemo
     	
         ParameterSpace pSpace = getParameterSpace();
         ReutersUsingTCEvaluationDemo experiment = new ReutersUsingTCEvaluationDemo();
-        // experiment.runTrainTest(pSpace);
+        experiment.runTrainTest(pSpace);
         experiment.runCrossValidation(pSpace);
     }
 
@@ -164,7 +165,7 @@ public class ReutersUsingTCEvaluationDemo
                 MekaClassificationUsingTCEvaluationAdapter.class, getPreprocessing(), NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
