@@ -70,29 +70,39 @@ public class MultiEvaluator
         
         double counterIncreaseValue = 1.0;
         SmallContingencyTables smallContingencyTables = new SmallContingencyTables(labelList);
-        for (int classId = 0; classId < numberOfLabels; classId++) {
+        for (int allLabelsClassId = 0; allLabelsClassId < numberOfLabels; allLabelsClassId++) {
         	for (SingleOutcome outcome : id2Outcome.getOutcomes()) {
+                int localClassId = outcome.getReverseLabelMapping(labelList).get(allLabelsClassId);
         		double threshold = outcome.getBipartitionThreshold();
-        		double goldValue = outcome.getGoldstandard()[classId];
-        		double predictionValue = outcome.getPrediction()[classId];
+                double goldValue;
+                double predictionValue;
+                // if the class was not present in this test example, assume it is not relevant
+                if (localClassId == -1) {
+                    goldValue = 0.;
+                    predictionValue = 0.;
+                }
+                else {
+                    goldValue = outcome.getGoldstandard()[localClassId];
+                    predictionValue = outcome.getPrediction()[localClassId];
+                }
         		if (goldValue >= threshold) {
         			// true positive
         			if (predictionValue >= threshold) {
-        				smallContingencyTables.addTruePositives(classId, counterIncreaseValue);
+        				smallContingencyTables.addTruePositives(allLabelsClassId, counterIncreaseValue);
         			}
         			// false negative
         			else {
-        				smallContingencyTables.addFalseNegatives(classId, counterIncreaseValue);
+        				smallContingencyTables.addFalseNegatives(allLabelsClassId, counterIncreaseValue);
         			}
         		}
         		else {
         			// false positive
         			if (predictionValue >= threshold) {
-        				smallContingencyTables.addFalsePositives(classId, counterIncreaseValue);
+        				smallContingencyTables.addFalsePositives(allLabelsClassId, counterIncreaseValue);
         			}
         			// true negative
         			else {
-        				smallContingencyTables.addTrueNegatives(classId, counterIncreaseValue);
+        				smallContingencyTables.addTrueNegatives(allLabelsClassId, counterIncreaseValue);
         			}
         		}
         	}
