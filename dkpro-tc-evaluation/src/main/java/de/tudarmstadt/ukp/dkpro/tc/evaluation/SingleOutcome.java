@@ -139,10 +139,28 @@ public class SingleOutcome implements Serializable
     }
     
     /**
+     * Retrieves a mapping of class label indices, given an external list of class labels.
+     * 
+     * @param allLabels
+     *            a list of class labels from another @link {@link SingleOutcome}
+     * @return a map with corresponding class label indices, the keys are indices of the class
+     *         labels from {@code allLabels}, the values are indices of the class labels in this @link
+     *         {@link SingleOutcome}
+     */
+    public Map<Integer, Integer> getReverseLabelMapping(List<String> allLabels)
+    {
+
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (String label : allLabels) {
+            map.put(allLabels.indexOf(label), labels.indexOf(label));
+        }
+        return map;
+    }
+
+    /**
      * checks if predicted and gold labels provide an exact match (regarding to threshold)
      * 
-     * @return true in the case of an exact match
-     * 		   false otherwise
+     * @return true in the case of an exact match false otherwise
      */
     public boolean isExactMatch(){
     	int length = goldstandard.length;
