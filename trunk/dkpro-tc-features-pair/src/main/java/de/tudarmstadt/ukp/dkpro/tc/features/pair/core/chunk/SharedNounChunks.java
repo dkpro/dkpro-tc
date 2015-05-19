@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
@@ -42,12 +43,9 @@ public class SharedNounChunks
     implements PairFeatureExtractor
 {
 
+    public static final String PARAM_NORMALIZE_WITH_FIRST = "NormalizeWithFirst";
+    @ConfigurationParameter(name = PARAM_NORMALIZE_WITH_FIRST, mandatory = false, defaultValue = "true")
     protected boolean normalizeWithFirst;
-
-    public SharedNounChunks(boolean normalizeWithFirst)
-    {
-        this.normalizeWithFirst = normalizeWithFirst;
-    }
 
     @Override
     public List<Feature> extract(JCas view1, JCas view2)
@@ -88,7 +86,9 @@ public class SharedNounChunks
             chunks2.add(chunk.getCoveredText());
         }
         chunks1.retainAll(chunks2);
-        return chunks1.size() / (double) JCasUtil.select(view1, Chunk.class).size();
+        Double result = chunks1.size() / (double) JCasUtil.select(view1, Chunk.class).size();
+
+        return result.equals(Double.NaN) ? 0. : result;
     }
 
 }

@@ -20,23 +20,29 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
-import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.PPipelineTestBase;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
 
-public class SharedNounChunksTest
+public class SharedNounChunksTest extends PPipelineTestBase
+
 {
 
     private JCas jcas1;
@@ -64,31 +70,14 @@ public class SharedNounChunksTest
     public void testExtract1()
         throws Exception
     {
-        Chunk chunk1 = new Chunk(jcas1, 0, 4);
-        chunk1.addToIndexes();
 
-        Chunk chunk2 = new Chunk(jcas2, 0, 4);
-        chunk2.addToIndexes();
-
-        SharedNounChunks extractor = new SharedNounChunks(true);
-        List<Feature> features = extractor.extract(jcas1, jcas2);
-
-        assertEquals(1, features.size());
-
-        for (Feature feature : features) {
-            assertFeature("SharedNounChunkView1", 1.0, feature, 0.0001);
-        }
-
-        Chunk chunk3 = new Chunk(jcas1, 5, 7);
-        chunk3.addToIndexes();
-
-        features = extractor.extract(jcas1, jcas2);
-
-        assertEquals(1, features.size());
-
-        for (Feature feature : features) {
-            assertFeature("SharedNounChunkView1", 0.5, feature, 0.0001);
-        }
+        SharedNounChunksTest test = new SharedNounChunksTest();
+        test.initialize();
+        test.parameters = new Object[] { SharedNounChunks.PARAM_NORMALIZE_WITH_FIRST, false };
+        test.runPipeline();
+        assertEquals(test.featureNames.size(), 1);
+        assertTrue(test.featureNames.first().startsWith("SharedNounChunkView2"));
+        assertEquals(0.0, test.instanceList.get(0).getFeatures().get(0).getValue());
 
     }
 
@@ -96,32 +85,32 @@ public class SharedNounChunksTest
     public void testExtract2()
         throws Exception
     {
-        Chunk chunk1 = new Chunk(jcas1, 0, 4);
-        chunk1.addToIndexes();
+        SharedNounChunksTest test = new SharedNounChunksTest();
+        test.initialize();
+        test.parameters = new Object[] { SharedNounChunks.PARAM_NORMALIZE_WITH_FIRST, true };
+        test.runPipeline();
+        assertEquals(test.featureNames.size(), 1);
+        assertTrue(test.featureNames.first().startsWith("SharedNounChunkView1"));
+        assertEquals(0.0, test.instanceList.get(0).getFeatures().get(0).getValue());
 
-        Chunk chunk2 = new Chunk(jcas2, 0, 4);
-        chunk2.addToIndexes();
+    }
 
-        SharedNounChunks extractor = new SharedNounChunks(false);
-        List<Feature> features = extractor.extract(jcas1, jcas2);
+    @Override
+    protected void getFeatureExtractorCollector(List<Object> parameterList) throws ResourceInitializationException
+    {
+        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
+                false, false, false, false,
+                SharedNounChunks.class.getName());
+    }
 
-        assertEquals(1, features.size());
-
-        for (Feature feature : features) {
-            assertFeature("SharedNounChunkView2", 1.0, feature, 0.0001);
-        }
-
-        Chunk chunk3 = new Chunk(jcas1, 5, 7);
-        chunk3.addToIndexes();
-
-        features = extractor.extract(jcas1, jcas2);
-
-        assertEquals(1, features.size());
-
-        for (Feature feature : features) {
-            assertFeature("SharedNounChunkView2", 1, feature, 0.0001);
-        }
-
+    @Override
+    protected void getMetaCollector(List<Object> parameterList)
+        throws ResourceInitializationException
+    {
+        metaCollector = AnalysisEngineFactory.createEngineDescription(
+                NoOpAnnotator.class);
     }
 
 }
