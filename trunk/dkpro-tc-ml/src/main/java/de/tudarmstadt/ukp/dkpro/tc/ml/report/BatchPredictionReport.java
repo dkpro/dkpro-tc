@@ -59,7 +59,7 @@ public class BatchPredictionReport
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             // FIXME this is a bad hack
-            if (subcontext.getType().contains("ExtractAndPredictTask")) {
+            if (subcontext.getType().contains("ExtractFeaturesAndPredictTask")) {
 
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
