@@ -210,6 +210,7 @@ class ModelSerializationDescription
         trainAndStoreModel(aContext);
 
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
+        SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
 
