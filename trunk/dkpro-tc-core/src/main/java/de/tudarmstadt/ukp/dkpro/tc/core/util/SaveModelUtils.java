@@ -170,15 +170,21 @@ public class SaveModelUtils implements Constants {
 			String featureClass = featureString.replaceAll("\\.", "/")
 					+ ".class";
 			
-			String location = feature.getProtectionDomain().getCodeSource()
-					.getLocation().getPath()
-					+ featureClass;
+			String sourceLocation = buildSourceLocation(feature, featureClass);
 
-			FileUtils.copyFile(new File(location),
+			FileUtils.copyFile(new File(sourceLocation),
 					new File(outputFolder.getAbsolutePath() + "/"
 							+ MODEL_FEATURE_CLASS_FOLDER + "/" + featureClass));
 		}
 
+	}
+
+	private static String buildSourceLocation(Class<?> feature, String featureClass) {
+		String folder = feature.getProtectionDomain().getCodeSource()
+		.getLocation().getPath();
+		folder = folder.endsWith("/") ? folder : folder + "/";
+		String sourceLocation = folder + "/" + featureClass;
+		return sourceLocation;
 	}
 
 }
