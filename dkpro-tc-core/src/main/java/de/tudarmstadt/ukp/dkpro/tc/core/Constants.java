@@ -332,10 +332,17 @@ public interface Constants
      * Name of the file which holds the feature extractors
      */
     public static final String MODEL_FEATURE_EXTRACTORS = "featureExtractors.txt";
+    
+    /**
+     * Name of the file which holds the feature extractors
+     */
+    public static final String MODEL_FEATURE_CLASS_FOLDER = "featureClassFolder";
+    
     /**
      * Name of the file which holds the global UIMA parameters
      */
     public static final String MODEL_PARAMETERS = "parameters.txt";
+    
     /**
      * Name of the file which holds the classifier
      */
