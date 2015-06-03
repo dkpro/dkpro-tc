@@ -137,21 +137,15 @@ public class SaveModelUtils implements Constants {
 			}
 
 		} else {
-			copySingleFiles(source, destination);
+			copySingleFile(source, destination);
 		}
 	}
 
-	private static void copySingleFiles(File source, File destination)
+	private static void copySingleFile(File source, File destination)
 			throws IOException {
 		InputStream inputstream = new FileInputStream(source);
 		OutputStream outputstream = new FileOutputStream(destination);
-
-		int length;
-		byte[] buffer = new byte[1024];
-		while ((length = inputstream.read(buffer)) > 0) {
-			outputstream.write(buffer, 0, length);
-		}
-
+		IOUtils.copy(inputstream, outputstream);
 		inputstream.close();
 		outputstream.close();
 	}
