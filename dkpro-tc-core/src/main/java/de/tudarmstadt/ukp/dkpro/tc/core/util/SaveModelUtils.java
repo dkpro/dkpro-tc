@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -163,28 +164,40 @@ public class SaveModelUtils implements Constants {
 				aModelMeta);
 	}
 
-	public static void writeFeatureClassFiles(File outputFolder,
+	public static void writeFeatureClassFiles(File modelFolder,
 			List<String> featureSet) throws Exception {
 		for (String featureString : featureSet) {
 			Class<?> feature = Class.forName(featureString);
-			String featureClass = featureString.replaceAll("\\.", "/")
-					+ ".class";
+			InputStream inStream = feature.getResource(
+					"/" + featureString.replace(".", "/") + ".class")
+					.openStream();
 			
-			String sourceLocation = buildSourceLocation(feature, featureClass);
+			OutputStream outStream = buildOutputStream(modelFolder, featureString);
+			
+			
+			
 
-			FileUtils.copyFile(new File(sourceLocation),
-					new File(outputFolder.getAbsolutePath() + "/"
-							+ MODEL_FEATURE_CLASS_FOLDER + "/" + featureClass));
+			IOUtils.copy(inStream, outStream);
+			outStream.close();
+			inStream.close();
+
 		}
 
 	}
 
-	private static String buildSourceLocation(Class<?> feature, String featureClass) {
-		String folder = feature.getProtectionDomain().getCodeSource()
-		.getLocation().getPath();
-		folder = folder.endsWith("/") ? folder : folder + "/";
-		String sourceLocation = folder + "/" + featureClass;
-		return sourceLocation;
+	private static OutputStream buildOutputStream(File modelFolder, String featureString) throws Exception {
+		
+		String packagePath = featureString.substring(0,
+				featureString.lastIndexOf(".")).replaceAll("\\.", "/");
+		String featureClassName = featureString.substring(featureString
+				.lastIndexOf(".") + 1) + ".class";
+	 
+		
+		String folderPath = modelFolder.getAbsolutePath() + "/"
+				+ MODEL_FEATURE_CLASS_FOLDER + "/" + packagePath + "/";
+		new File(folderPath).mkdirs();
+		return new FileOutputStream(new File(folderPath
+				+ featureClassName));
 	}
 
 }
