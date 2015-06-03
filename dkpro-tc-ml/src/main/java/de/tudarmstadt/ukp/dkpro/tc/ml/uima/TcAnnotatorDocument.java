@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.ml.uima;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,10 +28,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
@@ -59,7 +56,7 @@ public class TcAnnotatorDocument
 
     private TCMachineLearningAdapter mlAdapter;
 
-    private AnalysisEngine initalizedEngine;
+    private AnalysisEngine engine;
 
     @Override
     public void initialize(UimaContext context)
@@ -71,6 +68,13 @@ public class TcAnnotatorDocument
             mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
             parameters = ModelPersistUtil.initParameters(tcModelLocation);
             featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
+            
+            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
+                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
+                    learningMode, featureMode, DenseFeatureStore.class.getName(),
+                    featureExtractors.toArray(new String[0]));
+            engine = AnalysisEngineFactory.createEngine(connector);
+            
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -91,7 +95,6 @@ public class TcAnnotatorDocument
         // create new UIMA annotator in order to separate the parameter spaces
         // this annotator will get initialized with its own set of parameters loaded from the model
         try {
-            AnalysisEngine engine = getAnalysisEngine();
             engine.process(jcas);
         }
         catch (Exception e) {
@@ -102,20 +105,6 @@ public class TcAnnotatorDocument
         // .getOutcome());
     }
 
-    private AnalysisEngine getAnalysisEngine()
-        throws Exception
-    {
-        if (initalizedEngine == null) {
-
-            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
-                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
-                    learningMode, featureMode, DenseFeatureStore.class.getName(),
-                    featureExtractors.toArray(new String[0]));
-            initalizedEngine = AnalysisEngineFactory.createEngine(connector);
-
-        }
-        return initalizedEngine;
-    }
 
     /**
      * @param featureExtractorClassNames
@@ -128,27 +117,10 @@ public class TcAnnotatorDocument
         throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
-        List<Object> convertedParameters = new ArrayList<Object>();
-        if (parameters != null) {
-            for (Object parameter : parameters) {
-                convertedParameters.add(parameter.toString());
-            }
-        }
-        else {
-            parameters = new ArrayList<Object>();
-        }
-
-        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
-        for (String featureExtractor : featureExtractorClassNames) {
-            try {
-                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
-                        Class.forName(featureExtractor).asSubclass(Resource.class),
-                        convertedParameters.toArray()));
-            }
-            catch (ClassNotFoundException e) {
-                throw new ResourceInitializationException(e);
-            }
-        }
+    	List<Object> convertedParameters = TcAnnotatorUtil.convertParameters(parameters);
+        
+    	List<ExternalResourceDescription> extractorResources = TcAnnotatorUtil.loadExternalResourceDescriptionOfFeatures(
+				outputPath, featureExtractorClassNames, convertedParameters);
 
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION,
@@ -164,5 +136,6 @@ public class TcAnnotatorDocument
         return AnalysisEngineFactory.createEngineDescription(
                 mlAdapter.getLoadModelConnectorClass(), parameters.toArray());
     }
+    
 
 }
