@@ -19,9 +19,6 @@ package de.tudarmstadt.ukp.dkpro.tc.ml.uima;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -36,11 +33,9 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
@@ -112,18 +107,6 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 		addTCSequenceAnnotation(jcas);
 		addTCUnitAndOutcomeAnnotation(jcas);
 
-		// create new UIMA annotator in order to separate the parameter spaces
-		// this annotator will get initialized with its own set of parameters
-		// loaded from the model
-		// AnalysisEngineDescription connector =
-		// getSaveModelConnector(parameters,
-		// tcModelLocation.getAbsolutePath(),
-		// mlAdapter.getDataWriterClass().toString(),
-		// learningMode, featureMode, DenseFeatureStore.class.getName(),
-		// featureExtractors.toArray(new String[0]));
-		// AnalysisEngine engine =
-		// AnalysisEngineFactory.createEngine(connector);
-
 		// process and classify
 		engine.process(jcas);
 		Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
@@ -170,16 +153,9 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 			throws ResourceInitializationException {
 		// convert parameters to string as external resources only take string
 		// parameters
-		List<Object> convertedParameters = new ArrayList<Object>();
-		if (parameters != null) {
-			for (Object parameter : parameters) {
-				convertedParameters.add(parameter.toString());
-			}
-		} else {
-			parameters = new ArrayList<Object>();
-		}
+		List<Object> convertedParameters = TcAnnotatorUtil.convertParameters(parameters);
 
-		List<ExternalResourceDescription> extractorResources = loadExternalResourceDescriptionOfFeatures(
+		List<ExternalResourceDescription> extractorResources = TcAnnotatorUtil.loadExternalResourceDescriptionOfFeatures(
 				outputPath, featureExtractorClassNames, convertedParameters);
 
 		// add the rest of the necessary parameters with the correct types
@@ -201,36 +177,4 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 				mlAdapter.getLoadModelConnectorClass(), parameters.toArray());
 	}
 
-	private List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
-			String outputPath, String[] featureExtractorClassNames,
-			List<Object> convertedParameters)
-			throws ResourceInitializationException {
-
-		List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
-		try {
-			File classFile = new File(outputPath + "/"
-					+ Constants.MODEL_FEATURE_CLASS_FOLDER);
-			URLClassLoader urlClassLoader = new URLClassLoader(
-					new URL[] { classFile.toURI().toURL() });
-			for (String featureExtractor : featureExtractorClassNames) {
-
-				Class<? extends Resource> resource = urlClassLoader.loadClass(
-						featureExtractor).asSubclass(Resource.class);
-				ExternalResourceDescription resourceDescription = createExternalResource(
-						resource, convertedParameters);
-				extractorResources.add(resourceDescription);
-
-			}
-			urlClassLoader.close();
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-		return extractorResources;
-	}
-
-	private ExternalResourceDescription createExternalResource(
-			Class<? extends Resource> resource, List<Object> convertedParameters) {
-		return ExternalResourceFactory.createExternalResourceDescription(
-				resource, convertedParameters.toArray());
-	}
 }
