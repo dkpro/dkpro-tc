@@ -105,10 +105,11 @@ public class LoadModelConnectorWeka
 	public void process(JCas jcas)
 			throws AnalysisEngineProcessException
 	{
-		Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
+	   try {
+	           Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
 				.getSingleInstance(featureMode, featureExtractors, jcas, false,	false);
 
-		try {
+
 			weka.core.Instance wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes,
 					classLabels, false);
 
@@ -117,7 +118,7 @@ public class LoadModelConnectorWeka
 			TextClassificationOutcome outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
 			outcome.setOutcome(val);
 		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
+			throw new AnalysisEngineProcessException(new IllegalStateException(e.getMessage()));
 		}
     }
 }

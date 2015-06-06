@@ -331,13 +331,13 @@ public class TaskUtils
     public static Instance getSingleInstance(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
             boolean developerMode, boolean addInstanceId)
-        throws AnalysisEngineProcessException
+        throws TextClassificationException
     {
 
         Instance instance = new Instance();
 
         if (featureMode.equals(Constants.FM_DOCUMENT)) {
-            try {
+            
                 if (addInstanceId) {
                     instance.addFeature(InstanceIdFeature.retrieve(jcas));
                 }
@@ -352,48 +352,41 @@ public class TaskUtils
                     instance.setWeight(getWeight(jcas, null));
                     instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
                 }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
+       
         }
         else if (featureMode.equals(Constants.FM_PAIR)) {
             try {
                 if (addInstanceId) {
                     instance.addFeature(InstanceIdFeature.retrieve(jcas));
-                }
+                
 
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof PairFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-pair FE in pair mode: "
-                                + featExt.getResourceName());
+                    for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
+                        if (!(featExt instanceof PairFeatureExtractor)) {
+                            throw new TextClassificationException("Using non-pair FE in pair mode: "
+                                    + featExt.getResourceName());
+                        }
+                        JCas view1 = jcas.getView(Constants.PART_ONE);
+                        JCas view2 = jcas.getView(Constants.PART_TWO);
+
+                        instance.setOutcomes(getOutcomes(jcas, null));
+                        instance.setWeight(getWeight(jcas, null));
+                        instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                     }
-                    JCas view1 = jcas.getView(Constants.PART_ONE);
-                    JCas view2 = jcas.getView(Constants.PART_TWO);
-
-                    instance.setOutcomes(getOutcomes(jcas, null));
-                    instance.setWeight(getWeight(jcas, null));
-                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
             }
             catch (CASException e) {
-                throw new AnalysisEngineProcessException(e);
+                throw new TextClassificationException(e);
             }
         }
         else if (featureMode.equals(Constants.FM_UNIT)) {
-            try {
                 TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
                         TextClassificationFocus.class);
                 Collection<TextClassificationUnit> classificationUnits = JCasUtil.selectCovered(
                         jcas, TextClassificationUnit.class, focus);
 
                 if (classificationUnits.size() != 1) {
-                    throw new AnalysisEngineProcessException(
-                            "There is more than one TextClassificationUnit annotation in the JCas.",
-                            null);
+                    throw new TextClassificationException(
+                            "There is more than one TextClassificationUnit annotation in the JCas.");
                 }
 
                 TextClassificationUnit unit = classificationUnits.iterator().next();
@@ -418,10 +411,6 @@ public class TaskUtils
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, unit));
                 }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
         }
 
         return instance;
@@ -440,7 +429,7 @@ public class TaskUtils
     public static List<Instance> getMultipleInstances(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
             boolean addInstanceId, int sequenceId)
-        throws AnalysisEngineProcessException
+        throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
 
@@ -456,7 +445,7 @@ public class TaskUtils
             }
 
             // execute feature extractors and add features to instance
-            try {
+         
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
                         throw new TextClassificationException(
@@ -465,10 +454,8 @@ public class TaskUtils
                     instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
                             jcas, unit));
                 }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
+            
+
 
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(jcas, unit));
@@ -524,8 +511,7 @@ public class TaskUtils
         return instances;
     }
 
-    public static List<String> getOutcomes(JCas jcas, AnnotationFS unit)
-        throws AnalysisEngineProcessException
+    public static List<String> getOutcomes(JCas jcas, AnnotationFS unit) throws TextClassificationException
     {
         Collection<TextClassificationOutcome> outcomes;
         if (unit == null) {
@@ -536,8 +522,8 @@ public class TaskUtils
         }
 
         if (outcomes.size() == 0) {
-            throw new AnalysisEngineProcessException(new TextClassificationException(
-                    "No outcome annotations present in current CAS."));
+            throw new TextClassificationException(
+                    "No outcome annotations present in current CAS.");
         }
 
         List<String> stringOutcomes = new ArrayList<String>();
@@ -552,10 +538,10 @@ public class TaskUtils
      * @param jcas
      * @param unit
      * @return the instance weight
+     * @throws TextClassificationException 
      * @throws AnalysisEngineProcessException
      */
-    public static double getWeight(JCas jcas, AnnotationFS unit)
-            throws AnalysisEngineProcessException
+    public static double getWeight(JCas jcas, AnnotationFS unit) throws TextClassificationException
         {
             Collection<TextClassificationOutcome> outcomes;
             if (unit == null) {
@@ -566,8 +552,8 @@ public class TaskUtils
             }
 
             if (outcomes.size() == 0) {
-                throw new AnalysisEngineProcessException(new TextClassificationException(
-                        "No instance weight annotation present in current CAS."));
+                throw new TextClassificationException(
+                        "No instance weight annotation present in current CAS.");
             }
 
             double weight = -1.0;

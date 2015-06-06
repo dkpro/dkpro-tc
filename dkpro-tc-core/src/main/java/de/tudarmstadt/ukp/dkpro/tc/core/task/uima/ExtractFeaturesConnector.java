@@ -132,14 +132,19 @@ public class ExtractFeaturesConnector
     {
 
         List<Instance> instances = new ArrayList<Instance>();
-        if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId,
-                    sequenceId);
-            sequenceId++;
+        try {
+            if (featureMode.equals(Constants.FM_SEQUENCE)) {
+                instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId,
+                        sequenceId);
+                sequenceId++;
+            }
+            else {
+                instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
+                        developerMode, addInstanceId));
+            }
         }
-        else {
-            instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
-                    developerMode, addInstanceId));
+        catch (TextClassificationException e1) {
+            throw new AnalysisEngineProcessException(new IllegalStateException(e1.getMessage()));
         }
 
         for (Instance instance : instances) {
