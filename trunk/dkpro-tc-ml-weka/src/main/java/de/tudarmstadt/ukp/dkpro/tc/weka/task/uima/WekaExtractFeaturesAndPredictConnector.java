@@ -152,12 +152,13 @@ public class WekaExtractFeaturesAndPredictConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getSingleInstance(
+        weka.core.Instance wekaInstance;
+
+        try {
+            Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getSingleInstance(
                 featureMode, featureExtractors, jcas,
                 developerMode, false);
-
-        weka.core.Instance wekaInstance;
-        try {
+  
             if (!isMultiLabel) {
                 wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes,
                         allClassLabels, isRegression);
@@ -168,7 +169,7 @@ public class WekaExtractFeaturesAndPredictConnector
             }
         }
         catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
+            throw new AnalysisEngineProcessException(new IllegalStateException(e.getMessage()));
         }
         List<String> predicted = new ArrayList<String>();
 
