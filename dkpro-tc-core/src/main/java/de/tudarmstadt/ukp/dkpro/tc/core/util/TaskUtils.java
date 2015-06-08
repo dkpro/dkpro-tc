@@ -358,20 +358,19 @@ public class TaskUtils
             try {
                 if (addInstanceId) {
                     instance.addFeature(InstanceIdFeature.retrieve(jcas));
-                
+                }
 
-                    for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                        if (!(featExt instanceof PairFeatureExtractor)) {
-                            throw new TextClassificationException("Using non-pair FE in pair mode: "
-                                    + featExt.getResourceName());
-                        }
-                        JCas view1 = jcas.getView(Constants.PART_ONE);
-                        JCas view2 = jcas.getView(Constants.PART_TWO);
-
-                        instance.setOutcomes(getOutcomes(jcas, null));
-                        instance.setWeight(getWeight(jcas, null));
-                        instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
+                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
+                    if (!(featExt instanceof PairFeatureExtractor)) {
+                        throw new TextClassificationException("Using non-pair FE in pair mode: "
+                                + featExt.getResourceName());
                     }
+                    JCas view1 = jcas.getView(Constants.PART_ONE);
+                    JCas view2 = jcas.getView(Constants.PART_TWO);
+
+                    instance.setOutcomes(getOutcomes(jcas, null));
+                    instance.setWeight(getWeight(jcas, null));
+                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
                 }
             }
             catch (CASException e) {
