@@ -11,7 +11,7 @@
 	<packaging>pom</packaging>
 	<description>DKPro TC is a UIMA-based text classification framework built on top of DKPro Core and DKPro Lab. It is intended to alleviate supervised machine learning experiments with any kind of textual data.</description>
 	<inceptionYear>2013</inceptionYear>
-	<url>http://dkpro-tc.googlecode.com/</url>
+	<url>http://github.com/dkpro/dkpro-tc</url>
 	<licenses>
 		<license>
 			<name>GNU General Public License (GPL), Version 3.0</name>
@@ -35,9 +35,9 @@
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dkpro-tc.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://dkpro-tc.googlecode.com/svn/trunk</developerConnection>
-		<url>http://code.google.com/p/dkpro-tc/source/browse/</url>
+	  	<connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
+  		<developerConnection>scm:git:git@github.com:dkpro/dkpro-tc.git</developerConnection>
+		<url>https://github.com/dkpro/dkpro-tc</url>
 	</scm>
 	<repositories>
 		<repository>
