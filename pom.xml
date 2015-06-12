@@ -39,6 +39,10 @@
   		<developerConnection>scm:git:git@github.com:dkpro/dkpro-tc.git</developerConnection>
 		<url>https://github.com/dkpro/dkpro-tc</url>
 	</scm>
+	<issueManagement>
+		<url>https://github.com/dkpro/dkpro-tc/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
 	<repositories>
 		<repository>
 			<id>ukp-oss</id>
