@@ -78,20 +78,26 @@ public class FrequencyDistributionNGramFeatureExtractorBase
         // topK samples each of size n or greater.
 
         Map<String, Long> map = new HashMap<String, Long>();
-
+        int ngramVocabularySize = 0;
+        
         for (String key : trainingFD.getKeys()) {
-            map.put(key, trainingFD.getCount(key));
+        	long count = trainingFD.getCount(key);
+        	ngramVocabularySize += count;
+            map.put(key, count);
         }
 
         Map<String, Long> sorted_map = new TreeMap<String, Long>(new ValueComparator(map));
         sorted_map.putAll(map);
-
+        
         int i = 0;
         for (String key : sorted_map.keySet()) {
-            if (i >= ngramUseTopK) {
+        	long absCount = trainingFD.getCount(key);
+        	double relFrequency = ((double) absCount) / ngramVocabularySize;
+        	
+            if (i >= ngramUseTopK || relFrequency < ngramFreqThreshold) {
                 break;
             }
-            topNGrams.addSample(key, trainingFD.getCount(key));
+            topNGrams.addSample(key, absCount);
             i++;
         }
 

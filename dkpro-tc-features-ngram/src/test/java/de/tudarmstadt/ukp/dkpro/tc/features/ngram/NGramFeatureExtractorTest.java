@@ -64,7 +64,7 @@ public class NGramFeatureExtractorTest
     // "org.apache.uima.util.impl.Log4jLogger_impl");
     // }
 
-    private void initialize(int ngramNMin, int ngramNMax)
+    private void initialize(int ngramNMin, int ngramNMax, float ngramFreqThreshold)
         throws Exception
     {
 
@@ -86,8 +86,9 @@ public class NGramFeatureExtractorTest
         ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
                 Arrays.asList(new Object[] { FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
                         ngramNMin, FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N, ngramNMax,
-                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FD_FILE, frequencyDistFile }));
-
+                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FD_FILE, frequencyDistFile,
+                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FREQ_THRESHOLD, ngramFreqThreshold}));
+        
         AnalysisEngineDescription metaCollectorLucene = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parametersLucene.toArray());
 
@@ -129,7 +130,7 @@ public class NGramFeatureExtractorTest
     public void CompareOldAndNewPairFETest()
         throws Exception
     {
-        initialize(1, 3);
+        initialize(1, 3, 0.01f);
         TreeSet<String> luceneFeatures = fsLucene.getFeatureNames();
         TreeSet<String> frequencyDistFeatures = fsFrequenceDist.getFeatureNames();
 
@@ -141,16 +142,27 @@ public class NGramFeatureExtractorTest
     public void nonDefaultMinNMaxNTest()
         throws Exception
     {
-        initialize(1, 1);
+        initialize(1, 1, 0.01f);
 
         assertTrue(fsLucene.getFeatureNames().contains("ngram_cats"));
         assertFalse(fsLucene.getFeatureNames().contains("ngram_cats_eat"));
         assertFalse(fsLucene.getFeatureNames().contains("ngram_birds_chase_cats"));
 
-        initialize(3, 3);
+        initialize(3, 3, 0.01f);
 
         assertFalse(fsLucene.getFeatureNames().contains("ngram_cats"));
         assertFalse(fsLucene.getFeatureNames().contains("ngram_cats_eat"));
         assertTrue(fsLucene.getFeatureNames().contains("ngram_birds_chase_cats"));
+    }
+    
+    @Test
+    public void nonDefaultRelFreqTest()
+        throws Exception
+    {
+        initialize(1, 3, 0.1f);
+
+        assertTrue(fsFrequenceDist.getFeatureNames().contains("ngram_cats"));
+        assertFalse(fsFrequenceDist.getFeatureNames().contains("ngram_cats_eat"));
+        assertFalse(fsFrequenceDist.getFeatureNames().contains("ngram_birds_chase_cats"));
     }
 }
