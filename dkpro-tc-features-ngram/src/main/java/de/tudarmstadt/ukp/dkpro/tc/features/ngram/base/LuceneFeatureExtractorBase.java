@@ -48,12 +48,13 @@ public abstract class LuceneFeatureExtractorBase
     @Override
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
-    {       
+    {
 
     	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
         
         MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN()).create();
 
+        long ngramVocabularySize = 0;
         IndexReader reader;
         try {
             reader = DirectoryReader.open(FSDirectory.open(luceneDir));
@@ -66,8 +67,9 @@ public abstract class LuceneFeatureExtractorBase
                     while ((text = termsEnum.next()) != null) {
                         String term = text.utf8ToString();
                         long freq = termsEnum.totalTermFreq();
-                        if(passesScreening(term)){ 
+                        if(passesScreening(term)){
                             topN.add(new TermFreqTuple(term, freq));
+                            ngramVocabularySize += freq;
                         }
                     }
                 }
@@ -80,7 +82,11 @@ public abstract class LuceneFeatureExtractorBase
         int size = topN.size();
         for (int i=0; i < size; i++) {
             TermFreqTuple tuple = topN.poll();
-            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
+            long absCount = tuple.getFreq();
+            double relFrequency = ((double) absCount) / ngramVocabularySize;
+            
+            if( relFrequency >= ngramFreqThreshold )
+            	topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
         
         getLogger().log(Level.INFO, "+++ SELECTING THE " + topNGrams.getB() + " MOST FREQUENT NGRAMS");
