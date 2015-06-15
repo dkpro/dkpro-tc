@@ -58,7 +58,7 @@ public abstract class NGramFeatureExtractorBase
     protected boolean filterPartialStopwordMatches;
 
     public static final String PARAM_NGRAM_FREQ_THRESHOLD = "ngramFreqThreshold";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = true, defaultValue = "0.01")
+    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = true, defaultValue = "0.0")
     protected float ngramFreqThreshold;
 
     public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
