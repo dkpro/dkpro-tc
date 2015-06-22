@@ -65,8 +65,8 @@ public class LoadModelConnectorCRFSuite
     @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
     private String featureStoreImpl;
 
-    private static File model = null;
-    private static String executablePath = null;
+    private File model = null;
+    private String executablePath = null;
     private Path tmpFolderForFeatureFile=null;
     @Override
     public void initialize(UimaContext context)
@@ -147,7 +147,7 @@ public class LoadModelConnectorCRFSuite
 
     }
 
-    private static String classify(File featureFile)
+    private String classify(File featureFile)
         throws Exception
     {
         List<String> commandGoldPredictionOutput = CRFSuiteTestTask.wrapTestCommandAsList(
