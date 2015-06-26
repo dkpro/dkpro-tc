@@ -55,17 +55,17 @@ public class NrOfTokensPerSentenceUFE
     {
         List<Feature> featList = new ArrayList<Feature>();
 
-        int numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
         int numSentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit).size();
-
-        double ratio = numTokens / numSentences;
 
         if (numSentences == 0) {
             featList.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
                     MissingValueNonNominalType.NUMERIC)));
         }
         else {
-            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
+        	int numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
+        	double ratio = numTokens / numSentences;
+        	
+        	featList.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
         }
         return featList;
     }
