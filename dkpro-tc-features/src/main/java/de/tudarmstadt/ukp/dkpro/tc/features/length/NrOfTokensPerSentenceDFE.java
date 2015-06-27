@@ -52,16 +52,17 @@ public class NrOfTokensPerSentenceDFE
         throws TextClassificationException
     {
         List<Feature> featList = new ArrayList<Feature>();
-        double numTokens = JCasUtil.select(jcas, Token.class).size();
+        
         double numSentences = JCasUtil.select(jcas, Sentence.class).size();
-
-        double ratio = numTokens / numSentences;
 
         if (numSentences == 0) {
             featList.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
                     MissingValueNonNominalType.NUMERIC)));
         }
         else {
+        	double numTokens = JCasUtil.select(jcas, Token.class).size();
+        	double ratio = numTokens / numSentences;
+        	
             featList.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
         }
         return featList;
