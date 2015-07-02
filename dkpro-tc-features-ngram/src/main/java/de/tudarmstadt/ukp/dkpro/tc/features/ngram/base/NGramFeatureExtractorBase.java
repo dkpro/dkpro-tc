@@ -27,6 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaDependent;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
@@ -67,6 +68,7 @@ public abstract class NGramFeatureExtractorBase
 
     protected Set<String> stopwords;
     protected FrequencyDistribution<String> topKSet;
+    protected DfModel dfStore;
     protected String prefix;
 
     /**

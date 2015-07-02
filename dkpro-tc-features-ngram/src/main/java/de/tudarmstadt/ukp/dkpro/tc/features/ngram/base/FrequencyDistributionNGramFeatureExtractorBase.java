@@ -29,9 +29,12 @@ import java.util.TreeMap;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
@@ -44,6 +47,10 @@ public class FrequencyDistributionNGramFeatureExtractorBase
     @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
     private String ngramFdFile;
 
+    public static final String PARAM_DFSTORE_FILE = "dfstoreFile";
+    @ConfigurationParameter(name = PARAM_DFSTORE_FILE, mandatory = true)
+    private String dfstoreFile;
+    
     public static final String FD_NGRAM_FIELD = "ngram";
 
     private FrequencyDistribution<String> trainingFD;
@@ -56,6 +63,21 @@ public class FrequencyDistributionNGramFeatureExtractorBase
 
         return metaCollectorClasses;
     }
+    
+    
+    @Override
+    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+        throws ResourceInitializationException
+    {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
+       
+        dfStore = getDfStore();
+        
+        return true;
+    }    
+    
 
     @Override
     protected FrequencyDistribution<String> getTopNgrams()
@@ -105,6 +127,17 @@ public class FrequencyDistributionNGramFeatureExtractorBase
 
         return topNGrams;
     }
+    
+
+    protected DfModel getDfStore() throws ResourceInitializationException{   	
+    	DfModel dfModel;
+    	try {
+    		dfModel = TfidfUtils.getDfModel(dfstoreFile);
+		} catch (Exception e) {
+			throw new ResourceInitializationException(e);
+		}
+    	return dfModel;
+    };
 
     public class ValueComparator
         implements Comparator<String>

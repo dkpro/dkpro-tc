@@ -18,13 +18,13 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 
 public abstract class FreqDistBasedMetaCollector
@@ -32,6 +32,7 @@ public abstract class FreqDistBasedMetaCollector
 {
 
     protected FrequencyDistribution<String> fd;
+    protected DfStore dfStore;
 
     @Override
     public void initialize(UimaContext context)
@@ -40,6 +41,7 @@ public abstract class FreqDistBasedMetaCollector
         super.initialize(context);
 
         fd = new FrequencyDistribution<String>();
+        dfStore = new DfStore();
     }
 
     /**
@@ -56,7 +58,7 @@ public abstract class FreqDistBasedMetaCollector
         try {
             fd.save(getFreqDistFile());
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
     }
