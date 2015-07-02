@@ -42,18 +42,35 @@ public class FrequencyDistributionNGramDFE
     public List<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
+    	double totalCountDocumentNgrams = 0;
         List<Feature> features = new ArrayList<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
         documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+        
+        for (String ngram : documentNgrams.getKeys()) {
+        	totalCountDocumentNgrams += documentNgrams.getCount(ngram);
+        }
 
         for (String topNgram : topKSet.getKeys()) {
-            if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
+        	double tf = 0;
+        	double idf = 0;
+        	double tfIdf = 0;
+        	
+        	if (documentNgrams.getKeys().contains(topNgram)) {
+        		// calculate the TF value: the occurrences number of the current n-gram in the document
+            	// divided by the total number of n-gram occurrences in the document 
+        		tf = documentNgrams.getCount(topNgram) / totalCountDocumentNgrams;
+        		
+            	// calculate the IDF value: logarithm of dividing the total number of documents by 
+            	// the number of documents containing the current top n-gram
+            	idf = Math.log((double) dfStore.getDocumentCount() / dfStore.getDf(topNgram));
+            			
+    			// calculate the TF-IDF value
+            	tfIdf = tf * idf;	
             }
-            else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0));
-            }
+        	
+        	features.add(new Feature(getFeaturePrefix() + "_" + topNgram, tfIdf));
         }
         return features;
     }

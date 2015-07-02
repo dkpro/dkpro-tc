@@ -30,6 +30,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
@@ -43,6 +45,9 @@ public class NGramMetaCollector
 
     @ConfigurationParameter(name = FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, mandatory = true)
     private File ngramFdFile;
+    
+    @ConfigurationParameter(name = FrequencyDistributionNGramFeatureExtractorBase.PARAM_DFSTORE_FILE, mandatory = true)
+    private File dfstoreFile;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
@@ -80,11 +85,14 @@ public class NGramMetaCollector
         throws AnalysisEngineProcessException
     {
     	try{
+    		dfStore.registerNewDocument();
 	        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
 	                jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);  
 	        for (String ngram : documentNGrams.getKeys()) {
 	            fd.addSample(ngram, documentNGrams.getCount(ngram));
+	            dfStore.countTerm(ngram);
 	        }    
+	        dfStore.closeCurrentDocument();
     	} catch(TextClassificationException e){
     		throw new AnalysisEngineProcessException(e);
     	}
@@ -95,6 +103,7 @@ public class NGramMetaCollector
     {
         Map<String, String> mapping = new HashMap<String, String>();
         mapping.put(FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
+        mapping.put(FrequencyDistributionNGramFeatureExtractorBase.PARAM_DFSTORE_FILE, DfModel.FILE_NAME);
         return mapping;
     }
 
@@ -103,4 +112,25 @@ public class NGramMetaCollector
     {
         return ngramFdFile;
     }
+    
+    protected File getDfStoreFile()
+    {
+        return dfstoreFile;
+    }
+    
+    
+    @Override
+    public void collectionProcessComplete()
+        throws AnalysisEngineProcessException
+    {
+        super.collectionProcessComplete();
+
+        try {
+            TfidfUtils.writeDfModel(dfStore, getDfStoreFile().getAbsolutePath());
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
 }
