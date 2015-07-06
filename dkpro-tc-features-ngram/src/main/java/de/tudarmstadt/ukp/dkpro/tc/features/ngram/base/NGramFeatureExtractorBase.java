@@ -49,6 +49,10 @@ public abstract class NGramFeatureExtractorBase
     public static final String PARAM_NGRAM_USE_TOP_K = "ngramUseTopK";
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     protected int ngramUseTopK;
+    
+    public static final String PARAM_TF_IDF_CALCULATION = "tfIdfCalculation";
+    @ConfigurationParameter(name = PARAM_TF_IDF_CALCULATION, mandatory = true, defaultValue = "false")
+    protected String tfIdfCalculation;
 
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "ngramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)

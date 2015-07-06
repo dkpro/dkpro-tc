@@ -47,9 +47,9 @@ public class FrequencyDistributionNGramFeatureExtractorBase
     @ConfigurationParameter(name = PARAM_NGRAM_FD_FILE, mandatory = true)
     private String ngramFdFile;
 
-    public static final String PARAM_DFSTORE_FILE = "dfstoreFile";
+    public static final String PARAM_DFSTORE_FILE = "dfStoreFile";
     @ConfigurationParameter(name = PARAM_DFSTORE_FILE, mandatory = true)
-    private String dfstoreFile;
+    private String dfStoreFile;
     
     public static final String FD_NGRAM_FIELD = "ngram";
 
@@ -132,7 +132,7 @@ public class FrequencyDistributionNGramFeatureExtractorBase
     protected DfModel getDfStore() throws ResourceInitializationException{   	
     	DfModel dfModel;
     	try {
-    		dfModel = TfidfUtils.getDfModel(dfstoreFile);
+    		dfModel = TfidfUtils.getDfModel(dfStoreFile);
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
