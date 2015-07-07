@@ -70,6 +70,7 @@ public class NGramFeatureExtractorTest
 
         File luceneFolder = folder.newFolder();
         File outputPathLucene = folder.newFolder();
+        File dfStoreFile = folder.newFile();
         File frequencyDistFile = folder.newFile();
         File outputPathFrequencyDist = folder.newFolder();
 
@@ -87,7 +88,8 @@ public class NGramFeatureExtractorTest
                 Arrays.asList(new Object[] { FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
                         ngramNMin, FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N, ngramNMax,
                         FrequencyDistributionNGramDFE.PARAM_NGRAM_FD_FILE, frequencyDistFile,
-                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FREQ_THRESHOLD, ngramFreqThreshold}));
+                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FREQ_THRESHOLD, ngramFreqThreshold,
+                        FrequencyDistributionNGramDFE.PARAM_DFSTORE_FILE, dfStoreFile}));
         
         AnalysisEngineDescription metaCollectorLucene = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parametersLucene.toArray());

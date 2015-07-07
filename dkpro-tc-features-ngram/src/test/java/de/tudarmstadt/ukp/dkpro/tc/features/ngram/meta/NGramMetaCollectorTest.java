@@ -53,6 +53,7 @@ public class NGramMetaCollectorTest
         throws Exception
     {
         File tmpFdFile = folder.newFile(NGramMetaCollector.NGRAM_FD_KEY);
+        File tmpDfStoreFile = folder.newFile();
         
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TextReader.class, 
@@ -65,7 +66,8 @@ public class NGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 NGramMetaCollector.class,
-                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, tmpFdFile
+                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, tmpFdFile,
+                FrequencyDistributionNGramFeatureExtractorBase.PARAM_DFSTORE_FILE, tmpDfStoreFile
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {

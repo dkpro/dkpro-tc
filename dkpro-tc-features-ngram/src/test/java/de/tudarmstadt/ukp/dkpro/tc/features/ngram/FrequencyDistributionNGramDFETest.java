@@ -71,7 +71,7 @@ public class FrequencyDistributionNGramDFETest
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
         		TestReaderSentenceToDocument.class, TestReaderSentenceToDocument.PARAM_SENTENCES_FILE,
-                "src/test/resources/ngrams/text4.txt");
+                "src/test/resources/fd/text1.txt");
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
