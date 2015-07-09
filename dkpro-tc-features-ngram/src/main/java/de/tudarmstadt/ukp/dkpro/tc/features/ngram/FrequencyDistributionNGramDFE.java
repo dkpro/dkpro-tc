@@ -47,7 +47,7 @@ public class FrequencyDistributionNGramDFE
         documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
         
-        if (tfIdfCalculation.equals("true")) {
+        if (tfIdfCalculation == true) {
         	double countCurrentDocumentNgrams = 0;
             for (String ngram : documentNgrams.getKeys()) {
             	countCurrentDocumentNgrams += documentNgrams.getCount(ngram);
@@ -72,7 +72,7 @@ public class FrequencyDistributionNGramDFE
                 }            	
             	features.add(new Feature(getFeaturePrefix() + "_" + topNgram, tfIdf));
             }            
-    	} else if (tfIdfCalculation.equals("false")){
+    	} else if (tfIdfCalculation == false){
     		for (String topNgram : topKSet.getKeys()) {
                 if (documentNgrams.getKeys().contains(topNgram)) {
                     features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
