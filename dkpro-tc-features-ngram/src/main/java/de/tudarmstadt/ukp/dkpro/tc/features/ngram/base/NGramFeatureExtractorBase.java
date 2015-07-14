@@ -52,7 +52,7 @@ public abstract class NGramFeatureExtractorBase
     
     public static final String PARAM_TF_IDF_CALCULATION = "tfIdfCalculation";
     @ConfigurationParameter(name = PARAM_TF_IDF_CALCULATION, mandatory = true, defaultValue = "false")
-    protected String tfIdfCalculation;
+    protected boolean tfIdfCalculation;
 
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "ngramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)

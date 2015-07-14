@@ -62,7 +62,7 @@ public class FrequencyDistributionNGramDFETest
     // "org.apache.uima.util.impl.Log4jLogger_impl");
     // }
 
-    private void initialize(int ngramNMin, int ngramNMax, String tfIdfCalculation)
+    private void initialize(int ngramNMin, int ngramNMax, boolean tfIdfCalculation)
         throws Exception
     {
         File frequencyDistFile = folder.newFile();
@@ -113,7 +113,7 @@ public class FrequencyDistributionNGramDFETest
     public void withoutTfIdfCalculation()
         throws Exception
     {
-        initialize(1, 3, "false");
+        initialize(1, 3, false);
         int firstDocumentCounter = 0;
         int secondDocumentCounter = 0;
 
@@ -144,7 +144,7 @@ public class FrequencyDistributionNGramDFETest
     public void withTfIdfCalculation()
         throws Exception
     {
-        initialize(1, 3, "true");
+        initialize(1, 3, true);
         int firstDocumentCounter = 0;
         int secondDocumentCounter = 0;
         

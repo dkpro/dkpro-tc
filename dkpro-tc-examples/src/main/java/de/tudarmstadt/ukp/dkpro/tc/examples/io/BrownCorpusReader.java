@@ -72,6 +72,8 @@ public class BrownCorpusReader
             
             for (Token token : JCasUtil.selectCovered(jcas, Token.class, sentence)) {
                 TextClassificationUnit unit = new TextClassificationUnit(jcas, token.getBegin(), token.getEnd());
+                // will add the token content as a suffix to the ID of this unit 
+                unit.setSuffix(token.getCoveredText());
                 unit.addToIndexes();
                 
                 TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, token.getBegin(), token.getEnd());

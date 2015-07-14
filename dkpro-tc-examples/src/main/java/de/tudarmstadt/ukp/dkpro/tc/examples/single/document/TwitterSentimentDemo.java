@@ -85,6 +85,8 @@ public class TwitterSentimentDemo
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
+        // The reader is also responsible for setting the labels/outcome on all 
+        // documents/instances it creates.
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, LabeledTweetReader.class);
         dimReaders.put(
