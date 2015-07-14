@@ -2,13 +2,13 @@
  * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * @author Andriy Nadolskyy
- * 
+ *
  */
 public class MultiLargeContingencyTable
 	extends AbstractLargeContingencyTable<Map<String, Map<String, Double>>>
@@ -41,7 +41,7 @@ public class MultiLargeContingencyTable
 	public SmallContingencyTables decomposeLargeContingencyTable()
 	{
 		SmallContingencyTables smallContingencyTables = new SmallContingencyTables(labels);
-		
+
 		for (int decomposed = 0; decomposed < largeContingencyTable.size(); decomposed++){
 			for (String goldKey : largeContingencyTable.keySet()) {
 				for (String predictionKey : largeContingencyTable.get(goldKey).keySet()) {
@@ -62,10 +62,10 @@ public class MultiLargeContingencyTable
 								} catch (UnsupportedEncodingException e) {
 									 predictionLabelIndex = labels.indexOf(predictionKey);
 								}
-								// true positives and false negatives								
-								if (Integer.valueOf(goldLabelIndex) == decomposed) {							
+								// true positives and false negatives
+								if (goldLabelIndex == decomposed) {
 									// true positives
-									if (Integer.valueOf(predictionLabelIndex) == Integer.valueOf(goldLabelIndex)) {
+									if (predictionLabelIndex == goldLabelIndex) {
 										smallContingencyTables.addTruePositives(decomposed, largeContingencyTable.get(goldKey).get(predictionKey));
 									}
 									// false negatives
@@ -76,7 +76,7 @@ public class MultiLargeContingencyTable
 								// true negatives and false positives
 								else {
 									// false positives
-									if (Integer.valueOf(predictionLabelIndex) == decomposed) {
+									if (predictionLabelIndex == decomposed) {
 										smallContingencyTables.addFalsePositives(decomposed, largeContingencyTable.get(goldKey).get(predictionKey));
 									}
 									// true negatives
@@ -91,7 +91,7 @@ public class MultiLargeContingencyTable
 						// do nothing
 					}
 				}
-				
+
 			}
 		}
 		return smallContingencyTables;
