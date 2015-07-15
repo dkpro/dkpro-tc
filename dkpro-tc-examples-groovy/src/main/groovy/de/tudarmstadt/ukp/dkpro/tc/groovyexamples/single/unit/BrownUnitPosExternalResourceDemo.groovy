@@ -52,7 +52,7 @@ implements Constants {
     def String LANGUAGE_CODE = "en"
     def NUM_FOLDS = 2
     def String corpusFilePathTrain = "src/main/resources/data/brown_tei/"
-    def experimentName = "BrownPosDemo"
+    def experimentName = "BrownPosExternalResourceDemo"
 
     def ExternalResourceDescription dummyResource = createExternalResourceDescription(
         DummyResource.class)
