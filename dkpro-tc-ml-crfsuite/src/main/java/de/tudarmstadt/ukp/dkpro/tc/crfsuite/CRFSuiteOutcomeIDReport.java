@@ -1,5 +1,5 @@
 /**
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -35,9 +35,9 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
- * 
+ *
  * @author zesch
- * 
+ *
  */
 public class CRFSuiteOutcomeIDReport extends ReportBase {
 	/**

@@ -1,20 +1,21 @@
-/*******************************************************************************
- * Copyright 2014
+/**
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ */
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class CRFSuiteBatchTrainTestReport
             boolean softEvaluation = true;
             boolean individualLabelMeasures = false;
             String mode = "";
-                    
+
             StorageService store = getContext().getStorageService();
 
             FlexTable<String> table = FlexTable.forClass(String.class);
@@ -59,11 +60,11 @@ public class CRFSuiteBatchTrainTestReport
                 if (subcontext.getType().startsWith(CRFSuiteTestTask.class.getName())) {
                     Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                             Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                    
-                    File fileToEvaluate = store.getStorageFolder(subcontext.getId(), 
-                            CRFSuiteOutcomeIDReport.ID_OUTCOME_KEY); 
+
+                    File fileToEvaluate = store.getStorageFolder(subcontext.getId(),
+                            CRFSuiteOutcomeIDReport.ID_OUTCOME_KEY);
                     mode = discriminatorsMap.get(CRFSuiteTestTask.class.getName() + "|learningMode");
-                    EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(fileToEvaluate, 
+                    EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(fileToEvaluate,
                             mode, softEvaluation, individualLabelMeasures);
                     Map<String, Double> resultTempMap = evaluator.calculateEvaluationMeasures();
                     Map<String, String> resultMap = new HashMap<String, String>();
@@ -88,11 +89,11 @@ public class CRFSuiteBatchTrainTestReport
             }
 
             /*
-             * TODO: make rows to columns 
+             * TODO: make rows to columns
              * e.g. create a new table and set columns to rows of old table and rows to columns
              * but than must be class FlexTable in this case adapted accordingly: enable setting
              */
-            
+
             getContext().getLoggingService().message(getContextLabel(),
                     ReportUtils.getPerformanceOverview(table));
             // Excel cannot cope with more than 255 columns
