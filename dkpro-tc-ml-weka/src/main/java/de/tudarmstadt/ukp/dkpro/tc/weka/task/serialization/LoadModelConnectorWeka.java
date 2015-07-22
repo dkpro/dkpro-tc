@@ -1,5 +1,5 @@
 /**
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -51,7 +51,7 @@ public class LoadModelConnectorWeka
 
     @ConfigurationParameter(name = TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
-    
+
     public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
     @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
     private String bipartitionThreshold;
@@ -80,7 +80,7 @@ public class LoadModelConnectorWeka
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
-		
+
         attributes = new ArrayList<>();
         try {
 			for (String attributeName : FileUtils.readLines(new File(tcModelLocation, MODEL_FEATURE_NAMES))) {
@@ -89,7 +89,7 @@ public class LoadModelConnectorWeka
 		} catch (IOException e) {
 			throw new ResourceInitializationException(e);
 		}
-        
+
         classLabels = new ArrayList<>();
         try {
 			for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
@@ -113,7 +113,7 @@ public class LoadModelConnectorWeka
 			weka.core.Instance wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes,
 					classLabels, false);
 
-			String val = classLabels.get(new Double(cls.classifyInstance(wekaInstance)).intValue());
+			String val = classLabels.get((int) cls.classifyInstance(wekaInstance));
 
 			TextClassificationOutcome outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
 			outcome.setOutcome(val);

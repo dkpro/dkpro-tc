@@ -1,5 +1,5 @@
 /**
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -95,7 +95,7 @@ public class WekaUtils
     /**
      * Suffix for class label names in the test data that have been adapted to match the training
      * data
-     * 
+     *
      * @see #makeOutcomeClassesCompatible(Instances, Instances, boolean)
      */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
@@ -105,7 +105,7 @@ public class WekaUtils
      * unseen in the training data will be deleted from the test data. Class labels from the
      * training data unseen in the test data will be added to the test data. If training and test class
      * labels are equal, nothing will be done.
-     * 
+     *
      * @param trainData
      *            training data
      * @param testData
@@ -141,8 +141,8 @@ public class WekaUtils
             compTestData = new Instances(testData, testData.numInstances());
             for (int i = 0; i < testData.numInstances(); i++) {
                 weka.core.Instance instance = testData.instance(i);
-                String label = (String) testLabels.get(new Double(instance.value(testData
-                        .classAttribute())).intValue());
+                String label = (String) testLabels.get((int) instance.value(testData
+                        .classAttribute()));
                 if (trainLabels.indexOf(label) != -1) {
                     instance.setValue(
                             testData.attribute(Constants.CLASS_ATTRIBUTE_NAME
@@ -237,7 +237,7 @@ public class WekaUtils
 
     /**
      * Converts a feature store to a list of instances. Single-label case.
-     * 
+     *
      * @param outputFile
      * @param instanceList
      * @throws Exception
@@ -255,12 +255,12 @@ public class WekaUtils
         instanceListToArffFile(outputFile, instanceList,
                 useDenseInstances, isRegressionExperiment, false);
     }
-    
+
     /**
      * Converts a feature store to a list of instances. Single-label case.
-     * 
+     *
      * TODO: maybe rename to "featureStore2ArffFile"
-     * 
+     *
      * @param outputFile
      * @param instanceList
      * @param useDenseInstances
@@ -332,7 +332,7 @@ public class WekaUtils
             else {
                 wekaInstance.setClassValue(outcome);
             }
-            
+
             Double instanceWeight = instanceList.getWeight(i);
             if (useWeights) {
                 wekaInstance.setWeight(instanceWeight);
@@ -346,7 +346,7 @@ public class WekaUtils
         // finishes the incremental saving process
         saver.writeIncremental(null);
     }
-    
+
     public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
             boolean useDenseInstances)
         throws Exception
@@ -356,9 +356,9 @@ public class WekaUtils
     }
     /**
      * /** Converts a feature store to a list of instances. Multi-label case.
-     * 
+     *
      * TODO: maybe rename to "featureStore2ArffFile"
-     * 
+     *
      * @param outputFile
      * @param featureStore
      * @param useDenseInstances
@@ -422,12 +422,12 @@ public class WekaUtils
             }
 
             wekaInstance.setDataset(wekaInstances);
-            
+
             Double instanceWeight = featureStore.getWeight(i);
             if (useWeights) {
                 wekaInstance.setWeight(instanceWeight);
             }
-            
+
 
             // preprocessingFilter.input(wekaInstance);
             // saver.writeIncremental(preprocessingFilter.output());
@@ -441,7 +441,7 @@ public class WekaUtils
     /**
      * Converts a TC instance object into a Meka instance object, compatible with the given
      * attribute set and class labels.
-     * 
+     *
      * @param instance
      *            tc instance object
      * @param attributes
@@ -514,7 +514,7 @@ public class WekaUtils
     /**
      * Converts a TC instance object into a Weka instance object, compatible with the given
      * attribute set and class labels.
-     * 
+     *
      * @param instance
      *            tc instance object
      * @param attributes
@@ -624,7 +624,7 @@ public class WekaUtils
 
     /**
      * Evaluates a given single-label classifier on given train and test sets.
-     * 
+     *
      * @param cl
      *            single-label classifier, needs to be trained beforehand
      * @param trainData
@@ -643,7 +643,7 @@ public class WekaUtils
 
     /**
      * Evaluates a given multi-label classifier on given train and test sets.
-     * 
+     *
      * @param cl
      *            multi-label classifier, needs not be trained beforehand
      * @param trainData
@@ -665,7 +665,7 @@ public class WekaUtils
     /**
      * Generates an instances object containing the predictions of a given single-label classifier
      * for a given test set
-     * 
+     *
      * @param testData
      *            test set
      * @param cl
@@ -712,7 +712,7 @@ public class WekaUtils
     /**
      * Generates an instances object containing the predictions of a given multi-label classifier
      * for a given test set
-     * 
+     *
      * @param testData
      *            test set
      * @param cl
@@ -758,7 +758,7 @@ public class WekaUtils
 
     /**
      * Removes the instanceId attribute, iff present
-     * 
+     *
      * @param data
      *            data set with or without instanceId attribute
      * @return the data set without instanceId attribute
@@ -793,7 +793,7 @@ public class WekaUtils
     /**
      * Copies the instanceId attribute and its values from an existing data set, iff present. It will
      * be indexed right before the class attribute
-     * 
+     *
      * @param newData
      *            data set without instanceId attribute
      * @param oldData
@@ -833,7 +833,7 @@ public class WekaUtils
         }
         return filteredData;
     }
-    
+
 
     /**
      * Read instances from uncompressed or compressed arff files. Compression is determined by
@@ -843,7 +843,7 @@ public class WekaUtils
      * attribute set. For arff files with multi-label outcome, the class attribute is expected at
      * the beginning of the attribute set; additionally the number of class labels must be specified
      * in the relation tag behind a "-C" argument, e.g. "-C 3".
-     * 
+     *
      * @param instancesFile
      *            arff File
      * @param multiLabel
@@ -911,7 +911,7 @@ public class WekaUtils
 
     /**
      * Returns a list with names of the class attribute values.
-     * 
+     *
      * @param eval
      * @return
      */
@@ -936,7 +936,7 @@ public class WekaUtils
     /**
      * Calculates the threshold to turn a ranking of label predictions into a bipartition (one
      * threshold for each label)
-     * 
+     *
      * @param threshold
      *            PCut1, PCutL, or number between 0 and 1 (see Meka documentation for details on
      *            this)
@@ -973,9 +973,9 @@ public class WekaUtils
     }
 
     /**
-     * 
+     *
      * Feature selection using Weka.
-     * 
+     *
      * @param trainData
      *            training data
      * @param featureSearcher
@@ -1005,7 +1005,7 @@ public class WekaUtils
 
     /**
      * Feature selection using Mulan.
-     * 
+     *
      * @param trainData
      *            training data
      * @param labelTransformationMethod
@@ -1083,7 +1083,7 @@ public class WekaUtils
     /**
      * Converts the Meka-specific instances format to Mulan-specific instances. Hierarchical
      * relationships among labels cannot be expressed.
-     * 
+     *
      * @param instances
      * @return
      * @throws InvalidDataFormatException
@@ -1103,7 +1103,7 @@ public class WekaUtils
     /**
      * Applies a filter to reduce the dimension of attributes and reorders them to be used within
      * Meka
-     * 
+     *
      * @param trainData
      * @param removeFilter
      * @return a dataset to be used with Meka
@@ -1130,7 +1130,7 @@ public class WekaUtils
 
 	/**
 	 * Writes a file with all necessary information for evaluation.
-	 * 
+	 *
 	 * @param result the result file
 	 * @param file the file to write to
 	 * @throws IOException i/o error
@@ -1143,11 +1143,11 @@ public class WekaUtils
 		stream.writeObject(result);
 		stream.close();
 	}
-	
+
 	/**
-	 * Reads a file serialized with {@link WekaUtils#writeMlResultToFile(MultilabelResult, File)}. 
-	 * 
-	 * @param file the file to read from 
+	 * Reads a file serialized with {@link WekaUtils#writeMlResultToFile(MultilabelResult, File)}.
+	 *
+	 * @param file the file to read from
 	 * @return an object holding the results
 	 * @throws IOException i/o error
 	 * @throws ClassNotFoundException file not found

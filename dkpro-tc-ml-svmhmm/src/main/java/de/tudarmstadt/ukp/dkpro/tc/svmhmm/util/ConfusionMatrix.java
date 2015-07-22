@@ -1,7 +1,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.util;
 
 /*
- * Copyright 2014 Ubiquitous Knowledge Processing (UKP) Lab,
+ * Copyright 2015
+ * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,15 +41,15 @@ public class ConfusionMatrix
 
     int correct = 0;
 
-    private Map<String, Map<String, Integer>> map;
+    private final Map<String, Map<String, Integer>> map;
 
     private int numberOfDecimalPlaces = 3;
 
-    private TreeSet<String> allGoldLabels = new TreeSet<>();
+    private final TreeSet<String> allGoldLabels = new TreeSet<>();
 
-    private TreeSet<String> allPredictedLabels = new TreeSet<>();
+    private final TreeSet<String> allPredictedLabels = new TreeSet<>();
 
-    private List<String> labelSeries = new ArrayList<>();
+    private final List<String> labelSeries = new ArrayList<>();
 
     public ConfusionMatrix()
     {
@@ -606,7 +607,7 @@ public class ConfusionMatrix
             res += d;
         }
 
-        return res / (double) values.size();
+        return res / values.size();
     }
 
     public double getAvgRecall()
@@ -617,7 +618,7 @@ public class ConfusionMatrix
             res += d;
         }
 
-        return res / (double) values.size();
+        return res / values.size();
     }
 
     public static ConfusionMatrix createCumulativeMatrix(ConfusionMatrix... matrices)

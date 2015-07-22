@@ -448,7 +448,7 @@
 							<strictCheck>true</strictCheck>
 							<properties>
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
-								<currentYear>2014</currentYear>
+								<currentYear>2015</currentYear>
 							</properties>
 							<excludes>
 								<exclude>release.properties</exclude>
@@ -502,6 +502,7 @@
 										<exclude>CHANGES.txt</exclude>
 										<exclude>NOTICE.txt</exclude>
 										<exclude>README.txt</exclude>
+										<exclude>README.md</exclude>
 										<!-- build artifacts -->
 										<exclude>.activate_rat-check</exclude>
 										<exclude>target.db</exclude>
