@@ -18,6 +18,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.ml.uima;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -43,6 +45,9 @@ public class TcAnnotatorUtil {
 					+ Constants.MODEL_FEATURE_CLASS_FOLDER);
 			URLClassLoader urlClassLoader = new URLClassLoader(
 					new URL[] { classFile.toURI().toURL() });
+			
+			addToClassPath(classFile.toURI());
+			
 			for (String featureExtractor : featureExtractorClassNames) {
 
 				Class<? extends Resource> resource = urlClassLoader.loadClass(
@@ -57,6 +62,14 @@ public class TcAnnotatorUtil {
 			throw new ResourceInitializationException(e);
 		}
 		return extractorResources;
+	}
+
+	private static void addToClassPath(URI uri) throws Exception {
+		URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+	    Class<URLClassLoader> urlClass = URLClassLoader.class;
+	    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+	    method.setAccessible(true);
+	    method.invoke(urlClassLoader, new Object[]{uri.toURL()});
 	}
 
 	static ExternalResourceDescription createExternalResource(
