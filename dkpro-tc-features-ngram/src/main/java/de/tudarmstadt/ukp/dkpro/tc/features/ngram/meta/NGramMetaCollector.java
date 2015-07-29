@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -113,6 +113,7 @@ public class NGramMetaCollector
         return ngramFdFile;
     }
     
+    @Override
     protected File getDfStoreFile()
     {
         return dfstoreFile;

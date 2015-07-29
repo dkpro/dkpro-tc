@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -315,23 +315,23 @@ public class LuceneNGramPFE
         return "allNG";
     }
 
-    protected void setStopwords(Set<String> newStopwords)
-    {
-        stopwords = newStopwords;
-    }
-
-    protected void setFilterPartialStopwordMatches(boolean filtering)
-    {
-        filterPartialStopwordMatches = filtering;
-    }
-
-    protected void setLowerCase(boolean isLower)
-    {
-        ngramLowerCase = isLower;
-    }
-
-    protected void makeTopKSet(FrequencyDistribution<String> topK)
-    {
-        topKSet = topK;
-    }
+//    protected void setStopwords(Set<String> newStopwords)
+//    {
+//        stopwords = newStopwords;
+//    }
+//
+//    protected void setFilterPartialStopwordMatches(boolean filtering)
+//    {
+//        filterPartialStopwordMatches = filtering;
+//    }
+//
+//    protected void setLowerCase(boolean isLower)
+//    {
+//        ngramLowerCase = isLower;
+//    }
+//
+//    protected void makeTopKSet(FrequencyDistribution<String> topK)
+//    {
+//        topKSet = topK;
+//    }
 }

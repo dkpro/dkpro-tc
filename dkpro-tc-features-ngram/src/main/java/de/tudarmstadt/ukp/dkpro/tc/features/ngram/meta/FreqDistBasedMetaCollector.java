@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -45,9 +45,15 @@ public abstract class FreqDistBasedMetaCollector
     }
 
     /**
-     * @return The path where the lucene index should be stored for this meta collector.
+     * @return The path where the frequency distribution should be stored for this meta collector.
      */
     protected abstract File getFreqDistFile();
+    
+    /**
+     * @return The path where the document frequency store should be stored for this meta collector.
+     */
+    protected abstract File getDfStoreFile();
+
     
     @Override
     public void collectionProcessComplete()

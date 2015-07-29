@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -57,15 +57,15 @@ public class FrequencyDistributionNGramPFE
         return features;
     }
 
-    protected void setStopwords(Set<String> newStopwords)
-    {
-        stopwords = newStopwords;
-    }
+//    protected void setStopwords(Set<String> newStopwords)
+//    {
+//        stopwords = newStopwords;
+//    }
 
-    protected void makeTopKSet(FrequencyDistribution<String> topK)
-    {
-        topKSet = topK;
-    }
+//    protected void makeTopKSet(FrequencyDistribution<String> topK)
+//    {
+//        topKSet = topK;
+//    }
     
     @Override
     protected String getFeaturePrefix()

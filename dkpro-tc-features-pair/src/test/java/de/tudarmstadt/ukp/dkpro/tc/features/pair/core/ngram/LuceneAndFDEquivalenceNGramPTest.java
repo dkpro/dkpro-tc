@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -17,72 +17,130 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.apache.uima.jcas.JCas;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.FrequencyDistributionNGramPMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
+import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.testing.TestPairReader;
 
 public class LuceneAndFDEquivalenceNGramPTest
 {
-    LuceneNGramPFE extractor;
-    JCas jcas;
-    JCas view1;
-    JCas view2;
+    FeatureStore fsFrequenceDist;
+    FeatureStore fsLucene;
+    
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     private void initialize()
         throws Exception
     {
-        AnalysisEngineDescription seg = createEngineDescription(BreakIteratorSegmenter.class);
-        AnalysisEngine engine = createEngine(seg);
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
 
         AggregateBuilder builder = new AggregateBuilder();
-        builder.add(seg, Constants.INITIAL_VIEW, Constants.PART_ONE);
-        builder.add(seg, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        
+        File frequencyDistFile = folder.newFile();
+        File luceneFile = folder.newFolder();
+        File outputPathFrequencyDist = folder.newFolder();
+        File outputPathLucene = folder.newFolder();
+        File dfStoreFile = folder.newFile();        
+        
+ CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+         TestPairReader.class, 
+         TestPairReader.PARAM_INPUT_FILE,
+                "src/test/resources/data/textpairs.txt");
+        
+        ArrayList<Object> parametersLucene = new ArrayList<Object>(
+                Arrays.asList(new Object[] { 
+                		LuceneNGramPFE.PARAM_NGRAM_MIN_N_VIEW1, 1, 
+                		LuceneNGramPFE.PARAM_NGRAM_MIN_N_VIEW2, 1,
+                		LuceneNGramPFE.PARAM_NGRAM_MAX_N_VIEW1, 3,
+                		LuceneNGramPFE.PARAM_NGRAM_MAX_N_VIEW2, 3,
+                		LuceneNGramPFE.PARAM_NGRAM_USE_TOP_K_VIEW1, 500,
+                		LuceneNGramPFE.PARAM_NGRAM_USE_TOP_K_VIEW2, 500,
+                		LuceneNGramPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, true,
+                		LuceneNGramPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, true,
+                		LuceneNGramPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
+                		LuceneNGramPFE.PARAM_MARK_VIEWBLIND_NGRAMS_WITH_LOCAL_VIEW, false,
+                		LuceneNGramPFE.PARAM_NGRAM_LOWER_CASE, true,        		
+                        LuceneNGramPFE.PARAM_LUCENE_DIR, luceneFile,
+                        LuceneNGramPFE.PARAM_TF_IDF_CALCULATION, false}));
+        
+        ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
+                Arrays.asList(new Object[] { 
+                		FrequencyDistributionNGramPFE.PARAM_NGRAM_MIN_N, 1, 
+                		FrequencyDistributionNGramPFE.PARAM_NGRAM_MAX_N, 3,
+                		FrequencyDistributionNGramPFE.PARAM_NGRAM_USE_TOP_K, 500,
+                		FrequencyDistributionNGramPFE.PARAM_DFSTORE_FILE, dfStoreFile,
+                		FrequencyDistributionNGramPFE.PARAM_NGRAM_FD_FILE, frequencyDistFile,
+                		FrequencyDistributionNGramPFE.PARAM_NGRAM_LOWER_CASE, true,
+                		FrequencyDistributionNGramPFE.PARAM_TF_IDF_CALCULATION, false
+                		}));
+        
+        AnalysisEngineDescription metaCollectorFrequencyDist = AnalysisEngineFactory
+                .createEngineDescription(FrequencyDistributionNGramPMetaCollector.class,
+                        parametersFrequencyDist.toArray());
+        
+        AnalysisEngineDescription metaCollectorLucene = AnalysisEngineFactory
+                .createEngineDescription(LuceneNGramPMetaCollector.class,
+                        parametersLucene.toArray());
 
-        jcas = engine.newJCas();
-        view1 = jcas.createView(Constants.PART_ONE);
-        view2 = jcas.createView(Constants.PART_TWO);
-        view1.setDocumentLanguage("en");
-        view2.setDocumentLanguage("en");
-        view1.setDocumentText("Cats eat mice.");
-        view2.setDocumentText("Birds chase cats.");
+        AnalysisEngineDescription featExtractorConnectorFrequencyDist = TaskUtils
+                .getFeatureExtractorConnector(parametersFrequencyDist,
+                        outputPathFrequencyDist.getAbsolutePath(), JsonDataWriter.class.getName(),
+                        Constants.LM_SINGLE_LABEL, Constants.FM_PAIR,
+                        DenseFeatureStore.class.getName(), false, false, false, false,
+                        FrequencyDistributionNGramPFE.class.getName());
+        
+        AnalysisEngineDescription featExtractorConnectorLucene = TaskUtils
+                .getFeatureExtractorConnector(parametersLucene,
+                        outputPathLucene.getAbsolutePath(), JsonDataWriter.class.getName(),
+                        Constants.LM_SINGLE_LABEL, Constants.FM_PAIR,
+                        DenseFeatureStore.class.getName(), false, false, false, false,
+                        LuceneNGramPFE.class.getName());
+        
+        // run meta collector
+        SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), metaCollectorFrequencyDist);
+        // run FE
+        SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), featExtractorConnectorFrequencyDist);        
+        Gson gson = new Gson();
+        fsFrequenceDist = gson.fromJson(FileUtils.readFileToString(new File(
+        		outputPathFrequencyDist, JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
 
-        SimplePipeline.runPipeline(jcas, builder.createAggregateDescription());
-
-        extractor = new LuceneNGramPFE();
-        extractor.ngramMinN1 = 1;
-        extractor.ngramMinN2 = 1;
-        // extractor.ngramMinN = 1;
-        extractor.ngramMaxN1 = 3;
-        extractor.ngramMaxN2 = 3;
-        // extractor.ngramMaxN = 3;
-        extractor.useView1NgramsAsFeatures = false;
-        extractor.useView2NgramsAsFeatures = false;
-        extractor.useViewBlindNgramsAsFeatures = false;
-        extractor.markViewBlindNgramsWithLocalView = false;
-        extractor.ngramUseTopK1 = 500;
-        extractor.ngramUseTopK2 = 500;
-        // extractor.ngramUseTopK = 500;
-        extractor.setLowerCase(true);
-        extractor.setStopwords(FeatureUtil.getStopwords(null, false));
-        extractor.makeTopKSet(makeSomeNgrams());
-        extractor.topKSetView1 = makeSomeNgrams();
-        extractor.topKSetView2 = makeSomeNgrams();
+        // run meta collector
+        SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), metaCollectorLucene);
+        // run FE
+        SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), featExtractorConnectorLucene);
+        fsLucene = gson.fromJson(FileUtils.readFileToString(new File(
+                outputPathLucene, JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
     }
 
     @Test
@@ -90,73 +148,38 @@ public class LuceneAndFDEquivalenceNGramPTest
         throws Exception
     {
         initialize();
-        extractor.ngramMinN1 = 1;
-        extractor.ngramMaxN1 = 3;
-        extractor.ngramMinN2 = 1;
-        extractor.ngramMaxN2 = 3;
-        extractor.useView1NgramsAsFeatures = true;
-        extractor.useView2NgramsAsFeatures = true;
-        extractor.setLowerCase(true);
-
-        List<Feature> newFeatures = extractor.extract(jcas.getView(Constants.PART_ONE),
-                jcas.getView(Constants.PART_TWO));
         FrequencyDistribution<String> view1features = new FrequencyDistribution<String>();
         FrequencyDistribution<String> view2features = new FrequencyDistribution<String>();
 
-        for (Feature f : newFeatures) {
-            if (f.getName().startsWith("view1NG_")) {
-                view1features.addSample(f.getName().replace("view1NG_", ""), 1);
-            }
-            else {
-                view2features.addSample(f.getName().replace("view2NG_", ""), 1);
-            }
+        for (Instance instance : fsLucene.getInstances()) {
+        	for (Feature feature : instance.getFeatures()) {
+                if (feature.getName().startsWith("view1NG_") && ((double)feature.getValue()) > 0) {
+                    view1features.addSample(feature.getName().replace("view1NG_", ""), 1);
+                }
+                else if (feature.getName().startsWith("view2NG_") && ((double)feature.getValue()) > 0) {
+                    view2features.addSample(feature.getName().replace("view2NG_", ""), 1);
+                }
+        	}
+        }
+        
+        for (Instance instance : fsFrequenceDist.getInstances()) {
+        	for (Feature feature : instance.getFeatures()) {
+                if (feature.getName().startsWith("ngrams_PART_ONE_") && ((double)feature.getValue()) > 0) {
+                    view1features.addSample(feature.getName().replace("ngrams_PART_ONE_", ""), 1);
+                }
+                else if (feature.getName().startsWith("ngrams_PART_TWO_") && ((double)feature.getValue()) > 0) {
+                    view2features.addSample(feature.getName().replace("ngrams_PART_TWO_", ""), 1);
+                }
+        	}
         }
 
-        FrequencyDistributionNGramPFE oldExtractor = new FrequencyDistributionNGramPFE();
-        // oldExtractor.ngramMinN = 1;
-        // oldExtractor.ngramMaxN = 3;
-
-        oldExtractor.setStopwords(FeatureUtil.getStopwords(null, false));
-        oldExtractor.makeTopKSet(makeSomeNgrams());
-        List<Feature> oldFeatures = oldExtractor.extract(view1, view2);
-
-        for (Feature f : oldFeatures) {
-            if (f.getName().startsWith("ngrams_PART_ONE_")) {
-                view1features.addSample(f.getName().replace("ngrams_PART_ONE_", ""), 1);
-            }
-            else {
-                view2features.addSample(f.getName().replace("ngrams_PART_TWO_", ""), 1);
-            }
-        }
-        assertEquals(view1features.getKeys().size(), 7);
+        assertEquals(9, view1features.getKeys().size());
         for (String sample : view1features.getKeys()) {
             assertTrue(view1features.getCount(sample) == 2);
         }
-        assertEquals(view2features.getKeys().size(), 7);
+        assertEquals(9, view2features.getKeys().size());
         for (String sample : view2features.getKeys()) {
-            assertTrue(view1features.getCount(sample) == 2);
+            assertTrue(view2features.getCount(sample) == 2);
         }
     }
-
-    /**
-     * Makes a FD of "filtered ngrams from whole corpus." Not really filtered by params in this test
-     * suite. Each of these will always be a final feature; but have values according to whether
-     * they also occur in a set of ngrams for the view/jcas in question, which <b>has</b> been
-     * filtered by params in this test suite.
-     * 
-     * @return ngrams to represent a set of ngrams from the whole corpus
-     */
-    private static FrequencyDistribution<String> makeSomeNgrams()
-    {
-        FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
-        fd.addSample("cats", 2);
-        fd.addSample("birds", 1);
-        fd.addSample("dogs", 4);
-        fd.addSample("cats_eat", 5);
-        fd.addSample("cats_eat_mice", 1);
-        fd.addSample("birds_chase_cats", 2);
-        fd.addSample("Birds_chase_cats", 2);
-        return fd;
-    }
-
 }
