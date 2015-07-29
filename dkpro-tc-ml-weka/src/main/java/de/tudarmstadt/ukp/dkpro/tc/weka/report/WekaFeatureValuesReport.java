@@ -1,5 +1,5 @@
 /**
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -85,7 +85,7 @@ public class WekaFeatureValuesReport
 
         // -----MULTI LABEL-----------
         if (multiLabel) {
-        	// FIXME get rid of this method replace with new 
+        	// FIXME get rid of this method replace with new
             Result r = Result.readResultFromFile(evaluationFile.getAbsolutePath());
             classValues = new String[predictions.classIndex()];
             for (int i = 0; i < predictions.classIndex(); i++) {
@@ -168,14 +168,14 @@ public class WekaFeatureValuesReport
 
                     int classification;
                     try {
-                        classification = new Double(inst.value(predictions
+                        classification = (int) inst.value(predictions
                                 .attribute(Constants.CLASS_ATTRIBUTE_NAME
-                                        + WekaUtils.COMPATIBLE_OUTCOME_CLASS))).intValue();
+                                        + WekaUtils.COMPATIBLE_OUTCOME_CLASS));
                     }
                     catch (NullPointerException e) {
                         // if train and test data have not been balanced
-                        classification = new Double(inst.value(predictions
-                                .attribute(Constants.CLASS_ATTRIBUTE_NAME))).intValue();
+                        classification = (int) inst.value(predictions
+                                .attribute(Constants.CLASS_ATTRIBUTE_NAME));
                     }
 
                     // only numeric attributes involved in average calculation

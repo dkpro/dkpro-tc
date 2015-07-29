@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -73,30 +74,26 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 	AnalysisEngine engine = null;
 
 	@Override
-	public void initialize(UimaContext context)
-			throws ResourceInitializationException {
+	public void initialize(UimaContext context) throws ResourceInitializationException {
 		Logger.getLogger(getClass()).info("START: Initializing AnalysisEngine");
 		super.initialize(context);
 
 		try {
-			mlAdapter = ModelPersistUtil
-					.initMachineLearningAdapter(tcModelLocation);
+			mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
 			parameters = ModelPersistUtil.initParameters(tcModelLocation);
-			featureExtractors = ModelPersistUtil
-					.initFeatureExtractors(tcModelLocation);
+			featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
 
-			AnalysisEngineDescription connector = getSaveModelConnector(
-					parameters, tcModelLocation.getAbsolutePath(), mlAdapter
-							.getDataWriterClass().toString(), learningMode,
-					featureMode, SparseFeatureStore.class.getName(),
-					featureExtractors.toArray(new String[0]));
-			engine = AnalysisEngineFactory.createEngine(connector);
+			AnalysisEngineDescription connector = getSaveModelConnector(parameters, tcModelLocation.getAbsolutePath(),
+					mlAdapter.getDataWriterClass().toString(), learningMode, featureMode,
+					SparseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
+
+			engine = UIMAFramework.produceAnalysisEngine(connector,
+					TcAnnotatorUtil.getModelFeatureAwareResourceManager(tcModelLocation), null);
 
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
-		Logger.getLogger(getClass())
-				.info("FINISH: Initializing AnalysisEngine");
+		Logger.getLogger(getClass()).info("FINISH: Initializing AnalysisEngine");
 
 	}
 
@@ -115,14 +112,11 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 	private void addTCUnitAndOutcomeAnnotation(JCas jcas) {
 		Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
 
-		Collection<AnnotationFS> unitAnnotation = CasUtil.select(jcas.getCas(),
-				type);
+		Collection<AnnotationFS> unitAnnotation = CasUtil.select(jcas.getCas(), type);
 		for (AnnotationFS unit : unitAnnotation) {
-			TextClassificationUnit tcs = new TextClassificationUnit(jcas,
-					unit.getBegin(), unit.getEnd());
+			TextClassificationUnit tcs = new TextClassificationUnit(jcas, unit.getBegin(), unit.getEnd());
 			tcs.addToIndexes();
-			TextClassificationOutcome tco = new TextClassificationOutcome(jcas,
-					unit.getBegin(), unit.getEnd());
+			TextClassificationOutcome tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
 			tco.setOutcome("dummyValue");
 			tco.addToIndexes();
 		}
@@ -131,11 +125,9 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 	private void addTCSequenceAnnotation(JCas jcas) {
 		Type type = jcas.getCas().getTypeSystem().getType(nameSequence);
 
-		Collection<AnnotationFS> sequenceAnnotation = CasUtil.select(
-				jcas.getCas(), type);
+		Collection<AnnotationFS> sequenceAnnotation = CasUtil.select(jcas.getCas(), type);
 		for (AnnotationFS seq : sequenceAnnotation) {
-			TextClassificationSequence tcs = new TextClassificationSequence(
-					jcas, seq.getBegin(), seq.getEnd());
+			TextClassificationSequence tcs = new TextClassificationSequence(jcas, seq.getBegin(), seq.getEnd());
 			tcs.addToIndexes();
 		}
 	}
@@ -146,35 +138,28 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 	 * @throws ResourceInitializationException
 	 * @throws MalformedURLException
 	 */
-	private AnalysisEngineDescription getSaveModelConnector(
-			List<Object> parameters, String outputPath, String dataWriter,
-			String learningMode, String featureMode, String featureStore,
-			String... featureExtractorClassNames)
-			throws ResourceInitializationException {
+	private AnalysisEngineDescription getSaveModelConnector(List<Object> parameters, String outputPath,
+			String dataWriter, String learningMode, String featureMode, String featureStore,
+			String... featureExtractorClassNames) throws ResourceInitializationException {
 		// convert parameters to string as external resources only take string
 		// parameters
 		List<Object> convertedParameters = TcAnnotatorUtil.convertParameters(parameters);
 
-		List<ExternalResourceDescription> extractorResources = TcAnnotatorUtil.loadExternalResourceDescriptionOfFeatures(
-				outputPath, featureExtractorClassNames, convertedParameters);
+		List<ExternalResourceDescription> extractorResources = TcAnnotatorUtil
+				.loadExternalResourceDescriptionOfFeatures(outputPath, featureExtractorClassNames, convertedParameters);
 
 		// add the rest of the necessary parameters with the correct types
-		parameters.addAll(Arrays.asList(
-				TcAnnotatorSequence.PARAM_TC_MODEL_LOCATION, tcModelLocation,
+		parameters.addAll(Arrays.asList(TcAnnotatorSequence.PARAM_TC_MODEL_LOCATION, tcModelLocation,
 				ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
-				ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS,
-				dataWriter, ModelSerialization_ImplBase.PARAM_LEARNING_MODE,
-				learningMode,
-				ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS,
-				extractorResources,
-				ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,
-				ModelSerialization_ImplBase.PARAM_IS_TESTING, true,
-				ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode,
-				ModelSerialization_ImplBase.PARAM_FEATURE_STORE_CLASS,
-				featureStore));
+				ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
+				ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
+				ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, extractorResources,
+				ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null, ModelSerialization_ImplBase.PARAM_IS_TESTING,
+				true, ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode,
+				ModelSerialization_ImplBase.PARAM_FEATURE_STORE_CLASS, featureStore));
 
-		return AnalysisEngineFactory.createEngineDescription(
-				mlAdapter.getLoadModelConnectorClass(), parameters.toArray());
+		return AnalysisEngineFactory.createEngineDescription(mlAdapter.getLoadModelConnectorClass(),
+				parameters.toArray());
 	}
 
 }

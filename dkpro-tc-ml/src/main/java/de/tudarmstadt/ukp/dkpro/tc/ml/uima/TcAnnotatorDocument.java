@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -73,7 +74,9 @@ public class TcAnnotatorDocument
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
                     learningMode, featureMode, DenseFeatureStore.class.getName(),
                     featureExtractors.toArray(new String[0]));
-            engine = AnalysisEngineFactory.createEngine(connector);
+           
+            engine = UIMAFramework.produceAnalysisEngine(connector,
+					TcAnnotatorUtil.getModelFeatureAwareResourceManager(tcModelLocation), null);
             
         }
         catch (Exception e) {
@@ -101,8 +104,6 @@ public class TcAnnotatorDocument
             throw new AnalysisEngineProcessException(e);
         }
 
-        // System.out.println(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class)
-        // .getOutcome());
     }
 
 
