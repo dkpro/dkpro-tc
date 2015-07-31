@@ -19,32 +19,19 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
-import weka.classifiers.Classifier;
-import weka.core.Attribute;
-import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Save model batch
@@ -65,7 +52,7 @@ public class SaveModelWekaBatchTask
     private PreprocessTask preprocessTaskTrain;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
-    private ModelSerializationDescription saveModelTask;
+    private ModelSerializationTask saveModelTask;
 
     public SaveModelWekaBatchTask()
     {/* needed for Groovy */
@@ -139,7 +126,7 @@ public class SaveModelWekaBatchTask
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
-        saveModelTask = new ModelSerializationDescription();
+        saveModelTask = new ModelSerializationTask();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
@@ -156,12 +143,12 @@ public class SaveModelWekaBatchTask
 
     public void setExperimentName(String experimentName)
     {
-        this.experimentName = experimentName;
+    	this.experimentName = experimentName;
     }
 
     public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
     {
-        this.preprocessingPipeline = preprocessingPipeline;
+    	this.preprocessingPipeline = preprocessingPipeline;
     }
 
     public void setOperativeViews(List<String> operativeViews)
@@ -173,7 +160,7 @@ public class SaveModelWekaBatchTask
         throws TextClassificationException
     {
         try {
-            this.mlAdapter = mlAdapter.newInstance();
+        	this.mlAdapter = mlAdapter.newInstance();
         }
         catch (InstantiationException e) {
             throw new TextClassificationException(e);
@@ -185,99 +172,6 @@ public class SaveModelWekaBatchTask
 
     public void setOutputFolder(File outputFolder)
     {
-        this.outputFolder = outputFolder;
-    }
-}
-
-/**
- * Knows what to do in order to serialize a model - is called as task by the main class
- */
-class ModelSerializationDescription
-    extends WekaTestTask_ImplBase
-    implements Constants
-{
-
-    @Discriminator
-    protected List<Object> pipelineParameters;
-
-    private File outputFolder;
-
-    public void setOutputFolder(File outputFolder)
-    {
-        this.outputFolder = outputFolder;
-    }
-
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-
-        serializeWekaModel(aContext);
-
-        // write feature extractors
-        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-
-        // write meta collector data
-        // automatically determine the required metaCollector classes from the provided feature
-        // extractors
-        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet,
-                pipelineParameters);
-
-        // as a marker for the type, write the name of the ml adapter class
-        // write feature extractors
-        SaveModelUtils.writeModelAdapterInformation(outputFolder,
-                WekaClassificationAdapter.class.getName());
-    }
-
-    private void serializeWekaModel(TaskContext aContext)
-        throws Exception
-    {
-        boolean isMultiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
-
-        File arffFileTrain = new File(aContext.getStorageLocation(
-                TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY).getPath()
-                + "/"
-                + WekaClassificationAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.featureVectorsFile));
-
-        Instances trainData = WekaUtils.getInstances(arffFileTrain, isMultiLabel);
-        trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
-
-        featureSelection(aContext, trainData);
-
-        // File outputFolder = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-        // AccessMode.READWRITE)
-        // .getPath());
-
-        // write model file
-        Classifier cl = getClassifier();
-        cl.buildClassifier(trainData);
-        File model = new File(outputFolder, MODEL_CLASSIFIER);
-        model.getParentFile().mkdir();
-        weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
-
-        // write attribute file
-        StringBuilder attributes = new StringBuilder();
-        Enumeration<Attribute> atts = trainData.enumerateAttributes();
-        while (atts.hasMoreElements()) {
-            attributes.append(atts.nextElement().name());
-            attributes.append("\n");
-        }
-        attributes.append(trainData.classAttribute().name());
-        attributes.append("\n");
-
-        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_NAMES),
-                attributes.toString());
-
-        // write class labels file
-        List<String> classLabels;
-        if (!isRegression) {
-            classLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);
-            String classLabelsString = StringUtils.join(classLabels, "\n");
-            FileUtils.writeStringToFile(new File(outputFolder, MODEL_CLASS_LABELS),
-                    classLabelsString);
-        }
-
+    	this.outputFolder = outputFolder;
     }
 }

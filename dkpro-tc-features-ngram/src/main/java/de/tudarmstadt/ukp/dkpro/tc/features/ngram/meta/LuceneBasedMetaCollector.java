@@ -49,7 +49,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBas
 public abstract class LuceneBasedMetaCollector
     extends MetaCollector
 {
-    public final static String LUCENE_DIR = "lucence";
+    public final static String LUCENE_DIR = "lucene";
 
     public static final String LUCENE_ID_FIELD = "id";
 
