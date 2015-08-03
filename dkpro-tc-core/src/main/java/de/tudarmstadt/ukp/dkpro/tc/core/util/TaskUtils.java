@@ -385,7 +385,7 @@ public class TaskUtils
 
                 if (classificationUnits.size() != 1) {
                     throw new TextClassificationException(
-                            "There is more than one TextClassificationUnit annotation in the JCas.");
+                            "JCas should contain exactly one text classification unit, but it contains " + classificationUnits.size() + ".");
                 }
 
                 TextClassificationUnit unit = classificationUnits.iterator().next();
