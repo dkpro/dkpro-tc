@@ -33,9 +33,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
@@ -54,8 +53,7 @@ public class SaveModelCRFSuiteBatchTask
     private File outputFolder;
 
     // tasks
-    private ValidityCheckTask checkTask;
-    private PreprocessTask preprocessTaskTrain;
+    private InitTask initTaskTrain;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private ModelSerializationDescription saveModelTask;
@@ -104,23 +102,20 @@ public class SaveModelCRFSuiteBatchTask
             throw new IllegalStateException("You must set Experiment Name and Aggregate.");
         }
 
-        // check the validity of the experiment setup first
-        checkTask = new ValidityCheckTask();
-        checkTask.setMlAdapter(mlAdapter);
-
-        // preprocessing on training data
-        preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setPreprocessing(preprocessingPipeline);
-        preprocessTaskTrain.setOperativeViews(operativeViews);
-        preprocessTaskTrain.setTesting(false);
-        preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
+        // init the train part of the experiment
+        initTaskTrain = new InitTask();
+        initTaskTrain.setMlAdapter(mlAdapter);
+        initTaskTrain.setPreprocessing(preprocessingPipeline);
+        initTaskTrain.setOperativeViews(operativeViews);
+        initTaskTrain.setTesting(false);
+        initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
@@ -128,7 +123,7 @@ public class SaveModelCRFSuiteBatchTask
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+        featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
@@ -140,8 +135,7 @@ public class SaveModelCRFSuiteBatchTask
         saveModelTask.setAndCreateOutputFolder(outputFolder);
 
         // DKPro Lab issue 38: must be added as *first* task
-        addTask(checkTask);
-        addTask(preprocessTaskTrain);
+        addTask(initTaskTrain);
         addTask(metaTask);
         addTask(featuresTrainTask);
         addTask(saveModelTask);

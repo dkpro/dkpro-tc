@@ -39,16 +39,11 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 
 /**
  * Crossvalidation setup
- * 
- * @author daxenberger
- * @author zesch
- * @author jamison
  * 
  */
 public class ExperimentCrossValidation
@@ -63,8 +58,7 @@ public class ExperimentCrossValidation
     protected List<Class<? extends Report>> innerReports;
     protected TCMachineLearningAdapter mlAdapter;
 
-    protected ValidityCheckTask checkTask;
-    protected PreprocessTask preprocessTask;
+    protected InitTask initTask;
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask extractFeaturesTrainTask;
     protected ExtractFeaturesTask extractFeaturesTestTask;
@@ -151,16 +145,12 @@ public class ExperimentCrossValidation
                             "least 2 (but was " + numFolds + ")");
         }
 
-        // check the validity of the experiment setup first
-        checkTask = new ValidityCheckTask();
-        checkTask.setMlAdapter(mlAdapter);
-        checkTask.setType(checkTask.getType() + "-" + experimentName);
-
-        // preprocessing on the entire data set and only once
-        preprocessTask = new PreprocessTask();
-        preprocessTask.setPreprocessing(preprocessing);
-        preprocessTask.setOperativeViews(operativeViews);
-        preprocessTask.setType(preprocessTask.getType() + "-" + experimentName);
+        // initialize the setup
+        initTask = new InitTask();
+        initTask.setMlAdapter(mlAdapter);
+        initTask.setPreprocessing(preprocessing);
+        initTask.setOperativeViews(operativeViews);
+        initTask.setType(initTask.getType() + "-" + experimentName);
 
         // inner batch task (carried out numFolds times)
         BatchTask crossValidationTask = new BatchTask()
@@ -169,7 +159,7 @@ public class ExperimentCrossValidation
             public void execute(TaskContext aContext)
                 throws Exception
             {
-                File xmiPathRoot = aContext.getStorageLocation(PreprocessTask.OUTPUT_KEY_TRAIN,
+                File xmiPathRoot = aContext.getStorageLocation(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
                 Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
                         true);
@@ -241,7 +231,7 @@ public class ExperimentCrossValidation
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
-        crossValidationTask.addImport(preprocessTask, PreprocessTask.OUTPUT_KEY_TRAIN);
+        crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
         crossValidationTask.setType(crossValidationTask.getType() + experimentName);
         crossValidationTask.addTask(metaTask);
         crossValidationTask.addTask(extractFeaturesTrainTask);
@@ -254,8 +244,7 @@ public class ExperimentCrossValidation
         crossValidationTask.addReport(mlAdapter.getBatchTrainTestReportClass());
 
         // DKPro Lab issue 38: must be added as *first* task
-        addTask(checkTask);
-        addTask(preprocessTask);
+        addTask(initTask);
         addTask(crossValidationTask);
     }
 
