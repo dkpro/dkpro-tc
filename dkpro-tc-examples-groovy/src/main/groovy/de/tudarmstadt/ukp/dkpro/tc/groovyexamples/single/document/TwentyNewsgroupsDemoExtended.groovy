@@ -182,10 +182,10 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         /*
          * Wire tasks
          */
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY)
-        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY)
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY)
+        featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY)
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
-        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
+        featuresTestTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
         featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY)
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA)
@@ -206,8 +206,8 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
                 dimPipelineParameters
             ],
             tasks:           [
-                preprocessTaskTrain,
-                preprocessTaskTest,
+                initTaskTrain,
+                initTaskTest,
                 metaTask,
                 featuresTrainTask,
                 featuresTestTask,
