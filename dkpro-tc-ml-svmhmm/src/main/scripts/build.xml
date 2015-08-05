@@ -124,6 +124,28 @@
 			<entry key="svm_hmm_classify.exe" value="executable"/>
 			<entry key="svm_hmm_learn.exe" value="executable"/>
 		</propertyfile>
+		
+      <!-- OSX 64 bit -->
+        <mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64"/>
+        <get
+                src="https://bintray.com/artifact/download/zesch/DKPro/svm_hmm_classify"
+                dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/svm_hmm_classify"
+                skipexisting="true"/>
+        <get
+                src="https://bintray.com/artifact/download/zesch/DKPro/svm_hmm_learn"
+                dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/svm_hmm_learn"
+                skipexisting="true"/>
+
+        <echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/README">
+            SVMhmm - Sequence Tagging with Structural Support Vector Machines
+            Version V3.10, 14. August 2008
+        </echo>
+
+        <propertyfile
+                file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/manifest.properties">
+            <entry key="svm_hmm_classify" value="executable"/>
+            <entry key="svm_hmm_learn" value="executable"/>
+        </propertyfile>
 
 		<!--copy license to target -->
 		<copy tofile="target/model-staging/META-INF/LICENSE.txt"
