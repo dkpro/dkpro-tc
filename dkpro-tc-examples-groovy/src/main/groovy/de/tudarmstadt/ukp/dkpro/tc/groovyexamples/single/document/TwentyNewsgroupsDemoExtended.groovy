@@ -144,12 +144,14 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          */
 
         InitTask initTaskTrain = [
+			machineLearningAdapter: WekaClassificationAdapter,
             preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
             isTesting: false
         ]
 
         InitTask initTaskTest = [
+			machineLearningAdapter: WekaClassificationAdapter,
             preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
             isTesting: true
