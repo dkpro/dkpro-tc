@@ -3,4 +3,3 @@
 .project
 target
 .class
-bin/**/*.groovy
