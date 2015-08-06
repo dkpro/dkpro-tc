@@ -43,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.PreprocessConnector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
 
 /**
  * Initialization of the TC pipeline
@@ -127,12 +128,13 @@ public class InitTask
         throws ResourceInitializationException, IOException
     {
     	return createEngineDescription(
-    		getValidityCheckEngine(aContext),
-    		getPreprocessingEngine(aContext)
+    		getPreValidityCheckEngine(aContext),
+    		getPreprocessingEngine(aContext),
+    		getPostValidityCheckEngine(aContext)
     	);
     }
     
-    private AnalysisEngineDescription getValidityCheckEngine(TaskContext aContext)
+    private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
     		throws ResourceInitializationException
     {
         // check mandatory dimensions
@@ -160,6 +162,24 @@ public class InitTask
         parameters.add(developerMode);
 
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
+    }
+    
+    private AnalysisEngineDescription getPostValidityCheckEngine(TaskContext aContext)
+    		throws ResourceInitializationException
+    {
+        List<Object> parameters = new ArrayList<Object>();
+        if (pipelineParameters != null) {
+            parameters.addAll(pipelineParameters);
+        }
+
+        parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
+        parameters.add(learningMode);
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
+        parameters.add(featureMode);
+        parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
+        parameters.add(developerMode);
+
+        return createEngineDescription(ValidityCheckConnectorPost.class, parameters.toArray());
     }
     
     private AnalysisEngineDescription getPreprocessingEngine(TaskContext aContext)
