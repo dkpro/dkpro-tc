@@ -1,0 +1,92 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+## Quick Guide about how to write your own feature extractor
+
+This tutorial shows how to create a custom feature extractor.
+
+### Example
+
+As example, we will have at look at the `EmoticonRatioExtractor`:
+
+[source,java]
+----
+public class EmoticonRatioExtractor extends FeatureExtractorResource_ImplBase
+   implements DocumentFeatureExtractor // the type of the feature extractor
+{
+   @Override
+   public List<Feature> extract(JCas annoDb) throws TextClassificationException
+   {
+      // retrieve annotations from previously running preprocessing task
+      double nrOfEmoticons = JCasUtil.select(annoDb, EMO.class).size();
+      double nrOfTokens = JCasUtil.select(annoDb, Token.class).size();
+      double ratio = nrOfEmoticons / nrOfTokens;
+      return new Feature("EmoticonRatio", ratio).asList();
+   }
+}
+----
+
+### Options
+
+Here is a list of options you have to specify a feature extractor according to your needs.
+
+#### Feature Modes
+
+DKPro TC supports the following feature modes and feature extractor types:
+
+|| *Feature Mode* || *Corresponding Feature Extractor Type* || *Has Access To* ||
+|| document || DocumentFeatureExtractor || the entire CAS ||
+|| pair || PairFeatureExtractor || both documents, in the form of two views on the same CAS ||
+|| unit/sequence || ClassificationUnitFeatureExtractor || the current unit, all other units in the CAS, and to the entire CAS itself  ||
+
+
+#### Feature Value Types
+
+DKPro TC supports the following types of values for features:
+
+|| *Java Object* || *Corresponding Feature Value Type* ||
+|| Boolean || boolean (true or false) || 
+|| Number || a numeric value ||
+|| Enum || a nominal value (from a finite set of strings) ||
+|| String || a string value ||
+|| MissingValue || a missing value for cases in which no value can be calculated (see below) ||
+
+#### Missing Values
+
+In certain cases, a feature extractor might not be able to calculate a value for a certain instance. In the following example, each document needs to contain at least one sentence. Otherwise, the feature cannot be calculated.
+
+[source,java]
+----
+    @Override
+    public List<Feature> extract(JCas jcas)
+        throws TextClassificationException
+    {
+        List<Feature> featList = new ArrayList<Feature>();
+        double numTokens = JCasUtil.select(jcas, Token.class).size();
+        double numSentences = JCasUtil.select(jcas, Sentence.class).size();
+
+        if (numSentences == 0) {
+            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
+                    MissingValueNonNominalType.NUMERIC)));
+        }
+        else {
+            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, numTokens / numSentences));
+        }
+        return featList;
+    }
+----
+
+For such cases, DKPro TC offers a `MissingValue`. You need to specify the feature value type for non-nominal types (see above), or, for nominal types, the enum class, e.g. `new MissingValue(Values.class)` for the enum `Values`. Missing values will be handled individually by each DataWriter.

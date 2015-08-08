@@ -1,0 +1,96 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+    
+= DKPro TC™ User Guide and Reference
+:Author: The DKPro TC Team
+:toc-title: User Guide
+
+## Overview
+
+<table cellspacing="10">
+<tr>
+<td valign="top" width="220" >
+
+<img src="https://dkpro-tc.googlecode.com/svn/wiki/images/dkpro_tc_poster_acl2014.png" alt="DKPro TC Poster ACL 2014" width="200" height="141"/>
+
+</td>
+<td valign="top" width="300" >
+
+To get a first impression about DKPro TC, [https://dkpro-tc.googlecode.com/svn/wiki/files/dkpro_tc_poster_acl2014.pdf this] poster presented at the 2014 Annual Meeting of the Association for Computational Linguistics (ACL 2014) might be helpful.
+
+</td>
+</tr>
+</table>
+
+### Before you start
+  * [DeveloperSetup Developer Setup]
+  * [GroovySetup Groovy Setup]
+  
+### Getting Started
+  * [DemoExperiments Quick-Start Tutorial]
+  * [Discriminators Mandatory and optional parameters to configure DKPro-TC experiments]
+  * [FeatureExtractors Creating custom feature extractors]
+  * [Readers Creating custom data readers]
+  
+### FAQ
+  * [FAQ]
+
+### Developer Resources
+  * [CVWithFoldControl Cross-Validation and Fold Control: Reducing Information Leak]
+  * [JsonSetup Howto: Using JSON instead of Groovy to configure your experiments]
+  * [ServerSetup Howto: Running DKPro-TC experiments on a server]
+  * [CommitMessagesBestPractices Commit Messages: Recommended Practices]
+
+<<<
+
+
+include::{include-dir}DemoExperiments.adoc[]
+
+<<<
+
+include::{include-dir}CVWithFoldControl.adoc[]
+
+<<<
+
+include::{include-dir}Discriminators.adoc[]
+
+<<<
+
+include::{include-dir}FAQ.adoc[]
+
+<<<
+
+include::{include-dir}FeatureExtractors.adoc[]
+
+<<<
+
+include::{include-dir}GroovySetup.adoc[]
+
+<<<
+
+include::{include-dir}JsonSetup.adoc[]
+
+<<<
+
+include::{include-dir}Readers.adoc[]
+
+<<<
+
+include::{include-dir}ReusableTCModels.adoc[]
+
+<<<
+
+include::{include-dir}ServerSetup.adoc[]

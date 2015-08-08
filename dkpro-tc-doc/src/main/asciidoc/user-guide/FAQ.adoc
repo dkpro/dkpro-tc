@@ -1,0 +1,42 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+## Frequently Asked Questions
+
+### Initial setup
+
+After checking out one of the DKPro-TC demo projects, I see maven compiler version errors::
+    Even when you don't want to use Groovy in your experiment but the pure Java setup, you need to have the [http://code.google.com/p/dkpro-tc/wiki/GroovySetup Groovy plug-in installed] in order to initially compile the demos. Alternatively, you can delete the groovy profile from the DKPro-TC top-level POM. In DKPro 0.6.0 and later versions, all experiments which are configured using Groovy, are collected in `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl`. If you don't want to use Groovy, you don't need (to download) this module.
+
+After checking out one or more of the DKPro-TC projects, I see classpath errors::
+    DKPro-TC 0.6.0 and later versions need to be compiled with Java 7. Make sure that you have installed a JDK running Java 7. 
+
+What is DKPRO_HOME used for?::
+    It can be any writable folder anywhere in your system (if it does not exist, it gets created as soon as you run the experiment), where DKPro-TC stores outputs of the individual tasks (i.e. pre-processed data, extracted features...) and various task reports, but also the final output (i.e. classification result). Hence you will probably want to look into this folder whenever your experiment is finished.
+
+### Running Experiments
+
+I am running a DKPro-TC experiment under Windows and get an IOException::
+    Please make sure, that you have set a DocumentId in the DocumentMetadata of your JCases while reading the input data. You should not use an absolute path name here. DKPro-TC will try to store the output of the PreprocessingTask in a subfolder named after the DocumentId, which causes troubles under Windows if the name contains a drive letter.
+
+How can I configure classifier hyperparameters?::
+    Classifier hyperparameters settings (e.g. kernel settings for Support Vector Machines) are bound to the machine learning framework you are using. The `ComplexConfigurationSingleDemo` and `ComplexConfigurationMultiDemo` in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module show example configurations for Weka and Meka classifiers.
+
+Is it possible to apply feature/attribute selection in DKPro TC?::
+    Yes it is, with the help of Weka and Mulan. The `ComplexConfigurationSingleDemo` and `ComplexConfigurationMultiDemo` in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module show example configurations for single- and multi-label experiments with feature selection.
+
+Is it possible to classify unlabeled data based on a trained model?::
+    Yes. DKPro TC offers the `BatchTaskPrediction` in the `de.tudarmstadt.ukp.dkpro.tc.weka-gpl` module, for single-label, multi-label and regression learning task with Weka. The `TwitterSentimentPredictionDemo` in `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` shows how to apply it, based on the [DemoExperiments TwitterSentimentDemo].

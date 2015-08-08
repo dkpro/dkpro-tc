@@ -1,0 +1,20 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+## Running DKPro-TC experiments on a server
+
+All DKPro-TC projects are Maven projects, which makes it easy to deploy them to a server, e.g. via the maven-deploy-plugin. This might be necessary for long running experiments or large data sets which require lots of memory during processing. To avoid having to recompile the source every time you want to change a some configuration parameter, we have added a demo project which showcases how to call an external groovy script from within a Java wrapper using the GroovyClassLoader to run the groovy setup script: in the `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl` module, you will find a class called `SentimentPolarityDemoStarter` (`de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document` package). This (Java) class calls an external groovy script (located in src/main/resources/scripts) which looks very similar to the compiled Groovy scripts which we are using to start the _twentynewsgroups_, _reuters_ and _regression_ demo projects. 
+To run your own experiments using external scripts, you only need to have a small Java wrapper similar to the `SentimentPolarityExperimentStarter`, which extends `ExperimentStarter` and specifies where to find the external Groovy script. 
