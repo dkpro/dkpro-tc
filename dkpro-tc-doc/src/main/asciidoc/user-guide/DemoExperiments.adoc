@@ -77,41 +77,43 @@ The Twitter Sentiment Groovy Experiment uses `import de.tudarmstadt.ukp.dkpro.tc
 
 [source,java]
 ----
-     ExperimentCrossValidation batchTask = [
-            // identifier for your experiment
-            experimentName: "Twitter-Sentiment-CV",
-            // the name of the folder to hold the final evaluation results
-            type: "Evaluation-Twitter-Sentiment-CV",
-            // the name of the adapter which connects the experiment to a machine learning framework (in this case, Weka)
-            machineLearningAdapter: WekaClassificationAdapter,
-            // Preprocessing components and configuration
-            preprocessing: createEngineDescription(
-            ArktweetTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), 
-            // all parameters in the parameter space with more than one value in a list will be swept
-            parameterSpace: [
-                // source data reader
-                Dimension.createBundle("readers", [
-                    readerTrain: LabeledTweetReader,
-                    readerTrainParams: [
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/train/*/*.txt"
-                    ]]),
-                // feature mode; must be unique
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
-                // learning mode; must be unique
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                // a list of feature extractors
-                Dimension.create(DIM_FEATURE_SET, [
-                    EmoticonRatioDFE.name,
-                    NumberOfHashTagsDFE.name
-                ]),
-                // machine learning classifiers; two classifiers will be tested
-                Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
-            ],
-            // a report collecting the results from folds
-            reports: [BatchCrossValidationReport], 
-            // the number of folds
-            numFolds: 10]
+ExperimentCrossValidation batchTask = [
+  // identifier for your experiment
+  experimentName: "Twitter-Sentiment-CV",
+  // the name of the folder to hold the final evaluation results
+  type: "Evaluation-Twitter-Sentiment-CV",
+  // the name of the adapter which connects the experiment to 
+  // a machine learning framework (in this case, Weka)
+  machineLearningAdapter: WekaClassificationAdapter,
+  // Preprocessing components and configuration
+  preprocessing: createEngineDescription(
+  ArktweetTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default"), 
+  // all parameters in the parameter space with more than one value in a list will be swept
+  parameterSpace: [
+    // source data reader
+    Dimension.createBundle("readers", [
+      readerTrain: LabeledTweetReader,
+      readerTrainParams: [
+        LabeledTweetReader.PARAM_SOURCE_LOCATION,
+        "src/main/resources/data/twitter/train/*/*.txt"
+      ]]),
+    // feature mode; must be unique
+    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+    // learning mode; must be unique
+    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+    // a list of feature extractors
+    Dimension.create(DIM_FEATURE_SET, [
+      EmoticonRatioDFE.name,
+      NumberOfHashTagsDFE.name
+    ]),
+    // machine learning classifiers; two classifiers will be tested
+    Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
+  ],
+  // a report collecting the results from folds
+  reports: [BatchCrossValidationReport], 
+  // the number of folds
+  numFolds: 10
+]
 ----
 
 `ExperimentCrossValidation` and `ExperimentTrainTest` are pre-configured experiment setups. We recommend to re-use these setups.
@@ -151,7 +153,7 @@ The feature mode defines the type of feature extraction you want to apply to you
    * sequence: features are extracted from `units` within a sequence
 
 The learning mode defines whether the experiment is a classification task (either single- or multilabel), or a regression task.
-For more information on feature and learning modes, refer to the following paper: [https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.]
+For more information on feature and learning modes, refer to the following paper: https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf[DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.]
 
 .the feature extractors
 [source,java]

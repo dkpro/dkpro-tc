@@ -25,3 +25,19 @@ include::{include-dir}DeveloperSetup.adoc[]
 <<<
 
 include::{include-dir}CommitMessagesBestPractices.adoc[]
+
+<<<
+
+include::{include-dir}CVWithFoldControl.adoc[]
+
+<<<
+
+include::{include-dir}JsonSetup.adoc[]
+
+<<<
+
+include::{include-dir}ReusableTCModels.adoc[]
+
+<<<
+
+include::{include-dir}ServerSetup.adoc[]

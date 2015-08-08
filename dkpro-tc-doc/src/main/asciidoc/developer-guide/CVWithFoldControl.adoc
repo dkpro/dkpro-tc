@@ -49,16 +49,16 @@ When you run your DKPro TC experiment, change the BatchTaskCrossValidation line,
 
 [source,java]
 ----
-BatchTaskCrossValidation batch = new BatchTaskCrossValidation("TwentyNewsgroupsCV",
-                getPreprocessing(), NUM_FOLDS);
+BatchTaskCrossValidation batch = new BatchTaskCrossValidation(
+    "TwentyNewsgroupsCV", getPreprocessing(), NUM_FOLDS);
 ----
 
 to:
 
 [source,java]
 ----
-BatchTaskCrossValidation batch = new BatchTaskCrossValidationWithFoldControl("TwentyNewsgroupsCV",
-                getPreprocessing(), NUM_FOLDS, myComparator);
+BatchTaskCrossValidation batch = new BatchTaskCrossValidationWithFoldControl(
+    "TwentyNewsgroupsCV", getPreprocessing(), NUM_FOLDS, myComparator);
 ----
 
 Then, DKPro TC will create as evenly-sized folds as possible, using the comparator you provided instead of randomly assigning instances to a fold.
