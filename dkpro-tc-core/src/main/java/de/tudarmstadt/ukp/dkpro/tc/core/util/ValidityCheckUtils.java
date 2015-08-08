@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright 2015
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -12,15 +29,19 @@ public class ValidityCheckUtils {
 	{
 		int learningModeI = 0;
 
-        if (learningMode.equals(Constants.LM_SINGLE_LABEL))
+        if (learningMode.equals(Constants.LM_SINGLE_LABEL)) {
             learningModeI = 1;
-        else if (learningMode.equals(Constants.LM_MULTI_LABEL))
+        }
+        else if (learningMode.equals(Constants.LM_MULTI_LABEL)) {
             learningModeI = 2;
-        else if (learningMode.equals(Constants.LM_REGRESSION))
+        }
+        else if (learningMode.equals(Constants.LM_REGRESSION)) {
             learningModeI = 3;
-        else
+        }
+        else {
             throw new AnalysisEngineProcessException(new TextClassificationException(
                     "Please set a valid learning mode"));
+        }
         
         return learningModeI;
 	}
@@ -30,18 +51,22 @@ public class ValidityCheckUtils {
 	{
 		int featureModeI = 0;
 
-        if (featureMode.equals(Constants.FM_DOCUMENT))
+        if (featureMode.equals(Constants.FM_DOCUMENT)) {
             featureModeI = 1;
-        else if (featureMode.equals(Constants.FM_UNIT))
+        }
+        else if (featureMode.equals(Constants.FM_UNIT)) {
             featureModeI = 2;
-        else if (featureMode.equals(Constants.FM_PAIR))
+        }
+        else if (featureMode.equals(Constants.FM_PAIR)) {
             featureModeI = 3;
+        }
         else if (featureMode.equals(Constants.FM_SEQUENCE)) {
             featureModeI = 4;
         }
-        else
+        else {
             throw new AnalysisEngineProcessException(new TextClassificationException(
                     "Please set a valid feature mode"));
+        }
         
         return featureModeI;
 	}
