@@ -26,8 +26,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
 
 /**
  * Collects the final runtime results in a train/test setting.
@@ -53,7 +53,7 @@ public class BatchRuntimeReport
 
         Properties props = new Properties();
 
-        long preprocessingTime = 0;
+        long initTime = 0;
         long metaTime = 0;
         long featureExtractionTime = 0;
         long testingTime = 0;
@@ -72,8 +72,8 @@ public class BatchRuntimeReport
             }
             long difference = end - begin;
             
-            if (subcontext.getType().startsWith(PreprocessTask.class.getName())) {
-                preprocessingTime += difference;
+            if (subcontext.getType().startsWith(InitTask.class.getName())) {
+                initTime += difference;
             }
             else if (subcontext.getType().startsWith(MetaInfoTask.class.getName())) {
                 metaTime += difference;
@@ -87,19 +87,19 @@ public class BatchRuntimeReport
             }
         }
 
-        String preprocessingTimeString = convertTime(preprocessingTime);
+        String initTimeString = convertTime(initTime);
         String metaTimeString = convertTime(metaTime);
         String featureExtractionTimeString = convertTime(featureExtractionTime);
         String testingTimeString = convertTime(testingTime);
 
         System.out.println("--- DETAILED RUNTIME REPORT ---");
-        System.out.println("Preprocessing: " + preprocessingTimeString);
+        System.out.println("Initialization: " + initTimeString);
         System.out.println("Meta Extraction: " +  metaTimeString);
         System.out.println("Feature Extraction: " + featureExtractionTimeString);
         System.out.println("Testing: " + testingTimeString);
         System.out.println("-------------------------------");
 
-        props.setProperty("preprocessing", preprocessingTimeString);
+        props.setProperty("initialization", initTimeString);
         props.setProperty("meta", metaTimeString);
         props.setProperty("featureextraction", featureExtractionTimeString);
         props.setProperty("testing", testingTimeString);

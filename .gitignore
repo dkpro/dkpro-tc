@@ -2,5 +2,4 @@
 .classpath
 .project
 target
-*.class
-bin/**/*.groovy
+.class

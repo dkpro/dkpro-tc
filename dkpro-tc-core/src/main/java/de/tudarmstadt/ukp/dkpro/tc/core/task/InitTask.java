@@ -21,6 +21,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -36,88 +37,153 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaTaskBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.PreprocessConnector;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
 
 /**
- * Performs the preprocessing steps, that were configured by the user, on the documents.
- * 
- * @author zesch
+ * Initialization of the TC pipeline
+ * 1) checks the validity of the setup
+ * 2) runs the preprocessing
+ * 3) runs the outcome/unit annotator
+ * 4) runs additional validity checks that check the outcome/unit setup
  * 
  */
-public class PreprocessTask
+public class InitTask
     extends UimaTaskBase
 {
-    /**
-     * Public name of the folder under which the training data file will be stored within the task
-     */
-    public static final String OUTPUT_KEY_TRAIN = "preprocessorOutputTrain";
-    /**
-     * Public name of the folder under which the test data file will be stored within the task
-     */
-    public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
-
-    private boolean isTesting = false;
-    private List<String> operativeViews;
 
     @Discriminator
     protected Class<? extends CollectionReader> readerTrain;
-
     @Discriminator
     protected Class<? extends CollectionReader> readerTest;
-
     @Discriminator
     protected List<Object> readerTrainParams;
-
     @Discriminator
     protected List<Object> readerTestParams;
-
+    @Discriminator
+    protected List<Object> pipelineParameters;
+    @Discriminator
+    private String learningMode;
     @Discriminator
     private String featureMode;
+    @Discriminator
+    private String threshold;
+    @Discriminator
+    protected List<String> featureSet;
+    @Discriminator
+    protected boolean developerMode;
+
+    private boolean isTesting = false;
+
+	private AnalysisEngineDescription preprocessing;
 
     /**
-     * @param isTesting
+     * Public name of the folder under which the preprocessed training data file will be stored within the task
      */
-    public void setTesting(boolean isTesting)
-    {
-        this.isTesting = isTesting;
-    }
-
-    private AnalysisEngineDescription preprocessing;
-
+    public static final String OUTPUT_KEY_TRAIN = "preprocessorOutputTrain";
     /**
-     * @return
+     * Public name of the folder under which the preprocessed test data file will be stored within the task
      */
-    public AnalysisEngineDescription getPreprocessing()
-    {
-        return preprocessing;
-    }
+    public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
 
-    /**
-     * @param aAggregate
-     */
-    public void setPreprocessing(AnalysisEngineDescription preprocessing)
-    {
-        this.preprocessing = preprocessing;
-    }
-
+    private List<String> operativeViews;
+    
+    private TCMachineLearningAdapter mlAdapter;
+	
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        Class<? extends CollectionReader> reader = isTesting ? readerTest : readerTrain;
-        List<Object> readerParams = isTesting ? readerTestParams : readerTrainParams;
+        CollectionReaderDescription readerDesc;
+        if (!isTesting) {
+            if (readerTrain == null) {
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTrain is null"));
+            }
 
-        CollectionReaderDescription readerDesc = createReaderDescription(reader,
-                readerParams.toArray());
+            readerDesc = createReaderDescription(readerTrain,
+                    readerTrainParams.toArray());
+        }
+        else {
+            if (readerTest == null) {
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTest is null"));
+            }
+
+            readerDesc = createReaderDescription(readerTest,
+                    readerTestParams.toArray());
+        }
 
         return readerDesc;
     }
-
+    
+    // what should actually be done in this task
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
+    {
+    	return createEngineDescription(
+    		getPreValidityCheckEngine(aContext),
+    		getPreprocessingEngine(aContext),
+    		getPostValidityCheckEngine(aContext)
+    	);
+    }
+    
+    private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
+    		throws ResourceInitializationException
+    {
+        // check mandatory dimensions
+        if (featureSet == null) {
+            throw new ResourceInitializationException(new TextClassificationException(
+                    "No feature extractors have been added to the experiment."));
+        }
+
+        List<Object> parameters = new ArrayList<Object>();
+        if (pipelineParameters != null) {
+            parameters.addAll(pipelineParameters);
+        }
+
+        parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
+        parameters.add(learningMode);
+        parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
+        parameters.add(mlAdapter.getDataWriterClass().getName());
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
+        parameters.add(featureMode);
+        parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);
+        parameters.add(threshold);
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_EXTRACTORS);
+        parameters.add(featureSet);
+        parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
+        parameters.add(developerMode);
+
+        return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
+    }
+    
+    private AnalysisEngineDescription getPostValidityCheckEngine(TaskContext aContext)
+    		throws ResourceInitializationException
+    {
+        List<Object> parameters = new ArrayList<Object>();
+        if (pipelineParameters != null) {
+            parameters.addAll(pipelineParameters);
+        }
+
+        parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
+        parameters.add(learningMode);
+        parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
+        parameters.add(featureMode);
+        parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
+        parameters.add(developerMode);
+
+        return createEngineDescription(ValidityCheckConnectorPost.class, parameters.toArray());
+    }
+    
+    private AnalysisEngineDescription getPreprocessingEngine(TaskContext aContext)
+    		throws ResourceInitializationException
     {
         String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
         AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
@@ -160,7 +226,29 @@ public class PreprocessTask
         }
         return createEngineDescription(preprocessing, xmiWriter);
     }
+    
+    public void setTesting(boolean isTesting)
+    {
+        this.isTesting = isTesting;
+    }
 
+	public void setMlAdapter(TCMachineLearningAdapter mlAdapter) {
+		this.mlAdapter = mlAdapter;
+	}
+	
+    public AnalysisEngineDescription getPreprocessing()
+    {
+        return preprocessing;
+    }
+
+    /**
+     * @param aAggregate
+     */
+    public void setPreprocessing(AnalysisEngineDescription preprocessing)
+    {
+        this.preprocessing = preprocessing;
+    }
+	
     /**
      * @param operativeViews
      */

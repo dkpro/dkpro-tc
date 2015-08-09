@@ -1,0 +1,85 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+## How to set up a DKPro-TC reader
+
+_This tutorial referes to the 0.6.0-Release of DKPro TC._
+
+### Creating a reader for your data
+
+For reference, you should have a look at the readers of the `io` package in the `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module.
+
+### Minimal requirements
+
+All DKPro-TC readers should implement either `TCReaderSingleLabel` (single-label classification and regression experiments) or `TCReaderMultiLabel` (multi-label classification experiments).
+
+A reader in DKPro-TC needs to define at least:
+  * the structure of the UIMA CAS (i.e. the document text)
+  * the classification outcome (i.e. the class labels of the document)
+
+### Reusing DKPro Core readers
+
+You can re-use most readers from the `io` modules of [http://code.google.com/p/dkpro-core-asl DKPro Core], which contain readers for different simple data formats such as TXT or HTML, but also readers for popular data collections, e.g. the BNC.
+If your DKPro-TC reader inherits from a DKPro Core reader, you don't have to care about the structure of the CAS, but only need to additionally specify the `getTextClassificationOutcome()`. The latter sets the document labels.
+
+### Building a customized reader
+
+Imagine the following simple data structure:
+
+[source,java]
+----
+This is the first sentence.  ----  sentence_found
+It is the second one.	     ----  sentence_missing
+The third sentence.          ----  sentence_found
+----
+
+In `de.tudarmstadt.ukp.dkpro.tc.examples-gpl/src/main/resources/data/simple_reader`, you will find two TXT files corresponding to this structure: the first consists of documents (here: sentences) to be classified and the second of the corresponding labels. The label sentence_found means that sentence is containing the word "sentence", the label sentence_missing means the opposite of that: the sentence does not contain the word "sentence". 
+
+We now describe a simple customized reader for the above data structure. You can use this reader a basis for your own customized reader.
+The reader is named `SimpleDkproTCReader` and can be found in `de.tudarmstadt.ukp.dkpro.tc.examples.io`. It inherits from `JCasResourceCollectionReader_ImplBase` and implements `TCReaderSingleLabel` (as described in the first section). The following functions are relevant and may or may not have to be overwritten:
+
+[source,java]
+----
+initialize(UimaContext context)
+----
+
+This reads the initial data and stores it in appropriate data structure(s), e.g. lists of all texts and labels.
+
+[source,java]
+----
+hasNext()
+----
+
+If this method returns true, `getNext()` will be called, i.e. a new CAS (document) is created. This method usually iterates over the data structure created during `initialize(UimaContext context)`.
+
+[source,java]
+----
+getNext(JCas aJCas)
+----
+
+Here, we need to:
+   * set metadata (as we are creating more than one CAS out of a single file, we need to have different document titles and URIs for each CAS, otherwise serialized CASes will be overwritten), 
+   * set document text (a sentence in this case),
+   * set outcome (labels)
+
+[source,java]
+----
+getTextClassificationOutcome(JCas jcas) 
+----
+
+This method has to return the classification outcome (the responding label for this jcas).
+
+The demo which reuses `SimpleDkproTCReader` can be started with `SimpleDkproTCReaderDemo` in the package `de.tudarmstadt.ukp.dkpro.tc.examples.single.document`.

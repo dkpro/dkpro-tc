@@ -34,8 +34,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
@@ -143,16 +143,18 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          * Define (instantiate) tasks
          */
 
-        PreprocessTask preprocessTaskTrain = [
+        InitTask initTaskTrain = [
             preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
-            isTesting: false
+            isTesting: false,
+			mlAdapter: WekaClassificationAdapter.instance
         ]
 
-        PreprocessTask preprocessTaskTest = [
+        InitTask initTaskTest = [
             preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
-            isTesting: true
+            isTesting: true,
+			mlAdapter: WekaClassificationAdapter.instance
         ]
 
         MetaInfoTask metaTask = [
@@ -182,10 +184,10 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         /*
          * Wire tasks
          */
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY)
-        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY)
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY)
+        featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY)
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
-        featuresTestTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
+        featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
         featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY)
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA)
@@ -206,8 +208,8 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
                 dimPipelineParameters
             ],
             tasks:           [
-                preprocessTaskTrain,
-                preprocessTaskTest,
+                initTaskTrain,
+                initTaskTest,
                 metaTask,
                 featuresTrainTask,
                 featuresTestTask,

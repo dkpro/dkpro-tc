@@ -28,9 +28,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.PreprocessTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.ValidityCheckTask;
 
 /**
  * Pre-configured Prediction setup
@@ -48,9 +47,8 @@ public class ExperimentPrediction
     private List<String> operativeViews;
     protected TCMachineLearningAdapter mlAdapter;
 
-    private ValidityCheckTask checkTask;
-    private PreprocessTask preprocessTaskTrain;
-    private PreprocessTask preprocessTaskTest;
+    private InitTask initTaskTrain;
+    private InitTask initTaskTest;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private TaskBase featuresExtractAndPredictTask;
@@ -98,30 +96,28 @@ public class ExperimentPrediction
                     "You must set Experiment Name and Aggregate.");
         }
 
-        // check the validity of the experiment setup first
-        checkTask = new ValidityCheckTask();
-        checkTask.setMlAdapter(mlAdapter);
+        // initialize the training data setup
+        initTaskTrain = new InitTask();
+        initTaskTrain.setMlAdapter(mlAdapter);
+        initTaskTrain.setPreprocessing(preprocessing);
+        initTaskTrain.setOperativeViews(operativeViews);
+        initTaskTrain.setTesting(false);
+        initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
-        // preprocessing on training data
-        preprocessTaskTrain = new PreprocessTask();
-        preprocessTaskTrain.setPreprocessing(preprocessing);
-        preprocessTaskTrain.setOperativeViews(operativeViews);
-        preprocessTaskTrain.setTesting(false);
-        preprocessTaskTrain.setType(preprocessTaskTrain.getType() + "-Train-" + experimentName);
-
-        // preprocessing on test data
-        preprocessTaskTest = new PreprocessTask();
-        preprocessTaskTest.setPreprocessing(preprocessing);
-        preprocessTaskTest.setOperativeViews(operativeViews);
-        preprocessTaskTest.setTesting(true);
-        preprocessTaskTest.setType(preprocessTaskTest.getType() + "-Test-" + experimentName);
+        // initialize the test data setup
+        initTaskTest = new InitTask();
+        initTaskTest.setMlAdapter(mlAdapter);
+        initTaskTest.setPreprocessing(preprocessing);
+        initTaskTest.setOperativeViews(operativeViews);
+        initTaskTest.setTesting(true);
+        initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        metaTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
@@ -129,7 +125,7 @@ public class ExperimentPrediction
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTrainTask.addImport(preprocessTaskTrain, PreprocessTask.OUTPUT_KEY_TRAIN,
+        featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
@@ -138,7 +134,7 @@ public class ExperimentPrediction
                 + experimentName);
 
         featuresExtractAndPredictTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresExtractAndPredictTask.addImport(preprocessTaskTest, PreprocessTask.OUTPUT_KEY_TEST,
+        featuresExtractAndPredictTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresExtractAndPredictTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
@@ -146,9 +142,8 @@ public class ExperimentPrediction
         addReport(mlAdapter.getBatchTrainTestReportClass());
 
         // DKPro Lab issue 38: must be added as *first* task
-        addTask(checkTask);
-        addTask(preprocessTaskTrain);
-        addTask(preprocessTaskTest);
+        addTask(initTaskTrain);
+        addTask(initTaskTest);
         addTask(metaTask);
         addTask(featuresTrainTask);
         addTask(featuresExtractAndPredictTask);

@@ -1,0 +1,58 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+## Reusable Models
+Models trained with DKPro TC are not usable as independent components in pipelines, yet.
+We thus can't take advantage of once created models.
+In order to make trained TC models reusable, the necessary TC related components have to be deployed together with the model wrapped into a prediction-mode component.
+
+I see essentially 3 stages of TC model reusability
+
+### Stage 1 (TC/DKPro reusable)
+Progress: 80%
+
+Trained models can be used within a TC pipeline in a developing environment.
+This is largely achieved.
+
+Solved points:
+  * dealing with absolute file paths
+  * User defined features have to be provided (solved as in: copy them over by hand)
+
+Open points are:
+  * No version awareness if feature XY is needed and it is found in the classpath/workspace it is taken (feature might have changed between TC versions ...,0.6, 0.7) this might lead to unintended side-effects / different results which are extremely hard to track from the user perspective
+  * How to auto-install models locally or at least semi-automatically 
+  * Provide guides (by example code) of how to load/use the installed model in a minimal working example/annotator
+  * Ship recommended preprocessing information which can yet be turned off (e.g. ArkTagger should be used with ArkTokenizer)
+
+
+*REC* Let us assume we establish a best-practice as follows for TC experiments:
+
+  * experiments consist of two Maven projects: 
+    # *experiment code * - containing the experimental setup
+    # *runtime code* - containing any parts of the experimental setup that are required when using a generated model, e.g. custom feature extractors.
+  * additionally, models are packaged in a Maven artifact
+  * the model artifact has a dependency on the runtime artifact from above
+
+So when somebody adds a TC model to a Maven project, the runtime code with the custom feature extractors is automatically added as well.
+
+### Stage 2 (standalone application )
+Progress: 0%
+
+It is possible to create a standalone component that can be provided free of any developer environment to 3rd parties to release an actual product of something
+e.g. 
+{{{java -jar myExperiment.jar 'param1' 'param2' }}}
+
+This one might become trivial once stage 2 is cleared

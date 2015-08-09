@@ -1,0 +1,90 @@
+// Copyright 2015
+// Ubiquitous Knowledge Processing (UKP) Lab
+// Technische Universität Darmstadt
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+## Recommended Practices for Commit Messages
+
+The following recommendations come from [http://code.google.com/p/support/wiki/IssueTracker#Integration_with_version_control Google Code]:
+
+It is helpful if code revisions are linked with the Issue that they address.  You can easily create this link by the format of your Commit message.
+
+A Google Code commit message can contain up to three parts: 
+   # the commit notes: a summary of the revision
+   # (Newline, then) the Issue ID and any changes to the issue (update, fix/close, change of labels, etc.)
+   # a message to be posted to the Issue
+
+### Sample Commit Messages
+
+
+.Commit Message #1
+----
+Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+
+Update issue 99998
+The performance and internationalization aspects of this issue have
+been handled.  The remaining part of the issue has a clear work-around
+and only affects a small number of users, so it is less important to fix.
+----
+
+.Commit Message #2
+----
+Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+
+New issue
+Summary: Update and translate end-user docs on validation
+Owner: johnsmith@gmail.com
+Labels: Component-Documentation
+Now that we accept input in more languages, we should translate the on-line
+help for that part of the application.
+----
+
+.Commit Message #3_ (Will open and close an issue all at once)
+----
+Bug in ngram feature extractor throws exception if stopword file is empty.
+
+New issue
+Summary: Empty stopword file throws exception
+Owner: johnsmith@gmail.com
+Status: Fixed
+Labels: Priority-Medium
+When stopword file is empty, an exception was thrown.  Instead, now, it creates an empty list.
+----
+
+### Shortcuts to close an Issue
+
+For just closing an issue (i.e., not otherwise modifying it), a "fixes" phrase can be used anywhere in the commit notes:
+
+.Commit Message #4
+----
+Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+
+Fixes issue 99998
+Fixes issue 99999
+----
+
+.Commit Message #5
+----
+Fixes issue 998.  Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+----
+
+.Commit Message #6
+----
+(Fixes issue 998)  Change the validation routines to also accept unicode string. And,
+speeds up that O(N^2) comparison.
+----
