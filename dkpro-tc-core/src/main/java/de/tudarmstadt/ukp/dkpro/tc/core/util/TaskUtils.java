@@ -37,9 +37,6 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
@@ -72,6 +69,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.InstanceIdFeature;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -383,12 +382,15 @@ public class TaskUtils
                 Collection<TextClassificationUnit> classificationUnits = JCasUtil.selectCovered(
                         jcas, TextClassificationUnit.class, focus);
 
+                TextClassificationUnit unit = null;
                 if (classificationUnits.size() != 1) {
-                    throw new TextClassificationException(
-                            "JCas should contain exactly one text classification unit, but it contains " + classificationUnits.size() + ".");
+                	unit = tryGetMatchingUnitForFocus(focus, classificationUnits);
+                	
+                	if( unit == null)
+                		throw new TextClassificationException("JCas should contain exactly one text classification unit, but it contains " + classificationUnits.size() + ".");
                 }
-
-                TextClassificationUnit unit = classificationUnits.iterator().next();
+                else
+                	unit = classificationUnits.iterator().next();
 
                 if (addInstanceId) {
                     instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
@@ -416,6 +418,33 @@ public class TaskUtils
     }
 
     /**
+     * Helper method to return a matching TC unit for the given focus, if possible,
+     * based on matching start and end points.
+     * 
+     * @param focus The focus under consideration
+     * @param classificationUnits The list of TC units covered by this focus.
+     * @return TC Unit that is identical with the focus range, if available. Null otherwise.
+     */
+    private static TextClassificationUnit tryGetMatchingUnitForFocus(TextClassificationFocus focus, Collection<TextClassificationUnit> classificationUnits)
+    {
+    	if(focus == null)
+    		return null;
+    	
+		int focusBegin = focus.getBegin();
+		int focusEnd = focus.getEnd();
+		TextClassificationUnit foundUnit = null;
+		
+		for(TextClassificationUnit unit : classificationUnits) {
+			if(unit.getBegin() == focusBegin && unit.getEnd() == focusEnd) {
+				foundUnit = unit;
+				break;
+			}
+		}
+				
+		return foundUnit;
+	}
+
+	/**
      * @param featureMode
      * @param featureExtractors
      * @param jcas
@@ -537,7 +566,7 @@ public class TaskUtils
      * @param jcas
      * @param unit
      * @return the instance weight
-     * @throws TextClassificationException 
+     * @throws TextClassificationException
      * @throws AnalysisEngineProcessException
      */
     public static double getWeight(JCas jcas, AnnotationFS unit) throws TextClassificationException
