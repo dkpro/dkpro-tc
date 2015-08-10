@@ -1,0 +1,24 @@
+# Project releases
+# 
+# Example: 
+#
+# - version: 0.7.0
+#   date: 2015-04-08
+#   status: stable
+#
+# Possible status: "stable", "unstable"
+
+- version: 0.7.0
+  date: 2015-04-08
+  status: stable
+  groupId: de.tudarmstadt.ukp.dkpro.tc
+  artifactId: dkpro-tc
+
+
+- version: 0.8.0-SNAPSHOT
+  date: unknown
+  status: unstable
+  groupId: de.tudarmstadt.ukp.dkpro.tc
+  artifactId: dkpro-tc
+  user_guide_url: https://zoidberg.ukp.informatik.tu-darmstadt.de/jenkins/job/DKPro%20TC%20Documentation%20(GitHub)/de.tudarmstadt.ukp.dkpro.tc%24dkpro-tc-doc/doclinks/1/
+  developer_guide_url: https://zoidberg.ukp.informatik.tu-darmstadt.de/jenkins/job/DKPro%20TC%20Documentation%20(GitHub)/de.tudarmstadt.ukp.dkpro.tc%24dkpro-tc-doc/doclinks/2/

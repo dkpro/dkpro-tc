@@ -2,7 +2,7 @@
   url: "http://dkpro.github.io"
   side: left
 
-- title: PROJECT_X
+- title: TC
   url: "/"
   side: left
 
@@ -10,9 +10,9 @@
   url: "/downloads/"
   side: left
 
-#- title: Documentation
-#  url: "/documentation/"
-#  side: left
+- title: Documentation
+  url: "/documentation/"
+  side: left
 #  dropdown:
 #  - title: "Components"
 #    url: "/components/"
@@ -24,11 +24,11 @@
 #    url: "/typesystem/"
 
 - title: "Issues"
-  url: "http://github.com/dkpro/PROJECT_X/issues"
+  url: "http://github.com/dkpro/dkpro-tc/issues"
   side: left
 
 - title: Source
-  url: "http://github.com/dkpro/PROJECT_X"
+  url: "http://github.com/dkpro/dkpro-tc"
   side: left
 
 #- title: "Contact"

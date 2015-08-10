@@ -5,55 +5,41 @@
 # this work, you have to use › layout: frontpage
 #
 layout: frontpage
-title: "DKPro Core"
-#header:
-#	title: DKPro Core
-#   image_fullwidth: "header_unsplash_12.jpg"
-header-1:
-    title: A collection of software components for natural language processing (NLP) based on the Apache UIMA framework.
-    text: Many NLP tools are already freely available in the NLP research community. DKPro Core provides Apache UIMA components wrapping these tools (and some original tools) so they can be used interchangeably in UIMA processing pipelines. DKPro Core builds heavily on uimaFIT which allows for rapid and easy development of NLP processing pipelines, for wrapping existing tools and for creating original UIMA components.
+title: "DKPro TC"
 ---
 
+DKPro TC is a UIMA-based text classification framework built on top of [DKPro Core][DKPRO_CORE] and [DKPro Lab][DKPRO_LAB]. It is intended to alleviate supervised machine learning experiments with any kind of textual data. 
 
-How to cite
------------
+DKPro TC comes with
 
-Many of the wrapped third-party components and the models used by them should be cited individually. We currently do not provide a comprehensive overview over citable publications. We encourage you to track down citable publications for these dependencies. However, you might find pointers to some relevant publications in the Model overview of the DKPro Core release you are using or in the JavaDoc of individual components.
+  * Getting-started example code for standard text collections, e.g. the Reuters-21578 Text Categorization corpus, in Java and Groovy
+  * many generic feature extractors, e.g. n-grams, POS-tags etc.
+  * convenient parameter optimization capabilities
+  * comprehensive reporting with support for many standard performance measures
+  * support for single- and multi-label classification, and regression in various frameworks, e.g. [Weka][WEKA] and [CRFsuite][CRFSUITE]
 
-Please cite DKPro Core itself as:
+If you want to use the latest (snapshot) version of DKPro TC, please mind that the project is subject to constant change. 
 
-> Eckart de Castilho, R. and Gurevych, I. (2014). **A broad-coverage collection of portable NLP components for building shareable analysis pipelines**. In Proceedings of the Workshop on Open Infrastructures and Analysis Frameworks for HLT (OIAF4HLT) at COLING 2014, to be published, Dublin, Ireland.
-[(pdf)][1] [(bib)][2]
+For setup instructions and additional information, please refer to the [DKProTextClassificationOverview wiki]. Questions and suggestions are best posted to the [mailing list](http://groups.google.com/group/dkpro-tc-users).
 
-License
--------
+### How to cite?
 
-All components in DKPro Core ASL are licensed under the [Apache Software License (ASL) version 2][3] - but their dependencies may not be:
+If you use DKPro TC in research, please cite the following paper:
+  Johannes Daxenberger and Oliver Ferschke and Iryna Gurevych and Torsten Zesch (2014). DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data. In:  Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics.  System Demonstrations. [(pdf)][ACL_2014] [(bib)][ACL_2014_BIB]
 
-**IMPORTANT LICENSE NOTE** - It must be pointed out that while the component's source code itself is licensed under the ASL, individual components might make use of third-party libraries or products that are not licensed under the ASL, such as LGPL libraries or libraries which are free for research but may not be used in commercial scenarios. Please be aware of the third party licenses and respect them.
+### License
 
-About DKPro Core
-----------------
+While most DKPro TC modules are available under the Apache Software License (ASL) version 2, there are a few modules that depend on external libraries and are thus licensed under the GPL. The license of each individual module is specified in its LICENSE file.
 
-This project was initiated by the Ubiquitous Knowledge Processing Lab (UKP) at the Technische Universität Darmstadt, Germany under the auspices of Prof. Dr. Iryna Gurevych.
+It must be pointed out that while the component's source code itself is licensed under the ASL or GPL, individual components might make use of third-party libraries or products that are not licensed under the ASL or GPL. Please make sure that you are aware of the third party licenses and respect them.
 
-It is now jointly developed at UKP Lab, Technische Universität Darmstadt and Language Technology Lab, Universität Duisburg-Essen.
+### About
 
+This project was initiated under the auspices of Prof. Dr. Iryna Gurevych, [Ubiquitous Knowledge Processing Lab (UKP)](http://www.ukp.tu-darmstadt.de/), Technische Universität Darmstadt.
 
-<span class="footnotes">**Image sources**: [LogoJava.png][4] by Christian F. Burprich, Creative Commons (Attribution-Noncommercial-Share Alike 3.0 Unported), color changed; [LogoPython.png][5] by IFA; [LogoGroovy.png][6] by pictonic.co; [IconComponents.png][7], [IconModels.png][8] by [Visual Pharm][9]; [IconFormatText.png][10], [IconFormatBlank.png][11] by [Honza Dousek][12]; [IconTypeSystem.png][13] by Designmodo</span>
-
-[1]: https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/OIAF4HLT2014DKProCore_cameraready.pdf
-[2]: https://www.ukp.tu-darmstadt.de/publications/details/?no_cache=1&tx_bibtex_pi1%5Bpub_id%5D=TUD-CS-2014-0864&type=99&tx_bibtex_pi1%5Bbibtex%5D=yes
-[3]: http://www.apache.org/licenses/LICENSE-2.0
-[4]: https://www.iconfinder.com/icons/16890/java_icon#size=128
-[5]: https://www.iconfinder.com/icons/282803/logo_python_icon#size=128
-[6]: http://findicons.com/icon/576242/pl_groovy_02?id=576242
-[7]: https://www.iconfinder.com/icons/175334/services_icon#size=128
-[8]: https://www.iconfinder.com/icons/174880/database_icon#size=128
-[9]: http://icons8.com/
-[10]: https://www.iconfinder.com/icons/199323/extension_file_format_txt_icon#size=128
-[11]: https://www.iconfinder.com/icons/199231/blank_extension_file_format_icon#size=128
-[12]: https://www.iconfinder.com/iconsets/lexter-flat-colorfull-file-formats
-[13]: https://www.iconfinder.com/icons/115791/tag_icon#size=128
-[14]: http://uima.apache.org
-[15]: http://uima.apache.org/uimafit
+[DKPRO_CORE]: https://dkpro.github.io/dkpro-core
+[DKPRO_LAB]: https://dkpro.github.io/dkpro-lab
+[WEKA]: http://www.cs.waikato.ac.nz/ml/weka
+[CRFSUITE]: https://github.com/chokkan/crfsuite
+[ACL_2014]: http://anthology.aclweb.org//P/P14/P14-5011.pdf
+[ACL_2014_BIB]: http://anthology.aclweb.org/P/P14/P14-5011.bib
