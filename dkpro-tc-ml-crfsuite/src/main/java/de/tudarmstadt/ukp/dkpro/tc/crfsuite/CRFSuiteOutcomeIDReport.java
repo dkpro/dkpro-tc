@@ -19,6 +19,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,7 +68,7 @@ public class CRFSuiteOutcomeIDReport extends ReportBase {
 		StringBuilder sb = new StringBuilder();
 		sb.append("labels");
 		for (String label : mapping.keySet()) {
-			sb.append(" " + mapping.get(label) + "=" + label);
+			sb.append(" " + mapping.get(label) + "=" + URLEncoder.encode(label, "UTF-8"));
 		}
 
 		getContext().storeBinary(
