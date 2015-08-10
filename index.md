@@ -25,7 +25,8 @@ For setup instructions and additional information, please refer to the [DKProTex
 ### How to cite?
 
 If you use DKPro TC in research, please cite the following paper:
-  Johannes Daxenberger and Oliver Ferschke and Iryna Gurevych and Torsten Zesch (2014). DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data. In:  Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics.  System Demonstrations. [(pdf)][ACL_2014] [(bib)][ACL_2014_BIB]
+
+> Johannes Daxenberger and Oliver Ferschke and Iryna Gurevych and Torsten Zesch (2014). DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data. In:  Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics.  System Demonstrations. [(pdf)][ACL_2014] [(bib)][ACL_2014_BIB]
 
 ### License
 
