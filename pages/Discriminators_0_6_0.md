@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "Discriminators_0_6_0"
+title: "Discriminators (0.6.0 Release)
 permalink: "/Discriminators_0_6_0/"
 ---
 

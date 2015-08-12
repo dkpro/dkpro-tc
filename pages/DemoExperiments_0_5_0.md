@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DemoExperiments_0_5_0"
+title: "Getting Started with DKPro TC 0.5.0"
 permalink: "/DemoExperiments_0_5_0/"
 ---
 
