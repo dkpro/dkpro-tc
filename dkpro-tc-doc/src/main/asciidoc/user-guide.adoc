@@ -20,26 +20,13 @@
 
 ## Overview
 
-<table cellspacing="10">
-<tr>
-<td valign="top" width="220" >
-
-<img src="https://dkpro-tc.googlecode.com/svn/wiki/images/dkpro_tc_poster_acl2014.png" alt="DKPro TC Poster ACL 2014" width="200" height="141"/>
-
-</td>
-<td valign="top" width="300" >
-
-To get a first impression about DKPro TC, [https://dkpro-tc.googlecode.com/svn/wiki/files/dkpro_tc_poster_acl2014.pdf this] poster presented at the 2014 Annual Meeting of the Association for Computational Linguistics (ACL 2014) might be helpful.
-
-</td>
-</tr>
-</table>
+The following guides are intended to help users of DKPro TC to get started.
 
 include::{include-dir}GroovySetup.adoc[]
 
 <<<
 
-include::{include-dir}DemoExperiments.adoc[]
+include::{include-dir}DemoExperiments.adoc[] (start here if you don't know where to start)
 
 <<<
 

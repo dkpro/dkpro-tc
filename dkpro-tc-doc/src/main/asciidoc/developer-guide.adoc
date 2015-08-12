@@ -18,7 +18,7 @@
 :Author: The DKPro TC Team
 :toc-title: Developer Guide
 
-This document is targets developers of DKPro TC components.
+This document targets developers of DKPro TC components.
 
 include::{include-dir}DeveloperSetup.adoc[]
 
