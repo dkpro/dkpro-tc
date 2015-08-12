@@ -9,6 +9,18 @@ permalink: "/documentation/"
 
 ## Reference Documentation
 
+### DKPro TC 0.5.0}
+_0.5.0 release_
+
+* [Getting Started](/DemoExperiments_0_5_0/)
+* [Discriminators](/Discriminators_0_5_0/)
+
+### DKPro TC 0.6.0}
+_0.6.0 release_
+
+* [Getting Started](/DemoExperiments_0_6_0/)
+* [Discriminators](/Discriminators_0_6_0/)
+
 {% unless stable.version == null %}
 ### DKPro TC {{ stable.version }}
 _latest release_
