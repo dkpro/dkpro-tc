@@ -44,7 +44,7 @@ public class ExperimentTrainTest
     extends BatchTask
 {
 
-    private String experimentName;
+    protected String experimentName;
     private AnalysisEngineDescription preprocessing;
     private List<String> operativeViews;
     private List<Class<? extends Report>> innerReports;
@@ -99,7 +99,7 @@ public class ExperimentTrainTest
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private void init()
+    protected void init()
     {
         if (experimentName == null || preprocessing == null)
 
@@ -217,6 +217,6 @@ public class ExperimentTrainTest
         if (innerReports == null) {
             innerReports = new ArrayList<Class<? extends Report>>();
         }
-        this.innerReports.add(innerReport);
+        innerReports.add(innerReport);
     }
 }
