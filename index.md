@@ -20,7 +20,6 @@ DKPro TC comes with
 
 If you want to use the latest (snapshot) version of DKPro TC, please mind that the project is subject to constant change. 
 
-For setup instructions and additional information, please refer to the [DKProTextClassificationOverview wiki]. Questions and suggestions are best posted to the [mailing list](http://groups.google.com/group/dkpro-tc-users).
 
 ### How to cite?
 
