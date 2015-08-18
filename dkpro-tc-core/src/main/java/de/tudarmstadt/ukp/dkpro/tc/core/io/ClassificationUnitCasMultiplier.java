@@ -125,10 +125,10 @@ public class ClassificationUnitCasMultiplier
         // NOTE: As it may cause confusion: If in sequence classification several or all CAS
         // contains only a single sequence this counter would be zero in all cases - this is not a
         // bug, but a cosmetic flaw
-        DocumentMetaData.get(copyJCas).setDocumentId(
-                DocumentMetaData.get(jCas).getDocumentId() + "_" + subCASCounter);
-        DocumentMetaData.get(copyJCas).setDocumentUri(
-                DocumentMetaData.get(jCas).getDocumentUri() + "_" + subCASCounter);
+        String currentDocId = DocumentMetaData.get(this.jCas).getDocumentId();
+        DocumentMetaData.get(copyJCas).setDocumentId(currentDocId + "_" + this.subCASCounter);
+        String currentDocUri = DocumentMetaData.get(this.jCas).getDocumentUri() + "_" + this.subCASCounter;
+        DocumentMetaData.get(copyJCas).setDocumentUri(currentDocUri);
 
         // set the focus annotation
         AnnotationFS focusUnit = this.iterator.next();
@@ -155,8 +155,11 @@ public class ClassificationUnitCasMultiplier
         	unitCounter++;
         }
 
-        subCASCounter++;
-        getLogger().debug("Creating CAS " + subCASCounter + " of " + annotations.size());
+        this.subCASCounter++;
+
+        DocumentMetaData.get(copyJCas).setIsLastSegment( this.subCASCounter == this.annotations.size() );	// required for CAS mergers, which need to know whether this is the last CAS in a sequence (fix for issue #261)
+        
+        getLogger().debug("Creating CAS " + this.subCASCounter + " of " + this.annotations.size());
 
         return copyJCas;
     }
