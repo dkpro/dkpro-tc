@@ -22,7 +22,6 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,12 +79,12 @@ public class BrownPosCRFSuiteDemo
         dimReaders.put(DIM_READER_TRAIN_PARAMS, asList(BrownCorpusReader.PARAM_LANGUAGE,
                 "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz")));
+                asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz")));
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension
         .create(DIM_PIPELINE_PARAMS,
-                        Arrays.asList(new Object[] {
+                        asList(new Object[] {
                                         LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N,
                                         2,
                                         LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N,
