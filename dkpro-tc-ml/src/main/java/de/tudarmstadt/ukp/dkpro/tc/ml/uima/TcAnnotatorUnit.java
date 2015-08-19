@@ -47,10 +47,8 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.modelpersist.ModelPersistUtil;
  * Applies the given model to all TC focus annotated sections of the CAS.
  * Note that this Annotator is assumed to be used after the CAS multiplication
  * step in a Unit classification setting. Also, TC units and dummy TC outcomes
- * must have been added to the CASes already in some pipepline step prior to the
+ * must have been added to the CASes already in some pipeline step prior to the
  * one implemented with the TcAnnotatorUnit instance.
- * 
- * @author Martin Wunderlich (martin@wunderlich.com)
  * (based on TcAnnotatorSequence)
  *
  */

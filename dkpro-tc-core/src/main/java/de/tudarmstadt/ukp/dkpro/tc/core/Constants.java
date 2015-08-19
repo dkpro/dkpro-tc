@@ -237,6 +237,10 @@ public interface Constants
      */
     public static final String SUFFIX_CSV = ".csv";
     /**
+     * File suffix for LaTeX files
+     */
+    public static final String SUFFIX_LATEX = ".tex";
+    /**
      * Name of the file that holds the confusion matrix
      */
     public static final String CONFUSIONMATRIX_KEY = "confusionMatrix.csv";
