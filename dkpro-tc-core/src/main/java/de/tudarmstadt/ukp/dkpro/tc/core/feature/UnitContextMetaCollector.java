@@ -21,18 +21,23 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
-public class UnitContextMetaCollector 
+public class UnitContextMetaCollector
 	extends ContextMetaCollector_ImplBase
 {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
   
-        for (TextClassificationUnit unit : JCasUtil.select(jcas, TextClassificationUnit.class)) {
-        	String idString = (String) InstanceIdFeature.retrieve(jcas, unit).getValue(); 
-        	addContext(jcas, unit, idString, sb);
+		TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
+		
+		TextClassificationUnit unit = TaskUtils.tryGetMatchingUnitForFocus(jcas, focus);
+		if(unit != null) {
+        	String idString = (String) InstanceIdFeature.retrieve(jcas, unit).getValue();
+        	addContext(jcas, unit, idString, this.sb);
         }
 	}
 }
