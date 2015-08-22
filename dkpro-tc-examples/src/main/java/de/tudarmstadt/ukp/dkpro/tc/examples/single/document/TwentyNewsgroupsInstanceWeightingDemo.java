@@ -28,14 +28,12 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.WeightedTwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
@@ -48,11 +46,13 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
 
 /**
  * This is the TwentyNewsgroups demo with instance weighting.  With instance
  * weighting, some instances are considered by the machine learner/classifier to
- * be more important than others.  For example, if some instances in your 
+ * be more important than others.  For example, if some instances in your
  * training set were annotated by a very reliable annotator, and other instances
  * were annotated by an unreliable worker, then the instances can be weighted more
  * and less heavily, respectively. <br />
@@ -63,14 +63,14 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
  * to <b>true</b>.<br />
  * 
  * You may wish to weight just your training instances, and not your test instances,
- * or vice versa.  You can control this in your Reader.  Be careful when using 
+ * or vice versa.  You can control this in your Reader.  Be careful when using
  * cross-validation, if you only want part of your dataset to be weighted. <br />
  * 
- * Currently, DKPro TC only supports instance weighting with Weka (see 
+ * Currently, DKPro TC only supports instance weighting with Weka (see
  * {@link weka.core.WeightedInstancesHandler}); a full list of Weka
  * classifiers that support instance weighting can be found here:
  * (@link http://weka.sourceforge.net/doc.dev/weka/core/WeightedInstancesHandler.html}.
- * This list includes such common classifiers as J48, JRip, LinearReression, 
+ * This list includes such common classifiers as J48, JRip, LinearReression,
  * Logistic, MultilayerPerceptron, NaiveBayes, SMO, SMOreg, and ZeroR.
  * Users should familiarize themselves with the exact classifier and weight
  * utilization, as this varies per classifier. <br />
@@ -156,7 +156,7 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         Dimension<List<String>> dimBaselinePipelineParameters = Dimension.create(DIM_BASELINE_FEATURE_SET,
         		Arrays.asList(new String[]{NrOfTokensDFE.class.getName(),LuceneNGramDFE.class.getName()}));
 
-        Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(DIM_BASELINE_PIPELINE_PARAMS, 
+        Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(DIM_BASELINE_PIPELINE_PARAMS,
         		Arrays.asList(new Object[]{
         				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
@@ -165,7 +165,7 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets, dimBaselinePipelineParameters, 
+                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets, dimBaselinePipelineParameters,
                 Dimension.create(DIM_APPLY_INSTANCE_WEIGHTING, true)
                 //This last dimension is crucial for this demo
                 );

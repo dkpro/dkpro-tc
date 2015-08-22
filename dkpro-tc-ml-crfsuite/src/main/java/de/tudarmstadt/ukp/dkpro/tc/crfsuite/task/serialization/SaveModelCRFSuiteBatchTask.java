@@ -26,7 +26,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -44,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
  * 
  */
 public class SaveModelCRFSuiteBatchTask
-    extends BatchTask
+    extends DefaultBatchTask implements ExecutableTask
 {
     private String experimentName;
     private AnalysisEngineDescription preprocessingPipeline;
@@ -80,7 +81,6 @@ public class SaveModelCRFSuiteBatchTask
         throws Exception
     {
         init();
-        super.execute(aContext);
     }
 
     /**

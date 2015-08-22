@@ -24,7 +24,8 @@ import java.util.List;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -37,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
  * 
  */
 public class SaveModelWekaBatchTask
-    extends BatchTask
+    extends DefaultBatchTask implements ExecutableTask
 {
 
     private String experimentName;
@@ -68,13 +69,12 @@ public class SaveModelWekaBatchTask
         setTcMachineLearningAdapter(mlAdapter);
         setOutputFolder(outputFolder);
     }
-
+    
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
         init();
-        super.execute(aContext);
     }
 
     /**
