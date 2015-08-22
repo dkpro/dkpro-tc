@@ -31,8 +31,9 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -47,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
  * 
  */
 public class ExperimentCrossValidation
-    extends BatchTask
+    extends DefaultBatchTask implements ExecutableTask
 {
 
     protected String experimentName;
@@ -153,9 +154,8 @@ public class ExperimentCrossValidation
         initTask.setType(initTask.getType() + "-" + experimentName);
 
         // inner batch task (carried out numFolds times)
-        BatchTask crossValidationTask = new BatchTask()
+        DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
-            @Override
             public void execute(TaskContext aContext)
                 throws Exception
             {
@@ -180,8 +180,6 @@ public class ExperimentCrossValidation
 
                 ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
                 setParameterSpace(pSpace);
-
-                super.execute(aContext);
             }
         };
 
@@ -253,7 +251,6 @@ public class ExperimentCrossValidation
         throws Exception
     {
         init();
-        super.execute(aContext);
     }
 
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
@@ -298,7 +295,7 @@ public class ExperimentCrossValidation
     }
     public void setComparator(Comparator<String> aComparator)
     {
-        this.comparator = aComparator;
+        comparator = aComparator;
     }
 
     /**
@@ -312,6 +309,6 @@ public class ExperimentCrossValidation
         if (innerReports == null) {
             innerReports = new ArrayList<Class<? extends Report>>();
         }
-        this.innerReports.add(innerReport);
+        innerReports.add(innerReport);
     }
 }

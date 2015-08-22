@@ -24,7 +24,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -41,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
  * 
  */
 public class ExperimentTrainTest
-    extends BatchTask
+    extends DefaultBatchTask implements ExecutableTask
 {
 
     protected String experimentName;
@@ -85,7 +86,6 @@ public class ExperimentTrainTest
         throws Exception
     {
         init();
-        super.execute(aContext);
     }
 
     /**
