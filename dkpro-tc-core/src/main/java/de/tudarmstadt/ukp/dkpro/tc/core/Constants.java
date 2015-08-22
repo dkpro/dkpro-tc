@@ -270,6 +270,15 @@ public interface Constants
      */
     public static final String ID_OUTCOME_KEY = "id2outcome.txt";
     /**
+     * Name of the results file which stores detailed outcome results with id and tc unit text
+     */
+    public static final String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.txt";
+    /**
+     * Name of the meta task file which holds the tc unit text and context for all test
+     * instances.
+     */
+    public static final String ID_CONTEXT_KEY = "id2context.txt";
+    /**
      * Name of a serialized version of the id2outcome object.
      */
     public static final String SERIALIZED_ID_OUTCOME_KEY = "id2outcome.ser";
