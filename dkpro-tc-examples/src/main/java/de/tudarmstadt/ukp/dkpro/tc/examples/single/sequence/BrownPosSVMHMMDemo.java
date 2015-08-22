@@ -32,9 +32,9 @@ import org.apache.log4j.Logger;
 import org.apache.uima.fit.component.NoOpAnnotator;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
@@ -137,7 +137,7 @@ public class BrownPosSVMHMMDemo
                 machineLearningAdapter, createEngineDescription(NoOpAnnotator.class),
                 NUM_FOLDS);
         batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(BatchTask.ExecutionPolicy.RUN_AGAIN);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
         Lab.getInstance().run(batch);
@@ -150,7 +150,7 @@ public class BrownPosSVMHMMDemo
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter, createEngineDescription(NoOpAnnotator.class));
         batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(BatchTask.ExecutionPolicy.RUN_AGAIN);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
         Lab.getInstance().run(batch);
