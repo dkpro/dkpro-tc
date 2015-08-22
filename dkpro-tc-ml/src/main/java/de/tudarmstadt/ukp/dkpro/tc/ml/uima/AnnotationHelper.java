@@ -30,6 +30,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
  * Creates TC Unit and TC Outcome annotations for all units of the
@@ -42,6 +43,7 @@ public class AnnotationHelper extends JCasAnnotator_ImplBase {
 	public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";
 	@ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = true)
 	private String nameUnit;
+	private int currentId = 0;
 	
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
@@ -57,11 +59,16 @@ public class AnnotationHelper extends JCasAnnotator_ImplBase {
 			int end = unit.getEnd();
 			
 			TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas, begin, end);
-	        outcome.setOutcome("dummyValue");
+	        outcome.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
 	        outcome.addToIndexes();
 			
 	        TextClassificationUnit tcUnit = new TextClassificationUnit(aJCas, begin, end);
+	        tcUnit.setId( getNextId() );
 	        tcUnit.addToIndexes();
     	}
+	}
+
+	private int getNextId() {
+		return currentId++;
 	}
 }

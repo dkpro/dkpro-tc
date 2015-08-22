@@ -318,12 +318,16 @@ public interface Constants
     public static final String TEST_TASK_OUTPUT_KEY = "output";
     /**
      * Name of the instance ID feature
-     */    
+     */
     public static final String ID_FEATURE_NAME = "DKProTCInstanceID";
     /**
      * For empty predictions (no label value above the bipartition threshold)
      */
     public static String EMPTY_PREDICTION = "$NO_PREDICTION$";
+    /**
+     * Dummy value for text classification outcomes as placeholder for the real outcome
+     */
+	public String TC_OUTCOME_DUMMY_VALUE = "dummyValue";
 
     
     /*
@@ -364,5 +368,4 @@ public interface Constants
      * Public name of the prediction map file
      */
     public static final String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
-
 }

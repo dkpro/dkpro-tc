@@ -425,9 +425,9 @@ public class TaskUtils
      * @param classificationUnits The list of TC units covered by this focus.
      * @return TC Unit that is identical with the focus range, if available. Null otherwise.
      */
-    private static TextClassificationUnit tryGetMatchingUnitForFocus(TextClassificationFocus focus, Collection<TextClassificationUnit> classificationUnits)
+    public static TextClassificationUnit tryGetMatchingUnitForFocus(TextClassificationFocus focus, Collection<TextClassificationUnit> classificationUnits)
     {
-    	if(focus == null)
+    	if(focus == null || classificationUnits == null || classificationUnits.size() == 0)
     		return null;
     	
 		int focusBegin = focus.getBegin();
@@ -442,6 +442,23 @@ public class TaskUtils
 		}
 				
 		return foundUnit;
+	}
+    
+
+    /**
+     * Helper method to return a matching TC unit for the given focus and CAS, if possible,
+     * based on matching start and end points.
+     * Delegates to the other {@link #tryGetMatchingUnitForFocus(TextClassificationFocus, Collection<TextClassificationUnit>) tryGetMatchingUnitForFocus}
+     * 
+     * @param focus The focus under consideration
+     * @param classificationUnits The list of TC units covered by this focus.
+     * @return TC Unit that is identical with the focus range, if available. Null otherwise.
+     */
+	public static TextClassificationUnit tryGetMatchingUnitForFocus(JCas jcas, TextClassificationFocus focus)
+	{
+		List<TextClassificationUnit> allUnitsUnderFocus = JCasUtil.selectCovered(jcas, TextClassificationUnit.class, focus);
+		
+		return tryGetMatchingUnitForFocus(focus, allUnitsUnderFocus);
 	}
 
 	/**
