@@ -35,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.ContextMetaCollectorUtil;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 
+
 /**
  * Collects the final prediction results for each Unit and
  * writes them to a new, while optionally including the
@@ -53,6 +54,7 @@ public class BatchTrainTestDetailedOutcomeReport
     private static final String TEST_TASK_ID = "TestTask";
     private static final String METAINFO_TASK_ID = "MetaInfoTask";
     private static final boolean extractContext = true;		// TODO MW: Externalize to parameter, if or when reports are provided as instances instead of classes
+
 	private static final String OUTPUTFILE_HEADER = "#ID=PREDICTION;GOLDSTANDARD;PREDICTION CORRECT Y/N; TEXT OF TC UNIT (optionally with context)";
 
     @Override
@@ -112,7 +114,7 @@ public class BatchTrainTestDetailedOutcomeReport
     	for(String key : predictionsMap.keySet()) {
     		if(! contextMap.containsKey(key))		// this is required because contexts for both train and test runs are stored in the same file
     			continue;
-    		
+
     		String value = "";
     		
     		String predictions = predictionsMap.get(key);
@@ -154,6 +156,7 @@ public class BatchTrainTestDetailedOutcomeReport
 		
 		try {
 			File contextFile = new File(metaDirectory.getPath() + File.separator + Constants.ID_CONTEXT_KEY);
+
 			if(! contextFile.exists()) {
 				getContext().error("Required context file for detailed report is missing: " + contextFile + ". This file should have been created by the ContextCollectorUFE.");
 				return result;	// no harm done by returning an empty map
