@@ -20,11 +20,10 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -38,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
  * 
  */
 public class SaveModelWekaBatchTask
-    extends DefaultBatchTask implements ExecutableTask
+    extends DefaultBatchTask
 {
 
     private String experimentName;
@@ -71,10 +70,10 @@ public class SaveModelWekaBatchTask
     }
     
     @Override
-    public void execute(TaskContext aContext)
-        throws Exception
+    public void setConfiguration(Map<String, Object> aConfig)
     {
-        init();
+    	super.setConfiguration(aConfig);
+    	init();
     }
 
     /**

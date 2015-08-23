@@ -19,6 +19,8 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.io.File;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
@@ -87,6 +89,18 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
         saveModelTask.addImport(this.getFeatureExtractionTask(), ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
         this.addTask(saveModelTask);
+    }
+	
+    @Override
+    public void setConfiguration(Map<String, Object> aConfig)
+    {
+    	super.setConfiguration(aConfig);
+    	
+    	try {
+			init();
+		} catch (Exception e) {
+			Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+		}
     }
 
 	/**

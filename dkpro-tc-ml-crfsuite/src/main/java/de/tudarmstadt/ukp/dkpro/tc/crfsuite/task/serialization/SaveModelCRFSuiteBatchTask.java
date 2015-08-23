@@ -20,13 +20,13 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -45,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
  * 
  */
 public class SaveModelCRFSuiteBatchTask
-    extends DefaultBatchTask implements ExecutableTask
+    extends DefaultBatchTask
 {
     private String experimentName;
     private AnalysisEngineDescription preprocessingPipeline;
@@ -74,13 +74,6 @@ public class SaveModelCRFSuiteBatchTask
         setType("Evaluation-" + experimentName);
         setTcMachineLearningAdapter(mlAdapter);
         setOutputFolder(outputFolder);
-    }
-
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        init();
     }
 
     /**
@@ -141,6 +134,13 @@ public class SaveModelCRFSuiteBatchTask
         addTask(saveModelTask);
     }
 
+    @Override
+    public void setConfiguration(Map<String, Object> aConfig)
+    {
+    	super.setConfiguration(aConfig);
+    	init();
+    }
+    
     public void setExperimentName(String experimentName)
     {
         this.experimentName = experimentName;
