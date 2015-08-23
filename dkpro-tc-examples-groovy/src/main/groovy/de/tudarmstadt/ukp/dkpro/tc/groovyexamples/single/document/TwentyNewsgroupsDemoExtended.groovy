@@ -30,8 +30,8 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask
 import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask
@@ -197,7 +197,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          *	Wrap wired tasks in batch task
          */
 
-        BatchTask batchTask = [
+        DefaultBatchTask batchTask = [
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
                 dimReaders,
