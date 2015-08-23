@@ -61,7 +61,7 @@ public class BatchTrainTestLatexReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
-
+        
         Properties outcomeIdProps = new Properties();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
@@ -115,7 +115,7 @@ public class BatchTrainTestLatexReport
         table.setCompact(false);
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_LATEX, table.getLatexWriter(-1, -1));
 
-        // output the location of the batch evaluation folder
+                // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
         File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
