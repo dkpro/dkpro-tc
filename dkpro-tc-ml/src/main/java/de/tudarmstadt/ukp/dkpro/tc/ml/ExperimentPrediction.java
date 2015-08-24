@@ -18,11 +18,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -70,15 +70,13 @@ public class ExperimentPrediction
     }
 
     @Override
-    public void setConfiguration(Map<String, Object> aConfig)
+    public void initialize(TaskContext aContext)
     {
-    	super.setConfiguration(aConfig);
-    	
-    	try {
-			init();
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
-		}
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
     }
 
     /**

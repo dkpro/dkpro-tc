@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
@@ -157,8 +156,8 @@ public class ExperimentCrossValidation
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
-            public void execute(TaskContext aContext)
-                throws Exception
+            @Override
+            public void initialize(TaskContext aContext)
             {
                 File xmiPathRoot = aContext.getStorageLocation(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
@@ -248,15 +247,13 @@ public class ExperimentCrossValidation
     }
 
     @Override
-    public void setConfiguration(Map<String, Object> aConfig)
+    public void initialize(TaskContext aContext)
     {
-    	super.setConfiguration(aConfig);
-    	
-    	try {
-			init();
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
-		}
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
     }
 
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)

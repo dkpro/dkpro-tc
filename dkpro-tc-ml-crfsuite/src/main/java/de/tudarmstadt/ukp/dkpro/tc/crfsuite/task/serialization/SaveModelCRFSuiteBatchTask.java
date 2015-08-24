@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
@@ -135,10 +135,13 @@ public class SaveModelCRFSuiteBatchTask
     }
 
     @Override
-    public void setConfiguration(Map<String, Object> aConfig)
+    public void initialize(TaskContext aContext)
     {
-    	super.setConfiguration(aConfig);
-    	init();
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
     }
     
     public void setExperimentName(String experimentName)

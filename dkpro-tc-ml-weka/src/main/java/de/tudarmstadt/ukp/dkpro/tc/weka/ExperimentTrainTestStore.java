@@ -19,11 +19,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.io.File;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -90,18 +90,16 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 
         this.addTask(saveModelTask);
     }
-	
-    @Override
-    public void setConfiguration(Map<String, Object> aConfig)
-    {
-    	super.setConfiguration(aConfig);
-    	
-    	try {
-			init();
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
-		}
-    }
+
+	@Override
+	public void initialize(TaskContext aContext)
+	{
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
+	}
 
 	/**
 	 * Private helper function that returns the ExtractFeaturesTask of
@@ -113,7 +111,7 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	private ExtractFeaturesTask getFeatureExtractionTask() {
 		for(Task task : this.getTasks())
 			if(task instanceof ExtractFeaturesTask)
-				return (ExtractFeaturesTask) task;
+                return (ExtractFeaturesTask) task;
 
 		return null;
 	}
@@ -128,7 +126,7 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	private MetaInfoTask getMetaTask() {
 		for(Task task : this.getTasks())
 			if(task instanceof MetaInfoTask)
-				return (MetaInfoTask) task;
+                return (MetaInfoTask) task;
 
 		return null;
 	}
