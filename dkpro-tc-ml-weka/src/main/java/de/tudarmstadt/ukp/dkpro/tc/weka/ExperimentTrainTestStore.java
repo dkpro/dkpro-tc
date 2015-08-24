@@ -77,8 +77,9 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
     protected void init() {
     	super.init();
 
-    	if (outputDirectory == null)
+    	if (outputDirectory == null) {
             throw new IllegalStateException("You must set the outputdirectory.");
+        }
 
         ModelSerializationTask saveModelTask = new ModelSerializationTask();
     	String type = saveModelTask.getType() + "-" + experimentName;
@@ -109,9 +110,11 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	 * @return The ExtractFeaturesTask
 	 */
 	private ExtractFeaturesTask getFeatureExtractionTask() {
-		for(Task task : this.getTasks())
-			if(task instanceof ExtractFeaturesTask)
+		for(Task task : this.getTasks()) {
+            if(task instanceof ExtractFeaturesTask) {
                 return (ExtractFeaturesTask) task;
+            }
+        }
 
 		return null;
 	}
@@ -124,9 +127,11 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	 * @return The MetaTask
 	 */
 	private MetaInfoTask getMetaTask() {
-		for(Task task : this.getTasks())
-			if(task instanceof MetaInfoTask)
+		for(Task task : this.getTasks()) {
+            if(task instanceof MetaInfoTask) {
                 return (MetaInfoTask) task;
+            }
+        }
 
 		return null;
 	}

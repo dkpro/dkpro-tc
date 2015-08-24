@@ -18,14 +18,8 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
-import java.io.File;
-
-import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -43,6 +37,7 @@ public class BrownPosCRFSuiteDemoTest extends JavaDemosTest_Base
     BrownPosCRFSuiteDemo javaExperiment;
     ParameterSpace pSpace;
 
+    @Override
     @Before
     public void setup()
         throws Exception
