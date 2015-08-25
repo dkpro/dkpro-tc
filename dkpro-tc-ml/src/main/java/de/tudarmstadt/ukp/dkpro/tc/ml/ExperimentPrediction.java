@@ -18,11 +18,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
  * 
  */
 public class ExperimentPrediction
-    extends DefaultBatchTask implements ExecutableTask
+    extends DefaultBatchTask
 {
 
     private String experimentName;
@@ -70,10 +70,13 @@ public class ExperimentPrediction
     }
 
     @Override
-    public void execute(TaskContext aContext)
-        throws Exception
+    public void initialize(TaskContext aContext)
     {
-        init();
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
     }
 
     /**

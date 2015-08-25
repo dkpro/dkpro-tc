@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -31,7 +32,6 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.ExecutableTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
@@ -48,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
  * 
  */
 public class ExperimentCrossValidation
-    extends DefaultBatchTask implements ExecutableTask
+    extends DefaultBatchTask
 {
 
     protected String experimentName;
@@ -70,7 +70,7 @@ public class ExperimentCrossValidation
     }
 
     /**
-     * Preconfigured crossvalidation setup.  Pseudo-random assignment of 
+     * Preconfigured crossvalidation setup.  Pseudo-random assignment of
      * instances to folds.
      * 
      * @param aExperimentName
@@ -88,13 +88,13 @@ public class ExperimentCrossValidation
 		this(aExperimentName,
 				mlAdapter,
 				preprocessing,
-				aNumFolds, 
+				aNumFolds,
 				null
 				);
 	}
 	/**
 	 * Use this constructor for CV fold control.  The Comparator is
-	 * used to determine which instances must occur together in the same 
+	 * used to determine which instances must occur together in the same
 	 * CV fold.
 	 * 
 	 * @param aExperimentName
@@ -106,7 +106,7 @@ public class ExperimentCrossValidation
 	 */
 	public ExperimentCrossValidation(String aExperimentName,
 			Class<? extends TCMachineLearningAdapter> mlAdapter,
-			AnalysisEngineDescription preprocessing, int aNumFolds, 
+			AnalysisEngineDescription preprocessing, int aNumFolds,
 			Comparator<String> aComparator)
 			throws TextClassificationException
 	{
@@ -156,8 +156,8 @@ public class ExperimentCrossValidation
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
-            public void execute(TaskContext aContext)
-                throws Exception
+            @Override
+            public void initialize(TaskContext aContext)
             {
                 File xmiPathRoot = aContext.getStorageLocation(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
@@ -247,10 +247,13 @@ public class ExperimentCrossValidation
     }
 
     @Override
-    public void execute(TaskContext aContext)
-        throws Exception
+    public void initialize(TaskContext aContext)
     {
-        init();
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
     }
 
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)

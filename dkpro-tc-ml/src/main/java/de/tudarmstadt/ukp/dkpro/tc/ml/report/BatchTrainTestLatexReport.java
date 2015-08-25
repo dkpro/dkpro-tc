@@ -122,11 +122,9 @@ public class BatchTrainTestLatexReport
         getContext().getLoggingService().message(getContextLabel(),
                 ReportUtils.getPerformanceOverview(table));
         
-        table.transposeTable();
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_LATEX, table.getLatexWriter(3, 1));
         
         table.setCompact(false);
-        table.transposeTable();
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_LATEX, table.getLatexWriter(-1, -1));
 
         // this report is reused in CV, and we only want to aggregate confusion matrices from folds

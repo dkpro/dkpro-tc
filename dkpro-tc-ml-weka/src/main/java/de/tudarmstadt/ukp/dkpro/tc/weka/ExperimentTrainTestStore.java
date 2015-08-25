@@ -19,9 +19,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -75,8 +77,9 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
     protected void init() {
     	super.init();
 
-    	if (outputDirectory == null)
+    	if (outputDirectory == null) {
             throw new IllegalStateException("You must set the outputdirectory.");
+        }
 
         ModelSerializationTask saveModelTask = new ModelSerializationTask();
     	String type = saveModelTask.getType() + "-" + experimentName;
@@ -89,6 +92,16 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
         this.addTask(saveModelTask);
     }
 
+	@Override
+	public void initialize(TaskContext aContext)
+	{
+        try {
+            init();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
+        }
+	}
+
 	/**
 	 * Private helper function that returns the ExtractFeaturesTask of
 	 * the super class. Required, because all tasks are private in
@@ -97,9 +110,11 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	 * @return The ExtractFeaturesTask
 	 */
 	private ExtractFeaturesTask getFeatureExtractionTask() {
-		for(Task task : this.getTasks())
-			if(task instanceof ExtractFeaturesTask)
-				return (ExtractFeaturesTask) task;
+		for(Task task : this.getTasks()) {
+            if(task instanceof ExtractFeaturesTask) {
+                return (ExtractFeaturesTask) task;
+            }
+        }
 
 		return null;
 	}
@@ -112,9 +127,11 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	 * @return The MetaTask
 	 */
 	private MetaInfoTask getMetaTask() {
-		for(Task task : this.getTasks())
-			if(task instanceof MetaInfoTask)
-				return (MetaInfoTask) task;
+		for(Task task : this.getTasks()) {
+            if(task instanceof MetaInfoTask) {
+                return (MetaInfoTask) task;
+            }
+        }
 
 		return null;
 	}
