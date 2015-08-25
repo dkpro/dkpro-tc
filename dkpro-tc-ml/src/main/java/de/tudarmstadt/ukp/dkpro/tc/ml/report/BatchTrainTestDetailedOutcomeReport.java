@@ -32,8 +32,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.ContextMetaCollector_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.AbstractMetaInfoTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.ContextMetaCollectorUtil;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 
 /**
  * Collects the final prediction results for each Unit and
@@ -51,8 +51,8 @@ public class BatchTrainTestDetailedOutcomeReport
     public static final String SEPARATOR_CHAR = ";";		// Note: this should match the identical constant in WekaOutcomeIDReport; it is replicated here, though, to avoid a dependency on the ML-WEKA module
         
     private static final String TEST_TASK_ID = "TestTask";
-    private static final String CONTEXT_TASK_ID = "TestContextMetaTask";
-    private static final boolean extractContext = false;
+    private static final String METAINFO_TASK_ID = "MetaInfoTask";
+    private static final boolean extractContext = true;		// TODO MW: Externalize to parameter, if or when reports are provided as instances instead of classes
 	private static final String OUTPUTFILE_HEADER = "#ID=PREDICTION;GOLDSTANDARD;PREDICTION CORRECT Y/N; TEXT OF TC UNIT (optionally with context)";
 
     @Override
@@ -76,9 +76,9 @@ public class BatchTrainTestDetailedOutcomeReport
                     getContext().error("Error while trying to read predictions from test task file.", e);
                 }
             }
-            else if(type.contains(CONTEXT_TASK_ID)) {
+            else if(type.contains(METAINFO_TASK_ID)) {
             	try {
-                	File metaDirectory = store.getStorageFolder(subcontext.getId(), AbstractMetaInfoTask.META_KEY);
+                	File metaDirectory = store.getStorageFolder(subcontext.getId(), MetaInfoTask.META_KEY);
                 	contextMap = parseContextFile(metaDirectory, extractContext);
             	}
             	catch (Exception e) {
@@ -107,6 +107,9 @@ public class BatchTrainTestDetailedOutcomeReport
     	Properties props = new Properties();
     	
     	for(String key : predictionsMap.keySet()) {
+    		if(! contextMap.containsKey(key))		// this is required because contexts for both train and test runs are stored in the same file
+    			continue;
+    		
     		String value = "";
     		
     		String predictions = predictionsMap.get(key);
@@ -151,7 +154,7 @@ public class BatchTrainTestDetailedOutcomeReport
 			List<String> lines = FileUtils.readLines(contextFile, StandardCharsets.UTF_8.toString());
 			
 			for(String line : lines) {
-				int firstTabPos = line.indexOf(ContextMetaCollector_ImplBase.ID_CONTEXT_DELIMITER);		// context file is tab delimited, but there might be leading tabs in the text string, so we don't use split() here
+				int firstTabPos = line.indexOf(ContextMetaCollectorUtil.ID_CONTEXT_DELIMITER);		// context file is tab delimited, but there might be leading tabs in the text string, so we don't use split() here
 				
 				String id = line.substring(0, firstTabPos);
 				String textWithContext = line.substring(firstTabPos + 1);
@@ -178,10 +181,10 @@ public class BatchTrainTestDetailedOutcomeReport
 	private String removeContext(String textWithContext) {
 		String textWithoutContext = "";
 		
-		int leftSeparatorPos = textWithContext.indexOf(ContextMetaCollector_ImplBase.LEFT_CONTEXT_SEPARATOR);
-		int rightSeparatorPos = textWithContext.indexOf(ContextMetaCollector_ImplBase.RIGHT_CONTEXT_SEPARATOR);
+		int leftSeparatorPos = textWithContext.indexOf(ContextMetaCollectorUtil.LEFT_CONTEXT_SEPARATOR);
+		int rightSeparatorPos = textWithContext.indexOf(ContextMetaCollectorUtil.RIGHT_CONTEXT_SEPARATOR);
 		
-		textWithoutContext = textWithContext.substring(leftSeparatorPos + ContextMetaCollector_ImplBase.LEFT_CONTEXT_SEPARATOR.length(), rightSeparatorPos);
+		textWithoutContext = textWithContext.substring(leftSeparatorPos + ContextMetaCollectorUtil.LEFT_CONTEXT_SEPARATOR.length(), rightSeparatorPos);
 		
 		return textWithoutContext;
 	}

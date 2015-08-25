@@ -272,7 +272,7 @@ public interface Constants
     /**
      * Name of the results file which stores detailed outcome results with id and tc unit text
      */
-    public static final String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.txt";
+    public static final String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.csv";
     /**
      * Name of the meta task file which holds the tc unit text and context for all test
      * instances.
