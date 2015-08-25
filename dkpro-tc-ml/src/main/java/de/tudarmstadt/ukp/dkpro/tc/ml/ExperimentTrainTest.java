@@ -33,7 +33,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.task.TestContextMetaTask;
 
 /**
  * Train-Test setup
@@ -55,11 +54,9 @@ public class ExperimentTrainTest
     private InitTask initTaskTrain;
     private InitTask initTaskTest;
     private MetaInfoTask metaTask;
-    private TestContextMetaTask metaTask2;
     private ExtractFeaturesTask featuresTrainTask;
     private ExtractFeaturesTask featuresTestTask;
     private TaskBase testTask;
-	private boolean extractTestDataContext = false;	// default value so as to not affect experiments, if this hasn't been set explicitly; TODO MW: can this flag be moved to BatchTask?
 
     public ExperimentTrainTest()
     {/* needed for Groovy */
@@ -138,15 +135,6 @@ public class ExperimentTrainTest
 
         metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 MetaInfoTask.INPUT_KEY);
-        
-		if(extractTestDataContext) {
-	        metaTask2 = new TestContextMetaTask();
-	        metaTask2.setOperativeViews(operativeViews);
-	        metaTask2.setType(metaTask2.getType() + "-" + experimentName);
-	
-	        metaTask2.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
-	                MetaInfoTask.INPUT_KEY);
-        }
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
@@ -189,8 +177,6 @@ public class ExperimentTrainTest
         addTask(initTaskTrain);
         addTask(initTaskTest);
         addTask(metaTask);
-        if(extractTestDataContext)
-        	addTask(metaTask2);
         addTask(featuresTrainTask);
         addTask(featuresTestTask);
         addTask(testTask);
@@ -221,16 +207,6 @@ public class ExperimentTrainTest
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;
-    }
-    
-    /**
-     * Whether or not the context for the TC units from the
-     * test data should extract (similar to the training data context)
-     * 
-     */
-    public void setExtractTestDataContext(boolean extract)
-    {
-    	extractTestDataContext = extract;
     }
 
     /**
