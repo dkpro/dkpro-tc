@@ -166,7 +166,6 @@ public class BatchTrainTestDetailedOutcomeReport
 			
 			for(String line : lines) {
 				int firstTabPos = line.indexOf(ContextMetaCollectorUtil.ID_CONTEXT_DELIMITER);		// context file is tab delimited, but there might be leading tabs in the text string, so we don't use split() here
-				
 				if(firstTabPos == -1)			// shouldn't happen, but might.
 					continue;
 				
