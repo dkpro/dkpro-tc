@@ -151,6 +151,11 @@ public class BatchTrainTestDetailedOutcomeReport
 		
 		try {
 			File contextFile = new File(metaDirectory.getPath() + File.separator + Constants.ID_CONTEXT_KEY);
+			if(! contextFile.exists()) {
+				getContext().error("Required context file for detailed report is missing: " + contextFile + ". This file should have been created by the ContextCollectorUFE.");
+				return result;	// no harm done by returning an empty map
+			}
+			
 			List<String> lines = FileUtils.readLines(contextFile, StandardCharsets.UTF_8.toString());
 			
 			for(String line : lines) {

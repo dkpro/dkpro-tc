@@ -26,7 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 
-public class SequenceContextMetaCollector 
+public class SequenceContextMetaCollector
 	extends ContextMetaCollector_ImplBase
 {
 	
@@ -38,7 +38,7 @@ public class SequenceContextMetaCollector
 		int id = sequence.getId();
         for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas, TextClassificationUnit.class, sequence)) {
             String idString = (String) InstanceIdFeature.retrieve(jcas, unit, id).getValue();
-            addContext(jcas, unit, idString, sb);
+            ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
         }
 	}
 }

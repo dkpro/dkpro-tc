@@ -43,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.NoopFeatureExtractor;
+import de.tudarmstadt.ukp.dkpro.tc.core.feature.UnitContextMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.JsonDataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderMultiLabel;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.TestReaderRegression;
@@ -156,6 +157,7 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] {
+        		UnitContextMetaCollector.PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY
                 // "NAME", "VALUE"
         };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));

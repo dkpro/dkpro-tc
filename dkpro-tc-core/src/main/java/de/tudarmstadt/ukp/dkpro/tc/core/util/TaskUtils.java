@@ -297,6 +297,18 @@ public class TaskUtils
                 throw new ResourceInitializationException(e);
             }
         }
+        
+        // also add default FE for context extraction during meta collection
+        // TODO MW: Does not work here because field "contextFile" does not get initialised properly
+        /*try {
+        	String className = ContextCollectorUFE.class.getName();
+        	extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
+        		Class.forName(className).asSubclass(Resource.class),
+        		convertedParameters.toArray()));
+        }
+        catch (ClassNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }*/
 
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
