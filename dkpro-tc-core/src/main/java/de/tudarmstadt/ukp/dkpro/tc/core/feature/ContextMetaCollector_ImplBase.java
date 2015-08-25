@@ -37,18 +37,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
  */public abstract class ContextMetaCollector_ImplBase
 	extends MetaCollector
 {
-	
-	// Public constants used in this file format
-    public static final String ID_CONTEXT_DELIMITER = "\t";
-    public static final String RIGHT_CONTEXT_SEPARATOR = "]]" + ID_CONTEXT_DELIMITER;
-    public static final String LEFT_CONTEXT_SEPARATOR = ID_CONTEXT_DELIMITER + "[[";
-	
     public static final String PARAM_CONTEXT_FILE = "contextFile";
     @ConfigurationParameter(name = PARAM_CONTEXT_FILE, mandatory = true)
     protected File contextFile;
     
-	public static final int CONTEXT_WIDTH = 30;
-		
 	protected StringBuilder sb;
 
 	@Override
