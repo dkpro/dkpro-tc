@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -34,7 +33,9 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -67,19 +68,21 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
     private TCMachineLearningAdapter mlAdapter;
 
     private AnalysisEngine engine;
+	private org.apache.uima.util.Logger logger;
 
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-
+        logger = context.getLogger();
+        
         try {
             mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
             parameters = ModelPersistUtil.initParameters(tcModelLocation);
             featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
             
-            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
+            AnalysisEngineDescription connector = getLoadModelConnector(parameters,
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
                     learningMode, featureMode, DenseFeatureStore.class.getName(),
                     featureExtractors.toArray(new String[0]));
@@ -95,23 +98,36 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-    	Logger.getLogger(getClass()).debug("START: process(JCAS)");
+    	logger.log(Level.FINE, "START: process(JCAS)");
     	
-    	// Verify that Unit and Outcome annotations are already present
-    	if( JCasUtil.select(jcas, TextClassificationOutcome.class).size() < 1 )
-    		throw new IllegalArgumentException("At least one TC outcome annotation must be present in the CAS.");
-    	if( JCasUtil.select(jcas, TextClassificationUnit.class).size() < 1 )
-    		throw new IllegalArgumentException("At least one TC unit annotation must be present in the CAS.");
-    	
+    	// Verify that Unit, Outcome and Focus annotations are present
+    	boolean skip = false;
+    	if( JCasUtil.select(jcas, TextClassificationOutcome.class).size() < 1 ) {
+    		// throw new IllegalArgumentException("At least one TC outcome annotation must be present in the CAS.");
+    		skip = true;
+    		logger.log(Level.WARNING, "At least one TC outcome annotation must be present in the CAS. Skipping CAS.");
+    	}
+    	if( JCasUtil.select(jcas, TextClassificationUnit.class).size() < 1 ) {
+    		//throw new IllegalArgumentException("At least one TC unit annotation must be present in the CAS.");
+	    	skip = true;
+			logger.log(Level.WARNING, "At least one TC unit annotation must be present in the CAS. Skipping CAS.");
+		}
+    	if( JCasUtil.select(jcas, TextClassificationFocus.class).size() < 1 ) {
+    		//throw new IllegalArgumentException("At least one TC focus annotation must be present in the CAS.");
+	    	skip = true;
+			logger.log(Level.WARNING, "At least one TC focus annotation must be present in the CAS. Skipping CAS.");
+		}
+    
     	// Process and classify
         try {
-            engine.process(jcas);
+        	if(! skip)
+        		engine.process(jcas);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
         
-        Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
+        logger.log(Level.FINE, "FINISH: process(JCAS)");
     }
 
 
@@ -120,7 +136,7 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
      * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    private AnalysisEngineDescription getSaveModelConnector(List<Object> parameters,
+    private AnalysisEngineDescription getLoadModelConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, String... featureExtractorClassNames)
         throws ResourceInitializationException
