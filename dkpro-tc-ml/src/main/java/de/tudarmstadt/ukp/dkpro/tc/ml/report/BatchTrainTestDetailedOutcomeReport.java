@@ -169,6 +169,9 @@ public class BatchTrainTestDetailedOutcomeReport
 				if(firstTabPos == -1)			// shouldn't happen, but might.
 					continue;
 				
+				if(firstTabPos == -1)			// shouldn't happen, but might.
+					continue;
+				
 				String id = line.substring(0, firstTabPos);
 				String textWithContext = line.substring(firstTabPos + 1);
 				
