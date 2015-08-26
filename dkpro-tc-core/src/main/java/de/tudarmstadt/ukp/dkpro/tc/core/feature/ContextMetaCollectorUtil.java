@@ -41,7 +41,9 @@ public class ContextMetaCollectorUtil {
         sb.append(ID_CONTEXT_DELIMITER);
         sb.append(getLeftContext(jcas, unit));
         sb.append(LEFT_CONTEXT_SEPARATOR);
-    	sb.append(unit.getCoveredText());
+        String unitText = unit.getCoveredText();
+        unitText = unitText.replace("\n", " ");		// removing line breaks, to avoid problems with CSV-style output format
+    	sb.append(unitText);
     	sb.append(RIGHT_CONTEXT_SEPARATOR);
     	sb.append(getRightContext(jcas, unit));
         sb.append("\n");

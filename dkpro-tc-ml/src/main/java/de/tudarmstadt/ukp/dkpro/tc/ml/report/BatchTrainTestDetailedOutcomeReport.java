@@ -96,10 +96,13 @@ public class BatchTrainTestDetailedOutcomeReport
         dummyFolder.delete();
         
         // Build the output result and write to file
-        Properties props = getProperties(predictionsMap, contextMap);
-        getContext().storeBinary(Constants.ID_DETAILED_OUTCOME_KEY,
-                new PropertiesAdapter(props, OUTPUTFILE_HEADER));
-        
+        if( predictionsMap != null && contextMap != null ) {
+	        Properties props = getProperties(predictionsMap, contextMap);
+	        getContext().storeBinary(Constants.ID_DETAILED_OUTCOME_KEY,
+	                new PropertiesAdapter(props, OUTPUTFILE_HEADER));
+        }
+        else
+        	getContext().error("Unable to create detailed outcome report. One of predictionsMap or contextMap was Null.");
     }
 
     private Properties getProperties(Map<String, String> predictionsMap, Map<String, String> contextMap)
@@ -160,6 +163,9 @@ public class BatchTrainTestDetailedOutcomeReport
 			
 			for(String line : lines) {
 				int firstTabPos = line.indexOf(ContextMetaCollectorUtil.ID_CONTEXT_DELIMITER);		// context file is tab delimited, but there might be leading tabs in the text string, so we don't use split() here
+				
+				if(firstTabPos == -1)			// shouldn't happen, but might.
+					continue;
 				
 				String id = line.substring(0, firstTabPos);
 				String textWithContext = line.substring(firstTabPos + 1);
