@@ -17,27 +17,34 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.feature;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
-import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
+/** A dummy meta-collector which merely sets up the correct file path
+ * for the context file. This is required by the {@link ContextCollectorUFE},
+ * which in turn is a prerequisite for the {@link BatchTrainTestDetailedOutcomeReport}.
+ *
+ */
 public class UnitContextMetaCollector
 	extends ContextMetaCollector_ImplBase
 {
-
+    
 	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-  
-		TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-		
-		TextClassificationUnit unit = TaskUtils.tryGetMatchingUnitForFocus(jcas, focus);
-		if(unit != null) {
-        	String idString = (String) InstanceIdFeature.retrieve(jcas, unit).getValue();
-        	addContext(jcas, unit, idString, this.sb);
-        }
+	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		// Intentionally do nothing here.
+	}
+	
+	@Override
+	public Map<String, String> getParameterKeyPairs() {
+        Map<String, String> mapping = new HashMap<String, String>();
+        
+        mapping.put(PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY);
+                
+        return mapping;
 	}
 }

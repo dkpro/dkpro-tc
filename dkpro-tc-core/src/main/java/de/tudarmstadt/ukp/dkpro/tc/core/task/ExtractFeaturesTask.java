@@ -120,7 +120,11 @@ public class ExtractFeaturesTask
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
+        	// also add default FE for context extraction during meta collection
+        	// if (featureMode.equals(Constants.FM_UNIT))
+        	//    featureSet.add(UnitContextMetaCollector.class.getName()); // TODO MW: Not working -> UnsupportedOperationException
+        	
+        	metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
             requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
         }
         catch (ClassNotFoundException e) {

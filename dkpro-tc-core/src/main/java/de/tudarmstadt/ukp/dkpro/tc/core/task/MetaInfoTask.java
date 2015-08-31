@@ -47,7 +47,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.feature.SequenceContextMetaCollector;
-import de.tudarmstadt.ukp.dkpro.tc.core.feature.UnitContextMetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
 /**
@@ -131,14 +130,14 @@ public class MetaInfoTask
             throw new ResourceInitializationException(e);
         }
         
-        if (featureMode.equals(Constants.FM_UNIT)) {
+        //if (featureMode.equals(Constants.FM_UNIT)) {
             // add additional unit context meta collector that extracts the context around text classification units
             // mainly used for error analysis purposes
-            metaCollectorClasses.add(UnitContextMetaCollector.class);        	
-        }
+            //metaCollectorClasses.add(UnitContextMetaCollector.class);
+        //}
         
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            metaCollectorClasses.add(SequenceContextMetaCollector.class);        	
+            metaCollectorClasses.add(SequenceContextMetaCollector.class);
         }
 
         // collect parameter/key pairs that need to be set

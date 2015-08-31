@@ -37,7 +37,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
  * Collects the final evaluation results in a train/test setting.
@@ -62,7 +61,6 @@ public class BatchTrainTestLatexReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
-        Map<List<String>, Double> confMatrixMap = new HashMap<List<String>, Double>();
 
         Properties outcomeIdProps = new Properties();
 
@@ -81,17 +79,6 @@ public class BatchTrainTestLatexReport
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
                         Constants.RESULTS_FILENAME, new PropertiesAdapter()).getMap();
-
-                File confMatrix = store.getStorageFolder(subcontext.getId(),
-                        CONFUSIONMATRIX_KEY);
-
-                if (confMatrix.isFile()) {
-                    confMatrixMap = ReportUtils
-                            .updateAggregateMatrix(confMatrixMap, confMatrix);
-                }
-                else {
-                    confMatrix.delete();
-                }
 
                 String key = getKey(discriminatorsMap);
 
@@ -122,24 +109,11 @@ public class BatchTrainTestLatexReport
         getContext().getLoggingService().message(getContextLabel(),
                 ReportUtils.getPerformanceOverview(table));
         
+        table.transposeTable();
         getContext().storeBinary(EVAL_FILE_NAME + "_compact" + SUFFIX_LATEX, table.getLatexWriter(3, 1));
-    
+        
         table.setCompact(false);
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_LATEX, table.getLatexWriter(-1, -1));
-
-        // this report is reused in CV, and we only want to aggregate confusion matrices from folds
-        // in CV, and an aggregated OutcomeIdReport
-        if (getContext().getId().startsWith(ExperimentCrossValidation.class.getSimpleName())) {
-            // no confusion matrix for regression
-            if (confMatrixMap.size() > 0) {
-                FlexTable<String> confMatrix = ReportUtils
-                        .createOverallConfusionMatrix(confMatrixMap);
-                getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
-            }
-            if (outcomeIdProps.size() > 0)
-                getContext().storeBinary(Constants.ID_OUTCOME_KEY,
-                        new PropertiesAdapter(outcomeIdProps));
-        }
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
