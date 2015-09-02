@@ -30,7 +30,6 @@ import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
@@ -111,7 +110,6 @@ public class ManyInstancesExperiment implements Constants {
                 dimFeatureSets,
                 dimPipelineParameters
             ],
-            executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchCrossValidationReport
             ],

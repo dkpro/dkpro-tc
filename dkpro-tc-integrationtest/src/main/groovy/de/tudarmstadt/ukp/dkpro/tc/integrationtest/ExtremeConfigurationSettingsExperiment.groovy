@@ -27,7 +27,6 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import de.tudarmstadt.ukp.dkpro.lab.Lab
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
@@ -144,7 +143,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSets,
                 dimPipelineParametersEmpty
             ],
-            executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchCrossValidationReport
             ],
@@ -168,7 +166,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSets,
                 dimPipelineParametersEmpty
             ],
-            executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
@@ -197,7 +194,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
             ],
-            executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchCrossValidationReport
             ],
@@ -221,7 +217,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSetsEmpty,
                 dimPipelineParameters
             ],
-            executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
                 BatchTrainTestReport,
                 BatchOutcomeIDReport]
