@@ -30,13 +30,14 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ValidityCheckUtils;
 
 /**
- * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on
- * the CAS.
+ * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on the CAS.
  * 
- * This is called after initialization (which sets outcome and unit annotations) and executed for each CAS.
+ * This is called after initialization (which sets outcome and unit annotations) and executed for
+ * each CAS.
  */
 public class ValidityCheckConnectorPost
     extends ConnectorBase
@@ -53,21 +54,22 @@ public class ValidityCheckConnectorPost
 
     private int featureModeI;
     private int learningModeI;
-    
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-    	
+
         if (featureModeI == 0) {
-        	featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
+            featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
         }
 
         if (learningModeI == 0) {
-        	learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
+            learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
         }
 
-        getLogger().log(Level.FINE, "--- checking validity of experiment setup after initialization ---");
+        getLogger().log(Level.FINE,
+                "--- checking validity of experiment setup after initialization ---");
 
         Collection<TextClassificationOutcome> outcomes = JCasUtil.select(jcas,
                 TextClassificationOutcome.class);

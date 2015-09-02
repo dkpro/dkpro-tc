@@ -241,17 +241,11 @@ public class InitTask
         return preprocessing;
     }
 
-    /**
-     * @param aAggregate
-     */
     public void setPreprocessing(AnalysisEngineDescription preprocessing)
     {
         this.preprocessing = preprocessing;
     }
 	
-    /**
-     * @param operativeViews
-     */
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;

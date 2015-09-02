@@ -32,10 +32,11 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.DocumentFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ValidityCheckUtils;
 
 /**
- * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on
+ * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on
  * the CAS.
  * 
  */

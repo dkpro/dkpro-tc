@@ -18,20 +18,15 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.initializer;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public interface SequenceOutcomeAnnotator {
-
+public interface SequenceOutcomeAnnotator
+{
     /**
      * Returns the text classification outcome for each classification unit
-     * 
-     * @param jcas
-     * @return
-     * @throws CollectionException
      */
-    public String getTextClassificationOutcome(JCas jcas, TextClassificationUnit unit) throws AnalysisEngineProcessException;
-
+    public String getTextClassificationOutcome(JCas jcas, TextClassificationUnit unit)
+        throws AnalysisEngineProcessException;
 }

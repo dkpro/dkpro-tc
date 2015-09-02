@@ -50,13 +50,13 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMe
  * Combination pair ngram feature extractor. Creates features that are combinations of ngrams from
  * both documents in the pair. Returns all combinations of qualified ngrams from each of the two
  * documents. A feature value is 1 if each of the ngrams appeared in their respective text, and 0
- * otherwise. <br />
- * For example, given two documents:<br />
- * Document 1: "Cats eat mice"<br />
- * Document 2: "Birds chase cats"<br />
- * <br />
- * some combination ngrams are:<br />
- * comboNG_cats_birds:1, comboNG_cats_eat_birds:1, comboNG_cats_birds_chase:1, etc. <br />
+ * otherwise. <br>
+ * For example, given two documents:<br>
+ * Document 1: "Cats eat mice"<br>
+ * Document 2: "Birds chase cats"<br>
+ * <br>
+ * some combination ngrams are:<br>
+ * comboNG_cats_birds:1, comboNG_cats_eat_birds:1, comboNG_cats_birds_chase:1, etc. <br>
  * Note: To extract ngrams from a pair of documents that are not combinations of ngrams across the
  * documents, please use {@link LuceneNGramPFE}.
  * 
@@ -87,7 +87,7 @@ public class LuceneNGramCPFE
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K_COMBO, mandatory = false, defaultValue = "500")
     protected int ngramUseTopKCombo;
     /**
-     * If true, both orderings of ngram combinations will be used.<br />
+     * If true, both orderings of ngram combinations will be used.<br>
      * Example: If ngram 'cat' comes from Document 1, and ngram 'dog' comes from Document 2, then
      * when this param = true, the features comboNG_cat_dog AND comboNG_dog_cat are produced.
      */

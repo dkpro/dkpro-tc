@@ -98,7 +98,7 @@ public class TaskUtils
     }
 
     /**
-     * Saves a serializable object of type <T> to disk. Output file may be uncompressed, gzipped or
+     * Saves a serializable object of type T to disk. Output file may be uncompressed, gzipped or
      * bz2-compressed. Compressed files must have a .gz or .bz2 suffix.
      *
      * @param serializedFile
@@ -330,14 +330,6 @@ public class TaskUtils
     /**
      * Should not be called directly, but always from a connector (UIMA context with parameters
      * initialized)
-     * 
-     * @param featureMode
-     * @param featureExtractors
-     * @param jcas
-     * @param developerMode
-     * @param addInstanceId
-     * @return
-     * @throws AnalysisEngineProcessException
      */
     public static Instance getSingleInstance(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
@@ -398,11 +390,13 @@ public class TaskUtils
                 if (classificationUnits.size() != 1) {
                 	unit = tryGetMatchingUnitForFocus(focus, classificationUnits);
                 	
-                	if( unit == null)
-                		throw new TextClassificationException("JCas should contain exactly one text classification unit, but it contains " + classificationUnits.size() + ".");
+                	if( unit == null) {
+                        throw new TextClassificationException("JCas should contain exactly one text classification unit, but it contains " + classificationUnits.size() + ".");
+                    }
                 }
-                else
-                	unit = classificationUnits.iterator().next();
+                else {
+                    unit = classificationUnits.iterator().next();
+                }
 
                 if (addInstanceId) {
                     instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
@@ -439,8 +433,9 @@ public class TaskUtils
      */
     public static TextClassificationUnit tryGetMatchingUnitForFocus(TextClassificationFocus focus, Collection<TextClassificationUnit> classificationUnits)
     {
-    	if(focus == null || classificationUnits == null || classificationUnits.size() == 0)
-    		return null;
+    	if(focus == null || classificationUnits == null || classificationUnits.size() == 0) {
+            return null;
+        }
     	
 		int focusBegin = focus.getBegin();
 		int focusEnd = focus.getEnd();
@@ -460,10 +455,9 @@ public class TaskUtils
     /**
      * Helper method to return a matching TC unit for the given focus and CAS, if possible,
      * based on matching start and end points.
-     * Delegates to the other {@link #tryGetMatchingUnitForFocus(TextClassificationFocus, Collection<TextClassificationUnit>) tryGetMatchingUnitForFocus}
+     * Delegates to the other {@link #tryGetMatchingUnitForFocus(TextClassificationFocus, Collection)}
      * 
      * @param focus The focus under consideration
-     * @param classificationUnits The list of TC units covered by this focus.
      * @return TC Unit that is identical with the focus range, if available. Null otherwise.
      */
 	public static TextClassificationUnit tryGetMatchingUnitForFocus(JCas jcas, TextClassificationFocus focus)
@@ -473,16 +467,6 @@ public class TaskUtils
 		return tryGetMatchingUnitForFocus(focus, allUnitsUnderFocus);
 	}
 
-	/**
-     * @param featureMode
-     * @param featureExtractors
-     * @param jcas
-     * @param developerMode
-     * @param addInstanceId
-     * @param sequenceId
-     * @return
-     * @throws AnalysisEngineProcessException
-     */
     public static List<Instance> getMultipleInstances(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
             boolean addInstanceId, int sequenceId)
@@ -592,11 +576,7 @@ public class TaskUtils
     }
     /**
      * Gets the instance weight.
-     * @param jcas
-     * @param unit
      * @return the instance weight
-     * @throws TextClassificationException
-     * @throws AnalysisEngineProcessException
      */
     public static double getWeight(JCas jcas, AnnotationFS unit) throws TextClassificationException
         {

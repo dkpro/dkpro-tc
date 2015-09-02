@@ -33,21 +33,21 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 
 /**
- * This class extracts lists of specified keywords from a text. <br />
+ * This class extracts lists of specified keywords from a text. <br>
  * The lists are similar to ngrams, except that instead of using all tokens, only the specified
  * keywords are eligible to appear in a list. These "keyword ngrams" may be useful for tasks such
  * as sentence ordering (Barzilay and Lapata 2008). The concept is similar to strings of entity
  * mentions in Centering Theory, except since the user defines the permissible tokens, finite lists
- * are preferred. Keyword ngrams are extracted from an entire document, not just a single sentence.<br />
- * <br />
- * Example: keyword ngrams of discourse markers:<br />
+ * are preferred. Keyword ngrams are extracted from an entire document, not just a single sentence.<br>
+ * <br>
+ * Example: keyword ngrams of discourse markers:<br>
  * Text: Although apples are red, I prefer blueberries. Furthermore, bananas are green, if only when
- * unripe.<br />
- * Keyword ngrams: <br />
- * although_furthermore, <br />
- * furthermore_if_only, <br />
- * although_furthermore_if_only, etc.<br />
- * <br />
+ * unripe.<br>
+ * Keyword ngrams: <br>
+ * although_furthermore, <br>
+ * furthermore_if_only, <br>
+ * although_furthermore_if_only, etc.<br>
+ * <br>
  * Parameters are available to include sentence boundary markers, sentence text location, commas,
  * etc.
  * 

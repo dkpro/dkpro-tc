@@ -27,8 +27,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /** A dummy meta-collector which merely sets up the correct file path
  * for the context file. This is required by the {@link ContextCollectorUFE},
- * which in turn is a prerequisite for the {@link BatchTrainTestDetailedOutcomeReport}.
- *
+ * which in turn is a prerequisite for the BatchTrainTestDetailedOutcomeReport.
  */
 public class UnitContextMetaCollector
 	extends ContextMetaCollector_ImplBase

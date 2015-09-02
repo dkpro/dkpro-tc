@@ -30,8 +30,9 @@ import java.util.TreeSet;
 /**
  * Implementation of confusion matrix for evaluating learning algorithms; computes macro F-measure,
  * accuracy, confidence intervals, Cohen's Kappa
- * <p/>
+ * <p>
  * (c) 2013 Ivan Habernal
+ * </p>
  */
 @SuppressWarnings("unused")
 public class ConfusionMatrix
@@ -189,9 +190,9 @@ public class ConfusionMatrix
      * Micro-averaged F-measure gives equal weight to each document and is therefore
      * considered as an average over all the document/category pairs. It tends to be
      * dominated by the classifierâ€™s performance on common categories. (It's actually the accuracy).
-     * <p/>
+     * <p>
      * (from Ozgur et al., 2005. Text Categorization with Class-Based and Corpus-Based Keyword Selection.)
-     *
+     * </p>
      * @return double
      */
     public double getMicroFMeasure()

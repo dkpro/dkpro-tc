@@ -55,16 +55,16 @@ import weka.classifiers.functions.SMO;
  * be more important than others.  For example, if some instances in your
  * training set were annotated by a very reliable annotator, and other instances
  * were annotated by an unreliable worker, then the instances can be weighted more
- * and less heavily, respectively. <br />
+ * and less heavily, respectively. <br>
  * 
  * An instance weight is a double value greater than 0. As can be seen in the demo
  * below, implementing instance weighting in DKPro TC consists of building a Reader
  * that adds weights, and setting the ParameterSpace dimension DIM_APPLY_INSTANCE_WEIGHTING
- * to <b>true</b>.<br />
+ * to <b>true</b>.<br>
  * 
  * You may wish to weight just your training instances, and not your test instances,
  * or vice versa.  You can control this in your Reader.  Be careful when using
- * cross-validation, if you only want part of your dataset to be weighted. <br />
+ * cross-validation, if you only want part of your dataset to be weighted. <br>
  * 
  * Currently, DKPro TC only supports instance weighting with Weka (see
  * {@link weka.core.WeightedInstancesHandler}); a full list of Weka
@@ -73,10 +73,9 @@ import weka.classifiers.functions.SMO;
  * This list includes such common classifiers as J48, JRip, LinearReression,
  * Logistic, MultilayerPerceptron, NaiveBayes, SMO, SMOreg, and ZeroR.
  * Users should familiarize themselves with the exact classifier and weight
- * utilization, as this varies per classifier. <br />
+ * utilization, as this varies per classifier. <br>
  * 
- * See also: <br />
- * {@link https://weka.wikispaces.com/Add+weights+to+dataset}
+ * See also: {@link https://weka.wikispaces.com/Add+weights+to+dataset}
  */
 public class TwentyNewsgroupsInstanceWeightingDemo
     implements Constants

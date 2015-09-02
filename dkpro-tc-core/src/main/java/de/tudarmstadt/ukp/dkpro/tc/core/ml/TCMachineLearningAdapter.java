@@ -51,42 +51,40 @@ public interface TCMachineLearningAdapter
     }
 
     /**
-     * @return The task that reads the ML feature store format, trains the classifier and stores the test results.
+     * @return The task that reads the ML feature store format, trains the classifier and stores the
+     *         test results.
      */
     public TaskBase getTestTask();
 
     /**
      * This report is always added to {@code testTask} reports by default in
-     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}
-     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.TrainTestExperiment}.
+     * ExperimentCrossValidation and ExperimentTrainTest.
      *
      * @return The report that computes the classification results.
      */
     public Class<? extends ReportBase> getClassificationReportClass();
 
-	/**
+    /**
      * @return The data writer class that needs to be used with the corresponding ML framework
-	 */
-	public Class<? extends DataWriter> getDataWriterClass();
+     */
+    public Class<? extends DataWriter> getDataWriterClass();
 
-	/**
+    /**
      * @return The class of the load model connector to be used with this ML framework
-   	 */
-	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass();
+     */
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass();
 
-	
     /**
      * This report is always added to {@code testTask} reports by default in
-     * {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}
-     * and {@link de.tudarmstadt.ukp.dkpro.tc.ml.task.TrainTestExperiment}.
+     * ExperimentCrossValidation and ExperimentTrainTest.
      *
      * @return The report that collects the outcomeId to prediction values.
      */
     public Class<? extends ReportBase> getOutcomeIdReportClass();
 
     /**
-     * This report is always added to {@code crossValidationTask} reports
-     * by default in {@linkplain de.tudarmstadt.ukp.dkpro.tc.ml.task.CrossValidationExperiment}.
+     * This report is always added to {@code crossValidationTask} reports by default in
+     * ExperimentCrossValidation.
      *
      * @return The report that collects the results from the different folds.
      */
@@ -99,7 +97,8 @@ public interface TCMachineLearningAdapter
             int folds);
 
     /**
-     * @param name Which name should be returned
+     * @param name
+     *            Which name should be returned
      * @return Returns the filename that is used for specific files by the framework
      */
     public String getFrameworkFilename(AdapterNameEntries name);

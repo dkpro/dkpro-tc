@@ -36,15 +36,13 @@ public class EvaluatorFactory
     /***
      * 
      * @param file
-     *            - file containing data are to be evaluated
-     * @param mode
+     *            file containing data are to be evaluated
      * @param softEvaluation
      *            Controls how division by zero is treated. Soft: returns 0; Hard: returns NaN
      * @param individualLabelMeasures
      *            Controls calculation of measures for individual labels. individual: returns
      *            measures for each label and composite measures; not individual: returns just
      *            composite measures
-     * @throws IOException
      */
     public static EvaluatorBase createEvaluator(File file, String learningMode,
             boolean softEvaluation, boolean individualLabelMeasures)
@@ -57,15 +55,12 @@ public class EvaluatorFactory
     
     /***
      * 
-     * @param id2outcome
-     * @param mode
      * @param softEvaluation
      *            Controls how division by zero is treated. Soft: returns 0; Hard: returns NaN
      * @param individualLabelMeasures
      *            Controls calculation of measures for individual labels. individual: returns
      *            measures for each label and composite measures; not individual: returns just
      *            composite measures
-     * @throws IOException
      */
     public static EvaluatorBase createEvaluator(Id2Outcome id2outcome,
             boolean softEvaluation, boolean individualLabelMeasures)

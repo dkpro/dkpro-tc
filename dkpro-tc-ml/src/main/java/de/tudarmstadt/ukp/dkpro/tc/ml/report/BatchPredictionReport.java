@@ -35,11 +35,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
- * A report which collects results from all executed @link {@link ExtractFeaturesAndPredictTask}s,
- * and writes them into a human-readable format, one file per configuration.
+ * A report which collects results from all executed subtasks that contain 
+ * "ExtractFeaturesAndPredictTask" in their type and writes them into a human-readable format, one
+ * file per configuration.
  * 
  * @author daxenberger
- * 
  */
 public class BatchPredictionReport
     extends BatchReportBase

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.evaluation.evaluator.multi;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -153,7 +152,6 @@ public class MultiEvaluator
      * regarding to threshold
      * 
      * @return set of label combinations
-     * @throws IOException
      */
     public List<String> getLabelCombinations()
     {

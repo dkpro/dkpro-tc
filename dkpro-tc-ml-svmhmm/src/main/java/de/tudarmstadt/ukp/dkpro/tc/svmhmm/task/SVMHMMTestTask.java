@@ -85,7 +85,7 @@ public class SVMHMMTestTask
     private double paramC = 5;
 
     /**
-     * Parameter "-e <EPSILON>": This specifies the precision to which constraints are required
+     * Parameter "-e &lt;EPSILON&gt;": This specifies the precision to which constraints are required
      * to be satisfied by the solution. The smaller EPSILON, the longer and the more memory
      * training takes, but the solution is more precise. However, solutions more accurate than 0.5
      * typically do not improve prediction accuracy.
@@ -103,16 +103,16 @@ public class SVMHMMTestTask
     private int paramOrderT = 1;
 
     /**
-     * Parameter "--e <ORDER_E>": Order of dependencies of emissions in HMM. Can be any number
+     * Parameter "--e &lt;ORDER_E&gt;": Order of dependencies of emissions in HMM. Can be any number
      * larger than 0. (default 0)
-     * UPDATE: according to svm_struct_api.c: must be either 0 or 1; fails for >1
+     * UPDATE: according to svm_struct_api.c: must be either 0 or 1; fails for &gt;1
      */
     public static final String PARAM_ORDER_E = "paramOrderE";
     @Discriminator
     private int paramOrderE = 0;
 
     /**
-     * Parameter "--b <WIDTH>": A non-zero value turns on (approximate) beam search to replace
+     * Parameter "--b &lt;WIDTH&gt;": A non-zero value turns on (approximate) beam search to replace
      * the exact Viterbi algorithm both for finding the most violated constraint, as well as for
      * computing predictions. The value is the width of the beam used (e.g. 100). (default 0).
      */

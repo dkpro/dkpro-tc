@@ -179,9 +179,9 @@ public class ReportUtils
      * precision (percent of retrieved docs that are relevant) at various recall levels (after a
      * certain percentage of all the relevant docs for that query have been retrieved).
      * 'Interpolated' means that, for example, precision at recall 0.10 (ie, after 10% of rel docs
-     * for a query have been retrieved) is taken to be MAXIMUM of precision at all recall points >=
-     * 0.10. Values are averaged over all queries (for each of the 11 recall levels). These values
-     * are used for Recall-Precision graphs.
+     * for a query have been retrieved) is taken to be MAXIMUM of precision at all recall points 
+     * &gt;= 0.10. Values are averaged over all queries (for each of the 11 recall levels). These 
+     * values are used for Recall-Precision graphs.
      * 
      * @author Richard Eckart de Castilho
      * @author Johannes Daxenberger

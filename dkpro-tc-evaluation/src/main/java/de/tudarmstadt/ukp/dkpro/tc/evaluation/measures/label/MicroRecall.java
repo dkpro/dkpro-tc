@@ -25,7 +25,10 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallCont
 
 /**
  * calculation of the measure is based on:
- * @article{madjarov2012extensive,
+ * 
+ * <pre>
+ * <code>
+ * {@literal @}article{madjarov2012extensive,
  * title={An extensive experimental comparison of methods for multi-label learning},
  * author={Madjarov, Gjorgji and Kocev, Dragi and Gjorgjevikj, Dejan and D{\v{z}}eroski, Sa{\v{s}}o},
  * journal={Pattern Recognition},
@@ -35,17 +38,24 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallCont
  * year={2012},
  * publisher={Elsevier}
  * }
+ * </code>
+ * </pre>
  * 
  * creating of contingency tables is based on:
- * @article{van2013macro,
+ * 
+ * <pre>
+ * <code>
+ * {@literal @}article{van2013macro,
  * title={Macro-and micro-averaged evaluation measures [[BASIC DRAFT]]},
  * author={Van Asch, Vincent},
  * pages = {11--12},
  * year={2013},
  * url = {http://www.cnts.ua.ac.be/~vincent/pdf/microaverage.pdf}
  * }
- * EMPTY_PREDICTION is not defined as a valid label. 
+ * </code>
+ * </pre>
  * 
+ * EMPTY_PREDICTION is not defined as a valid label. 
  * 
  * @author Andriy Nadolskyy
  */

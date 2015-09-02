@@ -19,13 +19,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import meka.core.Result;
 import mulan.evaluation.measure.MicroPrecision;
 import mulan.evaluation.measure.MicroRecall;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
@@ -43,9 +41,6 @@ public class WekaReportUtils
      * Adds results from one fold to the overall CV confusion matrix. Also updates actual and
      * predicted label lists for the label powerset transformation
      * 
-     * @param numInstances
-     * @param r
-     * @param classNames
      * @param actualLabelsList
      *            not null
      * @param predictedLabelsList

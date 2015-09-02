@@ -44,7 +44,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
  * {@link de.tudarmstadt.ukp.dkpro.tc.features.ngram.KeywordNGramDFE
  * KeywordNGramDFE} Can be used to extract ngrams from one or both documents in the
  * pair, and parameters for each document (view 1's, view 2's) can be set separately, or both
- * documents can be treated together as one extended document. <br />
+ * documents can be treated together as one extended document. <br>
  * Note that ngram features created by this class are each from a single document, i.e., not
  * combinations of ngrams from the pair of documents.
  * 
@@ -125,8 +125,8 @@ public class LuceneKeywordPFE
      * but when writing features, the view where a particular ngram is found is recorded with the
      * ngram. For example, using a {@link #PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the
      * ngrams in the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is
-     * seen in any document, view 1 or 2, the document's view is recorded.<br />
-     * E.g., Feature: view2allNG_Dear<br />
+     * seen in any document, view 1 or 2, the document's view is recorded.<br>
+     * E.g., Feature: view2allNG_Dear<br>
      * In order to use this option, {@link #PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES} must also be set
      * to true.
      */

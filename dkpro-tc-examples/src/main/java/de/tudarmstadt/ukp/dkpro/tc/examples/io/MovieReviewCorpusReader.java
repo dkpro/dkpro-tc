@@ -30,8 +30,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.io.SingleLabelReaderBase;
 
 /**
  * Reads the Movie Review Corpus. Used by the Sentiment Polarity demo.
- * 
- * @see de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity.SentimentPolarityDemo
  */
 public class MovieReviewCorpusReader
     extends SingleLabelReaderBase

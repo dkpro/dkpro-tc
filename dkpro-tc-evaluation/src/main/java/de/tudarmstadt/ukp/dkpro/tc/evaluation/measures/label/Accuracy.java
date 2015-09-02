@@ -25,24 +25,34 @@ import de.tudarmstadt.ukp.dkpro.tc.evaluation.confusion.matrix.CombinedSmallCont
 
 /**
  * calculation of the measure is based on:
- * @article{van2013macro,
+ * 
+ * <pre>
+ * <code>
+ * {@literal @}article{van2013macro,
  * title={Macro-and micro-averaged evaluation measures [[BASIC DRAFT]]},
  * author={Van Asch, Vincent},
  * pages = {3--4},
  * year={2013},
  * url = {http://www.cnts.ua.ac.be/~vincent/pdf/microaverage.pdf}
  * }
+ * </code>
+ * </pre>
  * 
  * creating of contingency tables is based on:
- * @article{van2013macro,
+ * 
+ * <pre>
+ * <code>
+ * {@literal @}article{van2013macro,
  * title={Macro-and micro-averaged evaluation measures [[BASIC DRAFT]]},
  * author={Van Asch, Vincent},
  * pages = {11--12},
  * year={2013},
  * url = {http://www.cnts.ua.ac.be/~vincent/pdf/microaverage.pdf}
  * }
- * EMPTY_PREDICTION is not defined as a valid label. 
+ * </code>
+ * </pre>
  * 
+ * EMPTY_PREDICTION is not defined as a valid label. 
  * 
  * @author Andriy Nadolskyy
  */

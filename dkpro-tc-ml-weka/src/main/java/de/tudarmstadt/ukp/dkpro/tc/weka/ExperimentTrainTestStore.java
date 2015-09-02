@@ -69,9 +69,6 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
      *
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      */
 	@Override
     protected void init() {
