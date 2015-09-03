@@ -159,6 +159,8 @@ public class ExperimentCrossValidation
             @Override
             public void initialize(TaskContext aContext)
             {
+                super.initialize(aContext);
+                
                 File xmiPathRoot = aContext.getStorageLocation(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
                 Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
@@ -249,6 +251,8 @@ public class ExperimentCrossValidation
     @Override
     public void initialize(TaskContext aContext)
     {
+        super.initialize(aContext);
+        
         try {
             init();
         } catch (Exception e) {

@@ -72,6 +72,8 @@ public class ExperimentPrediction
     @Override
     public void initialize(TaskContext aContext)
     {
+        super.initialize(aContext);
+        
         try {
             init();
         } catch (Exception e) {
