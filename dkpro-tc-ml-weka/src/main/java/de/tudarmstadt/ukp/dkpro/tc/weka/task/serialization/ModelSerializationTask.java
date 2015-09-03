@@ -30,7 +30,6 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
@@ -52,10 +51,6 @@ public class ModelSerializationTask
 		extends WekaTestTask_ImplBase
 	    implements Constants
 {
-
-    @Discriminator
-    protected List<Object> pipelineParameters;
-
     private File outputFolder;
     
     public ModelSerializationTask() {
