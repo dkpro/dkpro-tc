@@ -27,12 +27,13 @@ For reference, you should have a look at the readers of the `io` package in the 
 All DKPro-TC readers should implement either `TCReaderSingleLabel` (single-label classification and regression experiments) or `TCReaderMultiLabel` (multi-label classification experiments).
 
 A reader in DKPro-TC needs to define at least:
+
 * the structure of the UIMA CAS (i.e. the document text)
 * the classification outcome (i.e. the class labels of the document)
 
 ### Reusing DKPro Core readers
 
-You can re-use most readers from the `io` modules of [http://code.google.com/p/dkpro-core-asl DKPro Core], which contain readers for different simple data formats such as TXT or HTML, but also readers for popular data collections, e.g. the BNC.
+You can re-use most readers from the `io` modules of https://dkpro.github.io/dkpro-core[DKPro Core], which contain readers for different simple data formats such as TXT or HTML, but also readers for popular data collections, e.g. the BNC.
 If your DKPro-TC reader inherits from a DKPro Core reader, you don't have to care about the structure of the CAS, but only need to additionally specify the `getTextClassificationOutcome()`. The latter sets the document labels.
 
 ### Building a customized reader
@@ -71,6 +72,7 @@ getNext(JCas aJCas)
 ----
 
 Here, we need to:
+
 * set metadata (as we are creating more than one CAS out of a single file, we need to have different document titles and URIs for each CAS, otherwise serialized CASes will be overwritten), 
 * set document text (a sentence in this case),
 * set outcome (labels)
