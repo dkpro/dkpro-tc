@@ -69,7 +69,7 @@ public class ExtractFeaturesTask
     @Discriminator
     private List<String> featureSet;
     @Discriminator
-    private List<String> featureFilters;
+    private List<String> featureFilters = Collections.<String>emptyList();
     @Discriminator
     private List<Object> pipelineParameters;
     @Discriminator
@@ -163,12 +163,6 @@ public class ExtractFeaturesTask
                     entry.getValue());
             parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
-        
-        // as feature filters are optional, check for null
-        if (featureFilters == null) {
-        	featureFilters = Collections.<String>emptyList();
-        }
-        
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName() , learningMode, featureMode,
