@@ -30,6 +30,8 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.FlowControllerFactory;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
@@ -41,6 +43,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.CasDropFlowController;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.PreprocessConnector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -127,11 +131,52 @@ public class InitTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-    	return createEngineDescription(
-    		getPreValidityCheckEngine(aContext),
-    		getPreprocessingEngine(aContext),
-    		getPostValidityCheckEngine(aContext)
-    	);
+	    FlowControllerDescription flowController = FlowControllerFactory.createFlowControllerDescription(
+        		CasDropFlowController.class,
+        		ConnectorBase.PARAM_FEATURE_MODE, featureMode,
+        		ConnectorBase.PARAM_LEARNING_MODE, learningMode
+	    );
+	    
+        String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
+        AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
+                BinaryCasWriter.PARAM_TARGET_LOCATION,
+                aContext.getFolder(output, AccessMode.READWRITE).getPath(),
+                BinaryCasWriter.PARAM_FORMAT, "6+");
+        
+	    // add a special connector as the first analysis engine that just checks whether there are no instances
+        // and outputs a meaningful error message then
+        AnalysisEngineDescription emptyProblemChecker = AnalysisEngineFactory.createEngineDescription(PreprocessConnector.class);
+        preprocessing = AnalysisEngineFactory.createEngineDescription(emptyProblemChecker, preprocessing);
+
+        // check whether we are dealing with pair classification and if so, add PART_ONE and
+        // PART_TWO views
+        if (featureMode.equals(Constants.FM_PAIR)) {
+            AggregateBuilder builder = new AggregateBuilder();
+            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
+                    Constants.PART_ONE);
+            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
+                    Constants.PART_TWO);
+            preprocessing = builder.createAggregateDescription();
+        }
+        else if (operativeViews != null) {
+            AggregateBuilder builder = new AggregateBuilder();
+            for (String viewName : operativeViews) {
+                builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
+                        viewName);
+            }
+            preprocessing = builder.createAggregateDescription();
+        }
+        // in unit or sequence mode, add cas multiplier
+        else if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
+            boolean useSequences = featureMode.equals(Constants.FM_SEQUENCE);
+
+            AnalysisEngineDescription casMultiplier = createEngineDescription(
+                    ClassificationUnitCasMultiplier.class,
+                    ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences);
+
+            return createEngineDescription(flowController, getPreValidityCheckEngine(aContext), preprocessing, casMultiplier, getPostValidityCheckEngine(aContext), xmiWriter);
+        }
+        return createEngineDescription(flowController, getPreValidityCheckEngine(aContext), preprocessing, getPostValidityCheckEngine(aContext), xmiWriter);
     }
     
     private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
@@ -180,51 +225,6 @@ public class InitTask
         parameters.add(developerMode);
 
         return createEngineDescription(ValidityCheckConnectorPost.class, parameters.toArray());
-    }
-    
-    private AnalysisEngineDescription getPreprocessingEngine(TaskContext aContext)
-    		throws ResourceInitializationException
-    {
-        String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
-        AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
-                BinaryCasWriter.PARAM_TARGET_LOCATION,
-                aContext.getStorageLocation(output, AccessMode.READWRITE).getPath(),
-                BinaryCasWriter.PARAM_FORMAT, "6+");
-        
-        // add a special connector as the first analysis engine that just checks whether there are no instances
-        // and outputs a meaningful error message then
-        AnalysisEngineDescription emptyProblemChecker = AnalysisEngineFactory.createEngineDescription(PreprocessConnector.class);
-        preprocessing = AnalysisEngineFactory.createEngineDescription(emptyProblemChecker, preprocessing);
-
-        // check whether we are dealing with pair classification and if so, add PART_ONE and
-        // PART_TWO views
-        if (featureMode.equals(Constants.FM_PAIR)) {
-            AggregateBuilder builder = new AggregateBuilder();
-            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                    Constants.PART_ONE);
-            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                    Constants.PART_TWO);
-            preprocessing = builder.createAggregateDescription();
-        }
-        else if (operativeViews != null) {
-            AggregateBuilder builder = new AggregateBuilder();
-            for (String viewName : operativeViews) {
-                builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                        viewName);
-            }
-            preprocessing = builder.createAggregateDescription();
-        }
-        // in unit or sequence mode, add cas multiplier
-        else if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
-            boolean useSequences = featureMode.equals(Constants.FM_SEQUENCE);
-
-            AnalysisEngineDescription casMultiplier = createEngineDescription(
-                    ClassificationUnitCasMultiplier.class,
-                    ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences);
-
-            return createEngineDescription(preprocessing, casMultiplier, xmiWriter);
-        }
-        return createEngineDescription(preprocessing, xmiWriter);
     }
     
     public void setTesting(boolean isTesting)
