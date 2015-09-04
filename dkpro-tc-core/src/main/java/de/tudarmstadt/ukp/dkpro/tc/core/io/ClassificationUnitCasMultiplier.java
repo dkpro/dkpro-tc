@@ -72,18 +72,22 @@ public class ClassificationUnitCasMultiplier
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        this.jCas = aJCas;
-        this.subCASCounter = 0;
-        this.sequenceCounter = 0;
-        this.unitCounter = 0;
+        jCas = aJCas;
+        subCASCounter = 0;
+        sequenceCounter = 0;
+        unitCounter = 0;
 
         if (useSequences) {
-            this.annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
+            annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
         }
         else {
-            this.annotations = JCasUtil.select(aJCas, TextClassificationUnit.class);
+            annotations = JCasUtil.select(aJCas, TextClassificationUnit.class);
         }
-        this.iterator = annotations.iterator();
+        
+        iterator = annotations.iterator();
+        
+        if(! iterator.hasNext())
+        	throw new AnalysisEngineProcessException(new RuntimeException("No annotations found in CAS for Units or Sequences."));
     }
 
     @Override
@@ -91,9 +95,9 @@ public class ClassificationUnitCasMultiplier
         throws AnalysisEngineProcessException
     {
         if (!iterator.hasNext()) {
-            this.jCas = null;
-            this.iterator = null;
-            this.annotations = null;
+            jCas = null;
+            iterator = null;
+            annotations = null;
             return false;
         }
         return true;
@@ -106,7 +110,7 @@ public class ClassificationUnitCasMultiplier
         // Create an empty CAS as a destination for a copy.
         JCas emptyJCas = this.getEmptyJCas();
         DocumentMetaData.create(emptyJCas);
-        emptyJCas.setDocumentText(this.jCas.getDocumentText());
+        emptyJCas.setDocumentText(jCas.getDocumentText());
         CAS emptyCas = emptyJCas.getCas();
 
         // Copy current CAS to the empty CAS.
@@ -125,13 +129,13 @@ public class ClassificationUnitCasMultiplier
         // NOTE: As it may cause confusion: If in sequence classification several or all CAS
         // contains only a single sequence this counter would be zero in all cases - this is not a
         // bug, but a cosmetic flaw
-        String currentDocId = DocumentMetaData.get(this.jCas).getDocumentId();
-        DocumentMetaData.get(copyJCas).setDocumentId(currentDocId + "_" + this.subCASCounter);
-        String currentDocUri = DocumentMetaData.get(this.jCas).getDocumentUri() + "_" + this.subCASCounter;
+        String currentDocId = DocumentMetaData.get(jCas).getDocumentId();
+        DocumentMetaData.get(copyJCas).setDocumentId(currentDocId + "_" + subCASCounter);
+        String currentDocUri = DocumentMetaData.get(jCas).getDocumentUri() + "_" + subCASCounter;
         DocumentMetaData.get(copyJCas).setDocumentUri(currentDocUri);
 
         // set the focus annotation
-        AnnotationFS focusUnit = this.iterator.next();
+        AnnotationFS focusUnit = iterator.next();
         TextClassificationFocus focus = new TextClassificationFocus(copyJCas, focusUnit.getBegin(),
                 focusUnit.getEnd());
         focus.addToIndexes();
@@ -155,11 +159,11 @@ public class ClassificationUnitCasMultiplier
         	unitCounter++;
         }
 
-        this.subCASCounter++;
+        subCASCounter++;
 
-        DocumentMetaData.get(copyJCas).setIsLastSegment( this.subCASCounter == this.annotations.size() );	// required for CAS mergers, which need to know whether this is the last CAS in a sequence (fix for issue #261)
+        DocumentMetaData.get(copyJCas).setIsLastSegment( subCASCounter == annotations.size() );	// required for CAS mergers, which need to know whether this is the last CAS in a sequence (fix for issue #261)
         
-        getLogger().debug("Creating CAS " + this.subCASCounter + " of " + this.annotations.size());
+        getLogger().debug("Creating CAS " + subCASCounter + " of " + annotations.size());
 
         return copyJCas;
     }
