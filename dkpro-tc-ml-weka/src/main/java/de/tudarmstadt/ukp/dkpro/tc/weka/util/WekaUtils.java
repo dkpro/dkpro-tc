@@ -911,9 +911,6 @@ public class WekaUtils
 
     /**
      * Returns a list with names of the class attribute values.
-     *
-     * @param eval
-     * @return
      */
     public static List<String> getClassLabels(Instances data, boolean isMultilabel)
     {

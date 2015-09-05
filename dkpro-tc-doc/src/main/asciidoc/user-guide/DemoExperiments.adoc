@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-## Introduction
+## Quick-Start Guide
 
 In this quick start guide, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
 
@@ -58,8 +58,9 @@ If you don't know where to start, go with the TwitterSentimentDemo first, as it 
 ### Binary Classification with DKPro-TC: TwitterSentiment Demo
 
 There are two ways to run the experiment:
-   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `dkpro-tc-examples-groovy` module)
-   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
+   
+* `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `dkpro-tc-examples-groovy` module)
+* `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
 
 In this tutorial, we will follow the Groovy version of the experiment, which is easier to read. The Java configuration is very similar.
 
@@ -67,11 +68,11 @@ In this tutorial, we will follow the Groovy version of the experiment, which is 
 
 The configuration takes care of 
 
-  * loading the data (reading the original files)
-  * extracting features (which feature extractors are used and how to configure them)
-  * training classifiers (which classifiers to use and how to configure them)
-  * evaluating classifiers (either with designated train/test sets or using cross-validation)
-  * writing results (which reports to use)
+* loading the data (reading the original files)
+* extracting features (which feature extractors are used and how to configure them)
+* training classifiers (which classifiers to use and how to configure them)
+* evaluating classifiers (either with designated train/test sets or using cross-validation)
+* writing results (which reports to use)
 
 The Twitter Sentiment Groovy Experiment uses `import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation.
 
@@ -147,10 +148,11 @@ Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
 ----
 
 The feature mode defines the type of feature extraction you want to apply to your data:
-   * document: features are extracted from the entire text of your document
-   * unit: features are extracted from a part (`unit`) of the document
-   * pair: features are extracted from a pair of documents
-   * sequence: features are extracted from `units` within a sequence
+
+* document: features are extracted from the entire text of your document
+* unit: features are extracted from a part (`unit`) of the document
+* pair: features are extracted from a pair of documents
+* sequence: features are extracted from `units` within a sequence
 
 The learning mode defines whether the experiment is a classification task (either single- or multilabel), or a regression task.
 For more information on feature and learning modes, refer to the following paper: https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf[DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.]
@@ -189,6 +191,6 @@ After an experiment has run, the path to the folder storing detailed results wil
 
 Once you got this example running as it is, you can start adapting various parameters:
 
-  * using different data sets - which are completely up to you (also see [Readers here])
-  * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
-  * using different classifiers - please refer to the respective frameworks for further information on that.
+* using different data sets - which are completely up to you (also see [Readers here])
+* using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
+* using different classifiers - please refer to the respective frameworks for further information on that.

@@ -14,19 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#summary List of parameters which have to or may be used to set up DKPro-TC experiments
+## Setting Parameters/Dimensions
 
 In the following, all DKPro-TC discriminators ("Dimensions"), which have to be used (mandatory) or may be used (optional) are listed. You have to insert all mandatory and those optional discriminators you want to define into a _ParameterSpace_ where every task can access them. If various values should be tested for a parameter (e.g. various classification algorithms), you can simply specify a list with all the different values for that parameter. 
 We list each discriminator with the expected type of its value and a short explanation. For detailed examples on how to specify parameters, please have a look at the [DemoExperiments demo experiments].
 
-
-== Latest version ==
-
-_if you use DKPro-TC version 0.6.0, see [Discriminators_0_6_0 here]_
-
-_if you use DKPro-TC version 0.5.0, see [Discriminators_0_5_0 here]_
-
-=== Mandatory Parameters ===
+### Mandatory Parameters
 
 * `readers` (DimensionBundle)
 ** `readerTrain`: name of the reader class for the training data
@@ -48,7 +41,7 @@ In addition to the parameters you need to set via discriminators, there are seve
 * `numFolds`: the number of folds (Integer) [only for `ExperimentCrossValidation`]
 * `parameterSpace`: the parameter space which contains all discriminators to be set, see above (`ParameterSpace`)
 
-=== Optional Parameters ===
+### Optional Parameters
 
 * `threshold`: boolean (the threshold to create a bipratition from a ranking; _only for multiLabel learning mode_)
 * `featureSelection` (DimensionBundle)

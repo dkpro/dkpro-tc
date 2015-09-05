@@ -26,7 +26,8 @@ include::{include-dir}GroovySetup.adoc[]
 
 <<<
 
-include::{include-dir}DemoExperiments.adoc[] (start here if you don't know where to start)
+include::{include-dir}DemoExperiments.adoc[]
+
 
 <<<
 
