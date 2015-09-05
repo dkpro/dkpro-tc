@@ -16,7 +16,7 @@
 
 ## How to set up a DKPro-TC reader
 
-_This tutorial referes to the 0.6.0-Release of DKPro TC._
+_This tutorial refers to the 0.6.0-Release of DKPro TC._
 
 ### Creating a reader for your data
 
