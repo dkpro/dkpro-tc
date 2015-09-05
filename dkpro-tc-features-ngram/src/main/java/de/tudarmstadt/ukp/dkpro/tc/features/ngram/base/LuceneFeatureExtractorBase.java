@@ -85,8 +85,9 @@ public abstract class LuceneFeatureExtractorBase
             long absCount = tuple.getFreq();
             double relFrequency = ((double) absCount) / ngramVocabularySize;
             
-            if( relFrequency >= ngramFreqThreshold )
-            	topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
+            if( relFrequency >= ngramFreqThreshold ) {
+                topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
+            }
         }
         
         getLogger().log(Level.INFO, "+++ SELECTING THE " + topNGrams.getB() + " MOST FREQUENT NGRAMS");
@@ -110,7 +111,7 @@ public abstract class LuceneFeatureExtractorBase
      * Permits the Pair FE's to use {@link #getTopNgrams()}: can be optionally overridden,
      * to constrain which ngrams are used as features.  (Pair ngram FE's generate a huge
      * number of features, that must usually be constrained.)  Without this method, getTopNgrams()
-     * must be overridden in {@link LucenePairFeatureExtractorBase} with essentially the same method,
+     * must be overridden in {@link LucenePFExtractorBase} with essentially the same method,
      * but with the constraint option in place, resulting in code duplication.
      * 
      * @param term potential new feature
