@@ -128,7 +128,7 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin</artifactId>
-				<version>20080814.0</version>
+				<version>20080814.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
