@@ -90,8 +90,10 @@ public class LuceneKeywordPMetaCollector
         return KeywordNGramUtils.getMultipleViewKeywordNgrams(
                 jcases, ngramMinN, ngramMaxN, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
+    
     /**
-     * This is an artifact to be merged with getNgramsFD(List<JCas> jcases) when pair FEs are ready.
+     * This is an artifact to be merged with {@code getNgramsFD(List<JCas> jcases)} when pair FEs
+     * are ready.
      */
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)

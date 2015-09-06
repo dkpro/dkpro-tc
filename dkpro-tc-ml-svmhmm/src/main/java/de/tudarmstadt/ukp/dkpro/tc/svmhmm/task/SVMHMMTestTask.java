@@ -72,7 +72,7 @@ public class SVMHMMTestTask
     private String learningMode = LM_SINGLE_LABEL;
 
     /**
-     * Parameter "-c <C>": Typical SVM parameter C trading-off slack vs. magnitude of the
+     * Parameter {@code "-c <C>"}: Typical SVM parameter C trading-off slack vs. magnitude of the
      * weight-vector.
      * NOTE: The default value for this parameter is unlikely to work well for your particular
      * problem. A good value for C must be selected via cross-validation, ideally exploring
@@ -95,8 +95,8 @@ public class SVMHMMTestTask
     private double paramEpsilon = 0.5;
 
     /**
-     * Parameter "--t <ORDER_T>": Order of dependencies of transitions in HMM. Can be any number
-     * larger than 1. (default 1)
+     * Parameter {@code "--t <ORDER_T>"}: Order of dependencies of transitions in HMM. Can be any
+     * number larger than 1. (default 1)
      */
     @Discriminator
     public static final String PARAM_ORDER_T = "paramOrderT";

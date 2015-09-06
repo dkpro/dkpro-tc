@@ -121,7 +121,7 @@ public class LuceneNGramPFE
     /**
      * This option collects a FrequencyDistribution of ngrams across both documents of all pairs,
      * but when writing features, the view where a particular ngram is found is recorded with the
-     * ngram. For example, using a {@link #PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the
+     * ngram. For example, using a {@code PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the
      * ngrams in the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is
      * seen in any document, view 1 or 2, the document's view is recorded.<br>
      * E.g., Feature: view2allNG_Dear<br>

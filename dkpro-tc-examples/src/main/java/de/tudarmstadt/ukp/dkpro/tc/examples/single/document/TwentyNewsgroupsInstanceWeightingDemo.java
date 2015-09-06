@@ -75,7 +75,7 @@ import weka.classifiers.functions.SMO;
  * Users should familiarize themselves with the exact classifier and weight
  * utilization, as this varies per classifier. <br>
  * 
- * See also: {@link https://weka.wikispaces.com/Add+weights+to+dataset}
+ * @see <a href="https://weka.wikispaces.com/Add+weights+to+dataset">Add weights to dataset</a>
  */
 public class TwentyNewsgroupsInstanceWeightingDemo
     implements Constants

@@ -105,8 +105,10 @@ public class LuceneNGramCPMetaCollector
     	              ngramMinN, ngramMaxN, stopwords);
         return fd;
     }
+    
     /**
-     * This is an artifact to be merged with getNgramsFD(List<JCas> jcases) when pair FEs are ready.
+     * This is an artifact to be merged with {@code getNgramsFD(List<JCas> jcases)} when pair FEs
+     * are ready.
      */
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)

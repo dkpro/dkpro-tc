@@ -120,14 +120,15 @@ public class LuceneKeywordPFE
     public static final String PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES = "useViewBlindKeywordNgramsAsFeatures";
     @ConfigurationParameter(name = PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, mandatory = true)
     protected boolean useViewBlindNgramsAsFeatures;
+    
     /**
      * This option collects a FrequencyDistribution of ngrams across both documents of all pairs,
      * but when writing features, the view where a particular ngram is found is recorded with the
-     * ngram. For example, using a {@link #PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the
+     * ngram. For example, using a {@code PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the
      * ngrams in the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is
      * seen in any document, view 1 or 2, the document's view is recorded.<br>
      * E.g., Feature: view2allNG_Dear<br>
-     * In order to use this option, {@link #PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES} must also be set
+     * In order to use this option, {@code PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES} must also be set
      * to true.
      */
     public static final String PARAM_MARK_VIEWBLIND_KEYWORD_NGRAMS_WITH_LOCAL_VIEW = "markViewBlindKeywordNgramsWithLocalView";
