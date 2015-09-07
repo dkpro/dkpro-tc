@@ -26,11 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.functions.SMO;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -150,9 +149,6 @@ public class PairTwentyNewsgroupsDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(
-                createEngineDescription(StanfordSegmenter.class),
-                createEngineDescription(StanfordNamedEntityRecognizer.class,
-                        StanfordNamedEntityRecognizer.PARAM_VARIANT, "all.3class.distsim.crf"));
+        return createEngineDescription(NoOpAnnotator.class);
     }
 }
