@@ -69,13 +69,12 @@ public class ClassificationUnitCasMultiplierTest
         engine.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
     }
 
-    @Test
+    @Test(expected=AnalysisEngineProcessException.class)
     public void testEmpty()
         throws ResourceInitializationException, AnalysisEngineProcessException
     {
         JCas jCas = createNewJCasWithText("Test String");
-        JCasIterator it = engine.processAndOutputNewCASes(jCas);
-        assertEquals("The JCasIterator should not have CASes", false, it.hasNext());
+        engine.processAndOutputNewCASes(jCas);
     }
 
     @Test
