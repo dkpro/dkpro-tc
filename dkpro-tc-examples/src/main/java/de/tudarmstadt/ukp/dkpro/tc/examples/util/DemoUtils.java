@@ -24,15 +24,18 @@ import java.util.Map;
 public class DemoUtils {
 
     /**
-     * Set the DKPRO_HOME environment variable to some folder in "target".
-     * This is mainly used to ensure that demo experiments run even if people have not set DKPRO_HOME before.
+     * Set the DKPRO_HOME environment variable to some folder in "target". This is mainly used to
+     * ensure that demo experiments run even if people have not set DKPRO_HOME before.
      * 
-     * If DKPRO_HOME is already set, nothing is done (in order not to override already working environments).
+     * If DKPRO_HOME is already set, nothing is done (in order not to override already working
+     * environments).
      * 
-     * It is highly recommended not to use that anywhere else than in the demo experiments,
-     * as DKPRO_HOME is usually also used to store other data required for (real) experiments. 
+     * It is highly recommended not to use that anywhere else than in the demo experiments, as
+     * DKPRO_HOME is usually also used to store other data required for (real) experiments.
      * 
      * @param experimentName
+     *            name of the experiment (will be used as folder name, no slashes/backslashes,
+     *            better avoid spaces)
      * @return True if DKPRO_HOME was correctly set and false if nothing was done.
      */
     public static boolean setDkproHome(String experimentName) {

@@ -56,7 +56,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.WekaPredictionAdapter;
  * This simplistic demo show-cases how to setup an experiment to classify a set of unlabeled tweets
  * as either "emotional" or "neutral", using a small set of labeled tweets to train a model.
  * 
- * @see de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo
+ * See also de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo
  */
 public class TwitterSentimentPredictionDemo
     implements Constants
