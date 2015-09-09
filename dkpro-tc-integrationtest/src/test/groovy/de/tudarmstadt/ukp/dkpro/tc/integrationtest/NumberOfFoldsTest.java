@@ -22,8 +22,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
-
 public class NumberOfFoldsTest
 {
     @Before
@@ -38,7 +36,7 @@ public class NumberOfFoldsTest
         System.setProperty("DKPRO_HOME", "target/dkpro_home");
     }
 
-    @Test(expected = ExecutionException.class) 
+    @Test(expected = IllegalStateException.class) 
     public void testNumberOfFolds()
         throws Exception
     {
