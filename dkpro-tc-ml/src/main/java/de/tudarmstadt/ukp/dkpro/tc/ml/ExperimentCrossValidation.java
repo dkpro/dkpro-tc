@@ -125,15 +125,10 @@ public class ExperimentCrossValidation
      * three-argument constructor.
      * 
      * @throws IllegalStateException
-     *             if not all necessary arguments have been set.
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     *             if no or invalid arguments have been provided 
      */
     protected void init()
-        throws IllegalStateException, InstantiationException, IllegalAccessException,
-        ClassNotFoundException
-    {
+        throws IllegalStateException    {
 
         if (experimentName == null || preprocessing == null) {
             throw new IllegalStateException(
@@ -252,12 +247,7 @@ public class ExperimentCrossValidation
     public void initialize(TaskContext aContext)
     {
         super.initialize(aContext);
-        
-        try {
-            init();
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
-        }
+        init();
     }
 
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)

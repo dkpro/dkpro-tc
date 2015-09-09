@@ -85,12 +85,7 @@ public class ExperimentTrainTest
     public void initialize(TaskContext aContext)
     {
         super.initialize(aContext);
-        
-        try {
-            init();
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass().getName()).severe("Error while trying to initialise: " + e);
-        }
+        init();
     }
 
     /**
