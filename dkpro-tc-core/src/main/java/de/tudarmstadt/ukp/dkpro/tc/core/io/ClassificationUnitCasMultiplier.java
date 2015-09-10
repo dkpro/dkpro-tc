@@ -17,8 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.io;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -123,6 +125,23 @@ public class ClassificationUnitCasMultiplier
             throw new AnalysisEngineProcessException("Exception while creating JCas", null, e);
         }
 
+        // Check for multiple DocumentMetaData annotations (issue #266)
+        Collection<DocumentMetaData> metaDataAnnotations = JCasUtil.select(copyJCas, DocumentMetaData.class);
+        List<DocumentMetaData> metaDataAnnotationsToDelete = new ArrayList<>();
+        
+        if(metaDataAnnotations.size() > 1)
+        	for(DocumentMetaData metaDataAnnotation : metaDataAnnotations)
+        		if( "x-unspecified".equals(metaDataAnnotation.getLanguage()) &&
+        				metaDataAnnotation.getDocumentTitle() == null &&
+        				metaDataAnnotation.getDocumentId() == null &&
+        				metaDataAnnotation.getDocumentUri() == null &&
+        				metaDataAnnotation.getDocumentBaseUri() == null &&
+        				metaDataAnnotation.getCollectionId() == null )
+        			metaDataAnnotationsToDelete.add(metaDataAnnotation);
+        
+    	for(DocumentMetaData metaDataAnnotation : metaDataAnnotationsToDelete)
+    		copyJCas.removeFsFromIndexes(metaDataAnnotation);
+    	
         // Set new ids and URIs for copied cases.
         // The counting variable keeps track of how many new CAS objects are created from the
         // original CAS, a CAS relative counter.
