@@ -26,7 +26,7 @@
 	</licenses>
 	<organization>
 		<name>${organisation.name}</name>
-		<url>http://www.ukp.tu-darmstadt.de/</url>
+		<url>https://www.ukp.tu-darmstadt.de/</url>
 	</organization>
 	<properties>
 		<dkpro.core.version>1.7.0</dkpro.core.version>
