@@ -19,13 +19,12 @@
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static java.util.Arrays.asList;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -48,9 +47,6 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
-/**
- *
- */
 public class TwentyNewsgroupsPreprocessing
     implements Constants
 {
@@ -82,42 +78,31 @@ public class TwentyNewsgroupsPreprocessing
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders
-                .put(
-                        DIM_READER_TRAIN_PARAMS,
-                        Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                                corpusFilePathTrain,
-                                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                        + "*/*.txt")));
+        dimReaders.put(DIM_READER_TRAIN_PARAMS, asList(
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, asList("*/*.txt")));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+                asList( NaiveBayes.class.getName()));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
+                DIM_PIPELINE_PARAMS, asList(new Object[] {
                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }
-        ));
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] {
-                		NrOfTokensDFE.class.getName(),
-                		LuceneNGramDFE.class.getName()
-                }
-        ));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, asList(
+        		NrOfTokensDFE.class.getName(),
+        		LuceneNGramDFE.class.getName()));
         
-        Dimension<List<Boolean>> dimUseStemming = Dimension.create("useStemming",
-        		Arrays.asList(new Boolean[] {true, false}));
+        Dimension<Boolean> dimUseStemming = Dimension.create("useStemming", true, false);
         
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
+        ParameterSpace pSpace = new ParameterSpace(
+                Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
+                dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs, dimUseStemming);
 
         return pSpace;
@@ -127,30 +112,23 @@ public class TwentyNewsgroupsPreprocessing
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV-preprocessing",
-        		WekaClassificationAdapter.class, createEngineDescription(NoOpAnnotator.class), NUM_FOLDS)
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+                "TwentyNewsgroupsCV-preprocessing",
+        		WekaClassificationAdapter.class, null, NUM_FOLDS)
         {
         	@Discriminator 
         	boolean useStemming;
         	  	
         	@Override
-			public void initialize(TaskContext aContext) {
-        		try {
-	            	if (useStemming) {
-						this.preprocessing =  createEngineDescription(
-						            createEngineDescription(BreakIteratorSegmenter.class),				                
-						            createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-						                    LANGUAGE_CODE)
-						);
-		
-	            	}
-	            	else {
-	            		this.preprocessing = createEngineDescription(
-					                createEngineDescription(OpenNlpSegmenter.class),
-					                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-					                        LANGUAGE_CODE)
-					    );
-	            	}
+            public void initialize(TaskContext aContext)
+            {
+                try {
+                    setPreprocessing(createEngineDescription(
+                            useStemming ?
+                                    createEngineDescription(BreakIteratorSegmenter.class) :
+                                    createEngineDescription(OpenNlpSegmenter.class),
+                            createEngineDescription(OpenNlpPosTagger.class, 
+                                    OpenNlpPosTagger.PARAM_LANGUAGE, LANGUAGE_CODE)));
 				} catch (ResourceInitializationException e) {
 					throw new RuntimeException(e);
 				}
