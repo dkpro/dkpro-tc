@@ -1,0 +1,30 @@
+# This is the list of people who have contributed code to the DKPro TC repository.
+#
+# This list is to be used in favor over author attributions in individual files,
+# e.g. via @author tags. 
+#
+# Code integrated from third parties by others than their original authors may not have any
+# @author tags removed and respective names must not be added to this file. Integration of
+# third party code should be avoided.
+#
+# See also https://github.com/dkpro/dkpro-core/blob/master/CONTRIBUTING.md
+
+# Please keep the list sorted.
+    
+Andriy Nadolskyy
+Emily K. Jamison
+Erik-Lân Do Dinh
+Ivan Habernal
+Jinseok Nam
+Johannes Daxenberger
+Judith Eckle-Kohler
+Krish Perumal
+Lisa Beinborn <lisa.beinborn@gmail.com>
+Martin Wunderlich
+Nicolai Erbs <nico.erbs@gmail.com>
+Oliver Ferschke
+Pedro Santos
+Richard Eckart de Castilho <richard.eckart@gmail.com>
+Tobias Horsmann
+Torsten Zesch
+Tristan Miller
