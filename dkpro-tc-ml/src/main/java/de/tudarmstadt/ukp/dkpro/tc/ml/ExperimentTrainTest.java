@@ -17,7 +17,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
