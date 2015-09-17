@@ -31,9 +31,9 @@ import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
@@ -75,8 +75,8 @@ public class NERSequenceDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
-        		CRFSuiteAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+        		CRFSuiteAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -103,7 +103,6 @@ public class NERSequenceDemo
         				InitialCharacterUpperCaseUFE.class.getName()
         		}));
 
-        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets);

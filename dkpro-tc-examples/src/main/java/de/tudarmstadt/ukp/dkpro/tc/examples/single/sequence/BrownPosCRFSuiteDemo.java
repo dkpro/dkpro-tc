@@ -105,7 +105,6 @@ public class BrownPosCRFSuiteDemo
                 		LuceneCharacterNGramUFE.class.getName()
                 		}));
 
-        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(
         		Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
@@ -125,7 +124,8 @@ public class BrownPosCRFSuiteDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite",
-                CRFSuiteAdapter.class, getPreprocessing(), NUM_FOLDS);
+                CRFSuiteAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(CRFSuiteBatchCrossValidationReport.class);

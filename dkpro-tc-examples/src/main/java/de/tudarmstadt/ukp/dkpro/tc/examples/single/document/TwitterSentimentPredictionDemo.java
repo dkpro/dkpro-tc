@@ -123,7 +123,8 @@ public class TwitterSentimentPredictionDemo
         throws Exception
     {
         ExperimentPrediction batch = new ExperimentPrediction("TwitterSentimentPrediction",
-                WekaPredictionAdapter.class, getPreprocessing());
+                WekaPredictionAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
 
         // Run

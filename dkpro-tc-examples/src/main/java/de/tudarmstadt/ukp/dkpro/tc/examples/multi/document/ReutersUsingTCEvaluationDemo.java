@@ -146,8 +146,8 @@ public class ReutersUsingTCEvaluationDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationUsingTCEvaluationAdapter.class,
-                getPreprocessing());
+        		MekaClassificationUsingTCEvaluationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
@@ -161,7 +161,8 @@ public class ReutersUsingTCEvaluationDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME + "-CV",
-                MekaClassificationUsingTCEvaluationAdapter.class, getPreprocessing(), NUM_FOLDS);
+                MekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);

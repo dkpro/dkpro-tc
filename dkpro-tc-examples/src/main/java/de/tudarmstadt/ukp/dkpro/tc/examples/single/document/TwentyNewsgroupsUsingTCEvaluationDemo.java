@@ -137,8 +137,8 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.class,
-                getPreprocessing());
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
@@ -152,7 +152,8 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationUsingTCEvaluationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);

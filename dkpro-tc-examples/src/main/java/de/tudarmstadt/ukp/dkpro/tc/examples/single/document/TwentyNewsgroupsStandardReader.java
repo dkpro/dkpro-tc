@@ -162,9 +162,10 @@ public class TwentyNewsgroupsStandardReader
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                 NUM_FOLDS);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -180,7 +181,8 @@ public class TwentyNewsgroupsStandardReader
     {
     	// demo for the statistical evaluation reports
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaStatisticsClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchStatisticsCVReport.class);
@@ -194,10 +196,10 @@ public class TwentyNewsgroupsStandardReader
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class,
-                getPreprocessing());
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -214,8 +216,8 @@ public class TwentyNewsgroupsStandardReader
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaStatisticsClassificationAdapter.class,
-                getPreprocessing());
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaStatisticsClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchStatisticsTrainTestReport.class);

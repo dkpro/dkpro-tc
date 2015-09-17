@@ -19,7 +19,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.uima.fit.component.NoOpAnnotator;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -134,8 +132,7 @@ public class BrownPosSVMHMMDemo
             throws Exception
     {
         final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
-                machineLearningAdapter, createEngineDescription(NoOpAnnotator.class),
-                NUM_FOLDS);
+                machineLearningAdapter, NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
@@ -148,7 +145,7 @@ public class BrownPosSVMHMMDemo
             throws Exception
     {
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
-                machineLearningAdapter, createEngineDescription(NoOpAnnotator.class));
+                machineLearningAdapter);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 

@@ -78,8 +78,8 @@ public class BrownUnitPosDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV",
-        		WekaClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+        		WekaClassificationAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -116,7 +116,6 @@ public class BrownUnitPosDemo
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensUFE.class.getName() }));
 
-        @SuppressWarnings("unchecked")
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,

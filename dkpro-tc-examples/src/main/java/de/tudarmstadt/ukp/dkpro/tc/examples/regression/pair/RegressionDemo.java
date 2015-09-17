@@ -32,9 +32,9 @@ import weka.classifiers.functions.SMOreg;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.STSReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
@@ -105,7 +105,6 @@ public class RegressionDemo
                 // based feature extractor
                 Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
-        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readerTrain", dimReaders), Dimension.create(
                         Constants.DIM_FEATURE_MODE, Constants.FM_PAIR), Dimension.create(
@@ -119,8 +118,8 @@ public class RegressionDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("RegressionExampleCV",
-                WekaRegressionAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                WekaRegressionAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
@@ -135,8 +134,8 @@ public class RegressionDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("RegressionExampleTrainTest",
-                WekaRegressionAdapter.class,
-                getPreprocessing());
+                WekaRegressionAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);

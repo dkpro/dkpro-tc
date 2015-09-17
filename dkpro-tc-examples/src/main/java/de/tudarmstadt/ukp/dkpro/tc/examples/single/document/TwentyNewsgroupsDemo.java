@@ -171,10 +171,11 @@ public class TwentyNewsgroupsDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                NUM_FOLDS);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.addInnerReport(WekaFeatureValuesReport.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
@@ -188,8 +189,9 @@ public class TwentyNewsgroupsDemo
         throws Exception
     {
     	// demo for the statistical evaluation reports
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaStatisticsClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV-withStats", WekaStatisticsClassificationAdapter.class,
+                NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchStatisticsCVReport.class);
@@ -203,11 +205,11 @@ public class TwentyNewsgroupsDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class,
-                getPreprocessing());
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.addInnerReport(WekaFeatureValuesReport.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
@@ -223,8 +225,8 @@ public class TwentyNewsgroupsDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaStatisticsClassificationAdapter.class,
-                getPreprocessing());
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest-withStats", WekaStatisticsClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchStatisticsTrainTestReport.class);

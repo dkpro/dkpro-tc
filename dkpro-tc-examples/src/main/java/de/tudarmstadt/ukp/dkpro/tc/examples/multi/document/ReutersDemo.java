@@ -149,8 +149,8 @@ public class ReutersDemo
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME
                 + "-CrossValidation",
-                MekaClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                MekaClassificationAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
@@ -164,8 +164,8 @@ public class ReutersDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationAdapter.class,
-                getPreprocessing());
+        		MekaClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);

@@ -33,9 +33,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.NERDemoReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
@@ -80,8 +80,8 @@ public class NERUnitDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV",
-        		WekaClassificationAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+        		WekaClassificationAdapter.class, NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -121,7 +121,6 @@ public class NERUnitDemo
                         InitialCharacterUpperCaseUFE.class.getName(),
                         IsSurroundedByCharsUFE.class.getName() }));
 
-        @SuppressWarnings("unchecked")
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,

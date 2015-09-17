@@ -157,8 +157,8 @@ public class ComplexConfigurationSingleDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME,
-        		WekaClassificationAdapter.class,
-                getPreprocessing());
+        		WekaClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
 

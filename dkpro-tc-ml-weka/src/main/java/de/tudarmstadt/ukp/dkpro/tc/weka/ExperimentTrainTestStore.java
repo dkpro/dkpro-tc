@@ -19,9 +19,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.io.File;
-import java.util.logging.Logger;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
@@ -40,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.ModelSerializationTas
  * 
  * @author Martin Wunderlich (martin@wunderlich.com)
  *
+ * TODO this is currently ML framework-specific. If the machine learning adapter knows how to serialize the model, this could be made generic.
  */
 public class ExperimentTrainTestStore extends ExperimentTrainTest {
 
@@ -50,10 +48,10 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
 	}
 
 	public ExperimentTrainTestStore(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessing, File outputDirectory)
+            File outputDirectory)
             throws TextClassificationException {
 
-		super(aExperimentName, mlAdapter, preprocessing);
+		super(aExperimentName, mlAdapter);
 
 		this.outputDirectory = outputDirectory;
     }

@@ -37,7 +37,6 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.CasDumpWriter;
-import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -218,8 +217,6 @@ public class SequenceClassificationTest
         ExperimentCrossValidation batch = new ExperimentCrossValidation("SequenceLabelingCV",
                 // random classifier
                 RandomSVMHMMAdapter.class,
-                // no additional annotations
-                AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class),
                 NUM_FOLDS);
         batch.setParameterSpace(getParamSpace());
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

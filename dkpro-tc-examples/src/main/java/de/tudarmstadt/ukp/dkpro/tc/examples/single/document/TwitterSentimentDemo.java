@@ -127,8 +127,8 @@ public class TwitterSentimentDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV",
-        		WekaClassificationAdapter.class,
-                getPreprocessing(), 3);
+        		WekaClassificationAdapter.class, 3);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchCrossValidationReport.class);
 
@@ -141,8 +141,8 @@ public class TwitterSentimentDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest",
-        		WekaClassificationAdapter.class,
-                getPreprocessing());
+        		WekaClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
 

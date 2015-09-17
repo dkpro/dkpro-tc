@@ -134,7 +134,8 @@ public class TwentyNewsgroupsLiblinear
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", LiblinearAdapter.class,
-                getPreprocessing(), NUM_FOLDS);
+                NUM_FOLDS);
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(LiblinearClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -149,8 +150,8 @@ public class TwentyNewsgroupsLiblinear
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", LiblinearAdapter.class,
-                getPreprocessing());
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", LiblinearAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(LiblinearClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
