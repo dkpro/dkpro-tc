@@ -79,6 +79,11 @@ public class CasDropFlowController
 
 		public Step next() throws AnalysisEngineProcessException {
 			
+			// final step if sequence ends
+		    if (currentStep >= mSequence.length) {
+		          return new FinalStep(); // this CAS has finished the sequence
+		    }
+		    
 			// check before multiplier is applied, i.e. after preprocessing
 			if (mSequence[currentStep].contains("ClassificationUnitCasMultiplier")) {
 				if (featureModeI == 0) {
@@ -124,11 +129,6 @@ public class CasDropFlowController
 						return new FinalStep();
 		            }
 		        }
-				
-				// final step if sequence ends
-			    if (currentStep >= mSequence.length) {
-			          return new FinalStep(); // this CAS has finished the sequence
-			    }
 			}
 			    
 			return new SimpleStep(mSequence[currentStep++]);

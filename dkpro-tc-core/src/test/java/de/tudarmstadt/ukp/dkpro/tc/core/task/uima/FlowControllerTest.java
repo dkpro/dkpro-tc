@@ -11,9 +11,12 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
 public class FlowControllerTest {
 
@@ -42,6 +45,7 @@ public class FlowControllerTest {
 	{
 		AnalysisEngineDescription desc = AnalysisEngineFactory.createEngineDescription(
 		         FlowControllerFactory.createFlowControllerDescription(CasDropFlowController.class),
+		         AnalysisEngineFactory.createEngineDescription(ClassificationUnitCasMultiplier.class),
                  AnalysisEngineFactory.createEngineDescription(AfterAE.class)
 		);
 
@@ -50,9 +54,13 @@ public class FlowControllerTest {
 		jcas.setDocumentText(text);
 
 		if (setOutcome) {
-			TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+			TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, 0, 0);
 			outcome.addToIndexes();			
 		}
+		TextClassificationUnit tcu = new TextClassificationUnit(jcas, 0, 0);
+		tcu.addToIndexes();
+		
+		DocumentMetaData.create(jcas);
 		
 		engine.process(jcas);
 		
