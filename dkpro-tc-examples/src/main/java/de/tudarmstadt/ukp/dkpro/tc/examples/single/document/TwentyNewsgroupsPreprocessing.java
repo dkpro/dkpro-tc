@@ -18,21 +18,20 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -96,14 +95,14 @@ public class TwentyNewsgroupsPreprocessing
         		NrOfTokensDFE.class.getName(),
         		LuceneNGramDFE.class.getName()));
         
-        Dimension<Boolean> dimUseStemming = Dimension.create("useStemming", true, false);
+        Dimension<String> dimSegmenter = Dimension.create("segmenter", "break", "opennlp");
         
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
                 dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs, dimUseStemming);
+                dimClassificationArgs, dimSegmenter);
 
         return pSpace;
     }
@@ -114,29 +113,33 @@ public class TwentyNewsgroupsPreprocessing
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
                 "TwentyNewsgroupsCV-preprocessing",
-        		WekaClassificationAdapter.class, null, NUM_FOLDS)
+        		WekaClassificationAdapter.class, NUM_FOLDS)
         {
         	@Discriminator 
-        	boolean useStemming;
-        	  	
+        	String segmenter;
+        	 
+        	
         	@Override
-            public void initialize(TaskContext aContext)
-            {
-                try {
-                    setPreprocessing(createEngineDescription(
-                            useStemming ?
-                                    createEngineDescription(BreakIteratorSegmenter.class) :
-                                    createEngineDescription(OpenNlpSegmenter.class),
-                            createEngineDescription(OpenNlpPosTagger.class, 
-                                    OpenNlpPosTagger.PARAM_LANGUAGE, LANGUAGE_CODE)));
+			public AnalysisEngineDescription getPreprocessing() {
+				
+        		try {
+        			if (segmenter.equals("break")) {
+                		return createEngineDescription(BreakIteratorSegmenter.class);
+        			}
+        			else if (segmenter.equals("opennlp")) {
+                		return createEngineDescription(OpenNlpSegmenter.class);        				
+        			}
+        			else {
+    					throw new RuntimeException("unexpected discriminator value: " + segmenter);        				
+        			}
 				} catch (ResourceInitializationException e) {
 					throw new RuntimeException(e);
 				}
 
-        		super.initialize(aContext);
             }
         };
         
+        batch.setPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
