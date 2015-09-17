@@ -118,7 +118,7 @@ public class ExperimentCrossValidation
     protected void init()
         throws IllegalStateException    {
     	
-        if (experimentName == null || preprocessing == null) {
+        if (experimentName == null || getPreprocessing() == null) {
             throw new IllegalStateException(
                     "You must set experiment name, datawriter and preprocessing aggregate.");
         }
@@ -132,7 +132,7 @@ public class ExperimentCrossValidation
         // initialize the setup
         initTask = new InitTask();
         initTask.setMlAdapter(mlAdapter);
-        initTask.setPreprocessing(preprocessing);
+        initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
         initTask.setDropInvalidCases(dropInvalidCases);
         initTask.setType(initTask.getType() + "-" + experimentName);

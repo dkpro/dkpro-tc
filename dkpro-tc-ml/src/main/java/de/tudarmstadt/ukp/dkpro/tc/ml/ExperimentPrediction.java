@@ -66,7 +66,7 @@ public class ExperimentPrediction
      */
     protected void init()
     {
-        if (experimentName == null || preprocessing == null)
+        if (experimentName == null || getPreprocessing() == null)
 
         {
             throw new IllegalStateException(
@@ -76,7 +76,7 @@ public class ExperimentPrediction
         // initialize the training data setup
         initTaskTrain = new InitTask();
         initTaskTrain.setMlAdapter(mlAdapter);
-        initTaskTrain.setPreprocessing(preprocessing);
+        initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
         initTaskTrain.setDropInvalidCases(dropInvalidCases);
@@ -85,7 +85,7 @@ public class ExperimentPrediction
         // initialize the test data setup
         initTaskTest = new InitTask();
         initTaskTest.setMlAdapter(mlAdapter);
-        initTaskTest.setPreprocessing(preprocessing);
+        initTaskTest.setPreprocessing(getPreprocessing());
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setTesting(true);
         initTaskTest.setDropInvalidCases(dropInvalidCases);

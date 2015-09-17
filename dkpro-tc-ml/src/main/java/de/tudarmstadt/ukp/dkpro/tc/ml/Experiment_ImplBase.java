@@ -39,7 +39,7 @@ public abstract class Experiment_ImplBase
 {
 
     protected String experimentName;
-    protected AnalysisEngineDescription preprocessing;
+    private AnalysisEngineDescription preprocessing;	// private as this might be overridden by a batch task to allow preprocessing as discriminator
     protected List<String> operativeViews;
     protected List<Class<? extends Report>> innerReports;
     protected TCMachineLearningAdapter mlAdapter;
@@ -51,7 +51,7 @@ public abstract class Experiment_ImplBase
         super.initialize(aContext);
         
         try {
-        	if (preprocessing == null) {
+        	if (getPreprocessing() == null) {
     			preprocessing = AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);        		
         	}
 		} catch (ResourceInitializationException e) {

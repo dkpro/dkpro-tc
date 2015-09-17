@@ -73,7 +73,7 @@ public class ExperimentTrainTest
      */
     protected void init()
     {
-        if (experimentName == null || preprocessing == null)
+        if (experimentName == null || getPreprocessing() == null)
 
         {
             throw new IllegalStateException(
@@ -84,7 +84,7 @@ public class ExperimentTrainTest
         initTaskTrain = new InitTask();
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
         initTaskTrain.setMlAdapter(mlAdapter);
-        initTaskTrain.setPreprocessing(preprocessing);
+        initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
         initTaskTrain.setDropInvalidCases(dropInvalidCases);
@@ -94,7 +94,7 @@ public class ExperimentTrainTest
         initTaskTest = new InitTask();
         initTaskTest.setTesting(true);
         initTaskTest.setMlAdapter(mlAdapter);
-        initTaskTest.setPreprocessing(preprocessing);
+        initTaskTest.setPreprocessing(getPreprocessing());
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setDropInvalidCases(dropInvalidCases);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
