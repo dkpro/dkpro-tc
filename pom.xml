@@ -377,7 +377,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
+			    <executions>
+			        <execution>
+			            <id>attach-javadocs</id>
+			            <goals>
+			                <goal>jar</goal>
+			            </goals>
+			            <configuration>
+			                <additionalparam>-Xdoclint:none</additionalparam>
+			            </configuration>
+			        </execution>
+			    </executions>
+                <configuration>
 					<notimestamp>true</notimestamp>
 					<!-- Exclude UIMA types and internal API -->
 					<excludePackageNames>*.type:*.internal.*:*.exception</excludePackageNames>
