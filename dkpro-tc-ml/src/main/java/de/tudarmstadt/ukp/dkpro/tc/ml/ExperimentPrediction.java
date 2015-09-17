@@ -17,13 +17,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -35,18 +28,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 /**
  * Pre-configured Prediction setup
  * 
- * @author daxenberger
- * @author zesch
- * 
  */
 public class ExperimentPrediction
-    extends DefaultBatchTask
+    extends Experiment_ImplBase
 {
-
-    private String experimentName;
-    private AnalysisEngineDescription preprocessing;
-    private List<String> operativeViews;
-    protected TCMachineLearningAdapter mlAdapter;
 
     private InitTask initTaskTrain;
     private InitTask initTaskTest;
@@ -59,21 +44,13 @@ public class ExperimentPrediction
     }
 
     public ExperimentPrediction(String aExperimentName,
-            Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessing) throws TextClassificationException
+            Class<? extends TCMachineLearningAdapter> mlAdapter) 
+            		throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         setMachineLearningAdapter(mlAdapter);
-        setPreprocessing(preprocessing);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
-    }
-
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-        init();
     }
 
     /**
@@ -87,7 +64,7 @@ public class ExperimentPrediction
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private void init()
+    protected void init()
     {
         if (experimentName == null || preprocessing == null)
 
@@ -102,6 +79,7 @@ public class ExperimentPrediction
         initTaskTrain.setPreprocessing(preprocessing);
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
+        initTaskTrain.setDropInvalidCases(dropInvalidCases);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
         // initialize the test data setup
@@ -110,6 +88,7 @@ public class ExperimentPrediction
         initTaskTest.setPreprocessing(preprocessing);
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setTesting(true);
+        initTaskTest.setDropInvalidCases(dropInvalidCases);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
@@ -148,34 +127,4 @@ public class ExperimentPrediction
         addTask(featuresTrainTask);
         addTask(featuresExtractAndPredictTask);
     }
-
-    public void setExperimentName(String experimentName)
-    {
-        this.experimentName = experimentName;
-    }
-
-    public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
-        throws IllegalArgumentException
-    {
-        try {
-            this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public void setPreprocessing(AnalysisEngineDescription preprocessing)
-    {
-        this.preprocessing = preprocessing;
-    }
-
-    public void setOperativeViews(List<String> operativeViews)
-    {
-        this.operativeViews = operativeViews;
-    }
-
 }

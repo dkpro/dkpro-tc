@@ -17,15 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
@@ -37,19 +30,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 /**
  * Train-Test setup
  * 
- * @author daxenberger
- * @author zesch
- * 
  */
 public class ExperimentTrainTest
-    extends DefaultBatchTask
+    extends Experiment_ImplBase
 {
-
-    protected String experimentName;
-    private AnalysisEngineDescription preprocessing;
-    private List<String> operativeViews;
-    private List<Class<? extends Report>> innerReports;
-    private TCMachineLearningAdapter mlAdapter;
 
     private InitTask initTaskTrain;
     private InitTask initTaskTest;
@@ -70,28 +54,19 @@ public class ExperimentTrainTest
      * @param preprocessing
      *            preprocessing analysis engine aggregate
      */
-    public ExperimentTrainTest(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessing)
+    public ExperimentTrainTest(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter)
             throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         setMachineLearningAdapter(mlAdapter);
-        setPreprocessing(preprocessing);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
-    }
-
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-        init();
     }
 
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
-     * three-argument constructor.
+     * arguments in the constructor.
      * 
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
@@ -112,6 +87,7 @@ public class ExperimentTrainTest
         initTaskTrain.setPreprocessing(preprocessing);
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
+        initTaskTrain.setDropInvalidCases(dropInvalidCases);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
         // init the test part of the experiment
@@ -120,6 +96,7 @@ public class ExperimentTrainTest
         initTaskTest.setMlAdapter(mlAdapter);
         initTaskTest.setPreprocessing(preprocessing);
         initTaskTest.setOperativeViews(operativeViews);
+        initTaskTest.setDropInvalidCases(dropInvalidCases);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training
@@ -174,46 +151,5 @@ public class ExperimentTrainTest
         addTask(featuresTrainTask);
         addTask(featuresTestTask);
         addTask(testTask);
-    }
-
-    public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
-        throws IllegalArgumentException
-    {
-        try {
-			this.mlAdapter = mlAdapter.newInstance();
-		} catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-		} catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-		}
-    }
-
-    public void setExperimentName(String experimentName)
-    {
-        this.experimentName = experimentName;
-    }
-
-    public void setPreprocessing(AnalysisEngineDescription preprocessing)
-    {
-        this.preprocessing = preprocessing;
-    }
-
-    public void setOperativeViews(List<String> operativeViews)
-    {
-        this.operativeViews = operativeViews;
-    }
-
-    /**
-     * Sets the report for the test task
-     * 
-     * @param innerReport
-     *            classification report or regression report
-     */
-    public void addInnerReport(Class<? extends Report> innerReport)
-    {
-        if (innerReports == null) {
-            innerReports = new ArrayList<Class<? extends Report>>();
-        }
-        innerReports.add(innerReport);
     }
 }
