@@ -30,10 +30,11 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ValidityCheckUtils;
 
 /**
- * UIMA analysis engine that is used in the {@link ValidityCheckTask} to test error conditions on
+ * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on
  * the CAS.
  * 
  * This is called after initialization (which sets outcome and unit annotations) and executed for each CAS.
