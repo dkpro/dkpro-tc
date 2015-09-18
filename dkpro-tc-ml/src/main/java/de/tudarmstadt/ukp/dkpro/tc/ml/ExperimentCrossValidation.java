@@ -88,7 +88,6 @@ public class ExperimentCrossValidation
 	 * 
 	 * @param aExperimentName
 	 * @param mlAdapter
-	 * @param preprocessing
 	 * @param aNumFolds
 	 * @param aComparator
 	 * @throws TextClassificationException

@@ -57,12 +57,6 @@ public class ExperimentPrediction
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
-     * 
-     * @throws IllegalStateException
-     *             if not all necessary arguments have been set.
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      */
     protected void init()
     {

@@ -50,8 +50,6 @@ public class ExperimentTrainTest
      * 
      * @param aExperimentName
      *            name of the experiment
-     * @param preprocessing
-     *            preprocessing analysis engine aggregate
      */
     public ExperimentTrainTest(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter)
             throws TextClassificationException
