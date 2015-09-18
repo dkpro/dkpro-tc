@@ -1,29 +1,22 @@
-/** 
- * Copyright (c) 2007-2008, Regents of the University of Colorado 
- * All rights reserved.
+/*******************************************************************************
+ * Copyright 2015
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. 
- * Neither the name of the University of Colorado at Boulder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. 
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE. 
- */
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,34 +24,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 
 /**
  * Internal representation of a feature.
- *  
- * <br>
- * Copyright (c) 2007-2008, Regents of the University of Colorado <br>
- * All rights reserved.
- * 
- * <p>
- * 
- * @author Philip Ogren
- * @author Philipp Wetzler
- * @author Steven Bethard
  */
-//TODO Issue 119: replace with own Feature implementation?
 public class Feature
-    implements Serializable
 {
 
-    private static final long serialVersionUID = -3215288856677656204L;
-
     protected String name;
-
     protected Object value;
-
-    /**
-     * Empty constructor (needed for serialization)
-     */
-    public Feature()
-    {
-    }
 
     /**
      * Create a new feature
@@ -83,33 +54,21 @@ public class Feature
         return list;
     }
 
-    /**
-     * @return
-     */
     public Object getValue()
     {
         return value;
     }
 
-    /**
-     * @param value
-     */
     public void setValue(Object value)
     {
         this.value = value;
     }
 
-    /**
-     * @return
-     */
     public String getName()
     {
         return name;
     }
 
-    /**
-     * @param name
-     */
     public void setName(String name)
     {
         this.name = name;
@@ -122,28 +81,34 @@ public class Feature
         return String.format("%s(<%s>, <%s>)", className, this.name, this.value);
     }
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof Feature) {
-            Feature other = (Feature) obj;
-            boolean nameMatch = (this.name == null && other.name == null)
-                    || (this.name != null && this.name.equals(other.name));
-            boolean valueMatch = (this.value == null && other.value == null)
-                    || (this.value != null && this.value.equals(other.value));
-            return nameMatch && valueMatch;
-        }
-        else {
-            return false;
-        }
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 1;
-        hash = hash * 31 + (this.name == null ? 0 : this.name.hashCode());
-        hash = hash * 31 + (this.value == null ? 0 : this.value.hashCode());
-        return hash;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Feature other = (Feature) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		return true;
+	}
 }
