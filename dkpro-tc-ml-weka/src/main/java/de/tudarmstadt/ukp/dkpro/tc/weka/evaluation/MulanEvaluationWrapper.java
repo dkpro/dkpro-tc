@@ -113,7 +113,7 @@ public class MulanEvaluationWrapper
         return measures;
     }
 
-    private static List<Measure> getMeasures(MultiLabelOutput prediction, int numOfLabels,
+    public static List<Measure> getMeasures(MultiLabelOutput prediction, int numOfLabels,
             boolean strict)
     {
 
