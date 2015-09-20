@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 
@@ -62,8 +62,8 @@ public abstract class LucenePFEBase
     protected int topNOfTheMoment;
 	
 
-    protected List<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
-            FrequencyDistribution<String> topKSet, List<Feature> features)
+    protected Set<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
+            FrequencyDistribution<String> topKSet, Set<Feature> features)
     {
         for (String ngram : topKSet.getKeys()) {
             long value = 1;

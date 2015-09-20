@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -47,7 +47,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_YOU_RATIO = "PronounRatioYou";
     
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
 
@@ -87,17 +87,17 @@ public class PronounRatioFeatureExtractor
             }
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
         if (n > 0) {
-            featList.add(new Feature(FN_HE_RATIO, (double) heCount / n));
-            featList.add(new Feature(FN_SHE_RATIO, (double) sheCount / n));
-            featList.add(new Feature(FN_I_RATIO, (double) iCount / n));
-            featList.add(new Feature(FN_WE_RATIO, (double) weCount / n));
-            featList.add(new Feature(FN_THEY_RATIO, (double) theyCount / n));
-            featList.add(new Feature(FN_US_RATIO, (double) usCount / n));
-            featList.add(new Feature(FN_YOU_RATIO, (double) youCount / n));
+            features.add(new Feature(FN_HE_RATIO, (double) heCount / n));
+            features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n));
+            features.add(new Feature(FN_I_RATIO, (double) iCount / n));
+            features.add(new Feature(FN_WE_RATIO, (double) weCount / n));
+            features.add(new Feature(FN_THEY_RATIO, (double) theyCount / n));
+            features.add(new Feature(FN_US_RATIO, (double) usCount / n));
+            features.add(new Feature(FN_YOU_RATIO, (double) youCount / n));
         }
 
-        return featList;
+        return features;
     }
 }

@@ -51,19 +51,19 @@ public class TestTaskUtils
         assertEquals(3, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_0_a", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_0_a", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1_car", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_1_car", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2_drives", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_2_drives", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
@@ -82,19 +82,19 @@ public class TestTaskUtils
         assertEquals(3, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_1", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2", multipleInstances.get(idx).getFeatures().get(0).getValue());
+        assertEquals("4711_0_2", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());

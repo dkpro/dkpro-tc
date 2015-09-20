@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -194,15 +195,15 @@ public class SequenceClassificationTest
             implements ClassificationUnitFeatureExtractor
     {
 
-        @Override public List<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+        @Override public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
                 throws TextClassificationException
         {
             List<ROOT> roots = JCasUtil.selectCovering(ROOT.class, classificationUnit);
             // make sure the ROOT annotation is still there
             assertEquals(1, roots.size());
 
-            return Arrays.asList(new Feature(
-                    "randomBinaryFeatureName" + new Random(System.currentTimeMillis()).nextInt(20), 1));
+            return new Feature(
+                    "randomBinaryFeatureName" + new Random(System.currentTimeMillis()).nextInt(20), 1).asSet();
         }
     }
 

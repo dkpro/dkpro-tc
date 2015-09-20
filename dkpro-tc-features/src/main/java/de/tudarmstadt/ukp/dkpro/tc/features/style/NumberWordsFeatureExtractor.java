@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,10 +44,9 @@ public class NumberWordsFeatureExtractor
     public static final String FEATURE_NAME = "WordsWithNumbers";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
     {
 
-        List<Feature> featList = new ArrayList<Feature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
         int nrOfTokens = tokens.size();
 
@@ -62,8 +61,6 @@ public class NumberWordsFeatureExtractor
                 System.out.println(t + " matches Words With Numbers");
             }
         }
-        featList.add(new Feature(FEATURE_NAME, (double) pmatches / nrOfTokens));
-
-        return featList;
+        return new Feature(FEATURE_NAME, (double) pmatches / nrOfTokens).asSet();
     }
 }

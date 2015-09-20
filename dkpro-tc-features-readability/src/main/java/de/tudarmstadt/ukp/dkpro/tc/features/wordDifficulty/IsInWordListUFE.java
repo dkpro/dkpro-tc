@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -88,19 +89,16 @@ public abstract class IsInWordListUFE
     }
 
     @Override
-    public List<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-
-        List<Feature> featList = new ArrayList<Feature>();
 
         Token tok = JCasUtil.selectCovered(Token.class, classificationUnit).get(0);
         String lemma = tok.getLemma().getValue();
         if (lowercase) {
             lemma = lemma.toLowerCase();
         }
-        featList.add(new Feature(featureName, wordsInList.contains(lemma)));
-        return featList;
+        return new Feature(featureName, wordsInList.contains(lemma)).asSet();
     }
 
     public List<String> getWordsInList()

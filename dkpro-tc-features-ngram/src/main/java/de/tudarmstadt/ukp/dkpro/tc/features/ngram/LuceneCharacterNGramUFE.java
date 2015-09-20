@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -39,10 +39,10 @@ public class LuceneCharacterNGramUFE
 {
 
     @Override
-    public List<Feature> extract(JCas jCas, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas jCas, TextClassificationUnit aClassificationUnit)
         throws TextClassificationException
     {
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentCharNgrams = NGramUtils.getAnnotationCharacterNgrams(
                 aClassificationUnit, charNgramLowerCase, charNgramMinN, charNgramMaxN, '^', '$');
 

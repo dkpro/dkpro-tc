@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.length;
 import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class NrOfSentencesFeatureExtractorTest
         engine.process(jcas);
 
         NrOfSentencesDFE extractor = new NrOfSentencesDFE();
-        List<Feature> features = extractor.extract(jcas);
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
 
         Assert.assertEquals(1, features.size());
 

@@ -18,9 +18,9 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -47,10 +47,10 @@ public class PositionInTextUFE
     public static final String REL_POSITION = "RelativePositionOfWord";
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
 
         Collection<Token> tokens = JCasUtil.select(jcas, Token.class);
         int position = 0;
@@ -61,8 +61,8 @@ public class PositionInTextUFE
             }
         }
         double relPosition = position / (double) Math.max(tokens.size(), 1);
-        featList.add(new Feature(ABS_POSITION, position));
-        featList.add(new Feature(REL_POSITION, relPosition));
-        return featList;
+        featSet.add(new Feature(ABS_POSITION, position));
+        featSet.add(new Feature(REL_POSITION, relPosition));
+        return featSet;
     }
 }

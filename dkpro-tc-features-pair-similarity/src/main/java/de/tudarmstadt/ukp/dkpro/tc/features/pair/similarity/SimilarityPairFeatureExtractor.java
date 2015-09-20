@@ -18,9 +18,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -56,7 +56,7 @@ public class SimilarityPairFeatureExtractor
     private TextSimilarityResourceBase textSimilarityResource;
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
         try {
@@ -91,9 +91,7 @@ public class SimilarityPairFeatureExtractor
                 similarity = textSimilarityResource.getSimilarity(f1, f2);
             }
 
-            return Arrays.asList(
-                    new Feature("Similarity" + textSimilarityResource.getName(), similarity)
-                    );
+            return new Feature("Similarity" + textSimilarityResource.getName(), similarity).asSet();
         }
         catch (FeaturePathException e) {
             throw new TextClassificationException(e);

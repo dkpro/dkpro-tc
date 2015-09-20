@@ -17,13 +17,13 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.core.feature;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -31,6 +31,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Level;
+import org.codehaus.plexus.util.FileUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -77,7 +78,7 @@ public class ContextCollectorUFE extends FeatureExtractorResource_ImplBase imple
 	};
 	
 	@Override
-	public List<Feature> extract(JCas jcas, TextClassificationUnit unit)
+	public Set<Feature> extract(JCas jcas, TextClassificationUnit unit)
 			throws TextClassificationException {
 		
 		TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
@@ -88,27 +89,14 @@ public class ContextCollectorUFE extends FeatureExtractorResource_ImplBase imple
         	ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
         }
 		
-		if(DocumentMetaData.get(jcas).getIsLastSegment() == true)
-			writeOutput();
-		
-		return new ArrayList<Feature>();
-	}
-		
-	private void writeOutput() {
-		BufferedWriter writer = null;
-		try {
-        	FileWriter out = new FileWriter(contextFile, true /* append */);	// TODO MW: Use Apache commons-io's FileUtils here, as soon as they have been updated to v2.2
-        	writer = new BufferedWriter(out);
-        	writer.write(sb.toString());
-		} catch (IOException e) {
-			this.getLogger().log(Level.WARNING, "Error while trying to write context file: " + e);
-		}
-        finally {
-        	try {
-				writer.close();
+		if(DocumentMetaData.get(jcas).getIsLastSegment() == true) {
+			try {
+				FileUtils.fileAppend(contextFile.getAbsolutePath(), sb.toString());
 			} catch (IOException e) {
-				// Do nothing;
+				throw new TextClassificationException(e);
 			}
-        }
-	}
+		}
+		
+		return new HashSet<Feature>();
+	}		
 }

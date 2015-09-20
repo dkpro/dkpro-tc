@@ -18,10 +18,10 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -54,10 +54,8 @@ public class PhrasePatternExtractor
     public static final String PCS_PER_SENTENCE = "PCsPerSentence";
     public static final String CHUNKS_PER_SENTENCE = "ChunksPerSentence";
 
-    public List<Feature> extract(JCas jcas)
-
+    public Set<Feature> extract(JCas jcas)
     {
-
         int chunkSum = 0;
         double nrOfSentences = 0.0;
 
@@ -69,7 +67,7 @@ public class PhrasePatternExtractor
 
         Collection<Sentence> sents = JCasUtil.select(jcas, Sentence.class);
         nrOfSentences = sents.size() * 1.0;
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
 
         for (Sentence s : sents) {
             int nrOfNCs = 0;
@@ -111,12 +109,12 @@ public class PhrasePatternExtractor
             chunkSum += chunks.size();
         }
 
-        featList.addAll(Arrays.asList(new Feature(NCS_PER_SENTENCE, ncSum / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(VCS_PER_SENTENCE, vcSum / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(PCS_PER_SENTENCE, pcSum / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(ADVCS_PER_SENTENCE, advcSum / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(SBARS_PER_SENTENCE, sbarSum / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(CHUNKS_PER_SENTENCE, chunkSum / nrOfSentences)));
-        return featList;
+        featSet.addAll(Arrays.asList(new Feature(NCS_PER_SENTENCE, ncSum / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(VCS_PER_SENTENCE, vcSum / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(PCS_PER_SENTENCE, pcSum / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(ADVCS_PER_SENTENCE, advcSum / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(SBARS_PER_SENTENCE, sbarSum / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(CHUNKS_PER_SENTENCE, chunkSum / nrOfSentences)));
+        return featSet;
     }
 }

@@ -18,7 +18,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -75,12 +77,12 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
     protected boolean smog;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
 
         ReadabilityMeasures readability = new ReadabilityMeasures();
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
         if (jcas.getDocumentLanguage() != null) {
             readability.setLanguage(jcas.getDocumentLanguage());
         }
@@ -95,39 +97,39 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
         Measures measure;
         if (ari) {
             measure = Measures.valueOf(PARAM_ADD_ARI);
-            featList.add(new Feature(PARAM_ADD_ARI, readability.getReadabilityScore(measure, words,
+            featSet.add(new Feature(PARAM_ADD_ARI, readability.getReadabilityScore(measure, words,
                     nrOfSentences)));
         }
         if (kincaid) {
             measure = Measures.valueOf(PARAM_ADD_KINCAID);
-            featList.add(new Feature(PARAM_ADD_KINCAID, readability.getReadabilityScore(measure,
+            featSet.add(new Feature(PARAM_ADD_KINCAID, readability.getReadabilityScore(measure,
                     words, nrOfSentences)));
         }
         if (colemanLiau) {
             measure = Measures.valueOf(PARAM_ADD_COLEMANLIAU);
-            featList.add(new Feature(PARAM_ADD_COLEMANLIAU, readability.getReadabilityScore(
+            featSet.add(new Feature(PARAM_ADD_COLEMANLIAU, readability.getReadabilityScore(
                     measure, words, nrOfSentences)));
         }
         if (flesh) {
             measure = Measures.valueOf(PARAM_ADD_FLESH);
-            featList.add(new Feature(PARAM_ADD_FLESH, readability.getReadabilityScore(measure,
+            featSet.add(new Feature(PARAM_ADD_FLESH, readability.getReadabilityScore(measure,
                     words, nrOfSentences)));
         }
         if (fog) {
             measure = Measures.valueOf(PARAM_ADD_FOG);
-            featList.add(new Feature(PARAM_ADD_FOG, readability.getReadabilityScore(measure, words,
+            featSet.add(new Feature(PARAM_ADD_FOG, readability.getReadabilityScore(measure, words,
                     nrOfSentences)));
         }
         if (smog) {
             measure = Measures.valueOf(PARAM_ADD_SMOG);
-            featList.add(new Feature(PARAM_ADD_SMOG, readability.getReadabilityScore(measure,
+            featSet.add(new Feature(PARAM_ADD_SMOG, readability.getReadabilityScore(measure,
                     words, nrOfSentences)));
         }
         if (lix) {
             measure = Measures.valueOf(PARAM_ADD_LIX);
-            featList.add(new Feature(PARAM_ADD_LIX, readability.getReadabilityScore(measure, words,
+            featSet.add(new Feature(PARAM_ADD_LIX, readability.getReadabilityScore(measure, words,
                     nrOfSentences)));
         }
-        return featList;
+        return featSet;
     }
 }

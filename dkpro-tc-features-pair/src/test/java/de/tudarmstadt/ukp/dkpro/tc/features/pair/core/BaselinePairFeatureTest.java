@@ -17,12 +17,12 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core;
 
+import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
-import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.*;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -44,7 +44,7 @@ public class BaselinePairFeatureTest
         AnalysisEngine engine = createEngine(desc);
 
         PairFeatureExtractor extractor = new AlwaysZeroPairFeatureExtractor();
-        List<Feature> features = runExtractor(engine, extractor);
+        Set<Feature> features = runExtractor(engine, extractor);
 
         assertEquals(1, features.size());
 

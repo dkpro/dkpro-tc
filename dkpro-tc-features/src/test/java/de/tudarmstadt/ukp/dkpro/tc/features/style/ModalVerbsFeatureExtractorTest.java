@@ -17,12 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -53,23 +52,22 @@ public class ModalVerbsFeatureExtractorTest
         engine.process(jcas);
 
         ModalVerbsFeatureExtractor extractor = new ModalVerbsFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(11, features.size());
 
-        Iterator<Feature> iter = features.iterator();
-        assertFeature(ModalVerbsFeatureExtractor.FN_CAN, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_COULD, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_MIGHT, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_MAY, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_MUST, 20.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_SHOULD, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_WILL, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_WOULD, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_SHALL, 10.0, iter.next());
-        assertFeature(ModalVerbsFeatureExtractor.FN_ALL, 100.0, iter.next()); // all verbs are modal
+        assertFeatures(ModalVerbsFeatureExtractor.FN_CAN, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_COULD, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_MIGHT, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_MAY, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_MUST, 20.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_SHOULD, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_WILL, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_WOULD, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_SHALL, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_ALL, 100.0, features, 0.001); // all verbs are modal
                                                                               // here
-        assertFeature(ModalVerbsFeatureExtractor.FN_UNCERT, 70.0, iter.next()); // 70% of the verbs
+        assertFeatures(ModalVerbsFeatureExtractor.FN_UNCERT, 70.0, features, 0.001); // 70% of the verbs
                                                                                 // express
                                                                                 // uncertainty
 

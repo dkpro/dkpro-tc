@@ -18,10 +18,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ne;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -44,11 +44,11 @@ public class SharedNEsFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.asList(new Feature("SharedNEs", !Collections.disjoint(getNEs(view1),
-                getNEs(view2))));
+        return new Feature("SharedNEs", !Collections.disjoint(getNEs(view1),
+                getNEs(view2))).asSet();
 
     }
 

@@ -18,8 +18,7 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.util;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -44,9 +43,9 @@ public class OriginalTextHolderFeatureExtractor
      */
     public static final String ORIGINAL_TEXT = "OriginalText";
 
-    @Override public List<Feature> extract(JCas jCas, TextClassificationUnit textClassificationUnit)
+    @Override public Set<Feature> extract(JCas jCas, TextClassificationUnit textClassificationUnit)
             throws TextClassificationException
     {
-        return Arrays.asList(new Feature(ORIGINAL_TEXT, textClassificationUnit.getCoveredText()));
+        return new Feature(ORIGINAL_TEXT, textClassificationUnit.getCoveredText()).asSet();
     }
 }

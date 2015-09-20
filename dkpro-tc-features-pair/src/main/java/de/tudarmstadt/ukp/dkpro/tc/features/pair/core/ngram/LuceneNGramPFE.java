@@ -18,8 +18,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
@@ -172,7 +175,7 @@ public class LuceneNGramPFE
     }
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
     	FrequencyDistribution<String> view1Ngrams = null;
@@ -185,7 +188,7 @@ public class LuceneNGramPFE
         allNgrams = getViewNgrams(view1, view2);
     	
 
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
         if (useView1NgramsAsFeatures) {
             prefix = "view1NG";
             features = addToFeatureArray(view1Ngrams, topKSetView1, features);
@@ -208,8 +211,8 @@ public class LuceneNGramPFE
         return features;
     }
 
-    protected List<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
-            FrequencyDistribution<String> topKSet, List<Feature> features)
+    protected Set<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
+            FrequencyDistribution<String> topKSet, Set<Feature> features)
     {
         for (String ngram : topKSet.getKeys()) {
             long value = 1;

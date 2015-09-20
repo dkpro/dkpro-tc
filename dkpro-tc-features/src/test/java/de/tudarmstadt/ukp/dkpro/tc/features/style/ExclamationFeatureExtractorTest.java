@@ -21,6 +21,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -48,7 +49,7 @@ public class ExclamationFeatureExtractorTest
         engine.process(jcas);
 
         ExclamationFeatureExtractor extractor = new ExclamationFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
 
         Assert.assertEquals(1, features.size());
 

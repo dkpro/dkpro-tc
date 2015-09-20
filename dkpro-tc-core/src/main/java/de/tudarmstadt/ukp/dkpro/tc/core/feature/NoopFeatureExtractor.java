@@ -18,7 +18,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.feature;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -33,8 +33,8 @@ public class NoopFeatureExtractor
 {
 
 	@Override
-	public List<Feature> extract(JCas view) throws TextClassificationException {
-		return Collections.<Feature>emptyList();
+	public Set<Feature> extract(JCas view) throws TextClassificationException {
+		return Collections.<Feature>emptySet();
 	}
 
 }

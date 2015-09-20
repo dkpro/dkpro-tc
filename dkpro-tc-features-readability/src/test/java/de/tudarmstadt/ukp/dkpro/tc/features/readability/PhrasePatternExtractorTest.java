@@ -22,6 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -56,7 +57,7 @@ public class PhrasePatternExtractorTest
         engine.process(jcas);
 
         PhrasePatternExtractor extractor = new PhrasePatternExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
 
         Assert.assertEquals(6, features.size());
         // System.out.println(features);

@@ -17,12 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
-import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -53,13 +52,12 @@ public class PastVsFutureFeatureExtractorTest
         engine.process(jcas);
 
         PastVsFutureFeatureExtractor extractor = new PastVsFutureFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(3, features.size());
-        Iterator<Feature> iter = features.iterator();
-        assertFeature(PastVsFutureFeatureExtractor.FN_PAST_RATIO, 25.0, iter.next());
-        assertFeature(PastVsFutureFeatureExtractor.FN_FUTURE_RATIO, 75.0, iter.next());
-        assertFeature(PastVsFutureFeatureExtractor.FN_FUTURE_VS_PAST_RATIO, 3.0, iter.next());
+        assertFeatures(PastVsFutureFeatureExtractor.FN_PAST_RATIO, 25.0, features, 0.01);
+        assertFeatures(PastVsFutureFeatureExtractor.FN_FUTURE_RATIO, 75.0, features, 0.01);
+        assertFeatures(PastVsFutureFeatureExtractor.FN_FUTURE_VS_PAST_RATIO, 3.0, features, 0.01);
 
     }
 }

@@ -21,7 +21,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -44,19 +44,19 @@ public class TestTokenFeatureExtractors {
 		TextClassificationUnit tcu = (TextClassificationUnit)o[1];
 
 		PreviousToken prev = new PreviousToken();
-		List<Feature> extract = prev.extract(jcas, tcu);
+		Set<Feature> extract = prev.extract(jcas, tcu);
 		assertEquals(1, extract.size());
-		assertEquals("It", extract.get(0).getValue());
+		assertEquals("It", extract.iterator().next().getValue());
 		
 		CurrentToken curr = new CurrentToken();
 		extract = curr.extract(jcas, tcu);
 		assertEquals(1, extract.size());
-		assertEquals("is", extract.get(0).getValue());
+		assertEquals("is", extract.iterator().next().getValue());
 		
 		NextToken next = new NextToken();
 		extract = next.extract(jcas, tcu);
 		assertEquals(1, extract.size());
-		assertEquals("raining", extract.get(0).getValue());
+		assertEquals("raining", extract.iterator().next().getValue());
 		
 	}
 

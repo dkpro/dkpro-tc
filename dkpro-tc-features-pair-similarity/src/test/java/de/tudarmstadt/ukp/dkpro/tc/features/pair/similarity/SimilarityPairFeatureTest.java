@@ -22,7 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -77,7 +77,7 @@ public class SimilarityPairFeatureTest
         		SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
                 SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource);
 
-        List<Feature> features = extractor.extract(jcas.getView(VIEW1), jcas.getView(VIEW2));
+        Set<Feature> features = extractor.extract(jcas.getView(VIEW1), jcas.getView(VIEW2));
 
         Assert.assertEquals(1, features.size());
         Iterator<Feature> iter = features.iterator();

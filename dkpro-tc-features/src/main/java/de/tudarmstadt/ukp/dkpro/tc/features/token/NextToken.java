@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.token;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -26,26 +25,23 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class NextToken extends TokenLookUpTable
+public class NextToken 
+	extends TokenLookUpTable
 {
 
     public static final String FEATURE_NAME = "nextToken";
     final static String END_OF_SEQUENCE = "EOS";
 
-    public List<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
         throws TextClassificationException
     {
         super.extract(aView, aClassificationUnit);
         Integer idx = tokenBegin2Idx.get(aClassificationUnit.getBegin());
         
         String featureVal = nextToken(idx);
-        Feature feature = new Feature(FEATURE_NAME, featureVal);
-
-        ArrayList<Feature> features = new ArrayList<Feature>();
-        features.add(feature);
-        return features;
-
+        return new Feature(FEATURE_NAME, featureVal).asSet();
     }
+    
     private String nextToken(Integer idx)
     {
         if (idx2SentenceEnd.get(idx) != null){

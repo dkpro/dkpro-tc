@@ -17,11 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -46,14 +45,12 @@ public class NrOfCharsFeatureExtractorTest
         engine.process(jcas);
 
         NrOfCharsDFE extractor = new NrOfCharsDFE();
-        List<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(3, features.size());
 
-        Iterator<Feature> iter = features.iterator();
-
-        assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS, 31., iter.next());
-        assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, iter.next());
-        assertFeature(NrOfCharsDFE.FN_NR_OF_CHARS_PER_TOKEN, 3.1, iter.next());
+        assertFeatures(NrOfCharsDFE.FN_NR_OF_CHARS, 31., features, 0.01);
+        assertFeatures(NrOfCharsDFE.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, features, 0.01);
+        assertFeatures(NrOfCharsDFE.FN_NR_OF_CHARS_PER_TOKEN, 3.1, features, 0.01);
     }
 }

@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -40,7 +39,7 @@ public class TypeTokenRatioFeatureExtractor
     public static final String FN_TTR = "TypeTokenRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
 
@@ -54,9 +53,5 @@ public class TypeTokenRatioFeatureExtractor
             ttr = (double) fd.getB() / fd.getN();
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new Feature(FN_TTR, ttr));
-
-        return featList;
-    }
+        return new Feature(FN_TTR, ttr).asSet();    }
 }

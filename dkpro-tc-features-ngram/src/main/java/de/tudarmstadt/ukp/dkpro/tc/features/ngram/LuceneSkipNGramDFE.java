@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.ngram;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
@@ -41,10 +41,10 @@ public class LuceneSkipNGramDFE
 {
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
 
         FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentSkipNgrams(jcas,
                 skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipSize,

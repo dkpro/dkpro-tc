@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -57,31 +57,31 @@ public class NrOfCharsDFE
     public static final String FN_NR_OF_CHARS_PER_TOKEN = "NrofCharsPerToken";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         double nrOfChars = jcas.getDocumentText().length();
         double nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
         double nrOfTokens = JCasUtil.select(jcas, Token.class).size();
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new Feature(FN_NR_OF_CHARS, nrOfChars));
+        Set<Feature> features = new HashSet<Feature>();
+        features.add(new Feature(FN_NR_OF_CHARS, nrOfChars));
 
         if (nrOfSentences == 0) {
-            featList.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, new MissingValue(
+        	features.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, new MissingValue(
                     MissingValueNonNominalType.NUMERIC)));
         }
         else {
-            featList.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, nrOfChars / nrOfSentences));
+        	features.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, nrOfChars / nrOfSentences));
         }
 
         if (nrOfTokens == 0) {
-            featList.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, new MissingValue(
+        	features.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, new MissingValue(
                     MissingValueNonNominalType.NUMERIC)));
         }
         else {
-            featList.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, nrOfChars / nrOfTokens));
+        	features.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, nrOfChars / nrOfTokens));
         }
-        return featList;
+        return features;
     }
 }

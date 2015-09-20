@@ -30,10 +30,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.readability;
  In addition, we use the per sentence features. 
  */
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -80,10 +78,8 @@ public class LexicalVariationExtractor
     public static final String LEXICAL_DENSITY = "LexicalDensity";
     public static final String LEXICAL_VARIATION = "LexicalVariation";
 
-    public List<Feature> extract(JCas jcas)
-
+    public Set<Feature> extract(JCas jcas)
     {
-
         double nrOfLexicalWords = 0.0;
         double nrOfNonLexicalWords = 0.0;
         Set<String> lexicalTokens = new HashSet<String>();
@@ -125,43 +121,43 @@ public class LexicalVariationExtractor
 
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
 
         // per sentence
         if (!excludeSentenceCounts) {
-            featList.addAll(Arrays.asList(new Feature(N_PER_SENTENCE, nrOfNouns / nrOfSentences)));
-            featList.addAll(Arrays.asList(new Feature(ADJ_PER_SENTENCE, nrOfAdjectives
+            featSet.addAll(Arrays.asList(new Feature(N_PER_SENTENCE, nrOfNouns / nrOfSentences)));
+            featSet.addAll(Arrays.asList(new Feature(ADJ_PER_SENTENCE, nrOfAdjectives
                     / nrOfSentences)));
-            featList.addAll(Arrays
+            featSet.addAll(Arrays
                     .asList(new Feature(ADV_PER_SENTENCE, nrOfAdverbs / nrOfSentences)));
-            featList.addAll(Arrays.asList(new Feature(V_PER_SENTENCE, nrOfVerbs / nrOfSentences)));
+            featSet.addAll(Arrays.asList(new Feature(V_PER_SENTENCE, nrOfVerbs / nrOfSentences)));
         }
         // per lexical word
 
         if (!excludeLexicalVariation) {
-            featList.addAll(Arrays
+            featSet.addAll(Arrays
                     .asList(new Feature(NOUN_VARIATION, nrOfNouns / nrOfLexicalWords)));
-            featList.addAll(Arrays
+            featSet.addAll(Arrays
                     .asList(new Feature(VERB_VARIATION, nrOfVerbs / nrOfLexicalWords)));
-            featList.addAll(Arrays.asList(new Feature(VERB_VARIATION1, nrOfVerbs
+            featSet.addAll(Arrays.asList(new Feature(VERB_VARIATION1, nrOfVerbs
                     / (double) verbTypes.size())));
 
-            featList.addAll(Arrays.asList(new Feature(CORRECTED_VERB_VARIATION, nrOfVerbs
+            featSet.addAll(Arrays.asList(new Feature(CORRECTED_VERB_VARIATION, nrOfVerbs
                     / Math.sqrt((2 * ((double) verbTypes.size()))))));
-            featList.addAll(Arrays.asList(new Feature(ADJ_VARIATION, nrOfAdjectives
+            featSet.addAll(Arrays.asList(new Feature(ADJ_VARIATION, nrOfAdjectives
                     / nrOfLexicalWords)));
-            featList.addAll(Arrays
+            featSet.addAll(Arrays
                     .asList(new Feature(ADV_VARIATION, nrOfAdverbs / nrOfLexicalWords)));
-            featList.addAll(Arrays.asList(new Feature(MODIFIER_VARIATION, nrOfModifiers
+            featSet.addAll(Arrays.asList(new Feature(MODIFIER_VARIATION, nrOfModifiers
                     / nrOfLexicalWords)));
-            featList.addAll(Arrays.asList(new Feature(LEXICAL_DENSITY, nrOfLexicalWords
+            featSet.addAll(Arrays.asList(new Feature(LEXICAL_DENSITY, nrOfLexicalWords
                     / (nrOfLexicalWords + nrOfNonLexicalWords))));
-            featList.addAll(Arrays.asList(new Feature(LEXICAL_VARIATION, nrOfLexicalWords
+            featSet.addAll(Arrays.asList(new Feature(LEXICAL_VARIATION, nrOfLexicalWords
                     / lexicalTokens.size())));
             // the value is so high, it does not seem to make sense to compare it with the others
-            featList.addAll(Arrays.asList(new Feature(SQUARED_VERB_VARIATION,
+            featSet.addAll(Arrays.asList(new Feature(SQUARED_VERB_VARIATION,
                     (nrOfVerbs * nrOfVerbs) / (double) verbTypes.size())));
         }
-        return featList;
+        return featSet;
     }
 }

@@ -19,10 +19,11 @@ package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -53,25 +54,25 @@ public class TopicWordsFeatureExtractor
     private String prefix;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         if (topicFilePath == null || topicFilePath.isEmpty()) {
             System.out.println("Path to word list must be set!");
         }
         List<String> topics = null;
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
         try {
             topics = FileUtils.readLines(new File(topicFilePath));
             for (String t : topics) {
-                featList.addAll(countWordHits(t, tokens));
+                features.addAll(countWordHits(t, tokens));
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        return featList;
+        return features;
     }
 
     private List<Feature> countWordHits(String wordListName, List<String> tokens)

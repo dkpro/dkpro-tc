@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -183,7 +184,7 @@ public class LuceneKeywordPFE
     }
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
         FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, ngramMinN1, ngramMaxN1,
@@ -192,7 +193,7 @@ public class LuceneKeywordPFE
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
         FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
         
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
         if (useView1NgramsAsFeatures) {
             prefix = "keyNG1";
             features = addToFeatureArray(view1Ngrams, topKSetView1, features);

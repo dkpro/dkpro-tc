@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.token;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -32,19 +31,14 @@ public class PreviousToken extends TokenLookUpTable
     public static final String FEATURE_NAME = "previousToken";
     final static String BEGIN_OF_SEQUENCE = "BOS";
 
-    public List<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
         throws TextClassificationException
     {
         super.extract(aView, aClassificationUnit);
         Integer idx = tokenBegin2Idx.get(aClassificationUnit.getBegin());
 
         String featureVal = previousToken(idx);
-        Feature feature = new Feature(FEATURE_NAME, featureVal);
-
-        ArrayList<Feature> features = new ArrayList<Feature>();
-        features.add(feature);
-        return features;
-
+        return new Feature(FEATURE_NAME, featureVal).asSet();
     }
     
     private String previousToken(Integer idx)

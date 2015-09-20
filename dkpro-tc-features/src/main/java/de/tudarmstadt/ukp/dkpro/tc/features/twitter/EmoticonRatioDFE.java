@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.twitter;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -46,12 +46,12 @@ public class EmoticonRatioDFE
     implements DocumentFeatureExtractor
 {
     @Override
-    public List<Feature> extract(JCas jCas)
+    public Set<Feature> extract(JCas jCas)
         throws TextClassificationException
     {
         int nrOfEmoticons = JCasUtil.select(jCas, EMO.class).size();
         int nrOfTokens = JCasUtil.select(jCas, Token.class).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
-        return new Feature(EmoticonRatioDFE.class.getSimpleName(), ratio).asList();
+        return new Feature(EmoticonRatioDFE.class.getSimpleName(), ratio).asSet();
     }
 }

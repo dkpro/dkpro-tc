@@ -18,9 +18,9 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -84,7 +84,7 @@ public class ParsePatternExtractor
     public static final String COORDS_PER_CLAUSE = "CoordinationsPerClause";
     public static final String COMPLEXNOMINALS_PER_CLAUSE = "ComplexNominalsPerClause";
 
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
 
     {
         double nrOfNPs = 0.0;
@@ -105,7 +105,7 @@ public class ParsePatternExtractor
         int lengthSumClauses = 0;
         int lengthSumTunits = 0;
         int parseTreeDepthSum = 0;
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
         double nrOfSentences = JCasUtil.select(jcas, Sentence.class).size() * 1.0;
         for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
             parseTreeDepthSum += ParsePatternUtils.getParseDepth(s);
@@ -160,19 +160,19 @@ public class ParsePatternExtractor
         // avoid division by zero, there should be at least one sentence in the cas
         nrOfSentences = Math.max(1, nrOfSentences);
 
-        featList.addAll(Arrays.asList(new Feature(NPS_PER_SENTENCE, nrOfNPs / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(VPS_PER_SENTENCE, nrOfVPs / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(PPS_PER_SENTENCE, nrOfPPs / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(SBARS_PER_SENTENCE, nrOfSbars / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(NPS_PER_SENTENCE, nrOfNPs / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(VPS_PER_SENTENCE, nrOfVPs / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(PPS_PER_SENTENCE, nrOfPPs / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(SBARS_PER_SENTENCE, nrOfSbars / nrOfSentences)));
 
-        featList.addAll(Arrays
+        featSet.addAll(Arrays
                 .asList(new Feature(CLAUSES_PER_SENTENCE, nrOfClauses / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(DEP_CLAUSES_PER_SENTENCE, nrOfDependentClauses
+        featSet.addAll(Arrays.asList(new Feature(DEP_CLAUSES_PER_SENTENCE, nrOfDependentClauses
                 / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(TUNITS_PER_SENTENCE, nrOfTunits / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(COMPLEX_TUNITS_PER_SENTENCE, nrOfComplexTunits
+        featSet.addAll(Arrays.asList(new Feature(TUNITS_PER_SENTENCE, nrOfTunits / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(COMPLEX_TUNITS_PER_SENTENCE, nrOfComplexTunits
                 / nrOfSentences)));
-        featList.addAll(Arrays.asList(new Feature(COORDS_PER_SENTENCE, nrOfCoords / nrOfSentences)));
+        featSet.addAll(Arrays.asList(new Feature(COORDS_PER_SENTENCE, nrOfCoords / nrOfSentences)));
 
         // avoid division by 0,
         // if we don't have any NPs, the lengthSum is 0, division by 1 will yield 0 as average
@@ -182,37 +182,37 @@ public class ParsePatternExtractor
         nrOfPPs = Math.max(1, nrOfPPs);
         nrOfTunits = Math.max(1, nrOfTunits);
 
-        featList.addAll(Arrays.asList(new Feature(AVG_NP_LENGTH, lengthSumNPs / nrOfNPs)));
-        featList.addAll(Arrays.asList(new Feature(AVG_VP_LENGTH, lengthSumVPs / nrOfVPs)));
-        featList.addAll(Arrays.asList(new Feature(AVG_PP_LENGTH, lengthSumPPs / nrOfPPs)));
-        featList.addAll(Arrays.asList(new Feature(AVG_TUNIT_LENGTH, lengthSumTunits / nrOfTunits)));
+        featSet.addAll(Arrays.asList(new Feature(AVG_NP_LENGTH, lengthSumNPs / nrOfNPs)));
+        featSet.addAll(Arrays.asList(new Feature(AVG_VP_LENGTH, lengthSumVPs / nrOfVPs)));
+        featSet.addAll(Arrays.asList(new Feature(AVG_PP_LENGTH, lengthSumPPs / nrOfPPs)));
+        featSet.addAll(Arrays.asList(new Feature(AVG_TUNIT_LENGTH, lengthSumTunits / nrOfTunits)));
 
-        featList.addAll(Arrays
+        featSet.addAll(Arrays
                 .asList(new Feature(AVG_TREE_DEPTH, parseTreeDepthSum / nrOfSentences)));
 
-        featList.addAll(Arrays.asList(new Feature(CLAUSES_PER_TUNIT, nrOfClauses / nrOfTunits)));
+        featSet.addAll(Arrays.asList(new Feature(CLAUSES_PER_TUNIT, nrOfClauses / nrOfTunits)));
 
         nrOfClauses = Math.max(1, nrOfClauses);
-        featList.addAll(Arrays
+        featSet.addAll(Arrays
                 .asList(new Feature(AVG_CLAUSE_LENGTH, lengthSumClauses / nrOfClauses)));
-        featList.addAll(Arrays.asList(new Feature(COMPLEX_TUNITS_PER_TUNIT, nrOfComplexTunits
+        featSet.addAll(Arrays.asList(new Feature(COMPLEX_TUNITS_PER_TUNIT, nrOfComplexTunits
                 / nrOfTunits)));
-        featList.addAll(Arrays.asList(new Feature(COORDS_PER_TUNIT, nrOfCoords / nrOfTunits)));
-        featList.addAll(Arrays.asList(new Feature(COMPLEXNOMINALS_PER_TUNIT, nrOfComplexNominals
+        featSet.addAll(Arrays.asList(new Feature(COORDS_PER_TUNIT, nrOfCoords / nrOfTunits)));
+        featSet.addAll(Arrays.asList(new Feature(COMPLEXNOMINALS_PER_TUNIT, nrOfComplexNominals
                 / nrOfTunits)));
-        featList.addAll(Arrays.asList(new Feature(VERBPHRASES_PER_TUNIT, nrOfVerbphrases
+        featSet.addAll(Arrays.asList(new Feature(VERBPHRASES_PER_TUNIT, nrOfVerbphrases
                 / nrOfTunits)));
-        featList.addAll(Arrays.asList(new Feature(DEPCLAUSE_TUNIT_RATIO, nrOfDependentClauses
+        featSet.addAll(Arrays.asList(new Feature(DEPCLAUSE_TUNIT_RATIO, nrOfDependentClauses
                 / nrOfTunits)));
         ;
 
-        featList.addAll(Arrays.asList(new Feature(DEPCLAUSE_CLAUSE_RATIO, nrOfDependentClauses
+        featSet.addAll(Arrays.asList(new Feature(DEPCLAUSE_CLAUSE_RATIO, nrOfDependentClauses
                 / nrOfClauses)));
-        featList.addAll(Arrays.asList(new Feature(COORDS_PER_CLAUSE, nrOfCoords / nrOfClauses)));
+        featSet.addAll(Arrays.asList(new Feature(COORDS_PER_CLAUSE, nrOfCoords / nrOfClauses)));
         ;
-        featList.addAll(Arrays.asList(new Feature(COMPLEXNOMINALS_PER_CLAUSE, nrOfComplexNominals
+        featSet.addAll(Arrays.asList(new Feature(COMPLEXNOMINALS_PER_CLAUSE, nrOfComplexNominals
                 / nrOfClauses)));
         ;
-        return featList;
+        return featSet;
     }
 }

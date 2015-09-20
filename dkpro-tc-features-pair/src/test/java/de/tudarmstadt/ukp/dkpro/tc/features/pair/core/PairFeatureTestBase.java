@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -31,7 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.PairFeatureExtractor;
 public class PairFeatureTestBase
 {
 
-    public List<Feature> runExtractor(AnalysisEngine engine, PairFeatureExtractor extractor)
+    public Set<Feature> runExtractor(AnalysisEngine engine, PairFeatureExtractor extractor)
         throws ResourceInitializationException, TextClassificationException,
         AnalysisEngineProcessException
     {

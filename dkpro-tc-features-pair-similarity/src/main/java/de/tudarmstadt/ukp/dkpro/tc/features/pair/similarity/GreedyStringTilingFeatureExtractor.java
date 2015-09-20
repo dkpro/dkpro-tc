@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -40,7 +39,7 @@ public class GreedyStringTilingFeatureExtractor
     protected GreedyStringTiling measure = new GreedyStringTiling(3);
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
 
@@ -48,7 +47,7 @@ public class GreedyStringTilingFeatureExtractor
             double similarity = measure.getSimilarity(view1.getDocumentText(),
                     view2.getDocumentText());
 
-            return Arrays.asList(new Feature("Similarity" + measure.getName(), similarity));
+            return new Feature("Similarity" + measure.getName(), similarity).asSet();
         }
         catch (SimilarityException e) {
             throw new TextClassificationException(e);

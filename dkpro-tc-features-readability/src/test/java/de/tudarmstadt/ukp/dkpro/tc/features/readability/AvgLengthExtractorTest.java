@@ -20,9 +20,9 @@ package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -54,15 +54,20 @@ public class AvgLengthExtractorTest
         engine.process(jcas);
 
         AvgLengthExtractor extractor = new AvgLengthExtractor();
-        List<Feature> features = extractor.extract(jcas);
-
-        Assert.assertEquals(3, features.size());
-        Assert.assertEquals(features.get(0).getName(), "AvgSentenceLength");
-        Assert.assertEquals(features.get(1).getName(), "AvgWordLengthInCharacters");
-        Assert.assertEquals(features.get(2).getName(), "AvgWordLengthInSyllables");
-        Assert.assertEquals((double) features.get(0).getValue(), 17.2, 0.1);
-        Assert.assertEquals((double) features.get(1).getValue(), 4.7, 0.1);
-        Assert.assertEquals((double) features.get(2).getValue(), 1.4, 0.1);
-
+        
+        int i=0;
+        for (Feature f : extractor.extract(jcas)) {
+        	if (f.getName().equals("AvgSentenceLength")) {
+                Assert.assertEquals((double) f.getValue(), 17.2, 0.1);
+        	}
+        	else if (f.getName().equals("AvgWordLengthInCharacters")) {
+                Assert.assertEquals((double) f.getValue(), 4.7, 0.1);
+        	}
+        	else if (f.getName().equals("AvgWordLengthInSyllables")) {
+                Assert.assertEquals((double) f.getValue(), 1.4, 0.1);
+        	}
+        	i++;
+        }
+        assertEquals(3, i);
     }
 }

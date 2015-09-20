@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -44,10 +44,10 @@ public class NrOfSentencesDFE
     public static final String FN_NR_OF_SENTENCES = "NrofSentences";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         return new Feature(FN_NR_OF_SENTENCES, JCasUtil.select(jcas, Sentence.class).size())
-                .asList();
+                .asSet();
     }
 }

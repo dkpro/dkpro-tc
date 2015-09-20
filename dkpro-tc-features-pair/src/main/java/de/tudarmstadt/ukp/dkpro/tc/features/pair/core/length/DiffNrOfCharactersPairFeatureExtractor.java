@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -40,14 +39,12 @@ public class DiffNrOfCharactersPairFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.asList(
-                new Feature("DiffNrOfCharacters",
+        return new Feature("DiffNrOfCharacters",
                         view1.getDocumentText().length() -
-                                view2.getDocumentText().length())
-                );
+                                view2.getDocumentText().length()).asSet();
 
     }
 }

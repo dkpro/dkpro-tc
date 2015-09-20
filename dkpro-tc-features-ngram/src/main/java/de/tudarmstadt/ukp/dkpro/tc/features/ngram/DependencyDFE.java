@@ -69,10 +69,10 @@ public class DependencyDFE
     private FrequencyDistribution<String> trainingDepsFD;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
 
         Set<String> depStrings = new HashSet<String>();
         for (Dependency dep : JCasUtil.select(jcas, Dependency.class)) {

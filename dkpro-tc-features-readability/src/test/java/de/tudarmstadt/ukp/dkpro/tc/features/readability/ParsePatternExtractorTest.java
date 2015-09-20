@@ -21,6 +21,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -52,7 +53,7 @@ public class ParsePatternExtractorTest
         engine.process(jcas);
 
         ParsePatternExtractor extractor = new ParsePatternExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
         Assert.assertEquals(features.size(), 24);
         double[] results = { 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0,
                 10.0, 2.0, 69.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0,

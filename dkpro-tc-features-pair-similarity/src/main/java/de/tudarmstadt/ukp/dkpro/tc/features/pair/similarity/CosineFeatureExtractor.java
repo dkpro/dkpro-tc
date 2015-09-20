@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +113,7 @@ public class CosineFeatureExtractor<T extends Annotation>
         return true;
     }
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
         try {
@@ -134,7 +133,7 @@ public class CosineFeatureExtractor<T extends Annotation>
             	similarity = 0.0;
             }
             
-            return Arrays.asList(new Feature("Similarity" + measure.getName(), similarity));
+            return new Feature("Similarity" + measure.getName(), similarity).asSet();
         }
         catch (SimilarityException e) {
             throw new TextClassificationException(e);

@@ -18,8 +18,8 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -41,11 +41,9 @@ public class PosTypeUFE
      *         This feature extractor checks the pos tag of the word. As not all ml learning
      *         algorithms can use enumerations, we create a boolean feature for each pos type.
      */
-    public List<Feature> extract(JCas jcas, TextClassificationUnit unit)
-
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit unit)
     {
-
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
         String pos = JCasUtil.selectCovered(jcas, POS.class, unit).get(0).getType().getShortName();
 
         // main word classes
@@ -54,9 +52,9 @@ public class PosTypeUFE
         for (String candidatePos : postags) {
             // boolean feature for each pos type
             String featureName = "Is" + candidatePos;
-            featList.add(new Feature(featureName, pos.equals(candidatePos)));
+            featSet.add(new Feature(featureName, pos.equals(candidatePos)));
         }
 
-        return featList;
+        return featSet;
     }
 }

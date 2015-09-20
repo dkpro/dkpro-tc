@@ -17,9 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.style;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
@@ -44,14 +42,12 @@ public class TypeTokenPairFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.asList(
-                new Feature("DiffTypeTokenRatio",
-
-                        getTypeTokenRatio(view1) / getTypeTokenRatio(view2))
-                );
+        return new Feature("DiffTypeTokenRatio",
+                        getTypeTokenRatio(view1) / getTypeTokenRatio(view2)
+                ).asSet();
     }
 
     /**

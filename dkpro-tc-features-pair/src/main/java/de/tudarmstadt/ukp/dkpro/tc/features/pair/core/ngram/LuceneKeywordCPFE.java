@@ -18,8 +18,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -116,7 +118,7 @@ public class LuceneKeywordCPFE
     }
     
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
     	FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, ngramMinN1, ngramMaxN1,
@@ -128,10 +130,9 @@ public class LuceneKeywordCPFE
                 .getCombinedNgrams(view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
                         ngramUseSymmetricalCombos);
 
-        List<Feature> features = new ArrayList<Feature>();
         prefix = "comboKNG";
-        features = addToFeatureArray(documentComboNgrams, topKSetCombo, features);
-
+        Set<Feature> features = new HashSet<Feature>();
+        addToFeatureArray(documentComboNgrams, topKSetCombo, features);
         return features;
     }
 

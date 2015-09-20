@@ -18,25 +18,27 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 
-import com.google.gson.*;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.File;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.gson.Gson;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
 public class SparseFeatureStoreTest
 {
@@ -67,7 +69,7 @@ public class SparseFeatureStoreTest
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals("outcome", fs.getUniqueOutcomes().first());
         assertEquals(new Feature("feature1", "value1"),
-                fs.getInstance(0).getFeatures().get(0));
+                fs.getInstance(0).getFeatures().iterator().next());
     }
 
     @Test
@@ -103,8 +105,8 @@ public class SparseFeatureStoreTest
     {
         FeatureStore fs = new SparseFeatureStore();
         // two instance, both have different features, in unsorted manner
-        Instance inst1 = new Instance(Arrays.asList(new Feature("featZ", "value")), "outcome1");
-        Instance inst2 = new Instance(Arrays.asList(new Feature("featA", "value")), "outcome1");
+        Instance inst1 = new Instance(new Feature("featZ", "value").asSet(), "outcome1");
+        Instance inst2 = new Instance(new Feature("featA", "value").asSet(), "outcome1");
 
         fs.addInstance(inst1);
         fs.addInstance(inst2);
@@ -113,12 +115,15 @@ public class SparseFeatureStoreTest
         // now it has two features
         assertEquals(2, retrievedInstance1.getFeatures().size());
         // which are sorted by name
-        assertEquals("featA", retrievedInstance1.getFeatures().get(0).getName());
-        assertEquals("featZ", retrievedInstance1.getFeatures().get(1).getName());
+        Iterator<Feature> iter = retrievedInstance1.getFeatures().iterator();
+        Feature feature1 = iter.next();
+        Feature feature2 = iter.next();
+        assertEquals("featA", feature1.getName());
+        assertEquals("featZ", feature2.getName());
         // but the "featA" is null
-        assertNull(retrievedInstance1.getFeatures().get(0).getValue());
+        assertNull(feature1.getValue());
         // and "featZ" has value = "value"
-        assertEquals("value", retrievedInstance1.getFeatures().get(1).getValue());
+        assertEquals("value", feature2.getValue());
     }
 
     @Test

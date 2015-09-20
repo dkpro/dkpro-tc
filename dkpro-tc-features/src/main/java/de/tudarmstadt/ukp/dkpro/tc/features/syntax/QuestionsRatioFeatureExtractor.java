@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +41,7 @@ public class QuestionsRatioFeatureExtractor
     public static final String FN_QUESTION_RATIO = "QuestionRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
 
@@ -63,6 +62,6 @@ public class QuestionsRatioFeatureExtractor
             questionRatio = (double) matches / nrOfSentences;
         }
 
-        return Arrays.asList(new Feature(FN_QUESTION_RATIO, questionRatio));
+        return new Feature(FN_QUESTION_RATIO, questionRatio).asSet();
     }
 }

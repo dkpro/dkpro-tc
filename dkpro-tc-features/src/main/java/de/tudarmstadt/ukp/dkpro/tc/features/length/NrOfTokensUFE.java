@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -46,10 +46,10 @@ public class NrOfTokensUFE
     public static final String FN_NR_OF_TOKENS = "NrofTokens";
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featList = new HashSet<Feature>();
 
         double numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
 

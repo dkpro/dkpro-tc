@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
+package de.tudarmstadt.ukp.dkpro.tc.api.features.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,28 +25,20 @@ import java.util.List;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
-public class SimpleFeatureStoreTest {
+public class InstanceTest {
 
 	@Test
-	public void basicTest() 
-		throws Exception
-    {
-		FeatureStore fs = new DenseFeatureStore();
-		
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value2");
-		List<Feature> features = new ArrayList<>();
-		features.add(f1);
-		features.add(f2);
-		Instance instance = new Instance(features, "outcome");
-		fs.addInstance(instance);
-		fs.addInstance(instance);
-		
-		assertEquals(2, fs.getNumberOfInstances());
-		assertEquals("outcome", fs.getUniqueOutcomes().first());
-		assertEquals(f1, fs.getInstance(0).getFeatures().iterator().next());
-	}
+	public void instanceTest() 
+			throws Exception
+	    {
+			Feature f1 = new Feature("feature", "value");
+			Feature f2 = new Feature("feature", "value");
+			List<Feature> features = new ArrayList<>();
+			features.add(f1);
+			features.add(f2);
+			Instance instance = new Instance(features, "outcome");
+			assertEquals(1, instance.getFeatures().size());
+		}
 }

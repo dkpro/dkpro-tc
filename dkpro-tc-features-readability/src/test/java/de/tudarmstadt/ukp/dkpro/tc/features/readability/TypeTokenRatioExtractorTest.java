@@ -22,6 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -57,7 +58,7 @@ public class TypeTokenRatioExtractorTest
 
         TypeTokenRatioExtractor extractor = new TypeTokenRatioExtractor();
 
-        List<Feature> features = extractor.extract(jcas);
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
 
         Assert.assertEquals(1, features.size());
         Assert.assertEquals((double) features.get(0).getValue(), 0.6, 0.1);

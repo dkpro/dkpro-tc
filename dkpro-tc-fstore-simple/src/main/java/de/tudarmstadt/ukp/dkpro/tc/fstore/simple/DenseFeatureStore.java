@@ -38,8 +38,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 /**
  * Data structure that holds instances.
  * 
- * @author zesch
- * 
  */
 public class DenseFeatureStore
     implements FeatureStore

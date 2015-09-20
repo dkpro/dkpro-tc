@@ -23,7 +23,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -60,7 +60,7 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
         engine.process(jcas);
 
         SpellingErrorPOSRatioFeatureExtractor extractor = new SpellingErrorPOSRatioFeatureExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(11, features.size());
 

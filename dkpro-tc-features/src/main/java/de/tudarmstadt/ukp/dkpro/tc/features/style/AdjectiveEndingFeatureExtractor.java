@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -56,7 +56,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String FN_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
     {
 
         int able = 0;
@@ -110,21 +110,21 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
         if (n > 0) {
-            featList.add(new Feature(FN_ENDING1, (double) able * 100 / n));
-            featList.add(new Feature(FN_ENDING2, (double) al * 100 / n));
-            featList.add(new Feature(FN_ENDING3, (double) ful * 100 / n));
-            featList.add(new Feature(FN_ENDING4, (double) ible * 100 / n));
-            featList.add(new Feature(FN_ENDING5, (double) less * 100 / n));
-            featList.add(new Feature(FN_ENDING6, (double) ous * 100 / n));
-            featList.add(new Feature(FN_ENDING7, (double) ive * 100 / n));
-            featList.add(new Feature(FN_ENDING8, (double) ic * 100 / n));
+            featSet.add(new Feature(FN_ENDING1, (double) able * 100 / n));
+            featSet.add(new Feature(FN_ENDING2, (double) al * 100 / n));
+            featSet.add(new Feature(FN_ENDING3, (double) ful * 100 / n));
+            featSet.add(new Feature(FN_ENDING4, (double) ible * 100 / n));
+            featSet.add(new Feature(FN_ENDING5, (double) less * 100 / n));
+            featSet.add(new Feature(FN_ENDING6, (double) ous * 100 / n));
+            featSet.add(new Feature(FN_ENDING7, (double) ive * 100 / n));
+            featSet.add(new Feature(FN_ENDING8, (double) ic * 100 / n));
         }
         if (m > 0) {
-            featList.add(new Feature(FN_ENDING9, (double) ly * 100 / m));
+            featSet.add(new Feature(FN_ENDING9, (double) ly * 100 / m));
         }
 
-        return featList;
+        return featSet;
     }
 }

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.testing;
 
+import java.util.Set;
+
 import junit.framework.Assert;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
@@ -71,5 +73,26 @@ public class FeatureTestUtil
         Assert.assertNotNull(actualFeature);
         Assert.assertEquals(expectedName, actualFeature.getName());
         Assert.assertEquals(expectedValue, (Double) actualFeature.getValue(), epsilon);
+    }
+    
+    /**
+     * Shortcut for JUnit assert that test whether a feature has a missing value
+     * 
+     * @param expectedName
+     * @param expectedValue
+     * @param features
+     */
+    public static void assertFeatures(String expectedName, double expectedValue,
+            Set<Feature> features, double epsilon)
+    {
+        Assert.assertNotNull(features);
+    	boolean found = false;
+    	for (Feature f : features) {
+    		if (f.getName().equals(expectedName)) {
+    			found = true;
+                Assert.assertEquals(expectedValue, (Double) f.getValue(), epsilon);	
+            }
+    	}
+    	Assert.assertTrue(found);
     }
 }

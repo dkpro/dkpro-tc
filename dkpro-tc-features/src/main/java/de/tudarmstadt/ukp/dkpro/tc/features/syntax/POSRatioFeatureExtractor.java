@@ -19,8 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -62,10 +62,10 @@ public class POSRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
 
         double total = JCasUtil.select(jcas, POS.class).size();
         double adj = select(jcas, ADJ.class).size() / total;
@@ -80,18 +80,18 @@ public class POSRatioFeatureExtractor
         double punc = select(jcas, PUNC.class).size() / total;
         double verb = select(jcas, V.class).size() / total;
 
-        featList.add(new Feature(FN_ADJ_RATIO, adj));
-        featList.add(new Feature(FN_ADV_RATIO, adv));
-        featList.add(new Feature(FN_ART_RATIO, art));
-        featList.add(new Feature(FN_CARD_RATIO, card));
-        featList.add(new Feature(FN_CONJ_RATIO, conj));
-        featList.add(new Feature(FN_N_RATIO, noun));
-        featList.add(new Feature(FN_O_RATIO, other));
-        featList.add(new Feature(FN_PR_RATIO, pron));
-        featList.add(new Feature(FN_PP_RATIO, prep));
-        featList.add(new Feature(FN_PUNC_RATIO, punc));
-        featList.add(new Feature(FN_V_RATIO, verb));
+        features.add(new Feature(FN_ADJ_RATIO, adj));
+        features.add(new Feature(FN_ADV_RATIO, adv));
+        features.add(new Feature(FN_ART_RATIO, art));
+        features.add(new Feature(FN_CARD_RATIO, card));
+        features.add(new Feature(FN_CONJ_RATIO, conj));
+        features.add(new Feature(FN_N_RATIO, noun));
+        features.add(new Feature(FN_O_RATIO, other));
+        features.add(new Feature(FN_PR_RATIO, pron));
+        features.add(new Feature(FN_PP_RATIO, prep));
+        features.add(new Feature(FN_PUNC_RATIO, punc));
+        features.add(new Feature(FN_V_RATIO, verb));
 
-        return featList;
+        return features;
     }
 }

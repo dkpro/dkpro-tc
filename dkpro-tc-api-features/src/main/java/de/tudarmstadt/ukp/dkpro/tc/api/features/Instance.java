@@ -19,7 +19,10 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -31,7 +34,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Instance
 {
-    private List<Feature> features;
+    private Set<Feature> features;
     private List<String> outcomes;
     private double weight;
     private int sequenceId;
@@ -41,7 +44,7 @@ public class Instance
      * Create an empty instance
      */
     public Instance() {
-        this.features = new ArrayList<Feature>();
+        this.features = new TreeSet<Feature>();
         this.outcomes = new ArrayList<String>();
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -54,10 +57,10 @@ public class Instance
      * @param features
      * @param outcome
      */
-    public Instance(List<Feature> features, String outcome)
+    public Instance(Collection<Feature> features, String outcome)
     {
         super();
-        this.features = features;
+        this.features = new TreeSet<>(features);
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
@@ -71,10 +74,10 @@ public class Instance
      * @param features
      * @param outcomes
      */
-    public Instance(List<Feature> features, String ... outcomes)
+    public Instance(Collection<Feature> features, String ... outcomes)
     {
         super();
-        this.features = features;
+        this.features = new TreeSet<>(features);
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -87,10 +90,10 @@ public class Instance
      * @param features
      * @param outcomes
      */
-    public Instance(List<Feature> features, List<String> outcomes)
+    public Instance(Collection<Feature> features, List<String> outcomes)
     {
         super();
-        this.features = features;
+        this.features = new TreeSet<>(features);
         this.outcomes = outcomes;
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -118,6 +121,16 @@ public class Instance
     }
     
     /**
+     * Add a list of features
+     * 
+     * @param features
+     */
+    public void addFeatures(Set<Feature> features)
+    {
+        this.features.addAll(features);
+    }
+    
+    /**
      * Returns the first outcome if more than one outcome is stored, or null if no outcomes have been stored yet.
      * 
      * @return The outcome of this instance
@@ -139,6 +152,17 @@ public class Instance
         return this.outcomes;
     }
 
+    /**
+     * Set the outcomes for this instance
+     * 
+     * @param outcomes
+     */
+    public void setOutcomes(Set<String> outcomes)
+    {
+        this.outcomes.clear();
+        this.outcomes.addAll(outcomes);
+    }
+    
     /**
      * Set the outcomes for this instance
      * 
@@ -182,7 +206,7 @@ public class Instance
     /**
      * @return The list of features stored for this instance
      */
-    public List<Feature> getFeatures()
+    public Set<Feature> getFeatures()
     {
         return this.features;
     }
@@ -192,7 +216,7 @@ public class Instance
      * 
      * @param features
      */
-    public void setFeatures(List<Feature> features)
+    public void setFeatures(Set<Feature> features)
     {
         this.features = features;
     }

@@ -113,9 +113,9 @@ public class SVMHMMDataWriterTest
             throws Exception
     {
         featureStore = new SparseFeatureStore();
-        featureStore.addInstance(new Instance(Arrays.asList(
-                new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
-                        "multi line \n text"))));
+        featureStore.addInstance(new Instance(
+        		new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
+                        "multi line \n text").asSet()));
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.getNumberOfInstances());
@@ -172,8 +172,7 @@ public class SVMHMMDataWriterTest
             throws Exception
     {
         featureStore = new SparseFeatureStore();
-        featureStore.addInstance(new Instance(Arrays.asList(
-                new Feature("doubleFeature", 0.123456789))));
+        featureStore.addInstance(new Instance(new Feature("doubleFeature", 0.123456789).asSet()));
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         System.out.println(featureStore.getNumberOfInstances());

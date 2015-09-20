@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.entityrecognition;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -41,11 +41,11 @@ public class NEFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view)
+    public Set<Feature> extract(JCas view)
         throws TextClassificationException
     {
 
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featList = new TreeSet<Feature>();
 
         int numOrgaNE = JCasUtil.select(view, Organization.class).size();
         int numPersonNE = JCasUtil.select(view, Person.class).size();

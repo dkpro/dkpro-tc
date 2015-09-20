@@ -18,8 +18,7 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -56,17 +55,14 @@ public class IsFunctionWordUFE
     public static final String IS_FUNC_WORD = "IsFunctionWord";
 
     @Override
-    public List<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
 
         POS pos = JCasUtil.selectCovered(POS.class, classificationUnit).get(0);
         Type type = pos.getType();
         boolean isFunctionWord = (type instanceof ART || type instanceof PP || type instanceof PR || type instanceof CONJ);
 
-        featList.add(new Feature(IS_FUNC_WORD, isFunctionWord));
-
-        return featList;
+        return new Feature(IS_FUNC_WORD, isFunctionWord).asSet();
     }
 }

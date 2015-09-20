@@ -18,9 +18,9 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -63,7 +63,7 @@ public class IsInflectedWordUFE
     public static final String INFLECTED_VERB = "IsInflectedVerb";
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
 
@@ -74,7 +74,7 @@ public class IsInflectedWordUFE
 
         String lang = jcas.getDocumentLanguage();
 
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
         boolean inflectedAdjective = false;
         boolean inflectedNoun = false;
         boolean inflectedVerb = false;
@@ -88,7 +88,7 @@ public class IsInflectedWordUFE
                         adjectiveEndings = ReadabilityUtils.getAdjectiveEndings(lang);
                         for (String ending : adjectiveEndings) {
                             if (token.endsWith(ending)) {
-                                featList.add(new Feature(DERIVED_ADJ, true));
+                                featSet.add(new Feature(DERIVED_ADJ, true));
                                 break;
                             }
                         }
@@ -96,7 +96,7 @@ public class IsInflectedWordUFE
                     catch (MissingResourceException e) {
                         // adjective endings are currently only available for English, German, and
                         // French
-                        featList.add(new Feature(DERIVED_ADJ, new MissingValue(
+                        featSet.add(new Feature(DERIVED_ADJ, new MissingValue(
                                 MissingValueNonNominalType.BOOLEAN)));
                     }
 
@@ -111,11 +111,11 @@ public class IsInflectedWordUFE
                 }
             }
         }
-        featList.add(new Feature(IS_LEMMA, solutionLemma.equals(token)));
-        featList.add(new Feature(INFLECTED_NOUN, inflectedNoun));
-        featList.add(new Feature(INFLECTED_ADJ, inflectedAdjective));
-        featList.add(new Feature(INFLECTED_VERB, inflectedVerb));
+        featSet.add(new Feature(IS_LEMMA, solutionLemma.equals(token)));
+        featSet.add(new Feature(INFLECTED_NOUN, inflectedNoun));
+        featSet.add(new Feature(INFLECTED_ADJ, inflectedAdjective));
+        featSet.add(new Feature(INFLECTED_VERB, inflectedVerb));
 
-        return featList;
+        return featSet;
     }
 }

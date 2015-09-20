@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -42,15 +41,11 @@ public class DiffNrOfTokensPairFeatureExtractor
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        List<Feature> features = new ArrayList<Feature>();
-        features.add(
-                new Feature("DiffNrOfTokens",
+        return new Feature("DiffNrOfTokens",
                         JCasUtil.select(view1, Token.class).size()
-                                - JCasUtil.select(view2, Token.class).size())
-                );
-        return features;
+                                - JCasUtil.select(view2, Token.class).size()).asSet();
     }
 }

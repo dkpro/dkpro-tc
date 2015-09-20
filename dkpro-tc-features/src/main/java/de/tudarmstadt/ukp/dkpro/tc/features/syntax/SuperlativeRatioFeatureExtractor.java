@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -41,7 +41,7 @@ public class SuperlativeRatioFeatureExtractor
     public static final String FN_SUPERLATIVE_RATIO_ADV = "SuperlativeRatioAdv";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         double adjRatio = 0;
@@ -72,10 +72,10 @@ public class SuperlativeRatioFeatureExtractor
             advRatio = (double) superlativeAdv / adverbs;
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new Feature(FN_SUPERLATIVE_RATIO_ADJ, adjRatio));
-        featList.add(new Feature(FN_SUPERLATIVE_RATIO_ADV, advRatio));
+        Set<Feature> features = new HashSet<Feature>();
+        features.add(new Feature(FN_SUPERLATIVE_RATIO_ADJ, adjRatio));
+        features.add(new Feature(FN_SUPERLATIVE_RATIO_ADV, advRatio));
 
-        return featList;
+        return features;
     }
 }

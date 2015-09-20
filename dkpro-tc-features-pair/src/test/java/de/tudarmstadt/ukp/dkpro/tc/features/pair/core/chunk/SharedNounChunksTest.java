@@ -77,7 +77,7 @@ public class SharedNounChunksTest extends PPipelineTestBase
         test.runPipeline();
         assertEquals(test.featureNames.size(), 1);
         assertTrue(test.featureNames.first().startsWith("SharedNounChunkView2"));
-        assertEquals(0.0, test.instanceList.get(0).getFeatures().get(0).getValue());
+        assertEquals(0.0, test.instanceList.get(0).getFeatures().iterator().next().getValue());
 
     }
 
@@ -91,7 +91,7 @@ public class SharedNounChunksTest extends PPipelineTestBase
         test.runPipeline();
         assertEquals(test.featureNames.size(), 1);
         assertTrue(test.featureNames.first().startsWith("SharedNounChunkView1"));
-        assertEquals(0.0, test.instanceList.get(0).getFeatures().get(0).getValue());
+        assertEquals(0.0, test.instanceList.get(0).getFeatures().iterator().next().getValue());
 
     }
 

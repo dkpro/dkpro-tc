@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -48,23 +47,21 @@ public class NrOfTokensPerSentenceDFE
     public static final String FN_TOKENS_PER_SENTENCE = "NrofTokensPerSentence";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
 
         int numSentences = JCasUtil.select(jcas, Sentence.class).size();
 
         if (numSentences == 0) {
-            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
-                    MissingValueNonNominalType.NUMERIC)));
+            return new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
+                    MissingValueNonNominalType.NUMERIC)).asSet();
         }
         else {
         	int numTokens = JCasUtil.select(jcas, Token.class).size();
         	double ratio = numTokens / (double) numSentences;
 
-            featList.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
+            return new Feature(FN_TOKENS_PER_SENTENCE, ratio).asSet();
         }
-        return featList;
     }
 }

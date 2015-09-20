@@ -19,7 +19,9 @@ package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -73,7 +75,7 @@ public class TypeTokenRatioExtractor
 
     public static final String TYPE_TOKEN_RATIO = "Type_Token_Ratio";
 
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
     {
         int numberOfTokens = 0;
         // int numberOfVerbs = 0;
@@ -96,8 +98,8 @@ public class TypeTokenRatioExtractor
 
         double typeTokenRatio = types.size() / (double) numberOfTokens;
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.addAll(Arrays.asList(new Feature(TYPE_TOKEN_RATIO, typeTokenRatio)));
+        Set<Feature> featSet = new HashSet<Feature>();
+        featSet.addAll(Arrays.asList(new Feature(TYPE_TOKEN_RATIO, typeTokenRatio)));
         if (addVariants) {
             double rootTtr = types.size() / Math.sqrt(numberOfTokens);
             double correctedTtr = types.size() / Math.sqrt((2 * numberOfTokens));
@@ -107,13 +109,13 @@ public class TypeTokenRatioExtractor
             double mtld = 0.5 * (ReadabilityUtils.getMTLD(jcas, false, mtldThreshold) + ReadabilityUtils
                     .getMTLD(jcas, true, mtldThreshold));
 
-            featList.addAll(Arrays.asList(new Feature("RootTTR", rootTtr)));
-            featList.addAll(Arrays.asList(new Feature("CorrectedTTR", correctedTtr)));
-            featList.addAll(Arrays.asList(new Feature("BilogarithmicTTR", bilog)));
-            featList.addAll(Arrays.asList(new Feature("UberIndex", uberIndex)));
-            featList.addAll(Arrays.asList(new Feature("MTLD", mtld)));
+            featSet.addAll(Arrays.asList(new Feature("RootTTR", rootTtr)));
+            featSet.addAll(Arrays.asList(new Feature("CorrectedTTR", correctedTtr)));
+            featSet.addAll(Arrays.asList(new Feature("BilogarithmicTTR", bilog)));
+            featSet.addAll(Arrays.asList(new Feature("UberIndex", uberIndex)));
+            featSet.addAll(Arrays.asList(new Feature("MTLD", mtld)));
 
         }
-        return featList;
+        return featSet;
     }
 }

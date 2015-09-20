@@ -18,17 +18,13 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
@@ -40,31 +36,33 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 public class CRFSuiteDataWriter
     implements DataWriter
 {
-    private static Log logger = null;
 
     @Override
     public void write(File aOutputDirectory, FeatureStore aFeatureStore,
             boolean aUseDenseInstances, String aLearningMode, boolean applyWeighting)
         throws Exception
     {
-        writeFeatureFile(aFeatureStore, aOutputDirectory);
+        writeFeatureFile(aFeatureStore, getFeatureFilename(aOutputDirectory));
 
         Map<String, Integer> outcomeMapping = getOutcomeMapping(aFeatureStore.getUniqueOutcomes());
         File mappingFile = new File(aOutputDirectory, CRFSuiteAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
     }
 
-    public static File writeFeatureFile(FeatureStore featureStore, File aOutputDirectory)
+    public static File getFeatureFilename(File outputDirectory) {
+        File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        outputFile.deleteOnExit();
+        return outputFile;
+    }
+    
+    public static void writeFeatureFile(FeatureStore featureStore, File outputFile)
         throws Exception
     {
         int totalCountOfInstances = featureStore.getNumberOfInstances();
 
-        File outputFile = new File(aOutputDirectory, CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-        outputFile.deleteOnExit();
-
-        BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
-
+        StringBuilder sb = new StringBuilder();
+        
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
         for (int ins = 0; ins < totalCountOfInstances; ins++) {
@@ -75,22 +73,22 @@ public class CRFSuiteDataWriter
                 lastSeenSeqId = i.getSequenceId();
             }
 
-            bf.write(LabelSubstitutor.labelReplacement(i.getOutcome()));
-            bf.write("\t");
+            sb.append(LabelSubstitutor.labelReplacement(i.getOutcome()));
+            sb.append("\t");
 
-            List<Feature> features = i.getFeatures();
-            for (int idx = 0; idx < features.size(); idx++) {
-                Feature f = features.get(idx);
-                bf.write(f.getName() + "=" + f.getValue());
-                if (idx + 1 < features.size()) {
-                    bf.write("\t");
+            int idx = 0;
+            for (Feature f :  i.getFeatures()) {
+                sb.append(f.getName() + "=" + f.getValue());
+                if (idx + 1 < i.getFeatures().size()) {
+                    sb.append("\t");
                 }
+                idx++;
             }
 
             // Mark first line of new sequence with an additional __BOS__
             if (seqIdChanged) {
-                bf.write("\t");
-                bf.write("__BOS__");
+                sb.append("\t");
+                sb.append("__BOS__");
                 seqIdChanged = false;
             }
 
@@ -98,28 +96,27 @@ public class CRFSuiteDataWriter
             if (ins + 1 < totalCountOfInstances) {
                 Instance next = featureStore.getInstance(ins + 1);
                 if (next.getSequenceId() != lastSeenSeqId) {
-                    appendEOS(bf);
+                    appendEOS(sb);
                     continue;
                 }
             }
             else if (ins + 1 == totalCountOfInstances) {
-                appendEOS(bf);
+                appendEOS(sb);
             }
 
-            bf.write("\n");
+            sb.append("\n");
         }
-        bf.close();
 
-        return outputFile;
+        FileUtils.write(outputFile, sb.toString());
     }
 
-    private static void appendEOS(BufferedWriter bf)
+    private static void appendEOS(StringBuilder sb)
         throws Exception
     {
-        bf.write("\t");
-        bf.write("__EOS__");
-        bf.write("\n");
-        bf.write("\n");
+        sb.append("\t");
+        sb.append("__EOS__");
+        sb.append("\n");
+        sb.append("\n");
     }
 
     public static String outcomeMap2String(Map<String, Integer> map)

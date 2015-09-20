@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.api.features;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
 
@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.util.FeatureUtil;
  * Internal representation of a feature.
  */
 public class Feature
+	implements Comparable<Feature>
 {
 
     protected String name;
@@ -44,14 +45,14 @@ public class Feature
     }
     
     /**
-     * Convenience method for feature extractors that expect list of features
+     * Convenience method for feature extractors that expect a set of features
      * 
-     * @return This feature as the first element of a list of features.
+     * @return This feature as the only element of a set of features.
      */
-    public List<Feature> asList() {
-        List<Feature> list = new ArrayList<Feature>();
-        list.add(this);
-        return list;
+    public Set<Feature> asSet() {
+        Set<Feature> set = new TreeSet<Feature>();
+        set.add(this);
+        return set;
     }
 
     public Object getValue()
@@ -111,4 +112,10 @@ public class Feature
 			return false;
 		return true;
 	}
+
+	@Override
+	public int compareTo(Feature o) {
+		return this.getName().compareTo(o.getName());
+	}
+	
 }

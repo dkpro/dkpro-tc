@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -52,7 +52,7 @@ public class LongWordsFeatureExtractor
     public static final String FN_SW_RATIO = "ShortTokenRatio"; // under 3 chars
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
     {
 
         double longTokenRatio = 0.0;
@@ -76,10 +76,10 @@ public class LongWordsFeatureExtractor
             shortTokenRatio = (double) shortTokenCount / n;
         }
 
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new Feature(FN_LW_RATIO, longTokenRatio));
-        featList.add(new Feature(FN_SW_RATIO, shortTokenRatio));
+        Set<Feature> featSet = new HashSet<Feature>();
+        featSet.add(new Feature(FN_LW_RATIO, longTokenRatio));
+        featSet.add(new Feature(FN_SW_RATIO, shortTokenRatio));
 
-        return featList;
+        return featSet;
     }
 }

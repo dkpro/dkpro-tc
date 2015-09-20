@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +43,7 @@ public class ExclamationFeatureExtractor
     public static final String FEATURE_NAME = "ExclamationRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
 
@@ -59,7 +58,7 @@ public class ExclamationFeatureExtractor
             matches++;
         }
 
-        return Arrays.asList(new Feature(FEATURE_NAME, sentences > 0 ? (matches / sentences) : 0));
+        return new Feature(FEATURE_NAME, sentences > 0 ? (matches / sentences) : 0).asSet();
     }
 
 }

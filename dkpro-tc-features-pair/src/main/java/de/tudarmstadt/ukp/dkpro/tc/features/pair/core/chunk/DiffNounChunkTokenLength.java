@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -43,12 +42,12 @@ public class DiffNounChunkTokenLength
 {
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        return Arrays.asList(new Feature(
+        return new Feature(
                 "DiffNounPhraseTokenLength",
-                getAverageNounPhraseTokenLength(view1) - getAverageNounPhraseTokenLength(view2)));
+                getAverageNounPhraseTokenLength(view1) - getAverageNounPhraseTokenLength(view2)).asSet();
 
     }
 

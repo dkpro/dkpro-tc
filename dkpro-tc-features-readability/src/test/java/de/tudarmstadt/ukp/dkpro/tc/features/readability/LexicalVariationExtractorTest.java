@@ -22,7 +22,8 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -56,23 +57,24 @@ public class LexicalVariationExtractorTest
         engine.process(jcas);
 
         LexicalVariationExtractor extractor = new LexicalVariationExtractor();
-        List<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas);
 
         Assert.assertEquals(14, features.size());
 
-        Assert.assertEquals((double) features.get(0).getValue(), 4.2, 0.1);
-        Assert.assertEquals((double) features.get(1).getValue(), 1.6, 0.1);
-        Assert.assertEquals((double) features.get(2).getValue(), 0.9, 0.1);
-        Assert.assertEquals((double) features.get(3).getValue(), 3.7, 0.1);
-        Assert.assertEquals((double) features.get(4).getValue(), 0.4, 0.1);
-        Assert.assertEquals((double) features.get(5).getValue(), 0.4, 0.1);
-        Assert.assertEquals((double) features.get(6).getValue(), 1.75, 0.1);
-        Assert.assertEquals((double) features.get(7).getValue(), 7.4, 0.1);
-        Assert.assertEquals((double) features.get(8).getValue(), 0.15, 0.1);
-        Assert.assertEquals((double) features.get(9).getValue(), 0.1, 0.1);
-        Assert.assertEquals((double) features.get(10).getValue(), 0.2, 0.1);
-        Assert.assertEquals((double) features.get(11).getValue(), 0.6, 0.1);
-        Assert.assertEquals((double) features.get(12).getValue(), 1.5, 0.1);
-        Assert.assertEquals((double) features.get(13).getValue(), 110.3, 0.1);
+        Iterator<Feature> featIter = features.iterator();
+        Assert.assertEquals((double) featIter.next().getValue(), 4.2, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 1.6, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.9, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 3.7, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.4, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.4, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 1.75, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 7.4, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.15, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.1, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.2, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 0.6, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 1.5, 0.1);
+        Assert.assertEquals((double) featIter.next().getValue(), 110.3, 0.1);
     }
 }

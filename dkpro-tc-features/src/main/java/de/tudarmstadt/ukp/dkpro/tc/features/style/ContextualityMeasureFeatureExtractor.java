@@ -19,8 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -56,10 +56,10 @@ public class ContextualityMeasureFeatureExtractor
     public static final String CONTEXTUALITY_MEASURE_FN = "ContextualityMeasure";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
 
         double total = JCasUtil.select(jcas, POS.class).size();
         double noun = select(jcas, N.class).size() / total;
@@ -83,17 +83,17 @@ public class ContextualityMeasureFeatureExtractor
         // adverb - interjection + 100
         double contextualityMeasure = 0.5 * (noun + adj + prep + art - pro - verb - adv - interj + 100);
 
-        featList.add(new Feature("NounRate", noun));
-        featList.add(new Feature("AdjectiveRate", adj));
-        featList.add(new Feature("PrepositionRate", prep));
-        featList.add(new Feature("ArticleRate", art));
-        featList.add(new Feature("PronounRate", pro));
-        featList.add(new Feature("VerbRate", verb));
-        featList.add(new Feature("AdverbRate", adv));
-        featList.add(new Feature("InterjectionRate", interj));
-        featList.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure));
+        featSet.add(new Feature("NounRate", noun));
+        featSet.add(new Feature("AdjectiveRate", adj));
+        featSet.add(new Feature("PrepositionRate", prep));
+        featSet.add(new Feature("ArticleRate", art));
+        featSet.add(new Feature("PronounRate", pro));
+        featSet.add(new Feature("VerbRate", verb));
+        featSet.add(new Feature("AdverbRate", adv));
+        featSet.add(new Feature("InterjectionRate", interj));
+        featSet.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure));
 
-        return featList;
+        return featSet;
     }
 
 }

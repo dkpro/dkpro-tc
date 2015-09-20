@@ -22,6 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class TraditionalReadabilityMeasuresExtractorTest
         		TraditionalReadabilityMeasuresFeatureExtractor.class,
         		TraditionalReadabilityMeasuresFeatureExtractor.PARAM_ADD_COLEMANLIAU, "true");
 
-        List<Feature> features = extractor.extract(jcas);
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
 
         Assert.assertEquals(2, features.size());
         Iterator<Feature> iter = features.iterator();

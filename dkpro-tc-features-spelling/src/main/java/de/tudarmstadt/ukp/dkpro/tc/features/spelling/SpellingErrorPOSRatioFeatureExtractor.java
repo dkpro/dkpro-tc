@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.spelling;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -66,10 +66,10 @@ public class SpellingErrorPOSRatioFeatureExtractor
     public static final String FN_V_ERROR_RATIO = "VerbErrorRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
 
         int nrOfSpellingAnomalies = 0;
         int adjErrors = 0;
@@ -124,29 +124,29 @@ public class SpellingErrorPOSRatioFeatureExtractor
             nrOfSpellingAnomalies++;
         }
 
-        featList.add(new Feature(FN_ADJ_ERROR_RATIO, (double) adjErrors
+        featSet.add(new Feature(FN_ADJ_ERROR_RATIO, (double) adjErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_ADV_ERROR_RATIO, (double) advErrors
+        featSet.add(new Feature(FN_ADV_ERROR_RATIO, (double) advErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_ART_ERROR_RATIO, (double) artErrors
+        featSet.add(new Feature(FN_ART_ERROR_RATIO, (double) artErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_CARD_ERROR_RATIO, (double) cardErrors
+        featSet.add(new Feature(FN_CARD_ERROR_RATIO, (double) cardErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_CONJ_ERROR_RATIO, (double) conjErrors
+        featSet.add(new Feature(FN_CONJ_ERROR_RATIO, (double) conjErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_N_ERROR_RATIO, (double) nounErrors
+        featSet.add(new Feature(FN_N_ERROR_RATIO, (double) nounErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_O_ERROR_RATIO, (double) otherErrors
+        featSet.add(new Feature(FN_O_ERROR_RATIO, (double) otherErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_PR_ERROR_RATIO, (double) pronErrors
+        featSet.add(new Feature(FN_PR_ERROR_RATIO, (double) pronErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_PP_ERROR_RATIO, (double) prepErrors
+        featSet.add(new Feature(FN_PP_ERROR_RATIO, (double) prepErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_PUNC_ERROR_RATIO, (double) puncErrors
+        featSet.add(new Feature(FN_PUNC_ERROR_RATIO, (double) puncErrors
                 / nrOfSpellingAnomalies));
-        featList.add(new Feature(FN_V_ERROR_RATIO, (double) verbErrors
+        featSet.add(new Feature(FN_V_ERROR_RATIO, (double) verbErrors
                 / nrOfSpellingAnomalies));
 
-        return featList;
+        return featSet;
     }
 }

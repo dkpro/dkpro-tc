@@ -21,7 +21,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -64,14 +64,14 @@ public class InitialCharacterUpperCaseFeatureExtractorTest
         unit2.setBegin(3);
         unit2.setEnd(5);
 
-    	List<Feature> features1 = extractor.extract(jcas, unit1);
+    	Set<Feature> features1 = extractor.extract(jcas, unit1);
 
         Assert.assertEquals(1, features1.size());
         for (Feature feature : features1) {
             assertFeature(InitialCharacterUpperCaseUFE.INITIAL_CH_UPPER_CASE, true, feature);
         }
 
-        List<Feature> features2 = extractor.extract(jcas, unit2);
+        Set<Feature> features2 = extractor.extract(jcas, unit2);
         Assert.assertEquals(1, features2.size());
         for (Feature feature : features2) {
             assertFeature(InitialCharacterUpperCaseUFE.INITIAL_CH_UPPER_CASE, false, feature);

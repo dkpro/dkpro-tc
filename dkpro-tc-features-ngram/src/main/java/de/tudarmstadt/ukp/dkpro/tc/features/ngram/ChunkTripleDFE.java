@@ -67,14 +67,14 @@ public class ChunkTripleDFE
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         // if(focusAnnotation!=null){
         // throw new TextClassificationException(new
         // UnsupportedOperationException("FocusAnnotation not yet supported!"));
         // }
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
 
         Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
         for (String featureTriple : tripleSet) {

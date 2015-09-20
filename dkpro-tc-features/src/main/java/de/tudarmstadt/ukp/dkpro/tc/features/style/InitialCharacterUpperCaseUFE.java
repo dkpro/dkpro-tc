@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -44,19 +43,17 @@ public class InitialCharacterUpperCaseUFE
     public static final String INITIAL_CH_UPPER_CASE = "InitialCharacterUpperCaseUFE";
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
         String token = classificationUnit.getCoveredText();
 
-        List<Feature> featList = new ArrayList<Feature>();
         boolean bool = false;
         if (Character.isUpperCase(token.charAt(0))) {
-            featList.add(new Feature(INITIAL_CH_UPPER_CASE, !bool));
+            return new Feature(INITIAL_CH_UPPER_CASE, !bool).asSet();
         }
         else {
-            featList.add(new Feature(INITIAL_CH_UPPER_CASE, bool));
+            return new Feature(INITIAL_CH_UPPER_CASE, bool).asSet();
         }
-        return featList;
     }
 }

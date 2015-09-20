@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.length;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
@@ -43,13 +42,9 @@ public class NrOfCharsUFE
     public static final String NR_OF_CHARS = "NrofChars";
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
         int nrOfChars = classificationUnit.getEnd() - classificationUnit.getBegin();
-        List<Feature> featList = new ArrayList<Feature>();
-        featList.add(new Feature(NR_OF_CHARS, nrOfChars));
-
-        return featList;
-    }
+        return new Feature(NR_OF_CHARS, nrOfChars).asSet();    }
 }

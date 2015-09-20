@@ -18,8 +18,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
@@ -120,7 +122,7 @@ public class LuceneNGramCPFE
     }
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
     	FrequencyDistribution<String> view1Ngrams = null;
@@ -134,7 +136,7 @@ public class LuceneNGramCPFE
                 .getCombinedNgrams(view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
                         ngramUseSymmetricalCombos);
 
-        List<Feature> features = new ArrayList<Feature>();
+        Set<Feature> features = new HashSet<Feature>();
         prefix = "comboNG";
         features = addToFeatureArray(documentComboNgrams, topKSetCombo, features);
 

@@ -18,9 +18,9 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.features.readability;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -50,10 +50,10 @@ public class AvgLengthExtractor
     public static final String AVG_WORD_LENGTH_IN_SYLLABLES = "AvgWordLengthInSyllables";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
 
         int nrOfWords = 0;
         int nrOfCharacters = 0;
@@ -74,16 +74,16 @@ public class AvgLengthExtractor
         // avoid division by 0;
 
         nrOfSentences = Math.max(nrOfSentences, 1);
-        featList.addAll(Arrays.asList(new Feature(AVG_SENTENCE_LENGTH, nrOfWords
+        featSet.addAll(Arrays.asList(new Feature(AVG_SENTENCE_LENGTH, nrOfWords
                 / (double) nrOfSentences)));
 
         nrOfWords = Math.max(nrOfWords, 1);
-        featList.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_CHARACTERS, nrOfCharacters
+        featSet.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_CHARACTERS, nrOfCharacters
                 / (double) nrOfWords)));
-        featList.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_SYLLABLES, nrOfSyllables
+        featSet.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_SYLLABLES, nrOfSyllables
                 / (double) nrOfWords)));
 
-        return featList;
+        return featSet;
     }
 
 }

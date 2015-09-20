@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.syntax;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -42,7 +41,7 @@ public class PluralRatioFeatureExtractor
     public static final String FN_PLURAL_RATIO = "PluralRatio";
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         int plural = 0;
@@ -58,11 +57,12 @@ public class PluralRatioFeatureExtractor
                 singular++;
             }
         }
-        List<Feature> featList = new ArrayList<Feature>();
         if ((singular + plural) > 0) {
-            featList.add(new Feature(FN_PLURAL_RATIO, (double) plural
-                    / (singular + plural)));
+            return new Feature(FN_PLURAL_RATIO, (double) plural
+                    / (singular + plural)).asSet();
         }
-        return featList;
+        else {
+        	return new Feature(FN_PLURAL_RATIO, 0.0).asSet();
+        }
     }
 }

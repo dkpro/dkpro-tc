@@ -17,8 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -62,10 +63,10 @@ public class IsSurroundedByCharsUFE
     public static final String SURROUNDED_BY_CHARS = "SurroundedByChars";
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        List<Feature> featList = new ArrayList<Feature>();
+        Set<Feature> featSet = new HashSet<Feature>();
         int maxTokensCount = JCasUtil.select(jcas, Token.class).size();
 
         // error conditions
@@ -93,13 +94,13 @@ public class IsSurroundedByCharsUFE
                 Token f = followingTokens.get(0);
                 if (p.getCoveredText().equals(String.valueOf(leftBoundary))
                         && f.getCoveredText().equals(String.valueOf(rightBoundary))) {
-                    featList.add(new Feature(SURROUNDED_BY_CHARS, true));
-                    return featList;
+                    featSet.add(new Feature(SURROUNDED_BY_CHARS, true));
+                    return featSet;
                 }
             }
         }
 
-        featList.add(new Feature(SURROUNDED_BY_CHARS, false));
-        return featList;
+        featSet.add(new Feature(SURROUNDED_BY_CHARS, false));
+        return featSet;
     }
 }

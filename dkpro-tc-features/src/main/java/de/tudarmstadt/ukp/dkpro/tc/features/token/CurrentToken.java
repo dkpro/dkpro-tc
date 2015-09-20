@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.token;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
@@ -34,15 +33,10 @@ public class CurrentToken
 {
     public final static String FEATURE_NAME = "currToken";
 
-    public List<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
         throws TextClassificationException
     {
         String token = aClassificationUnit.getCoveredText();
-        Feature feature = new Feature(FEATURE_NAME, token);
-
-        ArrayList<Feature> features = new ArrayList<Feature>();
-        features.add(feature);
-        return features;
+        return new Feature(FEATURE_NAME, token).asSet();
     }
-
 }

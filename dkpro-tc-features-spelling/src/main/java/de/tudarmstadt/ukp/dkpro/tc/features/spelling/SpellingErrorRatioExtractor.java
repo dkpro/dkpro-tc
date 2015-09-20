@@ -17,8 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.spelling;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -44,7 +43,7 @@ public class SpellingErrorRatioExtractor
     // TODO Issue 125: could be generalized to AnnotationRatioFE
     
     @Override
-    public List<Feature> extract(JCas view)
+    public Set<Feature> extract(JCas view)
         throws TextClassificationException
     {
         int nrOfSpellingErrors = JCasUtil.select(view, SpellingAnomaly.class).size();
@@ -54,6 +53,6 @@ public class SpellingErrorRatioExtractor
         if (nrOfTokens > 0) {
             ratio = (double) nrOfSpellingErrors / nrOfTokens;
         }
-        return Arrays.asList(new Feature("SpellingErrorRatio", ratio));
+        return new Feature("SpellingErrorRatio", ratio).asSet();
     }
 }

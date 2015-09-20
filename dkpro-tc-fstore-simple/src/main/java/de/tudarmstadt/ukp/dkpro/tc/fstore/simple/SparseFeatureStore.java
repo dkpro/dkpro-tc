@@ -32,7 +32,6 @@ import java.util.*;
  * All instances retrieved from this FeatureStore by {@link #getInstance(int)} have the same
  * number and ordering of features, but some features might have {@code null} value.
  *
- * @author Ivan Habernal
  */
 public class SparseFeatureStore
         implements FeatureStore

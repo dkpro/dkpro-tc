@@ -17,9 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.chunk;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -48,19 +46,15 @@ public class SharedNounChunks
     protected boolean normalizeWithFirst;
 
     @Override
-    public List<Feature> extract(JCas view1, JCas view2)
+    public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
 
         if (normalizeWithFirst) {
-            return Arrays.asList(
-                    new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2))
-                    );
+            return new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2)).asSet();
         }
         else {
-            return Arrays.asList(
-                    new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1))
-                    );
+            return new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1)).asSet();
         }
 
     }

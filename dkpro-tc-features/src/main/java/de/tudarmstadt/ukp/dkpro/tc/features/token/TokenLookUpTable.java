@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.token;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -33,8 +34,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class TokenLookUpTable extends FeatureExtractorResource_ImplBase
-		implements ClassificationUnitFeatureExtractor {
+public class TokenLookUpTable 
+	extends FeatureExtractorResource_ImplBase
+	implements ClassificationUnitFeatureExtractor
+{
 	private   String lastSeenDocumentId = "";
 
 	protected   HashMap<Integer, Boolean> idx2SentenceBegin = new HashMap<Integer, Boolean>();
@@ -45,7 +48,7 @@ public class TokenLookUpTable extends FeatureExtractorResource_ImplBase
 	protected   HashMap<Integer, Integer> tokenEnd2Idx = new HashMap<Integer, Integer>();
 	protected   List<String> tokens = new ArrayList<String>();
 
-	public List<Feature> extract(JCas aView,
+	public Set<Feature> extract(JCas aView,
 			TextClassificationUnit aClassificationUnit)
 			throws TextClassificationException {
 		if (isTheSameDocument(aView)) {

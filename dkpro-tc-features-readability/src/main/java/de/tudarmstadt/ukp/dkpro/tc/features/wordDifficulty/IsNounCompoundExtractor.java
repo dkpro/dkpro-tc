@@ -19,9 +19,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -75,12 +75,11 @@ public class IsNounCompoundExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
 
         boolean isCompound = false;
-        List<Feature> featList = new ArrayList<Feature>();
 
         POS pos = JCasUtil.selectCovered(Token.class, classificationUnit).get(0).getPos();
 
@@ -97,8 +96,8 @@ public class IsNounCompoundExtractor
             }
 
         }
-        featList.add(new Feature(IS_COMPOUND, isCompound));
-        return featList;
+       
+        return new Feature(IS_COMPOUND, isCompound).asSet();
     }
 
     public boolean isCompound(String word)

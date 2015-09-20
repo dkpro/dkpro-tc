@@ -114,8 +114,8 @@ public class LoadModelConnectorCRFSuite
             }
             
             s = System.currentTimeMillis();
-            File featureFile = CRFSuiteDataWriter.writeFeatureFile(featureStore,
-                    tmpFolderForFeatureFile.toFile());
+            File featureFile = CRFSuiteDataWriter.getFeatureFilename(tmpFolderForFeatureFile.toFile());
+            CRFSuiteDataWriter.writeFeatureFile(featureStore, featureFile);
             e = System.currentTimeMillis();
             long msWrite = (e-s);
             LogFactory.getLog(getClass()).info("Seconds spent in extraction: ["+(double)msExtraction/1000+"] in adding to feature store: ["+(double)msAdding/1000+"] in writing to file: ["+(double)msWrite/1000+"]");

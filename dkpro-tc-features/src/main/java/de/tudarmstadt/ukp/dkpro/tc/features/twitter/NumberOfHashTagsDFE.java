@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.twitter;
 
-import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +45,7 @@ public class NumberOfHashTagsDFE
     private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
 
     @Override
-    public List<Feature> extract(JCas jCas)
+    public Set<Feature> extract(JCas jCas)
         throws TextClassificationException
     {
         Matcher hashTagMatcher = HASHTAG_PATTERN.matcher(jCas.getDocumentText());
@@ -53,7 +53,7 @@ public class NumberOfHashTagsDFE
         while (hashTagMatcher.find()) {
             numberOfHashTags++;
         }
-        return new Feature(NumberOfHashTagsDFE.class.getSimpleName(), numberOfHashTags).asList();
+        return new Feature(NumberOfHashTagsDFE.class.getSimpleName(), numberOfHashTags).asSet();
     }
 
 }

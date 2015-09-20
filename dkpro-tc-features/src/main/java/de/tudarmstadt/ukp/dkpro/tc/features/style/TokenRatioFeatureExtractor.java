@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.style;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -45,7 +45,7 @@ public class TokenRatioFeatureExtractor
     }
 
     @Override
-    public List<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas)
         throws TextClassificationException
     {
         double tokenRatio = 0.0;
@@ -63,6 +63,6 @@ public class TokenRatioFeatureExtractor
             tokenRatio = (double) tokenCount / n;
         }
 
-        return new Feature(FN_TOKEN_RATIO + "_" + token, tokenRatio).asList();
+        return new Feature(FN_TOKEN_RATIO + "_" + token, tokenRatio).asSet();
     }
 }

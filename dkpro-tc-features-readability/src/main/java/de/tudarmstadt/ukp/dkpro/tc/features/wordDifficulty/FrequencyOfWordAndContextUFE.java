@@ -20,10 +20,10 @@ package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -66,7 +66,6 @@ public class FrequencyOfWordAndContextUFE
     private String language;
 
     private FrequencyCountProvider frequencyProvider;
-    private List<Feature> featList = new ArrayList<Feature>();
     private Logger logger;
 
     @Override
@@ -86,9 +85,11 @@ public class FrequencyOfWordAndContextUFE
     }
 
     @Override
-    public List<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
+
+        Set<Feature> featSet = new HashSet<Feature>();
 
         Sentence sent = JCasUtil.selectCovering(Sentence.class, classificationUnit).get(0);
         String word = classificationUnit.getCoveredText();
@@ -124,14 +125,14 @@ public class FrequencyOfWordAndContextUFE
         try {
             uprob = frequencyProvider.getLogProbability(word);
 
-            addToFeatureList(PROBABILITY, uprob, word);
+            addToFeatureList(featSet, PROBABILITY, uprob, word);
 
             double lprob = frequencyProvider.getLogProbability(leftWord);
             double rprob = frequencyProvider.getLogProbability(rightWord);
 
             // Trigram probability, classification unit is in the middle
             double tprob = frequencyProvider.getLogProbability(trigram);
-            addToFeatureList(TRIGRAM_PROBABILITY, tprob, trigram);
+            addToFeatureList(featSet, TRIGRAM_PROBABILITY, tprob, trigram);
 
             // normalized bigram probabilities
             double leftBigramProb = frequencyProvider.getLogProbability(leftBigram);
@@ -149,17 +150,17 @@ public class FrequencyOfWordAndContextUFE
             }
 
             double bigramModel = leftBigramProbNorm * uprob * rightBigramProbNorm;
-            addToFeatureList(LEFT_BIGRAM_PROB_NORM, leftBigramProbNorm, leftBigram);
-            addToFeatureList(RIGHT_BIGRAM_PROB_NORM, rightBigramProbNorm, rightBigram);
-            addToFeatureList(BIGRAM_MODEL, bigramModel, trigram);
+            addToFeatureList(featSet, LEFT_BIGRAM_PROB_NORM, leftBigramProbNorm, leftBigram);
+            addToFeatureList(featSet, RIGHT_BIGRAM_PROB_NORM, rightBigramProbNorm, rightBigram);
+            addToFeatureList(featSet, BIGRAM_MODEL, bigramModel, trigram);
         }
         catch (IOException e) {
             throw new TextClassificationException(e);
         }
-        return featList;
+        return featSet;
     }
 
-    private void addToFeatureList(String featureName, Double prob, String phrase)
+    private void addToFeatureList(Set<Feature> featureSet, String featureName, Double prob, String phrase)
     {
         if (prob.isNaN() || prob.isInfinite()) {
             prob = 0.0;
@@ -169,10 +170,10 @@ public class FrequencyOfWordAndContextUFE
         // weka replaces the missing value with the mean of the feature for most classifiers
 
         if (prob == 0.0 && StringUtils.containsAny(phrase, "-'")) {
-            featList.addAll(Arrays.asList(new Feature(featureName, new MissingValue(
+            featureSet.addAll(Arrays.asList(new Feature(featureName, new MissingValue(
                     MissingValueNonNominalType.NUMERIC))));
         }
-        featList.addAll(Arrays.asList(new Feature(PROBABILITY, prob)));
+        featureSet.addAll(Arrays.asList(new Feature(PROBABILITY, prob)));
 
     }
 
