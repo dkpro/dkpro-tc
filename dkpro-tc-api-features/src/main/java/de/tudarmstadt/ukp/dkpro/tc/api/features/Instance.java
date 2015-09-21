@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -34,7 +35,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Instance
 {
-    private Set<Feature> features;
+    private List<Feature> features;
     private List<String> outcomes;
     private double weight;
     private int sequenceId;
@@ -44,7 +45,7 @@ public class Instance
      * Create an empty instance
      */
     public Instance() {
-        this.features = new TreeSet<Feature>();
+        this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -60,7 +61,7 @@ public class Instance
     public Instance(Collection<Feature> features, String outcome)
     {
         super();
-        this.features = new TreeSet<>(features);
+        this.features = new ArrayList<>(features);
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
@@ -77,7 +78,7 @@ public class Instance
     public Instance(Collection<Feature> features, String ... outcomes)
     {
         super();
-        this.features = new TreeSet<>(features);
+        this.features = new ArrayList<>(features);
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -93,7 +94,7 @@ public class Instance
     public Instance(Collection<Feature> features, List<String> outcomes)
     {
         super();
-        this.features = new TreeSet<>(features);
+        this.features = new ArrayList<>(features);
         this.outcomes = outcomes;
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -208,7 +209,9 @@ public class Instance
      */
     public Set<Feature> getFeatures()
     {
-        return this.features;
+    	Set<Feature> featureSet = new HashSet<Feature>();
+    	featureSet.addAll(features);
+        return featureSet;
     }
 
     /**
@@ -218,7 +221,7 @@ public class Instance
      */
     public void setFeatures(Set<Feature> features)
     {
-        this.features = features;
+        this.features = new ArrayList<Feature>(features);
     }
 
     /**
