@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -35,7 +34,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Instance
 {
-    private List<Feature> features;
+    private Feature[] features;
     private List<String> outcomes;
     private double weight;
     private int sequenceId;
@@ -45,7 +44,7 @@ public class Instance
      * Create an empty instance
      */
     public Instance() {
-        this.features = new ArrayList<Feature>();
+        this.features = new Feature[0];
         this.outcomes = new ArrayList<String>();
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -61,7 +60,7 @@ public class Instance
     public Instance(Collection<Feature> features, String outcome)
     {
         super();
-        this.features = new ArrayList<>(features);
+        this.features = features.toArray(new Feature[0]);
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
@@ -78,7 +77,7 @@ public class Instance
     public Instance(Collection<Feature> features, String ... outcomes)
     {
         super();
-        this.features = new ArrayList<>(features);
+        this.features = features.toArray(new Feature[0]);
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -94,7 +93,7 @@ public class Instance
     public Instance(Collection<Feature> features, List<String> outcomes)
     {
         super();
-        this.features = new ArrayList<>(features);
+        this.features = features.toArray(new Feature[0]);
         this.outcomes = outcomes;
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -108,7 +107,12 @@ public class Instance
      */
     public void addFeature(Feature feature)
     {
-        this.features.add(feature);
+    	List<Feature> featTmp = new ArrayList<Feature>();
+    	for(Feature f : features){
+    		featTmp.add(f);
+    	}
+    	featTmp.add(feature);
+    	features = featTmp.toArray(new Feature[0]);
     }
     
     /**
@@ -118,7 +122,13 @@ public class Instance
      */
     public void addFeatures(List<Feature> features)
     {
-        this.features.addAll(features);
+
+    	List<Feature> featTmp = new ArrayList<Feature>();
+    	for(Feature f : features){
+    		featTmp.add(f);
+    	}
+    	featTmp.addAll(features);
+    	this.features = featTmp.toArray(new Feature[0]);
     }
     
     /**
@@ -128,7 +138,12 @@ public class Instance
      */
     public void addFeatures(Set<Feature> features)
     {
-        this.features.addAll(features);
+    	List<Feature> featTmp = new ArrayList<Feature>();
+    	for(Feature f : features){
+    		featTmp.add(f);
+    	}
+    	featTmp.addAll(features);
+    	this.features = featTmp.toArray(new Feature[0]);
     }
     
     /**
@@ -210,7 +225,9 @@ public class Instance
     public Set<Feature> getFeatures()
     {
     	Set<Feature> featureSet = new HashSet<Feature>();
-    	featureSet.addAll(features);
+    	for (Feature f : features){
+    		featureSet.add(f);
+    	}
         return featureSet;
     }
 
@@ -221,7 +238,7 @@ public class Instance
      */
     public void setFeatures(Set<Feature> features)
     {
-        this.features = new ArrayList<Feature>(features);
+        this.features = features.toArray(new Feature[0]);
     }
 
     /**
