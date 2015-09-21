@@ -17,11 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.api.features.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
