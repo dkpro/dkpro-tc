@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -30,15 +31,41 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 public class InstanceTest {
 
 	@Test
-	public void instanceTest() 
-			throws Exception
-	    {
-			Feature f1 = new Feature("feature", "value");
-			Feature f2 = new Feature("feature", "value");
-			List<Feature> features = new ArrayList<>();
-			features.add(f1);
-			features.add(f2);
-			Instance instance = new Instance(features, "outcome");
-			assertEquals(1, instance.getFeatures().size());
-		}
+	public void doubleInstanceTest() throws Exception {
+		Feature f1 = new Feature("feature", "value");
+		Feature f2 = new Feature("feature", "value");
+		List<Feature> features = new ArrayList<>();
+		features.add(f1);
+		features.add(f2);
+		Instance instance = new Instance(features, "outcome");
+		assertEquals(1, instance.getFeatures().size());
+	}
+
+	@Test
+	public void instanceCountTest() throws Exception {
+		Feature f1 = new Feature("feature1", "value1");
+		Feature f2 = new Feature("feature2", "value1");
+		List<Feature> features = new ArrayList<>();
+		features.add(f1);
+		features.add(f2);
+		Instance instance = new Instance(features, "outcome");
+
+		assertEquals(2, instance.getFeatures().size());
+
+		Feature f3 = new Feature("feature3", "value1");
+		instance.addFeature(f3);
+		assertEquals(3, instance.getFeatures().size());
+	}
+
+	@Test
+	public void instanceTestOutcome() throws Exception {
+
+		Feature f1 = new Feature("feature1", "value1");
+		Instance instance = new Instance();
+		instance.addFeature(f1);
+
+		instance.setOutcomes("outcome");
+		assertEquals(1, instance.getOutcomes().size());
+		assertEquals("outcome", instance.getOutcome());
+	}
 }
