@@ -20,9 +20,9 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -224,7 +224,7 @@ public class Instance
      */
     public Set<Feature> getFeatures()
     {
-    	Set<Feature> featureSet = new HashSet<Feature>();
+    	Set<Feature> featureSet = new TreeSet<Feature>();
     	for (Feature f : features){
     		featureSet.add(f);
     	}
