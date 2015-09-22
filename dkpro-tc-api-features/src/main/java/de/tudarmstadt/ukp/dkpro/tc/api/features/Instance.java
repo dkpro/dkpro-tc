@@ -108,11 +108,11 @@ public class Instance
     public void addFeature(Feature feature)
     {
     	List<Feature> featTmp = new ArrayList<Feature>();
-    	for(Feature f : features){
+    	for(Feature f : this.features){
     		featTmp.add(f);
     	}
     	featTmp.add(feature);
-    	features = featTmp.toArray(new Feature[0]);
+    	this.features = featTmp.toArray(new Feature[0]);
     }
     
     /**
