@@ -20,11 +20,13 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
 /**
  * Internal representation of an instance.
@@ -34,7 +36,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Instance
 {
-    private Feature[] features;
+    private List<Feature> features;
+    private Set<String> featureNames;
     private List<String> outcomes;
     private double weight;
     private int sequenceId;
@@ -44,7 +47,8 @@ public class Instance
      * Create an empty instance
      */
     public Instance() {
-        this.features = new Feature[0];
+        this.features = new ArrayList<>();
+        this.featureNames = new HashSet<>();
         this.outcomes = new ArrayList<String>();
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -58,9 +62,11 @@ public class Instance
      * @param outcome
      */
     public Instance(Collection<Feature> features, String outcome)
+    	throws TextClassificationException
     {
         super();
-        this.features = features.toArray(new Feature[0]);
+        this.features = new ArrayList<>(features);
+        this.featureNames = new HashSet<>(getFeatureNames(features));
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
@@ -75,9 +81,11 @@ public class Instance
      * @param outcomes
      */
     public Instance(Collection<Feature> features, String ... outcomes)
+    	throws TextClassificationException
     {
         super();
-        this.features = features.toArray(new Feature[0]);
+        this.features = new ArrayList<>(features);
+        this.featureNames = new HashSet<>(getFeatureNames(features));
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -91,9 +99,11 @@ public class Instance
      * @param outcomes
      */
     public Instance(Collection<Feature> features, List<String> outcomes)
+    	throws TextClassificationException
     {
         super();
-        this.features = features.toArray(new Feature[0]);
+        this.features = new ArrayList<>(features);
+        this.featureNames = new HashSet<>(getFeatureNames(features));
         this.outcomes = outcomes;
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -106,46 +116,34 @@ public class Instance
      * @param feature
      */
     public void addFeature(Feature feature)
+    	throws TextClassificationException
     {
-    	List<Feature> featTmp = new ArrayList<Feature>();
-    	for(Feature f : this.features){
-    		featTmp.add(f);
-    	}
-    	featTmp.add(feature);
-    	this.features = featTmp.toArray(new Feature[0]);
-    }
+		if (featureNames.contains(feature.getName())) {
+			throw new TextClassificationException("Duplicate feature name: " + feature.getName());
+		}
+		featureNames.add(feature.getName());    
+		
+		features.add(feature);
+	}
     
     /**
      * Add a list of features
      * 
      * @param features
      */
-    public void addFeatures(List<Feature> features)
+    public void addFeatures(Collection<Feature> features)
+    	throws TextClassificationException
     {
-
-    	List<Feature> featTmp = new ArrayList<Feature>();
-    	for(Feature f : this.features){
-    		featTmp.add(f);
+    	for (Feature feature : features) {
+    		if (featureNames.contains(feature.getName())) {
+    			throw new TextClassificationException("Duplicate feature name: " + feature.getName());
+    		}
+    		featureNames.add(feature.getName());    
+    		
+    		this.features.add(feature);
     	}
-    	featTmp.addAll(features);
-    	this.features = featTmp.toArray(new Feature[0]);
     }
-    
-    /**
-     * Add a list of features
-     * 
-     * @param features
-     */
-    public void addFeatures(Set<Feature> features)
-    {
-    	List<Feature> featTmp = new ArrayList<Feature>();
-    	for(Feature f : this.features){
-    		featTmp.add(f);
-    	}
-    	featTmp.addAll(features);
-    	this.features = featTmp.toArray(new Feature[0]);
-    }
-    
+  
     /**
      * Returns the first outcome if more than one outcome is stored, or null if no outcomes have been stored yet.
      * 
@@ -173,18 +171,7 @@ public class Instance
      * 
      * @param outcomes
      */
-    public void setOutcomes(Set<String> outcomes)
-    {
-        this.outcomes.clear();
-        this.outcomes.addAll(outcomes);
-    }
-    
-    /**
-     * Set the outcomes for this instance
-     * 
-     * @param outcomes
-     */
-    public void setOutcomes(List<String> outcomes)
+    public void setOutcomes(Collection<String> outcomes)
     {
         this.outcomes.clear();
         this.outcomes.addAll(outcomes);
@@ -220,25 +207,11 @@ public class Instance
     }
 
     /**
-     * @return The list of features stored for this instance
+     * @return The collection of features stored for this instance
      */
-    public Set<Feature> getFeatures()
+    public Collection<Feature> getFeatures()
     {
-    	Set<Feature> featureSet = new TreeSet<Feature>();
-    	for (Feature f : features){
-    		featureSet.add(f);
-    	}
-        return featureSet;
-    }
-
-    /**
-     * Set the list of features for this instance
-     * 
-     * @param features
-     */
-    public void setFeatures(Set<Feature> features)
-    {
-        this.features = features.toArray(new Feature[0]);
+        return features;
     }
 
     /**
@@ -275,6 +248,20 @@ public class Instance
     public void setSequencePosition(int sequencePosition)
     {
         this.sequencePosition = sequencePosition;
+    }
+    
+    private Set<String> getFeatureNames(Collection<Feature> features)
+    	throws TextClassificationException
+    {
+    	Set<String> featureNames = new HashSet<>();
+    	for (Feature feature : features) {
+    		if (featureNames.contains(feature.getName())) {
+    			throw new TextClassificationException("Duplicate feature name: " + feature.getName());
+    		}
+    		featureNames.add(feature.getName());
+    	}
+    	
+    	return featureNames;
     }
     
     @Override

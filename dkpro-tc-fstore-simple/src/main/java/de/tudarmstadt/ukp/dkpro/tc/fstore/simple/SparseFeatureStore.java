@@ -126,6 +126,7 @@ public class SparseFeatureStore
 
     @Override
     public Instance getInstance(int i)
+    		throws TextClassificationException
     {
         // set flag to disable adding new instances
         this.addingAnotherInstancesAllowed = false;
@@ -161,8 +162,10 @@ public class SparseFeatureStore
      *
      * @param i instance id
      * @return instance
+     * @throws TextClassificationException 
      */
     public Instance getInstanceSparseFeatures(int i)
+    		throws TextClassificationException
     {
         // set flag to disable adding new instances
         this.addingAnotherInstancesAllowed = false;

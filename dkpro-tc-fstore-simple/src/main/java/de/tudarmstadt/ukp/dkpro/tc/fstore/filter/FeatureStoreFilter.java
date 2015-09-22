@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.fstore.filter;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 
 /**
@@ -28,7 +29,8 @@ public interface FeatureStoreFilter
     /**
      * Applies the filter to the given feature store
      */
-    public void applyFilter(FeatureStore store);
+    public void applyFilter(FeatureStore store)
+    	throws TextClassificationException;
 
     /**
      * Whether the filter is applicable on training instances
