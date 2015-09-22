@@ -124,7 +124,7 @@ public class Instance
     {
 
     	List<Feature> featTmp = new ArrayList<Feature>();
-    	for(Feature f : features){
+    	for(Feature f : this.features){
     		featTmp.add(f);
     	}
     	featTmp.addAll(features);
@@ -139,7 +139,7 @@ public class Instance
     public void addFeatures(Set<Feature> features)
     {
     	List<Feature> featTmp = new ArrayList<Feature>();
-    	for(Feature f : features){
+    	for(Feature f : this.features){
     		featTmp.add(f);
     	}
     	featTmp.addAll(features);
