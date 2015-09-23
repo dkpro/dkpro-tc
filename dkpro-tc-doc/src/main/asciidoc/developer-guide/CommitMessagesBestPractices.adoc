@@ -14,9 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+<!--
+
 ## Recommended Practices for Commit Messages
 
-The following recommendations come from [http://code.google.com/p/support/wiki/IssueTracker#Integration_with_version_control Google Code]:
+The following recommendations come from http://code.google.com/p/support/wiki/IssueTracker#Integration_with_version_control[Google Code]:
 
 It is helpful if code revisions are linked with the Issue that they address.  You can easily create this link by the format of your Commit message.
 
@@ -88,3 +90,5 @@ speeds up that O(N^2) comparison.
 (Fixes issue 998)  Change the validation routines to also accept unicode string. And,
 speeds up that O(N^2) comparison.
 ----
+
+-->
