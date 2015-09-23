@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
  */
 public class Instance
 {
-    private UniqueInstanceFeatures uniqueFeatures;
+    private List<Feature> features;
     private List<String> outcomes;
     private double weight;
     private int sequenceId;
@@ -45,7 +45,7 @@ public class Instance
      */
     public Instance() throws TextClassificationException
     {
-        this.uniqueFeatures = new UniqueInstanceFeatures();
+        this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -59,9 +59,9 @@ public class Instance
      * @param outcome
      * @throws TextClassificationException 
      */
-    public Instance(Collection<Feature> features, String outcome) throws TextClassificationException
+    public Instance(Collection<Feature> features, String outcome) 
     {
-        this.uniqueFeatures = new UniqueInstanceFeatures(features);
+        this.features = new ArrayList<Feature>(features);
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
@@ -76,9 +76,9 @@ public class Instance
      * @param outcomes
      * @throws TextClassificationException 
      */
-    public Instance(Collection<Feature> features, String... outcomes) throws TextClassificationException
+    public Instance(Collection<Feature> features, String... outcomes) 
     {
-        this.uniqueFeatures = new UniqueInstanceFeatures(features);
+        this.features = new ArrayList<Feature>(features);
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -92,9 +92,9 @@ public class Instance
      * @param outcomes
      * @throws TextClassificationException 
      */
-    public Instance(Collection<Feature> features, List<String> outcomes) throws TextClassificationException
+    public Instance(Collection<Feature> features, List<String> outcomes)  
     {
-        this.uniqueFeatures = new UniqueInstanceFeatures(features);
+        this.features = new ArrayList<Feature>(features);
         this.outcomes = outcomes;
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -118,31 +118,20 @@ public class Instance
      * @param feature
      * @throws TextClassificationException 
      */
-    public void addFeature(Feature feature) throws TextClassificationException
+    public void addFeature(Feature feature) 
     {
-        uniqueFeatures.addFeature(feature);
+        features.add(feature);
     }
 
-    /**
+     /**
      * Add a list of features
      * 
      * @param features
      * @throws TextClassificationException 
      */
-    public void addFeatures(List<Feature> features) throws TextClassificationException
+    public void addFeatures(Collection<Feature> features)  
     {
-        uniqueFeatures.addFeatures(features);
-    }
-
-    /**
-     * Add a list of features
-     * 
-     * @param features
-     * @throws TextClassificationException 
-     */
-    public void addFeatures(Collection<Feature> features) throws TextClassificationException
-    {
-        uniqueFeatures.addFeatures(features);
+        this.features.addAll(features);
     }
 
     /**
@@ -203,7 +192,7 @@ public class Instance
      */
     public Collection<Feature> getFeatures()
     {
-        return uniqueFeatures.getFeatures();
+        return features;
     }
 
     /**
@@ -212,9 +201,9 @@ public class Instance
      * @param features
      * @throws TextClassificationException 
      */
-    public void setFeatures(Set<Feature> features) throws TextClassificationException
+    public void setFeatures(Set<Feature> features)  
     {
-        uniqueFeatures.setFeatures(features);
+        this.features = new ArrayList<Feature>(features);
     }
 
     /**

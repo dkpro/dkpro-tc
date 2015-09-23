@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -34,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
 public class InstanceTest {
 
+    @Ignore
 	@Test(expected=TextClassificationException.class)
 	public void doubleInstanceTest() throws Exception {
 		Feature f1 = new Feature("feature", "value");
