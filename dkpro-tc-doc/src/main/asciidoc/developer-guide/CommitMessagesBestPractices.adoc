@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-<!--
+//////////////////////////////////////////
 
 ## Recommended Practices for Commit Messages
 
@@ -91,4 +91,4 @@ speeds up that O(N^2) comparison.
 speeds up that O(N^2) comparison.
 ----
 
--->
+//////////////////////////////////////////
