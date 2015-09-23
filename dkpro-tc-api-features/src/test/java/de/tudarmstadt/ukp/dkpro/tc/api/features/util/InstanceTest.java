@@ -18,9 +18,11 @@
 package de.tudarmstadt.ukp.dkpro.tc.api.features.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -164,7 +166,7 @@ public class InstanceTest {
 	}
 
 	@Test
-	public void instanceTestOutcome() throws Exception {
+	public void instanceSetSingleOutcomeTest() throws Exception {
 
 		Feature f1 = new Feature("feature1", "value1");
 		Instance instance = new Instance();
@@ -173,5 +175,65 @@ public class InstanceTest {
 		instance.setOutcomes("outcome");
 		assertEquals(1, instance.getOutcomes().size());
 		assertEquals("outcome", instance.getOutcome());
+	}
+	
+	@Test
+	public void instanceNoSetOutcomeTest() throws Exception {
+
+		Instance instance = new Instance();
+
+		assertEquals(null, instance.getOutcome());
+	}
+	
+	@Test
+    public void instanceSetSeveralOutcomesTest() throws Exception {
+
+	    Feature f1 = new Feature("feature1", "value1");
+        Feature f2 = new Feature("feature2", "value1");
+        List<Feature> features = new ArrayList<>();
+        features.add(f1);
+        features.add(f2);
+        Instance instance = new Instance(features, "outcome");
+
+        List<String> newOutcomes = new ArrayList<String>();
+        newOutcomes.add("outcome1");
+        newOutcomes.add("outcome2");
+        
+        instance.setOutcomes(newOutcomes);
+        
+        assertEquals(2, instance.getOutcomes().size());
+    }
+	
+	@Test
+	public void instanceSetNewFeatureCollectionBySetterTest() {
+	    Feature f1 = new Feature("feature1", "value1");
+        Feature f2 = new Feature("feature2", "value1");
+        List<Feature> features = new ArrayList<>();
+        features.add(f1);
+        features.add(f2);
+        Instance instance = new Instance(features, "outcome");
+        
+        
+        Feature f3 = new Feature("feature3", "value1");
+        Feature f4 = new Feature("feature4", "value1");
+        Set<Feature> newFeatures = new HashSet<>();
+        newFeatures.add(f3);
+        newFeatures.add(f4);
+        instance.setFeatures(newFeatures);
+        
+        assertEquals(2, instance.getFeatures().size());
+        
+        Iterator<Feature> iterator = instance.getFeatures().iterator();
+        Feature next = iterator.next(); iterator.hasNext();
+        Feature next2 = iterator.next();
+        
+        //The order does not matter for this test - the input set orders the values "somehow"
+        
+        if (!next.getName().equals("feature3") && !next2.getName().equals("feature3")){
+            fail("Expected to find a feature named [feature3]");
+        }
+        if (!next.getName().equals("feature4") && !next2.getName().equals("feature4")){
+            fail("Expected to find a feature named [feature4]");
+        }
 	}
 }
