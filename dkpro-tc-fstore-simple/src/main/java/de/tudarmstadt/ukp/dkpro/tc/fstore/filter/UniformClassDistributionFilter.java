@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
@@ -45,7 +44,6 @@ public class UniformClassDistributionFilter
 
 	@Override
 	public void applyFilter(FeatureStore store) 
-			throws TextClassificationException
 	{
 		
 		// create mapping from outcomes to instance offsets in the feature store

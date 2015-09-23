@@ -176,7 +176,7 @@ public class ExtractFeaturesConnector
                     filter.applyFilter(featureStore);
                 }            
             }
-            catch (InstantiationException | IllegalAccessException | ClassNotFoundException | TextClassificationException e) {
+            catch (InstantiationException | IllegalAccessException | ClassNotFoundException  e) {
                 throw new AnalysisEngineProcessException(e);
             }
 

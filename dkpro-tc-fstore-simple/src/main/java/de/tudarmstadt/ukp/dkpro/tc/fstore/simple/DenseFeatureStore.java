@@ -114,7 +114,6 @@ public class DenseFeatureStore
 
     @Override
     public Instance getInstance(int i) 
-    		throws TextClassificationException
     {
         List<Feature> features = new ArrayList<Feature>();
 
@@ -176,7 +175,6 @@ public class DenseFeatureStore
 
     @Override
     public Iterable<Instance> getInstances()
-    	throws TextClassificationException
     {
         return new InstancesIterable(this);
     }

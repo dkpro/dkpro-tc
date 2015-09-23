@@ -31,13 +31,14 @@ public class InstancesIterable
 {
     private FeatureStore featureStore;
     private int instanceCounter;
-    
+
     /**
      * Creates a new instance iterable from a feature store
      * 
      * @param featureStore
      */
-    public InstancesIterable(FeatureStore featureStore) {
+    public InstancesIterable(FeatureStore featureStore)
+    {
         this.featureStore = featureStore;
         instanceCounter = 0;
     }
@@ -46,31 +47,27 @@ public class InstancesIterable
     public Iterator<Instance> iterator()
     {
         return new InstanceIterator();
-    }  
-    
+    }
+
     private class InstanceIterator
         implements Iterator<Instance>
     {
-       
+
         @Override
         public boolean hasNext()
         {
             return instanceCounter < featureStore.getNumberOfInstances();
         }
-    
+
         @Override
         public Instance next()
         {
             Instance instance;
-			try {
-				instance = featureStore.getInstance(instanceCounter);
-			} catch (TextClassificationException e) {
-				throw new RuntimeException(e);
-			}
+            instance = featureStore.getInstance(instanceCounter);
             instanceCounter++;
             return instance;
         }
-    
+
         @Override
         public void remove()
         {

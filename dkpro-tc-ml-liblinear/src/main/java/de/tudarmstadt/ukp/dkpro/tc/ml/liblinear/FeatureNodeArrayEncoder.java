@@ -65,7 +65,6 @@ public class FeatureNodeArrayEncoder {
 	}
 
 	public FeatureNode[][] featueStore2FeatureNode(FeatureStore store) 
-			throws TextClassificationException
 	{
 		// map feature indexes to feature nodes, sorting by index
 		Map<Integer, FeatureNode> featureNodes = new TreeMap<Integer, FeatureNode>();

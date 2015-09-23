@@ -37,8 +37,7 @@ public interface FeatureStore
     /**
      * @return An iterable over all stored instances
      */
-    public Iterable<Instance> getInstances()
-    		throws TextClassificationException;
+    public Iterable<Instance> getInstances();
 
     /**
      * Adds an instance
@@ -53,8 +52,7 @@ public interface FeatureStore
      * @param i
      * @return The i-th instance in the store
      */
-    public Instance getInstance(int i)
-    		throws TextClassificationException;
+    public Instance getInstance(int i);
 
     /**
      * Deletes the i-th instance from the store.

@@ -65,7 +65,6 @@ public class SparseFeatureStoreTest
     }
 
     private void testValuesOfDefaultFeatureStoreInstance(FeatureStore fs)
-    	throws TextClassificationException
     {
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals("outcome", fs.getUniqueOutcomes().first());
