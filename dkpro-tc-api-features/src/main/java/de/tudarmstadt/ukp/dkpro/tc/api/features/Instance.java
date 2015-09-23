@@ -25,8 +25,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-
 /**
  * Internal representation of an instance.
  *

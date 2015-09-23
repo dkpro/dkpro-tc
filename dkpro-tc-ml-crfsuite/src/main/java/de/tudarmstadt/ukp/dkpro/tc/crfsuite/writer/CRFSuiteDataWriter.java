@@ -18,7 +18,10 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,7 +64,7 @@ public class CRFSuiteDataWriter
     {
         int totalCountOfInstances = featureStore.getNumberOfInstances();
 
-        StringBuilder sb = new StringBuilder();
+        BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
         
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
@@ -73,22 +76,22 @@ public class CRFSuiteDataWriter
                 lastSeenSeqId = i.getSequenceId();
             }
 
-            sb.append(LabelSubstitutor.labelReplacement(i.getOutcome()));
-            sb.append("\t");
+            bf.write(LabelSubstitutor.labelReplacement(i.getOutcome()));
+            bf.write("\t");
 
             int idx = 0;
             for (Feature f :  i.getFeatures()) {
-                sb.append(f.getName() + "=" + f.getValue());
+            	bf.write(f.getName() + "=" + f.getValue());
                 if (idx + 1 < i.getFeatures().size()) {
-                    sb.append("\t");
+                	bf.write("\t");
                 }
                 idx++;
             }
 
             // Mark first line of new sequence with an additional __BOS__
             if (seqIdChanged) {
-                sb.append("\t");
-                sb.append("__BOS__");
+            	bf.write("\t");
+            	bf.write("__BOS__");
                 seqIdChanged = false;
             }
 
@@ -96,28 +99,27 @@ public class CRFSuiteDataWriter
             if (ins + 1 < totalCountOfInstances) {
                 Instance next = featureStore.getInstance(ins + 1);
                 if (next.getSequenceId() != lastSeenSeqId) {
-                    appendEOS(sb);
+                    appendEOS(bf);
                     continue;
                 }
             }
             else if (ins + 1 == totalCountOfInstances) {
-                appendEOS(sb);
+                appendEOS(bf);
             }
-
-            sb.append("\n");
+            bf.write("\n");
         }
 
-        FileUtils.write(outputFile, sb.toString());
+        bf.close();
     }
-
-    private static void appendEOS(StringBuilder sb)
-        throws Exception
-    {
-        sb.append("\t");
-        sb.append("__EOS__");
-        sb.append("\n");
-        sb.append("\n");
-    }
+    
+    private static void appendEOS(BufferedWriter bf)
+            throws Exception
+        {
+            bf.append("\t");
+            bf.append("__EOS__");
+            bf.append("\n");
+            bf.append("\n");
+        }
 
     public static String outcomeMap2String(Map<String, Integer> map)
     {
