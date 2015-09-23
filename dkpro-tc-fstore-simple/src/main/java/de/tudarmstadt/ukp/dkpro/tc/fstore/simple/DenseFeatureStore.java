@@ -113,7 +113,7 @@ public class DenseFeatureStore
     }
 
     @Override
-    public Instance getInstance(int i)
+    public Instance getInstance(int i) 
     {
         List<Feature> features = new ArrayList<Feature>();
 

@@ -73,7 +73,7 @@ public class MalletUtils
 
     // TODO yet to decide when to call this method
     public static void writeFeatureNamesToFile(FeatureStore instanceList, File outputFile)
-        throws IOException
+        throws IOException, TextClassificationException
     {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(
                 new FileOutputStream(outputFile)), "UTF-8"));
@@ -117,7 +117,7 @@ public class MalletUtils
         bw.close();
     }
 
-    public static HashMap<String, Integer> getFeatureOffsetIndex(FeatureStore instanceList)
+    public static HashMap<String, Integer> getFeatureOffsetIndex(FeatureStore instanceList) 
     {
         HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
         for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {
@@ -132,37 +132,6 @@ public class MalletUtils
         }
         return featureOffsetIndex;
     }
-
-    // public static String getInstanceSequenceId(Instance instance)
-    // {
-    // String instanceSequenceId;
-    // String featureValue;
-    // List<Feature> featList = instance.getFeatures();
-    // for (Feature feature : featList) {
-    // if (feature.getName().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
-    // featureValue = feature.getValue().toString();
-    // instanceSequenceId = featureValue.substring(0, featureValue.indexOf('_'));
-    // return instanceSequenceId;
-    // }
-    // }
-    // return null;
-    // }
-
-    // public static int getInstancePosition(Instance instance)
-    // {
-    // int instancePosition;
-    // String featureValue;
-    // List<Feature> featList = instance.getFeatures();
-    // for (Feature feature : featList) {
-    // if (feature.getName().equals(AddIdFeatureExtractor.ID_FEATURE_NAME)) {
-    // featureValue = feature.getValue().toString();
-    // instancePosition = Integer.parseInt(featureValue.substring(
-    // featureValue.lastIndexOf('_') + 1, featureValue.length()));
-    // return instancePosition;
-    // }
-    // }
-    // return -1;
-    // }
 
     public static void instanceListToMalletFormatFile(File outputFile, FeatureStore instanceList,
             boolean useDenseInstances)

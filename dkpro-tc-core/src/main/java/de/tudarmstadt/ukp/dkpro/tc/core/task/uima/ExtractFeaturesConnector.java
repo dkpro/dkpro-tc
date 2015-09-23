@@ -169,15 +169,18 @@ public class ExtractFeaturesConnector
             FeatureStoreFilter filter;
             try {
                 filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
+                
+                if (filter.isApplicableForTraining() && !isTesting
+                        || filter.isApplicableForTesting() && isTesting)
+                {
+                    filter.applyFilter(featureStore);
+                }            
             }
-            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            catch (InstantiationException | IllegalAccessException | ClassNotFoundException  e) {
                 throw new AnalysisEngineProcessException(e);
             }
 
-            if (filter.isApplicableForTraining() && !isTesting
-                    || filter.isApplicableForTesting() && isTesting) {
-                filter.applyFilter(featureStore);
-            }
+
         }
 
         // write feature names file if in training mode

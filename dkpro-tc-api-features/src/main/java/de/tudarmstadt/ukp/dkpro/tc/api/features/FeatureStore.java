@@ -29,54 +29,21 @@ import java.util.TreeSet;
 public interface FeatureStore
 {
 
-    /**
-     * @return The number of instances in the store.
-     */
     public int getNumberOfInstances();
 
-    /**
-     * @return An iterable over all stored instances
-     */
     public Iterable<Instance> getInstances();
 
-    /**
-     * Adds an instance
-     *
-     * @param instance
-     * @throws TextClassificationException
-     */
     public void addInstance(Instance instance)
             throws TextClassificationException;
 
-    /**
-     * @param i
-     * @return The i-th instance in the store
-     */
     public Instance getInstance(int i);
 
-    /**
-     * Deletes the i-th instance from the store.
-     */
     public void deleteInstance(int i);
 
-    /**
-     * @return A set of unique classification outcomes from all stored instances
-     */
     public SortedSet<String> getUniqueOutcomes();
 
-    /**
-     * Always returns a list of outcomes, even for single label classification where only the first element of the list will be filled.
-     *
-     * @param i
-     * @return The outcomes of the i-th instance in the store
-     */
     public List<String> getOutcomes(int i);
-    /**
-     * The weight for the instance.  Only a single weight per instance, even for multilabel classification.
-     * 
-     * @param i the instance number
-     * @return The instance weight
-     */
+
     public Double getWeight(int i);
 
     /**

@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import de.bwaldvogel.liblinear.FeatureNode;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -63,7 +64,8 @@ public class FeatureNodeArrayEncoder {
 		this.stringToInt.put(BIAS_NAME, biasIndex);
 	}
 
-	public FeatureNode[][] featueStore2FeatureNode(FeatureStore store) {
+	public FeatureNode[][] featueStore2FeatureNode(FeatureStore store) 
+	{
 		// map feature indexes to feature nodes, sorting by index
 		Map<Integer, FeatureNode> featureNodes = new TreeMap<Integer, FeatureNode>();
 

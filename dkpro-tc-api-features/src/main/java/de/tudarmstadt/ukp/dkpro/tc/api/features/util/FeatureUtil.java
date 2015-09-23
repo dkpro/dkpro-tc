@@ -46,8 +46,6 @@ public class FeatureUtil
 {
     /**
      * Escapes the names, as Weka does not seem to like special characters in attribute names.
-     * @param name
-     * @return
      */
     public static String escapeFeatureName(String name) {
         
@@ -68,12 +66,6 @@ public class FeatureUtil
         return sb.toString();
     }
     
-    /**
-     * @param inputFile Location of the file that contains the stopwords. One stopword per line.
-     * @param toLowerCase Whether the stopwords should be converted to lowercase or not.
-     * @return A set of stopwords.
-     * @throws IOException
-     */
     public static Set<String> getStopwords(String inputFile, boolean toLowerCase)
         throws IOException
     {

@@ -32,23 +32,12 @@ public class Feature
     protected String name;
     protected Object value;
 
-    /**
-     * Create a new feature
-     * 
-     * @param name
-     * @param value
-     */
     public Feature(String name, Object value)
     {
         this.name = FeatureUtil.escapeFeatureName(name);
         this.value = value;
     }
     
-    /**
-     * Convenience method for feature extractors that expect a set of features
-     * 
-     * @return This feature as the only element of a set of features.
-     */
     public Set<Feature> asSet() {
         Set<Feature> set = new TreeSet<Feature>();
         set.add(this);

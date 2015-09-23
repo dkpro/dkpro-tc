@@ -43,7 +43,8 @@ public class UniformClassDistributionFilter
 {
 
 	@Override
-	public void applyFilter(FeatureStore store) {
+	public void applyFilter(FeatureStore store) 
+	{
 		
 		// create mapping from outcomes to instance offsets in the feature store
 		Map<String, List<Integer>> outcome2instanceOffset = new HashMap<String, List<Integer>>();

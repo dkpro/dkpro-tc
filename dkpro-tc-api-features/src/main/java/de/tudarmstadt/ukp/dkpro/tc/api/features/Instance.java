@@ -22,203 +22,113 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+
 /**
  * Internal representation of an instance.
- * 
- * @author zesch
  *
  */
 public class Instance
 {
-    private Set<Feature> features;
+    private List<Feature> features;
     private List<String> outcomes;
     private double weight;
     private int sequenceId;
     private int sequencePosition;
-    
-    /**
-     * Create an empty instance
-     */
-    public Instance() {
-        this.features = new TreeSet<Feature>();
+
+    public Instance()  
+    {
+        this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
         this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
-    
-    /**
-     * Create an instance
-     * 
-     * @param features
-     * @param outcome
-     */
-    public Instance(Collection<Feature> features, String outcome)
+
+    public Instance(Collection<Feature> features, String outcome) 
     {
-        super();
-        this.features = new TreeSet<>(features);
+        this.features = new ArrayList<Feature>(features);
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
-    
-    /**
-     * Create an instance
-     * 
-     * @param features
-     * @param outcomes
-     */
-    public Instance(Collection<Feature> features, String ... outcomes)
+
+    public Instance(Collection<Feature> features, String... outcomes) 
     {
-        super();
-        this.features = new TreeSet<>(features);
+        this.features = new ArrayList<Feature>(features);
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
 
-    /**
-     * Create an instance
-     * 
-     * @param features
-     * @param outcomes
-     */
-    public Instance(Collection<Feature> features, List<String> outcomes)
+    public Instance(Collection<Feature> features, List<String> outcomes)  
     {
-        super();
-        this.features = new TreeSet<>(features);
+        this.features = new ArrayList<Feature>(features);
         this.outcomes = outcomes;
         this.weight = 0.0;
         this.sequenceId = 0;
         this.sequencePosition = 0;
     }
 
-    /**
-     * Add a feature
-     * 
-     * @param feature
-     */
-    public void addFeature(Feature feature)
+    public void setOutcomes(Collection<String> outcomes)
     {
-        this.features.add(feature);
+        this.outcomes.clear();
+        this.outcomes.addAll(outcomes);
     }
-    
-    /**
-     * Add a list of features
-     * 
-     * @param features
-     */
-    public void addFeatures(List<Feature> features)
+
+    public void addFeature(Feature feature) 
+    {
+        features.add(feature);
+    }
+
+    public void addFeatures(Collection<Feature> features)  
     {
         this.features.addAll(features);
     }
-    
-    /**
-     * Add a list of features
-     * 
-     * @param features
-     */
-    public void addFeatures(Set<Feature> features)
-    {
-        this.features.addAll(features);
-    }
-    
-    /**
-     * Returns the first outcome if more than one outcome is stored, or null if no outcomes have been stored yet.
-     * 
-     * @return The outcome of this instance
-     */
+
     public String getOutcome()
     {
         if (outcomes.size() > 0) {
             return outcomes.get(0);
         }
-        else {
-            return null;
-        }      
+        return null;
     }
-    
-    /**
-     * @return The list of outcomes for this instance
-     */
-    public List<String> getOutcomes() {
+
+    public List<String> getOutcomes()
+    {
         return this.outcomes;
     }
 
-    /**
-     * Set the outcomes for this instance
-     * 
-     * @param outcomes
-     */
-    public void setOutcomes(Set<String> outcomes)
-    {
-        this.outcomes.clear();
-        this.outcomes.addAll(outcomes);
-    }
-    
-    /**
-     * Set the outcomes for this instance
-     * 
-     * @param outcomes
-     */
-    public void setOutcomes(List<String> outcomes)
-    {
-        this.outcomes.clear();
-        this.outcomes.addAll(outcomes);
-    }
-
-    /**
-     * Set the outcomes for this instance
-     * 
-     * @param outcomes
-     */
-    public void setOutcomes(String ... outcomes)
+    public void setOutcomes(String... outcomes)
     {
         this.outcomes.clear();
         this.outcomes.addAll(Arrays.asList(outcomes));
     }
-    /**
-     * Gets the weight for this instance
-     * 
-     * @return the weight for this instance
-     */
+
     public double getWeight()
     {
         return this.weight;
     }
-    /**
-     * Sets the weight for this instance
-     * 
-     * @param weight
-     */
+
     public void setWeight(double weight)
     {
         this.weight = weight;
     }
 
-    /**
-     * @return The list of features stored for this instance
-     */
-    public Set<Feature> getFeatures()
+    public Collection<Feature> getFeatures()
     {
-        return this.features;
+        return features;
     }
 
-    /**
-     * Set the list of features for this instance
-     * 
-     * @param features
-     */
-    public void setFeatures(Set<Feature> features)
+    public void setFeatures(Set<Feature> features)  
     {
-        this.features = features;
+        this.features = new ArrayList<Feature>(features);
     }
 
     /**
@@ -229,39 +139,28 @@ public class Instance
         return sequenceId;
     }
 
-    /**
-     * Sets the sequence id
-     * 
-     * @param sequenceId
-     */
     public void setSequenceId(int sequenceId)
     {
         this.sequenceId = sequenceId;
-    }   
-    
-    /**
-     * @return The position within a certain sequence
-     */
+    }
+
     public int getSequencePosition()
     {
         return sequencePosition;
     }
 
-    /**
-     * Sets the position with the current sequence (as defined by the sequence id)
-     * 
-     * @param sequencePosition
-     */
     public void setSequencePosition(int sequencePosition)
     {
         this.sequencePosition = sequencePosition;
     }
-    
+
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(sequenceId); sb.append(" - "); sb.append(sequencePosition);
+        sb.append(sequenceId);
+        sb.append(" - ");
+        sb.append(sequencePosition);
         sb.append("\n");
         for (Feature feature : getFeatures()) {
             sb.append(feature);
@@ -270,4 +169,5 @@ public class Instance
         sb.append(StringUtils.join(outcomes, "-"));
         return sb.toString();
     }
+
 }
