@@ -16,7 +16,7 @@
   dropdown:
   - title: "General Documentation"
     url: "/documentation/"
-  - title: "Javadoc"
+  - title: "Javadoc (SNAPSHOT)"
     url: "https://zoidberg.ukp.informatik.tu-darmstadt.de/jenkins/job/DKPro%20Text%20Classification%20Framework%20(GitHub)/javadoc/"
   - title: "Jenkins"
     url: "https://zoidberg.ukp.informatik.tu-darmstadt.de/jenkins/job/DKPro%20Text%20Classification%20Framework%20(GitHub)/"
