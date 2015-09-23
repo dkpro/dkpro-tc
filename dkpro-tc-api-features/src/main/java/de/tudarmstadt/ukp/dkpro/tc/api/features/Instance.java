@@ -39,11 +39,7 @@ public class Instance
     private int sequenceId;
     private int sequencePosition;
 
-    /**
-     * Create an empty instance
-     * @throws TextClassificationException 
-     */
-    public Instance() throws TextClassificationException
+    public Instance()  
     {
         this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
@@ -52,13 +48,6 @@ public class Instance
         this.sequencePosition = 0;
     }
 
-    /**
-     * Create an instance
-     * 
-     * @param features
-     * @param outcome
-     * @throws TextClassificationException 
-     */
     public Instance(Collection<Feature> features, String outcome) 
     {
         this.features = new ArrayList<Feature>(features);
@@ -69,13 +58,6 @@ public class Instance
         this.sequencePosition = 0;
     }
 
-    /**
-     * Create an instance
-     * 
-     * @param features
-     * @param outcomes
-     * @throws TextClassificationException 
-     */
     public Instance(Collection<Feature> features, String... outcomes) 
     {
         this.features = new ArrayList<Feature>(features);
@@ -85,13 +67,6 @@ public class Instance
         this.sequencePosition = 0;
     }
 
-    /**
-     * Create an instance
-     * 
-     * @param features
-     * @param outcomes
-     * @throws TextClassificationException 
-     */
     public Instance(Collection<Feature> features, List<String> outcomes)  
     {
         this.features = new ArrayList<Feature>(features);
@@ -101,45 +76,22 @@ public class Instance
         this.sequencePosition = 0;
     }
 
-    /**
-     * Set the outcomes for this instance
-     * 
-     * @param outcomes
-     */
     public void setOutcomes(Collection<String> outcomes)
     {
         this.outcomes.clear();
         this.outcomes.addAll(outcomes);
     }
 
-    /**
-     * Add a feature
-     * 
-     * @param feature
-     * @throws TextClassificationException 
-     */
     public void addFeature(Feature feature) 
     {
         features.add(feature);
     }
 
-     /**
-     * Add a list of features
-     * 
-     * @param features
-     * @throws TextClassificationException 
-     */
     public void addFeatures(Collection<Feature> features)  
     {
         this.features.addAll(features);
     }
 
-    /**
-     * Returns the first outcome if more than one outcome is stored, or null if no outcomes have
-     * been stored yet.
-     * 
-     * @return The outcome of this instance
-     */
     public String getOutcome()
     {
         if (outcomes.size() > 0) {
@@ -148,59 +100,32 @@ public class Instance
         return null;
     }
 
-    /**
-     * @return The list of outcomes for this instance
-     */
     public List<String> getOutcomes()
     {
         return this.outcomes;
     }
 
-    /**
-     * Set the outcomes for this instance
-     * 
-     * @param outcomes
-     */
     public void setOutcomes(String... outcomes)
     {
         this.outcomes.clear();
         this.outcomes.addAll(Arrays.asList(outcomes));
     }
 
-    /**
-     * Gets the weight for this instance
-     * 
-     * @return the weight for this instance
-     */
     public double getWeight()
     {
         return this.weight;
     }
 
-    /**
-     * Sets the weight for this instance
-     * 
-     * @param weight
-     */
     public void setWeight(double weight)
     {
         this.weight = weight;
     }
 
-    /**
-     * @return The list of features stored for this instance
-     */
     public Collection<Feature> getFeatures()
     {
         return features;
     }
 
-    /**
-     * Set the list of features for this instance
-     * 
-     * @param features
-     * @throws TextClassificationException 
-     */
     public void setFeatures(Set<Feature> features)  
     {
         this.features = new ArrayList<Feature>(features);
@@ -214,29 +139,16 @@ public class Instance
         return sequenceId;
     }
 
-    /**
-     * Sets the sequence id
-     * 
-     * @param sequenceId
-     */
     public void setSequenceId(int sequenceId)
     {
         this.sequenceId = sequenceId;
     }
 
-    /**
-     * @return The position within a certain sequence
-     */
     public int getSequencePosition()
     {
         return sequencePosition;
     }
 
-    /**
-     * Sets the position with the current sequence (as defined by the sequence id)
-     * 
-     * @param sequencePosition
-     */
     public void setSequencePosition(int sequencePosition)
     {
         this.sequencePosition = sequencePosition;
