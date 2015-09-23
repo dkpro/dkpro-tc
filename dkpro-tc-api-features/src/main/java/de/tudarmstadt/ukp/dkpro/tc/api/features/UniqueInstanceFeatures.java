@@ -38,7 +38,7 @@ public class UniqueInstanceFeatures
         String name = feature.getName();
         if (seenFeatureNames.contains(name)) {
             throw new TextClassificationException("The feature with the name [" + name
-                    + "] has been added more than once - dropped duplicate!");
+                    + "] has been added more than once");
         }
 
         seenFeatureNames.add(name);
