@@ -126,6 +126,7 @@ Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
 {% endhighlight groovy %}
 
 The feature mode defines the type of feature extraction you want to apply to your data:
+
    * document: features are extracted from the entire text of your document
    * unit: features are extracted from a part (`unit`) of the document
    * pair: features are extracted from a pair of documents
