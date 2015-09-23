@@ -14,7 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-<!--
+//////////////////////////////////////////
+
 ## Reusable Models
 Models trained with DKPro TC are not usable as independent components in pipelines, yet.
 We thus can't take advantage of once created models.
@@ -58,4 +59,4 @@ e.g.
 
 This one might become trivial once stage 2 is cleared
 
--->
+//////////////////////////////////////////
