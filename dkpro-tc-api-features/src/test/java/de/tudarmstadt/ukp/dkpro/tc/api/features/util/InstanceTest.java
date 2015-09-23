@@ -28,12 +28,13 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
 public class InstanceTest {
 
-	@Test
+	@Test(expected=TextClassificationException.class)
 	public void doubleInstanceTest() throws Exception {
 		Feature f1 = new Feature("feature", "value");
 		Feature f2 = new Feature("feature", "value");
@@ -205,7 +206,7 @@ public class InstanceTest {
     }
 	
 	@Test
-	public void instanceSetNewFeatureCollectionBySetterTest() {
+	public void instanceSetNewFeatureCollectionBySetterTest() throws TextClassificationException {
 	    Feature f1 = new Feature("feature1", "value1");
         Feature f2 = new Feature("feature2", "value1");
         List<Feature> features = new ArrayList<>();

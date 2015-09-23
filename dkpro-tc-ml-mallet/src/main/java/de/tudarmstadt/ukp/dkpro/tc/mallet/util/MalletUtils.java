@@ -73,7 +73,7 @@ public class MalletUtils
 
     // TODO yet to decide when to call this method
     public static void writeFeatureNamesToFile(FeatureStore instanceList, File outputFile)
-        throws IOException
+        throws IOException, TextClassificationException
     {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(
                 new FileOutputStream(outputFile)), "UTF-8"));
@@ -117,7 +117,8 @@ public class MalletUtils
         bw.close();
     }
 
-    public static HashMap<String, Integer> getFeatureOffsetIndex(FeatureStore instanceList)
+    public static HashMap<String, Integer> getFeatureOffsetIndex(FeatureStore instanceList) 
+    		throws TextClassificationException
     {
         HashMap<String, Integer> featureOffsetIndex = new HashMap<String, Integer>();
         for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {

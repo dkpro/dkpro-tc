@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 
 import java.util.Iterator;
 
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
@@ -60,7 +61,12 @@ public class InstancesIterable
         @Override
         public Instance next()
         {
-            Instance instance = featureStore.getInstance(instanceCounter);
+            Instance instance;
+			try {
+				instance = featureStore.getInstance(instanceCounter);
+			} catch (TextClassificationException e) {
+				throw new RuntimeException(e);
+			}
             instanceCounter++;
             return instance;
         }
