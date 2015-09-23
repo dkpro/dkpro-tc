@@ -8,27 +8,32 @@ In this quick start guide, we assume a certain familiarity with machine learning
 
 Please make sure that you have set up an environment variable `DKPRO_HOME`. The variable should point to a (possibly yet empty) directory which is intended to store any sort of resources which are to be used by any DKPro component. One way to set the variable `DKPRO_HOME` (there are several other ways) is to include the following line of code at the beginning of the main method of your experiment class:
 
-```
+{% highlight java %}
 System.setProperty("DKPRO_HOME", "pathToYourDKproDirectory");
 // example of pathToYourDKproDirectory: /home/user/workspace/DKPRO_HOME 
-```
+{% endhighlight java %}
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
 Currently, there are two example projects which represent TC experiments in Java and Groovy:
-```
+
+{% highlight java %}
 de.tudarmstadt.ukp.dkpro.tc.examples-gpl
 de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
-```
+{% endhighlight java %}
 
 They are sorted into packages based on their feature and learning modes, e.g.
-```
+
+{% highlight java %}
 TwitterSentimentDemo
-```
+{% endhighlight java %}
+
 can be found in the package
-```
+
+{% highlight java %}
 de.tudarmstadt.ukp.dkpro.tc.examples.single.document
-```
+{% endhighlight java %}
+
 as it demonstrates a single-label classification experiment with entire documents (tweets) as classification objects. For an explanation of feature and learning modes, please see below.
 
 All example projects come with a set of data and can be run right away. The _TwitterSentimentDemo_ and _TwentyNewsgroupsDemo_ experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
@@ -37,8 +42,9 @@ If you don't know where to start, go with the TwitterSentimentDemo first, as it 
 ## Binary Classification with DKPro-TC: TwitterSentiment Demo
 
 There are two ways to run the experiment:
-  * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl` module)
-  * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module)
+
+   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl` module)
+   * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` module)
 
 In this tutorial, we will follow the Groovy version of the experiment, which is easier to read. The Java configuration is very similar.
 
@@ -46,15 +52,15 @@ In this tutorial, we will follow the Groovy version of the experiment, which is 
 
 The configuration takes care of
 
-  * loading the data (reading the original files)
-  * extracting features (which feature extractors are used and how to configure them)
-  * training classifiers (which classifiers to use and how to configure them)
-  * evaluating classifiers (either with designated train/test sets or using cross-validation)
-  * writing results (which reports to use)
+   * loading the data (reading the original files)
+   * extracting features (which feature extractors are used and how to configure them)
+   * training classifiers (which classifiers to use and how to configure them)
+   * evaluating classifiers (either with designated train/test sets or using cross-validation)
+   * writing results (which reports to use)
 
 The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.task.BatchTaskCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation using the Weka Machine Learning framework.
 
-```
+{% highlight groovy %}
      BatchTaskCrossValidation batchTask = [
             // identifier for your experiment
             experimentName: "Twitter-Sentiment-CV",
@@ -90,67 +96,71 @@ The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.t
             reports: [BatchCrossValidationReport], 
             // the number of folds
             numFolds: 10]
-```
+{% endhighlight groovy %}
 
 `BatchTaskCrossValidation` and `BatchTaskTrainTest` are pre-configured experiment setups. We recommend to re-use these setups.
 
 The `preprocessingPipeline` expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
 
 The `parameterSpace` contains configuration parameters which can be tested for different values. Such parameters are called discriminators.
-You can find a list of all configurable discriminators and their explanantion [here](Discriminators.md).
+You can find a list of all configurable discriminators and their explanantion [here](Discriminators_0_6_0.md).
 
 In short, the above example define:
 
 **the reader**
 
-```
+{% highlight groovy %}
 Dimension.createBundle("readers", ...
-```
+{% endhighlight groovy %}
 
-In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`. See also [here](Readers.md).
+In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`.
 
 **the feature mode and the learning mode**
-```
-Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
-```
 
-```
+{% highlight groovy %}
+Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
+{% endhighlight groovy %}
+
+{% highlight groovy %}
 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
-```
+{% endhighlight groovy %}
 
 The feature mode defines the type of feature extraction you want to apply to your data:
-  * document: features are extracted from the entire text of your document
-  * unit: features are extracted from a part (`unit`) of the document
-  * pair: features are extracted from a pair of documents
-  * sequence: features are extracted from `units` within a sequence
+   * document: features are extracted from the entire text of your document
+   * unit: features are extracted from a part (`unit`) of the document
+   * pair: features are extracted from a pair of documents
+   * sequence: features are extracted from `units` within a sequence
 
 The learning mode defines whether the experiment is a classification task (either single- or multilabel), or a regression task.
 For more information on feature and learning modes, refer to the following paper: [DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.](https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf)
 
 **the feature extractors**
-```
+
+{% highlight groovy %}
 Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
-```
+{% endhighlight groovy %}
 
 The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also [here](FeatureExtractors.md).
 
 Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
-```
+{% highlight groovy %}
 Dimension.create(DIM_PIPELINE_PARAMS, ...)
-```
+{% endhighlight groovy %}
 
 **the data writer**
-```
+
+{% highlight groovy %}
 Dimension.create(DIM_DATA_WRITER, WekaDataWriter.name)
-```
+{% endhighlight groovy %}
 
 This data writer creates ARFF files which can be consumed by Weka. For multi-label experiments, you have to use `MekaDataWriter` which produces output for Meka.
 
 **the learning algorithm**
-```
+
+{% highlight groovy %}
 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])]
-```
+{% endhighlight groovy %}
 
 Here, a varargs list of lists containing the learning algorithms and their configuration (none in the example) is configured. A NaiveBayes and a RandomForest classifier will iteratively be tested.
 
@@ -165,6 +175,6 @@ After an experiment has run, the path to the folder storing detailed results wil
 
 Once you got this example running as it is, you can start adapting various parameters:
 
-  * using different data sets - which are completely up to you (also see [here](Readers.md))
-  * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
-  * using different classifiers - please refer to the Weka/Meka-JavaDoc for further information on that.
+   * using different data sets - which are completely up to you
+   * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors
+   * using different classifiers - please refer to the Weka/Meka-JavaDoc for further information on that

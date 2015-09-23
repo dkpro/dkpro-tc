@@ -32,6 +32,7 @@ If you don't know where to start, go with the twentynewsgroups demo first, as it
 It might be advisable to open the code in parallel to reading this tutorial, as we will not copy the whole code in here.
 
 There are two ways to run the experiment:
+
    * `TwentyNewsgroupsGroovyExperiment` (Groovy configuration)
    * `TwentyNewsgroupsJavaExperiment` (Java configuration)
 
