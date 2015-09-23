@@ -30,7 +30,7 @@ _latest release_
 -->
 
 {% unless unstable.version == null %}
-### DKPro TC {{ unstable.version }} and {{ stable.version }}
+### DKPro TC {{ stable.version }} and {{ unstable.version }}
 _upcoming release - links may be temporarily broken while a build is in progress_
 
 {% unless unstable.user_guide_url == null %}* [User Guide]({{ unstable.user_guide_url }}){% endunless %}
