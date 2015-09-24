@@ -34,7 +34,7 @@ public class Feature
 
     public Feature(String name, Object value)
     {
-        this.name = FeatureUtil.escapeFeatureName(name);
+        this.name = FeatureUtil.escapeFeatureName(name).intern();
         this.value = value;
     }
     
@@ -61,7 +61,7 @@ public class Feature
 
     public void setName(String name)
     {
-        this.name = name;
+        this.name = name.intern();
     }
 
     @Override

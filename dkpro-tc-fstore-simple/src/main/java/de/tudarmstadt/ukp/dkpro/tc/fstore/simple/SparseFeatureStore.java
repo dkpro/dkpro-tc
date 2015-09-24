@@ -82,7 +82,7 @@ public class SparseFeatureStore
         // convert from List<Feature> to Map<name, value>
         Map<String, Object> currentInstanceFeatures = new HashMap<>();
         for (Feature feature : instance.getFeatures()) {
-            String name = feature.getName();
+            String name = feature.getName().intern();
             Object value = feature.getValue();
 
             // check for duplicate features
