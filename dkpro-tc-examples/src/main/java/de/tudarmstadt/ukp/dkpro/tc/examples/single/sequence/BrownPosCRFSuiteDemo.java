@@ -90,7 +90,7 @@ public class BrownPosCRFSuiteDemo
                                         LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N,
                                         4,
                                         LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K,
-                                        1000 }));
+                                        50 }));
 
         @SuppressWarnings("unchecked")
         /* If no algorithm is provided, CRFSuite takes lbfgs*/
