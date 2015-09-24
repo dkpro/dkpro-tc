@@ -51,10 +51,8 @@ public class NERDemoReader
 	implements TCReaderSequence
 
 {
-    private static final int OFFSET = 0;
     private static final int TOKEN = 1;
     private static final int IOB = 2;
-    private static final int IOB_EMBEDDED = 3;
 
 
     /**

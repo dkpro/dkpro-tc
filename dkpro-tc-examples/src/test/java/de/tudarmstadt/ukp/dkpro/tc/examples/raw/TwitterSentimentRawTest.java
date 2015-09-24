@@ -18,14 +18,8 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.raw;
 
-import java.io.File;
-
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
