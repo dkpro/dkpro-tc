@@ -102,7 +102,6 @@ public class TwitterSentimentPredictionDemo
                         UnlabeledTweetReader.INCLUDE_PREFIX + "*.txt" }));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }),
                 Arrays.asList(new String[] { RandomForest.class.getName() }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(

@@ -28,20 +28,17 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ExperimentUtil;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
@@ -53,6 +50,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
+import weka.classifiers.functions.SMO;
 
 /**
  * Shows how to use the ablation test feature sets.
@@ -111,26 +109,17 @@ public class AblationDemo
                 Arrays.asList(new String[] { SMO.class.getName() })
         );
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-        );
-
         // ##############
         // this is where the feature set for the ablation test are created
         Dimension<List<String>> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
         		EmoticonRatioDFE.class.getName(),
                 NumberOfHashTagsDFE.class.getName(),
-                NrOfTokensDFE.class.getName(),
-                LuceneNGramDFE.class.getName()
+                NrOfTokensDFE.class.getName()
         );
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
+                        DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
                 dimClassificationArgs);
 
         return pSpace;

@@ -106,8 +106,7 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
                         TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }),
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+                Arrays.asList(new String[] { SMO.class.getName() }));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,

@@ -136,8 +136,8 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
                         );
 
@@ -157,8 +157,8 @@ public class TwentyNewsgroupsInstanceWeightingDemo
 
         Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(DIM_BASELINE_PIPELINE_PARAMS,
         		Arrays.asList(new Object[]{
-        				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+        				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3}));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

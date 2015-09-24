@@ -116,9 +116,9 @@ public class SimpleDkproTCReaderDemo
                 .create(DIM_PIPELINE_PARAMS,
                         asList(new Object[] {
                                 FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-                                "100",
+                                "50",
                                 FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-                                1,
+                                2,
                                 FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
                                 3 }));
 

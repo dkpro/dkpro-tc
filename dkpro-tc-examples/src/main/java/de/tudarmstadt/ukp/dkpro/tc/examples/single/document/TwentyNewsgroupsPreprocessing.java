@@ -87,9 +87,9 @@ public class TwentyNewsgroupsPreprocessing
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS, asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 4 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, asList(
         		NrOfTokensDFE.class.getName(),
