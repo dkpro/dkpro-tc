@@ -115,16 +115,10 @@ public class TwentyNewsgroupsDemo
                         TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { J48.class.getName() }),
-                Arrays.asList(new String[] { RandomForest.class.getName(), "-I", "200" }));
+                Arrays.asList(new String[] { J48.class.getName() }));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-                        ,
                 Arrays.asList(new Object[] {
                 		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,

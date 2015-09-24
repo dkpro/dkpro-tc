@@ -19,7 +19,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.document.ablation;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -54,7 +53,6 @@ public class AblationDemoTest extends JavaDemosTest_Base
         javaExperiment.runTrainTest(pSpace);
     }
 
-    @Ignore //speeding up jenkin builds
     @Test
     public void testJavaCrossValidation()
         throws Exception
