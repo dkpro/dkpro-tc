@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.api.features;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ public class Instance
     public Instance(Collection<Feature> features, String outcome) 
     {
         this.features = new ArrayList<Feature>(features);
+        this.features.sort(getComparator());
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
         this.weight = 0.0;
@@ -59,6 +61,7 @@ public class Instance
     public Instance(Collection<Feature> features, String... outcomes) 
     {
         this.features = new ArrayList<Feature>(features);
+        this.features.sort(getComparator());
         this.outcomes = Arrays.asList(outcomes);
         this.weight = 0.0;
         this.sequenceId = 0;
@@ -83,11 +86,13 @@ public class Instance
     public void addFeature(Feature feature) 
     {
         features.add(feature);
+        features.sort(getComparator());
     }
 
-    public void addFeatures(Collection<Feature> features)  
+    public void addFeatures(Collection<Feature> featureCollection)  
     {
-        this.features.addAll(features);
+        features.addAll(featureCollection);
+        features.sort(getComparator());
     }
 
     public String getOutcome()
@@ -124,9 +129,10 @@ public class Instance
         return features;
     }
 
-    public void setFeatures(Set<Feature> features)  
+    public void setFeatures(Set<Feature> featureSet)  
     {
-        this.features = new ArrayList<Feature>(features);
+        features = new ArrayList<Feature>(featureSet);
+        features.sort(getComparator());
     }
 
     /**
@@ -166,6 +172,15 @@ public class Instance
         }
         sb.append(StringUtils.join(outcomes, "-"));
         return sb.toString();
+    }
+    
+    private Comparator<Feature> getComparator(){
+    	return new Comparator<Feature>(){
+
+			@Override
+			public int compare(Feature o1, Feature o2) {
+				return o1.name.compareTo(o2.name);
+			}};
     }
 
 }
