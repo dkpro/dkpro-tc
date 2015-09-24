@@ -105,7 +105,7 @@ public class ReutersUsingTCEvaluationDemo
 
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(DIM_CLASSIFICATION_ARGS,
-                        Arrays.asList(new String[] { BR.class.getName(), "-W"}));
+                        Arrays.asList(new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName()}));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
