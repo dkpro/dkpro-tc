@@ -19,6 +19,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.examples.report;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
