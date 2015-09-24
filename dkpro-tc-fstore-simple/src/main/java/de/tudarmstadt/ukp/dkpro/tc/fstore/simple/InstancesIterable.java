@@ -19,7 +19,6 @@ package de.tudarmstadt.ukp.dkpro.tc.fstore.simple;
 
 import java.util.Iterator;
 
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 
