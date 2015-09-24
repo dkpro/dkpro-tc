@@ -30,12 +30,10 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
@@ -44,6 +42,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This is an example for POS tagging as unit classification. Each POS is treated as a

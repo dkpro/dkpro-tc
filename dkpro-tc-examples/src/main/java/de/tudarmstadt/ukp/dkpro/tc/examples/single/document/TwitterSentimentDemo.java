@@ -28,8 +28,6 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.trees.RandomForest;
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -45,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import weka.classifiers.trees.RandomForest;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
