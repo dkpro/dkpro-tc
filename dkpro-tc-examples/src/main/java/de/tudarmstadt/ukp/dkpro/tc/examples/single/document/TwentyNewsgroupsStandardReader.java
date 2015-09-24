@@ -54,8 +54,6 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
-import weka.classifiers.trees.J48;
-import weka.classifiers.trees.RandomForest;
 
 /**
  * This a version of the TwentyNewsgroupsExperiment that uses a standard reader (from DKPro Core)
@@ -83,10 +81,8 @@ public class TwentyNewsgroupsStandardReader
         ParameterSpace pSpace = getParameterSpace();
 
         TwentyNewsgroupsStandardReader experiment = new TwentyNewsgroupsStandardReader();
-        experiment.runCrossValidation(pSpace);
-//        experiment.runCrossValidationWithStatsEval(pSpace);
+//        experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
-//        experiment.runTrainTestWithStatsEval(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -115,15 +111,9 @@ public class TwentyNewsgroupsStandardReader
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-                        ,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-                		);
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -141,8 +131,8 @@ public class TwentyNewsgroupsStandardReader
 
         Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(DIM_BASELINE_PIPELINE_PARAMS,
         		Arrays.asList(new Object[]{
-        				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+        				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3}));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
