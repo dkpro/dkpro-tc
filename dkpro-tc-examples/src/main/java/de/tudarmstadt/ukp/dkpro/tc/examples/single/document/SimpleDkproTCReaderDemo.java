@@ -41,10 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 
 /**
  * This demo uses the {@link SimpleDkproTCReader}.
@@ -77,11 +74,11 @@ public class SimpleDkproTCReaderDemo
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
                 "SimpleReaderDemoCV", WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
+//        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+//        batch.addReport(BatchCrossValidationReport.class);
+//        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

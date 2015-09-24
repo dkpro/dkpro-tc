@@ -80,11 +80,11 @@ public class NERUnitDemo
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV",
         		WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
+//        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+//        batch.addReport(BatchCrossValidationReport.class);
+//        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

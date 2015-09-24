@@ -28,6 +28,8 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -41,13 +43,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchRuntimeReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaFeatureValuesReport;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 
 /**
  * This is the TwentyNewsgroups demo with instance weighting.  With instance
@@ -183,12 +179,12 @@ public class TwentyNewsgroupsInstanceWeightingDemo
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaFeatureValuesReport.class);
+//        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+//        batch.addReport(BatchTrainTestReport.class);
+//        batch.addReport(BatchOutcomeIDReport.class);
+//        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

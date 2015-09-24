@@ -40,8 +40,6 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
@@ -136,8 +134,8 @@ public class PairTwentyNewsgroupsDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+//        batch.addReport(BatchTrainTestReport.class);
+//        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

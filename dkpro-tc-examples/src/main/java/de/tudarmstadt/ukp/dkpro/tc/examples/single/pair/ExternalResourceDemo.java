@@ -33,16 +33,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
 import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
@@ -132,8 +130,8 @@ public class ExternalResourceDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+//        batch.addReport(BatchTrainTestReport.class);
+//        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);

@@ -43,7 +43,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
 public class TwentyNewsgroupsPreprocessing
@@ -142,7 +141,7 @@ public class TwentyNewsgroupsPreprocessing
         batch.setPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+//        batch.addReport(BatchCrossValidationReport.class);
 
         Lab.getInstance().run(batch);
     }

@@ -48,7 +48,7 @@ public class STSReaderTest
         );
 
         int i=0;
-        for (JCas jcas : new JCasIterable(reader)) {
+        for (@SuppressWarnings("unused") JCas jcas : new JCasIterable(reader)) {
 
 // FIXME should test not write to console
 //            System.out.println(jcas.getView(AbstractPairReader.PART_ONE).getDocumentText());

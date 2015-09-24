@@ -45,8 +45,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -187,12 +185,12 @@ public class TwentyNewsgroupsStandardReader
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaFeatureValuesReport.class);
+//        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+//        batch.addReport(BatchOutcomeIDReport.class);
+//        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

@@ -47,7 +47,6 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
@@ -160,7 +159,7 @@ public class ComplexConfigurationSingleDemo
         		WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
+//        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);
