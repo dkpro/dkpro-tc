@@ -110,13 +110,9 @@ public class TwentyNewsgroupsUsingTCEvaluationDemo
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                 Arrays.asList(new Object[] {
+                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
+                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
                 		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(

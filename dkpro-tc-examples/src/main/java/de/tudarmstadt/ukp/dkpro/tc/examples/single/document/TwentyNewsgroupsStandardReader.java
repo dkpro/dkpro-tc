@@ -81,7 +81,7 @@ public class TwentyNewsgroupsStandardReader
         ParameterSpace pSpace = getParameterSpace();
 
         TwentyNewsgroupsStandardReader experiment = new TwentyNewsgroupsStandardReader();
-//        experiment.runCrossValidation(pSpace);
+        experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 
