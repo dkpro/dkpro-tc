@@ -53,7 +53,7 @@ public class NewTcEvaluationReportDemoTest extends JavaDemosTest_Base
     }
     
     
-    
+    @Ignore
     @Test
     public void testCrossValidation()
         throws Exception

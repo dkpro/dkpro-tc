@@ -54,11 +54,11 @@ public class ReportUsageDemoTest extends JavaDemosTest_Base
     }
     
     
-    
+    @Ignore
     @Test
     public void testCrossValidation()
         throws Exception
     {
-       new ReportUsageDemo().runTrainTest(pSpace);
+       new ReportUsageDemo().runCrossValidation(pSpace);
     }
 }
