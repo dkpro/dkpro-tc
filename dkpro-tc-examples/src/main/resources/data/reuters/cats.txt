@@ -15,24 +15,3 @@ training/28 acq
 training/36 corn grain
 training/78 acq
 training/89 crude
-training/105 crude
-training/137 crude
-training/138 corn grain
-training/139 crude
-training/141 corn grain oat
-training/151 crude
-training/168 crude
-training/173 crude
-training/212 acq
-training/234 acq
-training/247 crude
-training/249 crude
-training/250 crude
-training/255 acq
-training/260 acq
-training/275 acq
-training/366 corn grain
-training/574 corn grain
-training/804 corn grain
-training/879 corn grain
-training/889 corn grain

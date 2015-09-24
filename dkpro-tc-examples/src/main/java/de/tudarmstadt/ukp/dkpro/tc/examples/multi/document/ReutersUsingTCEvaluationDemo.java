@@ -105,18 +105,13 @@ public class ReutersUsingTCEvaluationDemo
 
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(DIM_CLASSIFICATION_ARGS,
-                        Arrays.asList(new String[] { BR.class.getName(), "-W",
-                                NaiveBayes.class.getName() }));
+                        Arrays.asList(new String[] { BR.class.getName(), "-W"}));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
                         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-                        "500", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
-                Arrays.asList(new Object[] {
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-                        "1000", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
+                        "100", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
                         1, FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
