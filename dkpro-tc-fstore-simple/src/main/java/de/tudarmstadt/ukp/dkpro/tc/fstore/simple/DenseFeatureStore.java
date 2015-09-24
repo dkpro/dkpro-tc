@@ -57,7 +57,7 @@ public class DenseFeatureStore
         if (featureNames == null) {
             featureNames = new TreeSet<String>();
             for (Feature feature : instance.getFeatures()) {
-                String name = feature.getName().intern();
+                String name = feature.getName();
                 if (featureNames.contains(name)) {
                     throw new TextClassificationException("Feature with name '" + name
                             + "' is defined multiple times.");
@@ -68,7 +68,7 @@ public class DenseFeatureStore
 
         HashSet<String> instanceFeatureNames = new HashSet<String>();
         for (Feature f : instance.getFeatures()) {
-            instanceFeatureNames.add(f.getName().intern());
+            instanceFeatureNames.add(f.getName());
         }
         @SuppressWarnings("unchecked")
         String[] symDiff = new ArrayList<String>(CollectionUtils.disjunction(
