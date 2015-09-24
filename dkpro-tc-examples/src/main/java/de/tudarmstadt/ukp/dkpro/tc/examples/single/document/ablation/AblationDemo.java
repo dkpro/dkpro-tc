@@ -43,8 +43,10 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
+import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchRuntimeReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 
 /**
  * Shows how to use the ablation test feature sets.
@@ -72,7 +74,6 @@ public class AblationDemo
 
         AblationDemo experiment = new AblationDemo();
         experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -127,35 +128,11 @@ public class AblationDemo
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
                 NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
-//        batch.addInnerReport(WekaClassificationReport.class);
-        // add a second report to TestTask which creates a report about average feature values for
-        // each outcome label
-//        batch.addInnerReport(WekaFeatureValuesReport.class);
+        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//        batch.addReport(BatchCrossValidationReport.class);
-//        batch.addReport(BatchRuntimeReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
-
-    // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
-        throws Exception
-    {
-
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-//        batch.addInnerReport(WekaClassificationReport.class);
-        // add a second report to TestTask which creates a report about average feature values for
-        // each outcome label
-//        batch.addInnerReport(WekaFeatureValuesReport.class);
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//        batch.addReport(BatchTrainTestReport.class);
-//        batch.addReport(BatchOutcomeIDReport.class);
-//        batch.addReport(BatchRuntimeReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

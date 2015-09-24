@@ -47,13 +47,6 @@ public class AblationDemoTest extends JavaDemosTest_Base
     }
 
     @Test
-    public void testJavaTrainTest()
-        throws Exception
-    {
-        javaExperiment.runTrainTest(pSpace);
-    }
-
-    @Test
     public void testJavaCrossValidation()
         throws Exception
     {
