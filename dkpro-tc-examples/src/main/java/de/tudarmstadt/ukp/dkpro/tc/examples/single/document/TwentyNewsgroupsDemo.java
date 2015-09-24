@@ -87,10 +87,8 @@ public class TwentyNewsgroupsDemo
         ParameterSpace pSpace = getParameterSpace();
 
         TwentyNewsgroupsDemo experiment = new TwentyNewsgroupsDemo();
-        experiment.runCrossValidation(pSpace);
-//        experiment.runCrossValidationWithStatsEval(pSpace);
+//        experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
-//        experiment.runTrainTestWithStatsEval(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -118,8 +116,6 @@ public class TwentyNewsgroupsDemo
                         TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }),
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }),
                 Arrays.asList(new String[] { J48.class.getName() }),
                 Arrays.asList(new String[] { RandomForest.class.getName(), "-I", "200" }));
 

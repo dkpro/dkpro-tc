@@ -132,7 +132,7 @@ public class ComplexConfigurationSingleDemo
                 DIM_PIPELINE_PARAMS,
                 asList(new Object[] {
                         LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
-                        "500", LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
+                        "50", LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
                         LuceneNGramDFE.PARAM_NGRAM_MAX_N, 3 }));
 
         // single-label feature selection (Weka specific options), reduces the feature set to 10
