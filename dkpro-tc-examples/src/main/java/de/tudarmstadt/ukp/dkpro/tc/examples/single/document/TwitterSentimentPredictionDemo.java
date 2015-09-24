@@ -29,7 +29,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.trees.RandomForest;
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -102,7 +101,7 @@ public class TwitterSentimentPredictionDemo
                         UnlabeledTweetReader.INCLUDE_PREFIX + "*.txt" }));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { RandomForest.class.getName() }));
+                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
