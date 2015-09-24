@@ -105,7 +105,6 @@ public class NERUnitDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }),
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
@@ -117,7 +116,7 @@ public class NERUnitDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
+                Arrays.asList(new String[] { 
                         InitialCharacterUpperCaseUFE.class.getName(),
                         IsSurroundedByCharsUFE.class.getName() }));
 
