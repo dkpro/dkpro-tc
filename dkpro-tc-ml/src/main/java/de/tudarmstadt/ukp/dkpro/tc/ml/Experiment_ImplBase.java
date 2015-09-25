@@ -39,7 +39,9 @@ public abstract class Experiment_ImplBase
 {
 
     protected String experimentName;
-    private AnalysisEngineDescription preprocessing;	// private as this might be overridden by a batch task to allow preprocessing as discriminator
+    private AnalysisEngineDescription preprocessing; // private as this might be overridden by a
+                                                     // batch task to allow preprocessing as
+                                                     // discriminator
     protected List<String> operativeViews;
     protected List<Class<? extends Report>> innerReports;
     protected TCMachineLearningAdapter mlAdapter;
@@ -49,37 +51,53 @@ public abstract class Experiment_ImplBase
     public void initialize(TaskContext aContext)
     {
         super.initialize(aContext);
-        
+
         try {
-        	if (getPreprocessing() == null) {
-    			preprocessing = AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);        		
-        	}
-		} catch (ResourceInitializationException e) {
-			throw new RuntimeException(e);
-		}
-        
+            if (getPreprocessing() == null) {
+                preprocessing = AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
+            }
+        }
+        catch (ResourceInitializationException e) {
+            throw new RuntimeException(e);
+        }
+
         init();
     }
-    
+
     protected abstract void init()
-            throws IllegalStateException;
-    
+        throws IllegalStateException;
 
     public void setExperimentName(String experimentName)
     {
+        boolean invalidCharsFound = experimentNameContainsInvalidCharacters(experimentName);
+        if (invalidCharsFound) {
+            throw new IllegalArgumentException("Your experiment name [" + experimentName
+                    + "] contains illegal characters. Permitted are [a-zA-Z0-9-_]");
+        }
         this.experimentName = experimentName;
+    }
+
+    private boolean experimentNameContainsInvalidCharacters(String experimentName)
+    {
+        String result = experimentName.replaceAll("[a-zA-Z0-9-_]+", "");
+        if (result.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
         throws IllegalArgumentException
     {
         try {
-			this.mlAdapter = mlAdapter.newInstance();
-		} catch (InstantiationException e) {
+            this.mlAdapter = mlAdapter.newInstance();
+        }
+        catch (InstantiationException e) {
             throw new IllegalArgumentException(e);
-		} catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
-		}
+        }
     }
 
     public void setPreprocessing(AnalysisEngineDescription preprocessing)
@@ -87,11 +105,12 @@ public abstract class Experiment_ImplBase
         this.preprocessing = preprocessing;
     }
 
-    public AnalysisEngineDescription getPreprocessing() {
-		return preprocessing;
-	}
+    public AnalysisEngineDescription getPreprocessing()
+    {
+        return preprocessing;
+    }
 
-	public void setOperativeViews(List<String> operativeViews)
+    public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;
     }
@@ -110,7 +129,8 @@ public abstract class Experiment_ImplBase
         innerReports.add(innerReport);
     }
 
-	public void setDropInvalidCases(boolean dropInvalidCases) {
-		this.dropInvalidCases = dropInvalidCases;
-	}    
+    public void setDropInvalidCases(boolean dropInvalidCases)
+    {
+        this.dropInvalidCases = dropInvalidCases;
+    }
 }
