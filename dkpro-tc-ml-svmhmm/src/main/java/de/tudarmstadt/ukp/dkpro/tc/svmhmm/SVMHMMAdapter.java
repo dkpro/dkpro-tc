@@ -32,6 +32,7 @@ import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationRepor
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
 /**
@@ -100,8 +101,7 @@ public class SVMHMMAdapter
 
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		// FIXME to be implemented
-		throw new UnsupportedOperationException();
+		return LoadModelConnectorSvmhmm.class;
 	}
 }
 

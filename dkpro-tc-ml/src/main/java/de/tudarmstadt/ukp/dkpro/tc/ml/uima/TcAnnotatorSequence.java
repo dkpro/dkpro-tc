@@ -35,6 +35,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.util.CasUtil;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -106,6 +107,11 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 
 		// process and classify
 		engine.process(jcas);
+		
+		for (TextClassificationOutcome o : JCasUtil.select(jcas, TextClassificationOutcome.class)){
+			System.out.println(o.getOutcome());
+		}
+		
 		Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
 	}
 

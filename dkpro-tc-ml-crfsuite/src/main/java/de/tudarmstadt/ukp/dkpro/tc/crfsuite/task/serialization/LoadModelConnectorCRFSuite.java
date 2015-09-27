@@ -92,33 +92,20 @@ public class LoadModelConnectorCRFSuite
         try {
         	FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl).newInstance();
             int sequenceId = 0;
-            long msExtraction=0;
-            long msAdding=0;
-            long s=0,e=0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
-            	 s = System.currentTimeMillis();
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
                         jcas, seq, true, sequenceId++);
-                e = System.currentTimeMillis();
-                msExtraction += (e-s);
                 
-                s = System.currentTimeMillis();
                 for (Instance instance : instances) {
                     featureStore.addInstance(instance);
                 }
-                e = System.currentTimeMillis();
-                msAdding+= (e-s);
                 
             }
             
-            s = System.currentTimeMillis();
             File featureFile = CRFSuiteDataWriter.getFeatureFilename(tmpFolderForFeatureFile.toFile());
             CRFSuiteDataWriter.writeFeatureFile(featureStore, featureFile);
-            e = System.currentTimeMillis();
-            long msWrite = (e-s);
-            LogFactory.getLog(getClass()).info("Seconds spent in extraction: ["+(double)msExtraction/1000+"] in adding to feature store: ["+(double)msAdding/1000+"] in writing to file: ["+(double)msWrite/1000+"]");
             
             String labels = classify(featureFile);
             setPredictedOutcome(jcas, labels);

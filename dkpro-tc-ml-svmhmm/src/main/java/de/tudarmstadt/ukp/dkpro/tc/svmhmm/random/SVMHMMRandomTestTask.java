@@ -45,14 +45,14 @@ public class SVMHMMRandomTestTask
     static Random random = new Random(System.currentTimeMillis());
 
     @Override
-    protected void trainModel(TaskContext taskContext, File trainingFile)
+    public void trainModel(TaskContext taskContext, File trainingFile)
             throws Exception
     {
         // no training
     }
 
     @Override
-    protected void testModel(TaskContext taskContext, File testFile)
+    public void testModel(TaskContext taskContext, File testFile)
             throws Exception
     {
         // file to hold prediction results
