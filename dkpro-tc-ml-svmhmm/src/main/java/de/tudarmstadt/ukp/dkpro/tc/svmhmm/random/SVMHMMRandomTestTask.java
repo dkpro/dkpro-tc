@@ -56,8 +56,9 @@ public class SVMHMMRandomTestTask
             throws Exception
     {
         // file to hold prediction results
-        File predictionsFile = new File(taskContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), new SVMHMMAdapter().getFrameworkFilename(
+    	File predictionFolder = taskContext.getFolder(TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        File predictionsFile = new File(predictionFolder, new SVMHMMAdapter().getFrameworkFilename(
                 TCMachineLearningAdapter.AdapterNameEntries.predictionsFile));
 
         // number of expected outcomes

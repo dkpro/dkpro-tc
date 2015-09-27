@@ -69,9 +69,9 @@ public class SVMHMMBatchCrossValidationReport
         // iterate over all sub tasks
         for (TaskContextMetadata subContext : testTasks) {
             // locate CSV file with outcomes (gold, predicted, token, etc.)
-            File csvFile = storageService.getStorageFolder(subContext.getId(),
+        	File csvFile = storageService.locateKey(subContext.getId(),
                     Constants.TEST_TASK_OUTPUT_KEY + File.separator
-                            + testTaskCSVFile);
+                    + testTaskCSVFile);
 
             // load the CSV
             CSVParser csvParser = new CSVParser(new FileReader(csvFile),
@@ -91,9 +91,9 @@ public class SVMHMMBatchCrossValidationReport
         }
 
         // store aggregated outcomes again to CSV
-        File evaluationFile = new File(
-                getContext().getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY,
-                        StorageService.AccessMode.READWRITE),
+        File evaluationFolder = getContext().getFolder(Constants.TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        File evaluationFile = new File(evaluationFolder,
                 testTaskCSVFile);
         log.debug("Evaluation file: " + evaluationFile.getAbsolutePath());
 

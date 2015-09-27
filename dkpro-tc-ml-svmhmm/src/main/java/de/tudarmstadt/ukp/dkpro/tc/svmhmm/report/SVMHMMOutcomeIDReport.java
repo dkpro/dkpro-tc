@@ -54,7 +54,7 @@ public class SVMHMMOutcomeIDReport
     protected File locateTestFile()
     {
         // test file with gold labels
-        File testDataStorage = getContext().getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
+    	File testDataStorage = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
         String fileName = new SVMHMMAdapter().getFrameworkFilename(
                 TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
@@ -70,16 +70,19 @@ public class SVMHMMOutcomeIDReport
             throws IOException
     {
         // predictions
-        File predictionsFile = new File(getContext().getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READONLY), new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile));
+    	File predictionFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READONLY);
+    	String predictionFileName = new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
+        File predictionsFile = new File(predictionFolder, predictionFileName);
 
         // test file with gold labels
         File testFile = locateTestFile();
 
         // load the mappings from labels to integers
-        File mappingFile = new File(getContext().getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE),
+        File mappingFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        File mappingFile = new File(mappingFolder,
                 SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
         BidiMap labelsToIntegersMapping = SVMHMMUtils.loadMapping(mappingFile);
 
@@ -118,8 +121,9 @@ public class SVMHMMOutcomeIDReport
                     "Gold labels, original tokens or sequenceIDs differ in size!");
         }
 
-        File evaluationFile = new File(getContext().getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
+        File evaluationFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        File evaluationFile = new File(evaluationFolder, SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
 
         // write results into CSV
         // form: gold;predicted;token;seqID

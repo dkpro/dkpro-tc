@@ -376,15 +376,17 @@ public final class SVMHMMUtils
     {
         // storing the results as latex confusion matrix
         String confMatrixFileTex = (filePrefix != null ? filePrefix : "") + "confusionMatrix.tex";
-        File evaluationFileLaTeX = new File(context.getStorageLocation(
-                Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), confMatrixFileTex);
+        File matrixFolderTex = context.getFolder(Constants.TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        File evaluationFileLaTeX = new File(matrixFolderTex, confMatrixFileTex);
         FileUtils.writeStringToFile(evaluationFileLaTeX, confusionMatrix.toStringLatex());
 
         // as CSV confusion matrix
+        
         String confMatrixFileCsv = (filePrefix != null ? filePrefix : "") + "confusionMatrix.csv";
-        File evaluationFileCSV = new File(context.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), confMatrixFileCsv);
+        File matrixFolder = context.getFolder(Constants.TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        File evaluationFileCSV = new File(matrixFolder, confMatrixFileCsv);
 
         CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(evaluationFileCSV),
                 CSVFormat.DEFAULT);
@@ -392,9 +394,11 @@ public final class SVMHMMUtils
         IOUtils.closeQuietly(csvPrinter);
 
         // and results
-        File evaluationFile = new File(context.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE), new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.evaluationFile));
+        File evalFolder = context.getFolder(Constants.TEST_TASK_OUTPUT_KEY,
+                StorageService.AccessMode.READWRITE);
+        String evalFileName = new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.evaluationFile);
+        File evaluationFile = new File(evalFolder, evalFileName);
 
         PrintWriter pw = new PrintWriter(evaluationFile);
         pw.println(confusionMatrix.printNiceResults());
