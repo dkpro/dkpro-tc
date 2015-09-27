@@ -134,12 +134,12 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 		checkParameters();
 
 		// where the training date are located
-		File trainingDataStorage = taskContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-				StorageService.AccessMode.READONLY);
+		File trainingDataStorage = taskContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+				StorageService.AccessMode.READONLY); 
 
 		// where the test data are located
-		File testDataStorage = taskContext.getStorageLocation(TEST_TASK_INPUT_KEY_TEST_DATA,
-				StorageService.AccessMode.READONLY);
+		File testDataStorage =  taskContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
+					StorageService.AccessMode.READONLY);
 
 		// file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND
 		// TESTING!!!!!!
@@ -160,8 +160,8 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 		labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
 
 		// save mapping to file
-		File mappingFile = new File(
-				taskContext.getStorageLocation(TEST_TASK_OUTPUT_KEY, StorageService.AccessMode.READWRITE),
+		File mappingFolder = taskContext.getFolder(TEST_TASK_OUTPUT_KEY, StorageService.AccessMode.READWRITE);
+		File mappingFile = new File(mappingFolder,
 				SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
 		SVMHMMUtils.saveMapping(labelsToIntegersMapping, mappingFile);
 
@@ -217,14 +217,15 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 */
 	public void testModel(TaskContext taskContext, File testFile) throws Exception {
 		// file to hold prediction results
-		File predictionsFile = new File(
-				taskContext.getStorageLocation(TEST_TASK_OUTPUT_KEY, StorageService.AccessMode.READWRITE),
-				new SVMHMMAdapter().getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile));
+		File predictionFolder = taskContext.getFolder(TEST_TASK_OUTPUT_KEY, StorageService.AccessMode.READWRITE);
+		String predictionFileName = new SVMHMMAdapter().getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
+		File predictionsFile = new File(predictionFolder,
+				predictionFileName);
 
 		// location of the trained model
-		File modelFile = taskContext.getStorageLocation(MODEL_NAME, StorageService.AccessMode.READONLY);
+		File modelFile = taskContext.getFile(MODEL_NAME, StorageService.AccessMode.READONLY);
 
-		callTestCommand(modelFile, predictionsFile, testFile);
+		callTestCommand(predictionsFile, modelFile, testFile);
 	}
 
 	public static void callTestCommand(File predictionsFile, File modelFile, File testFile) throws Exception {
