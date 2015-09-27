@@ -173,8 +173,6 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
 
 	private File outputFolder;
 
-	private File integerMapping;
-
 	public void setAndCreateOutputFolder(File outputFolder) {
 		this.outputFolder = outputFolder;
 		outputFolder.mkdirs();
@@ -194,7 +192,7 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
 
 	private void trainAndStoreModel(TaskContext aContext) throws Exception {
 
-		File trainingDataStorage = aContext.getStorageLocation(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+		File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
 				StorageService.AccessMode.READONLY);
 
 		// file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND

@@ -21,16 +21,13 @@ package de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Stream;
 
 import org.apache.commons.collections.BidiMap;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -40,7 +37,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.codehaus.plexus.util.FileUtils;
 
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -73,8 +69,8 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 	private String featureStoreImpl;
 
 	private File model = null;
-	private String executablePath = null;
 	private Path tmpFolderForFeatureFile = null;
+	private BidiMap loadMapping;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -82,12 +78,18 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 
 		try {
 			tmpFolderForFeatureFile = Files.createTempDirectory("temp" + System.currentTimeMillis());
-			executablePath = SVMHMMTestTask.resolveSVMHmmLearnCommand();
 			model = new File(tcModelLocation, MODEL_CLASSIFIER);
+			loadMapping = loadLabel2IntegerMap();
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
 
+	}
+
+	private BidiMap loadLabel2IntegerMap() throws IOException {
+		File mappingFile = new File(
+				tcModelLocation.getAbsolutePath() + "/" + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
+		return SVMHMMUtils.loadMapping(mappingFile);
 	}
 
 	@Override
@@ -109,10 +111,6 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 			SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
 			svmhmmDataWriter.write(tmpFolderForFeatureFile.toFile(), featureStore, true, "", false);
 
-			File mappingFile = new File(
-					tcModelLocation.getAbsolutePath() + "/" + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
-			BidiMap loadMapping = SVMHMMUtils.loadMapping(mappingFile);
-
 			File featureFile = new File(tmpFolderForFeatureFile.toFile() + "/" + new SVMHMMAdapter()
 					.getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
 			File augmentedTestFile = SVMHMMUtils.replaceLabelsWithIntegers(featureFile, loadMapping);
@@ -120,14 +118,8 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 			File predictionsFile = FileUtils.createTempFile("svmhmmPrediction", ".txt", null);
 			SVMHMMTestTask.callTestCommand(predictionsFile, model, augmentedTestFile);
 			
-			
-			Scanner sc = new Scanner(predictionsFile);
-			while(sc.hasNextLine()){
-				System.out.println(loadMapping.getKey(sc.next().toString()));
-			}
-			
-			int a=0;
-			a++;
+			List<String> getOutcomes = readOutcomes(predictionsFile, loadMapping);
+			setPredictedOutcomes(jcas, getOutcomes);
 			
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
@@ -135,19 +127,24 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 
 	}
 
-	private void setPredictedOutcome(JCas jcas, String aLabels) {
+	private List<String> readOutcomes(File predictionsFile, BidiMap loadMapping) throws Exception {
+		List<String> outcomes = new ArrayList<>();
+		
+		List<String> readLines = org.apache.commons.io.FileUtils.readLines(predictionsFile);
+		for(String line : readLines){
+			Integer i = Integer.valueOf(line);
+			String outcome = (String) loadMapping.getKey(i);
+			outcomes.add(outcome);
+		}
+		return outcomes;
+	}
+
+	private void setPredictedOutcomes(JCas jcas, List<String> labels) {
 		List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
 				JCasUtil.select(jcas, TextClassificationOutcome.class));
-		String[] labels = aLabels.split("\n");
-
-		for (int i = 0, labelIdx = 0; i < outcomes.size(); i++) {
-			if (labels[labelIdx].isEmpty()) {
-				// empty lines mark end of sequence
-				// shift label index +1 to begin of next sequence
-				labelIdx++;
-			}
+		for (int i = 0; i < outcomes.size(); i++) {
 			TextClassificationOutcome o = outcomes.get(i);
-			o.setOutcome(labels[labelIdx++]);
+			o.setOutcome(labels.get(i));
 		}
 
 	}

@@ -34,7 +34,6 @@ import java.util.TreeSet;
  * (c) 2013 Ivan Habernal
  * </p>
  */
-@SuppressWarnings("unused")
 public class ConfusionMatrix
 {
 
