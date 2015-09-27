@@ -40,9 +40,11 @@ public class CRFSuiteClassificationReport
     {
         // only a mock for now - this needs to be rewritten anyway once the evaluation module is
         // ready
-        File evalFile = new File(getContext().getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE), CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.evaluationFile));
+    	File evalFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+                AccessMode.READWRITE);
+    	String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
+                AdapterNameEntries.evaluationFile);
+        File evalFile = new File(evalFolder,evalFileName);
 
         Properties props = new Properties();
         for (String line : FileUtils.readLines(evalFile)) {

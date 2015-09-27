@@ -114,7 +114,7 @@ public class CRFSuiteOutcomeIDReport extends ReportBase {
 	}
 
 	private List<String> getTestData() throws Exception {
-		File storage = getContext().getStorageLocation(
+		File storage = getContext().getFolder(
 				CRFSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
 				AccessMode.READONLY);
 
@@ -129,7 +129,7 @@ public class CRFSuiteOutcomeIDReport extends ReportBase {
 	}
 
 	private List<String> getGoldAndPredictions() throws Exception {
-		File storage = getContext().getStorageLocation(
+		File storage = getContext().getFolder(
 				CRFSuiteTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
 		File predictionFile = new File(storage.getAbsolutePath()
 				+ "/"

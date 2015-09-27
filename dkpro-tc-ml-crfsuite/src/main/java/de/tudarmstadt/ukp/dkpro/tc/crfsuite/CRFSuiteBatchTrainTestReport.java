@@ -61,7 +61,7 @@ public class CRFSuiteBatchTrainTestReport
                     Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                             Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
-                    File fileToEvaluate = store.getStorageFolder(subcontext.getId(),
+                    File fileToEvaluate = store.locateKey(subcontext.getId(),
                             CRFSuiteOutcomeIDReport.ID_OUTCOME_KEY);
                     mode = discriminatorsMap.get(CRFSuiteTestTask.class.getName() + "|learningMode");
                     EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(fileToEvaluate,
@@ -111,7 +111,7 @@ public class CRFSuiteBatchTrainTestReport
 
             // output the location of the batch evaluation folder
             // otherwise it might be hard for novice users to locate this
-            File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+            File dummyFolder = store.locateKey(getContext().getId(), "dummy");
             // TODO can we also do this without creating and deleting the dummy folder?
             getContext().getLoggingService().message(getContextLabel(),
                     "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
