@@ -182,24 +182,28 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 * @throws java.lang.IllegalArgumentException
 	 *             if model params out of range
 	 */
-	protected void checkParameters() throws IllegalArgumentException {
-		if (this.paramOrderT < 0 || this.paramOrderT > 3) {
-			throw new IllegalArgumentException("paramOrderT (=" + this.paramOrderT + ") must be in range [0..3])");
+	public void checkParameters() throws IllegalArgumentException {
+		checkParameters(paramOrderT, paramOrderE, paramB, paramC);
+	}
+	
+	public static void checkParameters(int paramOrderT, int paramOrderE, int paramB, double paramC){
+		if (paramOrderT < 0 || paramOrderT > 3) {
+			throw new IllegalArgumentException("paramOrderT (=" + paramOrderT + ") must be in range [0..3])");
 		}
 
-		if (this.paramOrderE < 0 || this.paramOrderE > 1) {
-			throw new IllegalArgumentException("paramOrderE (=" + this.paramOrderE + ") must be in range [0..1])");
+		if (paramOrderE < 0 || paramOrderE > 1) {
+			throw new IllegalArgumentException("paramOrderE (=" + paramOrderE + ") must be in range [0..1])");
 		}
 
-		if (this.paramB < 0) {
-			throw new IllegalArgumentException("paramB (=" + this.paramB + ") must be >= 0");
+		if (paramB < 0) {
+			throw new IllegalArgumentException("paramB (=" + paramB + ") must be >= 0");
 		}
 
-		if (this.paramC < 0) {
-			throw new IllegalArgumentException("paramC (=" + this.paramC + ") must be >= 0");
+		if (paramC < 0) {
+			throw new IllegalArgumentException("paramC (=" + paramC + ") must be >= 0");
 		}
 
-		if (this.paramOrderT < this.paramOrderE) {
+		if (paramOrderT < paramOrderE) {
 			throw new IllegalArgumentException("paramOrderE must be <= paramOrderT");
 		}
 	}

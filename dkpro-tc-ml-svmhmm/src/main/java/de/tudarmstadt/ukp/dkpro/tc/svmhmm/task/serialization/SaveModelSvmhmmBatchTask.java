@@ -181,7 +181,7 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
 	public void execute(TaskContext aContext) throws Exception {
 
 		trainAndStoreModel(aContext);
-
+		//TODO: persist classificationArguments
 		SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
 		SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
 		SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
@@ -190,7 +190,7 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
 	}
 
 	private void trainAndStoreModel(TaskContext aContext) throws Exception {
-
+		
 		File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
 				StorageService.AccessMode.READONLY);
 
