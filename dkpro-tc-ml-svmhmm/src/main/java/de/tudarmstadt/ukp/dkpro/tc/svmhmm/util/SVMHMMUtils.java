@@ -18,9 +18,11 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -136,8 +138,11 @@ public final class SVMHMMUtils
         File result = new File(featureVectorsFile.getParent(),
                 "mappedLabelsToInt_" + featureVectorsFile.getName());
         PrintWriter pw = new PrintWriter(new FileOutputStream(result));
-
-        for (String line : FileUtils.readLines(featureVectorsFile)) {
+        
+        BufferedReader br = new BufferedReader(new FileReader(featureVectorsFile));
+        
+        String line=null;
+        while((line = br.readLine())!=null){
             // split on the first whitespaces, keep the rest
             String[] split = line.split("\\s", 2);
             String label = split[0];
@@ -151,6 +156,7 @@ public final class SVMHMMUtils
         }
 
         IOUtils.closeQuietly(pw);
+        IOUtils.closeQuietly(br);
 
         return result;
     }
@@ -186,6 +192,7 @@ public final class SVMHMMUtils
         PrintWriter pw = new PrintWriter(new FileOutputStream(outputFile));
 
         // sort values (feature indexes)
+        @SuppressWarnings("unchecked")
         SortedSet<Object> featureIndexes = new TreeSet<Object>(mapping.values());
 
         for (Object featureIndex : featureIndexes) {
