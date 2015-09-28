@@ -108,9 +108,9 @@ public class TcAnnotatorSequence extends JCasAnnotator_ImplBase {
 		// process and classify
 		engine.process(jcas);
 		
-		for (TextClassificationOutcome o : JCasUtil.select(jcas, TextClassificationOutcome.class)){
-			System.out.println(o.getOutcome());
-		}
+//		for (TextClassificationOutcome o : JCasUtil.select(jcas, TextClassificationOutcome.class)){
+//			System.out.println(o.getOutcome());
+//		}
 		
 		Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
 	}
