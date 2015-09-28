@@ -19,7 +19,9 @@ package de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -117,8 +119,7 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 			File predictionsFile = FileUtils.createTempFile("svmhmmPrediction", ".txt", null);
 			SVMHMMTestTask.callTestCommand(predictionsFile, model, augmentedTestFile);
 			
-			List<String> getOutcomes = readOutcomes(predictionsFile, loadMapping);
-			setPredictedOutcomes(jcas, getOutcomes);
+			setOutcomes(jcas, predictionsFile, loadMapping);
 			
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
@@ -126,25 +127,21 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 
 	}
 
-	private List<String> readOutcomes(File predictionsFile, BidiMap loadMapping) throws Exception {
-		List<String> outcomes = new ArrayList<>();
+	private void setOutcomes(JCas jcas, File predictionsFile, BidiMap loadMapping) throws Exception {
+	    List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+	    int idx=0;
 		
-		List<String> readLines = org.apache.commons.io.FileUtils.readLines(predictionsFile);
-		for(String line : readLines){
-			Integer i = Integer.valueOf(line);
-			String outcome = (String) loadMapping.getKey(i);
-			outcomes.add(outcome);
+		//avoid holding all predictions in RAM (might use a lot of RAM if a few million predictions are being made)
+		BufferedReader br = new BufferedReader(new FileReader(predictionsFile));
+		String line=null;
+		while((line = br.readLine()) != null){
+		    Integer i = Integer.valueOf(line);
+            String outcome = (String) loadMapping.getKey(i);
+            outcomes.get(idx).setOutcome(outcome);
+            idx++;
 		}
-		return outcomes;
+		br.close();
 	}
 
-	private void setPredictedOutcomes(JCas jcas, List<String> labels) {
-		List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
-				JCasUtil.select(jcas, TextClassificationOutcome.class));
-		for (int i = 0; i < outcomes.size(); i++) {
-			TextClassificationOutcome o = outcomes.get(i);
-			o.setOutcome(labels.get(i));
-		}
-
-	}
 }
