@@ -183,10 +183,7 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 *             if model params out of range
 	 */
 	public void checkParameters() throws IllegalArgumentException {
-		checkParameters(paramOrderT, paramOrderE, paramB, paramC);
-	}
-	
-	public static void checkParameters(int paramOrderT, int paramOrderE, int paramB, double paramC){
+	 
 		if (paramOrderT < 0 || paramOrderT > 3) {
 			throw new IllegalArgumentException("paramOrderT (=" + paramOrderT + ") must be in range [0..3])");
 		}
@@ -284,6 +281,8 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private File trainModelAtTemporaryLocation(File trainingFile) throws Exception {
+	    //the check needs to happen a bit later here to ensure that the model store feature also runs through the parameter check
+	    checkParameters();
 		File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
 
 		// we have to copy the training file to tmp to prevent long path issue

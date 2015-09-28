@@ -190,7 +190,7 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
 	}
 
 	private void trainAndStoreModel(TaskContext aContext) throws Exception {
-		
+	    
 		File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
 				StorageService.AccessMode.READONLY);
 
