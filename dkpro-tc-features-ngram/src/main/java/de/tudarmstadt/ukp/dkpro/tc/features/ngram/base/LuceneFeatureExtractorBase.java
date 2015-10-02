@@ -90,12 +90,16 @@ public abstract class LuceneFeatureExtractorBase
             }
         }
         
-        getLogger().log(Level.INFO, "+++ SELECTING THE " + topNGrams.getB() + " MOST FREQUENT NGRAMS");
+        logSelectionProcess(topNGrams.getB());
 
         return topNGrams;
     }
         
-    /**
+    protected void logSelectionProcess(long N) {
+    	getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT NGRAMS");		
+	}
+
+	/**
      * @return The field name that this lucene-based ngram FE uses for storing the ngrams
      */
     @Override
