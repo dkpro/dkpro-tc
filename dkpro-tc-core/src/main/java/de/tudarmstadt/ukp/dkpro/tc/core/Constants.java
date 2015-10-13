@@ -338,6 +338,10 @@ public interface Constants
      */
     public static final String MODEL_META = "model.meta";
     /**
+     * Tc version under which this model has been trained
+     */
+    public static final String MODEL_TC_VERSION = "model.tcVersion";
+    /**
      * Name of the file which holds the feature names
      */
     public static final String MODEL_FEATURE_NAMES = "featureNames.txt";

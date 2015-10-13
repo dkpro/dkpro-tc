@@ -26,6 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,162 +38,228 @@ import java.util.Set;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
-public class SaveModelUtils implements Constants {
-	public static void writeFeatureInformation(File outputFolder,
-			List<String> featureSet) throws Exception {
-		String featureExtractorString = StringUtils.join(featureSet, "\n");
-		FileUtils.writeStringToFile(new File(outputFolder,
-				MODEL_FEATURE_EXTRACTORS), featureExtractorString);
-	}
+public class SaveModelUtils
+    implements Constants
+{
+    public static void writeFeatureInformation(File outputFolder, List<String> featureSet)
+        throws Exception
+    {
+        String featureExtractorString = StringUtils.join(featureSet, "\n");
+        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_EXTRACTORS),
+                featureExtractorString);
+    }
 
-	public static void writeModelParameters(TaskContext aContext,
-			File aOutputFolder, List<String> aFeatureSet,
-			List<Object> aFeatureParameters) throws Exception {
-		// write meta collector data
-		// automatically determine the required metaCollector classes from the
-		// provided feature
-		// extractors
-		Set<Class<? extends MetaCollector>> metaCollectorClasses;
-		try {
-			metaCollectorClasses = TaskUtils
-					.getMetaCollectorsFromFeatureExtractors(aFeatureSet);
-		} catch (ClassNotFoundException e) {
-			throw new ResourceInitializationException(e);
-		} catch (InstantiationException e) {
-			throw new ResourceInitializationException(e);
-		} catch (IllegalAccessException e) {
-			throw new ResourceInitializationException(e);
-		}
+    public static void writeModelParameters(TaskContext aContext, File aOutputFolder,
+            List<String> aFeatureSet, List<Object> aFeatureParameters)
+        throws Exception
+    {
+        // write meta collector data
+        // automatically determine the required metaCollector classes from the
+        // provided feature
+        // extractors
+        Set<Class<? extends MetaCollector>> metaCollectorClasses;
+        try {
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(aFeatureSet);
+        }
+        catch (ClassNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }
+        catch (InstantiationException e) {
+            throw new ResourceInitializationException(e);
+        }
+        catch (IllegalAccessException e) {
+            throw new ResourceInitializationException(e);
+        }
 
-		// collect parameter/key pairs that need to be set
-		Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
-		for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-			try {
-				metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
-						.getParameterKeyPairs());
-			} catch (InstantiationException e) {
-				throw new ResourceInitializationException(e);
-			} catch (IllegalAccessException e) {
-				throw new ResourceInitializationException(e);
-			}
-		}
+        // collect parameter/key pairs that need to be set
+        Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
+        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+            try {
+                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
+                        .getParameterKeyPairs());
+            }
+            catch (InstantiationException e) {
+                throw new ResourceInitializationException(e);
+            }
+            catch (IllegalAccessException e) {
+                throw new ResourceInitializationException(e);
+            }
+        }
 
-		Properties parameterProperties = new Properties();
-		for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-			File file = new File(aContext.getStorageLocation(META_KEY,
-					AccessMode.READWRITE), entry.getValue());
+        Properties parameterProperties = new Properties();
+        for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
+            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+                    entry.getValue());
 
-			String name = file.getName();
-			String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-			File targetFolder = new File(subFolder);
-			copyToTargetLocation(file, targetFolder);
-			parameterProperties.put(entry.getKey(), name);
+            String name = file.getName();
+            String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+            File targetFolder = new File(subFolder);
+            copyToTargetLocation(file, targetFolder);
+            parameterProperties.put(entry.getKey(), name);
 
-			// should never be reached
-		}
+            // should never be reached
+        }
 
-		for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
+        for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
 
-			String key = (String) aFeatureParameters.get(i).toString();
-			String value = aFeatureParameters.get(i + 1).toString();
+            String key = (String) aFeatureParameters.get(i).toString();
+            String value = aFeatureParameters.get(i + 1).toString();
 
-			if (valueExistAsFileOrFolderInTheFileSystem(value)) {
-				String name = new File(value).getName();
-				String destination = aOutputFolder + "/" + name;
-				copyToTargetLocation(new File(value), new File(destination));
-				parameterProperties.put(key, name);
-				continue;
-			}
-			parameterProperties.put(key, value);
-		}
+            if (valueExistAsFileOrFolderInTheFileSystem(value)) {
+                String name = new File(value).getName();
+                String destination = aOutputFolder + "/" + name;
+                copyToTargetLocation(new File(value), new File(destination));
+                parameterProperties.put(key, name);
+                continue;
+            }
+            parameterProperties.put(key, value);
+        }
 
-		FileWriter writer = new FileWriter(new File(aOutputFolder,
-				MODEL_PARAMETERS));
-		parameterProperties.store(writer, "");
-		writer.close();
-	}
+        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
+        parameterProperties.store(writer, "");
+        writer.close();
+    }
 
-	private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue) {
-		return new File(aValue).exists();
-	}
+    private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
+    {
+        return new File(aValue).exists();
+    }
 
-	private static void copyToTargetLocation(File source, File destination)
-			throws IOException {
+    private static void copyToTargetLocation(File source, File destination)
+        throws IOException
+    {
 
-		if (source.isDirectory()) {
-			if (!destination.exists()) {
-				destination.mkdir();
-			}
+        if (source.isDirectory()) {
+            if (!destination.exists()) {
+                destination.mkdir();
+            }
 
-			for (String file : source.list()) {
-				File src = new File(source, file);
-				File dest = new File(destination, file);
-				copyToTargetLocation(src, dest);
-			}
+            for (String file : source.list()) {
+                File src = new File(source, file);
+                File dest = new File(destination, file);
+                copyToTargetLocation(src, dest);
+            }
 
-		} else {
-			copySingleFile(source, destination);
-		}
-	}
+        }
+        else {
+            copySingleFile(source, destination);
+        }
+    }
 
-	private static void copySingleFile(File source, File destination)
-			throws IOException {
-		InputStream inputstream = new FileInputStream(source);
-		OutputStream outputstream = new FileOutputStream(destination);
-		IOUtils.copy(inputstream, outputstream);
-		inputstream.close();
-		outputstream.close();
-	}
+    private static void copySingleFile(File source, File destination)
+        throws IOException
+    {
+        InputStream inputstream = new FileInputStream(source);
+        OutputStream outputstream = new FileOutputStream(destination);
+        IOUtils.copy(inputstream, outputstream);
+        inputstream.close();
+        outputstream.close();
+    }
 
-	public static void writeModelAdapterInformation(File aOutputFolder,
-			String aModelMeta) throws Exception {
-		// as a marker for the type, write the name of the ml adapter class
-		// write feature extractors
-		FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META),
-				aModelMeta);
-	}
+    public static void writeModelAdapterInformation(File aOutputFolder, String aModelMeta)
+        throws Exception
+    {
+        // as a marker for the type, write the name of the ml adapter class
+        // write feature extractors
+        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta);
+    }
 
-	public static void writeFeatureClassFiles(File modelFolder,
-			List<String> featureSet) throws Exception {
-		for (String featureString : featureSet) {
-			Class<?> feature = Class.forName(featureString);
-			InputStream inStream = feature.getResource(
-					"/" + featureString.replace(".", "/") + ".class")
-					.openStream();
-			
-			OutputStream outStream = buildOutputStream(modelFolder, featureString);
-			
-			
-			
+    public static void writeFeatureClassFiles(File modelFolder, List<String> featureSet)
+        throws Exception
+    {
+        for (String featureString : featureSet) {
+            Class<?> feature = Class.forName(featureString);
+            InputStream inStream = feature.getResource(
+                    "/" + featureString.replace(".", "/") + ".class").openStream();
 
-			IOUtils.copy(inStream, outStream);
-			outStream.close();
-			inStream.close();
+            OutputStream outStream = buildOutputStream(modelFolder, featureString);
 
-		}
+            IOUtils.copy(inStream, outStream);
+            outStream.close();
+            inStream.close();
 
-	}
+        }
 
-	private static OutputStream buildOutputStream(File modelFolder, String featureString) throws Exception {
-		
-		String packagePath = featureString.substring(0,
-				featureString.lastIndexOf(".")).replaceAll("\\.", "/");
-		String featureClassName = featureString.substring(featureString
-				.lastIndexOf(".") + 1) + ".class";
-	 
-		
-		String folderPath = modelFolder.getAbsolutePath() + "/"
-				+ MODEL_FEATURE_CLASS_FOLDER + "/" + packagePath + "/";
-		new File(folderPath).mkdirs();
-		return new FileOutputStream(new File(folderPath
-				+ featureClassName));
-	}
+    }
+
+    private static OutputStream buildOutputStream(File modelFolder, String featureString)
+        throws Exception
+    {
+
+        String packagePath = featureString.substring(0, featureString.lastIndexOf(".")).replaceAll(
+                "\\.", "/");
+        String featureClassName = featureString.substring(featureString.lastIndexOf(".") + 1)
+                + ".class";
+
+        String folderPath = modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_CLASS_FOLDER + "/"
+                + packagePath + "/";
+        new File(folderPath).mkdirs();
+        return new FileOutputStream(new File(folderPath + featureClassName));
+    }
+
+    public static void writeCurrentVersionOfDKProTC(File outputFolder)
+    {
+
+        Class<?> contextClass = SaveModelUtils.class;
+
+        // Try to determine the location of the POM file belonging to the context object
+        URL url = contextClass.getResource(contextClass.getSimpleName() + ".class");
+        String classPart = contextClass.getName().replace(".", "/") + ".class";
+        String base = url.toString();
+        base = base.substring(0, base.length() - classPart.length());
+
+        URL pomUrl = null;
+
+        String extraNotFoundInfo = "";
+        if ("file".equals(url.getProtocol()) && base.endsWith("target/classes/")) {
+            // This is an alternative strategy when running during a Maven build. In a normal
+            // Maven build, the Maven descriptor in META-INF is only created during the
+            // "package" phase, so we try looking in the project directory.
+            // See also: http://jira.codehaus.org/browse/MJAR-76
+
+            base = base.substring(0, base.length() - "target/classes/".length());
+            File pomFile = new File(new File(URI.create(base)), "pom.xml");
+            if (pomFile.exists()) {
+                pomUrl = pomFile.toURI().toURL();
+            }
+            else {
+                extraNotFoundInfo = " Since it looks like you are running a Maven build, it POM "
+                        + "file was also searched for at [" + pomFile
+                        + "], but it doesn't exist there.";
+            }
+        }
+
+        // Parser the POM
+        Model model;
+        try {
+            MavenXpp3Reader reader = new MavenXpp3Reader();
+            model = reader.read(pomUrl.openStream());
+
+        }
+        catch (XmlPullParserException e) {
+            throw new IOException(e);
+        }
+
+        String version = model.getParent().getVersion();
+
+        Properties properties = new Properties();
+        properties.setProperty("TcVersion", version);
+
+        File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
+        FileOutputStream fileOut = new FileOutputStream(file);
+        properties.store(fileOut, "Version of DKPro TC used to train this model");
+        fileOut.close();
+
+    }
 
 }
