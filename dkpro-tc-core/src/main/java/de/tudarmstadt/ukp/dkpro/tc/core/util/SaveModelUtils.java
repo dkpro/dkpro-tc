@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -207,7 +208,7 @@ public class SaveModelUtils
         return new FileOutputStream(new File(folderPath + featureClassName));
     }
 
-    public static void writeCurrentVersionOfDKProTC(File outputFolder)
+    public static void writeCurrentVersionOfDKProTC(File outputFolder) throws Exception
     {
 
         Class<?> contextClass = SaveModelUtils.class;
