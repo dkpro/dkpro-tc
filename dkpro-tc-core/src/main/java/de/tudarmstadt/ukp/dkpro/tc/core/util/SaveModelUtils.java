@@ -208,7 +208,8 @@ public class SaveModelUtils
         return new FileOutputStream(new File(folderPath + featureClassName));
     }
 
-    public static void writeCurrentVersionOfDKProTC(File outputFolder) throws Exception
+    public static void writeCurrentVersionOfDKProTC(File outputFolder)
+        throws Exception
     {
 
         Class<?> contextClass = SaveModelUtils.class;
@@ -218,26 +219,26 @@ public class SaveModelUtils
         String classPart = contextClass.getName().replace(".", "/") + ".class";
         String base = url.toString();
         base = base.substring(0, base.length() - classPart.length());
+        base = base.substring(0, base.length() - "target/classes/".length());
 
         URL pomUrl = null;
+        //
+        // if ("file".equals(url.getProtocol()) && base.endsWith("target/classes/")) {
+        // // This is an alternative strategy when running during a Maven build. In a normal
+        // // Maven build, the Maven descriptor in META-INF is only created during the
+        // // "package" phase, so we try looking in the project directory.
+        // // See also: http://jira.codehaus.org/browse/MJAR-76
+        //
+        // File pomFile = new File(new File(URI.create(base)), "pom.xml");
+        // if (pomFile.exists()) {
+        // pomUrl = pomFile.toURI().toURL();
+        // }
+        // }
 
-        String extraNotFoundInfo = "";
-        if ("file".equals(url.getProtocol()) && base.endsWith("target/classes/")) {
-            // This is an alternative strategy when running during a Maven build. In a normal
-            // Maven build, the Maven descriptor in META-INF is only created during the
-            // "package" phase, so we try looking in the project directory.
-            // See also: http://jira.codehaus.org/browse/MJAR-76
-
-            base = base.substring(0, base.length() - "target/classes/".length());
-            File pomFile = new File(new File(URI.create(base)), "pom.xml");
-            if (pomFile.exists()) {
-                pomUrl = pomFile.toURI().toURL();
-            }
-            else {
-                extraNotFoundInfo = " Since it looks like you are running a Maven build, it POM "
-                        + "file was also searched for at [" + pomFile
-                        + "], but it doesn't exist there.";
-            }
+        pomUrl = contextClass.getProtectionDomain().getCodeSource().getLocation();
+        File pomFile = new File(new File(URI.create(base)), "pom.xml");
+        if (pomFile.exists()) {
+            pomUrl = pomFile.toURI().toURL();
         }
 
         // Parser the POM
