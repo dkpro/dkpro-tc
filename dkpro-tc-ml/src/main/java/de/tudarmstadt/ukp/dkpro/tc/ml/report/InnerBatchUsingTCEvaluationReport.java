@@ -85,6 +85,31 @@ public class InnerBatchUsingTCEvaluationReport
         ObjectOutputStream outputStream = new ObjectOutputStream(fos);
         outputStream.writeObject(overallOutcome);
         outputStream.close();
+        
+        // write out a homogenized human readable file
+        String homogenizedOverallOutcomes = overallOutcome.homogenizeAggregatedFile();
+        String[] homogenizedLines = homogenizedOverallOutcomes.split("\n");
+        
+        Properties props = new Properties();
+        String header = "";
+        //header = header + homogenizedLines[0] + "\n" + homogenizedLines[1];       
+        for (int i = 0; i < homogenizedLines.length; i++) {
+        	if (i <= 1){
+        		header = header + homogenizedLines[i];     
+        		if (i == 0){
+        			header = header + "\n";
+        		}   		        		       		
+        	}
+        	else{
+        		// line might contain several '=', split at the last one
+        		int idxMostRightHandEqual = homogenizedLines[i].lastIndexOf("=");
+                String id = homogenizedLines[i].substring(0, idxMostRightHandEqual);
+                String evaluationData = homogenizedLines[i].substring(idxMostRightHandEqual + 1);
+        		props.setProperty(id, evaluationData); 
+        	}
+		}        
+        getContext().storeBinary(ID_HOMOGENIZED_OUTCOME_KEY,
+                new PropertiesAdapter(props, header));
     }
     
     private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
