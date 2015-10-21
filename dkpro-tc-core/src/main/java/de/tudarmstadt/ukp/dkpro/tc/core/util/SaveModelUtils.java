@@ -19,14 +19,15 @@ package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -39,10 +40,7 @@ import java.util.Set;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
@@ -214,46 +212,28 @@ public class SaveModelUtils
 
         Class<?> contextClass = SaveModelUtils.class;
 
-        // Try to determine the location of the POM file belonging to the context object
-        URL url = contextClass.getResource(contextClass.getSimpleName() + ".class");
-        String classPart = contextClass.getName().replace(".", "/") + ".class";
-        String base = url.toString();
-        base = base.substring(0, base.length() - classPart.length());
-        base = base.substring(0, base.length() - "target/classes/".length());
-
         URL pomUrl = null;
-        //
-        // if ("file".equals(url.getProtocol()) && base.endsWith("target/classes/")) {
-        // // This is an alternative strategy when running during a Maven build. In a normal
-        // // Maven build, the Maven descriptor in META-INF is only created during the
-        // // "package" phase, so we try looking in the project directory.
-        // // See also: http://jira.codehaus.org/browse/MJAR-76
-        //
-        // File pomFile = new File(new File(URI.create(base)), "pom.xml");
-        // if (pomFile.exists()) {
-        // pomUrl = pomFile.toURI().toURL();
-        // }
-        // }
 
         pomUrl = contextClass.getProtectionDomain().getCodeSource().getLocation();
-        File pomFile = new File(new File(URI.create(base)), "pom.xml");
-        if (pomFile.exists()) {
-            pomUrl = pomFile.toURI().toURL();
-        }
-
-        // Parser the POM
-        Model model;
-        try {
-            MavenXpp3Reader reader = new MavenXpp3Reader();
-            model = reader.read(pomUrl.openStream());
-
-        }
-        catch (XmlPullParserException e) {
-            throw new IOException(e);
-        }
-
-        String version = model.getParent().getVersion();
-
+        String base = pomUrl.toString();
+        base = base.substring(0, base.length() - "target/classes/".length());
+        base += "/pom.xml";
+        URI pomUri = URI.create(base);
+        pomUrl = pomUri.toURL();
+        
+        
+        String version=null;
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(pomUrl.openStream()));
+                String inputLine;
+                while ((inputLine = in.readLine()) != null){
+                    if(inputLine.contains("<version>")){
+                        version = inputLine.replaceAll("<version>", "").replaceAll("</version>", "").replaceAll("\t", "");
+                        break;
+                    }
+                }
+                in.close();
+                
         Properties properties = new Properties();
         properties.setProperty("TcVersion", version);
 
