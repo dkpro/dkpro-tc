@@ -38,6 +38,7 @@ public class SingleOutcome implements Serializable
     private double[] prediction;
     private double[] goldstandard;
     private List<String> labels;
+    private String id;
 
 
     /**
@@ -49,13 +50,15 @@ public class SingleOutcome implements Serializable
      *            the prediction value, in the order specified by {@code labels}
      * @param labels
      *            a list with the class labels
+     * @param id
      */
-    public SingleOutcome(double[] goldstandard, double[] prediction, List<String> labels)
+    public SingleOutcome(double[] goldstandard, double[] prediction, List<String> labels, String id)
     {
         this.goldstandard = goldstandard;
         this.prediction = prediction;
         this.bipartitionThreshold = -1;
         this.labels = labels;
+        this.setId(id);
     }
 
     /**
@@ -69,13 +72,16 @@ public class SingleOutcome implements Serializable
      *            the bipartition threshold
      * @param labels
      *            a list with the class labels
+     * @param id
      */
-    public SingleOutcome(double[] goldstandard, double[] prediction, double bipartitionThreshold, List<String> labels)
+    public SingleOutcome(double[] goldstandard, double[] prediction, double bipartitionThreshold, 
+    		List<String> labels, String id)
     {
         this.goldstandard = goldstandard;
         this.prediction = prediction;
         this.bipartitionThreshold = bipartitionThreshold;
         this.labels = labels;
+        this.setId(id);
     }
 
     /**
@@ -175,4 +181,12 @@ public class SingleOutcome implements Serializable
 		}
     	return true;
     }
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 }

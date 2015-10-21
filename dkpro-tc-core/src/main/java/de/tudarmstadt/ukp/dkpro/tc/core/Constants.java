@@ -274,6 +274,11 @@ public interface Constants
      */
     public static final String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.csv";
     /**
+     * Name of the global homogenized file which contains the classifier predictions and gold standard 
+     * for all test instances.
+     */
+    public static final String ID_HOMOGENIZED_OUTCOME_KEY = "id2homogenizedOutcome.txt";
+    /**
      * Name of the meta task file which holds the tc unit text and context for all test
      * instances.
      */
@@ -282,6 +287,10 @@ public interface Constants
      * Name of a serialized version of the id2outcome object.
      */
     public static final String SERIALIZED_ID_OUTCOME_KEY = "id2outcome.ser";
+    /***
+     * For missing values at the homogenizing
+     */
+    public static final double HOMOGENIZING_MISSING_VALUE = Double.NaN;
     /**
      * Name of a file which holds a copy of the discriminators keys and values.
      */
