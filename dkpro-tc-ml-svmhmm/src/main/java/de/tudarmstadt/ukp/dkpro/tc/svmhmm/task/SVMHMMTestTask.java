@@ -207,7 +207,7 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 
 	/**
 	 * Tests the model against the test data and stores the outcomes in the
-	 * {@linkplain TCMachineLearningAdapter.AdapterNameEntries#predictionsFile}
+	 * {@link de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries#predictionsFile}
 	 * file.
 	 *
 	 * @param taskContext
