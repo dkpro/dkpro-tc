@@ -22,6 +22,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,7 +42,13 @@ import java.util.Set;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
@@ -209,38 +217,111 @@ public class SaveModelUtils
     public static void writeCurrentVersionOfDKProTC(File outputFolder)
         throws Exception
     {
-
         Class<?> contextClass = SaveModelUtils.class;
-
-        URL pomUrl = null;
-
-        pomUrl = contextClass.getProtectionDomain().getCodeSource().getLocation();
-        String base = pomUrl.toString();
-        base = base.substring(0, base.length() - "target/classes/".length());
-        base += "/pom.xml";
-        URI pomUri = URI.create(base);
-        pomUrl = pomUri.toURL();
         
+        // Try to determine the location of the POM file belonging to the context object
+        URL url = contextClass.getResource(contextClass.getSimpleName() + ".class");
+        String classPart = contextClass.getName().replace(".", "/") + ".class";
+        String base = url.toString();
+        base = base.substring(0, base.length() - classPart.length());
+
+        List<URL> urls = new LinkedList<URL>();
+
+        String extraNotFoundInfo = "";
+        if ("file".equals(url.getProtocol()) && base.endsWith("target/classes/")) {
+            // This is an alternative strategy when running during a Maven build. In a normal
+            // Maven build, the Maven descriptor in META-INF is only created during the
+            // "package" phase, so we try looking in the project directory.
+            // See also: http://jira.codehaus.org/browse/MJAR-76
+
+            base = base.substring(0, base.length() - "target/classes/".length());
+            File pomFile = new File(new File(URI.create(base)), "pom.xml");
+            if (pomFile.exists()) {
+                urls.add(pomFile.toURI().toURL());
+            }
+            else {
+                extraNotFoundInfo = " Since it looks like you are running a Maven build, it POM "
+                        + "file was also searched for at [" + pomFile
+                        + "], but it doesn't exist there.";
+            }
+        }
         
-        String version=null;
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(pomUrl.openStream()));
-                String inputLine;
-                while ((inputLine = in.readLine()) != null){
-                    if(inputLine.contains("<version>")){
-                        version = inputLine.replaceAll("<version>", "").replaceAll("</version>", "").replaceAll("\t", "");
-                        break;
-                    }
-                }
-                in.close();
+      URL location = contextClass.getProtectionDomain().getCodeSource().getLocation();
+      
+      base = location.toString();
+      base = base.substring(0, base.length() - "target/classes/".length());
+      base += "/pom.xml";
+      URI pomUri = URI.create(base);
+      urls.add(pomUri.toURL());
+        
+
+        for(URL pomUrl : urls){
+            // Parser the POM
+            Model model;
+            try {
+                MavenXpp3Reader reader = new MavenXpp3Reader();
+                model = reader.read(pomUrl.openStream());
+                String version = model.getParent().getVersion();
                 
-        Properties properties = new Properties();
-        properties.setProperty("TcVersion", version);
+                if(version!=null){
+                    Properties properties = new Properties();
+                  properties.setProperty("TcVersion", version);
+          
+                  File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
+                  FileOutputStream fileOut = new FileOutputStream(file);
+                  properties.store(fileOut, "Version of DKPro TC used to train this model");
+                  fileOut.close();
+                }
 
-        File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
-        FileOutputStream fileOut = new FileOutputStream(file);
-        properties.store(fileOut, "Version of DKPro TC used to train this model");
-        fileOut.close();
+            }
+            catch (XmlPullParserException e) {
+                throw new IOException(e);
+            }
+
+            // Extract the version of the model artifact
+//            if ((model.getDependencyManagement() != null)
+//                    && (model.getDependencyManagement().getDependencies() != null)) {
+//                List<Dependency> deps = model.getDependencyManagement().getDependencies();
+//                for (Dependency dep : deps) {
+//                    if (StringUtils.equals(dep.getGroupId(), modelGroup)
+//                            && StringUtils.equals(dep.getArtifactId(), modelArtifact)) {
+//                        return dep.getVersion();
+//                    }
+//                }
+//            }
+        }
+
+//        Class<?> contextClass = SaveModelUtils.class;
+//
+//        URL pomUrl = null;
+//
+//        pomUrl = contextClass.getProtectionDomain().getCodeSource().getLocation();
+//        String base = pomUrl.toString();
+//        base = base.substring(0, base.length() - "target/classes/".length());
+//        base += "/pom.xml";
+//        URI pomUri = URI.create(base);
+//        pomUrl = pomUri.toURL();
+//        
+//        
+//        String version=null;
+//        BufferedReader in = new BufferedReader(
+//                new InputStreamReader(pomUrl.openStream()));
+//                String inputLine;
+//                while ((inputLine = in.readLine()) != null){
+//                    if(inputLine.contains("<version>")){
+//                        version = inputLine.replaceAll("<version>", "").replaceAll("</version>", "").replaceAll("\t", "");
+//                        break;
+//                    }
+//                }
+//                in.close();
+//                
+//        Properties properties = new Properties();
+//        properties.setProperty("TcVersion", version);
+//
+//        File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
+//        FileOutputStream fileOut = new FileOutputStream(file);
+//        properties.store(fileOut, "Version of DKPro TC used to train this model");
+//        fileOut.close();
 
     }
 
