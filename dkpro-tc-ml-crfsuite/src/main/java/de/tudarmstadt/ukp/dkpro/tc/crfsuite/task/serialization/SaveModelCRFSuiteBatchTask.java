@@ -47,7 +47,7 @@ public class SaveModelCRFSuiteBatchTask extends DefaultBatchTask {
 	private InitTask initTaskTrain;
 	private MetaInfoTask metaTask;
 	private ExtractFeaturesTask featuresTrainTask;
-	private ModelSerializationDescription saveModelTask;
+	private CRFSuiteModelSerializationDescription saveModelTask;
 
 	public SaveModelCRFSuiteBatchTask() {/* needed for Groovy */
 	}
@@ -105,7 +105,7 @@ public class SaveModelCRFSuiteBatchTask extends DefaultBatchTask {
 		featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
 
 		// feature extraction and prediction on test data
-		saveModelTask = new ModelSerializationDescription();
+		saveModelTask = new CRFSuiteModelSerializationDescription();
 		saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
 		saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
 		saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,

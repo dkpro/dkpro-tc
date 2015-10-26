@@ -31,7 +31,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 
-class ModelSerializationDescription extends ExecutableTaskBase implements Constants {
+class CRFSuiteModelSerializationDescription extends ExecutableTaskBase implements Constants {
 
     @Discriminator
     protected List<Object> pipelineParameters;
@@ -56,7 +56,7 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
         SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
-        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+//        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
     }
 
     private void trainAndStoreModel(TaskContext aContext) throws Exception {

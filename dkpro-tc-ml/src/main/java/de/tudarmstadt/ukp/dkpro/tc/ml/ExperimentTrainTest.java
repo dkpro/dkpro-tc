@@ -34,12 +34,12 @@ public class ExperimentTrainTest
     extends Experiment_ImplBase
 {
 
-    private InitTask initTaskTrain;
-    private InitTask initTaskTest;
-    private MetaInfoTask metaTask;
-    private ExtractFeaturesTask featuresTrainTask;
-    private ExtractFeaturesTask featuresTestTask;
-    private TaskBase testTask;
+    protected InitTask initTaskTrain;
+    protected InitTask initTaskTest;
+    protected MetaInfoTask metaTask;
+    protected ExtractFeaturesTask featuresTrainTask;
+    protected ExtractFeaturesTask featuresTestTask;
+    protected TaskBase testTask;
 
     public ExperimentTrainTest()
     {/* needed for Groovy */
