@@ -56,7 +56,7 @@ class CRFSuiteModelSerializationDescription extends ExecutableTaskBase implement
         SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
-//        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
     }
 
     private void trainAndStoreModel(TaskContext aContext) throws Exception {

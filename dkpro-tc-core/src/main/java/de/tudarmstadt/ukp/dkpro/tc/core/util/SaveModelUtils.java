@@ -31,6 +31,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +40,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -218,110 +224,24 @@ public class SaveModelUtils
         throws Exception
     {
         Class<?> contextClass = SaveModelUtils.class;
-        
-        // Try to determine the location of the POM file belonging to the context object
-        URL url = contextClass.getResource(contextClass.getSimpleName() + ".class");
-        String classPart = contextClass.getName().replace(".", "/") + ".class";
-        String base = url.toString();
-        base = base.substring(0, base.length() - classPart.length());
 
-        List<URL> urls = new LinkedList<URL>();
+        InputStream resourceAsStream = contextClass
+                .getResourceAsStream("/META-INF/maven/de.tudarmstadt.ukp.dkpro.tc/dkpro-tc-core/pom.xml");
 
-        String extraNotFoundInfo = "";
-        if ("file".equals(url.getProtocol()) && base.endsWith("target/classes/")) {
-            // This is an alternative strategy when running during a Maven build. In a normal
-            // Maven build, the Maven descriptor in META-INF is only created during the
-            // "package" phase, so we try looking in the project directory.
-            // See also: http://jira.codehaus.org/browse/MJAR-76
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model;
+        model = reader.read(resourceAsStream);
+        String version = model.getParent().getVersion();
 
-            base = base.substring(0, base.length() - "target/classes/".length());
-            File pomFile = new File(new File(URI.create(base)), "pom.xml");
-            if (pomFile.exists()) {
-                urls.add(pomFile.toURI().toURL());
-            }
-            else {
-                extraNotFoundInfo = " Since it looks like you are running a Maven build, it POM "
-                        + "file was also searched for at [" + pomFile
-                        + "], but it doesn't exist there.";
-            }
+        if (version != null) {
+            Properties properties = new Properties();
+            properties.setProperty("TcVersion", version);
+
+            File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
+            FileOutputStream fileOut = new FileOutputStream(file);
+            properties.store(fileOut, "Version of DKPro TC used to train this model");
+            fileOut.close();
         }
-        
-      URL location = contextClass.getProtectionDomain().getCodeSource().getLocation();
-      
-      base = location.toString();
-      base = base.substring(0, base.length() - "target/classes/".length());
-      base += "/pom.xml";
-      URI pomUri = URI.create(base);
-      urls.add(pomUri.toURL());
-        
-
-        for(URL pomUrl : urls){
-            // Parser the POM
-            Model model;
-            try {
-                MavenXpp3Reader reader = new MavenXpp3Reader();
-                model = reader.read(pomUrl.openStream());
-                String version = model.getParent().getVersion();
-                
-                if(version!=null){
-                    Properties properties = new Properties();
-                  properties.setProperty("TcVersion", version);
-          
-                  File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
-                  FileOutputStream fileOut = new FileOutputStream(file);
-                  properties.store(fileOut, "Version of DKPro TC used to train this model");
-                  fileOut.close();
-                }
-
-            }
-            catch (XmlPullParserException e) {
-                throw new IOException(e);
-            }
-
-            // Extract the version of the model artifact
-//            if ((model.getDependencyManagement() != null)
-//                    && (model.getDependencyManagement().getDependencies() != null)) {
-//                List<Dependency> deps = model.getDependencyManagement().getDependencies();
-//                for (Dependency dep : deps) {
-//                    if (StringUtils.equals(dep.getGroupId(), modelGroup)
-//                            && StringUtils.equals(dep.getArtifactId(), modelArtifact)) {
-//                        return dep.getVersion();
-//                    }
-//                }
-//            }
-        }
-
-//        Class<?> contextClass = SaveModelUtils.class;
-//
-//        URL pomUrl = null;
-//
-//        pomUrl = contextClass.getProtectionDomain().getCodeSource().getLocation();
-//        String base = pomUrl.toString();
-//        base = base.substring(0, base.length() - "target/classes/".length());
-//        base += "/pom.xml";
-//        URI pomUri = URI.create(base);
-//        pomUrl = pomUri.toURL();
-//        
-//        
-//        String version=null;
-//        BufferedReader in = new BufferedReader(
-//                new InputStreamReader(pomUrl.openStream()));
-//                String inputLine;
-//                while ((inputLine = in.readLine()) != null){
-//                    if(inputLine.contains("<version>")){
-//                        version = inputLine.replaceAll("<version>", "").replaceAll("</version>", "").replaceAll("\t", "");
-//                        break;
-//                    }
-//                }
-//                in.close();
-//                
-//        Properties properties = new Properties();
-//        properties.setProperty("TcVersion", version);
-//
-//        File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
-//        FileOutputStream fileOut = new FileOutputStream(file);
-//        properties.store(fileOut, "Version of DKPro TC used to train this model");
-//        fileOut.close();
 
     }
 
