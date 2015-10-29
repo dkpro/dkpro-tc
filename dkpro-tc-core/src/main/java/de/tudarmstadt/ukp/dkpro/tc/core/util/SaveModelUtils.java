@@ -247,7 +247,7 @@ public class SaveModelUtils
         return version;
     }
 
-    public static String getCurrentTcVersionFromJar() throws Exception{
+    public static String getCurrentTcVersionFromJar() {
         Class<?> contextClass = SaveModelUtils.class;
         
         
@@ -261,7 +261,11 @@ public class SaveModelUtils
         
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model;
+        try{
         model = reader.read(resourceAsStream);
+        }catch(Exception e){
+            return null;
+        }
         String version = model.getParent().getVersion();
         return version;
     }
