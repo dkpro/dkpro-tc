@@ -44,6 +44,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import weka.classifiers.Classifier;
@@ -79,84 +80,94 @@ public class LoadModelConnectorWeka
     {
         super.initialize(context);
 
-		try {
-			cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-
-        attributes = new ArrayList<>();
         try {
-			for (String attributeName : FileUtils.readLines(new File(tcModelLocation, MODEL_FEATURE_NAMES))) {
-				attributes.add(new Attribute(attributeName));
-			}
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
+            cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation,
+                    MODEL_CLASSIFIER).getAbsolutePath());
 
-        classLabels = new ArrayList<>();
-        try {
-			for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
-				classLabels.add(classLabel);
-			}
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
+            attributes = new ArrayList<>();
+            for (String attributeName : FileUtils.readLines(new File(tcModelLocation,
+                    MODEL_FEATURE_NAMES))) {
+                attributes.add(new Attribute(attributeName));
+            }
 
+            classLabels = new ArrayList<>();
+
+            for (String classLabel : FileUtils.readLines(new File(tcModelLocation,
+                    MODEL_CLASS_LABELS))) {
+                classLabels.add(classLabel);
+            }
+
+            SaveModelUtils.verifyTcVersion(tcModelLocation,getClass());
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
     }
 
-	@Override
-	public void process(JCas jcas)
-			throws AnalysisEngineProcessException
-	{
-	   try {
-		    Logger.getLogger(getClass()).debug("START: process(JCAS) - applying Weka Model");
-		   
-	        Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,	false);
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+        try {
+            Logger.getLogger(getClass()).debug("START: process(JCAS) - applying Weka Model");
 
-			weka.core.Instance wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes, classLabels, false);
+            Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getSingleInstance(
+                    featureMode, featureExtractors, jcas, false, false);
 
-			String val = classLabels.get((int) cls.classifyInstance(wekaInstance));
-			
-			TextClassificationOutcome outcome = null;
-			if(! FM_UNIT.equals(featureMode))
-				outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
-			else
-				outcome = getOutcomeForFocus(jcas);
-			
-			outcome.setOutcome(val);
-						
-			Logger.getLogger(getClass()).debug("Found classification result \"" + val + "\" for text: \"" + outcome.getCoveredText() + "\"");
-			
-			Logger.getLogger(getClass()).debug("END: process(JCAS) - applying Weka Model");
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(new IllegalStateException(e.getMessage()));
-		}
+            weka.core.Instance wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance,
+                    attributes, classLabels, false);
+
+            String val = classLabels.get((int) cls.classifyInstance(wekaInstance));
+
+            TextClassificationOutcome outcome = null;
+            if (!FM_UNIT.equals(featureMode))
+                outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
+            else
+                outcome = getOutcomeForFocus(jcas);
+
+            outcome.setOutcome(val);
+
+            Logger.getLogger(getClass()).debug(
+                    "Found classification result \"" + val + "\" for text: \""
+                            + outcome.getCoveredText() + "\"");
+
+            Logger.getLogger(getClass()).debug("END: process(JCAS) - applying Weka Model");
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(new IllegalStateException(e.getMessage()));
+        }
     }
 
-	private TextClassificationOutcome getOutcomeForFocus(JCas jcas) {
-		TextClassificationOutcome outcome = null;
-		TextClassificationFocus focus = null;
-		
-		try {
-			focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-		}
-		catch(Exception ex) {
-			String msg = "Error while trying to retrieve TC focus from CAS. Details: " + ex.getMessage();
-			Logger.getLogger(getClass()).error(msg, ex);
-			throw new RuntimeException(msg);
-		}
-		
-		Iterator<TextClassificationOutcome> outcomeIterator = JCasUtil.iterator(focus, TextClassificationOutcome.class, false /* ambiguous*/, false /* strict */);
-		
-		if(! outcomeIterator.hasNext())
-			throw new IllegalStateException("There should be exactly one TC outcome covered by the TC focus from " + focus.getBegin() + " to " + focus.getEnd());
-		
-		outcome = outcomeIterator.next();
-		
-		if(outcomeIterator.hasNext())
-			throw new IllegalStateException("There should be exactly one TC outcome covered by the TC focus from " + focus.getBegin() + " to " + focus.getEnd());
-		
-		return outcome;
-	}
+    private TextClassificationOutcome getOutcomeForFocus(JCas jcas)
+    {
+        TextClassificationOutcome outcome = null;
+        TextClassificationFocus focus = null;
+
+        try {
+            focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
+        }
+        catch (Exception ex) {
+            String msg = "Error while trying to retrieve TC focus from CAS. Details: "
+                    + ex.getMessage();
+            Logger.getLogger(getClass()).error(msg, ex);
+            throw new RuntimeException(msg);
+        }
+
+        Iterator<TextClassificationOutcome> outcomeIterator = JCasUtil.iterator(focus,
+                TextClassificationOutcome.class, false /* ambiguous */, false /* strict */);
+
+        if (!outcomeIterator.hasNext())
+            throw new IllegalStateException(
+                    "There should be exactly one TC outcome covered by the TC focus from "
+                            + focus.getBegin() + " to " + focus.getEnd());
+
+        outcome = outcomeIterator.next();
+
+        if (outcomeIterator.hasNext())
+            throw new IllegalStateException(
+                    "There should be exactly one TC outcome covered by the TC focus from "
+                            + focus.getBegin() + " to " + focus.getEnd());
+
+        return outcome;
+    }
 }

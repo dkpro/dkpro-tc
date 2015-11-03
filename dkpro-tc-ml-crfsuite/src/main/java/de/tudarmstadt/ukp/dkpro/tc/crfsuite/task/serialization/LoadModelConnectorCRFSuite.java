@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -40,6 +41,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
@@ -60,13 +62,14 @@ public class LoadModelConnectorCRFSuite
 
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
-    
+
     @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
     private String featureStoreImpl;
 
     private File model = null;
     private String executablePath = null;
-    private Path tmpFolderForFeatureFile=null;
+    private Path tmpFolderForFeatureFile = null;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -74,9 +77,11 @@ public class LoadModelConnectorCRFSuite
         super.initialize(context);
 
         try {
-        	tmpFolderForFeatureFile = Files.createTempDirectory("temp"+ System.currentTimeMillis());
+            tmpFolderForFeatureFile = Files
+                    .createTempDirectory("temp" + System.currentTimeMillis());
             executablePath = CRFSuiteTestTask.getExecutablePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
+            SaveModelUtils.verifyTcVersion(tcModelLocation,getClass());
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -89,23 +94,25 @@ public class LoadModelConnectorCRFSuite
         throws AnalysisEngineProcessException
     {
         try {
-        	FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl).newInstance();
+            FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
+                    .newInstance();
             int sequenceId = 0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
                 List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
                         jcas, seq, true, sequenceId++);
-                
+
                 for (Instance instance : instances) {
                     featureStore.addInstance(instance);
                 }
-                
+
             }
-            
-            File featureFile = CRFSuiteDataWriter.getFeatureFilename(tmpFolderForFeatureFile.toFile());
+
+            File featureFile = CRFSuiteDataWriter.getFeatureFilename(tmpFolderForFeatureFile
+                    .toFile());
             CRFSuiteDataWriter.writeFeatureFile(featureStore, featureFile);
-            
+
             String labels = classify(featureFile);
             setPredictedOutcome(jcas, labels);
         }

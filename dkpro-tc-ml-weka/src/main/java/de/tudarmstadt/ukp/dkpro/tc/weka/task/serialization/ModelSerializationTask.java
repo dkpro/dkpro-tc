@@ -87,6 +87,8 @@ public class ModelSerializationTask
         // write feature extractors
         SaveModelUtils.writeModelAdapterInformation(outputFolder,
                 WekaClassificationAdapter.class.getName());
+        
+        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
     }
 
     private void serializeWekaModel(TaskContext aContext)

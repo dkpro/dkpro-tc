@@ -45,6 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
@@ -81,6 +82,7 @@ public class LoadModelConnectorSvmhmm extends ModelSerialization_ImplBase {
 			tmpFolderForFeatureFile = Files.createTempDirectory("temp" + System.currentTimeMillis());
 			model = new File(tcModelLocation, MODEL_CLASSIFIER);
 			loadMapping = loadLabel2IntegerMap();
+			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}

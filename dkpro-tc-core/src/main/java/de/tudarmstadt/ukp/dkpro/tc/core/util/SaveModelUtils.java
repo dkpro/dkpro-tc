@@ -38,6 +38,7 @@ import java.util.Set;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -46,6 +47,8 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
 
 public class SaveModelUtils
     implements Constants
@@ -246,8 +249,21 @@ public class SaveModelUtils
         
         return version;
     }
+    
+    public static void verifyTcVersion(File tcModelLocation, Class<? extends ModelSerialization_ImplBase> class1)
+            throws Exception
+        {
+            String loadedVersion = SaveModelUtils.loadTcVersionFromModel(tcModelLocation);
+            String currentVersion = SaveModelUtils.getCurrentTcVersionFromJar();
+            if (loadedVersion.equals(currentVersion)) {
+                return;
+            }
+            Logger.getLogger(class1).warn(
+                    "The model was created under version [" + loadedVersion + "], you are using ["
+                            + currentVersion + "]");
+        }
 
-    public static String getCurrentTcVersionFromJar() {
+    private static String getCurrentTcVersionFromJar() {
         Class<?> contextClass = SaveModelUtils.class;
         
         
