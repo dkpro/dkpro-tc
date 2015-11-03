@@ -48,7 +48,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
 
 public class SaveModelUtils
     implements Constants
