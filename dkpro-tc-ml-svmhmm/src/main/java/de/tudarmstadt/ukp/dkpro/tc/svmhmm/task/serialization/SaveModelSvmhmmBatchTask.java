@@ -181,11 +181,11 @@ class ModelSerializationDescription extends ExecutableTaskBase implements Consta
 	public void execute(TaskContext aContext) throws Exception {
 
 		trainAndStoreModel(aContext);
-		//TODO: persist classificationArguments
 		SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
 		SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
 		SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
 		SaveModelUtils.writeModelAdapterInformation(outputFolder, SVMHMMAdapter.class.getName());
+		SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
 
 	}
 
