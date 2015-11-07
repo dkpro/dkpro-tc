@@ -24,7 +24,6 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +38,8 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import weka.classifiers.Classifier;
+import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
@@ -47,8 +48,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
-import weka.classifiers.Classifier;
-import weka.core.Attribute;
 
 public class LoadModelConnectorWeka
     extends ModelSerialization_ImplBase

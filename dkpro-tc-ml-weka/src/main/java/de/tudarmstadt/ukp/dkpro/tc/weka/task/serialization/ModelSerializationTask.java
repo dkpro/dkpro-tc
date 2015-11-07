@@ -72,32 +72,29 @@ public class ModelSerializationTask
         throws Exception
     {
 
-        serializeWekaModel(aContext);
+        writeWekaSpecificInformation(aContext);
 
         // write feature extractors
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
+        
+        SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
 
-        // write meta collector data
-        // automatically determine the required metaCollector classes from the provided feature
-        // extractors
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet,
                 pipelineParameters);
 
-        // as a marker for the type, write the name of the ml adapter class
-        // write feature extractors
         SaveModelUtils.writeModelAdapterInformation(outputFolder,
                 WekaClassificationAdapter.class.getName());
         
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
     }
 
-    private void serializeWekaModel(TaskContext aContext)
+    private void writeWekaSpecificInformation(TaskContext aContext)
         throws Exception
     {
         boolean isMultiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
         boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
 
-        File arffFileTrain = new File(aContext.getStorageLocation(
+        File arffFileTrain = new File(aContext.getFolder(
                 TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY).getPath()
                 + "/"
                 + WekaClassificationAdapter.getInstance().getFrameworkFilename(
