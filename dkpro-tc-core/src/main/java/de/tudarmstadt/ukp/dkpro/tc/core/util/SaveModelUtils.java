@@ -52,8 +52,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 public class SaveModelUtils
     implements Constants
 {
-    private static final String TCVERSION="TcVersion";
-    
+    private static final String TCVERSION = "TcVersion";
+
     public static void writeFeatureInformation(File outputFolder, List<String> featureSet)
         throws Exception
     {
@@ -101,7 +101,7 @@ public class SaveModelUtils
 
         Properties parameterProperties = new Properties();
         for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READWRITE),
+            File file = new File(aContext.getFile(META_KEY, AccessMode.READWRITE),
                     entry.getValue());
 
             String name = file.getName();
@@ -213,10 +213,10 @@ public class SaveModelUtils
     public static void writeCurrentVersionOfDKProTC(File outputFolder)
         throws Exception
     {
-       String version = getCurrentTcVersionFromJar();
-       if(version==null){
-           version=getCurrentTcVersionFromWorkspace();
-       }
+        String version = getCurrentTcVersionFromJar();
+        if (version == null) {
+            version = getCurrentTcVersionFromWorkspace();
+        }
         if (version != null) {
             Properties properties = new Properties();
             properties.setProperty(TCVERSION, version);
@@ -228,11 +228,12 @@ public class SaveModelUtils
         }
 
     }
-    
-    private static String getCurrentTcVersionFromWorkspace() throws Exception
+
+    private static String getCurrentTcVersionFromWorkspace()
+        throws Exception
     {
         Class<?> contextClass = SaveModelUtils.class;
-        
+
         // Try to determine the location of the POM file belonging to the context object
         URL url = contextClass.getResource(contextClass.getSimpleName() + ".class");
         String classPart = contextClass.getName().replace(".", "/") + ".class";
@@ -240,52 +241,61 @@ public class SaveModelUtils
         base = base.substring(0, base.length() - classPart.length());
         base = base.substring(0, base.length() - "target/classes/".length());
         File pomFile = new File(new File(URI.create(base)), "pom.xml");
-        
+
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model;
         model = reader.read(new FileInputStream(pomFile));
         String version = model.getParent().getVersion();
-        
+
         return version;
     }
-    
-    public static void verifyTcVersion(File tcModelLocation, Class<? extends ModelSerialization_ImplBase> class1)
-            throws Exception
-        {
-            String loadedVersion = SaveModelUtils.loadTcVersionFromModel(tcModelLocation);
-            String currentVersion = SaveModelUtils.getCurrentTcVersionFromJar();
-            if (loadedVersion.equals(currentVersion)) {
-                return;
-            }
-            Logger.getLogger(class1).warn(
-                    "The model was created under version [" + loadedVersion + "], you are using ["
-                            + currentVersion + "]");
+
+    public static void verifyTcVersion(File tcModelLocation,
+            Class<? extends ModelSerialization_ImplBase> class1)
+        throws Exception
+    {
+        String loadedVersion = SaveModelUtils.loadTcVersionFromModel(tcModelLocation);
+        String currentVersion = SaveModelUtils.getCurrentTcVersionFromJar();
+
+        if (currentVersion == null) {
+            currentVersion = SaveModelUtils.getCurrentTcVersionFromWorkspace();
         }
 
-    private static String getCurrentTcVersionFromJar() {
+        if (loadedVersion.equals(currentVersion)) {
+            return;
+        }
+        Logger.getLogger(class1).warn(
+                "The model was created under version [" + loadedVersion + "], you are using ["
+                        + currentVersion + "]");
+    }
+
+    private static String getCurrentTcVersionFromJar()
+    {
         Class<?> contextClass = SaveModelUtils.class;
-        
-        
-//        String pomPattern = base + "META-INF/maven/" + modelGroup + "/" + moduleArtifactId +
-//                "*/pom.xml";
-//        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-//        Resource[] resources = resolver.getResources(pomPattern);
+
+        // String pomPattern = base + "META-INF/maven/" + modelGroup + "/" + moduleArtifactId +
+        // "*/pom.xml";
+        // PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        // Resource[] resources = resolver.getResources(pomPattern);
 
         InputStream resourceAsStream = contextClass
                 .getResourceAsStream("/META-INF/maven/de.tudarmstadt.ukp.dkpro.tc/dkpro-tc-core/pom.xml");
-        
+
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model;
-        try{
-        model = reader.read(resourceAsStream);
-        }catch(Exception e){
+        try {
+            model = reader.read(resourceAsStream);
+        }
+        catch (Exception e) {
             return null;
         }
         String version = model.getParent().getVersion();
         return version;
     }
-    
-    public static String loadTcVersionFromModel(File modelFolder) throws Exception{
+
+    public static String loadTcVersionFromModel(File modelFolder)
+        throws Exception
+    {
         File file = new File(modelFolder, MODEL_TC_VERSION);
         Properties prop = new Properties();
         prop.load(new FileInputStream(file));
