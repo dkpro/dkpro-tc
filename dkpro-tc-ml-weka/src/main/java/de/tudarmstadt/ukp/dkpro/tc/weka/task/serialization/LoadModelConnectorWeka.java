@@ -24,6 +24,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -80,27 +81,40 @@ public class LoadModelConnectorWeka
         super.initialize(context);
 
         try {
-            cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation,
-                    MODEL_CLASSIFIER).getAbsolutePath());
+            loadClassifier();
+            loadAttributes();
+            loadClassLabels();
 
-            attributes = new ArrayList<>();
-            for (String attributeName : FileUtils.readLines(new File(tcModelLocation,
-                    MODEL_FEATURE_NAMES))) {
-                attributes.add(new Attribute(attributeName));
-            }
-
-            classLabels = new ArrayList<>();
-
-            for (String classLabel : FileUtils.readLines(new File(tcModelLocation,
-                    MODEL_CLASS_LABELS))) {
-                classLabels.add(classLabel);
-            }
-
-            SaveModelUtils.verifyTcVersion(tcModelLocation,getClass());
+            SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
+    }
+
+    private void loadClassLabels() throws IOException
+    {
+        classLabels = new ArrayList<>();
+        for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
+            classLabels.add(classLabel);
+        }
+    }
+
+    private void loadAttributes()
+        throws IOException
+    {
+        attributes = new ArrayList<>();
+        for (String attributeName : FileUtils.readLines(new File(tcModelLocation,
+                MODEL_FEATURE_NAMES))) {
+            attributes.add(new Attribute(attributeName));
+        }
+    }
+
+    private void loadClassifier()
+        throws Exception
+    {
+        cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation,
+                MODEL_CLASSIFIER).getAbsolutePath());
     }
 
     @Override
@@ -108,8 +122,6 @@ public class LoadModelConnectorWeka
         throws AnalysisEngineProcessException
     {
         try {
-            Logger.getLogger(getClass()).debug("START: process(JCAS) - applying Weka Model");
-
             Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getSingleInstance(
                     featureMode, featureExtractors, jcas, false, false);
 
@@ -125,12 +137,6 @@ public class LoadModelConnectorWeka
                 outcome = getOutcomeForFocus(jcas);
 
             outcome.setOutcome(val);
-
-            Logger.getLogger(getClass()).debug(
-                    "Found classification result \"" + val + "\" for text: \""
-                            + outcome.getCoveredText() + "\"");
-
-            Logger.getLogger(getClass()).debug("END: process(JCAS) - applying Weka Model");
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(new IllegalStateException(e.getMessage()));
