@@ -103,7 +103,6 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
-			Logger.getLogger(getClass()).debug("START: process(JCAS)");
 
 			annotateAllUnits(jcas);
 
@@ -150,7 +149,6 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 			throw new AnalysisEngineProcessException(e);
 		}
 
-		Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
 	}
 
 	private void annotateAllUnits(JCas jcas) {
