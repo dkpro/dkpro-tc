@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -101,10 +102,9 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+//	    long s = System.currentTimeMillis();
 		try {
-
-			annotateAllUnits(jcas);
-
+		    
 			Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
 			Collection<AnnotationFS> select = CasUtil.select(jcas.getCas(),
 					type);
@@ -117,6 +117,10 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 			// iterate the units and set on each the focus with a prepared dummy
 			// outcome
 			for (AnnotationFS unit : unitAnnotation) {
+			    TextClassificationUnit tcs = new TextClassificationUnit(jcas,
+	                    unit.getBegin(), unit.getEnd());
+	            tcs.addToIndexes();
+	            
 				tcf = new TextClassificationFocus(jcas, unit.getBegin(),
 						unit.getEnd());
 				tcf.addToIndexes();
@@ -148,17 +152,10 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 			throw new AnalysisEngineProcessException(e);
 		}
 
-	}
-
-	private void annotateAllUnits(JCas jcas) {
-		Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
-		Collection<AnnotationFS> unitAnnotation = CasUtil.select(jcas.getCas(),
-				type);
-		for (AnnotationFS unit : unitAnnotation) {
-			TextClassificationUnit tcs = new TextClassificationUnit(jcas,
-					unit.getBegin(), unit.getEnd());
-			tcs.addToIndexes();
-		}
+		double e=System.currentTimeMillis();
+		
+//		LogFactory.getLog(getClass()).info(((e-s)/1000) + " spend seconds with tagging cas");
+		
 	}
 
 	/**
