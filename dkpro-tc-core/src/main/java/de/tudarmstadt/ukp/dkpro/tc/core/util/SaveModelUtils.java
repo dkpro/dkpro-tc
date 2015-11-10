@@ -101,7 +101,7 @@ public class SaveModelUtils
 
         Properties parameterProperties = new Properties();
         for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getFile(META_KEY, AccessMode.READWRITE),
+            File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
                     entry.getValue());
 
             String name = file.getName();
