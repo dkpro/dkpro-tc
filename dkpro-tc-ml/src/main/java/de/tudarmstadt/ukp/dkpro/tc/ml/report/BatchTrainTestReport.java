@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -64,18 +63,9 @@ public class BatchTrainTestReport
         Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
         Map<List<String>, Double> confMatrixMap = new HashMap<List<String>, Double>();
 
-        Properties outcomeIdProps = new Properties();
-
         for (TaskContextMetadata subcontext : getSubtasks()) {
             // FIXME this is a bad hack
             if (subcontext.getType().contains("TestTask")) {
-                try {
-                    outcomeIdProps.putAll(store.retrieveBinary(subcontext.getId(),
-                            Constants.ID_OUTCOME_KEY, new PropertiesAdapter()).getMap());
-                }
-                catch (Exception e) {
-                    // silently ignore if this file was not generated
-                }
 
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
@@ -143,9 +133,6 @@ public class BatchTrainTestReport
                         .createOverallConfusionMatrix(confMatrixMap);
                 getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
             }
-            if (outcomeIdProps.size() > 0)
-                getContext().storeBinary(Constants.ID_OUTCOME_KEY,
-                        new PropertiesAdapter(outcomeIdProps));
         }
 
         // output the location of the batch evaluation folder
