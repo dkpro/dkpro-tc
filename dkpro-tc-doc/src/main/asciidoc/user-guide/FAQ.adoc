@@ -40,3 +40,6 @@ Is it possible to apply feature/attribute selection in DKPro TC?::
 
 Is it possible to classify unlabeled data based on a trained model?::
     Yes. DKPro TC offers the `BatchTaskPrediction` in the `de.tudarmstadt.ukp.dkpro.tc.weka-gpl` module, for single-label, multi-label and regression learning task with Weka. The `TwitterSentimentPredictionDemo` in `de.tudarmstadt.ukp.dkpro.tc.examples-gpl` shows how to apply it, based on the [DemoExperiments TwitterSentimentDemo].
+    
+When executing Groovy scripts in Eclipse, I see ClassNotFoundExceptions::
+    This is a known issue in Mavenized Groovy projects in Eclipse caused by missing libraries in the boot loader. The easiest way around this is to execute your project as Java application.  
