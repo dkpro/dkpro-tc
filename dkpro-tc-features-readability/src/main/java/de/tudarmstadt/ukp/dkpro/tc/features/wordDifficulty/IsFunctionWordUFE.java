@@ -62,8 +62,6 @@ public class IsFunctionWordUFE
 
         POS pos = JCasUtil.selectCovered(POS.class, classificationUnit).get(0);
        
-        //Type type = pr.getType();
-        //Type type2 = art.getType();
         boolean isFunctionWord = (pos.getClass().getName().equals(ART.class.getName()) || pos.getClass().getName().equals(PP.class.getName()) || pos.getClass().getName().equals(PR.class.getName()) || pos.getClass().getName().equals(CONJ.class.getName()));
 
         return new Feature(IS_FUNC_WORD, isFunctionWord).asSet();
