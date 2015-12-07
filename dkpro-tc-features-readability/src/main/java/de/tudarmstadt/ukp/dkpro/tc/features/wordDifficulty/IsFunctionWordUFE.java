@@ -20,7 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.wordDifficulty;
 
 import java.util.Set;
 
-import org.apache.uima.cas.Type;
+
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -53,6 +53,7 @@ public class IsFunctionWordUFE
      *         function words. e.g. http://en.wikipedia.org/wiki/Function_word
      */
     public static final String IS_FUNC_WORD = "IsFunctionWord";
+    
 
     @Override
     public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
@@ -60,8 +61,10 @@ public class IsFunctionWordUFE
     {
 
         POS pos = JCasUtil.selectCovered(POS.class, classificationUnit).get(0);
-        Type type = pos.getType();
-        boolean isFunctionWord = (type instanceof ART || type instanceof PP || type instanceof PR || type instanceof CONJ);
+       
+        //Type type = pr.getType();
+        //Type type2 = art.getType();
+        boolean isFunctionWord = (pos.getClass().getName().equals(ART.class.getName()) || pos.getClass().getName().equals(PP.class.getName()) || pos.getClass().getName().equals(PR.class.getName()) || pos.getClass().getName().equals(CONJ.class.getName()));
 
         return new Feature(IS_FUNC_WORD, isFunctionWord).asSet();
     }
