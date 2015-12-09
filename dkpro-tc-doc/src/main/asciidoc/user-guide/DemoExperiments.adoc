@@ -124,7 +124,7 @@ The `machineLearningAdapter` tells the experiment which machine learning framewo
 The `preprocessing` aggregate expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
 
 The `parameterSpace` contains configuration parameters which can be tested for different values. Such parameters are called discriminators.
-You can find a list of all configurable discriminators and their explanation [Discriminators here]. 
+You can find a list of all configurable discriminators and their explanation link:#_setting_parameters_dimensions[here]. 
 
 In short, the above example define:
 
