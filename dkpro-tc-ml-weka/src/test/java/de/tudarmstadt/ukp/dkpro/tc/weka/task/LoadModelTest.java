@@ -21,16 +21,22 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.TcAnnotationConsumer;
 
+/**
+ * Tests for the Weka model serialization functionality
+ */
 public class LoadModelTest {
 	
-	@Ignore
+	/**
+	 * Loads a saved model and applies it to classify an unseen document 
+	 * @throws Exception
+	 */
 	@Test
 	public void loadModelTest()  throws Exception {
 		
@@ -38,14 +44,12 @@ public class LoadModelTest {
 				CollectionReaderFactory.createReader(
 						StringReader.class,
 						StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
-						StringReader.PARAM_LANGUAGE, "en"
-				),
+						StringReader.PARAM_LANGUAGE, "en"),
 				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
 				AnalysisEngineFactory.createEngineDescription(
 						TcAnnotatorDocument.class,
 						TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION,
-						"src/test/resources/model/"
-				)
-		);
+						"src/test/resources/model/"),
+				AnalysisEngineFactory.createEngineDescription(TcAnnotationConsumer.class));
 	}
 }
