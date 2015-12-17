@@ -1,0 +1,5 @@
+#
+#Thu Dec 17 15:41:09 CET 2015
+ngramMaxN=3
+ngramMinN=1
+ngramUseTopK=500

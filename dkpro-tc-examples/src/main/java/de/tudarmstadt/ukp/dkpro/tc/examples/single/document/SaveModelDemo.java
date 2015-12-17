@@ -40,21 +40,35 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
+/**
+ * Demo to show-case how trained models can be persisted. 
+ */
 public class SaveModelDemo
     implements Constants
 {
+    /**
+     * language of input files
+     */
     public static final String LANGUAGE_CODE = "en";
-
-    public static final int NUM_FOLDS = 3;
-
+    /**
+     * input directory file path
+     */
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+    /**
+     * output folder path
+     */
     public static final File modelPath = new File("target/model");
 
+    /**
+     * Start the demo.
+     * 
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args)
         throws Exception
     {
@@ -63,13 +77,15 @@ public class SaveModelDemo
     	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
     	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
     	DemoUtils.setDkproHome(SaveModelDemo.class.getSimpleName());
-    	
-        ParameterSpace pSpace = getParameterSpace();
 
+        ParameterSpace pSpace = getParameterSpace();
         SaveModelDemo experiment = new SaveModelDemo();
         experiment.runSaveModel(pSpace);
     }
 
+    /**
+     * @return the parameter space
+     */
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
     {
@@ -99,11 +115,7 @@ public class SaveModelDemo
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(new String[] {
-                		NrOfTokensDFE.class.getName(),
-                		LuceneNGramDFE.class.getName()
-                }
-        ));
+                Arrays.asList(new String[] {NrOfTokensDFE.class.getName()}));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
