@@ -69,22 +69,23 @@ DKPro TC supports the following feature modes and feature extractor types:
 DKPro TC supports the following types of values for features:
 
 |====
-| Java Object | Corresponding Feature Value Type
+| Feature Value Type | Corresponding Java Object
 
-| Boolean 
 | boolean (true or false)
+| Boolean 
 
-| Number
 | a numeric value
+| Number
 
-| Enum 
-| an enumeration value (from a finite set of strings)
 
-| String
+| nominal value (from a finite set of objects, typically strings)
+| Enum
+
 | a string value
+| String
 
-| MissingValue 
 | a missing value for cases in which no value can be calculated (see below)
+| MissingValue 
 |====
 
 #### Missing Values
