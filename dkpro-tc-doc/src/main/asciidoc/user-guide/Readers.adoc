@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+[[Readers]]
 ## How to set up a DKPro-TC reader
 
 _This tutorial refers to the 0.6.0-Release of DKPro TC._
@@ -47,7 +48,7 @@ It is the second one.        ----  sentence_missing
 The third sentence.          ----  sentence_found
 ----
 
-In `de.tudarmstadt.ukp.dkpro.tc.examples-gpl/src/main/resources/data/simple_reader`, you will find two TXT files corresponding to this structure: the first consists of documents (here: sentences) to be classified and the second of the corresponding labels. The label sentence_found means that sentence is containing the word "sentence", the label sentence_missing means the opposite of that: the sentence does not contain the word "sentence". 
+In `de.tudarmstadt.ukp.dkpro.tc.examples-gpl/src/main/resources/data/simple_reader`, you will find two TXT files corresponding to this structure: the first consists of documents (here: sentences) to be classified and the second of the corresponding labels. The label `sentence_found` means that sentence is containing the word "sentence", the label `sentence_missing` means the opposite of that: the sentence does not contain the word "sentence". 
 
 We now describe a simple customized reader for the above data structure. You can use this reader a basis for your own customized reader.
 The reader is named `SimpleDkproTCReader` and can be found in `de.tudarmstadt.ukp.dkpro.tc.examples.io`. It inherits from `JCasResourceCollectionReader_ImplBase` and implements `TCReaderSingleLabel` (as described in the first section). The following functions are relevant and may or may not have to be overwritten:

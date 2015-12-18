@@ -14,10 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+[[Discriminators]]
 ## Setting Parameters/Dimensions
 
 In the following, all DKPro-TC discriminators ("Dimensions"), which have to be used (mandatory) or may be used (optional) are listed. You have to insert all mandatory and those optional discriminators you want to define into a _ParameterSpace_ where every task can access them. If various values should be tested for a parameter (e.g. various classification algorithms), you can simply specify a list with all the different values for that parameter. 
-We list each discriminator with the expected type of its value and a short explanation. For detailed examples on how to specify parameters, please have a look at the [DemoExperiments demo experiments].
+We list each discriminator with the expected type of its value and a short explanation. For detailed examples on how to specify parameters, please have a look at the link:#QuickStart[demo experiments].
 
 ### Mandatory Parameters
 
@@ -28,17 +29,17 @@ We list each discriminator with the expected type of its value and a short expla
 ** `readerTestParams`: a list of parameterName-value pairs to configure the test data reader (_not necessary for Crossvalidation_)
 * `featureSet`: a list of feature extractor class names (the feature extractors to use)
 * `pipelineParameters`: a list of parameterName-value pairs (parameters necessary to configure the feature extractors)
-* `classificationArguments`: classifier class and list of arguments to parametrize it (the classification algorithm)
+* `classificationArguments`: classifier class and list of arguments to parameterize it (the classification algorithm)
 * `featureMode`: one of `document`, `unit`, `pair`, or `sequence`
 * `learningMode`: one of `singleLabel`, `multiLabel`, or `regression`
 
-In addition to the parameters you need to set via discriminators, there are several (mandatory) parameters for the default experiment setups (`ExperimentCrossValidation` and `ExperimentTrainTest`):
+In addition to the parameters, you need to set via discriminators, there are several (mandatory) parameters for the default experiment setups (`ExperimentCrossValidation` and `ExperimentTrainTest`):
 
 * `experimentName`: the name of the experiment (String)
 * `type`: the name of the folder to hold the final evaluation results (String)
 * `machineLearningAdapter`: the adapter to the machine learning framework (`TCMachineLearningAdapter`)
 * `preprocessing`: Preprocessing components and configuration (`AnalysisEngineDescription`)
-* `numFolds`: the number of folds (Integer) [only for `ExperimentCrossValidation`]
+* `numFolds`: the number of folds (Integer) link:#TwitterSentimentDemo[only for `ExperimentCrossValidation`]
 * `parameterSpace`: the parameter space which contains all discriminators to be set, see above (`ParameterSpace`)
 
 ### Optional Parameters
@@ -46,7 +47,7 @@ In addition to the parameters you need to set via discriminators, there are seve
 * `threshold`: boolean (the threshold to create a bipratition from a ranking; _only for multiLabel learning mode_)
 * `featureSelection` (DimensionBundle)
 ** `attributeEvaluator`: Weka attribute selection evaluation class and list of arguments to parametrize it (the attribute evaluation algorithm)
-** `featureSearcher`: Weka attribute selection search class and list of arguments to parametrize it (the ranking algorithm; _only for singleLabel learning mode_)
+** `featureSearcher`: Weka attribute selection search class and list of arguments to parameterize it (the ranking algorithm; _only for singleLabel learning mode_)
 ** `labelTransformationMethod`: a Mulan label transformation method (the label transformation method; _only for multiLabel learning mode_)
 ** `numLabelsToKeep`: integer (the number of features which will be selected; _only for multiLabel learning mode_)
 ** `applySelection`: boolean (whether to actually apply the )

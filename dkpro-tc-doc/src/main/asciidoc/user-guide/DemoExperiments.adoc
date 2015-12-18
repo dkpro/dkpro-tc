@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+[[QuickStart]]
 ## Quick-Start Guide
 
 In this quick start guide, we assume a certain familiarity with machine learning, natural language processing and the respective terminology. This document is not intended to be an introduction into these topics in general.
@@ -36,7 +37,7 @@ de.tudarmstadt.ukp.dkpro.tc.examples-gpl
 de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
 ----
 
-They are sorted into packages based on their feature and learning modes, e.g. 
+They are sorted into packages based on their feature and learning modes, e.g.:
 
 [source,java]
 ----
@@ -55,6 +56,7 @@ as it demonstrates a single-label classification experiment with entire document
 All example projects come with a set of data and can be run right away. The _TwitterSentimentDemo_ and _TwentyNewsgroupsDemo_ experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
 If you don't know where to start, go with the TwitterSentimentDemo first, as it has the most extensive documentation.
 
+[[TwitterSentimentDemo]]
 ### Binary Classification with DKPro-TC: TwitterSentiment Demo
 
 There are two ways to run the experiment:
@@ -124,7 +126,7 @@ The `machineLearningAdapter` tells the experiment which machine learning framewo
 The `preprocessing` aggregate expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
 
 The `parameterSpace` contains configuration parameters which can be tested for different values. Such parameters are called discriminators.
-You can find a list of all configurable discriminators and their explanation link:#_setting_parameters_dimensions[here]. 
+You can find a list of all configurable discriminators and their explanation link:#Discriminators[here]. 
 
 In short, the above example define:
 
@@ -134,7 +136,7 @@ In short, the above example define:
 Dimension.createBundle("readers", ...
 ----
 
-In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`. The reader is also responsible for setting the labels of all documents in the pipeline. `LabeledTweetReader` does so by taking the name of the parent directory of each file it reads as label. See also [Readers here].
+In this case, the `LabeledTweetReader` will read all the .txt-files that can be found in (sub-)directories of `corpusFilePathTrain`. The reader is also responsible for setting the labels of all documents in the pipeline. `LabeledTweetReader` does so by taking the name of the parent directory of each file it reads as label. See also link:#Readers[here].
 
 .the feature mode and the learning mode
 [source,java]
@@ -154,7 +156,7 @@ The feature mode defines the type of feature extraction you want to apply to you
 * pair: features are extracted from a pair of documents
 * sequence: features are extracted from `units` within a sequence
 
-The learning mode defines whether the experiment is a classification task (either single- or multilabel), or a regression task.
+The learning mode defines whether the experiment is a classification task (either single- or multilabel) or a regression task.
 For more information on feature and learning modes, refer to the following paper: https://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2014/DKProTCPreprint.pdf[DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.]
 
 .the feature extractors
@@ -163,7 +165,7 @@ For more information on feature and learning modes, refer to the following paper
 Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
 ----
 
-The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also [FeatureExtractors here].
+The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also link:#FeatureExtractors[here].
 
 Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
@@ -191,6 +193,6 @@ After an experiment has run, the path to the folder storing detailed results wil
 
 Once you got this example running as it is, you can start adapting various parameters:
 
-* using different data sets - which are completely up to you (also see [Readers here])
+* using different data sets - which are completely up to you (also see link:#Readers[here])
 * using different features - any that you can think of. Please have a look at the respective classes to get an idea about the parameters you might have to configure for each of the feature extractors.
 * using different classifiers - please refer to the respective frameworks for further information on that.
