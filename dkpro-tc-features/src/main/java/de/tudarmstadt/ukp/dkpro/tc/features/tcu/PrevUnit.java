@@ -15,28 +15,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.features.token;
+package de.tudarmstadt.ukp.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class CurrentToken
-    extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+/**
+ * Sets the text of the previous TextClassificationUnit as feature value 
+ */
+public class PrevUnit extends TcuLookUpTable
 {
-    public final static String FEATURE_NAME = "currToken";
 
-    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
+    public static final String FEATURE_NAME = "prevUnit";
+    final static String BEGIN_OF_SEQUENCE = "BOS";
+
+    public Set<Feature> extract(JCas aView, TextClassificationUnit unit)
         throws TextClassificationException
     {
-        String token = aClassificationUnit.getCoveredText();
-        return new Feature(FEATURE_NAME, token).asSet();
+        super.extract(aView, unit);
+        Integer idx = unitBegin2Idx.get(unit.getBegin());
+
+        String featureVal = previousUnit(idx);
+        return new Feature(FEATURE_NAME, featureVal).asSet();
+    }
+    
+    private String previousUnit(Integer idx)
+    {
+        if (idx2SequenceBegin.get(idx) != null){
+            return BEGIN_OF_SEQUENCE;
+        }
+        
+        if (idx - 1 >= 0) {
+            return units.get(idx - 1);
+        }
+        return BEGIN_OF_SEQUENCE;
     }
 }

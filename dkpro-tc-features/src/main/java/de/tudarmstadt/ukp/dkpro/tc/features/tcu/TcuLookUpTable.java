@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.features.token;
+package de.tudarmstadt.ukp.dkpro.tc.features.tcu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,27 +26,31 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class TokenLookUpTable 
+/**
+ * Provides speedy access to the TextClassificationUnits (TCU) covered by a TextClassificationSequence.
+ * Enables faster access to the previous/next TCU
+ * The look-up tables provided here are build for each new sequence. 
+ */
+public class TcuLookUpTable 
 	extends FeatureExtractorResource_ImplBase
 	implements ClassificationUnitFeatureExtractor
 {
 	private   String lastSeenDocumentId = "";
 
-	protected   HashMap<Integer, Boolean> idx2SentenceBegin = new HashMap<Integer, Boolean>();
-	protected   HashMap<Integer, Boolean> idx2SentenceEnd = new HashMap<Integer, Boolean>();
+	protected   HashMap<Integer, Boolean> idx2SequenceBegin = new HashMap<Integer, Boolean>();
+	protected   HashMap<Integer, Boolean> idx2SequenceEnd = new HashMap<Integer, Boolean>();
 
-	protected   HashMap<Integer, Token> begin2Token = new HashMap<Integer, Token>();
-	protected   HashMap<Integer, Integer> tokenBegin2Idx = new HashMap<Integer, Integer>();
-	protected   HashMap<Integer, Integer> tokenEnd2Idx = new HashMap<Integer, Integer>();
-	protected   List<String> tokens = new ArrayList<String>();
+	protected   HashMap<Integer, TextClassificationUnit> begin2Unit = new HashMap<Integer, TextClassificationUnit>();
+	protected   HashMap<Integer, Integer> unitBegin2Idx = new HashMap<Integer, Integer>();
+	protected   HashMap<Integer, Integer> unitEnd2Idx = new HashMap<Integer, Integer>();
+	protected   List<String> units = new ArrayList<String>();
 
 	public Set<Feature> extract(JCas aView,
 			TextClassificationUnit aClassificationUnit)
@@ -54,29 +58,29 @@ public class TokenLookUpTable
 		if (isTheSameDocument(aView)) {
 			return null;
 		}
-		begin2Token = new HashMap<Integer, Token>();
-		tokenBegin2Idx = new HashMap<Integer, Integer>();
-		idx2SentenceBegin = new HashMap<Integer, Boolean>();
-		idx2SentenceEnd = new HashMap<Integer, Boolean>();
-		tokens = new ArrayList<String>();
+		begin2Unit = new HashMap<Integer, TextClassificationUnit>();
+		unitBegin2Idx = new HashMap<Integer, Integer>();
+		idx2SequenceBegin = new HashMap<Integer, Boolean>();
+		idx2SequenceEnd = new HashMap<Integer, Boolean>();
+		units = new ArrayList<String>();
 
 		int i = 0;
-		for (Token t : JCasUtil.select(aView, Token.class)) {
+		for (TextClassificationUnit t : JCasUtil.select(aView, TextClassificationUnit.class)) {
 			Integer begin = t.getBegin();
 			Integer end = t.getEnd();
-			begin2Token.put(begin, t);
-			tokenBegin2Idx.put(begin, i);
-			tokenEnd2Idx.put(end, i);
-			tokens.add(t.getCoveredText());
+			begin2Unit.put(begin, t);
+			unitBegin2Idx.put(begin, i);
+			unitEnd2Idx.put(end, i);
+			units.add(t.getCoveredText());
 			i++;
 		}
-		for (Sentence sentence : JCasUtil.select(aView, Sentence.class)) {
-			Integer begin = sentence.getBegin();
-			Integer end = sentence.getEnd();
-			Integer idxStartToken = tokenBegin2Idx.get(begin);
-			Integer idxEndtoken = tokenEnd2Idx.get(end);
-			idx2SentenceBegin.put(idxStartToken, true);
-			idx2SentenceEnd.put(idxEndtoken, true);
+		for (TextClassificationSequence sequence : JCasUtil.select(aView, TextClassificationSequence.class)) {
+			Integer begin = sequence.getBegin();
+			Integer end = sequence.getEnd();
+			Integer idxStartUnit = unitBegin2Idx.get(begin);
+			Integer idxEndUnit = unitEnd2Idx.get(end);
+			idx2SequenceBegin.put(idxStartUnit, true);
+			idx2SequenceEnd.put(idxEndUnit, true);
 		}
 		return null;
 	}

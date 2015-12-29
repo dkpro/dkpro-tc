@@ -15,43 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.features.token;
+package de.tudarmstadt.ukp.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class NextToken 
-	extends TokenLookUpTable
-{
+/**
+ * Sets the text of the current TextClassificationUnit as feature value
+ */
+public class CurrentUnit extends FeatureExtractorResource_ImplBase implements
+		ClassificationUnitFeatureExtractor {
+	public final static String FEATURE_NAME = "currUnit";
 
-    public static final String FEATURE_NAME = "nextToken";
-    final static String END_OF_SEQUENCE = "EOS";
-
-    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
-        throws TextClassificationException
-    {
-        super.extract(aView, aClassificationUnit);
-        Integer idx = tokenBegin2Idx.get(aClassificationUnit.getBegin());
-        
-        String featureVal = nextToken(idx);
-        return new Feature(FEATURE_NAME, featureVal).asSet();
-    }
-    
-    private String nextToken(Integer idx)
-    {
-        if (idx2SentenceEnd.get(idx) != null){
-            return END_OF_SEQUENCE;
-        }
-        
-        if (idx + 1 < tokens.size()) {
-            return tokens.get(idx + 1);
-        }
-        return END_OF_SEQUENCE;
-    }
-
+	public Set<Feature> extract(JCas aView,
+			TextClassificationUnit aClassificationUnit)
+			throws TextClassificationException {
+		String token = aClassificationUnit.getCoveredText();
+		return new Feature(FEATURE_NAME, token).asSet();
+	}
 }

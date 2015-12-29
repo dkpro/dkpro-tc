@@ -129,15 +129,15 @@ public class CRFSuiteSaveAndLoadModelTest
     @Test
     public void loadModel() throws Exception {
                //create a model
-        File modelFolder = folder.newFolder();
+        File modelFolder = new File("/Users/toobee/Desktop/germanMode");
         ParameterSpace pSpace = getParameterSpace();
-        executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
+//        executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
         
         SimplePipeline.runPipeline(
                 CollectionReaderFactory.createReader(
                         StringReader.class,
-                        StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
-                        StringReader.PARAM_LANGUAGE, "en"
+                        StringReader.PARAM_DOCUMENT_TEXT, "Das ist ein Beispiel",
+                        StringReader.PARAM_LANGUAGE, "de"
                 ),
                 AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
                 AnalysisEngineFactory.createEngineDescription(

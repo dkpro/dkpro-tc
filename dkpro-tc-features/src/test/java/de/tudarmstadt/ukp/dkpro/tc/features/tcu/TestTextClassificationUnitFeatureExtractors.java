@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.features.token;
+package de.tudarmstadt.ukp.dkpro.tc.features.tcu;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
@@ -34,8 +34,13 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
+import de.tudarmstadt.ukp.dkpro.tc.features.tcu.CurrentUnit;
+import de.tudarmstadt.ukp.dkpro.tc.features.tcu.NextNextUnit;
+import de.tudarmstadt.ukp.dkpro.tc.features.tcu.NextUnit;
+import de.tudarmstadt.ukp.dkpro.tc.features.tcu.PrevPrevUnit;
+import de.tudarmstadt.ukp.dkpro.tc.features.tcu.PrevUnit;
 
-public class TestTokenFeatureExtractors {
+public class TestTextClassificationUnitFeatureExtractors {
 	@Test
 	public void testTokenFeatureExtractors() throws Exception {
 		
@@ -43,26 +48,36 @@ public class TestTokenFeatureExtractors {
 		JCas jcas = (JCas) o[0];
 		TextClassificationUnit tcu = (TextClassificationUnit)o[1];
 
-		PreviousToken prev = new PreviousToken();
-		Set<Feature> extract = prev.extract(jcas, tcu);
+		PrevPrevUnit pp = new PrevPrevUnit();
+		Set<Feature> extract = pp.extract(jcas, tcu);
 		assertEquals(1, extract.size());
 		assertEquals("It", extract.iterator().next().getValue());
 		
-		CurrentToken curr = new CurrentToken();
-		extract = curr.extract(jcas, tcu);
+		PrevUnit p = new PrevUnit();
+		extract= p.extract(jcas, tcu);
 		assertEquals(1, extract.size());
 		assertEquals("is", extract.iterator().next().getValue());
 		
-		NextToken next = new NextToken();
-		extract = next.extract(jcas, tcu);
+		CurrentUnit curr = new CurrentUnit();
+		extract = curr.extract(jcas, tcu);
 		assertEquals(1, extract.size());
 		assertEquals("raining", extract.iterator().next().getValue());
+		
+		NextUnit n = new NextUnit();
+		extract = n.extract(jcas, tcu);
+		assertEquals(1, extract.size());
+		assertEquals("all", extract.iterator().next().getValue());
+		
+		NextNextUnit nn = new NextNextUnit();
+		extract = nn.extract(jcas, tcu);
+		assertEquals(1, extract.size());
+		assertEquals("day", extract.iterator().next().getValue());
 		
 	}
 
 	private Object[] setUp() throws Exception {
 		JCas jcas = JCasFactory.createJCas();
-		jcas.setDocumentText("It is raining.");
+		jcas.setDocumentText("It is raining all day");
 		
 		DocumentMetaData dmd = new DocumentMetaData(jcas);
 		dmd.setDocumentId("1");
@@ -73,10 +88,32 @@ public class TestTokenFeatureExtractors {
 
 		ArrayList<Token> arrayList = new ArrayList<Token>(JCasUtil.select(
 				jcas, Token.class));
-		Token is = arrayList.get(1);
+		
+		Token bb = arrayList.get(0);
+		TextClassificationUnit tcbb = new TextClassificationUnit(jcas,
+				bb.getBegin(), bb.getEnd());
+		tcbb.addToIndexes();
+		
+		Token b = arrayList.get(1);
+		TextClassificationUnit tcb = new TextClassificationUnit(jcas,
+				b.getBegin(), b.getEnd());
+		tcb.addToIndexes();
+		
+		Token c = arrayList.get(2);
 		TextClassificationUnit tcu = new TextClassificationUnit(jcas,
-				is.getBegin(), is.getEnd());
+				c.getBegin(), c.getEnd());
 		tcu.addToIndexes();
+		
+		Token n = arrayList.get(3);
+		TextClassificationUnit tcn = new TextClassificationUnit(jcas,
+				n.getBegin(), n.getEnd());
+		tcn.addToIndexes();
+		
+		Token nn = arrayList.get(4);
+		TextClassificationUnit tcnn = new TextClassificationUnit(jcas,
+				nn.getBegin(), nn.getEnd());
+		tcnn.addToIndexes();
+		
 		return new Object[] {jcas, tcu};
 	}
 }

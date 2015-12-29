@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.features.token;
+package de.tudarmstadt.ukp.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
@@ -25,31 +25,36 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
-public class PreviousToken extends TokenLookUpTable
+/**
+ * Sets the text of the TextClassificationUnit after next as feature value 
+ */
+public class NextNextUnit 
+	extends TcuLookUpTable
 {
 
-    public static final String FEATURE_NAME = "previousToken";
-    final static String BEGIN_OF_SEQUENCE = "BOS";
+    public static final String FEATURE_NAME = "nextNextUnit";
+    final static String END_OF_SEQUENCE = "EOS";
 
-    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas aView, TextClassificationUnit unit)
         throws TextClassificationException
     {
-        super.extract(aView, aClassificationUnit);
-        Integer idx = tokenBegin2Idx.get(aClassificationUnit.getBegin());
-
-        String featureVal = previousToken(idx);
+        super.extract(aView, unit);
+        Integer idx = unitBegin2Idx.get(unit.getBegin());
+        
+        String featureVal = nextToken(idx);
         return new Feature(FEATURE_NAME, featureVal).asSet();
     }
     
-    private String previousToken(Integer idx)
+    private String nextToken(Integer idx)
     {
-        if (idx2SentenceBegin.get(idx) != null){
-            return BEGIN_OF_SEQUENCE;
+        if (idx2SequenceEnd.get(idx) != null){
+            return END_OF_SEQUENCE;
         }
         
-        if (idx - 1 >= 0) {
-            return tokens.get(idx - 1);
+        if (idx + 2 < units.size()) {
+            return units.get(idx + 2);
         }
-        return BEGIN_OF_SEQUENCE;
+        return END_OF_SEQUENCE;
     }
+
 }
