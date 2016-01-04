@@ -55,7 +55,6 @@ public class CRFSuiteDataWriter
     public static File getFeatureFilename(File outputDirectory) {
         File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-        outputFile.deleteOnExit();
         return outputFile;
     }
     
