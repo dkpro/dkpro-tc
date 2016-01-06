@@ -50,7 +50,6 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 	@Discriminator
 	private String[] classificationArguments;
 
-	public static final String MODELNAME = "model.crfsuite";
 	public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
 	Log logger = null;
 
@@ -266,7 +265,7 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private String trainModel(TaskContext aContext) throws Exception {
-		String tmpModelLocation = System.getProperty("java.io.tmpdir") + File.separator + MODELNAME;
+		String tmpModelLocation = System.getProperty("java.io.tmpdir") + File.separator + MODEL_CLASSIFIER;
 		List<String> modelTrainCommand = buildTrainCommand(aContext, tmpModelLocation);
 
 		log("Start training model");
@@ -285,9 +284,9 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private String writeModel(TaskContext aContext, String aTmpModelLocation) throws Exception {
-		aContext.storeBinary(MODELNAME, new FileInputStream(new File(aTmpModelLocation)));
+		aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(new File(aTmpModelLocation)));
 
-		File modelLocation = aContext.getFile(MODELNAME, AccessMode.READONLY);
+		File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
 
 		return modelLocation.getAbsolutePath();
 	}
