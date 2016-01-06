@@ -65,11 +65,7 @@ class CRFSuiteModelSerializationDescription
         if (trainModel) {
             trainAndStoreModel(aContext);
         }else {
-            File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-            
-            FileInputStream fis = new FileInputStream(file);
-            FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
-            IOUtils.copy(fis, fos);
+            copyAlreadyTrainedModel(aContext);
         }
 
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
@@ -77,6 +73,15 @@ class CRFSuiteModelSerializationDescription
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+    }
+
+    private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception
+    {
+        File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
+        
+        FileInputStream fis = new FileInputStream(file);
+        FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
+        IOUtils.copy(fis, fos);        
     }
 
     private void trainAndStoreModel(TaskContext aContext)
