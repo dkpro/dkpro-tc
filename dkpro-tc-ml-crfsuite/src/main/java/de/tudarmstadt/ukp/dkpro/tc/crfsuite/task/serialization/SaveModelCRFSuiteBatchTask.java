@@ -53,7 +53,7 @@ public class SaveModelCRFSuiteBatchTask extends DefaultBatchTask {
 	}
 
 	public SaveModelCRFSuiteBatchTask(String aExperimentName, File outputFolder,
-			Class<? extends TCMachineLearningAdapter> mlAdapter, AnalysisEngineDescription preprocessingPipeline)
+			Class<? extends TCMachineLearningAdapter> mlAdapter)
 					throws TextClassificationException {
 		setExperimentName(aExperimentName);
 		setPreprocessingPipeline(preprocessingPipeline);
