@@ -18,7 +18,6 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.model;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -27,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
@@ -89,7 +87,7 @@ public class CRFSuiteSaveAndLoadModelTest
         throws Exception
     {
         SaveModelCRFSuiteBatchTask batch = new SaveModelCRFSuiteBatchTask("TestSaveModel", aModelFolder,
-                CRFSuiteAdapter.class, createEngineDescription(NoOpAnnotator.class));
+                CRFSuiteAdapter.class);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
