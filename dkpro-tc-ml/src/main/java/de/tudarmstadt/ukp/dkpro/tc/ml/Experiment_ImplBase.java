@@ -58,8 +58,8 @@ public abstract class Experiment_ImplBase
 
         try {
             if (getPreprocessing() == null) {
-                log.warn("Preprocessing engine has not been set, will use "
-                        + NoOpAnnotator.class.getSimpleName() + " as default");
+                log.warn("Preprocessing engine has not been set, will use ["
+                        + NoOpAnnotator.class.getSimpleName() + "] as default");
                 preprocessing = AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
             }
         }
