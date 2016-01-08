@@ -76,9 +76,6 @@ public class SaveModelSvmhmmBatchTask
      * 
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      */
     protected void init()
     {
