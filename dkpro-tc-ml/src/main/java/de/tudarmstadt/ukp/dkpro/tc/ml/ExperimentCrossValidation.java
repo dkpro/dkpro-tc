@@ -117,9 +117,9 @@ public class ExperimentCrossValidation
     protected void init()
         throws IllegalStateException    {
     	
-        if (experimentName == null || getPreprocessing() == null) {
+        if (experimentName == null) {
             throw new IllegalStateException(
-                    "You must set experiment name, datawriter and preprocessing aggregate.");
+                    "You must set an experiment name");
         }
 
         if (numFolds < 2) {

@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
@@ -40,9 +39,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization.SaveModelCRFSuiteBatchTask;
@@ -58,12 +57,13 @@ public class CRFSuiteSaveAndLoadModelTest
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    
+
     @After
-    public void cleanUp(){
+    public void cleanUp()
+    {
         folder.delete();
     }
-    
+
     @Test
     public void saveModel()
         throws Exception
@@ -74,22 +74,22 @@ public class CRFSuiteSaveAndLoadModelTest
 
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
-        
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
+
+        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
+                + MODEL_FEATURE_EXTRACTORS);
         assertTrue(usedFeaturesFile.exists());
-        
+
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
-        
+
         modelFolder.deleteOnExit();
     }
 
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        SaveModelCRFSuiteBatchTask batch = new SaveModelCRFSuiteBatchTask("TestSaveModel", aModelFolder,
-                CRFSuiteAdapter.class);
-        batch.setPreprocessingPipeline(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class));
+        SaveModelCRFSuiteBatchTask batch = new SaveModelCRFSuiteBatchTask("TestSaveModel",
+                CRFSuiteAdapter.class, aModelFolder);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
@@ -125,27 +125,24 @@ public class CRFSuiteSaveAndLoadModelTest
                         DIM_FEATURE_MODE, FM_SEQUENCE), dimPipelineParameters, dimFeatureSets);
         return pSpace;
     }
-    
+
     @Test
-    public void loadModel() throws Exception {
-               //create a model
+    public void loadModel()
+        throws Exception
+    {
+        // create a model
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace();
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
-        
-        SimplePipeline.runPipeline(
-                CollectionReaderFactory.createReader(
-                        StringReader.class,
-                        StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
-                        StringReader.PARAM_LANGUAGE, "en"
-                ),
-                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
-                AnalysisEngineFactory.createEngineDescription(
-                        TcAnnotatorSequence.class,
+
+        SimplePipeline.runPipeline(CollectionReaderFactory.createReader(StringReader.class,
+                StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
+                StringReader.PARAM_LANGUAGE, "en"), AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class), AnalysisEngineFactory
+                .createEngineDescription(TcAnnotatorSequence.class,
                         TcAnnotatorSequence.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                        TcAnnotatorSequence.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                        TcAnnotatorSequence.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName()
-                )
-        );        
+                        TcAnnotatorSequence.PARAM_NAME_SEQUENCE_ANNOTATION,
+                        Sentence.class.getName(), TcAnnotatorSequence.PARAM_NAME_UNIT_ANNOTATION,
+                        Token.class.getName()));
     }
 }

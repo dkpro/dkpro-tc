@@ -18,16 +18,10 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.pair;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.fit.component.NoOpAnnotator;
-import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -131,19 +125,11 @@ public class PairTwentyNewsgroupsDemo
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
         		WekaClassificationAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//        batch.addReport(BatchTrainTestReport.class);
-//        batch.addReport(BatchOutcomeIDReport.class);
 
         // Run
         Lab.getInstance().run(batch);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
-        return createEngineDescription(NoOpAnnotator.class);
-    }
 }

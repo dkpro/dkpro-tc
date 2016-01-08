@@ -45,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
 /**
- * Demo to show-case how trained models can be persisted. 
+ * Demo to show-case how trained models can be persisted.
  */
 public class SaveModelDemo
     implements Constants
@@ -72,11 +72,13 @@ public class SaveModelDemo
     public static void main(String[] args)
         throws Exception
     {
-    	
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(SaveModelDemo.class.getSimpleName());
+
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(SaveModelDemo.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
         SaveModelDemo experiment = new SaveModelDemo();
@@ -93,29 +95,23 @@ public class SaveModelDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders
-                .put(
-                        DIM_READER_TRAIN_PARAMS,
-                        Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                                corpusFilePathTrain,
-                                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                        + "*/*.txt")));
+        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt")));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] {NrOfTokensDFE.class.getName()}));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(new String[] { NrOfTokensDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
@@ -124,17 +120,14 @@ public class SaveModelDemo
 
         return pSpace;
     }
-    
+
     // ##### SAVE-MODEL #####
     protected void runSaveModel(ParameterSpace pSpace)
         throws Exception
     {
-        SaveModelWekaBatchTask batch = new SaveModelWekaBatchTask(
-        		"TwentyNewsgroupsSaveModel",
-        		modelPath,
-        		WekaClassificationAdapter.class,
-        		getPreprocessing()
-        );
+        SaveModelWekaBatchTask batch = new SaveModelWekaBatchTask("TwentyNewsgroupsSaveModel",
+                WekaClassificationAdapter.class, modelPath);
+        batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
@@ -148,10 +141,7 @@ public class SaveModelDemo
 
         return createEngineDescription(
                 createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(
-                		OpenNlpPosTagger.class,
-                		OpenNlpPosTagger.PARAM_LANGUAGE, LANGUAGE_CODE
-                )
-        );
+                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+                        LANGUAGE_CODE));
     }
 }

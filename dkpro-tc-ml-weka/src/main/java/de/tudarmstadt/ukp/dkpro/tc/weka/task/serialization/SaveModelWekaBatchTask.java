@@ -19,32 +19,24 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import java.io.File;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
+import de.tudarmstadt.ukp.dkpro.tc.ml.Experiment_ImplBase;
 
 /**
  * Save model batch
  * 
  */
 public class SaveModelWekaBatchTask
-    extends DefaultBatchTask
+    extends Experiment_ImplBase
 {
 
-    private String experimentName;
-    private AnalysisEngineDescription preprocessingPipeline;
-    private List<String> operativeViews;
-    private TCMachineLearningAdapter mlAdapter;
     private File outputFolder;
 
     // tasks
@@ -57,19 +49,17 @@ public class SaveModelWekaBatchTask
     {/* needed for Groovy */
     }
 
-    public SaveModelWekaBatchTask(String aExperimentName, File outputFolder,
-            Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessingPipeline)
+    public SaveModelWekaBatchTask(String aExperimentName,
+            Class<? extends TCMachineLearningAdapter> mlAdapter, File outputFolder)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
-        setPreprocessingPipeline(preprocessingPipeline);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
-        setTcMachineLearningAdapter(mlAdapter);
+        setMachineLearningAdapter(mlAdapter);
         setOutputFolder(outputFolder);
     }
-    
+
     @Override
     public void initialize(TaskContext aContext)
     {
@@ -88,18 +78,18 @@ public class SaveModelWekaBatchTask
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private void init()
+    protected void init()
     {
-        if (experimentName == null || preprocessingPipeline == null)
+        if (experimentName == null)
 
         {
-            throw new IllegalStateException("You must set Experiment Name and Aggregate.");
+            throw new IllegalStateException("You must set an experiment name");
         }
 
         // init the train part of the experiment
         initTaskTrain = new InitTask();
         initTaskTrain.setMlAdapter(mlAdapter);
-        initTaskTrain.setPreprocessing(preprocessingPipeline);
+        initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
@@ -109,8 +99,7 @@ public class SaveModelWekaBatchTask
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
-                MetaInfoTask.INPUT_KEY);
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
@@ -135,37 +124,8 @@ public class SaveModelWekaBatchTask
         addTask(saveModelTask);
     }
 
-    public void setExperimentName(String experimentName)
-    {
-    	this.experimentName = experimentName;
-    }
-
-    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
-    {
-    	this.preprocessingPipeline = preprocessingPipeline;
-    }
-
-    public void setOperativeViews(List<String> operativeViews)
-    {
-        this.operativeViews = operativeViews;
-    }
-
-    public void setTcMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
-        throws TextClassificationException
-    {
-        try {
-        	this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (InstantiationException e) {
-            throw new TextClassificationException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new TextClassificationException(e);
-        }
-    }
-
     public void setOutputFolder(File outputFolder)
     {
-    	this.outputFolder = outputFolder;
+        this.outputFolder = outputFolder;
     }
 }
