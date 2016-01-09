@@ -33,16 +33,16 @@ import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
 /**
  * Demo to show-case how trained models can be persisted.
@@ -125,7 +125,7 @@ public class SaveModelDemo
     protected void runSaveModel(ParameterSpace pSpace)
         throws Exception
     {
-        SaveModelWekaBatchTask batch = new SaveModelWekaBatchTask("TwentyNewsgroupsSaveModel",
+        ExperimentSaveModel batch = new ExperimentSaveModel("TwentyNewsgroupsSaveModel",
                 WekaClassificationAdapter.class, modelPath);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
