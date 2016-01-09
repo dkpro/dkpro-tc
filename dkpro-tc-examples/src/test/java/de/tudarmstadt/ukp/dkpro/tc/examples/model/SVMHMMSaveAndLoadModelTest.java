@@ -47,9 +47,9 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorSequence;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization.SaveModelSvmhmmBatchTask;
 
 public class SVMHMMSaveAndLoadModelTest
     implements Constants
@@ -88,7 +88,7 @@ public class SVMHMMSaveAndLoadModelTest
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        SaveModelSvmhmmBatchTask batch = new SaveModelSvmhmmBatchTask("TestSaveModel",
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
                 SVMHMMAdapter.class, aModelFolder);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

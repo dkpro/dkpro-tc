@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -45,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * 
  */
 public abstract class WekaTestTask_ImplBase
-    extends ExecutableTaskBase
+    extends ModelSerializationTask
     implements Constants
 {
     @Discriminator

@@ -47,24 +47,18 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  *  saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
  *  saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
  */
-public class ModelSerializationTask
+public class WekaModelSerializationDescription
 		extends WekaTestTask_ImplBase
 	    implements Constants
 {
-    private File outputFolder;
     
-    public ModelSerializationTask() {
+    public WekaModelSerializationDescription() {
     	// required for groovy (?)
     }
 
-    public ModelSerializationTask(String type, File outputFolder) {
+    public WekaModelSerializationDescription(String type, File outputFolder) {
     	this.setType(type);
     	this.setOutputFolder(outputFolder);
-    }
-    
-    public void setOutputFolder(File outputFolder)
-    {
-        this.outputFolder = outputFolder;
     }
 
     @Override

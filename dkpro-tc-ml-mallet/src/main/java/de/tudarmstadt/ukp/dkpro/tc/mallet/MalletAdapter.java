@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletBatchTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.report.MalletOutcomeIDReport;
@@ -64,6 +65,7 @@ public class MalletAdapter
 		return MalletBatchTrainTestReport.class;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
 			String[] files, int folds) {
@@ -90,7 +92,11 @@ public class MalletAdapter
 	
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		// FIXME to be implemented
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 		throw new UnsupportedOperationException();
 	}
 }

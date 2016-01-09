@@ -28,15 +28,15 @@ import org.apache.commons.io.IOUtils;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 
-class CRFSuiteModelSerializationDescription
-    extends ExecutableTaskBase
+public class CRFSuiteModelSerializationDescription
+    extends ModelSerializationTask
     implements Constants
 {
 
@@ -48,14 +48,6 @@ class CRFSuiteModelSerializationDescription
     private String[] classificationArguments;
 
     boolean trainModel = true;
-
-    private File outputFolder;
-
-    public void setAndCreateOutputFolder(File outputFolder)
-    {
-        this.outputFolder = outputFolder;
-        outputFolder.mkdirs();
-    }
 
     @Override
     public void execute(TaskContext aContext)

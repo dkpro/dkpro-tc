@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.io.File;
+import java.util.List;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -27,16 +28,15 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
-import de.tudarmstadt.ukp.dkpro.tc.ml.Experiment_ImplBase;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 
 /**
  * Save model batch
  * 
  */
-public class SaveModelWekaBatchTask
+public class ExperimentSaveModel
     extends Experiment_ImplBase
 {
-
     private File outputFolder;
 
     // tasks
@@ -45,26 +45,19 @@ public class SaveModelWekaBatchTask
     private ExtractFeaturesTask featuresTrainTask;
     private ModelSerializationTask saveModelTask;
 
-    public SaveModelWekaBatchTask()
+    public ExperimentSaveModel()
     {/* needed for Groovy */
     }
 
-    public SaveModelWekaBatchTask(String aExperimentName,
+    public ExperimentSaveModel(String aExperimentName,
             Class<? extends TCMachineLearningAdapter> mlAdapter, File outputFolder)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
-        setMachineLearningAdapter(mlAdapter);
+        setTcMachineLearningAdapter(mlAdapter);
         setOutputFolder(outputFolder);
-    }
-
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-        init();
     }
 
     /**
@@ -91,7 +84,8 @@ public class SaveModelWekaBatchTask
         initTaskTrain.setTesting(false);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
-        // get some meta data depending on the whole document collection that we need for training
+        // get some meta data depending on the whole document collection that we
+        // need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
@@ -107,18 +101,54 @@ public class SaveModelWekaBatchTask
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
-        saveModelTask = new ModelSerializationTask();
+        try {
+		saveModelTask = mlAdapter.getSaveModelTask().newInstance();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         saveModelTask.setOutputFolder(outputFolder);
+        
+    	} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);
         addTask(metaTask);
         addTask(featuresTrainTask);
         addTask(saveModelTask);
+    }
+
+    @Override
+    public void initialize(TaskContext aContext)
+    {
+        super.initialize(aContext);
+        init();
+    }
+
+    public void setExperimentName(String experimentName)
+    {
+        this.experimentName = experimentName;
+    }
+
+    public void setOperativeViews(List<String> operativeViews)
+    {
+        this.operativeViews = operativeViews;
+    }
+
+    public void setTcMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
+        throws TextClassificationException
+    {
+        try {
+            this.mlAdapter = mlAdapter.newInstance();
+        }
+        catch (InstantiationException e) {
+            throw new TextClassificationException(e);
+        }
+        catch (IllegalAccessException e) {
+            throw new TextClassificationException(e);
+        }
     }
 
     public void setOutputFolder(File outputFolder)

@@ -28,7 +28,7 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.ModelSerializationTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
 
 /**
  * A subclass of the ExperiementTrainTest batch task, which
@@ -76,7 +76,7 @@ public class ExperimentTrainTestStore extends ExperimentTrainTest {
             throw new IllegalStateException("You must set the outputdirectory.");
         }
 
-        ModelSerializationTask saveModelTask = new ModelSerializationTask();
+        WekaModelSerializationDescription saveModelTask = new WekaModelSerializationDescription();
     	String type = saveModelTask.getType() + "-" + experimentName;
     	saveModelTask.setType(type);
     	saveModelTask.setOutputFolder(outputDirectory.getAbsoluteFile());

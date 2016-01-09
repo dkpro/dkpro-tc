@@ -44,11 +44,11 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization.SaveModelCRFSuiteBatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorSequence;
 
 public class CRFSuiteSaveAndLoadModelTest
@@ -88,7 +88,7 @@ public class CRFSuiteSaveAndLoadModelTest
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        SaveModelCRFSuiteBatchTask batch = new SaveModelCRFSuiteBatchTask("TestSaveModel",
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
                 CRFSuiteAdapter.class, aModelFolder);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

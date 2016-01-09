@@ -28,11 +28,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
+import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
 /**
@@ -102,6 +104,11 @@ public class SVMHMMAdapter
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		return LoadModelConnectorSvmhmm.class;
+	}
+
+	@Override
+	public Class<? extends ModelSerializationTask> getSaveModelTask() {
+		return SvmhmmModelSerializationDescription.class;
 	}
 }
 

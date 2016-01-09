@@ -47,17 +47,17 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.SaveModelWekaBatchTask;
 
 public class WekaSaveAndLoadModelTest
 {
@@ -114,7 +114,7 @@ public class WekaSaveAndLoadModelTest
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
 
-        SaveModelWekaBatchTask batch = new SaveModelWekaBatchTask("TestSaveModel",
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
                 WekaClassificationAdapter.class, modelFolder);
         batch.setPreprocessing(createEngineDescription(
                 createEngineDescription(BreakIteratorSegmenter.class),

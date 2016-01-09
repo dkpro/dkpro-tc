@@ -73,7 +73,7 @@ public class SaveModelCRFSuiteTrainTestTask
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        saveModelTask.setAndCreateOutputFolder(outputFolder);
+        saveModelTask.setOutputFolder(outputFolder);
         
         saveModelTask.addImport(testTask, Constants.MODEL_CLASSIFIER);
         saveModelTask.trainModel(false);

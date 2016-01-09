@@ -28,6 +28,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
@@ -91,5 +92,10 @@ public class MekaClassificationUsingTCEvaluationAdapter
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		return LoadModelConnectorWeka.class;
+	}
+	
+	@Override
+	public Class<? extends ModelSerializationTask> getSaveModelTask() {
+		throw new UnsupportedOperationException("Model serialization is not yet implemented for this ML adapter");
 	}
 }
