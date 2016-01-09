@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -102,7 +101,6 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-//	    long s = System.currentTimeMillis();
 		try {
 		    
 			Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
@@ -151,10 +149,6 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
-
-		double e=System.currentTimeMillis();
-		
-//		LogFactory.getLog(getClass()).info(((e-s)/1000) + " spend seconds with tagging cas");
 		
 	}
 
