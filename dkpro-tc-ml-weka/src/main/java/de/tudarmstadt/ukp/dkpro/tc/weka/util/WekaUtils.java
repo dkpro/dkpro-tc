@@ -53,12 +53,14 @@ import mulan.dimensionalityReduction.Ranker;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.bzip2.CBZip2InputStream;
 
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.attributeSelection.AttributeSelection;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Attribute;
@@ -71,12 +73,16 @@ import weka.core.converters.Saver;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
@@ -103,8 +109,8 @@ public class WekaUtils
     /**
      * Adapts the test data class labels to the training data. Class labels from the test data
      * unseen in the training data will be deleted from the test data. Class labels from the
-     * training data unseen in the test data will be added to the test data. If training and test class
-     * labels are equal, nothing will be done.
+     * training data unseen in the test data will be added to the test data. If training and test
+     * class labels are equal, nothing will be done.
      *
      * @param trainData
      *            training data
@@ -252,8 +258,8 @@ public class WekaUtils
             boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception
     {
-        instanceListToArffFile(outputFile, instanceList,
-                useDenseInstances, isRegressionExperiment, false);
+        instanceListToArffFile(outputFile, instanceList, useDenseInstances, isRegressionExperiment,
+                false);
     }
 
     /**
@@ -284,8 +290,7 @@ public class WekaUtils
 
         // Make sure "outcome" is not the name of an attribute
         List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
-        Attribute outcomeAttribute = createOutcomeAttribute(outcomeList,
-                isRegressionExperiment);
+        Attribute outcomeAttribute = createOutcomeAttribute(outcomeList, isRegressionExperiment);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
             System.err
                     .println("A feature with name \"outcome\" was found. Renaming outcome attribute");
@@ -351,9 +356,9 @@ public class WekaUtils
             boolean useDenseInstances)
         throws Exception
     {
-        instanceListToArffFileMultiLabel(outputFile, featureStore,
-                useDenseInstances, false);
+        instanceListToArffFileMultiLabel(outputFile, featureStore, useDenseInstances, false);
     }
+
     /**
      * /** Converts a feature store to a list of instances. Multi-label case.
      *
@@ -362,7 +367,8 @@ public class WekaUtils
      * @param outputFile
      * @param featureStore
      * @param useDenseInstances
-     * @param useWeights use instance weights
+     * @param useWeights
+     *            use instance weights
      * @throws Exception
      */
     public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
@@ -427,7 +433,6 @@ public class WekaUtils
             if (useWeights) {
                 wekaInstance.setWeight(instanceWeight);
             }
-
 
             // preprocessingFilter.input(wekaInstance);
             // saver.writeIncremental(preprocessingFilter.output());
@@ -791,8 +796,8 @@ public class WekaUtils
     }
 
     /**
-     * Copies the instanceId attribute and its values from an existing data set, iff present. It will
-     * be indexed right before the class attribute
+     * Copies the instanceId attribute and its values from an existing data set, iff present. It
+     * will be indexed right before the class attribute
      *
      * @param newData
      *            data set without instanceId attribute
@@ -833,7 +838,6 @@ public class WekaUtils
         }
         return filteredData;
     }
-
 
     /**
      * Read instances from uncompressed or compressed arff files. Compression is determined by
@@ -957,8 +961,7 @@ public class WekaUtils
         }
         else if (threshold.equals("PCutL")) {
             // one threshold for each label (PCutL in Meka)
-            t = ThresholdUtils.calibrateThresholds(r.predictions,
-                    MLUtils.labelCardinalities(data));
+            t = ThresholdUtils.calibrateThresholds(r.predictions, MLUtils.labelCardinalities(data));
             // FIXME
             throw new Exception("Not yet implemented.");
         }
@@ -1124,35 +1127,116 @@ public class WekaUtils
         return filtered;
     }
 
+    /**
+     * Writes a file with all necessary information for evaluation.
+     *
+     * @param result
+     *            the result file
+     * @param file
+     *            the file to write to
+     * @throws IOException
+     *             i/o error
+     * @throws FileNotFoundException
+     *             file not found
+     */
+    public static void writeMlResultToFile(MultilabelResult result, File file)
+        throws FileNotFoundException, IOException
+    {
+        // file.mkdirs();
+        // file.createNewFile();
+        ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file));
+        stream.writeObject(result);
+        stream.close();
+    }
 
-	/**
-	 * Writes a file with all necessary information for evaluation.
-	 *
-	 * @param result the result file
-	 * @param file the file to write to
-	 * @throws IOException i/o error
-	 * @throws FileNotFoundException file not found
-	 */
-	public static void writeMlResultToFile(MultilabelResult result, File file) throws FileNotFoundException, IOException {
-		//file.mkdirs();
-		//file.createNewFile();
-		ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file));
-		stream.writeObject(result);
-		stream.close();
-	}
+    /**
+     * Reads a file serialized with {@link WekaUtils#writeMlResultToFile(MultilabelResult, File)}.
+     *
+     * @param file
+     *            the file to read from
+     * @return an object holding the results
+     * @throws IOException
+     *             i/o error
+     * @throws ClassNotFoundException
+     *             file not found
+     */
+    public static MultilabelResult readMlResultFromFile(File file)
+        throws IOException, ClassNotFoundException
+    {
+        ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
+        MultilabelResult result = (MultilabelResult) stream.readObject();
+        stream.close();
+        return result;
+    }
 
-	/**
-	 * Reads a file serialized with {@link WekaUtils#writeMlResultToFile(MultilabelResult, File)}.
-	 *
-	 * @param file the file to read from
-	 * @return an object holding the results
-	 * @throws IOException i/o error
-	 * @throws ClassNotFoundException file not found
-	 */
-	public static MultilabelResult readMlResultFromFile(File file) throws IOException, ClassNotFoundException{
-		ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
-		MultilabelResult result = (MultilabelResult)stream.readObject();
-		stream.close();
-		return result;
-	}
+    public static Classifier getClassifier(String learningMode, List<String> classificationArguments)
+        throws Exception
+    {
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+
+        Classifier cl;
+        if (multiLabel) {
+            List<String> mlArgs = classificationArguments
+                    .subList(1, classificationArguments.size());
+            cl = AbstractClassifier.forName(classificationArguments.get(0), new String[] {});
+            ((MultilabelClassifier) cl).setOptions(mlArgs.toArray(new String[0]));
+        }
+        else {
+            cl = AbstractClassifier.forName(classificationArguments.get(0), classificationArguments
+                    .subList(1, classificationArguments.size()).toArray(new String[0]));
+        }
+        return cl;
+    }
+
+    public static void featureSelection(TaskContext aContext, Instances trainData,
+            String learningMode, List<String> featureSearcher, List<String> attributeEvaluator,
+            boolean applySelection, String labelTransformationMethod, int numLabelsToKeep)
+    {
+
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+
+        // FEATURE SELECTION
+        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
+            try {
+                AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData,
+                        featureSearcher, attributeEvaluator);
+                // Write the results of attribute selection
+                FileUtils.writeStringToFile(
+                        new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                                AccessMode.READWRITE).getAbsolutePath()
+                                + "/"
+                                + WekaClassificationAdapter.getInstance().getFrameworkFilename(
+                                        AdapterNameEntries.featureSelectionFile)),
+                        selector.toResultsString());
+                if (applySelection) {
+                    trainData = selector.reduceDimensionality(trainData);
+                }
+            }
+            catch (Exception e) {
+                LogFactory.getLog(WekaUtils.class).warn("Could not apply feature selection.", e);
+            }
+        }
+        if (multiLabel && attributeEvaluator != null && labelTransformationMethod != null
+                && numLabelsToKeep != 0) {
+            try {
+                // file to hold the results of attribute selection
+                File fsResultsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
+                        AccessMode.READWRITE).getAbsolutePath()
+                        + "/"
+                        + WekaClassificationAdapter.getInstance().getFrameworkFilename(
+                                AdapterNameEntries.featureSelectionFile));
+                // filter for reducing dimension of attributes
+                Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData,
+                        labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
+                        fsResultsFile);
+                if (removeFilter != null && applySelection) {
+                    trainData = WekaUtils.applyAttributeSelectionFilter(trainData, removeFilter);
+                }
+            }
+            catch (Exception e) {
+                LogFactory.getLog(WekaUtils.class).warn(
+                        "Could not apply multi-label feature selection.", e);
+            }
+        }
+    }
 }

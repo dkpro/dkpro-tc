@@ -19,6 +19,7 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 
 import java.io.File;
+import java.util.List;
 
 import meka.core.Result;
 import weka.classifiers.Classifier;
@@ -26,6 +27,8 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSink;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
@@ -36,9 +39,32 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  * Base class for test task and save model tasks
  */
 public class WekaTestTask
-    extends WekaTestTask_ImplBase
+    extends ExecutableTaskBase
     implements Constants
 {
+    
+    @Discriminator
+    protected List<Object> pipelineParameters;
+    @Discriminator
+    protected List<String> classificationArguments;
+    @Discriminator
+    protected List<String> featureSearcher;
+    @Discriminator
+    protected List<String> attributeEvaluator;
+    @Discriminator
+    protected String labelTransformationMethod;
+    @Discriminator
+    protected int numLabelsToKeep;
+    @Discriminator
+    protected boolean applySelection;
+    @Discriminator
+    protected String featureMode;
+    @Discriminator
+    protected List<String> featureSet;
+    @Discriminator
+    protected String learningMode;
+    @Discriminator
+    protected String threshold;
 
     @Override
     public void execute(TaskContext aContext)
@@ -67,10 +93,10 @@ public class WekaTestTask
         testData = WekaUtils.removeInstanceId(testData, multiLabel);
 
         // FEATURE SELECTION
-        featureSelection(aContext, trainData);
+        WekaUtils.featureSelection(aContext, trainData, learningMode, featureSearcher, attributeEvaluator,applySelection, labelTransformationMethod, numLabelsToKeep);
         
         // build classifier
-        Classifier cl = getClassifier();
+        Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
         
         // file to hold prediction results
         File evalOutput = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,

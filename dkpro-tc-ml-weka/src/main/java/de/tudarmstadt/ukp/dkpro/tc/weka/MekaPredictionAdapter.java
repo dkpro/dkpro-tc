@@ -33,6 +33,7 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchPredictionReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaExtractFeaturesAndPredictTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
 public class MekaPredictionAdapter 
@@ -95,6 +96,6 @@ public class MekaPredictionAdapter
 	
 	@Override
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-		throw new UnsupportedOperationException("Model serialization is not yet implemented for this ML adapter");
+	    return WekaModelSerializationDescription.class;
 	}
 }
