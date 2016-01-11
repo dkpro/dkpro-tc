@@ -51,7 +51,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportUtils;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MekaEvaluationUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
@@ -80,8 +79,6 @@ public class WekaClassificationReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY,
-                AccessMode.READONLY);
         boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
                 .equals(Constants.LM_MULTI_LABEL);
 
@@ -92,15 +89,15 @@ public class WekaClassificationReport
         // matrix to hold CM results
         double[][] confusionMatrix = null;
 
-        File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
+        
+        File evaluationFile =WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,AdapterNameEntries.evaluationFile, AccessMode.READONLY);
 
         if (multiLabel) {
             // ============= multi-label setup ======================
         	MultilabelResult r = WekaUtils.readMlResultFromFile(evaluationFile); 
 
-            File dataFile = new File(storage.getAbsolutePath() + "/"
-                    + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile));
+            File dataFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,AdapterNameEntries.predictionsFile, AccessMode.READONLY);
+                    
             Instances data = WekaUtils.getInstances(dataFile, true);
             String[] classNames = new String[data.classIndex()];
 
@@ -182,7 +179,7 @@ public class WekaClassificationReport
             try {
                 ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
                         ReportUtils.createXYDataset(prcData));
-                FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
+                FileOutputStream fos = new FileOutputStream(new File(getContext().getFile(
                         WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                         + "/" + PR_CURVE_KEY));
                 renderer.write(fos);

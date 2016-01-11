@@ -70,6 +70,7 @@ public class WekaRegressionAdapter
         return BatchTrainTestReport.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public DimensionBundle<Collection<String>> getFoldDimensionBundle(
             String[] files, int folds)

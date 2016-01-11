@@ -1201,12 +1201,9 @@ public class WekaUtils
                 AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData,
                         featureSearcher, attributeEvaluator);
                 // Write the results of attribute selection
+                File file = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE);
                 FileUtils.writeStringToFile(
-                        new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                                AccessMode.READWRITE).getAbsolutePath()
-                                + "/"
-                                + WekaClassificationAdapter.getInstance().getFrameworkFilename(
-                                        AdapterNameEntries.featureSelectionFile)),
+                        file,
                         selector.toResultsString());
                 if (applySelection) {
                     trainData = selector.reduceDimensionality(trainData);
@@ -1220,11 +1217,8 @@ public class WekaUtils
                 && numLabelsToKeep != 0) {
             try {
                 // file to hold the results of attribute selection
-                File fsResultsFile = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-                        AccessMode.READWRITE).getAbsolutePath()
-                        + "/"
-                        + WekaClassificationAdapter.getInstance().getFrameworkFilename(
-                                AdapterNameEntries.featureSelectionFile));
+                File fsResultsFile = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE); 
+                        
                 // filter for reducing dimension of attributes
                 Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData,
                         labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
@@ -1238,5 +1232,22 @@ public class WekaUtils
                         "Could not apply multi-label feature selection.", e);
             }
         }
+    }
+    
+    /**
+     * Convenience method to get file described in an AdapterNameEntry in a folder of the current context 
+     * @param aContext
+     * @param key
+     * @param entry
+     * @param mode
+     * @return
+     */
+    public static File getFile(TaskContext aContext, String key, AdapterNameEntries entry, AccessMode mode)
+    {
+        String path = aContext.getFolder(key, mode).getPath();
+        String featureFile = WekaClassificationAdapter.getInstance().getFrameworkFilename(entry);
+        String pathToArff = path + "/" + featureFile;
+
+        return new File(pathToArff);
     }
 }

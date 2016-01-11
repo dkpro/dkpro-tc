@@ -65,7 +65,8 @@ public class MekaClassificationAdapter
 		return BatchTrainTestReport.class;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
 			String[] files, int folds) {
 		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);

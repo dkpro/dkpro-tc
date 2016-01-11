@@ -63,7 +63,8 @@ public class WekaPredictionAdapter
         return BatchPredictionReport.class;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
 			String[] files, int folds) {
         return null;

@@ -37,7 +37,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
@@ -60,47 +59,42 @@ public class WekaOutcomeIDUsingTCEvaluationReport
      * Character that is used for separating fields in the output file
      */
     public static final String SEPARATOR_CHAR = ";";
-    
+
     private File mlResults;
 
     @Override
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY,
-                AccessMode.READONLY);
-        File arff = new File(storage.getAbsolutePath()
-                + "/"
-                + WekaClassificationAdapter.getInstance()
-                        .getFrameworkFilename(AdapterNameEntries.predictionsFile));
-         mlResults = new File(storage.getAbsolutePath()
-                + "/"
-                + WekaClassificationAdapter.getInstance()
-                        .getFrameworkFilename(AdapterNameEntries.evaluationFile));
+        File arff = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+                AdapterNameEntries.predictionsFile, AccessMode.READONLY);
+        mlResults = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+                AdapterNameEntries.evaluationFile, AccessMode.READONLY);
 
-        boolean multiLabel = getDiscriminators()
-                .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-                .equals(Constants.LM_MULTI_LABEL);
-        boolean regression = getDiscriminators()
-                .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-                .equals(Constants.LM_REGRESSION);
+        boolean multiLabel = getDiscriminators().get(
+                WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(
+                Constants.LM_MULTI_LABEL);
+        boolean regression = getDiscriminators().get(
+                WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(
+                Constants.LM_REGRESSION);
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
-        
-       
+
         List<String> labels = WekaUtils.getClassLabels(predictions, multiLabel);
 
-        Properties props = generateProperties(predictions, multiLabel, regression, labels, mlResults);
+        Properties props = generateProperties(predictions, multiLabel, regression, labels,
+                mlResults);
         getContext().storeBinary(ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, generateHeader(labels)));
     }
 
-    protected static String generateHeader(List<String> labels) throws UnsupportedEncodingException
+    protected static String generateHeader(List<String> labels)
+        throws UnsupportedEncodingException
     {
         StringBuilder comment = new StringBuilder();
-        comment.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + 
-                SEPARATOR_CHAR + "THRESHOLD" + "\n" + "labels");
-        
+        comment.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
+                + "THRESHOLD" + "\n" + "labels");
+
         // add numbered indexing of labels: e.g. 0=NPg, 1=JJ
         for (int i = 0; i < labels.size(); i++) {
             comment.append(" " + String.valueOf(i) + "="
@@ -109,8 +103,9 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         return comment.toString();
     }
 
-    protected static Properties generateProperties(Instances predictions, boolean isMultiLabel, 
-            boolean isRegression, List<String> labels, File mlResults) throws ClassNotFoundException, IOException
+    protected static Properties generateProperties(Instances predictions, boolean isMultiLabel,
+            boolean isRegression, List<String> labels, File mlResults)
+        throws ClassNotFoundException, IOException
     {
         Properties props = new Properties();
         String[] classValues = new String[predictions.numClasses()];
@@ -120,26 +115,26 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         }
 
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
-        
+
         if (isMultiLabel) {
             Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
-        	MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
-        	int[][] goldmatrix = r.getGoldstandard();
-        	double[][] predictionsmatrix = r.getPredictions();
-        	double bipartition = r.getBipartitionThreshold();
-        	
-        	for(int i = 0; i < goldmatrix.length; i++){
-        		Double[] predList = new Double[labels.size()];
-        		Integer[] goldList = new Integer[labels.size()];
-        		for(int j = 0; j < goldmatrix[i].length; j++){
-        			int classNo = class2number.get(labels.get(j));
-        			goldList[classNo] = goldmatrix[i][j];
-        			predList[classNo] = predictionsmatrix[i][j];
-        		}
-                String s = (StringUtils.join(predList, ",") + SEPARATOR_CHAR + StringUtils
-                        .join(goldList, ",") + SEPARATOR_CHAR + bipartition);
+            MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
+            int[][] goldmatrix = r.getGoldstandard();
+            double[][] predictionsmatrix = r.getPredictions();
+            double bipartition = r.getBipartitionThreshold();
+
+            for (int i = 0; i < goldmatrix.length; i++) {
+                Double[] predList = new Double[labels.size()];
+                Integer[] goldList = new Integer[labels.size()];
+                for (int j = 0; j < goldmatrix[i].length; j++) {
+                    int classNo = class2number.get(labels.get(j));
+                    goldList[classNo] = goldmatrix[i][j];
+                    predList[classNo] = predictionsmatrix[i][j];
+                }
+                String s = (StringUtils.join(predList, ",") + SEPARATOR_CHAR
+                        + StringUtils.join(goldList, ",") + SEPARATOR_CHAR + bipartition);
                 props.setProperty(predictions.get(i).stringValue(attOffset), s);
-        	}
+            }
         }
         // single-label
         else {
@@ -159,11 +154,11 @@ public class WekaOutcomeIDUsingTCEvaluationReport
                 Double prediction = new Double(inst.value(gsAtt));
                 if (!isRegression) {
                     Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
-                	Integer predictionAsNumber = class2number.get(gsAtt.value(prediction.intValue()));
-                	Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
-                    props.setProperty(
-                            inst.stringValue(attOffset), predictionAsNumber + SEPARATOR_CHAR 
-                                    + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
+                    Integer predictionAsNumber = class2number
+                            .get(gsAtt.value(prediction.intValue()));
+                    Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
+                    props.setProperty(inst.stringValue(attOffset), predictionAsNumber
+                            + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
                 }
                 else {
                     // the outcome is numeric

@@ -33,8 +33,8 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Simple report for regression problems
@@ -51,11 +51,8 @@ public class WekaRegressionReport
     public void execute()
         throws Exception
     {
-        File storage = getContext().getStorageLocation(WekaTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
-        Properties props = new Properties();
-        File evaluationFile = new File(storage.getAbsolutePath() + "/"
-                + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));
-
+        File evaluationFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY, AdapterNameEntries.evaluationFile, AccessMode.READONLY);
+        
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(evaluationFile.getAbsolutePath());
         HashMap<String, Double> m = new HashMap<String, Double>();
@@ -66,6 +63,7 @@ public class WekaRegressionReport
         m.put(ROOT_MEAN_SQUARED_ERROR, eval.rootMeanSquaredError());
         m.put(ROOT_RELATIVE_SQUARED_ERROR, eval.rootRelativeSquaredError());
 
+        Properties props = new Properties();
         for (String s : m.keySet()) {
             props.setProperty(s, m.get(s).toString());
         }
