@@ -79,7 +79,6 @@ public class ExperimentTrainTest
 
         // init the train part of the experiment
         initTaskTrain = new InitTask();
-        initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
         initTaskTrain.setMlAdapter(mlAdapter);
         initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
