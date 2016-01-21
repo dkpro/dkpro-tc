@@ -23,6 +23,7 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 
 /**
  * Interface for machine learning frameworks in TC
@@ -102,4 +103,6 @@ public interface TCMachineLearningAdapter
      * @return Returns the filename that is used for specific files by the framework
      */
     public String getFrameworkFilename(AdapterNameEntries name);
+
+	public Class<? extends ModelSerializationTask> getSaveModelTask();
 }

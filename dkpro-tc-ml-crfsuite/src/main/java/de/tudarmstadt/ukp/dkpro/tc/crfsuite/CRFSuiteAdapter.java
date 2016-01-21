@@ -28,7 +28,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 
@@ -134,5 +136,10 @@ public class CRFSuiteAdapter
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 	    return LoadModelConnectorCRFSuite.class;
+	}
+
+	@Override
+	public Class<? extends ModelSerializationTask> getSaveModelTask() {
+		return CRFSuiteModelSerializationDescription.class;
 	}
 }

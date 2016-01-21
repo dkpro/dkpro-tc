@@ -60,11 +60,11 @@ public class ExperimentPrediction
      */
     protected void init()
     {
-        if (experimentName == null || getPreprocessing() == null)
+        if (experimentName == null)
 
         {
             throw new IllegalStateException(
-                    "You must set Experiment Name and Aggregate.");
+                    "You must set an experiment name");
         }
 
         // initialize the training data setup

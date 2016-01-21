@@ -50,8 +50,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.meta.MetaCollector;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.uima.WekaExtractFeaturesAndPredictConnector;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Executes all feature extractors and classifies instances with a previously trained model.
@@ -96,12 +96,10 @@ public class WekaExtractFeaturesAndPredictTask
         throws ResourceInitializationException, IOException
     {
 
-        File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE)
+        File outputDir = aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE)
                 .getParentFile();
-        File arffFileTrain = new File(aContext.getStorageLocation(
-                TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY).getPath()
-                + "/" + WekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        File arffFileTrain = WekaUtils.getFile(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA, AdapterNameEntries.featureVectorsFile,AccessMode.READONLY);
+                
 
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
@@ -139,7 +137,7 @@ public class WekaExtractFeaturesAndPredictTask
         }
 
         for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
+            File file = new File(aContext.getFile(META_KEY, AccessMode.READONLY),
                     entry.getValue());
             parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
@@ -185,7 +183,7 @@ public class WekaExtractFeaturesAndPredictTask
         throws ResourceInitializationException, IOException
     {
         // TrainTest setup: input files are set as imports
-        File root = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
+        File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
         Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
         return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                 files);

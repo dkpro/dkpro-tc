@@ -28,11 +28,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaClassificationReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.MekaDataWriter;
 
 public class MekaStatisticsClassificationAdapter 
@@ -63,6 +65,7 @@ public class MekaStatisticsClassificationAdapter
 		return BatchStatisticsTrainTestReport.class;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
 			String[] files, int folds) {
@@ -90,5 +93,10 @@ public class MekaStatisticsClassificationAdapter
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		return LoadModelConnectorWeka.class;
+	}
+	
+	@Override
+	public Class<? extends ModelSerializationTask> getSaveModelTask() {
+	    return WekaModelSerializationDescription.class;
 	}
 }

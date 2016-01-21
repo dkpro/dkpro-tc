@@ -27,6 +27,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 
 public class LiblinearAdapter 
 	implements TCMachineLearningAdapter
@@ -89,5 +90,10 @@ public class LiblinearAdapter
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
 		// FIXME to be implemented
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Class<? extends ModelSerializationTask> getSaveModelTask() {
+		throw new UnsupportedOperationException("Model serialization is not yet implemented for this ML adapter");
 	}
 }

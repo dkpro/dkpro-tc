@@ -38,9 +38,6 @@ import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation;
 /**
  * Collects the final evaluation results in a cross validation setting.
  * 
- * @author zesch
- * @author daxenberger
- * 
  */
 public class BatchCrossValidationUsingTCEvaluationReport
     extends BatchReportBase
@@ -66,7 +63,7 @@ public class BatchCrossValidationUsingTCEvaluationReport
             if (subcontext.getLabel().startsWith(name)) {
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(), Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter()).getMap();
                 
-                File fileToEvaluate = store.getStorageFolder(subcontext.getId(), 
+                File fileToEvaluate = store.locateKey(subcontext.getId(), 
                 		Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
                 
                 ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileToEvaluate));
@@ -112,7 +109,7 @@ public class BatchCrossValidationUsingTCEvaluationReport
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        File dummyFolder = store.locateKey(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
         getContext().getLoggingService().message(getContextLabel(),
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");

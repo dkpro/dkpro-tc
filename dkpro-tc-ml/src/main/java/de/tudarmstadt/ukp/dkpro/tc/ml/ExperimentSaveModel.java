@@ -1,50 +1,41 @@
-/**
+/*******************************************************************************
  * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see http://www.gnu.org/licenses/.
- */
-package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package de.tudarmstadt.ukp.dkpro.tc.ml;
 
 import java.io.File;
 import java.util.List;
-import java.util.logging.Logger;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 
 /**
  * Save model batch
  * 
  */
-public class SaveModelWekaBatchTask
-    extends DefaultBatchTask
+public class ExperimentSaveModel
+    extends Experiment_ImplBase
 {
-
-    private String experimentName;
-    private AnalysisEngineDescription preprocessingPipeline;
-    private List<String> operativeViews;
-    private TCMachineLearningAdapter mlAdapter;
     private File outputFolder;
 
     // tasks
@@ -53,28 +44,19 @@ public class SaveModelWekaBatchTask
     private ExtractFeaturesTask featuresTrainTask;
     private ModelSerializationTask saveModelTask;
 
-    public SaveModelWekaBatchTask()
+    public ExperimentSaveModel()
     {/* needed for Groovy */
     }
 
-    public SaveModelWekaBatchTask(String aExperimentName, File outputFolder,
-            Class<? extends TCMachineLearningAdapter> mlAdapter,
-            AnalysisEngineDescription preprocessingPipeline)
+    public ExperimentSaveModel(String aExperimentName,
+            Class<? extends TCMachineLearningAdapter> mlAdapter, File outputFolder)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
-        setPreprocessingPipeline(preprocessingPipeline);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
         setTcMachineLearningAdapter(mlAdapter);
         setOutputFolder(outputFolder);
-    }
-    
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-        init();
     }
 
     /**
@@ -84,33 +66,30 @@ public class SaveModelWekaBatchTask
      * 
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      */
-    private void init()
+    protected void init()
     {
-        if (experimentName == null || preprocessingPipeline == null)
+        if (experimentName == null)
 
         {
-            throw new IllegalStateException("You must set Experiment Name and Aggregate.");
+            throw new IllegalStateException("You must set an experiment name");
         }
 
         // init the train part of the experiment
         initTaskTrain = new InitTask();
         initTaskTrain.setMlAdapter(mlAdapter);
-        initTaskTrain.setPreprocessing(preprocessingPipeline);
+        initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
-        // get some meta data depending on the whole document collection that we need for training
+        // get some meta data depending on the whole document collection that we
+        // need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
-                MetaInfoTask.INPUT_KEY);
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
@@ -121,12 +100,17 @@ public class SaveModelWekaBatchTask
                 ExtractFeaturesTask.INPUT_KEY);
 
         // feature extraction and prediction on test data
-        saveModelTask = new ModelSerializationTask();
+        try {
+		saveModelTask = mlAdapter.getSaveModelTask().newInstance();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         saveModelTask.setOutputFolder(outputFolder);
+        
+    	} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);
@@ -135,14 +119,16 @@ public class SaveModelWekaBatchTask
         addTask(saveModelTask);
     }
 
-    public void setExperimentName(String experimentName)
+    @Override
+    public void initialize(TaskContext aContext)
     {
-    	this.experimentName = experimentName;
+        super.initialize(aContext);
+        init();
     }
 
-    public void setPreprocessingPipeline(AnalysisEngineDescription preprocessingPipeline)
+    public void setExperimentName(String experimentName)
     {
-    	this.preprocessingPipeline = preprocessingPipeline;
+        this.experimentName = experimentName;
     }
 
     public void setOperativeViews(List<String> operativeViews)
@@ -154,7 +140,7 @@ public class SaveModelWekaBatchTask
         throws TextClassificationException
     {
         try {
-        	this.mlAdapter = mlAdapter.newInstance();
+            this.mlAdapter = mlAdapter.newInstance();
         }
         catch (InstantiationException e) {
             throw new TextClassificationException(e);
@@ -166,6 +152,6 @@ public class SaveModelWekaBatchTask
 
     public void setOutputFolder(File outputFolder)
     {
-    	this.outputFolder = outputFolder;
+        this.outputFolder = outputFolder;
     }
 }

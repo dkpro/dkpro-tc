@@ -20,6 +20,8 @@ package de.tudarmstadt.ukp.dkpro.tc.ml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -47,6 +49,8 @@ public abstract class Experiment_ImplBase
     protected TCMachineLearningAdapter mlAdapter;
     protected boolean dropInvalidCases;
 
+    Log log = LogFactory.getLog(Experiment_ImplBase.class);
+
     @Override
     public void initialize(TaskContext aContext)
     {
@@ -54,6 +58,8 @@ public abstract class Experiment_ImplBase
 
         try {
             if (getPreprocessing() == null) {
+                log.warn("Preprocessing engine has not been set, will use ["
+                        + NoOpAnnotator.class.getSimpleName() + "] as default");
                 preprocessing = AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
             }
         }

@@ -30,11 +30,12 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
@@ -47,24 +48,39 @@ import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
  *  saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
  *  saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
  */
-public class ModelSerializationTask
-		extends WekaTestTask_ImplBase
+public class WekaModelSerializationDescription
+		extends ModelSerializationTask
 	    implements Constants
 {
-    private File outputFolder;
     
-    public ModelSerializationTask() {
+    @Discriminator
+    protected List<Object> pipelineParameters;
+    @Discriminator
+    protected List<String> classificationArguments;
+    @Discriminator
+    protected List<String> featureSearcher;
+    @Discriminator
+    protected List<String> attributeEvaluator;
+    @Discriminator
+    protected String labelTransformationMethod;
+    @Discriminator
+    protected int numLabelsToKeep;
+    @Discriminator
+    protected boolean applySelection;
+    @Discriminator
+    protected String featureMode;
+    @Discriminator
+    protected List<String> featureSet;
+    @Discriminator
+    protected String learningMode;
+    
+    public WekaModelSerializationDescription() {
     	// required for groovy (?)
     }
 
-    public ModelSerializationTask(String type, File outputFolder) {
+    public WekaModelSerializationDescription(String type, File outputFolder) {
     	this.setType(type);
     	this.setOutputFolder(outputFolder);
-    }
-    
-    public void setOutputFolder(File outputFolder)
-    {
-        this.outputFolder = outputFolder;
     }
 
     @Override
@@ -103,14 +119,14 @@ public class ModelSerializationTask
         Instances trainData = WekaUtils.getInstances(arffFileTrain, isMultiLabel);
         trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
 
-        featureSelection(aContext, trainData);
-
-        // File outputFolder = new File(aContext.getStorageLocation(TEST_TASK_OUTPUT_KEY,
-        // AccessMode.READWRITE)
-        // .getPath());
+        
+     // FEATURE SELECTION
+        WekaUtils.featureSelection(aContext, trainData, learningMode, featureSearcher, attributeEvaluator,applySelection, labelTransformationMethod, numLabelsToKeep);
+        
+        // build classifier
 
         // write model file
-        Classifier cl = getClassifier();
+        Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
         cl.buildClassifier(trainData);
         File model = new File(outputFolder, MODEL_CLASSIFIER);
         model.getParentFile().mkdir();

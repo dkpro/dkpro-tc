@@ -68,13 +68,14 @@ public class ExperimentTrainTest
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
      */
+    @Override
     protected void init()
     {
-        if (experimentName == null || getPreprocessing() == null)
+        if (experimentName == null)
 
         {
             throw new IllegalStateException(
-                    "You must set Experiment Name, DataWriter and Aggregate.");
+                    "You must set an experiment name");
         }
 
         // init the train part of the experiment

@@ -92,7 +92,7 @@ public class MetaInfoTask
     {
         // TrainTest setup: input files are set as imports
         if (filesRoot == null || files_training == null) {
-            File root = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
+            File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
             Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
@@ -163,13 +163,13 @@ public class MetaInfoTask
         // extracted, as in the regression demo)
         // TODO better way to do this?
         if (parameterKeyPairs.size() == 0) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY)
+            File file = new File(aContext.getFolder(META_KEY, AccessMode.READONLY)
                     .getPath());
             file.mkdir();
         }
 
         for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
+            File file = new File(aContext.getFolder(META_KEY, AccessMode.READONLY),
                     entry.getValue());
             parameters.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
@@ -190,9 +190,6 @@ public class MetaInfoTask
         return builder.createAggregateDescription();
     }
 
-    /**
-     * @param operativeViews
-     */
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;

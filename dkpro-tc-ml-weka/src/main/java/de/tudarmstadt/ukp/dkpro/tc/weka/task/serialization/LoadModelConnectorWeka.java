@@ -50,129 +50,125 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
-public class LoadModelConnectorWeka
-    extends ModelSerialization_ImplBase
-{
+public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 
-    @ConfigurationParameter(name = TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, mandatory = true)
-    private File tcModelLocation;
+	@ConfigurationParameter(name = TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, mandatory = true)
+	private File tcModelLocation;
 
-    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
-    @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
-    private String bipartitionThreshold;
+	public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
+	@ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
+	private String bipartitionThreshold;
 
-    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected FeatureExtractorResource_ImplBase[] featureExtractors;
+	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+	protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
-    private String learningMode;
+	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
+	private String learningMode;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
-    private String featureMode;
+	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
+	private String featureMode;
 
-    private Classifier cls;
-    private List<Attribute> attributes;
-    private List<String> classLabels;
+	private Classifier cls;
+	private List<Attribute> attributes;
+	private List<String> classLabels;
 
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
+	@Override
+	public void initialize(UimaContext context)
+			throws ResourceInitializationException {
+		super.initialize(context);
 
-        try {
-            loadClassifier();
-            loadAttributes();
-            loadClassLabels();
+		try {
+			loadClassifier();
+			loadAttributes();
+			loadClassLabels();
 
-            SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-    }
+			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
+		} catch (Exception e) {
+			throw new ResourceInitializationException(e);
+		}
+	}
 
-    private void loadClassLabels() throws IOException
-    {
-        classLabels = new ArrayList<>();
-        for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
-            classLabels.add(classLabel);
-        }
-    }
+	private void loadClassLabels() throws IOException {
+		classLabels = new ArrayList<>();
+		for (String classLabel : FileUtils.readLines(new File(tcModelLocation,
+				MODEL_CLASS_LABELS))) {
+			classLabels.add(classLabel);
+		}
+	}
 
-    private void loadAttributes()
-        throws IOException
-    {
-        attributes = new ArrayList<>();
-        for (String attributeName : FileUtils.readLines(new File(tcModelLocation,
-                MODEL_FEATURE_NAMES))) {
-            attributes.add(new Attribute(attributeName));
-        }
-    }
+	private void loadAttributes() throws IOException {
+		attributes = new ArrayList<>();
+		for (String attributeName : FileUtils.readLines(new File(
+				tcModelLocation, MODEL_FEATURE_NAMES))) {
+			attributes.add(new Attribute(attributeName));
+		}
+	}
 
-    private void loadClassifier()
-        throws Exception
-    {
-        cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation,
-                MODEL_CLASSIFIER).getAbsolutePath());
-    }
+	private void loadClassifier() throws Exception {
+		cls = (Classifier) weka.core.SerializationHelper.read(new File(
+				tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
+	}
 
-    @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-        try {
-            Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils.getSingleInstance(
-                    featureMode, featureExtractors, jcas, false, false);
+	@Override
+	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		try {
+			Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
+					.getSingleInstance(featureMode, featureExtractors, jcas,
+							false, false);
 
-            weka.core.Instance wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance,
-                    attributes, classLabels, false);
+			weka.core.Instance wekaInstance = WekaUtils
+					.tcInstanceToWekaInstance(instance, attributes,
+							classLabels, false);
 
-            String val = classLabels.get((int) cls.classifyInstance(wekaInstance));
+			String val = classLabels.get((int) cls
+					.classifyInstance(wekaInstance));
 
-            TextClassificationOutcome outcome = null;
-            if (!FM_UNIT.equals(featureMode))
-                outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
-            else
-                outcome = getOutcomeForFocus(jcas);
+			TextClassificationOutcome outcome = null;
+			if (!FM_UNIT.equals(featureMode)) {
+				outcome = JCasUtil.selectSingle(jcas,
+						TextClassificationOutcome.class);
+			} else {
+				outcome = getOutcomeForFocus(jcas);
+			}
 
-            outcome.setOutcome(val);
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(new IllegalStateException(e.getMessage()));
-        }
-    }
+			outcome.setOutcome(val);
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(new IllegalStateException(
+					e.getMessage()));
+		}
+	}
 
-    private TextClassificationOutcome getOutcomeForFocus(JCas jcas)
-    {
-        TextClassificationOutcome outcome = null;
-        TextClassificationFocus focus = null;
+	private TextClassificationOutcome getOutcomeForFocus(JCas jcas) {
+		TextClassificationOutcome outcome = null;
+		TextClassificationFocus focus = null;
 
-        try {
-            focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        }
-        catch (Exception ex) {
-            String msg = "Error while trying to retrieve TC focus from CAS. Details: "
-                    + ex.getMessage();
-            Logger.getLogger(getClass()).error(msg, ex);
-            throw new RuntimeException(msg);
-        }
+		try {
+			focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
+		} catch (Exception ex) {
+			String msg = "Error while trying to retrieve TC focus from CAS. Details: "
+					+ ex.getMessage();
+			Logger.getLogger(getClass()).error(msg, ex);
+			throw new RuntimeException(msg, ex);
+		}
 
-        Iterator<TextClassificationOutcome> outcomeIterator = JCasUtil.iterator(focus,
-                TextClassificationOutcome.class, false /* ambiguous */, false /* strict */);
+		Iterator<TextClassificationOutcome> outcomeIterator = JCasUtil
+				.iterator(focus, TextClassificationOutcome.class,
+						false /* ambiguous */, false /* strict */);
 
-        if (!outcomeIterator.hasNext())
-            throw new IllegalStateException(
-                    "There should be exactly one TC outcome covered by the TC focus from "
-                            + focus.getBegin() + " to " + focus.getEnd());
+		if (!outcomeIterator.hasNext()) {
+			throw new IllegalStateException(
+					"There should be exactly one TC outcome covered by the TC focus from "
+							+ focus.getBegin() + " to " + focus.getEnd());
+		}
 
-        outcome = outcomeIterator.next();
+		outcome = outcomeIterator.next();
 
-        if (outcomeIterator.hasNext())
-            throw new IllegalStateException(
-                    "There should be exactly one TC outcome covered by the TC focus from "
-                            + focus.getBegin() + " to " + focus.getEnd());
+		if (outcomeIterator.hasNext()) {
+			throw new IllegalStateException(
+					"There should be exactly one TC outcome covered by the TC focus from "
+							+ focus.getBegin() + " to " + focus.getEnd());
+		}
 
-        return outcome;
-    }
+		return outcome;
+	}
 }

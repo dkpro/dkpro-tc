@@ -115,7 +115,7 @@ public class ExtractFeaturesTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
+        File outputDir = aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
 
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
@@ -159,7 +159,7 @@ public class ExtractFeaturesTask
         }
 
         for (Entry<String, String> entry : parameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getStorageLocation(META_KEY, AccessMode.READONLY),
+            File file = new File(aContext.getFolder(META_KEY, AccessMode.READONLY),
                     entry.getValue());
             parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
@@ -177,7 +177,7 @@ public class ExtractFeaturesTask
     {
         // TrainTest setup: input files are set as imports
         if (filesRoot == null) {
-            File root = aContext.getStorageLocation(INPUT_KEY, AccessMode.READONLY);
+            File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
             Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
