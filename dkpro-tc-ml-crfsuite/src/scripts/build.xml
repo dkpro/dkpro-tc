@@ -41,7 +41,7 @@
 	<target name="separate-jars" depends="install-executables"/>
 
 	<target name="install-executables">
-		<property name="version.bin" value="20140918.0"/>
+		<property name="version.bin" value="20140918.1"/>
 
 		<mkdir dir="target/download"/>
 
