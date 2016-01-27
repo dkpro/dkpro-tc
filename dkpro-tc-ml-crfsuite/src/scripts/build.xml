@@ -94,7 +94,7 @@
 		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32/README">
 			crfsuite version 0.12
 		</echo>
-		
+
 		<propertyfile
 		    file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/linux-x86_32/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
@@ -148,9 +148,23 @@
 		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32/README">
 			crfsuite version 0.12
 		</echo>
-		
+
 		<propertyfile 
 			file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32/manifest.properties">
+			<entry  key="crfsuite" value="executable"/>
+		</propertyfile>
+
+		<!-- WINDOWS 64 bit -->
+		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_64"/>
+		<copydir src="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_32"
+				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_64"/>
+
+		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_64/README">
+					crfsuite version 0.12
+				</echo>
+
+		<propertyfile 
+					file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/crfsuite/windows-x86_64/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
@@ -162,7 +176,7 @@
 				<include name="**/*"/>
 			</fileset>
 		</jar>
-		
+
 		<generate-pom 
 			groupId="de.tudarmstadt.ukp.dkpro.tc"
 			artifactId="de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin" 
@@ -174,7 +188,7 @@
 			artifactId="de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin" 
 			version="${version.bin}"/>
 		<clean-pom/>
-	 	<delete dir="target/model-staging"/>
-		<delete dir="target/download"/> 
+		<delete dir="target/model-staging"/>
+		<delete dir="target/download"/>
 	</target>
 </project>
