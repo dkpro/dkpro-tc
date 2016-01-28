@@ -49,7 +49,7 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfCharsUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorSequence;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 
 public class CRFSuiteSaveAndLoadModelTest
     implements Constants
@@ -148,10 +148,10 @@ public class CRFSuiteSaveAndLoadModelTest
                 StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
                 StringReader.PARAM_LANGUAGE, "en"), AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class), AnalysisEngineFactory
-                .createEngineDescription(TcAnnotatorSequence.class,
-                        TcAnnotatorSequence.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                        TcAnnotatorSequence.PARAM_NAME_SEQUENCE_ANNOTATION,
-                        Sentence.class.getName(), TcAnnotatorSequence.PARAM_NAME_UNIT_ANNOTATION,
+                .createEngineDescription(TcAnnotator.class,
+                        TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+                        TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION,
+                        Sentence.class.getName(), TcAnnotator.PARAM_NAME_UNIT_ANNOTATION,
                         Token.class.getName()));
     }
 }

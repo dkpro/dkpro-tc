@@ -47,12 +47,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 
-	@ConfigurationParameter(name = TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION, mandatory = true)
+	@ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
 	private File tcModelLocation;
 
 	public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";

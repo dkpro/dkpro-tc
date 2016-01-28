@@ -50,7 +50,7 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
 public class WekaSaveAndLoadModelTest implements Constants
@@ -203,8 +203,8 @@ public class WekaSaveAndLoadModelTest implements Constants
                         StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
                         StringReader.PARAM_LANGUAGE, "en"), AnalysisEngineFactory
                         .createEngineDescription(BreakIteratorSegmenter.class),
-                        AnalysisEngineFactory.createEngineDescription(TcAnnotatorDocument.class,
-                                TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION,
+                        AnalysisEngineFactory.createEngineDescription(TcAnnotator.class,
+                                TcAnnotator.PARAM_TC_MODEL_LOCATION,
                                 modelFolder.getAbsolutePath()));
     }
 }
