@@ -81,6 +81,15 @@ public class CRFSuiteSaveAndLoadModelTest
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
+        
+        File tcversion = new File(modelFolder.getAbsolutePath() + "/" + MODEL_TC_VERSION);
+        assertTrue(tcversion.exists());
+        
+        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+        assertTrue(featureMode.exists());
+        
+        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+        assertTrue(learningMode.exists());
 
         modelFolder.deleteOnExit();
     }

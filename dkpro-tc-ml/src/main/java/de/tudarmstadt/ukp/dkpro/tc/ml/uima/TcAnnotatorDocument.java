@@ -34,11 +34,10 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.ml.modelpersist.ModelPersistUtil;
+import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 
 public class TcAnnotatorDocument
     extends JCasAnnotator_ImplBase
@@ -48,8 +47,8 @@ public class TcAnnotatorDocument
     @ConfigurationParameter(name = PARAM_TC_MODEL_LOCATION, mandatory = true)
     protected File tcModelLocation;
 
-    private String learningMode = Constants.LM_SINGLE_LABEL;
-    private String featureMode = Constants.FM_DOCUMENT;
+    private String learningMode = null;
+    private String featureMode = null;
 
     // private List<FeatureExtractorResource_ImplBase> featureExtractors;
     private List<String> featureExtractors;
@@ -66,9 +65,11 @@ public class TcAnnotatorDocument
         super.initialize(context);
 
         try {
-            mlAdapter = ModelPersistUtil.initMachineLearningAdapter(tcModelLocation);
-            parameters = ModelPersistUtil.initParameters(tcModelLocation);
-            featureExtractors = ModelPersistUtil.initFeatureExtractors(tcModelLocation);
+            mlAdapter = SaveModelUtils.initMachineLearningAdapter(tcModelLocation);
+            parameters = SaveModelUtils.initParameters(tcModelLocation);
+            featureExtractors = SaveModelUtils.initFeatureExtractors(tcModelLocation);
+            featureMode = SaveModelUtils.initFeatureMode(tcModelLocation);
+            learningMode =  SaveModelUtils.initLearningMode(tcModelLocation);
             
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
@@ -76,7 +77,7 @@ public class TcAnnotatorDocument
                     featureExtractors.toArray(new String[0]));
            
             engine = UIMAFramework.produceAnalysisEngine(connector,
-					TcAnnotatorUtil.getModelFeatureAwareResourceManager(tcModelLocation), null);
+					SaveModelUtils.getModelFeatureAwareResourceManager(tcModelLocation), null);
             
         }
         catch (Exception e) {
@@ -118,9 +119,9 @@ public class TcAnnotatorDocument
         throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
-    	List<Object> convertedParameters = TcAnnotatorUtil.convertParameters(parameters);
+    	List<Object> convertedParameters = SaveModelUtils.convertParameters(parameters);
         
-    	List<ExternalResourceDescription> extractorResources = TcAnnotatorUtil.loadExternalResourceDescriptionOfFeatures(
+    	List<ExternalResourceDescription> extractorResources = SaveModelUtils.loadExternalResourceDescriptionOfFeatures(
 				outputPath, featureExtractorClassNames, convertedParameters);
 
         // add the rest of the necessary parameters with the correct types

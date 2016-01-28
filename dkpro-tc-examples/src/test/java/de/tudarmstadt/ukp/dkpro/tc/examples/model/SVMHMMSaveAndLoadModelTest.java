@@ -81,6 +81,12 @@ public class SVMHMMSaveAndLoadModelTest
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
+        
+        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+        assertTrue(featureMode.exists());
+        
+        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+        assertTrue(learningMode.exists());
 
         modelFolder.deleteOnExit();
     }

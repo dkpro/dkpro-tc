@@ -41,11 +41,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.ml.modelpersist.ModelPersistUtil;
+import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 
 /**
  * Applies the given model to all TC focus annotated sections of the CAS. Note
@@ -65,8 +64,8 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = true)
 	private String nameUnit;
 
-	private String learningMode = Constants.LM_SINGLE_LABEL;
-	private String featureMode = Constants.FM_UNIT;
+	private String learningMode = null;
+	private String featureMode = null;
 
 	private List<String> featureExtractors;
 	private List<Object> parameters;
@@ -81,11 +80,13 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 		super.initialize(context);
 
 		try {
-			mlAdapter = ModelPersistUtil
+			mlAdapter = SaveModelUtils
 					.initMachineLearningAdapter(tcModelLocation);
-			parameters = ModelPersistUtil.initParameters(tcModelLocation);
-			featureExtractors = ModelPersistUtil
+			parameters = SaveModelUtils.initParameters(tcModelLocation);
+			featureExtractors = SaveModelUtils
 					.initFeatureExtractors(tcModelLocation);
+			featureMode = SaveModelUtils.initFeatureMode(tcModelLocation);
+            learningMode =  SaveModelUtils.initLearningMode(tcModelLocation);
 
 			AnalysisEngineDescription connector = getSaveModelConnector(
 					parameters, tcModelLocation.getAbsolutePath(), mlAdapter
@@ -164,10 +165,10 @@ public class TcAnnotatorUnit extends JCasAnnotator_ImplBase {
 			throws ResourceInitializationException {
 		// convert parameters to string as external resources only take string
 		// parameters
-		List<Object> convertedParameters = TcAnnotatorUtil
+		List<Object> convertedParameters = SaveModelUtils
 				.convertParameters(parameters);
 
-		List<ExternalResourceDescription> extractorResources = TcAnnotatorUtil
+		List<ExternalResourceDescription> extractorResources = SaveModelUtils
 				.loadExternalResourceDescriptionOfFeatures(outputPath,
 						featureExtractorClassNames, convertedParameters);
 

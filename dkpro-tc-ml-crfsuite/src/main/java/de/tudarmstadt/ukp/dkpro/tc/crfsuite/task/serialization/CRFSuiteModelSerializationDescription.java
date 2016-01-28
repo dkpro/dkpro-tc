@@ -31,9 +31,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 
 public class CRFSuiteModelSerializationDescription
     extends ModelSerializationTask
@@ -46,6 +46,10 @@ public class CRFSuiteModelSerializationDescription
     protected List<String> featureSet;
     @Discriminator
     private String[] classificationArguments;
+    @Discriminator
+    private String featureMode;
+    @Discriminator
+    private String learningMode;
 
     boolean trainModel = true;
 
@@ -65,6 +69,8 @@ public class CRFSuiteModelSerializationDescription
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+        SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
+        SaveModelUtils.writeLearningMode(outputFolder, learningMode);
     }
 
     private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception

@@ -345,11 +345,11 @@ public interface Constants
     /**
      * Name of the file which holds the model meta data
      */
-    public static final String MODEL_META = "model.meta";
+    public static final String MODEL_META = "meta.txt";
     /**
      * Tc version under which this model has been trained
      */
-    public static final String MODEL_TC_VERSION = "model.tcVersion";
+    public static final String MODEL_TC_VERSION = "tcVersion.txt";
     /**
      * Name of the file which holds the feature names
      */
@@ -377,6 +377,15 @@ public interface Constants
      * Name of the file which holds the classifier
      */
     public static final String MODEL_CLASSIFIER = "classifier.ser";
+
+    /**
+     * Name of the file which holds the feature mode
+     */
+    public static final String MODEL_FEATURE_MODE = "featureMode.txt";
+    /**
+     * Name of the file which holds the feature mode
+     */
+    public static final String MODEL_LEARNING_MODE = "learningMode.txt";
     /**
      * Public name of the prediction map file
      */

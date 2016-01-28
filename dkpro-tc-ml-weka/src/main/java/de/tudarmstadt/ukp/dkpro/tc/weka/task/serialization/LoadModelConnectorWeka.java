@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
+import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -83,6 +83,8 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 			loadClassLabels();
 
 			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
+			SaveModelUtils.writeFeatureMode(tcModelLocation, featureMode);
+			SaveModelUtils.writeLearningMode(tcModelLocation, learningMode);
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}

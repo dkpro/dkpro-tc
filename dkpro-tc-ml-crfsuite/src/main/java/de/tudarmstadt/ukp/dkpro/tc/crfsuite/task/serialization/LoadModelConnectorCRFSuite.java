@@ -40,10 +40,10 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
+import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
 
 public class LoadModelConnectorCRFSuite
@@ -55,12 +55,6 @@ public class LoadModelConnectorCRFSuite
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
-
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
-    private String learningMode;
-
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
-    private String featureMode;
 
     @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
     private String featureStoreImpl;

@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
+import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.util.SVMHMMUtils;
@@ -45,6 +45,10 @@ public class SvmhmmModelSerializationDescription
     protected List<String> featureSet;
     @Discriminator
     private String[] classificationArguments;
+    @Discriminator
+    protected String featureMode;
+    @Discriminator
+    protected String learningMode;
 
 
     @Override
@@ -58,7 +62,8 @@ public class SvmhmmModelSerializationDescription
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
         SaveModelUtils.writeModelAdapterInformation(outputFolder, SVMHMMAdapter.class.getName());
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
-
+        SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
+        SaveModelUtils.writeLearningMode(outputFolder, learningMode);
     }
 
     private void trainAndStoreModel(TaskContext aContext)
