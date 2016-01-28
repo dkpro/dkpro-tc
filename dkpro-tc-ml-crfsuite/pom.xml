@@ -99,7 +99,7 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.tc.crfsuite-bin</artifactId>
-				<version>20140918.0</version>
+				<version>20140918.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
