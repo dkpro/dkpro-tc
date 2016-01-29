@@ -30,7 +30,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotatorDocument;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 
 /**
  * Demo to show-case how trained models can be loaded and used to classify unlabeled documents. 
@@ -82,8 +82,8 @@ public class ApplyTrainedModelToUnlabeledDataDemo
 						StringReader.PARAM_LANGUAGE, LANGUAGE_CODE),
 				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
 				AnalysisEngineFactory.createEngineDescription(
-						TcAnnotatorDocument.class,
-						TcAnnotatorDocument.PARAM_TC_MODEL_LOCATION,
+						TcAnnotator.class,
+						TcAnnotator.PARAM_TC_MODEL_LOCATION,
 						MODEL_PATH),
 				AnalysisEngineFactory.createEngineDescription(
 						XmiWriter.class,
