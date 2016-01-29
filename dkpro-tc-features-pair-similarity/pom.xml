@@ -36,12 +36,12 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.featurepath-asl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.algorithms.lexical-asl</artifactId>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.uima.core-asl</artifactId>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-uima-core-asl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
@@ -65,8 +65,8 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>dkpro.similarity</groupId>
-			<artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-api-asl</artifactId>
 		</dependency>
 		<dependency>		
 			<groupId>org.apache.uima</groupId>
