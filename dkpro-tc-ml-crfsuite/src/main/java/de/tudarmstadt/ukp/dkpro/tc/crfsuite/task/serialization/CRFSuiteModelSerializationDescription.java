@@ -33,7 +33,6 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameE
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 
 public class CRFSuiteModelSerializationDescription
     extends ModelSerializationTask
@@ -64,13 +63,7 @@ public class CRFSuiteModelSerializationDescription
             copyAlreadyTrainedModel(aContext);
         }
 
-        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-        SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
-        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
-        SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
-        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
-        SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
-        SaveModelUtils.writeLearningMode(outputFolder, learningMode);
+        writeModelConfiguration(aContext, CRFSuiteAdapter.class.getName());
     }
 
     private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception

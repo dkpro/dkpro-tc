@@ -46,8 +46,8 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 
 public class TcAnnotator
     extends JCasAnnotator_ImplBase

@@ -34,7 +34,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
-import de.tudarmstadt.ukp.dkpro.tc.ml.savemodel.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
@@ -87,19 +86,8 @@ public class WekaModelSerializationDescription
     public void execute(TaskContext aContext)
         throws Exception
     {
-
         writeWekaSpecificInformation(aContext);
-
-        // write feature extractors
-        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-        SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
-        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet,
-                pipelineParameters);
-        SaveModelUtils.writeModelAdapterInformation(outputFolder,
-                WekaClassificationAdapter.class.getName());
-        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
-        SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
-        SaveModelUtils.writeLearningMode(outputFolder, learningMode);
+        writeModelConfiguration(aContext, WekaClassificationAdapter.class.getName());
     }
 
     private void writeWekaSpecificInformation(TaskContext aContext)

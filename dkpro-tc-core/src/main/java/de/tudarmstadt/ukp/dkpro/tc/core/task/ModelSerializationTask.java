@@ -18,14 +18,29 @@
 package de.tudarmstadt.ukp.dkpro.tc.core.task;
 
 import java.io.File;
+import java.util.List;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 
 public abstract class ModelSerializationTask
     extends ExecutableTaskBase
     implements Constants
 {
+    
+    @Discriminator
+    protected List<Object> pipelineParameters;
+    @Discriminator
+    protected List<String> featureSet;
+    @Discriminator
+    private String[] classificationArguments;
+    @Discriminator
+    private String featureMode;
+    @Discriminator
+    private String learningMode;
 
 	protected File outputFolder;
 
@@ -34,5 +49,15 @@ public abstract class ModelSerializationTask
         this.outputFolder = outputFolder;
     }
 
+	
+	public void writeModelConfiguration(TaskContext aContext, String mlAdapter) throws Exception{
+        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
+        SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
+        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
+        SaveModelUtils.writeModelAdapterInformation(outputFolder, mlAdapter);
+        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+        SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
+        SaveModelUtils.writeLearningMode(outputFolder, learningMode);
+	}
    
 }

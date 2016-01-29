@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.tc.ml.savemodel;
+package de.tudarmstadt.ukp.dkpro.tc.core.util;
 
 import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 
