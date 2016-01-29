@@ -40,15 +40,7 @@ public class CRFSuiteModelSerializationDescription
 {
 
     @Discriminator
-    protected List<Object> pipelineParameters;
-    @Discriminator
-    protected List<String> featureSet;
-    @Discriminator
     private String[] classificationArguments;
-    @Discriminator
-    private String featureMode;
-    @Discriminator
-    private String learningMode;
 
     boolean trainModel = true;
 

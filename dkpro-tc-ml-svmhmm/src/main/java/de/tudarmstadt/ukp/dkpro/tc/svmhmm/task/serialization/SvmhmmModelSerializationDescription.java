@@ -18,7 +18,6 @@
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.serialization;
 
 import java.io.File;
-import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.collections.BidiMap;
@@ -39,15 +38,7 @@ public class SvmhmmModelSerializationDescription
 {
 
     @Discriminator
-    protected List<Object> pipelineParameters;
-    @Discriminator
-    protected List<String> featureSet;
-    @Discriminator
     private String[] classificationArguments;
-    @Discriminator
-    protected String featureMode;
-    @Discriminator
-    protected String learningMode;
 
 
     @Override
