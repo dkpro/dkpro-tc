@@ -53,8 +53,6 @@ public class WekaModelSerializationDescription
 {
     
     @Discriminator
-    protected List<Object> pipelineParameters;
-    @Discriminator
     protected List<String> classificationArguments;
     @Discriminator
     protected List<String> featureSearcher;
@@ -66,12 +64,6 @@ public class WekaModelSerializationDescription
     protected int numLabelsToKeep;
     @Discriminator
     protected boolean applySelection;
-    @Discriminator
-    protected String featureMode;
-    @Discriminator
-    protected List<String> featureSet;
-    @Discriminator
-    protected String learningMode;
     
     public WekaModelSerializationDescription() {
     	// required for groovy (?)

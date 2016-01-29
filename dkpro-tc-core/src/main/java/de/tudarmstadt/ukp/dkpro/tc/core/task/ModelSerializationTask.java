@@ -36,11 +36,9 @@ public abstract class ModelSerializationTask
     @Discriminator
     protected List<String> featureSet;
     @Discriminator
-    private String[] classificationArguments;
+    protected String featureMode;
     @Discriminator
-    private String featureMode;
-    @Discriminator
-    private String learningMode;
+    protected String learningMode;
 
 	protected File outputFolder;
 
