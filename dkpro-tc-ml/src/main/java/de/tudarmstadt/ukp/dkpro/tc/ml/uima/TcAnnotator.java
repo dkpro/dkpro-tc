@@ -65,8 +65,8 @@ public class TcAnnotator
     @ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = false)
     private String nameUnit;
 
-    private String learningMode = null;
-    private String featureMode = null;
+    private String learningMode;
+    private String featureMode;
 
     // private List<FeatureExtractorResource_ImplBase> featureExtractors;
     private List<String> featureExtractors;
@@ -108,7 +108,7 @@ public class TcAnnotator
 
     private void validateUimaParameter()
     {
-        switch (learningMode) {
+        switch (featureMode) {
 
         case Constants.FM_UNIT: {
             boolean unitAnno = nameUnit != null && !nameUnit.isEmpty();
@@ -175,6 +175,10 @@ public class TcAnnotator
     {
         switch (featureMode) {
         case Constants.FM_DOCUMENT:
+            processDocument(jcas);
+            break;
+        case Constants.FM_PAIR:
+            // same as document
             processDocument(jcas);
             break;
         case Constants.FM_SEQUENCE:
@@ -279,7 +283,7 @@ public class TcAnnotator
     private void processDocument(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        // we need an outcome annotation present
+        // we need an outcome annotation to be present
         TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
         outcome.setOutcome("");
         outcome.addToIndexes();
