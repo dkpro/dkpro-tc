@@ -173,7 +173,7 @@ public class TcAnnotator
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        switch (learningMode) {
+        switch (featureMode) {
         case Constants.FM_DOCUMENT:
             processDocument(jcas);
             break;
