@@ -51,20 +51,22 @@ public class CRFSuiteModelSerializationDescription
 
         if (trainModel) {
             trainAndStoreModel(aContext);
-        }else {
+        }
+        else {
             copyAlreadyTrainedModel(aContext);
         }
 
         writeModelConfiguration(aContext, CRFSuiteAdapter.class.getName());
     }
 
-    private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception
+    private void copyAlreadyTrainedModel(TaskContext aContext)
+        throws Exception
     {
         File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-        
+
         FileInputStream fis = new FileInputStream(file);
         FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
-        IOUtils.copy(fis, fos);        
+        IOUtils.copy(fis, fos);
     }
 
     private void trainAndStoreModel(TaskContext aContext)
@@ -74,11 +76,13 @@ public class CRFSuiteModelSerializationDescription
                 AccessMode.READONLY);
         String trainFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
                 AdapterNameEntries.featureVectorsFile);
-        File train = new File(trainFolder.getPath() + "/" + trainFileName);
 
-        List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(
-                outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER, train.getAbsolutePath(),
-                classificationArguments != null ? classificationArguments[0] : null);
+        String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
+        String trainingDataPath = trainFolder.getPath() + "/" + trainFileName;
+        String classificationArgs = classificationArguments != null ? classificationArguments[0]
+                : null;
+        List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(classifierPath,
+                trainingDataPath, classificationArgs);
 
         Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
         process.waitFor();
