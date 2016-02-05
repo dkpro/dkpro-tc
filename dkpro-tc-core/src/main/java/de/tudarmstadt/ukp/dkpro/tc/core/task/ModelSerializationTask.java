@@ -45,6 +45,7 @@ public abstract class ModelSerializationTask
 	public void setOutputFolder(File outputFolder)
     {
         this.outputFolder = outputFolder;
+        this.outputFolder.mkdirs();
     }
 
 	
