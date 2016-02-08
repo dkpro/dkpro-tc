@@ -21,6 +21,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,6 +60,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils;
 
+/**
+ * Demo to show case how to train and save a model in document mode and multi-label classification
+ * using Meka/Weka.
+ */
 public class SaveModelUtils
     implements Constants
 {
@@ -462,4 +467,20 @@ public class SaveModelUtils
         resourceManager.setExtensionClassPath(classpathOfModelFeatures, true);
         return resourceManager;
     }
+
+	public static String initBipartitionThreshold(File tcModelLocation) throws FileNotFoundException, IOException {
+        File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
+        Properties prop = new Properties();
+        prop.load(new FileInputStream(file));
+        return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+	}
+
+	public static void writeBipartitionThreshold(File outputFolder, String bipartitionThreshold) throws IOException {
+        Properties properties = new Properties();
+        properties.setProperty(DIM_BIPARTITION_THRESHOLD, bipartitionThreshold);
+
+        File file = new File(outputFolder + "/" + MODEL_BIPARTITION_THRESHOLD);
+        FileOutputStream fileOut = new FileOutputStream(file);
+        properties.store(fileOut, "Bipartition threshold used to train this model (only multi-label classification)");
+        fileOut.close(); 	}
 }

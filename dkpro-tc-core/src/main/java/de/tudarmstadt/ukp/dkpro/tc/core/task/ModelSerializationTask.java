@@ -39,6 +39,8 @@ public abstract class ModelSerializationTask
     protected String featureMode;
     @Discriminator
     protected String learningMode;
+    @Discriminator
+    protected String threshold;
 
 	protected File outputFolder;
 
@@ -57,6 +59,7 @@ public abstract class ModelSerializationTask
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
         SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
         SaveModelUtils.writeLearningMode(outputFolder, learningMode);
+        SaveModelUtils.writeBipartitionThreshold(outputFolder, threshold);
 	}
    
 }

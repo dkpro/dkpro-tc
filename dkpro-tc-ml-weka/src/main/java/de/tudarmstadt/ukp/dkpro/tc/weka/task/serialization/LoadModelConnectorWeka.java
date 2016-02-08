@@ -45,10 +45,12 @@ import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBas
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
 
 public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 
@@ -117,27 +119,76 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 			Instance instance = de.tudarmstadt.ukp.dkpro.tc.core.util.TaskUtils
 					.getSingleInstance(featureMode, featureExtractors, jcas,
 							false, false);
-
-			weka.core.Instance wekaInstance = WekaUtils
+			
+			boolean isMultiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+			boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
+			
+			if(!isMultiLabel){
+				weka.core.Instance wekaInstance = WekaUtils
 					.tcInstanceToWekaInstance(instance, attributes,
-							classLabels, false);
+							classLabels, isRegression);
 
-			String val = classLabels.get((int) cls
+				String val = classLabels.get((int) cls
 					.classifyInstance(wekaInstance));
 
-			TextClassificationOutcome outcome = null;
-			if (!FM_UNIT.equals(featureMode)) {
-				outcome = JCasUtil.selectSingle(jcas,
-						TextClassificationOutcome.class);
-			} else {
-				outcome = getOutcomeForFocus(jcas);
+				TextClassificationOutcome outcome = null;
+				if (!FM_UNIT.equals(featureMode)) {
+					outcome = JCasUtil.selectSingle(jcas,
+							TextClassificationOutcome.class);
+				} else {
+					outcome = getOutcomeForFocus(jcas);
+				}
+				outcome.setOutcome(val);
 			}
+			else{
+				weka.core.Instance mekaInstance = WekaUtils
+						.tcInstanceToMekaInstance(instance, attributes, classLabels);
+				double[] vals = cls.distributionForInstance(mekaInstance);
+				List<String> outcomes = new ArrayList<String>();
+                for (int i = 0; i < vals.length; i++) {
+                    if (vals[i] >= Double.valueOf(bipartitionThreshold)) {
+                        String label = mekaInstance.attribute(i).name()
+                        		.split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1];
+                        outcomes.add(label);
+                    }
+                }	
 
-			outcome.setOutcome(val);
+				TextClassificationOutcome outcome = null;
+				TextClassificationFocus focus = null;
+				if (!FM_UNIT.equals(featureMode)) {
+					outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
+				} else {
+					outcome = getOutcomeForFocus(jcas);
+					focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
+				}
+				if(outcomes.size() > 0){
+					outcome.setOutcome(outcomes.get(0));
+					outcome.addToIndexes();
+				}
+				if(outcomes.size() > 1){
+					// add more outcome annotations
+					try {
+						for(int i = 1; i < outcomes.size(); i++){
+							TextClassificationOutcome newOutcome = new TextClassificationOutcome(jcas);
+							if(focus != null){
+								newOutcome.setBegin(focus.getBegin());
+								newOutcome.setEnd(focus.getEnd());
+							}
+							newOutcome.setOutcome(outcomes.get(i));
+							newOutcome.addToIndexes();
+						}
+					} catch (Exception ex) {
+						String msg = "Error while trying to retrieve TC focus from CAS. Details: "
+								+ ex.getMessage();
+						Logger.getLogger(getClass()).error(msg, ex);
+						throw new RuntimeException(msg, ex);
+					}
+				}
+			}
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(new IllegalStateException(
-					e.getMessage()));
-		}
+						e.getMessage()));
+		}		
 	}
 
 	private TextClassificationOutcome getOutcomeForFocus(JCas jcas) {

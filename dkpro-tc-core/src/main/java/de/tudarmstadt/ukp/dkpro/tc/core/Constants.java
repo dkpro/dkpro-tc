@@ -387,6 +387,10 @@ public interface Constants
      */
     public static final String MODEL_LEARNING_MODE = "learningMode.txt";
     /**
+     * Name of the file which holds the bipartition threshold
+     */
+    public static final String MODEL_BIPARTITION_THRESHOLD = "bipartitionThreshold.txt";
+    /**
      * Public name of the prediction map file
      */
     public static final String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";

@@ -510,7 +510,8 @@ public class WekaUtils
         List<Attribute> atts = new ArrayList<Attribute>();
 
         for (String outcome : outcomeValues) {
-            atts.add(new Attribute(CLASS_ATTRIBUTE_PREFIX + outcome, Arrays.asList(new String[] {
+        	String name = outcome.contains(CLASS_ATTRIBUTE_PREFIX) ? outcome : CLASS_ATTRIBUTE_PREFIX + outcome;
+            atts.add(new Attribute(name, Arrays.asList(new String[] {
                     "0", "1" })));
         }
         return atts;

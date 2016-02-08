@@ -50,6 +50,11 @@ public abstract class ConnectorBase
      * The feature mode, e.g. document, pair, unit, or sequence
      */
     public static final String PARAM_FEATURE_MODE = "featureMode";
+    
+    /**
+     * In case of multi-labeling, the threshold used to create bipartitions from rankings
+     */
+    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
 
     /**
      * Switches to developer mode with less restrictive settings. For example, using document level
