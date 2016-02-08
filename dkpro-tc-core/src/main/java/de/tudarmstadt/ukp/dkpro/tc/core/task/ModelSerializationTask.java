@@ -52,6 +52,10 @@ public abstract class ModelSerializationTask
 
 	
 	public void writeModelConfiguration(TaskContext aContext, String mlAdapter) throws Exception{
+		
+		// bipartition threshold is optional
+		threshold = "0.5";
+		
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
         SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);

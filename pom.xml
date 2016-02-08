@@ -453,7 +453,7 @@
 							<strictCheck>true</strictCheck>
 							<properties>
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
-								<currentYear>2015</currentYear>
+								<currentYear>2016</currentYear>
 							</properties>
 							<excludes>
 								<exclude>release.properties</exclude>

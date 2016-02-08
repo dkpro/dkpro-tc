@@ -1,5 +1,5 @@
 /**
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -90,6 +90,9 @@ public class CRFSuiteSaveAndLoadModelTest
         
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
+        
+        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
+        assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
     }
