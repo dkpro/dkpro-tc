@@ -18,6 +18,8 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_DOCUMENT;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_PAIR;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_UNIT;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
@@ -26,6 +28,7 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -151,19 +154,22 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
                         		.split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1];
                         outcomes.add(label);
                     }
-                }	
-
-				TextClassificationOutcome outcome = null;
-				TextClassificationFocus focus = null;
-				if (!FM_UNIT.equals(featureMode)) {
-					outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
+                }
+				
+                TextClassificationFocus focus = null;
+				if (FM_DOCUMENT.equals(featureMode) || FM_PAIR.equals(featureMode)) {
+					Collection<TextClassificationOutcome> oldOutcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
+					for (TextClassificationOutcome oldOutcome : oldOutcomes) {
+						oldOutcome.removeFromIndexes();
+					}
 				} else {
-					outcome = getOutcomeForFocus(jcas);
+					getOutcomeForFocus(jcas).removeFromIndexes();
 					focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
 				}
 				if(outcomes.size() > 0){
-					outcome.setOutcome(outcomes.get(0));
-					outcome.addToIndexes();
+					TextClassificationOutcome newOutcome = new TextClassificationOutcome(jcas);
+					newOutcome.setOutcome(outcomes.get(0));
+					newOutcome.addToIndexes();
 				}
 				if(outcomes.size() > 1){
 					// add more outcome annotations
