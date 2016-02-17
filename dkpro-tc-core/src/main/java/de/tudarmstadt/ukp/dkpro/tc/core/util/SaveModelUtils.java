@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -380,17 +381,15 @@ public class SaveModelUtils
         throws IOException
     {
         List<Object> parameters = new ArrayList<>();
-        for (String parameter : FileUtils.readLines(new File(tcModelLocation, MODEL_PARAMETERS))) {
-            if (!parameter.startsWith("#")) {
-                String[] parts = parameter.split("=");
-                parameters.add(parts[0]);
-
-                if (isExistingFilePath(tcModelLocation, parts[1])) {
-                    parameters.add(tcModelLocation + "/" + parts[1]);
-                }
-                else {
-                    parameters.add(parts[1]);
-                }
+        Properties parametersProp = new Properties();
+        parametersProp.load(new FileReader(new File(tcModelLocation, MODEL_PARAMETERS)));
+        for (Object key : parametersProp.keySet()) {
+            parameters.add((String)key);
+            if (isExistingFilePath(tcModelLocation, (String)parametersProp.get(key))) {
+                parameters.add(tcModelLocation + "/" + (String)parametersProp.get(key));
+            }
+            else {
+                parameters.add((String)parametersProp.get(key));
             }
         }
         return parameters;
