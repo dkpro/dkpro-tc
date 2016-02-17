@@ -40,6 +40,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import weka.classifiers.Classifier;
@@ -159,11 +160,16 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
                 TextClassificationFocus focus = null;
 				if (FM_DOCUMENT.equals(featureMode) || FM_PAIR.equals(featureMode)) {
 					Collection<TextClassificationOutcome> oldOutcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
+					List<Annotation> annotationsList = new ArrayList<Annotation>();
 					for (TextClassificationOutcome oldOutcome : oldOutcomes) {
-						oldOutcome.removeFromIndexes();
+						annotationsList.add(oldOutcome);
+					}
+					for (Annotation annotation : annotationsList) {
+						annotation.removeFromIndexes();
 					}
 				} else {
-					getOutcomeForFocus(jcas).removeFromIndexes();
+					TextClassificationOutcome annotation = getOutcomeForFocus(jcas);
+					annotation.removeFromIndexes();
 					focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
 				}
 				if(outcomes.size() > 0){
