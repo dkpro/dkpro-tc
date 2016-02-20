@@ -21,14 +21,21 @@ package de.tudarmstadt.ukp.dkpro.tc.examples.multi.document;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
+import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -42,12 +49,13 @@ import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
 import meka.classifiers.multilabel.BR;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.classifiers.bayes.NaiveBayes;
 
-public class SaveModelMultilabelDemo
+public class SaveAndApplyModelMultilabelDemo
     implements Constants
 {
 
@@ -58,7 +66,8 @@ public class SaveModelMultilabelDemo
     public static final String LANGUAGE_CODE = "en";
     public static final String BIPARTITION_THRESHOLD = "0.001";
    
-    public static final File modelPath = new File("target/model/test");
+    public static final File modelPath = new File("target/model");
+    public static final File PREDICTION_PATH = new File("target/prediction");
 
 
     public static void main(String[] args)
@@ -70,8 +79,9 @@ public class SaveModelMultilabelDemo
     	DemoUtils.setDkproHome(ReutersUsingTCEvaluationDemo.class.getSimpleName());
     	
         ParameterSpace pSpace = getParameterSpace();
-        SaveModelMultilabelDemo experiment = new SaveModelMultilabelDemo();
+        SaveAndApplyModelMultilabelDemo experiment = new SaveAndApplyModelMultilabelDemo();
         experiment.runSaveModel(pSpace);
+        experiment.applyStoredModel("An example sentence. And another one.");
     }
 
     @SuppressWarnings("unchecked")
@@ -156,5 +166,22 @@ public class SaveModelMultilabelDemo
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
+    }
+    
+    protected void applyStoredModel(String text) throws ResourceInitializationException, UIMAException, IOException{
+		SimplePipeline.runPipeline(
+				CollectionReaderFactory.createReader(
+						StringReader.class,
+						StringReader.PARAM_DOCUMENT_TEXT, text,
+						StringReader.PARAM_DOCUMENT_ID, "exampleID",
+						StringReader.PARAM_LANGUAGE, LANGUAGE_CODE),
+				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
+				AnalysisEngineFactory.createEngineDescription(
+						TcAnnotator.class,
+						TcAnnotator.PARAM_TC_MODEL_LOCATION,
+						modelPath),
+				AnalysisEngineFactory.createEngineDescription(
+						XmiWriter.class,
+						XmiWriter.PARAM_TARGET_LOCATION, PREDICTION_PATH));
     }
 }
