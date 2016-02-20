@@ -355,6 +355,10 @@ public interface Constants
      */
     public static final String MODEL_FEATURE_NAMES = "featureNames.txt";
     /**
+     * Name of the file which holds the feature names (non-human-readable)
+     */
+    public static final String MODEL_FEATURE_NAMES_SERIALIZED = "featureNames.ser";
+    /**
      * Name of the file which holds the class labels
      */
     public static final String MODEL_CLASS_LABELS = "classLabels.txt";

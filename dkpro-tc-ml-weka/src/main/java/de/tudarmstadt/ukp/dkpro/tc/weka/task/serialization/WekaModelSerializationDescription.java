@@ -19,6 +19,9 @@
 package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -100,28 +103,26 @@ public class WekaModelSerializationDescription
         
      // FEATURE SELECTION
         WekaUtils.featureSelection(aContext, trainData, learningMode, featureSearcher, attributeEvaluator,applySelection, labelTransformationMethod, numLabelsToKeep);
-        
-        // build classifier
 
+        // write attribute file
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        Enumeration<Attribute> atts = trainData.enumerateAttributes();
+        
+        while (atts.hasMoreElements()) {
+            attributes.add(atts.nextElement());
+        }
+        attributes.add(trainData.classAttribute());
+        
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(outputFolder, MODEL_FEATURE_NAMES_SERIALIZED)));
+        out.writeObject(attributes);
+        out.close();
+        
         // write model file
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
         cl.buildClassifier(trainData);
         File model = new File(outputFolder, MODEL_CLASSIFIER);
         model.getParentFile().mkdir();
         weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
-
-        // write attribute file
-        StringBuilder attributes = new StringBuilder();
-        Enumeration<Attribute> atts = trainData.enumerateAttributes();
-        while (atts.hasMoreElements()) {
-            attributes.append(atts.nextElement().name());
-            attributes.append("\n");
-        }
-        attributes.append(trainData.classAttribute().name());
-        attributes.append("\n");
-
-        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_NAMES),
-                attributes.toString());
 
         // write class labels file
         List<String> classLabels;

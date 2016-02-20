@@ -23,10 +23,12 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_PAIR;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_UNIT;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
-import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES_SERIALIZED;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -104,12 +106,12 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 		}
 	}
 
-	private void loadAttributes() throws IOException {
-		attributes = new ArrayList<>();
-		for (String attributeName : FileUtils.readLines(new File(
-				tcModelLocation, MODEL_FEATURE_NAMES))) {
-			attributes.add(new Attribute(attributeName));
-		}
+	@SuppressWarnings("unchecked")
+	private void loadAttributes() throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(
+				tcModelLocation, MODEL_FEATURE_NAMES_SERIALIZED)));
+        attributes = (List<Attribute>) in.readObject();
+        in.close();
 	}
 
 	private void loadClassifier() throws Exception {
@@ -147,6 +149,7 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 			else{
 				weka.core.Instance mekaInstance = WekaUtils
 						.tcInstanceToMekaInstance(instance, attributes, classLabels);
+				
 				double[] vals = cls.distributionForInstance(mekaInstance);
 				List<String> outcomes = new ArrayList<String>();
                 for (int i = 0; i < vals.length; i++) {
