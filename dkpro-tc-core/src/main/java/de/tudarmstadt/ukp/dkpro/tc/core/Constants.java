@@ -304,7 +304,7 @@ public interface Constants
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
-    public static final String RESULTS_FILENAME = "results.prop";
+    public static final String RESULTS_FILENAME = "results.txt";
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
@@ -381,6 +381,11 @@ public interface Constants
      * Name of the file which holds the classifier
      */
     public static final String MODEL_CLASSIFIER = "classifier.ser";
+    
+    /**
+     * Name of the file which holds the feature selection filter
+     */
+    public static final String MODEL_FEATURE_REDUCER = "featureSelection.ser";
 
     /**
      * Name of the file which holds the feature mode
