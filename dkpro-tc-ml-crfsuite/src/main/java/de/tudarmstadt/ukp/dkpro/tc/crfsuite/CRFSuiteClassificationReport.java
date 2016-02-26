@@ -18,13 +18,17 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.util.Properties;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
 
 public class CRFSuiteClassificationReport
     extends ReportBase
@@ -37,14 +41,44 @@ public class CRFSuiteClassificationReport
     {
         // only a mock for now - this needs to be rewritten anyway once the evaluation module is
         // ready
-    	File evalFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+    	File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
                 AccessMode.READWRITE);
-    	String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.evaluationFile);
-        File evalFile = new File(evalFolder,evalFileName);
+    	String predFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
+                AdapterNameEntries.predictionsFile);
+        File predFile = new File(folder,predFileName);
+        
+        Double correct = 0.0;
+        Double incorrect = 0.0;
+        
+        BufferedReader br = new BufferedReader(new FileReader(predFile));
+        String line=null;
+        while((line=br.readLine())!=null){
+            if(line.startsWith("#")){
+                continue;
+            }
+            if(line.isEmpty()){
+                continue;
+            }
+            String[] split = line.split("\t");
+            
+            if(split[0].equals(split[1])){
+                correct++;
+            }else{
+                incorrect++;
+            }
+        }
+        
+        
+        File accuracyFile = getContext().getFile(Constants.RESULTS_FILENAME, AccessMode.READWRITE);
+        
+        Double accuracy = correct/(correct+incorrect);
+        
+        Properties p = new Properties();
+        p.setProperty(ReportConstants.CORRECT, correct.toString());
+        p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
+        p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
+        p.store(new FileOutputStream(accuracyFile), "Accuracy on test data");
 
-        // Write out properties
-        getContext().storeBinary(Constants.RESULTS_FILENAME, new FileInputStream(evalFile));
-
+        br.close();
     }
 }
