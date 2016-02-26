@@ -20,11 +20,10 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
@@ -42,7 +41,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.writer.LabelSubstitutor;
 
@@ -120,7 +118,7 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 
 		writeCRFSuiteGeneratedReports2File(aContext);
 
-		List<String> predictionValues = writeSelfGeneratedAccuracyReport2File(aContext, aRawTextOutput);
+		List<String> predictionValues = new ArrayList<String>(Arrays.asList(aRawTextOutput.split("\n")));
 
 		writeFileWithPredictedLabels(aContext, predictionValues);
 	}
@@ -143,52 +141,6 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 		}
 		FileUtils.writeStringToFile(predictionsFile, sb.toString());
 
-	}
-
-	private List<String> writeSelfGeneratedAccuracyReport2File(TaskContext aContext, String aRawTextOutput)
-			throws Exception {
-		String[] lines = aRawTextOutput.split("\n");
-
-		Double correct = 0.0;
-		Double incorrect = 0.0;
-
-		List<String> predictionValues = new ArrayList<String>();
-		for (String line : lines) {
-			predictionValues.add(line);
-
-			String[] split = line.split("\t");
-			if (split.length < 2) {
-				continue;
-			}
-			String actual = split[0];
-			String prediction = split[1];
-
-			if (actual.equals(prediction)) {
-				correct++;
-			} else {
-				incorrect++;
-			}
-		}
-
-		Double denominator = correct + incorrect;
-		Double numerator = correct;
-		Double accuracy = 0.0;
-		if (denominator > 0) {
-			accuracy = numerator / denominator;
-		}
-
-		// file to hold prediction results
-		File evalFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-		String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile);
-		File evalFile = new File(evalFolder, evalFileName);
-		
-        Properties p = new Properties();
-        p.setProperty(ReportConstants.CORRECT, correct.toString());
-        p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
-        p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
-        p.store(new FileOutputStream(evalFile), "Accuracy on test data");
-
-		return predictionValues;
 	}
 
 	private void writeCRFSuiteGeneratedReports2File(TaskContext aContext) throws Exception {
