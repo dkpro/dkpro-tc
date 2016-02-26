@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.NGRAM_GLUE;
 import java.util.List;
 import java.util.Set;
 
@@ -55,9 +56,9 @@ public class ComboUtils
     {
         FrequencyDistribution<String> documentComboNGrams = new FrequencyDistribution<String>();
         for (String ngram1 : document1NGrams.getKeys()) {
-            int ngram1size = StringUtils.countMatches(ngram1, NGramUtils.NGRAM_GLUE) + 1;
+            int ngram1size = StringUtils.countMatches(ngram1, NGRAM_GLUE) + 1;
             for (String ngram2 : document2NGrams.getKeys()) {
-                int ngram2size = StringUtils.countMatches(ngram2, NGramUtils.NGRAM_GLUE) + 1;
+                int ngram2size = StringUtils.countMatches(ngram2, NGRAM_GLUE) + 1;
                 if (ngram1size + ngram2size >= minN && ngram1size + ngram2size <= maxN) {
                 	//final feature value, binary or count, is controlled in the FE
                 	long value = document1NGrams.getCount(ngram1) * document2NGrams.getCount(ngram2);

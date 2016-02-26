@@ -295,6 +295,10 @@ public interface Constants
      * Name of a file which holds a copy of the discriminators keys and values.
      */
     public static final String DISCRIMINATORS_KEY_TEMP = Task.DISCRIMINATORS_KEY + "_Temp.txt";
+    /**
+     * This is the character for joining strings for pair ngrams.
+     */
+    public static final String NGRAM_GLUE = "_";
 
     
     

@@ -19,6 +19,8 @@ package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
 import java.util.Set;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.NGRAM_GLUE;
+
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -71,10 +73,10 @@ public abstract class LucenePFEBase
                 value = viewNgrams.getCount(ngram);
             }
             if (viewNgrams.contains(ngram)) {
-                features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, value));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, value));
             }
             else {
-                features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, 0));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, 0));
             }
         }
         return features;

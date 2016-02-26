@@ -20,6 +20,7 @@ package de.tudarmstadt.ukp.dkpro.tc.features.ngram.util;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.toText;
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.NGRAM_GLUE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,10 +50,6 @@ import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 
 public class NGramUtils
 {
-    /**
-     * This is the character for joining strings for pair ngrams.
-     */
-    public static final String NGRAM_GLUE = "_";
 
     public static FrequencyDistribution<String> getAnnotationNgrams(JCas jcas,
             Annotation focusAnnotation, boolean lowerCaseNGrams, boolean filterPartialMatches,
@@ -202,6 +199,42 @@ public class NGramUtils
         }
         return posNgrams;
     }
+    
+	public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focusAnnotation, int minN,
+			int maxN, boolean useCanonical) {
+		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
+
+		if (JCasUtil.selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
+			for (Sentence s : selectCovered(jcas, Sentence.class, focusAnnotation)) {
+				List<String> postagstrings = new ArrayList<String>();
+				for (POS p : JCasUtil.selectCovered(jcas, POS.class, s)) {
+					if (useCanonical) {
+						postagstrings.add(p.getClass().getSimpleName());
+					} else {
+						postagstrings.add(p.getPosValue());
+					}
+				}
+				String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
+				for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
+					posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+				}
+			}
+		} else {
+			List<String> postagstrings = new ArrayList<String>();
+			for (POS p : selectCovered(POS.class, focusAnnotation)) {
+				if (useCanonical) {
+					postagstrings.add(p.getClass().getSimpleName());
+				} else {
+					postagstrings.add(p.getPosValue());
+				}
+			}
+			String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
+			for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
+				posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+			}
+		}
+		return posNgrams;
+	}
 
     public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas, int minN,
             int maxN)

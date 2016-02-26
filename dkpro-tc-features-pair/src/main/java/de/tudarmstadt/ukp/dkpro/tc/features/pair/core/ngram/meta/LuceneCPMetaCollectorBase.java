@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram.meta;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.NGRAM_GLUE;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +83,8 @@ public abstract class LuceneCPMetaCollectorBase
         for (String ngram1: view1NGrams.getKeys()){
             for (String ngram2: view2NGrams.getKeys()){
 
-                int combinedSize = ngram1.split(NGramUtils.NGRAM_GLUE).length 
-                        + ngram2.split(NGramUtils.NGRAM_GLUE).length;
+                int combinedSize = ngram1.split(NGRAM_GLUE).length 
+                        + ngram2.split(NGRAM_GLUE).length;
                 if (combinedSize <= getNgramMaxNCombo()
                         && combinedSize >= getNgramMinNCombo()) {
                     // set count = 1, for doc freq and not total term freq

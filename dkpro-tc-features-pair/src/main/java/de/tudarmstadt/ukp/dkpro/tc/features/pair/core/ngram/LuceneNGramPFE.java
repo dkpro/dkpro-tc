@@ -17,6 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.features.pair.core.ngram;
 
+import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.NGRAM_GLUE;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -220,10 +222,10 @@ public class LuceneNGramPFE
                 value = viewNgrams.getCount(ngram);
             }
             if (viewNgrams.contains(ngram)) {
-                features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, value));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, value));
             }
             else {
-                features.add(new Feature(prefix + NGramUtils.NGRAM_GLUE + ngram, 0));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, 0));
             }
         }
         return features;
