@@ -20,9 +20,11 @@ package de.tudarmstadt.ukp.dkpro.tc.crfsuite.task;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
@@ -147,8 +149,8 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 			throws Exception {
 		String[] lines = aRawTextOutput.split("\n");
 
-		int correct = 0;
-		int incorrect = 0;
+		Double correct = 0.0;
+		Double incorrect = 0.0;
 
 		List<String> predictionValues = new ArrayList<String>();
 		for (String line : lines) {
@@ -168,23 +170,23 @@ public class CRFSuiteTestTask extends ExecutableTaskBase implements Constants {
 			}
 		}
 
-		double denominator = correct + incorrect;
-		double numerator = correct;
-		double accuracy = 0;
+		Double denominator = correct + incorrect;
+		Double numerator = correct;
+		Double accuracy = 0.0;
 		if (denominator > 0) {
 			accuracy = numerator / denominator;
 		}
-		log("Accuracy: " + accuracy * 100 + " (" + correct + " correct, " + incorrect + " incorrect)");
 
 		// file to hold prediction results
 		File evalFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
 		String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile);
 		File evalFile = new File(evalFolder, evalFileName);
-		StringBuilder sb = new StringBuilder();
-		sb.append(ReportConstants.CORRECT + "=" + correct + "\n");
-		sb.append(ReportConstants.INCORRECT + "=" + incorrect + "\n");
-		sb.append(ReportConstants.PCT_CORRECT + "=" + accuracy + "\n");
-		FileUtils.writeStringToFile(evalFile, sb.toString());
+		
+        Properties p = new Properties();
+        p.setProperty(ReportConstants.CORRECT, correct.toString());
+        p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
+        p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
+        p.store(new FileOutputStream(evalFile), "Accuracy on test data");
 
 		return predictionValues;
 	}
