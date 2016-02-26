@@ -19,13 +19,10 @@
 package de.tudarmstadt.ukp.dkpro.tc.crfsuite;
 
 import java.io.File;
-import java.util.Properties;
-
-import org.apache.commons.io.FileUtils;
+import java.io.FileInputStream;
 
 import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
@@ -46,14 +43,8 @@ public class CRFSuiteClassificationReport
                 AdapterNameEntries.evaluationFile);
         File evalFile = new File(evalFolder,evalFileName);
 
-        Properties props = new Properties();
-        for (String line : FileUtils.readLines(evalFile)) {
-            String[] parts = line.split("=");
-            props.setProperty(parts[0], parts[1]);
-        }
-
         // Write out properties
-        getContext().storeBinary(Constants.RESULTS_FILENAME, new PropertiesAdapter(props));
+        getContext().storeBinary(Constants.RESULTS_FILENAME, new FileInputStream(evalFile));
 
     }
 }

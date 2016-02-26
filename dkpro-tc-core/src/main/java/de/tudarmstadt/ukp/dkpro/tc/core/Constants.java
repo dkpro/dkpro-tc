@@ -304,7 +304,7 @@ public interface Constants
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
-    public static final String RESULTS_FILENAME = "results.prop";
+    public static final String RESULTS_FILENAME = "results.txt";
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
