@@ -27,10 +27,13 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
+import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instances;
+import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -101,8 +104,21 @@ public class WekaModelSerializationDescription
         trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
 
         
-     // FEATURE SELECTION
-        WekaUtils.featureSelection(aContext, trainData, learningMode, featureSearcher, attributeEvaluator,applySelection, labelTransformationMethod, numLabelsToKeep);
+        // FEATURE SELECTION
+        if(!isMultiLabel){
+        	if(featureSearcher != null && attributeEvaluator!= null){
+        		AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext, trainData, featureSearcher, attributeEvaluator);
+        		trainData = attSel.reduceDimensionality(trainData);
+				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+        	}
+        }
+        else {
+        	if(attributeEvaluator != null && labelTransformationMethod!= null && numLabelsToKeep > 0){
+        		Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData, attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
+        		trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
+				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+        	}
+        }
 
         // write attribute file
         List<Attribute> attributes = new ArrayList<Attribute>();

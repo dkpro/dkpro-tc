@@ -53,7 +53,6 @@ import mulan.dimensionalityReduction.Ranker;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.LogFactory;
 import org.apache.tools.bzip2.CBZip2InputStream;
 
 import weka.attributeSelection.ASEvaluation;
@@ -486,6 +485,7 @@ public class WekaUtils
 
         SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
         sparseInstance.setDataset(wekaInstances);
+        sparseInstance.setClassValue(outcomeAttributes.size());
         // preprocessingFilter.input(sparseInstance);
         // return preprocessingFilter.output();
         return sparseInstance;
@@ -1189,51 +1189,29 @@ public class WekaUtils
         return cl;
     }
 
-    public static void featureSelection(TaskContext aContext, Instances trainData,
-            String learningMode, List<String> featureSearcher, List<String> attributeEvaluator,
-            boolean applySelection, String labelTransformationMethod, int numLabelsToKeep)
-    {
+	public static AttributeSelection featureSelectionSinglelabel(TaskContext aContext, Instances trainData,
+			List<String> featureSearcher, List<String> attributeEvaluator) throws Exception {
+		AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData, featureSearcher,
+				attributeEvaluator);
+		// Write the results of attribute selection
+		File file = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile,
+				AccessMode.READWRITE);
+		FileUtils.writeStringToFile(file, selector.toResultsString());
+		return selector;
 
-        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+	}
+        
+	public static Remove featureSelectionMultilabel(TaskContext aContext, Instances trainData,
+			List<String> attributeEvaluator, String labelTransformationMethod, int numLabelsToKeep) throws TextClassificationException {
+		// file to hold the results of attribute selection
+		File fsResultsFile = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile,
+				AccessMode.READWRITE);
 
-        // FEATURE SELECTION
-        if (!multiLabel && featureSearcher != null && attributeEvaluator != null) {
-            try {
-                AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData,
-                        featureSearcher, attributeEvaluator);
-                // Write the results of attribute selection
-                File file = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE);
-                FileUtils.writeStringToFile(
-                        file,
-                        selector.toResultsString());
-                if (applySelection) {
-                    trainData = selector.reduceDimensionality(trainData);
-                }
-            }
-            catch (Exception e) {
-                LogFactory.getLog(WekaUtils.class).warn("Could not apply feature selection.", e);
-            }
-        }
-        if (multiLabel && attributeEvaluator != null && labelTransformationMethod != null
-                && numLabelsToKeep != 0) {
-            try {
-                // file to hold the results of attribute selection
-                File fsResultsFile = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE); 
-                        
-                // filter for reducing dimension of attributes
-                Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData,
-                        labelTransformationMethod, attributeEvaluator, numLabelsToKeep,
-                        fsResultsFile);
-                if (removeFilter != null && applySelection) {
-                    trainData = WekaUtils.applyAttributeSelectionFilter(trainData, removeFilter);
-                }
-            }
-            catch (Exception e) {
-                LogFactory.getLog(WekaUtils.class).warn(
-                        "Could not apply multi-label feature selection.", e);
-            }
-        }
-    }
+		// filter for reducing dimension of attributes
+		Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData, labelTransformationMethod,
+				attributeEvaluator, numLabelsToKeep, fsResultsFile);
+		return removeFilter;
+	}
     
     /**
      * Convenience method to get file described in an AdapterNameEntry in a folder of the current context 

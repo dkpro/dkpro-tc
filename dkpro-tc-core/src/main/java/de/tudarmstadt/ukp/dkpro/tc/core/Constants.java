@@ -385,11 +385,6 @@ public interface Constants
      * Name of the file which holds the classifier
      */
     public static final String MODEL_CLASSIFIER = "classifier.ser";
-    
-    /**
-     * Name of the file which holds the feature selection filter
-     */
-    public static final String MODEL_FEATURE_REDUCER = "featureSelection.ser";
 
     /**
      * Name of the file which holds the feature mode

@@ -21,10 +21,14 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import java.io.File;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import meka.core.Result;
+import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSink;
+import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -87,10 +91,28 @@ public class WekaTestTask
         Instances copyTestData = new Instances(testData);
         trainData = WekaUtils.removeInstanceId(trainData, multiLabel);
         testData = WekaUtils.removeInstanceId(testData, multiLabel);
+        
 
         // FEATURE SELECTION
-        WekaUtils.featureSelection(aContext, trainData, learningMode, featureSearcher,
-                attributeEvaluator, applySelection, labelTransformationMethod, numLabelsToKeep);
+        if(!learningMode.equals(Constants.LM_MULTI_LABEL)){
+        	if(featureSearcher != null && attributeEvaluator!= null){
+        		AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext, trainData, featureSearcher, attributeEvaluator);
+        		trainData = attSel.reduceDimensionality(trainData);
+				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+        	}
+        }
+        else {
+        	if(attributeEvaluator != null && labelTransformationMethod!= null && numLabelsToKeep > 0){
+        		Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData, attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
+				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+        		trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
+        	}
+        }
+        
+        System.out.println(trainData);
+        System.out.println();
+        System.out.println(testData);
+        
 
         // build classifier
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
