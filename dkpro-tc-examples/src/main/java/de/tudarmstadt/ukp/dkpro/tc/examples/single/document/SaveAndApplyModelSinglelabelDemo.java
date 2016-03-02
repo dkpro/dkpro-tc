@@ -18,18 +18,28 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import weka.attributeSelection.InfoGainAttributeEval;
+import weka.attributeSelection.Ranker;
 import weka.classifiers.bayes.NaiveBayes;
+import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
+import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
@@ -40,14 +50,17 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
+import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
+import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
  * Demo to show-case how trained models can be persisted.
  */
-public class SaveModelDemo
+public class SaveAndApplyModelSinglelabelDemo
     implements Constants
 {
     /**
@@ -62,6 +75,20 @@ public class SaveModelDemo
      * output folder path
      */
     public static final File modelPath = new File("target/model");
+	/**
+	 * example text
+	 */
+	public static final String EXAMPLE_TEXT = "This is an exmaple.";
+	/**
+	 * example text id
+	 */
+	public static final String EXAMPLE_TEXT_ID = "example_text";
+	/**
+	 * path to where the prediction outcome is store 
+	 */
+	public static final File PREDICTION_PATH = new File("target/prediction");
+
+
 
     /**
      * Start the demo.
@@ -78,11 +105,12 @@ public class SaveModelDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(SaveModelDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(SaveAndApplyModelSinglelabelDemo.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
-        SaveModelDemo experiment = new SaveModelDemo();
+        SaveAndApplyModelSinglelabelDemo experiment = new SaveAndApplyModelSinglelabelDemo();
         experiment.runSaveModel(pSpace);
+        experiment.applyStoredModel(EXAMPLE_TEXT);
     }
 
     /**
@@ -111,13 +139,25 @@ public class SaveModelDemo
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName() }));
+                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+        
+        // single-label feature selection (Weka specific options), reduces the feature set to 10
+        Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
+        dimFeatureSelection.put(DIM_FEATURE_SEARCHER_ARGS,
+                asList(new String[] { Ranker.class.getName(), "-N", "3" }));
+        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS,
+                asList(new String[] { InfoGainAttributeEval.class.getName() }));
+        dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
+        ParameterSpace pSpace = new ParameterSpace(
+        		Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
+                Dimension.createBundle("featureSelection", dimFeatureSelection),
+                dimPipelineParameters, 
+                dimFeatureSets,
                 dimClassificationArgs);
-
+        
         return pSpace;
     }
 
@@ -143,5 +183,22 @@ public class SaveModelDemo
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
+    }
+    
+    protected void applyStoredModel(String text) throws ResourceInitializationException, UIMAException, IOException{
+		SimplePipeline.runPipeline(
+				CollectionReaderFactory.createReader(
+						StringReader.class,
+						StringReader.PARAM_DOCUMENT_TEXT, text,
+						StringReader.PARAM_DOCUMENT_ID, EXAMPLE_TEXT_ID,
+						StringReader.PARAM_LANGUAGE, LANGUAGE_CODE),
+				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
+				AnalysisEngineFactory.createEngineDescription(
+						TcAnnotator.class,
+						TcAnnotator.PARAM_TC_MODEL_LOCATION,
+						modelPath),
+				AnalysisEngineFactory.createEngineDescription(
+						XmiWriter.class,
+						XmiWriter.PARAM_TARGET_LOCATION, PREDICTION_PATH));
     }
 }

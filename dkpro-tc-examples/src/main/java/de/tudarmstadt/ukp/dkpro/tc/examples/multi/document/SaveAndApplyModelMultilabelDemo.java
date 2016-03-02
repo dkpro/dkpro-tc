@@ -76,7 +76,7 @@ public class SaveAndApplyModelMultilabelDemo
     	// This is used to ensure that the required DKPRO_HOME environment variable is set.
     	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
     	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(ReutersUsingTCEvaluationDemo.class.getSimpleName());
+    	DemoUtils.setDkproHome(SaveAndApplyModelMultilabelDemo.class.getSimpleName());
     	
         ParameterSpace pSpace = getParameterSpace();
         SaveAndApplyModelMultilabelDemo experiment = new SaveAndApplyModelMultilabelDemo();
@@ -131,7 +131,7 @@ public class SaveAndApplyModelMultilabelDemo
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
         dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD, "BinaryRelevanceAttributeEvaluator");
         dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS, Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
-        dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 100);
+        dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 10);
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(

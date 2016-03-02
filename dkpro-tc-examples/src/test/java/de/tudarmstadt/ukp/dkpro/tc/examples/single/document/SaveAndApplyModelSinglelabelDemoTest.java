@@ -31,9 +31,9 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
  * @author Oliver Ferschke, Emily Jamison
  * 
  */
-public class SaveModelDemoTest extends JavaDemosTest_Base
+public class SaveAndApplyModelSinglelabelDemoTest extends JavaDemosTest_Base
 {
-    SaveModelDemo javaExperiment;
+    SaveAndApplyModelSinglelabelDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -42,8 +42,8 @@ public class SaveModelDemoTest extends JavaDemosTest_Base
     {
         super.setup();
         
-        javaExperiment = new SaveModelDemo();
-        pSpace = SaveModelDemo.getParameterSpace();
+        javaExperiment = new SaveAndApplyModelSinglelabelDemo();
+        pSpace = SaveAndApplyModelSinglelabelDemo.getParameterSpace();
     }
 
     @Test
@@ -51,5 +51,6 @@ public class SaveModelDemoTest extends JavaDemosTest_Base
         throws Exception
     {
         javaExperiment.runSaveModel(pSpace);
+        javaExperiment.applyStoredModel("This is a fancy example text.");
     }
 }

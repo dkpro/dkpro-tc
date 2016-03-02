@@ -122,7 +122,7 @@ public class ReutersUsingTCEvaluationDemo
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
         dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD, "BinaryRelevanceAttributeEvaluator");
         dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS, Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
-        dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 100);
+        dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 10);
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(
