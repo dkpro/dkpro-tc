@@ -38,6 +38,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tools.bzip2.CBZip2InputStream;
+
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
+import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
+import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.MLUtils;
 import meka.core.Result;
@@ -50,11 +66,6 @@ import mulan.data.MultiLabelInstances;
 import mulan.dimensionalityReduction.BinaryRelevanceAttributeEvaluator;
 import mulan.dimensionalityReduction.LabelPowersetAttributeEvaluator;
 import mulan.dimensionalityReduction.Ranker;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.tools.bzip2.CBZip2InputStream;
-
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.AttributeEvaluator;
@@ -72,18 +83,6 @@ import weka.core.converters.Saver;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureStore;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
-import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaFeatureEncoder;
 
 /**
  * Utils for WEKA
@@ -1005,83 +1004,6 @@ public class WekaUtils
     }
 
     /**
-     * Feature selection using Mulan.
-     *
-     * @param trainData
-     *            training data
-     * @param labelTransformationMethod
-     *            method to transform multi-label data into single-label data
-     * @param attributeEvaluator
-     * @param numLabelsToKeep
-     *            number of labels that should be kept
-     * @param featureSelectionResultsFile
-     *            a file to write the evaluated attributes to
-     * @return a filter to reduce the attribute dimension
-     * @throws TextClassificationException
-     */
-    public static Remove multiLabelAttributeSelection(Instances trainData,
-            String labelTransformationMethod, List<String> attributeEvaluator, int numLabelsToKeep,
-            File featureSelectionResultsFile)
-        throws TextClassificationException
-    {
-        Remove filterRemove = new Remove();
-        try {
-            MultiLabelInstances mulanInstances = convertMekaInstancesToMulanInstances(trainData);
-
-            ASEvaluation eval = ASEvaluation.forName(attributeEvaluator.get(0), attributeEvaluator
-                    .subList(1, attributeEvaluator.size()).toArray(new String[0]));
-
-            AttributeEvaluator attributeSelectionFilter;
-
-            // We currently only support the following Mulan Transformation methods (configuration
-            // is complicated due to missing commandline support of mulan):
-            if (labelTransformationMethod.equals("LabelPowersetAttributeEvaluator")) {
-                attributeSelectionFilter = new LabelPowersetAttributeEvaluator(eval, mulanInstances);
-            }
-            else if (labelTransformationMethod.equals("BinaryRelevanceAttributeEvaluator")) {
-                attributeSelectionFilter = new BinaryRelevanceAttributeEvaluator(eval,
-                        mulanInstances, "max", "none", "rank");
-            }
-            else {
-                throw new TextClassificationException(
-                        "This Label Transformation Method is not supported.");
-            }
-
-            Ranker r = new Ranker();
-            int[] result = r.search(attributeSelectionFilter, mulanInstances);
-
-            // collect evaluation for *all* attributes and write to file
-            StringBuffer evalFile = new StringBuffer();
-            for (Attribute att : mulanInstances.getFeatureAttributes()) {
-                evalFile.append(att.name()
-                        + ": "
-                        + attributeSelectionFilter.evaluateAttribute(att.index()
-                                - mulanInstances.getNumLabels()) + "\n");
-            }
-            FileUtils.writeStringToFile(featureSelectionResultsFile, evalFile.toString());
-
-            // create a filter to reduce the dimension of the attributes
-            int[] toKeep = new int[numLabelsToKeep + mulanInstances.getNumLabels()];
-            System.arraycopy(result, 0, toKeep, 0, numLabelsToKeep);
-            int[] labelIndices = mulanInstances.getLabelIndices();
-            System.arraycopy(labelIndices, 0, toKeep, numLabelsToKeep,
-                    mulanInstances.getNumLabels());
-
-            filterRemove.setAttributeIndicesArray(toKeep);
-            filterRemove.setInvertSelection(true);
-            filterRemove.setInputFormat(mulanInstances.getDataSet());
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
-            // less attributes than we want => no filtering
-            return null;
-        }
-        catch (Exception e) {
-            throw new TextClassificationException(e);
-        }
-        return filterRemove;
-    }
-
-    /**
      * Converts the Meka-specific instances format to Mulan-specific instances. Hierarchical
      * relationships among labels cannot be expressed.
      *
@@ -1201,6 +1123,12 @@ public class WekaUtils
 
 	}
         
+	
+    /**
+     * Feature selection using Mulan.
+     *
+     * @throws TextClassificationException
+     */
 	public static Remove featureSelectionMultilabel(TaskContext aContext, Instances trainData,
 			List<String> attributeEvaluator, String labelTransformationMethod, int numLabelsToKeep) throws TextClassificationException {
 		// file to hold the results of attribute selection
@@ -1208,9 +1136,61 @@ public class WekaUtils
 				AccessMode.READWRITE);
 
 		// filter for reducing dimension of attributes
-		Remove removeFilter = WekaUtils.multiLabelAttributeSelection(trainData, labelTransformationMethod,
-				attributeEvaluator, numLabelsToKeep, fsResultsFile);
-		return removeFilter;
+	    Remove filterRemove = new Remove();
+        try {
+            MultiLabelInstances mulanInstances = convertMekaInstancesToMulanInstances(trainData);
+
+            ASEvaluation eval = ASEvaluation.forName(attributeEvaluator.get(0), attributeEvaluator
+                    .subList(1, attributeEvaluator.size()).toArray(new String[0]));
+
+            AttributeEvaluator attributeSelectionFilter;
+
+            // We currently only support the following Mulan Transformation methods (configuration
+            // is complicated due to missing commandline support of mulan):
+            if (labelTransformationMethod.equals("LabelPowersetAttributeEvaluator")) {
+                attributeSelectionFilter = new LabelPowersetAttributeEvaluator(eval, mulanInstances);
+            }
+            else if (labelTransformationMethod.equals("BinaryRelevanceAttributeEvaluator")) {
+                attributeSelectionFilter = new BinaryRelevanceAttributeEvaluator(eval,
+                        mulanInstances, "max", "none", "rank");
+            }
+            else {
+                throw new TextClassificationException(
+                        "This Label Transformation Method is not supported.");
+            }
+
+            Ranker r = new Ranker();
+            int[] result = r.search(attributeSelectionFilter, mulanInstances);
+
+            // collect evaluation for *all* attributes and write to file
+            StringBuffer evalFile = new StringBuffer();
+            for (Attribute att : mulanInstances.getFeatureAttributes()) {
+                evalFile.append(att.name()
+                        + ": "
+                        + attributeSelectionFilter.evaluateAttribute(att.index()
+                                - mulanInstances.getNumLabels()) + "\n");
+            }
+            FileUtils.writeStringToFile(fsResultsFile, evalFile.toString());
+
+            // create a filter to reduce the dimension of the attributes
+            int[] toKeep = new int[numLabelsToKeep + mulanInstances.getNumLabels()];
+            System.arraycopy(result, 0, toKeep, 0, numLabelsToKeep);
+            int[] labelIndices = mulanInstances.getLabelIndices();
+            System.arraycopy(labelIndices, 0, toKeep, numLabelsToKeep,
+                    mulanInstances.getNumLabels());
+
+            filterRemove.setAttributeIndicesArray(toKeep);
+            filterRemove.setInvertSelection(true);
+            filterRemove.setInputFormat(mulanInstances.getDataSet());
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            // less attributes than we want => no filtering
+            return null;
+        }
+        catch (Exception e) {
+            throw new TextClassificationException(e);
+        }
+		return filterRemove;
 	}
     
     /**

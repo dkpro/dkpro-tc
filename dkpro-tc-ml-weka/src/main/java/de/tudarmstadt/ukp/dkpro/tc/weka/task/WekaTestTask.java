@@ -21,14 +21,9 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import meka.core.Result;
-import weka.attributeSelection.AttributeSelection;
-import weka.classifiers.Classifier;
-import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSink;
-import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -37,6 +32,12 @@ import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
+import meka.core.Result;
+import weka.attributeSelection.AttributeSelection;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSink;
+import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * Base class for test task and save model tasks
@@ -91,29 +92,36 @@ public class WekaTestTask
         Instances copyTestData = new Instances(testData);
         trainData = WekaUtils.removeInstanceId(trainData, multiLabel);
         testData = WekaUtils.removeInstanceId(testData, multiLabel);
-        
+      
 
         // FEATURE SELECTION
-        if(!learningMode.equals(Constants.LM_MULTI_LABEL)){
-        	if(featureSearcher != null && attributeEvaluator!= null){
-        		AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext, trainData, featureSearcher, attributeEvaluator);
-        		trainData = attSel.reduceDimensionality(trainData);
-				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
-        	}
+        if (!learningMode.equals(Constants.LM_MULTI_LABEL)) {
+            if (featureSearcher != null && attributeEvaluator != null) {
+                AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext,
+                        trainData, featureSearcher, attributeEvaluator);
+                File file = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY,
+                        AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE);
+                FileUtils.writeStringToFile(file, attSel.toResultsString());
+                if (applySelection) {
+                    Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+                    trainData = attSel.reduceDimensionality(trainData);
+                    testData = attSel.reduceDimensionality(testData);
+                }
+            }
         }
         else {
-        	if(attributeEvaluator != null && labelTransformationMethod!= null && numLabelsToKeep > 0){
-        		Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData, attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
-				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
-        		trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
-        	}
+            if (attributeEvaluator != null && labelTransformationMethod != null
+                    && numLabelsToKeep > 0) {
+                Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData,
+                        attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
+                if (applySelection) {
+                    Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+                    trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
+                    testData = WekaUtils.applyAttributeSelectionFilter(testData, attSel);
+                }
+            }
         }
         
-        System.out.println(trainData);
-        System.out.println();
-        System.out.println(testData);
-        
-
         // build classifier
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
 
