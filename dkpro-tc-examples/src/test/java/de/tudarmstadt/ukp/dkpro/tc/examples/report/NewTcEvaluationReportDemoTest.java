@@ -23,7 +23,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.tc.examples.single.document.ComplexConfigurationSingleDemo;
 import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
@@ -43,7 +42,7 @@ public class NewTcEvaluationReportDemoTest extends JavaDemosTest_Base
         super.setup();
         
         javaExperiment = new NewTcEvaluationReportDemo();
-        pSpace = ComplexConfigurationSingleDemo.getParameterSpace();
+        pSpace = NewTcEvaluationReportDemo.getParameterSpace();
     }
 
     @Test
