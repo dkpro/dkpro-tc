@@ -18,7 +18,6 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.document;
 
-import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.File;
@@ -35,9 +34,6 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.attributeSelection.InfoGainAttributeEval;
-import weka.attributeSelection.Ranker;
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -51,11 +47,11 @@ import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils;
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE;
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramUFE;
 import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * Demo to show-case how trained models can be persisted.
@@ -140,20 +136,11 @@ public class SaveAndApplyModelSinglelabelDemo
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
-        
-        // single-label feature selection (Weka specific options), reduces the feature set to 10
-        Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
-        dimFeatureSelection.put(DIM_FEATURE_SEARCHER_ARGS,
-                asList(new String[] { Ranker.class.getName(), "-N", "3" }));
-        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS,
-                asList(new String[] { InfoGainAttributeEval.class.getName() }));
-        dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(
         		Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
-                Dimension.createBundle("featureSelection", dimFeatureSelection),
                 dimPipelineParameters, 
                 dimFeatureSets,
                 dimClassificationArgs);

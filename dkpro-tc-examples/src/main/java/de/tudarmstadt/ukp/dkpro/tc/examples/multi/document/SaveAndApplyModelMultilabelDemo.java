@@ -51,9 +51,8 @@ import de.tudarmstadt.ukp.dkpro.tc.features.ngram.base.FrequencyDistributionNGra
 import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentSaveModel;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
-import meka.classifiers.multilabel.BR;
-import weka.attributeSelection.InfoGainAttributeEval;
-import weka.classifiers.bayes.NaiveBayes;
+import meka.classifiers.multilabel.MULAN;
+import weka.classifiers.trees.RandomForest;
 
 public class SaveAndApplyModelMultilabelDemo
     implements Constants
@@ -114,7 +113,12 @@ public class SaveAndApplyModelMultilabelDemo
 
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(DIM_CLASSIFICATION_ARGS,
-                        Arrays.asList(new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName()}));
+                        Arrays.asList(new String[] {         
+                                MULAN.class.getName(),
+                                "-S",
+                                "RAkEL2",
+                                "-W",
+                                RandomForest.class.getName()}));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
@@ -128,19 +132,12 @@ public class SaveAndApplyModelMultilabelDemo
                 Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
                         LuceneNGramDFE.class.getName() }));
 
-        Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
-        dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD, "BinaryRelevanceAttributeEvaluator");
-        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS, Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
-        dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 10);
-        dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
-
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD),
-                dimPipelineParameters, dimFeatureSets, dimClassificationArgs,
-                Dimension.createBundle("featureSelection", dimFeatureSelection));
+                dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
