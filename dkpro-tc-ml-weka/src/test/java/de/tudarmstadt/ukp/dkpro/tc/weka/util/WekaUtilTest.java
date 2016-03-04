@@ -28,13 +28,13 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import weka.core.Attribute;
-import weka.core.Instances;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
 import de.tudarmstadt.ukp.dkpro.tc.fstore.simple.DenseFeatureStore;
+import weka.core.Attribute;
+import weka.core.Instances;
 
 public class WekaUtilTest
 {
@@ -155,16 +155,18 @@ public class WekaUtilTest
         i2.addFeature(new Feature("feature4", "val_1"));
         i2.addFeature(new Feature("feature3_{{", "b"));
 
-        List<Attribute> attributes = new ArrayList<Attribute>();
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature5"));
         attributes.add(new Attribute("feature2"));
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_1", "val_2" })));
         attributes.add(new Attribute("feature1"));
         attributes.add(new Attribute("outcome"));
+        
+        Instances trainingData = new Instances("test", attributes, 0);
 
-        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, attributes,
+        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, trainingData,
                 null, true);
-        weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToWekaInstance(i2, attributes,
+        weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToWekaInstance(i2, trainingData,
                 null, true);
 
         assertEquals(true, wekaInstance1.equalHeaders(wekaInstance2));
@@ -192,12 +194,14 @@ public class WekaUtilTest
         i2.addFeature(new Feature("feature4", "val_1"));
         i2.addFeature(new Feature("feature3_{{", "b"));
 
-        List<Attribute> attributes = new ArrayList<Attribute>();
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature5"));
         attributes.add(new Attribute("feature2"));
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_1", "val_2" })));
         attributes.add(new Attribute("feature1"));
         attributes.add(new Attribute("outcome", outcomeValues));
+        
+        Instances trainingData = new Instances("test", attributes, 0);
 
         // test missing values
         Instance i3 = new Instance();
@@ -206,11 +210,11 @@ public class WekaUtilTest
         i3.addFeature(new Feature("feature3_{{",
                 new MissingValue(MissingValueNonNominalType.STRING)));
 
-        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, attributes,
+        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, trainingData,
                 outcomeValues, false);
-        weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToWekaInstance(i2, attributes,
+        weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToWekaInstance(i2, trainingData,
                 outcomeValues, false);
-        weka.core.Instance wekaInstance3 = WekaUtils.tcInstanceToWekaInstance(i3, attributes,
+        weka.core.Instance wekaInstance3 = WekaUtils.tcInstanceToWekaInstance(i3, trainingData,
                 outcomeValues, false);
 
         assertEquals(true, wekaInstance1.equalHeaders(wekaInstance2));
@@ -240,7 +244,7 @@ public class WekaUtilTest
         i2.addFeature(new Feature("feature4", "val_1"));
         i2.addFeature(new Feature("feature3_{{", "b"));
 
-        List<Attribute> attributes = new ArrayList<Attribute>();
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("outc_1", Arrays.asList(new String[] { "0", "1" })));
         attributes.add(new Attribute("outc_2", Arrays.asList(new String[] { "0", "1" })));
         attributes.add(new Attribute("outc_3", Arrays.asList(new String[] { "0", "1" })));
@@ -249,9 +253,11 @@ public class WekaUtilTest
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_1", "val_2" })));
         attributes.add(new Attribute("feature1"));
 
-        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToMekaInstance(i1, attributes,
+        Instances trainingData = new Instances("test", attributes, 0);
+
+        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToMekaInstance(i1, trainingData,
                 outcomeValues);
-        weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToMekaInstance(i2, attributes,
+        weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToMekaInstance(i2, trainingData,
                 outcomeValues);
 
         assertEquals(true, wekaInstance1.equalHeaders(wekaInstance2));
@@ -274,13 +280,15 @@ public class WekaUtilTest
         i1.addFeature(new Feature("feature4", "val_1"));
         i1.addFeature(new Feature("feature3_{{", "a"));
 
-        List<Attribute> attributes = new ArrayList<Attribute>();
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature2"));
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_4", "val_2" })));
         attributes.add(new Attribute("outcome", outcomeValues));
+        
+        Instances trainingData = new Instances("test", attributes, 0);
 
         @SuppressWarnings("unused")
-        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, attributes,
+        weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, trainingData,
                 outcomeValues, false);
     }
 

@@ -23,7 +23,6 @@ import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_PAIR;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.FM_UNIT;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
-import static de.tudarmstadt.ukp.dkpro.tc.core.Constants.MODEL_FEATURE_NAMES_SERIALIZED;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,8 +44,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -58,6 +55,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 import de.tudarmstadt.ukp.dkpro.tc.ml.uima.TcAnnotator;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 
@@ -78,7 +77,7 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 	private String featureMode;
 
 	private Classifier cls;
-	private List<Attribute> attributes;
+	private Instances trainingData;
 	private List<String> classLabels;
 
 	@Override
@@ -88,7 +87,7 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 
 		try {
 			loadClassifier();
-			loadAttributes();
+			loadTrainingData();
 			loadClassLabels();
 
 			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
@@ -107,12 +106,11 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void loadAttributes() throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(
-				tcModelLocation, MODEL_FEATURE_NAMES_SERIALIZED)));
-        attributes = (List<Attribute>) in.readObject();
-        in.close();
+	private void loadTrainingData() throws IOException, ClassNotFoundException {
+        ObjectInputStream inT = new ObjectInputStream(new FileInputStream(new File(
+                tcModelLocation, "training_data")));
+        trainingData = (Instances) inT.readObject();
+        inT.close();
 	}
 
 	private void loadClassifier() throws Exception {
@@ -138,7 +136,7 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 			// single-label
 			weka.core.Instance wekaInstance = null;
 			try {
-				wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes, classLabels,
+				wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, trainingData, classLabels,
 						isRegression);
 			} catch (Exception e) {
 				throw new AnalysisEngineProcessException(e);
@@ -162,7 +160,7 @@ public class LoadModelConnectorWeka extends ModelSerialization_ImplBase {
 			// multi-label
 			weka.core.Instance mekaInstance = null;
 			try {
-				mekaInstance = WekaUtils.tcInstanceToMekaInstance(instance, attributes, classLabels);
+				mekaInstance = WekaUtils.tcInstanceToMekaInstance(instance, trainingData, classLabels);
 			} catch (Exception e) {
 				throw new AnalysisEngineProcessException(e);
 			}

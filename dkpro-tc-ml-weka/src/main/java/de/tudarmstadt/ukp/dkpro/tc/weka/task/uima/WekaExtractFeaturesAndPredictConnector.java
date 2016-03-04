@@ -22,12 +22,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import meka.classifiers.multilabel.MultilabelClassifier;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -37,9 +34,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Instance;
@@ -48,6 +42,10 @@ import de.tudarmstadt.ukp.dkpro.tc.core.task.uima.ConnectorBase;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaExtractFeaturesAndPredictTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 /**
  * 
@@ -92,8 +90,10 @@ public class WekaExtractFeaturesAndPredictConnector
     private Map<String, List<String>> predictionMap;
 
     private Classifier wekaClassifier;
-    List<Attribute> attributes;
+//    List<Attribute> attributes;
     List<String> allClassLabels;
+    Instances trainingData;
+    
 
     boolean isRegression;
     boolean isMultiLabel;
@@ -128,19 +128,19 @@ public class WekaExtractFeaturesAndPredictConnector
                                 .subList(1, classificationArguments.size()).toArray(new String[0]));
             }
 
-            weka.core.Instances trainData = WekaUtils.getInstances(arffFileTrainingData,
+            trainingData = WekaUtils.getInstances(arffFileTrainingData,
                     isMultiLabel);
-            trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
-            wekaClassifier.buildClassifier(trainData);
+            trainingData = WekaUtils.removeInstanceId(trainingData, isMultiLabel);
+            wekaClassifier.buildClassifier(trainingData);
 
-            attributes = new ArrayList<Attribute>();
-            Enumeration<Attribute> atts = trainData.enumerateAttributes();
-            while (atts.hasMoreElements()) {
-                attributes.add(atts.nextElement());
-            }
-            attributes.add(trainData.classAttribute());
+//            attributes = new ArrayList<Attribute>();
+//            Enumeration<Attribute> atts = trainData.enumerateAttributes();
+//            while (atts.hasMoreElements()) {
+//                attributes.add(atts.nextElement());
+//            }
+//            attributes.add(trainData.classAttribute());
             if (!isRegression) {
-                allClassLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);
+                allClassLabels = WekaUtils.getClassLabels(trainingData, isMultiLabel);
             }
         }
         catch (Exception e) {
@@ -160,11 +160,11 @@ public class WekaExtractFeaturesAndPredictConnector
                 developerMode, false);
   
             if (!isMultiLabel) {
-                wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, attributes,
+                wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, trainingData,
                         allClassLabels, isRegression);
             }
             else {
-                wekaInstance = WekaUtils.tcInstanceToMekaInstance(instance, attributes,
+                wekaInstance = WekaUtils.tcInstanceToMekaInstance(instance, trainingData,
                         allClassLabels);
             }
         }

@@ -21,19 +21,11 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task.serialization;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
-import weka.attributeSelection.AttributeSelection;
-import weka.classifiers.Classifier;
-import weka.core.Attribute;
-import weka.core.Instances;
-import weka.filters.unsupervised.attribute.Remove;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
@@ -42,6 +34,8 @@ import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameE
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 /**
  * Knows what to do in order to serialize a model - is called as task by the main class.
@@ -107,31 +101,27 @@ public class WekaModelSerializationDescription
         // FEATURE SELECTION
         if(!isMultiLabel){
         	if(featureSearcher != null && attributeEvaluator!= null){
-        		AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext, trainData, featureSearcher, attributeEvaluator);
-        		trainData = attSel.reduceDimensionality(trainData);
-				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+//        		AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext, trainData, featureSearcher, attributeEvaluator);
+//        		trainData = attSel.reduceDimensionality(trainData);
+//				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+        	    throw new Exception("Feature Selection is currently not supported in Save Model mode.");
         	}
         }
         else {
         	if(attributeEvaluator != null && labelTransformationMethod!= null && numLabelsToKeep > 0){
-        		Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData, attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
-        		trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
-				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+//        		Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData, attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
+//        		trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
+//				Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
+        	    throw new Exception("Feature Selection is currently not supported in Save Model mode.");
         	}
-        }
-
-        // write attribute file
-        List<Attribute> attributes = new ArrayList<Attribute>();
-        Enumeration<Attribute> atts = trainData.enumerateAttributes();
+        }        
         
-        while (atts.hasMoreElements()) {
-            attributes.add(atts.nextElement());
-        }
-        attributes.add(trainData.classAttribute());
-        
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(outputFolder, MODEL_FEATURE_NAMES_SERIALIZED)));
-        out.writeObject(attributes);
-        out.close();
+        // write training data header
+        ObjectOutputStream outT = new ObjectOutputStream(new FileOutputStream(new File(outputFolder, "training_data")));
+        Instances emptyTrainCopy = new Instances(trainData);
+        emptyTrainCopy.delete();
+        outT.writeObject(emptyTrainCopy);
+        outT.close();
         
         // write model file
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
