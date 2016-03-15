@@ -23,36 +23,46 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.api.features.Feature;
 import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 
 public class InstanceIdFeature {
 
 	
-	public static Feature retrieve(JCas jcas) {
-		return new Feature(ID_FEATURE_NAME, DocumentMetaData.get(jcas).getDocumentId());
+	public static Feature retrieve(JCas jcas) throws ResourceInitializationException {
+		
+		String fullId = getFullId(jcas);
+		return new Feature(ID_FEATURE_NAME, fullId);
 	};
 	
-	public static Feature retrieve(JCas jcas, TextClassificationUnit unit) {
+	public static Feature retrieve(JCas jcas, TextClassificationUnit unit) throws ResourceInitializationException{
 		
-		String fullId = DocumentMetaData.get(jcas).getDocumentId();
+		String fullId = getFullId(jcas);
+		
 		String[] parts = fullId.split("_");
 		fullId = StringUtils.join(Arrays.copyOfRange(parts, 0, parts.length-1), "_");
-
+		
         fullId = fullId + "_" + unit.getId();
             
         String suffix = unit.getSuffix();
         if (suffix != null && suffix.length() > 0) {
             fullId = fullId + "_" + suffix;
+            
         }
-	    
+		
+		
 		return new Feature(ID_FEATURE_NAME, fullId);
 	};
 	
-	public static Feature retrieve(JCas jcas, TextClassificationUnit unit, Integer sequenceId) {		
-		String fullId = DocumentMetaData.get(jcas).getDocumentId();
+	public static Feature retrieve(JCas jcas, TextClassificationUnit unit, Integer sequenceId) 
+		throws ResourceInitializationException 		
+	{
+		String fullId = getFullId(jcas);
+
 		String[] parts = fullId.split("_");
 		fullId = StringUtils.join(Arrays.copyOfRange(parts, 0, parts.length-1), "_");
 
@@ -66,4 +76,16 @@ public class InstanceIdFeature {
 	    
 		return new Feature(ID_FEATURE_NAME, fullId);
 	};
+	
+	private static String getFullId(JCas jcas) 
+			throws ResourceInitializationException
+	{		
+		String fullId = DocumentMetaData.get(jcas).getDocumentId();	
+		
+		if (fullId == null) {
+			throw new ResourceInitializationException(new Throwable("DocumentId in DocumentMetaData cannot be null."));
+		}
+		
+		return fullId;
+	}
 }
