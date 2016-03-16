@@ -34,6 +34,7 @@ public class Feature
 
     public Feature(String name, Object value)
     {
+    	// TODO should we cache the feature espacing? this is called quite often ...
         this.name = FeatureUtil.escapeFeatureName(name).intern();
         this.value = value;
     }
