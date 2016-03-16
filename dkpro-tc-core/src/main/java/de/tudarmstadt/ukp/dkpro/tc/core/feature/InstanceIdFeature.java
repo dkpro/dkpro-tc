@@ -23,7 +23,6 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
@@ -33,14 +32,16 @@ import de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit;
 public class InstanceIdFeature {
 
 	
-	public static Feature retrieve(JCas jcas) throws ResourceInitializationException {
-		
+	public static Feature retrieve(JCas jcas) 
+			throws TextClassificationException
+	{
 		String fullId = getFullId(jcas);
 		return new Feature(ID_FEATURE_NAME, fullId);
 	};
 	
-	public static Feature retrieve(JCas jcas, TextClassificationUnit unit) throws ResourceInitializationException{
-		
+	public static Feature retrieve(JCas jcas, TextClassificationUnit unit)
+			throws TextClassificationException
+	{
 		String fullId = getFullId(jcas);
 		
 		String[] parts = fullId.split("_");
@@ -54,12 +55,11 @@ public class InstanceIdFeature {
             
         }
 		
-		
 		return new Feature(ID_FEATURE_NAME, fullId);
 	};
 	
 	public static Feature retrieve(JCas jcas, TextClassificationUnit unit, Integer sequenceId) 
-		throws ResourceInitializationException 		
+		throws TextClassificationException 		
 	{
 		String fullId = getFullId(jcas);
 
@@ -78,12 +78,12 @@ public class InstanceIdFeature {
 	};
 	
 	private static String getFullId(JCas jcas) 
-			throws ResourceInitializationException
+			throws TextClassificationException
 	{		
 		String fullId = DocumentMetaData.get(jcas).getDocumentId();	
 		
 		if (fullId == null) {
-			throw new ResourceInitializationException(new Throwable("DocumentId in DocumentMetaData cannot be null."));
+			throw new TextClassificationException("DocumentId in DocumentMetaData cannot be null.");
 		}
 		
 		return fullId;
