@@ -63,7 +63,7 @@ public class CRFSuiteDataWriter
     {
         int totalCountOfInstances = featureStore.getNumberOfInstances();
 
-        BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
+        BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile),"utf-8"));
         
         int lastSeenSeqId = -1;
         boolean seqIdChanged = false;
