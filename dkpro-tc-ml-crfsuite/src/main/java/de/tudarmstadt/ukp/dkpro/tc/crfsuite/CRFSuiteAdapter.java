@@ -122,7 +122,7 @@ public class CRFSuiteAdapter
         case predictionsFile:
             return "predictions.txt";
         case evaluationFile:
-            return Constants.RESULTS_FILENAME;
+            return "evaluation.txt";
         case featureSelectionFile:
             return "attributeEvaluationResults.txt";
         }
