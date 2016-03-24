@@ -67,7 +67,9 @@ public class CRFSuiteClassificationReport
         }
         
         
-        File accuracyFile = getContext().getFile(Constants.RESULTS_FILENAME, AccessMode.READWRITE);
+        String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
+                AdapterNameEntries.evaluationFile);
+        File accuracyFile = getContext().getFile(evalFileName, AccessMode.READWRITE);
         
         Double accuracy = correct/(correct+incorrect);
         
