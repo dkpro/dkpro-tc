@@ -39,8 +39,6 @@ public class CRFSuiteClassificationReport
     public void execute()
         throws Exception
     {
-        // only a mock for now - this needs to be rewritten anyway once the evaluation module is
-        // ready
     	File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
                 AccessMode.READWRITE);
     	String predFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
