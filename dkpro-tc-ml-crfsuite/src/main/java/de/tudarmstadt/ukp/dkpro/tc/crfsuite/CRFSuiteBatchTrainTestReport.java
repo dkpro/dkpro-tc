@@ -62,7 +62,7 @@ public class CRFSuiteBatchTrainTestReport
                             Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
                     File fileToEvaluate = store.locateKey(subcontext.getId(),
-                            CRFSuiteOutcomeIDReport.ID_OUTCOME_KEY);
+                            Constants.ID_OUTCOME_KEY);
                     mode = discriminatorsMap.get(CRFSuiteTestTask.class.getName() + "|learningMode");
                     EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(fileToEvaluate,
                             mode, softEvaluation, individualLabelMeasures);

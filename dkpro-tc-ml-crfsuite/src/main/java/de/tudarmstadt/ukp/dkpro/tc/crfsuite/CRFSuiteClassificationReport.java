@@ -39,7 +39,7 @@ public class CRFSuiteClassificationReport
     public void execute()
         throws Exception
     {
-    	File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+    	File folder = getContext().getFolder("",
                 AccessMode.READWRITE);
     	String predFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
                 AdapterNameEntries.predictionsFile);

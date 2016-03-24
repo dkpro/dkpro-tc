@@ -41,11 +41,8 @@ import de.tudarmstadt.ukp.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
  *
  */
 public class CRFSuiteOutcomeIDReport extends ReportBase {
-	/**
-	 * Name of the file where the instanceID / outcome pairs are stored
-	 */
-	public static final String ID_OUTCOME_KEY = "id2outcome.txt";
-	/**
+	
+    /**
 	 * Character that is used for separating fields in the output file
 	 */
 	public static final String SEPARATOR_CHAR = ";";
@@ -72,7 +69,7 @@ public class CRFSuiteOutcomeIDReport extends ReportBase {
 		}
 
 		getContext().storeBinary(
-				ID_OUTCOME_KEY,
+				Constants.ID_OUTCOME_KEY,
 				new PropertiesAdapter(props, "ID=PREDICTION" + SEPARATOR_CHAR
 						+ "GOLDSTANDARD" + "\n" + sb.toString()));
 	}
@@ -129,12 +126,8 @@ public class CRFSuiteOutcomeIDReport extends ReportBase {
 	}
 
 	private List<String> getGoldAndPredictions() throws Exception {
-		File storage = getContext().getFolder(
-				CRFSuiteTestTask.TEST_TASK_OUTPUT_KEY, AccessMode.READONLY);
-		File predictionFile = new File(storage.getAbsolutePath()
-				+ "/"
-				+ CRFSuiteAdapter.getInstance().getFrameworkFilename(
-						AdapterNameEntries.predictionsFile));
+		File predictionFile = getContext().getFile(CRFSuiteAdapter.getInstance().getFrameworkFilename(
+                AdapterNameEntries.predictionsFile), AccessMode.READONLY);
 		List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
 
 		return readLines;
