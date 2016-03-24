@@ -25,6 +25,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -121,7 +122,7 @@ public class CRFSuiteAdapter
         case predictionsFile:
             return "predictions.txt";
         case evaluationFile:
-            return "evaluation.txt";
+            return Constants.RESULTS_FILENAME;
         case featureSelectionFile:
             return "attributeEvaluationResults.txt";
         }
