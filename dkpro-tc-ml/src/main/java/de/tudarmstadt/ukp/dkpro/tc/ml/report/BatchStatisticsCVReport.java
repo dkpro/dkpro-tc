@@ -21,11 +21,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashSet;
 
+import org.dkpro.lab.reporting.BatchReportBase;
+import org.dkpro.lab.storage.impl.StringAdapter;
+import org.dkpro.lab.task.TaskContextMetadata;
+
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.StringAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 

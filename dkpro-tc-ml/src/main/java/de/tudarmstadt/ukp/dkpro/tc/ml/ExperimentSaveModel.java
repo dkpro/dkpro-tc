@@ -20,7 +20,8 @@ package de.tudarmstadt.ukp.dkpro.tc.ml;
 import java.io.File;
 import java.util.List;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.engine.TaskContext;
+
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;

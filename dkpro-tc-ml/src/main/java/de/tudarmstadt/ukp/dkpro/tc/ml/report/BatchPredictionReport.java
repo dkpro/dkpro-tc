@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.dkpro.lab.reporting.BatchReportBase;
+import org.dkpro.lab.reporting.FlexTable;
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.lab.task.Task;
+import org.dkpro.lab.task.TaskContextMetadata;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**

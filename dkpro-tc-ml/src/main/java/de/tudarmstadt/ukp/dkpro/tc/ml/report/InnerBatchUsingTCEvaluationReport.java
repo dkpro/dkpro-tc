@@ -25,12 +25,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
+import org.dkpro.lab.reporting.BatchReportBase;
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.lab.task.Task;
+import org.dkpro.lab.task.TaskContextMetadata;
+
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.evaluation.Id2Outcome;

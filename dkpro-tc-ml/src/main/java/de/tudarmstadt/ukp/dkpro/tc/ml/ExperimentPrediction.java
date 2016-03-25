@@ -17,7 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.tc.ml;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.lab.task.impl.TaskBase;
+
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;

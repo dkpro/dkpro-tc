@@ -20,10 +20,11 @@ package de.tudarmstadt.ukp.dkpro.tc.ml.report;
 import java.util.Map;
 import java.util.Properties;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
+import org.dkpro.lab.reporting.BatchReportBase;
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.lab.task.TaskContextMetadata;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.InitTask;

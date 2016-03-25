@@ -24,12 +24,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.dkpro.lab.reporting.BatchReportBase;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.lab.storage.impl.StringAdapter;
+import org.dkpro.lab.task.Task;
+import org.dkpro.lab.task.TaskContextMetadata;
+
 import au.com.bytecode.opencsv.CSVWriter;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.BatchReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.StringAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
