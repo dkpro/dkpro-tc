@@ -25,9 +25,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
 import org.apache.uima.resource.ResourceInitializationException
 
-import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.lab.Lab
+import org.dkpro.lab.task.Dimension
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteAdapter
 import de.tudarmstadt.ukp.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport

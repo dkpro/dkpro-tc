@@ -29,10 +29,10 @@ import weka.attributeSelection.InfoGainAttributeEval
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.lab.Lab
+import org.dkpro.lab.task.Dimension
+import org.dkpro.lab.task.impl.DefaultBatchTask
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.ReutersCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.examples.util.DemoUtils

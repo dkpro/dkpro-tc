@@ -29,9 +29,9 @@ import org.apache.uima.resource.ResourceInitializationException
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
-import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.lab.Lab
+import org.dkpro.lab.task.Dimension
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.BrownCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensUFE
