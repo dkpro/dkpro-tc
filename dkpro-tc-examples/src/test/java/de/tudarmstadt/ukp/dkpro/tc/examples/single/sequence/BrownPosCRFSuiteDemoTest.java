@@ -18,10 +18,10 @@
  */
 package de.tudarmstadt.ukp.dkpro.tc.examples.single.sequence;
 
+import org.dkpro.lab.task.ParameterSpace;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
