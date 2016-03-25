@@ -20,11 +20,12 @@ package de.tudarmstadt.ukp.dkpro.tc.mallet.task;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.Discriminator;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
+
 import cc.mallet.fst.TransducerEvaluator;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.util.MalletUtils;
 

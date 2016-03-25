@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.impl.DimensionBundle;
+import org.dkpro.lab.task.impl.DynamicDimension;
 
 // FIXME Issue 128: instanceID should contain sequenceID - so we can easily make sure that sequences are completed moved into folds
 /**

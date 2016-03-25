@@ -27,10 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.lab.reporting.FlexTable;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.mallet.task.MalletTestTask;
 
