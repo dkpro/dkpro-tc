@@ -29,13 +29,13 @@ import java.util.Properties;
 import meka.core.Result;
 
 import org.apache.commons.lang.StringUtils;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
 
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;

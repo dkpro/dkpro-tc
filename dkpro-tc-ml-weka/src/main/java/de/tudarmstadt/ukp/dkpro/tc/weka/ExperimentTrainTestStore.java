@@ -20,8 +20,9 @@ package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.io.File;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.task.Task;
+
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;

@@ -20,11 +20,12 @@ package de.tudarmstadt.ukp.dkpro.tc.weka;
 
 import java.util.Collection;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.impl.DimensionBundle;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.lab.task.impl.FoldDimensionBundle;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;

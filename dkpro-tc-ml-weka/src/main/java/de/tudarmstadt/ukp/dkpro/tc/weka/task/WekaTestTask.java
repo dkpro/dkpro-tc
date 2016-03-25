@@ -21,23 +21,24 @@ package de.tudarmstadt.ukp.dkpro.tc.weka.task;
 import java.io.File;
 import java.util.List;
 
+import meka.core.Result;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.Discriminator;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
-import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
-import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
-import meka.core.Result;
 import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSink;
 import weka.filters.unsupervised.attribute.Remove;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
+import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.MultilabelResult;
+import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Base class for test task and save model tasks

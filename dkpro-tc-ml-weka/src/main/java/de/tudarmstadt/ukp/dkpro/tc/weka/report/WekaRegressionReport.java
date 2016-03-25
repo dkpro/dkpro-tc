@@ -28,10 +28,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+
 import weka.core.SerializationHelper;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.weka.task.WekaTestTask;
 import de.tudarmstadt.ukp.dkpro.tc.weka.util.WekaUtils;
