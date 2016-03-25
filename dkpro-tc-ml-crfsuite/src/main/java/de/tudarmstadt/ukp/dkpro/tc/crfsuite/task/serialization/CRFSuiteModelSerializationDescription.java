@@ -24,10 +24,10 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.Discriminator;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;

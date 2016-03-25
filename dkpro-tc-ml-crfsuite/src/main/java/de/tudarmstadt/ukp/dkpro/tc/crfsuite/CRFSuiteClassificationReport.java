@@ -24,8 +24,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.Properties;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.ReportConstants;
