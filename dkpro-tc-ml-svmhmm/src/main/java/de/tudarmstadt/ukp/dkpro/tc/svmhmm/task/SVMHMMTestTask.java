@@ -35,12 +35,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.task.Discriminator;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
