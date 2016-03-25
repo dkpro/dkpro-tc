@@ -18,8 +18,9 @@
 
 package de.tudarmstadt.ukp.dkpro.tc.svmhmm.random;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
+
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 
 /**

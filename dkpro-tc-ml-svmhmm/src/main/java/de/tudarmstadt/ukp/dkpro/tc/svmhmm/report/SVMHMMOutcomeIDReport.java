@@ -26,9 +26,9 @@ import java.util.List;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.IOUtils;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;

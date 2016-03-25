@@ -21,10 +21,10 @@ import java.io.File;
 import java.util.SortedSet;
 
 import org.apache.commons.collections.BidiMap;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.task.Discriminator;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;

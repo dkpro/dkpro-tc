@@ -27,9 +27,9 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.SVMHMMAdapter;
 import de.tudarmstadt.ukp.dkpro.tc.svmhmm.task.SVMHMMTestTask;
