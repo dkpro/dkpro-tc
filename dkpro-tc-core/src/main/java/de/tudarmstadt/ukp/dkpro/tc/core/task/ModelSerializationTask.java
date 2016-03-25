@@ -20,9 +20,10 @@ package de.tudarmstadt.ukp.dkpro.tc.core.task;
 import java.io.File;
 import java.util.List;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.task.Discriminator;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.util.SaveModelUtils;
 

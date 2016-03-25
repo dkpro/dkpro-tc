@@ -118,7 +118,7 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
 	</dependencies>

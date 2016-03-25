@@ -19,9 +19,10 @@ package de.tudarmstadt.ukp.dkpro.tc.core.ml;
 
 import java.util.Collection;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.task.impl.DimensionBundle;
+import org.dkpro.lab.task.impl.TaskBase;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.io.DataWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.task.ModelSerializationTask;
 

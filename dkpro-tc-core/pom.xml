@@ -62,11 +62,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-uima</artifactId>
 		</dependency>
 		<dependency>
@@ -82,7 +82,7 @@
 			<artifactId>gson</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-uima-engine-simple</artifactId>
 		</dependency>
 		<dependency>

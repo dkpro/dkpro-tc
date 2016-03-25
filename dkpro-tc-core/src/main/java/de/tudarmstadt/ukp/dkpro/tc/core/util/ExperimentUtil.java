@@ -22,8 +22,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminable;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.Discriminable;
+
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 public class ExperimentUtil {

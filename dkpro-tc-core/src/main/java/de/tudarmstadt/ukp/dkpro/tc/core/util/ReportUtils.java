@@ -42,15 +42,15 @@ import java.util.regex.Pattern;
 //import mulan.evaluation.measure.MicroRecall;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.text.StrTokenizer;
+import org.dkpro.lab.reporting.ChartUtil;
+import org.dkpro.lab.reporting.FlexTable;
+import org.dkpro.lab.storage.StreamWriter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
 
-import de.tudarmstadt.ukp.dkpro.lab.reporting.ChartUtil;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.FlexTable;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**

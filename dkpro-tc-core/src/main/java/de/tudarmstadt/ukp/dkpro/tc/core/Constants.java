@@ -19,7 +19,7 @@ package de.tudarmstadt.ukp.dkpro.tc.core;
 
 import org.apache.uima.cas.CAS;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+import org.dkpro.lab.task.Task;
 
 /**
  * Basic constants that are used throughout the project

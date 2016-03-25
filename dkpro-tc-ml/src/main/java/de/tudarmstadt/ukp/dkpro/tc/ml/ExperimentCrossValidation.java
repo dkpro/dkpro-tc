@@ -23,15 +23,16 @@ import java.util.Collection;
 import java.util.Comparator;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.reporting.Report;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.lab.task.impl.DefaultBatchTask;
+import org.dkpro.lab.task.impl.FoldDimensionBundle;
+import org.dkpro.lab.task.impl.TaskBase;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 import de.tudarmstadt.ukp.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 import de.tudarmstadt.ukp.dkpro.tc.core.ml.TCMachineLearningAdapter;
