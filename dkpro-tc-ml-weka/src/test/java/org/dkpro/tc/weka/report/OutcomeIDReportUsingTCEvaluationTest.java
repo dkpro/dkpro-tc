@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import weka.core.Instances;
@@ -111,7 +112,7 @@ public class OutcomeIDReportUsingTCEvaluationTest
 
     }
 
-
+    @Ignore
     @Test
     public void testGenerateOutcomeIdPropertiesMultiLabel() throws ClassNotFoundException, IOException
     {
