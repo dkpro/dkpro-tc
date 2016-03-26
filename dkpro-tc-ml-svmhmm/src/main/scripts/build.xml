@@ -23,7 +23,7 @@
 	<!-- 
 	  - Output package configuration
 	  -->
-	<property name="outputPackage" value="de/tudarmstadt/ukp/dkpro/tc/svmhmm/lib"/>
+	<property name="outputPackage" value="org/dkpro/tc/svmhmm/lib"/>
 
 	<target name="local-maven">
 		<property name="install-artifact-mode" value="local"/>
@@ -43,7 +43,7 @@
 		<mkdir dir="target/download"/>
 
 		<!-- LINUX 32 bit -->
-		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_32"/>
 		<get src="http://download.joachims.org/svm_hmm/current/svm_hmm_linux32.tar.gz"
 		     dest="target/download/svmhmm.linux-x86_32.tar.gz"
 		     skipexisting="true"/>
@@ -52,26 +52,26 @@
 				dest="target/download/svmhmm.linux-x86_32.tar"/>
 		<untar
 				src="target/download/svmhmm.linux-x86_32.tar"
-				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32">
+				dest="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_32">
 			<patternset>
 				<include name="*"/>
 			</patternset>
 			<mapper type="flatten"/>
 		</untar>
 
-		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32/README.txt">
+		<echo file="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_32/README.txt">
 			SVMhmm - Sequence Tagging with Structural Support Vector Machines
 			Version V3.10, 14. August 2008
 		</echo>
 
 		<propertyfile
-				file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_32/manifest.properties">
+				file="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_32/manifest.properties">
 			<entry key="svm_hmm_classify" value="executable"/>
 			<entry key="svm_hmm_learn" value="executable"/>
 		</propertyfile>
 
 		<!-- LINUX 64 bit -->
-		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_64"/>
 		<get
 				src="http://download.joachims.org/svm_hmm/current/svm_hmm_linux64.tar.gz"
 				dest="target/download/svmhmm.linux-x86_64.tar.gz"
@@ -81,68 +81,68 @@
 				dest="target/download/svmhmm.linux-x86_64.tar"/>
 		<untar
 				src="target/download/svmhmm.linux-x86_64.tar"
-				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64">
+				dest="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_64">
 			<patternset>
 				<include name="*"/>
 			</patternset>
 			<mapper type="flatten"/>
 		</untar>
 
-		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64/README">
+		<echo file="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_64/README">
 			SVMhmm - Sequence Tagging with Structural Support Vector Machines
 			Version V3.10, 14. August 2008
 		</echo>
 
 		<propertyfile
-				file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/linux-x86_64/manifest.properties">
+				file="target/model-staging/org/dkpro/tc/svmhmm/linux-x86_64/manifest.properties">
 			<entry key="svm_hmm_classify" value="executable"/>
 			<entry key="svm_hmm_learn" value="executable"/>
 		</propertyfile>
 
 		<!-- WINDOWS 32 bit -->
-		<mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/svmhmm/windows-x86_32"/>
 		<get
 				src="http://download.joachims.org/svm_hmm/current/svm_hmm_windows.zip"
 				dest="target/download/svmhmm.windows-x86_32.zip"
 				skipexisting="true"/>
 		<unzip
 				src="target/download/svmhmm.windows-x86_32.zip"
-				dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32">
+				dest="target/model-staging/org/dkpro/tc/svmhmm/windows-x86_32">
 			<patternset>
 				<include name="*"/>
 			</patternset>
 			<mapper type="flatten"/>
 		</unzip>
 
-		<echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32/README">
+		<echo file="target/model-staging/org/dkpro/tc/svmhmm/windows-x86_32/README">
 			SVMhmm - Sequence Tagging with Structural Support Vector Machines
 			Version V3.10, 14. August 2008
 		</echo>
 
 		<propertyfile
-				file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/windows-x86_32/manifest.properties">
+				file="target/model-staging/org/dkpro/tc/svmhmm/windows-x86_32/manifest.properties">
 			<entry key="svm_hmm_classify.exe" value="executable"/>
 			<entry key="svm_hmm_learn.exe" value="executable"/>
 		</propertyfile>
 		
       <!-- OSX 64 bit -->
-        <mkdir dir="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64"/>
+        <mkdir dir="target/model-staging/org/dkpro/tc/svmhmm/osx-x86_64"/>
         <get
                 src="https://bintray.com/artifact/download/zesch/DKPro/svm_hmm_classify"
-                dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/svm_hmm_classify"
+                dest="target/model-staging/org/dkpro/tc/svmhmm/osx-x86_64/svm_hmm_classify"
                 skipexisting="true"/>
         <get
                 src="https://bintray.com/artifact/download/zesch/DKPro/svm_hmm_learn"
-                dest="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/svm_hmm_learn"
+                dest="target/model-staging/org/dkpro/tc/svmhmm/osx-x86_64/svm_hmm_learn"
                 skipexisting="true"/>
 
-        <echo file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/README">
+        <echo file="target/model-staging/org/dkpro/tc/svmhmm/osx-x86_64/README">
             SVMhmm - Sequence Tagging with Structural Support Vector Machines
             Version V3.10, 14. August 2008
         </echo>
 
         <propertyfile
-                file="target/model-staging/de/tudarmstadt/ukp/dkpro/tc/svmhmm/osx-x86_64/manifest.properties">
+                file="target/model-staging/org/dkpro/tc/svmhmm/osx-x86_64/manifest.properties">
             <entry key="svm_hmm_classify" value="executable"/>
             <entry key="svm_hmm_learn" value="executable"/>
         </propertyfile>
@@ -152,7 +152,7 @@
 		      file="src/main/scripts/LICENSE.txt"/>
 
 		<jar
-				destfile="target/de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin-${version.bin}.jar"
+				destfile="target/org.dkpro.tc.svmhmm-bin-${version.bin}.jar"
 				compress="true">
 			<fileset dir="target/model-staging">
 				<include name="META-INF/**/*"/>
@@ -161,14 +161,14 @@
 		</jar>
 
 		<generate-pom
-				groupId="de.tudarmstadt.ukp.dkpro.tc"
-				artifactId="de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin"
+				groupId="org.dkpro.tc"
+				artifactId="org.dkpro.tc.svmhmm-bin"
 				version="${version.bin}"/>
 
 		<install-artifact
-				file="target/de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin-${version.bin}.jar"
-				groupId="de.tudarmstadt.ukp.dkpro.tc"
-				artifactId="de.tudarmstadt.ukp.dkpro.tc.svmhmm-bin"
+				file="target/org.dkpro.tc.svmhmm-bin-${version.bin}.jar"
+				groupId="org.dkpro.tc"
+				artifactId="org.dkpro.tc.svmhmm-bin"
 				version="${version.bin}"/>
 		<clean-pom/>
 		<delete dir="target/model-staging"/>

@@ -5,7 +5,7 @@
 		<artifactId>dkpro-parent-pom</artifactId>
 		<version>12</version>
 	</parent>
-	<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+	<groupId>org.dkpro.tc</groupId>
 	<artifactId>dkpro-tc</artifactId>
 	<version>0.8.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -114,112 +114,112 @@
 		<dependencies>
 			<!-- Modules: Please keep the following dependencies in alphabetical order -->
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-api</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-api-features</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-core</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-docbook</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-evaluation</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-examples</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-examples-groovy</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-ngram</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-pair</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-pair-similarity</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-readability</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-features-spelling</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-fstore-simple</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-integrationtest</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-crfsuite</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-liblinear</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-mallet</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
 			<dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-svmhmm</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-weka</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+                <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-testing</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
@@ -447,43 +447,43 @@
 					<groups>
 						<group>
 							<title>API definitions</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.api*</packages>
+							<packages>org.dkpro.tc.api*</packages>
 						</group>
 						<group>
 							<title>Core functionality</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.core*</packages>
+							<packages>org.dkpro.tc.core*</packages>
 						</group>
 						<group>
 							<title>Usage examples (Java)</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.examples*</packages>
+							<packages>org.dkpro.tc.examples*</packages>
 						</group>
 						<group>
 							<title>Usage examples (Groovy)</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.groovyexamples*</packages>
+							<packages>org.dkpro.tc.groovyexamples*</packages>
 						</group>
 						<group>
 							<title>Basic feature extractors</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.features*</packages>
+							<packages>org.dkpro.tc.features*</packages>
 						</group>
 						<group>
 							<title>N-gram feature extractors</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.features.ngram*</packages>
+							<packages>org.dkpro.tc.features.ngram*</packages>
 						</group>
 						<group>
 							<title>Pair feature extractors</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.features.pair*</packages>
+							<packages>org.dkpro.tc.features.pair*</packages>
 						</group>
 						<group>
 							<title>Support for MALLET machine learning framework</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.mallet*</packages>
+							<packages>org.dkpro.tc.mallet*</packages>
 						</group>
 						<group>
 							<title>Support for WEKA machine learning framework</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.weka*</packages>
+							<packages>org.dkpro.tc.weka*</packages>
 						</group>
 						<group>
 							<title>Machine Learning (framework independent)</title>
-							<packages>de.tudarmstadt.ukp.dkpro.tc.ml*</packages>
+							<packages>org.dkpro.tc.ml*</packages>
 						</group>
 					</groups>
 				</configuration>

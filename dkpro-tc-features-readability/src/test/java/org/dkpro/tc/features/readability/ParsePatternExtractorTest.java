@@ -1,0 +1,72 @@
+/*******************************************************************************
+ * Copyright 2015
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+package org.dkpro.tc.features.readability;
+
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.jcas.JCas;
+import org.junit.Assert;
+import org.junit.Ignore;
+
+import de.tudarmstadt.ukp.dkpro.core.maltparser.MaltParser;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
+
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.features.readability.ParsePatternExtractor;
+
+public class ParsePatternExtractorTest
+{
+    @Ignore
+    public void testParsePatternExtractor()
+        throws Exception
+    {
+        String text = "We use it when a girl in our dorm is acting like a spoiled and nervous child.";
+        AnalysisEngineDescription desc = createEngineDescription(
+                createEngineDescription(OpenNlpSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class),
+                createEngineDescription(MaltParser.class));
+        AnalysisEngine engine = createEngine(desc);
+        JCas jcas = engine.newJCas();
+        jcas.setDocumentLanguage("en");
+        jcas.setDocumentText(text);
+        engine.process(jcas);
+
+        ParsePatternExtractor extractor = new ParsePatternExtractor();
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
+        Assert.assertEquals(features.size(), 24);
+        double[] results = { 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0,
+                10.0, 2.0, 69.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0,
+                1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0, 10.0, 2.0, 1.0, 69.0, 1.0, 2.0, 2.0,
+                1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5,
+                77.0, 10.0, 2.0, 1.0, 69.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0 };
+        for (int i = 0; i < features.size(); i++) {
+
+            Assert.assertEquals(results[i], (double) features.get(i).getValue(), 0.1);
+
+        }
+    }
+
+}

@@ -6,7 +6,7 @@
   <vendor/>
   <types>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationOutcome</name>
+      <name>org.dkpro.tc.api.type.TextClassificationOutcome</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -33,7 +33,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationUnit</name>
+      <name>org.dkpro.tc.api.type.TextClassificationUnit</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     <features>
@@ -52,12 +52,12 @@ This can be used to add additional information e.g. for identifying the unit.</d
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationFocus</name>
+      <name>org.dkpro.tc.api.type.TextClassificationFocus</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.tudarmstadt.ukp.dkpro.tc.api.type.TextClassificationSequence</name>
+      <name>org.dkpro.tc.api.type.TextClassificationSequence</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     <features>

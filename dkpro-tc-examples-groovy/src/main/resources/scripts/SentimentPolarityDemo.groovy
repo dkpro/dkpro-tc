@@ -1,4 +1,4 @@
-package de.tudarmstadt.ukp.dkpro.tc.demo.sentimentpolarity;
+package org.dkpro.tc.demo.sentimentpolarity;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
@@ -13,19 +13,19 @@ import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.impl.DefaultBatchTask
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants
-import de.tudarmstadt.ukp.dkpro.tc.core.GroovyExperiment
-import de.tudarmstadt.ukp.dkpro.tc.examples.io.MovieReviewCorpusReader
-import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE
-import de.tudarmstadt.ukp.dkpro.tc.features.ngram.LuceneNGramDFE
-import de.tudarmstadt.ukp.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
-import de.tudarmstadt.ukp.dkpro.tc.weka.WekaClassificationAdapter;
-import de.tudarmstadt.ukp.dkpro.tc.weka.writer.WekaDataWriter
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation
-import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentTrainTest
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchCrossValidationReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import de.tudarmstadt.ukp.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.core.Constants
+import org.dkpro.tc.core.GroovyExperiment
+import org.dkpro.tc.examples.io.MovieReviewCorpusReader
+import org.dkpro.tc.features.length.NrOfTokensDFE
+import org.dkpro.tc.features.ngram.LuceneNGramDFE
+import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
+import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.writer.WekaDataWriter
+import org.dkpro.tc.ml.ExperimentCrossValidation
+import org.dkpro.tc.ml.ExperimentTrainTest
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchOutcomeIDReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Groovy-Version of the SentimentPolarityExperiment

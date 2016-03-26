@@ -21,7 +21,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+		<groupId>org.dkpro.tc</groupId>
 		<artifactId>dkpro-tc</artifactId>
 		<version>0.8.0-SNAPSHOT</version>
 	</parent>
@@ -35,7 +35,7 @@
 	</licenses>
 	<dependencies>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-examples</artifactId>
 		</dependency>
 		<dependency>
@@ -43,7 +43,7 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-gpl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-features-pair</artifactId>
 		</dependency>
 		<dependency>
@@ -67,19 +67,19 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-features</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-features-ngram</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml-weka</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-core</artifactId>
 		</dependency>
 		<dependency>
@@ -100,11 +100,11 @@
 			<artifactId>uimaj-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml-crfsuite</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml</artifactId>
 		</dependency>
 	</dependencies>
