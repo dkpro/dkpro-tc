@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
@@ -81,5 +82,8 @@ public class CRFSuiteClassificationReport
         p.store(new FileOutputStream(accuracyFile), "Accuracy on test data");
 
         br.close();
+        
+        //TODO: BatchTrainTestReport expects a file named Constants.RESULTS_FILENAME we copy the evaluationFile 
+        FileUtils.copyFile(accuracyFile, getContext().getFile(Constants.RESULTS_FILENAME, AccessMode.READWRITE));
     }
 }
