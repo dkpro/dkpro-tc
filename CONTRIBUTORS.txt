@@ -25,6 +25,6 @@ Nicolai Erbs <nico.erbs@gmail.com>
 Oliver Ferschke
 Pedro Santos
 Richard Eckart de Castilho <richard.eckart@gmail.com>
-Tobias Horsmann
+Tobias Horsmann <tobias.horsmann@gmail.com>
 Torsten Zesch
 Tristan Miller
