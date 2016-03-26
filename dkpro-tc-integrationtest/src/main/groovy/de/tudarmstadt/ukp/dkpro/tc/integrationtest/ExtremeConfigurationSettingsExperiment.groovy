@@ -25,8 +25,8 @@ import org.apache.uima.resource.ResourceInitializationException
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import de.tudarmstadt.ukp.dkpro.lab.Lab
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
+import org.dkpro.lab.Lab
+import org.dkpro.lab.task.Dimension
 import de.tudarmstadt.ukp.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import de.tudarmstadt.ukp.dkpro.tc.features.length.NrOfTokensDFE

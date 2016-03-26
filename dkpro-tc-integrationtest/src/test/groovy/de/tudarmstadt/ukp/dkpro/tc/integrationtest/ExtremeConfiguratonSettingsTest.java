@@ -25,7 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
+import org.dkpro.lab.engine.ExecutionException;
 
 public class ExtremeConfiguratonSettingsTest
 {
