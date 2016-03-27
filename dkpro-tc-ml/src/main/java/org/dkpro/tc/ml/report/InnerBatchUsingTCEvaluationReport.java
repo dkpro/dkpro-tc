@@ -58,7 +58,7 @@ public class InnerBatchUsingTCEvaluationReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-                File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), ID_OUTCOME_KEY);
                 Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
                 overallOutcome.add(id2outcome);
                 for (Object key : discriminatorsMap.keySet()) {
@@ -77,9 +77,10 @@ public class InnerBatchUsingTCEvaluationReport
         }
         getContext().storeBinary(Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter(prop));
 
-        FileOutputStream fos = new FileOutputStream(new File(getContext().getStorageLocation(
-                Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY));
+        File folder = getContext().getFolder(
+                Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+        FileOutputStream fos = new FileOutputStream(new File(folder,
+                Constants.SERIALIZED_ID_OUTCOME_KEY));
         ObjectOutputStream outputStream = new ObjectOutputStream(fos);
         outputStream.writeObject(overallOutcome);
         outputStream.close();

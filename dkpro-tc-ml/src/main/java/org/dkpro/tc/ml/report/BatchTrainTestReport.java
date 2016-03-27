@@ -69,7 +69,7 @@ public class BatchTrainTestReport
                 Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
                         Constants.RESULTS_FILENAME, new PropertiesAdapter()).getMap();
 
-                File confMatrix = store.getStorageFolder(subcontext.getId(),
+                File confMatrix = store.locateKey(subcontext.getId(),
                         CONFUSIONMATRIX_KEY);
 
                 if (confMatrix.isFile()) {
@@ -134,7 +134,7 @@ public class BatchTrainTestReport
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        File dummyFolder = store.locateKey(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
         getContext().getLoggingService().message(getContextLabel(),
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");

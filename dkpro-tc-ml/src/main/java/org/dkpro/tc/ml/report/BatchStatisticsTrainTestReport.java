@@ -67,7 +67,7 @@ public class BatchStatisticsTrainTestReport
 
                 Map<String, String> discriminatorsMap = getContext().getStorageService().retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), ID_OUTCOME_KEY);
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
 
                                 

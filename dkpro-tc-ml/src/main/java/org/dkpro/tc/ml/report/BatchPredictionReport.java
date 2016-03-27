@@ -31,7 +31,6 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
-
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -47,6 +46,7 @@ public class BatchPredictionReport
     private static final String report_name = "PredictionReport";
     private static final String predicted_value = "Prediction";
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute()
         throws Exception
@@ -63,7 +63,7 @@ public class BatchPredictionReport
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
                 // deserialize file
-                FileInputStream f = new FileInputStream(store.getStorageFolder(subcontext.getId(),
+                FileInputStream f = new FileInputStream(store.locateKey(subcontext.getId(),
                         PREDICTION_MAP_FILE_NAME));
                 ObjectInputStream s = new ObjectInputStream(f);
                 Map<String, List<String>> resultMap = (Map<String, List<String>>) s.readObject();
@@ -79,7 +79,7 @@ public class BatchPredictionReport
                 }
                 // create a separate output folder for each execution of
                 // ExtractFeaturesAndPredictTask, 36 is the length of the UUID hash
-                File contextFolder = store.getStorageFolder(getContext().getId(),
+                File contextFolder = store.locateKey(getContext().getId(),
                         subcontext.getId().substring(subcontext.getId().length() - 36));
                 // Excel cannot cope with more than 255 columns
                 if (table.getColumnIds().length <= 255) {
@@ -102,7 +102,7 @@ public class BatchPredictionReport
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        File dummyFolder = store.locateKey(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
         getContext().getLoggingService().message(getContextLabel(),
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");

@@ -74,6 +74,7 @@ import weka.core.converters.Saver;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
@@ -120,6 +121,7 @@ public class WekaUtils
      * @return the adapted test data
      * @throws Exception
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Instances makeOutcomeClassesCompatible(Instances trainData, Instances testData,
             boolean multilabel)
         throws Exception

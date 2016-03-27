@@ -80,7 +80,7 @@ public class BatchTrainTestDetailedOutcomeReport
             }
             else if(type.contains(METAINFO_TASK_ID)) {
             	try {
-                	File metaDirectory = store.getStorageFolder(subcontext.getId(), MetaInfoTask.META_KEY);
+                	File metaDirectory = store.locateKey(subcontext.getId(), MetaInfoTask.META_KEY);
                 	contextMap = parseContextFile(metaDirectory, extractContext);
             	}
             	catch (Exception e) {
@@ -91,7 +91,7 @@ public class BatchTrainTestDetailedOutcomeReport
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        File dummyFolder = store.locateKey(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
         getContext().getLoggingService().message(getContextLabel(),
                 "Storing detailed classification results in:\n" + dummyFolder.getParent() + "\n");

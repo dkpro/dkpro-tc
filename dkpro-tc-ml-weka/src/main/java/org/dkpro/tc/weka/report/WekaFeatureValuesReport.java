@@ -36,6 +36,7 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.weka.task.WekaTestTask;
@@ -255,6 +256,7 @@ public class WekaFeatureValuesReport
             this.b = b;
         }
 
+        @SuppressWarnings("unused")
         public static <A, B> PairKey<A, B> make(A a, B b)
         {
             return new PairKey<A, B>(a, b);
@@ -266,6 +268,7 @@ public class WekaFeatureValuesReport
             return (a != null ? a.hashCode() : 0) + 31 * (b != null ? b.hashCode() : 0);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public boolean equals(Object o)
         {

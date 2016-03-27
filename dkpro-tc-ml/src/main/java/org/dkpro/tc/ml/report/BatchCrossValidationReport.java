@@ -77,7 +77,7 @@ public class BatchCrossValidationReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
-                File eval = store.getStorageFolder(subcontext.getId(), EVAL_FILE_NAME + SUFFIX_CSV);
+                File eval = store.locateKey(subcontext.getId(), EVAL_FILE_NAME + SUFFIX_CSV);
 
                 Map<String, String> resultMap = new HashMap<String, String>();
 
@@ -190,7 +190,7 @@ public class BatchCrossValidationReport
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        File dummyFolder = store.locateKey(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
         getContext().getLoggingService().message(getContextLabel(),
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");

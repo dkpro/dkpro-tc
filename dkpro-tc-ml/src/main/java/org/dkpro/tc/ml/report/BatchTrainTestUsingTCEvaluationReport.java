@@ -63,7 +63,7 @@ public class BatchTrainTestUsingTCEvaluationReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-                File id2outcomeFile = getContext().getStorageService().getStorageFolder(subcontext.getId(), ID_OUTCOME_KEY);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), ID_OUTCOME_KEY);
                 Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
                 EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(id2outcome, softEvaluation, individualLabelMeasures);
                 Map<String, Double> resultTempMap = evaluator.calculateEvaluationMeasures();
@@ -105,7 +105,7 @@ public class BatchTrainTestUsingTCEvaluationReport
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.getStorageFolder(getContext().getId(), "dummy");
+        File dummyFolder = store.locateKey(getContext().getId(), "dummy");
         // TODO can we also do this without creating and deleting the dummy folder?
         getContext().getLoggingService().message(getContextLabel(),
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
