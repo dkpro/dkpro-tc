@@ -313,11 +313,16 @@ public class SaveModelUtils
     {
         File file = new File(modelFolder, MODEL_TC_VERSION);
         Properties prop = new Properties();
-        prop.load(new FileInputStream(file));
+
+        FileInputStream fos = new FileInputStream(file);
+        prop.load(fos);
+        fos.close();
+
         return prop.getProperty(TCVERSION);
     }
 
-    public static void writeFeatureMode(File outputFolder, String featureMode) throws IOException
+    public static void writeFeatureMode(File outputFolder, String featureMode)
+        throws IOException
     {
         Properties properties = new Properties();
         properties.setProperty(DIM_FEATURE_MODE, featureMode);
@@ -326,10 +331,11 @@ public class SaveModelUtils
         FileOutputStream fileOut = new FileOutputStream(file);
         properties.store(fileOut, "Feature mode used to train this model");
         fileOut.close();
-        
+
     }
 
-    public static void writeLearningMode(File outputFolder, String learningMode)  throws IOException
+    public static void writeLearningMode(File outputFolder, String learningMode)
+        throws IOException
     {
         Properties properties = new Properties();
         properties.setProperty(DIM_LEARNING_MODE, learningMode);
@@ -337,26 +343,37 @@ public class SaveModelUtils
         File file = new File(outputFolder + "/" + MODEL_LEARNING_MODE);
         FileOutputStream fileOut = new FileOutputStream(file);
         properties.store(fileOut, "Learning mode used to train this model");
-        fileOut.close();        
+        fileOut.close();
     }
 
-    public static String initFeatureMode(File tcModelLocation) throws IOException
+    public static String initFeatureMode(File tcModelLocation)
+        throws IOException
     {
         File file = new File(tcModelLocation, MODEL_FEATURE_MODE);
         Properties prop = new Properties();
-        prop.load(new FileInputStream(file));
+
+        FileInputStream fis = new FileInputStream(file);
+        prop.load(fis);
+        fis.close();
+
         return prop.getProperty(DIM_FEATURE_MODE);
     }
 
-    public static String initLearningMode(File tcModelLocation) throws IOException
+    public static String initLearningMode(File tcModelLocation)
+        throws IOException
     {
         File file = new File(tcModelLocation, MODEL_LEARNING_MODE);
         Properties prop = new Properties();
-        prop.load(new FileInputStream(file));
+
+        FileInputStream fis = new FileInputStream(file);
+        prop.load(fis);
+        fis.close();
+
         return prop.getProperty(DIM_LEARNING_MODE);
     }
-    
-    public static TCMachineLearningAdapter initMachineLearningAdapter(File tcModelLocation) throws Exception
+
+    public static TCMachineLearningAdapter initMachineLearningAdapter(File tcModelLocation)
+        throws Exception
     {
         File modelMeta = new File(tcModelLocation, MODEL_META);
         String fileContent = FileUtils.readFileToString(modelMeta);
@@ -381,14 +398,18 @@ public class SaveModelUtils
     {
         List<Object> parameters = new ArrayList<>();
         Properties parametersProp = new Properties();
-        parametersProp.load(new FileReader(new File(tcModelLocation, MODEL_PARAMETERS)));
+
+        FileInputStream fis = new FileInputStream(new File(tcModelLocation, MODEL_PARAMETERS));
+        parametersProp.load(fis);
+        fis.close();
+
         for (Object key : parametersProp.keySet()) {
-            parameters.add((String)key);
-            if (isExistingFilePath(tcModelLocation, (String)parametersProp.get(key))) {
-                parameters.add(tcModelLocation + "/" + (String)parametersProp.get(key));
+            parameters.add((String) key);
+            if (isExistingFilePath(tcModelLocation, (String) parametersProp.get(key))) {
+                parameters.add(tcModelLocation + "/" + (String) parametersProp.get(key));
             }
             else {
-                parameters.add((String)parametersProp.get(key));
+                parameters.add((String) parametersProp.get(key));
             }
         }
         return parameters;
@@ -396,62 +417,72 @@ public class SaveModelUtils
 
     private static boolean isExistingFilePath(File tcModelLocation, String name)
     {
-        
         return new File(tcModelLocation.getAbsolutePath() + "/" + name).exists();
     }
-    
+
     /**
-     * Loads the java classes of the feature that are provided with the model and adds them to the classpath
+     * Loads the java classes of the feature that are provided with the model and adds them to the
+     * classpath
      */
-    public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(String outputPath,
-            String[] featureExtractorClassNames, List<Object> convertedParameters)
-                    throws ResourceInitializationException {
+    public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
+            String outputPath, String[] featureExtractorClassNames, List<Object> convertedParameters)
+        throws ResourceInitializationException
+    {
 
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
         try {
             File classFile = new File(outputPath + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
-            URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI().toURL() });
+            URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI()
+                    .toURL() });
 
             for (String featureExtractor : featureExtractorClassNames) {
 
                 Class<? extends Resource> resource = urlClassLoader.loadClass(featureExtractor)
                         .asSubclass(Resource.class);
-                ExternalResourceDescription resourceDescription = createExternalResource(resource, convertedParameters);
+                ExternalResourceDescription resourceDescription = createExternalResource(resource,
+                        convertedParameters);
                 extractorResources.add(resourceDescription);
 
             }
             urlClassLoader.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
         return extractorResources;
     }
 
     static ExternalResourceDescription createExternalResource(Class<? extends Resource> resource,
-            List<Object> convertedParameters) {
-        return ExternalResourceFactory.createExternalResourceDescription(resource, convertedParameters.toArray());
+            List<Object> convertedParameters)
+    {
+        return ExternalResourceFactory.createExternalResourceDescription(resource,
+                convertedParameters.toArray());
     }
 
-    /** 
-     * Converts objects by calling <code>toString()</code> for each parameter 
+    /**
+     * Converts objects by calling <code>toString()</code> for each parameter
      */
-    public static List<Object> convertParameters(List<Object> parameters) {
+    public static List<Object> convertParameters(List<Object> parameters)
+    {
         List<Object> convertedParameters = new ArrayList<Object>();
         if (parameters != null) {
             for (Object parameter : parameters) {
                 convertedParameters.add(parameter.toString());
             }
-        } else {
+        }
+        else {
             parameters = new ArrayList<Object>();
         }
         return convertedParameters;
     }
 
     /**
-     * Produces a resource manager that is used when creating the engine which is aware of the class files located in the model folder 
+     * Produces a resource manager that is used when creating the engine which is aware of the class
+     * files located in the model folder
      */
     public static ResourceManager getModelFeatureAwareResourceManager(File tcModelLocation)
-            throws ResourceInitializationException, MalformedURLException {
+        throws ResourceInitializationException, MalformedURLException
+    {
         // The features of a model are located in a subfolder where Java does
         // not look for them by default. This avoids that during model execution
         // several features with the same name are on the classpath which might
@@ -466,19 +497,29 @@ public class SaveModelUtils
         return resourceManager;
     }
 
-	public static String initBipartitionThreshold(File tcModelLocation) throws FileNotFoundException, IOException {
+    public static String initBipartitionThreshold(File tcModelLocation)
+        throws FileNotFoundException, IOException
+    {
         File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
         Properties prop = new Properties();
-        prop.load(new FileInputStream(file));
-        return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
-	}
 
-	public static void writeBipartitionThreshold(File outputFolder, String bipartitionThreshold) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+        prop.load(fis);
+        fis.close();
+
+        return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+    }
+
+    public static void writeBipartitionThreshold(File outputFolder, String bipartitionThreshold)
+        throws IOException
+    {
         Properties properties = new Properties();
         properties.setProperty(DIM_BIPARTITION_THRESHOLD, bipartitionThreshold);
 
         File file = new File(outputFolder + "/" + MODEL_BIPARTITION_THRESHOLD);
         FileOutputStream fileOut = new FileOutputStream(file);
-        properties.store(fileOut, "Bipartition threshold used to train this model (only multi-label classification)");
-        fileOut.close(); 	}
+        properties.store(fileOut,
+                "Bipartition threshold used to train this model (only multi-label classification)");
+        fileOut.close();
+    }
 }

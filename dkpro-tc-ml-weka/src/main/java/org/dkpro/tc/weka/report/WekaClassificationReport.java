@@ -81,8 +81,9 @@ public class WekaClassificationReport
     public void execute()
         throws Exception
     {
-        boolean multiLabel = getDiscriminators().get(WekaTestTask.class.getName() + "|learningMode")
-                .equals(Constants.LM_MULTI_LABEL);
+        boolean multiLabel = getDiscriminators()
+                .get(WekaTestTask.class.getName() + "|learningMode").equals(
+                        Constants.LM_MULTI_LABEL);
 
         Properties props = new Properties();
         // table to hold CM results
@@ -91,15 +92,16 @@ public class WekaClassificationReport
         // matrix to hold CM results
         double[][] confusionMatrix = null;
 
-        
-        File evaluationFile =WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,AdapterNameEntries.evaluationFile, AccessMode.READONLY);
+        File evaluationFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+                AdapterNameEntries.evaluationFile, AccessMode.READONLY);
 
         if (multiLabel) {
             // ============= multi-label setup ======================
-        	MultilabelResult r = WekaUtils.readMlResultFromFile(evaluationFile); 
+            MultilabelResult r = WekaUtils.readMlResultFromFile(evaluationFile);
 
-            File dataFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,AdapterNameEntries.predictionsFile, AccessMode.READONLY);
-                    
+            File dataFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+                    AdapterNameEntries.predictionsFile, AccessMode.READONLY);
+
             Instances data = WekaUtils.getInstances(dataFile, true);
             String[] classNames = new String[data.classIndex()];
 
@@ -175,9 +177,9 @@ public class WekaClassificationReport
         // ================================================
 
         if (multiLabel) {
-                // store ML confusion matrix
-                confusionMatrix = createConfusionMatrix(tempM);
-                // create PR curve diagram
+            // store ML confusion matrix
+            confusionMatrix = createConfusionMatrix(tempM);
+            // create PR curve diagram
             try {
                 ReportUtils.PrecisionRecallDiagramRenderer renderer = new ReportUtils.PrecisionRecallDiagramRenderer(
                         ReportUtils.createXYDataset(prcData));
@@ -207,7 +209,8 @@ public class WekaClassificationReport
 
         // Write out properties
         getContext().storeBinary(WekaTestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
-        getContext().storeBinary(WekaClassificationReport.CONFUSIONMATRIX_KEY, cMTable.getCsvWriter());
+        getContext().storeBinary(WekaClassificationReport.CONFUSIONMATRIX_KEY,
+                cMTable.getCsvWriter());
 
     }
 

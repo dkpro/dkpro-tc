@@ -67,7 +67,7 @@ public class CRFSuiteClassificationReport
                 incorrect++;
             }
         }
-        
+        br.close();
         
         String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
                 AdapterNameEntries.evaluationFile);
@@ -79,9 +79,12 @@ public class CRFSuiteClassificationReport
         p.setProperty(ReportConstants.CORRECT, correct.toString());
         p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
         p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
-        p.store(new FileOutputStream(accuracyFile), "Accuracy on test data");
-
-        br.close();
+        
+        FileOutputStream fos = new FileOutputStream(accuracyFile);
+        p.store(fos, "Accuracy on test data");
+        fos.close();
+        
+        
         
         //TODO: BatchTrainTestReport expects a file named Constants.RESULTS_FILENAME we copy the evaluationFile 
         FileUtils.copyFile(accuracyFile, getContext().getFile(Constants.RESULTS_FILENAME, AccessMode.READWRITE));
