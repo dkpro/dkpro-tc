@@ -46,14 +46,6 @@ public class LiblinearClassificationReport
     	File evalFile = new File(folder,
 	    		fileName);  	
     	
-        Properties props = new Properties();
-    	for (String line : FileUtils.readLines(evalFile)) {
-    		String[] parts = line.split("=");
-    		props.setProperty(parts[0], parts[1]);
-    	}
-	
-        // Write out properties
-        getContext().storeBinary(Constants.RESULTS_FILENAME, new PropertiesAdapter(props));
-        
+    	FileUtils.copyFile(evalFile, new File(Constants.RESULTS_FILENAME));
     }
 }
