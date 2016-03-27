@@ -29,6 +29,15 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.ngram.io.TestReaderSentenceToDocument;
+import org.dkpro.tc.features.ngram.meta.NGramMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -36,17 +45,6 @@ import org.junit.rules.TemporaryFolder;
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE;
-import org.dkpro.tc.features.ngram.io.TestReaderSentenceToDocument;
-import org.dkpro.tc.features.ngram.meta.NGramMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class FrequencyDistributionNGramDFETest
 {

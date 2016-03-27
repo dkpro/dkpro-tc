@@ -19,31 +19,16 @@ package org.dkpro.tc.core.feature;
 
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.junit.Assert.*;
-
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
-
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ART;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.CONJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.NN;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.NP;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationUnit;
-import org.dkpro.tc.core.feature.InstanceIdFeature;
+import org.junit.Test;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 
 
@@ -65,10 +50,9 @@ public class InstanceIdFeatureTest {
 	        DocumentMetaData dmd = DocumentMetaData.create(jcas);
 	        dmd.setDocumentId("document_123");
 	        
-	        InstanceIdFeature retriever = new InstanceIdFeature();
-	        Feature feature = retriever.retrieve(jcas, unit1);
-	        Feature feature2 = retriever.retrieve(jcas);
-	        Feature feature3= retriever.retrieve(jcas, unit1, 5);
+	        Feature feature = InstanceIdFeature.retrieve(jcas, unit1);
+	        Feature feature2 = InstanceIdFeature.retrieve(jcas);
+	        Feature feature3= InstanceIdFeature.retrieve(jcas, unit1, 5);
 	        assertEquals(feature.getValue(),"document_0");
 	        assertEquals(feature2.getValue(), "document_123");
 	        assertEquals(feature3.getValue(), "document_5_0");   

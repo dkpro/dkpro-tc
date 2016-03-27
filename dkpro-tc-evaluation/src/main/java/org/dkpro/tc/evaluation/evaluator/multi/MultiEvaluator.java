@@ -106,6 +106,7 @@ public class MultiEvaluator
     }
     
 
+    @SuppressWarnings("unchecked")
     @Override
     public AbstractLargeContingencyTable<Map<String, Map<String, Double>>> buildLargeContingencyTable()
     {

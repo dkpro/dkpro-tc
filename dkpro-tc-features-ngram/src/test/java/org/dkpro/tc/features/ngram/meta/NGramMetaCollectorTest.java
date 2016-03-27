@@ -50,6 +50,7 @@ public class NGramMetaCollectorTest
         System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void ngramMetaCollectorTest()
         throws Exception

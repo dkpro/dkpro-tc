@@ -33,6 +33,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
@@ -101,6 +102,7 @@ public class TopicWordsFeatureExtractor
                 numTokens > 0 ? (wordcount / numTokens) : 0));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException

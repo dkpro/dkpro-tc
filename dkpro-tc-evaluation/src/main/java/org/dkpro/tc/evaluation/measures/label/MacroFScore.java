@@ -84,7 +84,6 @@ public class MacroFScore
 				recall = tp / localSum;
 			}
 			if ((localSum = precision + recall) != 0.0) {
-				double fScore = (2 * precision * recall) / localSum;
 				summedFScore += (2 * precision * recall) / localSum;
 			}
 			else if (! softEvaluation) {

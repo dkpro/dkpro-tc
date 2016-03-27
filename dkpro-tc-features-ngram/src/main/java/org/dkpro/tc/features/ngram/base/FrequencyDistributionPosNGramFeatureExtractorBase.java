@@ -34,6 +34,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
@@ -73,6 +74,7 @@ public class FrequencyDistributionPosNGramFeatureExtractorBase
     protected String prefix;
     private FrequencyDistribution<String> trainingFD;
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
         throws ResourceInitializationException

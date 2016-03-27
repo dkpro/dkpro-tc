@@ -45,6 +45,7 @@ public class SingleEvaluator
 		super(id2Outcome, softEvaluation, individualLabelMeasures);
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
 	public AbstractLargeContingencyTable<List<List<Double>>> buildLargeContingencyTable() throws TextClassificationException
     {

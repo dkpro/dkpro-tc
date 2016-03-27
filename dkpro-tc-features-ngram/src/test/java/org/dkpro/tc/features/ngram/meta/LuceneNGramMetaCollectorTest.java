@@ -51,6 +51,7 @@ public class LuceneNGramMetaCollectorTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
+    @SuppressWarnings("unused")
     @Test
     public void luceneNgramMetaCollectorTest()
         throws Exception
@@ -112,6 +113,7 @@ public class LuceneNGramMetaCollectorTest
        assertEquals(35, i);    
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void emptyDocumentTest()
         throws Exception

@@ -26,12 +26,12 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-
 import org.dkpro.tc.features.ngram.util.SkipNgramStringListIterable;
 
 public class SkipNgramStringListIterableTest
 {
 
+    @SuppressWarnings("unused")
     @Test
     public void ngramTest_size2() {
         
