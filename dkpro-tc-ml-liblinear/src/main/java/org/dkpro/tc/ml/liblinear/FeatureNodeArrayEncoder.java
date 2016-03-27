@@ -44,11 +44,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import de.bwaldvogel.liblinear.FeatureNode;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
+
+import de.bwaldvogel.liblinear.FeatureNode;
 
 public class FeatureNodeArrayEncoder {
 

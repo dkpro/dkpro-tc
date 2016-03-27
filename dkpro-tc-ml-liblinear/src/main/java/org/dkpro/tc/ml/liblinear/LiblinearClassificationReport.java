@@ -41,8 +41,10 @@ public class LiblinearClassificationReport
         throws Exception
     {
     	// only a mock for now - this needs to be rewritten anyway once the evaluation module is ready
-    	File evalFile = new File(getContext().getStorageLocation(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE),
-	    		LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile));  	
+        File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+        String fileName = LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile);
+    	File evalFile = new File(folder,
+	    		fileName);  	
     	
         Properties props = new Properties();
     	for (String line : FileUtils.readLines(evalFile)) {

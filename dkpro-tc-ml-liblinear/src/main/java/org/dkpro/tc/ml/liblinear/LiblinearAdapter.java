@@ -24,7 +24,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -63,7 +62,8 @@ public class LiblinearAdapter
 		return LiblinearBatchTrainTestReport.class;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
 			String[] files, int folds) {
 		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
