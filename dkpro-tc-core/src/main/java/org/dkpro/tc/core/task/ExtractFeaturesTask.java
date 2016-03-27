@@ -42,6 +42,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
+
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.TaskUtils;
@@ -92,6 +93,7 @@ public class ExtractFeaturesTask
     // collects annotation types required by FEs (source code annotations need to be inserted in
     // each FE)
     // could be used to automatically configure preprocessing
+    @SuppressWarnings("unused")
     private Set<String> requiredTypes;
     
     private TCMachineLearningAdapter mlAdapter;

@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminable;
-
 import org.dkpro.tc.core.Constants;
 
 public class ExperimentUtil {
@@ -101,6 +100,7 @@ public class ExperimentUtil {
      * 
      * @param <T>
      */
+    @SuppressWarnings("serial")
     public static class NamedArrayList<T> extends ArrayList<T> implements Discriminable
     {
         private String name;
