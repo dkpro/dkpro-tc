@@ -18,13 +18,10 @@
 package org.dkpro.tc.ml.liblinear;
 
 import java.io.File;
-import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.storage.impl.PropertiesAdapter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
@@ -46,6 +43,7 @@ public class LiblinearClassificationReport
     	File evalFile = new File(folder,
 	    		fileName);  	
     	
-    	FileUtils.copyFile(evalFile, new File(Constants.RESULTS_FILENAME));
+    	File outputFolder = getContext().getFolder("", AccessMode.READWRITE);
+    	FileUtils.copyFile(evalFile, new File(outputFolder, Constants.RESULTS_FILENAME));
     }
 }
