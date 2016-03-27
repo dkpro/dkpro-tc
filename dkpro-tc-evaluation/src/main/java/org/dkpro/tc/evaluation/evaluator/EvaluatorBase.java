@@ -32,10 +32,6 @@ import org.dkpro.tc.evaluation.measures.label.MicroPrecision;
 import org.dkpro.tc.evaluation.measures.label.MicroRecall;
 
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public abstract class EvaluatorBase {
 	
 	protected Id2Outcome id2Outcome;

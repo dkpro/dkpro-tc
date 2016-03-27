@@ -42,9 +42,6 @@ import org.dkpro.tc.weka.report.WekaClassificationReport
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification
  * unit. This is only a showcase of the concept.
- *
- * @author Andriy Nadolskyy
- * @author daxenberger
  */
 public class NERUnitDemo
 implements Constants {

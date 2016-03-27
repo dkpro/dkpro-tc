@@ -36,8 +36,6 @@ public class PosTypeUFE
     implements ClassificationUnitFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         This feature extractor checks the pos tag of the word. As not all ml learning
      *         algorithms can use enumerations, we create a boolean feature for each pos type.
      */

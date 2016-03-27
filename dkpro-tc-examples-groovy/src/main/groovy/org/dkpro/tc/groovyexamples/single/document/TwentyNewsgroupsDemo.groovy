@@ -52,8 +52,6 @@ import org.dkpro.tc.weka.report.WekaClassificationReport
  * a basic CV and TrainTest setup. This is more convenient, but less flexible.
  *
  * If you need to define a more complex experiment setup, look at TwentyNewsgroupsGroovyExtendedExperiment
- *
- * @author Oliver Ferschke
  */
 public class TwentyNewsgroupsDemo implements Constants {
 

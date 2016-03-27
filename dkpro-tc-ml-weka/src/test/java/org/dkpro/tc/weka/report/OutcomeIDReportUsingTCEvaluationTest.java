@@ -42,9 +42,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 /**
  * Tests the correct generation of the OutcomeIdReport for the internal DKPro TC evaluation with
  * various setups.
- * 
- * @author daxenberger
- * 
  */
 public class OutcomeIDReportUsingTCEvaluationTest
 {

@@ -28,9 +28,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
  * This class always assigns the baseline value (=0) as a feature
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class AlwaysZeroPairFeatureExtractor
     extends FeatureExtractorResource_ImplBase

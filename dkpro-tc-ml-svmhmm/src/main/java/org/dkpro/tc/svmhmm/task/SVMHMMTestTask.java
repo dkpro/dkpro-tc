@@ -52,8 +52,6 @@ import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
  * parameters. Consult
  * {@code http://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html} for
  * parameter settings.
- *
- * @author Ivan Habernal
  */
 public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	/*

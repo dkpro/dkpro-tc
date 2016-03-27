@@ -38,9 +38,6 @@ import org.dkpro.tc.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
 import org.dkpro.tc.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
 import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
-/**
- * @author Ivan Habernal
- */
 public class SVMHMMAdapter
 	implements TCMachineLearningAdapter
 {

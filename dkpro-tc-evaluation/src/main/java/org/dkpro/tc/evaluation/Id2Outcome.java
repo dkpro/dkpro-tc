@@ -40,10 +40,6 @@ import org.dkpro.tc.core.Constants;
 
 /**
  * Container for id2outcome files.
- * 
- * @author daxenberger
- * @author Andriy Nadolskyy
- * 
  */
 public class Id2Outcome implements Serializable
 {

@@ -49,10 +49,6 @@ import org.dkpro.tc.weka.MekaClassificationAdapter
  * Groovy-Version of the ReutersTextClassificationExperiment
  *
  * Base class for running for Train-Test and CrossValidation experiments using the pre-configured BatchTask setups.
- *
- * @author Oliver Ferschke
- * @author daxenberger
- *
  */
 public class ReutersDemo implements Constants {
 

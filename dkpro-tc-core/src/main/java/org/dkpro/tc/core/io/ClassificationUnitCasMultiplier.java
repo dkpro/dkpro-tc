@@ -43,10 +43,6 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
  * original JCas. The newly created JCas contains one {@link TextClassificationFocus} annotation
  * that shows with TextClassificationUnit should be classified. All annotations in the original JCas
  * are copied to the new one.
- * 
- * @author Artem Vovk
- * @author zesch
- * 
  */
 public class ClassificationUnitCasMultiplier
     extends JCasMultiplier_ImplBase

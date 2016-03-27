@@ -50,9 +50,6 @@ import org.dkpro.tc.weka.WekaClassificationAdapter;
  * from similar sources, we do not provide a demo Cross Validation setup here. (Our sample train and
  * test datasets are from separate newsgroups.) Please see TwentyNewsgroupsGroovyExperiment for a
  * demo implementing a CV experiment.
- * 
- * 
- * @author Emily Jamison
  */
 public class PairTwentyNewsgroupsDemo
     implements Constants

@@ -53,8 +53,6 @@ import org.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
  * </pre>
  * 
  * EMPTY_PREDICTION is not defined as a valid label. 
- * 
- * @author Andriy Nadolskyy
  */
 public class Accuracy
 {

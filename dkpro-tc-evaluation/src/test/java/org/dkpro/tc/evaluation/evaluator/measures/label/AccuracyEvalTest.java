@@ -25,10 +25,6 @@ import org.junit.Test;
 import org.dkpro.tc.evaluation.confusion.matrix.CombinedSmallContingencyTable;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class AccuracyEvalTest {
 
 	@Test

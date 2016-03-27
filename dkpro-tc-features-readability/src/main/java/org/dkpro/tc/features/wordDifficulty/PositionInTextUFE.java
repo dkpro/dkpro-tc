@@ -37,8 +37,6 @@ public class PositionInTextUFE
     implements ClassificationUnitFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         In this feature extractor we simply return the absolute position of the word by
      *         counting the tokens. The relative position is then calculated by dividing by the
      *         number of words). Alternative solutions could also take the sentences into account.

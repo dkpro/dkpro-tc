@@ -65,8 +65,6 @@ import org.dkpro.tc.mallet.writer.MalletFeatureEncoder;
  * Utility class for the Mallet machine learning toolkit
  * 
  * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
- * @author Krish Perumal
- * 
  */
 public class MalletUtils
 {
@@ -431,7 +429,7 @@ public class MalletUtils
 	}
 
 	//FIXME HMM is not currently supported (uncomment and use a different vector sequence compatible to HMM utilities
-	//in Mallet) @author krishperumal11
+	//in Mallet) 
 
 //	public static void runTrainHMM(File trainingFile, File modelFile, String defaultLabel, int iterations, boolean denseFeatureValues) throws FileNotFoundException, IOException {
 //		Reader trainingFileReader = null;

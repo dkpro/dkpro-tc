@@ -55,9 +55,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Executes all feature extractors and classifies instances with a previously trained model.
- * 
- * @author daxenberger
- * 
  */
 public class WekaExtractFeaturesAndPredictTask
     extends UimaTaskBase

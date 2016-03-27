@@ -32,9 +32,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 /**
  * Pair-wise feature extractor Computes the type-token-ratio in a view and returns the difference of
  * type-token-rations in both views.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class TypeTokenPairFeatureExtractor
     extends FeatureExtractorResource_ImplBase

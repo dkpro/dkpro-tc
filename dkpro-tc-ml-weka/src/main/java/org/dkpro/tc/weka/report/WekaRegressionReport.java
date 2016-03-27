@@ -39,10 +39,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Simple report for regression problems
- * 
- * @author Oliver Ferschke
- * @author daxenberger
- * 
  */
 public class WekaRegressionReport
     extends ReportBase

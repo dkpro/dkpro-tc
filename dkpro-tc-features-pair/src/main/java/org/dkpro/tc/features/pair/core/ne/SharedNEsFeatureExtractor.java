@@ -34,9 +34,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
  * Pair-wise feature extractor Returns if two views share the same named entities.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class SharedNEsFeatureExtractor
     extends FeatureExtractorResource_ImplBase

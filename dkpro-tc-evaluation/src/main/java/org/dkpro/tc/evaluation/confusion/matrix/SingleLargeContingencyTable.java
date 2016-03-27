@@ -19,11 +19,6 @@ package org.dkpro.tc.evaluation.confusion.matrix;
 
 import java.util.List;
 
-
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class SingleLargeContingencyTable 
 	extends AbstractLargeContingencyTable<List<List<Double>>>
 {

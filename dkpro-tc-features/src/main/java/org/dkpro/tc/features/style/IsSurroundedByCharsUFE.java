@@ -36,9 +36,6 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 /**
  * Extracts information about whether the classification unit is situated between two characters
  * (left and right boundary tokens).
- * 
- * @author Andriy Nadolskyy
- * @author daxenberger
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class IsSurroundedByCharsUFE

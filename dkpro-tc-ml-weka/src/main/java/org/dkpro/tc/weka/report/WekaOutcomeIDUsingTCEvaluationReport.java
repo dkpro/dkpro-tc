@@ -43,10 +43,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Writes a instanceId / outcome data for each classification instance.
- * 
- * @author zesch
- * @author Andriy Nadolskyy
- * 
  */
 public class WekaOutcomeIDUsingTCEvaluationReport
     extends ReportBase

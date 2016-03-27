@@ -41,9 +41,6 @@ import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.svmhmm.util.ConfusionMatrix;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
-/**
- * @author Ivan Habernal
- */
 public class SVMHMMBatchCrossValidationReport
         extends BatchReportBase
 {

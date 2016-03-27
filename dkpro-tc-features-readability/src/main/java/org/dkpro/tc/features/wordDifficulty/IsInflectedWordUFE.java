@@ -48,8 +48,6 @@ public class IsInflectedWordUFE
     implements ClassificationUnitFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         In this feature, we assume that the word is inflected if it does not equal the lemma.
      *         This is slightly simplified. From a strict linguistic view, there also exists
      *         so-called zero derivation. The distinction between derivation and inflection is also

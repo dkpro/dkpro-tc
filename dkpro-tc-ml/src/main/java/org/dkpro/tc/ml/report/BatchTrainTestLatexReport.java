@@ -40,9 +40,6 @@ import org.dkpro.tc.core.util.ReportUtils;
 
 /**
  * Collects the final evaluation results in a train/test setting.
- * 
- * @author zesch
- * 
  */
 public class BatchTrainTestLatexReport
     extends BatchReportBase

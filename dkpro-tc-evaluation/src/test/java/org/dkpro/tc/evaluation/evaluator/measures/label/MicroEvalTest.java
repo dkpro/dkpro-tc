@@ -27,10 +27,6 @@ import org.dkpro.tc.evaluation.measures.label.MicroFScore;
 import org.dkpro.tc.evaluation.measures.label.MicroPrecision;
 import org.dkpro.tc.evaluation.measures.label.MicroRecall;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class MicroEvalTest {
 
 	@Test

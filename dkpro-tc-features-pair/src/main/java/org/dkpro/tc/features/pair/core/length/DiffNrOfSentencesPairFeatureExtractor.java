@@ -31,9 +31,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 /**
  * Pair-wise feature extractor Computes the number of sentences in a view and returns the difference
  * of both views.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class DiffNrOfSentencesPairFeatureExtractor
     extends FeatureExtractorResource_ImplBase

@@ -42,9 +42,6 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
     /**
      * Computes the readability measures ari, coleman_liau, flesch, fog, kincaid, lix and smog as
      * implemented in de.tudarmstadt.ukp.dkpro.core.readability-asl s
-     * 
-     * @author beinborn
-     * 
      */
     // having all these parameters is not nice
     // better: several instances of extractor with measure as resource

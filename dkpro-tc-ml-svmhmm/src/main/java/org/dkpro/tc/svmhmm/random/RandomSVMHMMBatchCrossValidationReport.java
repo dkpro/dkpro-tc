@@ -24,8 +24,6 @@ import org.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationReport;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter
- *
- * @author Ivan Habernal
  */
 public class RandomSVMHMMBatchCrossValidationReport
         extends

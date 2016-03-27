@@ -37,10 +37,6 @@ import org.dkpro.tc.weka.util.AttributeStore;
  * 
  * Copyright (c) 2012, Regents of the University of Colorado <br>
  * All rights reserved.
- * 
- * @author Philip Ogren
- * @author Torsten Zesch
- * 
  */
 
 public class WekaFeatureEncoder

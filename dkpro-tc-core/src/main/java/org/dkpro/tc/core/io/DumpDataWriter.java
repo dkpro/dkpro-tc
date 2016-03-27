@@ -29,9 +29,6 @@ import org.dkpro.tc.core.Constants;
 /**
  * Dumps the feature store to a human readable file and also to the console. Mainly used for testing
  * purposes.
- * 
- * @author zesch
- * 
  */
 public class DumpDataWriter
     implements DataWriter, Constants

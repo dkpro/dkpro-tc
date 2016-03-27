@@ -47,10 +47,6 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
- * 
- * @author zesch
- * @author daxenberger
- * 
  */
 public class BatchCrossValidationReport
     extends BatchReportBase

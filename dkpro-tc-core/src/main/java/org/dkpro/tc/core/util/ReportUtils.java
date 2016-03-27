@@ -55,9 +55,6 @@ import org.dkpro.tc.core.Constants;
 
 /**
  * Utility methods needed in reports
- * 
- * @author Johannes Daxenberger
- * 
  */
 public class ReportUtils
 {
@@ -182,9 +179,6 @@ public class ReportUtils
      * for a query have been retrieved) is taken to be MAXIMUM of precision at all recall points 
      * &gt;= 0.10. Values are averaged over all queries (for each of the 11 recall levels). These 
      * values are used for Recall-Precision graphs.
-     * 
-     * @author Richard Eckart de Castilho
-     * @author Johannes Daxenberger
      */
     public static class PrecisionRecallDiagramRenderer
         implements StreamWriter

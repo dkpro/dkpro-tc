@@ -28,9 +28,6 @@ import org.apache.commons.io.IOUtils;
 /**
  * Java wrapper class for the execution of Groovy scripts. It is needed to avoid the pre-compilation
  * of Groovy scripts.
- * 
- * @author Artem Vovk
- * 
  */
 public class ExperimentStarter
 {

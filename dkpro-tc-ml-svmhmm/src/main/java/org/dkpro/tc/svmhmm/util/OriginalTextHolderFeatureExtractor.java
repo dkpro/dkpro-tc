@@ -30,8 +30,6 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * Stores the original token (text content) of the unit
- *
- * @author Ivan Habernal
  */
 public class OriginalTextHolderFeatureExtractor
         extends FeatureExtractorResource_ImplBase

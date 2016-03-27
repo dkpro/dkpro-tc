@@ -51,10 +51,6 @@ import mulan.evaluation.measure.SubsetAccuracy;
 /**
  * A wrapper for evaluation measures calculated by the Mulan framework for multi-label
  * classification.
- * 
- * @author Jinseok Nam
- * @author Johannes Daxenberger
- * 
  */
 public class MulanEvaluationWrapper
 {

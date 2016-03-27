@@ -23,9 +23,6 @@ import org.dkpro.lab.task.Task;
 
 /**
  * Basic constants that are used throughout the project
- * 
- * @author zesch
- * 
  */
 public interface Constants
 {

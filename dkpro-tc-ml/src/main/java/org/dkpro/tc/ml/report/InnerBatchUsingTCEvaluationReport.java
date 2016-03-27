@@ -39,9 +39,6 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 /**
  * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
  * level task context.
- * 
- * @author daxenberger
- * 
  */
 public class InnerBatchUsingTCEvaluationReport
     extends BatchReportBase

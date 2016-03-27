@@ -40,9 +40,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 /**
  * Tests several Weka and Meka classifiers and their evaluation scores. Changes in the underlying
  * classifier algorithms might change the evaluation scores and hence make the tests fail.
- * 
- * @author daxenberger
- * 
  */
 public class WekaResultsTest
 {

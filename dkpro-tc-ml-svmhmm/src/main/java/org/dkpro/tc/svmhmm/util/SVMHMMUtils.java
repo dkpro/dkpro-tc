@@ -52,9 +52,6 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
-/**
- * @author Ivan Habernal
- */
 public final class SVMHMMUtils {
 	/**
 	 * File name of serialized mapping from String labels to numbers

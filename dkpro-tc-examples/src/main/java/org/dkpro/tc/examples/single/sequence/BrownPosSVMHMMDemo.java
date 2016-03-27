@@ -48,8 +48,6 @@ import org.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 
 /**
  * Tests SVMhmm on POS tagging of one file in Brown corpus
- *
- * @author Ivan Habernal
  */
 public class BrownPosSVMHMMDemo
 {

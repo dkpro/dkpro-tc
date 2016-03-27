@@ -29,9 +29,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 /**
  * Pair-wise feature extractor Computes the number of characters in a view and returns the
  * difference of both views.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class DiffNrOfCharactersPairFeatureExtractor
     extends FeatureExtractorResource_ImplBase

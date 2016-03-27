@@ -26,10 +26,6 @@ import org.dkpro.tc.evaluation.evaluator.multi.MultiEvaluator;
 import org.dkpro.tc.evaluation.evaluator.regression.RegressionEvaluator;
 import org.dkpro.tc.evaluation.evaluator.single.SingleEvaluator;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class EvaluatorFactory
 {
 

@@ -24,9 +24,6 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * Interface that should be implemented by readers for multi label setups.
- * 
- * @author zesch
- *
  */
 public interface TCReaderMultiLabel
 {

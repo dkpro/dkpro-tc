@@ -25,9 +25,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 
 /**
  * Common signature for feature extractors which extract their features from a pair of documents.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public interface PairFeatureExtractor
 {

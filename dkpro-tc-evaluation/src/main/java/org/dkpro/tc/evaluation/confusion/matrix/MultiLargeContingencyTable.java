@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * @author Andriy Nadolskyy
- *
- */
 public class MultiLargeContingencyTable
 	extends AbstractLargeContingencyTable<Map<String, Map<String, Double>>>
 {

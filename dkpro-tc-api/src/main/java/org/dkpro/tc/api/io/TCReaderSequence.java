@@ -24,9 +24,6 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * Interface that should be implemented by readers for sequence labeling setups.
- * 
- * @author zesch
- *
  */
 public interface TCReaderSequence
 {

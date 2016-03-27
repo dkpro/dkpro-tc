@@ -46,9 +46,6 @@ import org.dkpro.tc.weka.WekaClassificationAdapter;
 /**
  * This is an example for NER as unit classification. Each Entity is treated as a classification
  * unit. This is only a showcase of the concept.
- * 
- * @author Andriy Nadolskyy
- * @author daxenberger
  */
 public class NERUnitDemo
     implements Constants

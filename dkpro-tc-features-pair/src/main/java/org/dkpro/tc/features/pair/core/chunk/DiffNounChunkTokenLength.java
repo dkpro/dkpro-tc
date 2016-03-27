@@ -32,9 +32,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 /**
  * Pair-wise feature extractor Computes the average token length of all noun chunks in a view and
  * returns the difference of both views.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class DiffNounChunkTokenLength
     extends FeatureExtractorResource_ImplBase

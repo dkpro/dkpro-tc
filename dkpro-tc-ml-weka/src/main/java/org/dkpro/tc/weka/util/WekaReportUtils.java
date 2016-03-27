@@ -31,9 +31,6 @@ import org.dkpro.tc.weka.evaluation.MulanEvaluationWrapper;
 
 /**
  * Utility methods needed in reports
- * 
- * @author Johannes Daxenberger
- * 
  */
 public class WekaReportUtils
 {

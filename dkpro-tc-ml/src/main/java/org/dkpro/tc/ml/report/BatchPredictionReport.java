@@ -38,8 +38,6 @@ import org.dkpro.tc.core.Constants;
  * A report which collects results from all executed subtasks that contain 
  * "ExtractFeaturesAndPredictTask" in their type and writes them into a human-readable format, one
  * file per configuration.
- * 
- * @author daxenberger
  */
 public class BatchPredictionReport
     extends BatchReportBase

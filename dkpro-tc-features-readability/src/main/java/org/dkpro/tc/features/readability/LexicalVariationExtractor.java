@@ -18,8 +18,6 @@
 package org.dkpro.tc.features.readability;
 
 /**
- @author beinborn
- *
  * Calculates lexical varions as described in:
  * Vajjala and Detmar Meurers. 2012. On improving the accuracy of readability classification
  * using insights from second language acquisition. In Proceedings of the Seventh Workshop on

@@ -19,9 +19,6 @@ package org.dkpro.tc.api.exception;
 
 /**
  * Exception thrown by DKPro TC components.
- * 
- * @author zesch
- *
  */
 public class TextClassificationException
     extends Exception

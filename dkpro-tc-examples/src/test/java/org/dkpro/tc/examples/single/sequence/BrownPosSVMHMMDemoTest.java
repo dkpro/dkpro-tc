@@ -30,9 +30,6 @@ import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
- * 
- * @author Oliver Ferschke, Emily Jamison
- * 
  */
 public class BrownPosSVMHMMDemoTest extends JavaDemosTest_Base
 {

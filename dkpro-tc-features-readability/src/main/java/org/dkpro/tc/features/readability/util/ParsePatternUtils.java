@@ -49,8 +49,6 @@ public class ParsePatternUtils
      * The definitions of syntactic elements are based on Xiaofei Lu, 2010. Automatic analysis of
      * syntactic complexity in second language writing. In International Journal of Corpus
      * Linguistics}, vol.15, issue 4, pp.474--496
-     * 
-     * @author beinborn
      **/
     public static boolean isCoordinate(Constituent c)
     {

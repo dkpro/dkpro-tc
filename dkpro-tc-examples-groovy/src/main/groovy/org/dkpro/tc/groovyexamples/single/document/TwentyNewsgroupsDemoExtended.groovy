@@ -58,9 +58,6 @@ import org.dkpro.tc.weka.task.WekaTestTask
  * which is more convenient, but less flexible.
  *
  * Currently only supports train-test setup.
- *
- * @author Oliver Ferschke
- * @author daxenberger
  */
 public class TwentyNewsgroupsDemoExtended implements Constants{
 

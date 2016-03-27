@@ -25,10 +25,6 @@ import java.util.Map;
 /**
  * Container for single entries from a {link {@link Id2Outcome}s, i.e. at least gold standard value
  * and prediction value
- * 
- * @author daxenberger
- * @author Andriy Nadolskyy
- * 
  */
 public class SingleOutcome implements Serializable
 {

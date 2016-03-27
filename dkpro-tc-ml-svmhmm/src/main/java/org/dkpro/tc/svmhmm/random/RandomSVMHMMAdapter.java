@@ -25,8 +25,6 @@ import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter
- *
- * @author Ivan Habernal
  */
 public class RandomSVMHMMAdapter
         extends SVMHMMAdapter

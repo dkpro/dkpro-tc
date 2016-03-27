@@ -48,8 +48,6 @@ public class IsNounCompoundExtractor
     implements ClassificationUnitFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         This feature extractor tests, if the classification unit is a noun compound using a
      *         splitter algorithm from dkpro.core.decompounding.
      */

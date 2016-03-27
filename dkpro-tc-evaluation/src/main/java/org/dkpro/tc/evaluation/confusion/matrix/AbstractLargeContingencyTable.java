@@ -19,12 +19,6 @@ package org.dkpro.tc.evaluation.confusion.matrix;
 
 import java.util.List;
 
-
-
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public abstract class AbstractLargeContingencyTable<T> {
 	protected T largeContingencyTable;
 	protected List<String> labels;

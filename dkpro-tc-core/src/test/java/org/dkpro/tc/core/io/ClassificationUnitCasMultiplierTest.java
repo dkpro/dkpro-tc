@@ -45,9 +45,6 @@ import org.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
 /**
  * Tests for ClassificationUnitCasMultiplier
- * 
- * @author Artem Vovk
- * 
  */
 public class ClassificationUnitCasMultiplierTest
 {

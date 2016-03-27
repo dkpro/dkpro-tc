@@ -38,9 +38,6 @@ import org.dkpro.tc.weka.writer.WekaDataWriter;
  * 
  * The pipeline will run all DKPro TC components up to the creation of the input the for the Machine
  * Learning framework. No actual learning or evaluation will be done.
- * 
- * @author zesch
- * 
  */
 public class TwentyNewsgroupsRaw
 {

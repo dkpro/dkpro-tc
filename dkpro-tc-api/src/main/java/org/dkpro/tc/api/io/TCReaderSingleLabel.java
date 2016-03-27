@@ -22,9 +22,6 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * Interface that should be implemented by readers for single label setups.
- * 
- * @author zesch
- *
  */
 public interface TCReaderSingleLabel
 {

@@ -40,8 +40,6 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
- * @author beinborn
- * 
  *         We would prefer to have the wordListLocation and the feature name as parameters.
  *         Unfortunately, we cannot instantiate the same feature extractor several times with
  *         different parameters in one experiments. Therefore, we use subclasses of this extractor

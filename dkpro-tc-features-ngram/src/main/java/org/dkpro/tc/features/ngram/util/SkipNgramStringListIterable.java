@@ -38,9 +38,6 @@ import org.paukov.combinatorics.ICombinatoricsVector;
  *   A closer look at skip-gram modelling.
  *   In Proceedings of the Fifth international Conference on Language Resources and Evaluation (LREC)
  *   pages 1222–1225, 2006
- * 
- * @author zesch
- *
  */
 public class SkipNgramStringListIterable implements Iterable<List<String>>
 {

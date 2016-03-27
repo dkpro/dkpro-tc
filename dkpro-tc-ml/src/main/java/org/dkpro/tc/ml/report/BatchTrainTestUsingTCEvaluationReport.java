@@ -39,10 +39,6 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 
 /**
  * Collects the final evaluation results in a train/test setting.
- * 
- * @author daxenberger
- * @author Andriy Nadolskyy
- * 
  */
 public class BatchTrainTestUsingTCEvaluationReport
     extends BatchReportBase

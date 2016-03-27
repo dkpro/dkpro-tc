@@ -45,8 +45,6 @@ import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
 /**
  * Converts features to the internal format for SVM HMM
- *
- * @author Ivan Habernal
  */
 public class SVMHMMDataWriter
         implements DataWriter

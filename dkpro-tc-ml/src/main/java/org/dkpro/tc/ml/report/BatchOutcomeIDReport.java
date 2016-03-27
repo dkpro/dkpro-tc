@@ -30,9 +30,6 @@ import org.dkpro.tc.core.Constants;
 /**
  * Collects all files written by the OutcomeIdReports of machine learning frameworks and writes a
  * merged file.
- * 
- * @author zesch
- * 
  */
 public class BatchOutcomeIDReport
 	extends BatchReportBase

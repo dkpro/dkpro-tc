@@ -35,9 +35,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Tests the correct generation of the OutcomeIdReport for various setups.
- * 
- * @author daxenberger
- * 
  */
 public class OutcomeIDReportTest
 {

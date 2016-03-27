@@ -48,9 +48,6 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
  * documents can be treated together as one extended document. <br>
  * Note that ngram features created by this class are each from a single document, i.e., not
  * combinations of ngrams from the pair of documents.
- * 
- * @author Emily Jamison
- * 
  */
 public class LuceneKeywordPFE
     extends LucenePFEBase

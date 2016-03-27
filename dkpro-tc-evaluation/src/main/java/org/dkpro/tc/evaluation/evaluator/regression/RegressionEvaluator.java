@@ -22,10 +22,6 @@ import java.util.Map;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class RegressionEvaluator
     extends EvaluatorBase
 {

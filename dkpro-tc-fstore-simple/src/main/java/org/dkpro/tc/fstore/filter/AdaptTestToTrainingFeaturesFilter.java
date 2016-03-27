@@ -24,9 +24,6 @@ import java.util.TreeSet;
 /**
  * Filter for injecting feature space (feature names) that were seen during training to the
  * feature store during testing.
- *
- * @author Torsten Zesch
- * @author Ivan Habernal
  */
 public class AdaptTestToTrainingFeaturesFilter
         implements FeatureStoreFilter

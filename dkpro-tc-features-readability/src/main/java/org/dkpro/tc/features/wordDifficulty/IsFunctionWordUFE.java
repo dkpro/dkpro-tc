@@ -43,8 +43,6 @@ public class IsFunctionWordUFE
     implements ClassificationUnitFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         In this feature, all articles, prepositions, conjunctions and pronouns are considered
      *         to be function words following this definition:
      *         http://dictionary.cambridge.org/dictionary/british/function-word

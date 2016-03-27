@@ -35,9 +35,6 @@ import org.dkpro.tc.core.Constants;
 /**
  * Creates TC Unit and TC Outcome annotations for all units of the
  * given type.
- * 
- * @author Martin Wunderlich (martin@wunderlich.com)
- *
  */
 public class AnnotationHelper extends JCasAnnotator_ImplBase {
 	public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";

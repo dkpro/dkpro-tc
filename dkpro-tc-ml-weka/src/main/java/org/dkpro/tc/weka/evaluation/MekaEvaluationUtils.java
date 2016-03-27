@@ -40,10 +40,6 @@ import org.apache.commons.math.stat.descriptive.moment.Mean;
 
 /**
  * Originally written by Jesse Read. Small adaptions by Johannes Daxenberger.
- * 
- * @author Jesse Read (jmr30@cs.waikato.ac.nz)
- * @author Johannes Daxenberger
- * 
  */
 public class MekaEvaluationUtils
     extends MLEvalUtils

@@ -50,9 +50,6 @@ import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
  * <br>
  * Parameters are available to include sentence boundary markers, sentence text location, commas,
  * etc.
- * 
- * @author jamison
- * 
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })

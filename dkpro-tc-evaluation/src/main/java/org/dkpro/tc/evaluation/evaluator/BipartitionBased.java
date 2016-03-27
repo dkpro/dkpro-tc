@@ -28,9 +28,6 @@ import org.dkpro.tc.evaluation.confusion.matrix.AbstractLargeContingencyTable;
  * is further divided into example-based and label-based."
  * Gj. Madjarov, et al., An extensive experimental comparison of methods for multi-label learning, 
  * Pattern Recognition (2012)
- * 
- * @author Andriy Nadolskyy
- * 
  */
 public interface BipartitionBased {
 	

@@ -33,8 +33,6 @@ public class IsLatinWordUFE
     implements ClassificationUnitFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         This feature extractor tests, if the solution is in a list of words with latin roots.
      *         Unless you explicitly provide a word list file, it queries a list of English words
      *         derived from Latin extracted from Wikipedia.

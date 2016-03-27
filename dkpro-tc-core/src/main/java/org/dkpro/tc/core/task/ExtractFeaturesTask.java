@@ -49,9 +49,6 @@ import org.dkpro.tc.core.util.TaskUtils;
 /**
  * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file)
  * on disk.
- * 
- * @author zesch
- * 
  */
 public class ExtractFeaturesTask
     extends UimaTaskBase

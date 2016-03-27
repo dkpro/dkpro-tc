@@ -36,9 +36,6 @@ import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 /**
  * Computes the average word and average sentence length, ignores punctuation
- * 
- * @author beinborn
- * 
  */
 public class AvgLengthExtractor
     extends FeatureExtractorResource_ImplBase

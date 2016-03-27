@@ -36,9 +36,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 /**
  * A serializable model of Weka and Meka classifiers along with all necessary meta information to
  * use it as external resource in tasks which use this model to classify unseen data.
- * 
- * @author daxenberger
- * 
  */
 public class WekaSerializedModel
     implements SharedResourceObject, Serializable

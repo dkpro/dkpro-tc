@@ -41,9 +41,6 @@ import org.dkpro.tc.evaluation.SingleOutcome;
  * }
  * </code>
  * </pre>
- * 
- * @author Andriy Nadolskyy
- * 
  */
 public class SubsetAccuracy
 {

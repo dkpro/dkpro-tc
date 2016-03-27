@@ -36,8 +36,6 @@ import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter
- *
- * @author Ivan Habernal
  */
 public class SVMHMMRandomTestTask
         extends SVMHMMTestTask

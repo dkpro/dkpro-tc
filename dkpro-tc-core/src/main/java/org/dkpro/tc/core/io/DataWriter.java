@@ -24,9 +24,6 @@ import org.dkpro.tc.api.features.FeatureStore;
 /**
  * Interface for data writers that write instances in the representation format used by machine
  * learning tools.
- * 
- * @author zesch
- * 
  */
 public interface DataWriter
 {

@@ -35,9 +35,6 @@ import org.dkpro.tc.mallet.util.MalletUtils;
  * moved.
  * 
  * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
- * 
- * @author krishperumal11
- * 
  */
 public class MalletTestTask
     extends ExecutableTaskBase
@@ -98,7 +95,6 @@ public class MalletTestTask
         TransducerEvaluator eval = MalletUtils.runTrainTest(fileTrain, fileTest, fileModel, gaussianPriorVariance, iterations, defaultLabel,
     			false, orders, tagger, denseFeatureValues);
         
-        //TODO move to reports (@author krishperumal11)
         
         File filePredictions = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
                 .getPath() + "/" + PREDICTIONS_KEY);

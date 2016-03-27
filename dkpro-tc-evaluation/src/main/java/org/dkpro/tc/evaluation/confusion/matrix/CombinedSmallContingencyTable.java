@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.evaluation.confusion.matrix;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class CombinedSmallContingencyTable {
 
 	private double[][] combinedSmallContingencyTable;

@@ -42,8 +42,6 @@ import org.dkpro.tc.mallet.task.MalletTestTask;
  * Collects the final evaluation results in a train/test setting.
  * 
  * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
- * @author zesch
- * 
  */
 public class MalletBatchTrainTestReport
     extends BatchReportBase

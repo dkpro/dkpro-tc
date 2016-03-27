@@ -28,9 +28,8 @@ import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import org.dkpro.tc.core.Constants;
 
-/*
+/**
  * Modification of SimpleTagger2FeatureVectorSequence from Mallet
- * @author Krish Perumal
  */
 
 /**

@@ -25,9 +25,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.svmhmm.util.ConfusionMatrix;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
-/**
- * @author Ivan Habernal
- */
 public class SVMHMMClassificationReport
         extends SVMHMMOutcomeIDReport
         implements Constants

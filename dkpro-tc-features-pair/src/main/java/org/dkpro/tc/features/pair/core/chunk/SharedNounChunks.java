@@ -32,9 +32,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
  * Pair-wise feature extractor. Computes how many noun chunks two views share.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class SharedNounChunks
     extends FeatureExtractorResource_ImplBase

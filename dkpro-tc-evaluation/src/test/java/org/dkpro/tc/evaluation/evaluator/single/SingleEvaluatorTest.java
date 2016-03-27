@@ -34,10 +34,6 @@ import org.dkpro.tc.evaluation.measures.label.MacroFScore;
 import org.dkpro.tc.evaluation.measures.label.MacroPrecision;
 import org.dkpro.tc.evaluation.measures.label.MacroRecall;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class SingleEvaluatorTest
 {
 

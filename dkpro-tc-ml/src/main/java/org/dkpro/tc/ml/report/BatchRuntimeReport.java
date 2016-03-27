@@ -32,9 +32,6 @@ import org.dkpro.tc.core.task.MetaInfoTask;
 
 /**
  * Collects the final runtime results in a train/test setting.
- * 
- * @author zesch
- * 
  */
 public class BatchRuntimeReport
     extends BatchReportBase

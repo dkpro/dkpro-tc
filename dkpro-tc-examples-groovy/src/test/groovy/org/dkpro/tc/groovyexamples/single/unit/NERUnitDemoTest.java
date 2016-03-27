@@ -31,9 +31,6 @@ import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
- * 
- * @author Oliver Ferschke, Emily Jamison
- * 
  */
 public class NERUnitDemoTest extends GroovyDemosTest_Base
 {

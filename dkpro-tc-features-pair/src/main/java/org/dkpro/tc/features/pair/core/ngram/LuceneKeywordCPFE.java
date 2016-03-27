@@ -50,9 +50,6 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordCPMetaCollector;
  * comboNG_cats_birds:1, comboNG_cats_eat_birds:1, comboNG_cats_birds_chase:1, etc. <br>
  * Note: To extract ngrams from a pair of documents that are not combinations of ngrams across the
  * documents, please use {@link LuceneNGramPFE}.
- * 
- * @author Emily Jamison
- * 
  */
 public class LuceneKeywordCPFE
     extends LuceneKeywordPFE

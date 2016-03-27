@@ -58,9 +58,6 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
  * Note that ngram features created by this class are each from a single document, i.e., not
  * combinations of ngrams from the pair of documents. To make combinations of ngrams across both
  * documents, please use {@link LuceneNGramCPFE}.
- * 
- * @author Emily Jamison
- * 
  */
 public class LuceneNGramPFE
     extends LuceneFeatureExtractorBase

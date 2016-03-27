@@ -28,9 +28,6 @@ import org.dkpro.tc.core.Constants;
 
 /**
  * Writes the feature store to a JSON file. Mainly used for testing purposes.
- * 
- * @author zesch
- * 
  */
 public class JsonDataWriter
     implements DataWriter, Constants

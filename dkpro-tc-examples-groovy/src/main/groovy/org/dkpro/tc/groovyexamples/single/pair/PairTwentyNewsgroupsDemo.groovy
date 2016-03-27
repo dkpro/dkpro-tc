@@ -55,9 +55,6 @@ import org.dkpro.tc.weka.report.WekaClassificationReport
  * training and testing on pairs of data from similar sources, we do not provide
  * a demo Cross Validation setup here.  (Our sample train and test datasets are from separate
  * newsgroups.)  Please see TwentyNewsgroupsGroovyExperiment for a demo implementing a CV experiment.
- *
- *
- * @author Emily Jamison
  */
 class PairTwentyNewsgroupsDemo implements Constants {
 

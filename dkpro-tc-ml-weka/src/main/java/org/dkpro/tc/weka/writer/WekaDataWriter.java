@@ -29,9 +29,6 @@ import org.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * {@link DataWriter} for the Weka machine learning tool.
- * 
- * @author zesch
- * 
  */
 public class WekaDataWriter
     implements DataWriter, Constants

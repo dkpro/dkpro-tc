@@ -29,9 +29,6 @@ import org.apache.uima.resource.ResourceSpecifier;
  * Abstract base class for all feature extractors.
  * 
  * Feature extractors are implemented as UIMA external resources.
- * 
- * @author zesch
- *
  */
 public abstract class FeatureExtractorResource_ImplBase
     extends Resource_ImplBase

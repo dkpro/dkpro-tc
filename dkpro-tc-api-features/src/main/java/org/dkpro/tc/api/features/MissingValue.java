@@ -19,9 +19,6 @@ package org.dkpro.tc.api.features;
 
 /**
  * Base class representing a feature value with a missing value.
- * 
- * @author daxenberger
- * 
  */
 public class MissingValue
 {

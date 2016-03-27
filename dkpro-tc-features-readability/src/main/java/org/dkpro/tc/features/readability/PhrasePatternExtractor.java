@@ -43,8 +43,6 @@ public class PhrasePatternExtractor
     /**
      * This Extractor is inspired by the ParsePatternExtractor but relies only on chunking
      * information.
-     * 
-     * @author beinborn
      */
 
     public static final String NCS_PER_SENTENCE = "NCsPerSentence";

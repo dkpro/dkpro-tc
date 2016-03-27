@@ -56,8 +56,6 @@ import org.dkpro.tc.evaluation.confusion.matrix.SmallContingencyTables;
  * </pre>
  * 
  * EMPTY_PREDICTION is not defined as a valid label. 
- * 
- * @author Andriy Nadolskyy
  */
 // TODO fscore should calculate f_1 as a default but allow to configure other betas
 public class MacroFScore

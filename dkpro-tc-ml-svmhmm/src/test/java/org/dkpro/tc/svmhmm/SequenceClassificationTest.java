@@ -79,9 +79,6 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 import org.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 
-/**
- * @author Ivan Habernal
- */
 @RunWith(JUnit4.class)
 public class SequenceClassificationTest
 {

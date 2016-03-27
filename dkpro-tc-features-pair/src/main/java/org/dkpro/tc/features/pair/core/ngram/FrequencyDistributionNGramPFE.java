@@ -29,10 +29,6 @@ import org.dkpro.tc.features.ngram.FrequencyDistributionNGramDFE;
 
 /**
  * Pair-wise feature extractor Returns the ngrams in a view with the view name as prefix
- * 
- * @author nico.erbs@gmail.com
- * @author daxenberger
- * 
  */
 @Deprecated
 public class FrequencyDistributionNGramPFE

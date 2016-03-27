@@ -76,9 +76,6 @@ import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
  * etc).
- *
- * @author Oliver Ferschke
- * @author zesch
  */
 public class TaskUtils
 {

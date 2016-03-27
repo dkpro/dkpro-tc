@@ -40,8 +40,6 @@ public class TypeTokenRatioExtractor
     implements DocumentFeatureExtractor
 {
     /**
-     * @author beinborn
-     * 
      *         Calculates the Type-Token Ratio following the explanations in: Sowmya Vajjala and
      *         Detmar Meurers. 2012. On improving the accuracy of readability classification using
      *         insights from second language acquisition. In Proceedings of the Seventh Workshop on

@@ -29,9 +29,6 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * Extracts whether the first character of the classification unit is upper-case or not.
- * 
- * @author Andriy Nadolskyy
- * @author daxenberger
  */
 public class InitialCharacterUpperCaseUFE
     extends FeatureExtractorResource_ImplBase

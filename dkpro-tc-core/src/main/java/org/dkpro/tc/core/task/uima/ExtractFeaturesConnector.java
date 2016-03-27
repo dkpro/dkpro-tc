@@ -46,8 +46,6 @@ import org.dkpro.tc.fstore.filter.FeatureStoreFilter;
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
  * extractors on each CAS.
- *
- * @author zesch
  */
 public class ExtractFeaturesConnector
         extends ConnectorBase

@@ -38,10 +38,6 @@ import org.dkpro.tc.evaluation.evaluator.BipartitionBased;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.measures.example.SubsetAccuracy;
 
-/**
- * @author Andriy Nadolskyy
- * 
- */
 public class MultiEvaluator
     extends EvaluatorBase
     implements BipartitionBased

@@ -28,14 +28,11 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.DynamicDimension;
 
-// FIXME Issue 128: instanceID should contain sequenceID - so we can easily make sure that sequences are completed moved into folds
 /**
  * Modification to FoldDimensionBundle in order to add instances belonging to the same sequence in
  * the same fold
  * 
  * @deprecated As of release 0.7.0, only dkpro-tc-ml-crfsuite is supported
- * 
- * @author perumal
  */
 public class MalletFoldDimensionBundle extends DimensionBundle<Collection<String>> implements DynamicDimension
 {

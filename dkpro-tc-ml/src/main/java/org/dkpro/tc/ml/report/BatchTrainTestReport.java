@@ -40,9 +40,6 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
  * Collects the final evaluation results in a train/test setting.
- * 
- * @author zesch
- * 
  */
 public class BatchTrainTestReport
     extends BatchReportBase

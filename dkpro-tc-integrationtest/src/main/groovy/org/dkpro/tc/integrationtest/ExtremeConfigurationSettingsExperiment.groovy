@@ -42,9 +42,6 @@ import org.dkpro.tc.weka.report.WekaClassificationReport
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
  * The experiment setup was adapted from the TwentyNewsgroups example.
- *
- * @author zesch
- * @author Oliver Ferschke
  */
 public class ExtremeConfigurationSettingsExperiment implements Constants {
 

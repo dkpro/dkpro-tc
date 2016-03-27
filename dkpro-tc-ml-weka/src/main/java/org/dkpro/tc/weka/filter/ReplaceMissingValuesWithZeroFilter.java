@@ -27,8 +27,6 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
  * Weka Classifiers treat missing values very differently. This class is used to force the treatment
  * of missing values as zero. This is especially useful if missing values actually encode something
  * you would normally encode as a distinct value.
- * 
- * @author Michael Kutschke
  */
 public class ReplaceMissingValuesWithZeroFilter
     extends ReplaceMissingValues

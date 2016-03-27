@@ -28,9 +28,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 
 /**
  * Data structure that stores a collection of Weka attributes.
- * 
- * @author zesch
- *
  */
 public class AttributeStore
 {

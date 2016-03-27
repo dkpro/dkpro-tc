@@ -36,9 +36,6 @@ import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
- *
- * @author zesch
- *
  */
 public class CRFSuiteOutcomeIDReport extends ReportBase {
 	

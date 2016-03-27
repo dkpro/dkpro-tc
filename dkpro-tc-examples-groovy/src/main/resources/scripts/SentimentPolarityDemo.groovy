@@ -29,9 +29,6 @@ import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Groovy-Version of the SentimentPolarityExperiment
- *
- * @author Oliver Ferschke
- * @author daxenberger
  */
 public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 

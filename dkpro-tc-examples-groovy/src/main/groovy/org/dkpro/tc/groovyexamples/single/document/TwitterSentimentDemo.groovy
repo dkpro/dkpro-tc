@@ -47,8 +47,6 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
  * </pre>
  *
  * This simplistic demo show-cases how to setup an experiment to classify a set of tweets as either "emotional" or "neutral".
- *
- * @author Johannes Daxenberger
  */
 public class TwitterSentimentDemo implements Constants {
 

@@ -30,9 +30,6 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * A feature extracting the number of hashtags in a tweet.
- * 
- * @author Johannes Daxenberger
- * 
  */
 public class NumberOfHashTagsDFE
     extends FeatureExtractorResource_ImplBase

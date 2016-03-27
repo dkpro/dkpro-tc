@@ -45,9 +45,6 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  * Computes for each coarse grained POS tag the ratio of being affected by a spelling error. For
  * example, if there are 4 spelling errors in the document, and 3 of them affect nouns, while one
  * affects a verb, the ratio will be 0.75 for nouns, 0.25 for verbs, and 0.0 for all other POS.
- * 
- * @author zesch
- * 
  */
 public class SpellingErrorPOSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase

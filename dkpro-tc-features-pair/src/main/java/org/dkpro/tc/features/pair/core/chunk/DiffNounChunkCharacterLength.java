@@ -31,9 +31,6 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 /**
  * Pair-wise feature extractor Computes the average character lenght of all noun chunks in a view
  * and reuturns the difference of both views.
- * 
- * @author nico.erbs@gmail.com
- * 
  */
 public class DiffNounChunkCharacterLength
     extends FeatureExtractorResource_ImplBase

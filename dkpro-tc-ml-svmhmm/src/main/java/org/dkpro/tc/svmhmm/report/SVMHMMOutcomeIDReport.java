@@ -34,9 +34,6 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
-/**
- * @author Ivan Habernal
- */
 public class SVMHMMOutcomeIDReport
         extends ReportBase
         implements Constants
