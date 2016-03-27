@@ -63,7 +63,7 @@ public class NGramFeatureExtractorTest
     // System.setProperty("org.apache.uima.logger.class",
     // "org.apache.uima.util.impl.Log4jLogger_impl");
     // }
-
+    @SuppressWarnings("deprecation")
     private void initialize(int ngramNMin, int ngramNMax, float ngramFreqThreshold)
         throws Exception
     {

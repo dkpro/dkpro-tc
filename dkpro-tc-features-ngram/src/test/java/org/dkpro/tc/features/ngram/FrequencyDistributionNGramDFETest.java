@@ -62,6 +62,7 @@ public class FrequencyDistributionNGramDFETest
     // "org.apache.uima.util.impl.Log4jLogger_impl");
     // }
 
+    @SuppressWarnings("deprecation")
     private void initialize(int ngramNMin, int ngramNMax, boolean tfIdfCalculation)
         throws Exception
     {

@@ -72,6 +72,7 @@ public class SkipNgramStringListIterableTest
         assertEquals(ngrams.size(), i);
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void ngramTest_size2_3() {
         
