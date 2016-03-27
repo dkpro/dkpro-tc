@@ -86,7 +86,6 @@ public class WekaExtractFeaturesAndPredictTask
     private boolean developerMode;
 
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
-    private Set<String> requiredTypes;
 
     @Override
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
@@ -102,7 +101,6 @@ public class WekaExtractFeaturesAndPredictTask
         // extractors
         try {
             metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-            requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
         }
         catch (ClassNotFoundException e) {
             throw new ResourceInitializationException(e);
