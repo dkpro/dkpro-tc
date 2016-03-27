@@ -36,17 +36,16 @@ import org.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
  * will store the trained classifier to the output directory
  * that is provided in the constructor or via setter.
  * 
- * TODO this is currently ML framework-specific. If the machine learning adapter knows how to serialize the model, this could be made generic.
  */
-public class ExperimentTrainTestStore extends ExperimentTrainTest {
+public class WekaTrainTestStore extends ExperimentTrainTest {
 
 	File outputDirectory = null;
 
-	public ExperimentTrainTestStore() {
+	public WekaTrainTestStore() {
 		/* needed for Groovy */
 	}
 
-	public ExperimentTrainTestStore(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter,
+	public WekaTrainTestStore(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter,
             File outputDirectory)
             throws TextClassificationException {
 
