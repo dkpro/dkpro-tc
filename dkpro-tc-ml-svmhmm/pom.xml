@@ -25,14 +25,6 @@
 			<artifactId>dkpro-tc-ml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.core.io.tei-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -108,18 +100,21 @@
 			<artifactId>commons-collections</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.lexmorph-asl
-			</artifactId>
+			<groupId>org.dkpro.lab</groupId>
+			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
-			<artifactId>org.dkpro.tc.svmhmm-bin</artifactId>
+			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.dkpro.lab</groupId>
-			<artifactId>dkpro-lab-core</artifactId>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>3.0.22</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

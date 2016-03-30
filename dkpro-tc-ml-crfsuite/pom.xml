@@ -37,10 +37,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
-			<artifactId>org.dkpro.tc.crfsuite-bin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api</artifactId>
 		</dependency>
 		<dependency>
@@ -72,10 +68,6 @@
 			<artifactId>dkpro-tc-evaluation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
@@ -92,6 +84,14 @@
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-fstore-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
 		</dependency>
 	</dependencies>
 		<dependencyManagement>
