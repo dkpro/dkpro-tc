@@ -39,11 +39,11 @@ import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import org.dkpro.tc.api.io.TCReaderSingleLabel;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.examples.single.document.SimpleDkproTCReaderDemo;
+import org.dkpro.tc.examples.single.document.WekaSimpleDkproTCReaderDemo;
 
 /**
  * A very basic DKPro TC reader, which reads sentences from a text file and labels from another text
- * file. It is used in {@link SimpleDkproTCReaderDemo}.
+ * file. It is used in {@link WekaSimpleDkproTCReaderDemo}.
  * 
  */
 public class SimpleDkproTCReader
