@@ -1,4 +1,7 @@
+************************************************
+
 DKPro-TC 0.8.0 Release
+
 == Highlights ==
 Issue 223: Add support for model load/save on Weka/CRFsuite
 Issue 282: Model saving/loading of SVMHMM models
@@ -16,6 +19,7 @@ Issue 269: Replace @author annotation in source by a contributors.txt file
 Issue 295: Setting NoOpAnnotator by default if no preprocessing is defined
 Issue 305: CRFSuite binary: Windows 64 bit binary is missing
 Issue 321: Update package names to org.dkpro.tc
+Issue 326: Example Project: Prefixing examples with the MLA name that is used
 
 
 ************************************************
