@@ -74,6 +74,7 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -92,6 +93,7 @@
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-fstore-simple</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 		<dependencyManagement>
