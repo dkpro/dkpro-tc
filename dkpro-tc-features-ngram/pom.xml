@@ -49,6 +49,10 @@
 			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
 		</dependency>
@@ -136,16 +140,6 @@
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.api.featurepath-asl
 			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.resources-asl
-			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>

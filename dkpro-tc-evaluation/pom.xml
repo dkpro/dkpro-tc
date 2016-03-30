@@ -38,12 +38,7 @@
   	</dependency>
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-api</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-core</artifactId>
-  		<scope>test</scope>
   	</dependency>
   </dependencies>
 </project>

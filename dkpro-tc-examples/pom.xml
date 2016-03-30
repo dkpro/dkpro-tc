@@ -84,6 +84,10 @@
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.io-asl</artifactId>
 		</dependency>
 		<dependency>
@@ -174,20 +178,11 @@
 			</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-fstore-simple</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				dkpro-similarity-algorithms-lexical-asl
+				de.tudarmstadt.ukp.dkpro.core.api.parameter-asl
 			</artifactId>
 		</dependency>
-		<dependency>
-  <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-  <artifactId>de.tudarmstadt.ukp.dkpro.core.api.parameter-asl</artifactId>
-  <scope>provided</scope>        
-</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

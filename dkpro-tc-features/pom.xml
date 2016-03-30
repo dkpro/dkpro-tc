@@ -37,6 +37,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
 			<scope>test</scope>
@@ -90,12 +94,6 @@
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-testing</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
-			</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
