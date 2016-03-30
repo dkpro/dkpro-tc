@@ -1,4 +1,7 @@
+************************************************
+
 DKPro-TC 0.8.0 Release
+
 == Highlights ==
 Issue 223: Add support for model load/save on Weka/CRFsuite
 Issue 282: Model saving/loading of SVMHMM models
