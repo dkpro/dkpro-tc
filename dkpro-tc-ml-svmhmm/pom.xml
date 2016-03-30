@@ -116,6 +116,10 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging-api</artifactId>
 		</dependency>
+			<dependency>
+  			<groupId>org.dkpro.tc</groupId>
+ 	<artifactId>org.dkpro.tc.svmhmm-bin</artifactId>
+ 	</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
