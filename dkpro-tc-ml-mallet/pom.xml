@@ -48,10 +48,6 @@
             <groupId>org.dkpro.tc</groupId>
             <artifactId>dkpro-tc-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.dkpro.tc</groupId>
-            <artifactId>dkpro-tc-ml</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math</artifactId>
@@ -67,10 +63,6 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>		
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
 		</dependency>
 	</dependencies>
 </project>
