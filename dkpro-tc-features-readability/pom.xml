@@ -36,10 +36,12 @@
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.clearnlp-asl
 			</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
@@ -50,12 +52,14 @@
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.tokit-asl
 			</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.opennlp-asl
 			</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -136,6 +140,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
@@ -146,6 +151,7 @@
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.maltparser-asl
 			</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
