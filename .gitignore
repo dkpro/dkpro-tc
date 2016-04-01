@@ -3,3 +3,6 @@
 .project
 target
 .class
+.idea
+*.ipr
+*.iml
