@@ -39,7 +39,8 @@
 	  	<connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
   		<developerConnection>scm:git:git@github.com:dkpro/dkpro-tc.git</developerConnection>
 		<url>https://github.com/dkpro/dkpro-tc</url>
-	</scm>
+	  <tag>0.8.x</tag>
+  </scm>
 	<issueManagement>
 		<url>https://github.com/dkpro/dkpro-tc/issues</url>
 		<system>GitHub Issues</system>
