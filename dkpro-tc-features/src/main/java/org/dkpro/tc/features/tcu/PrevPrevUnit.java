@@ -51,7 +51,7 @@ public class PrevPrevUnit extends TcuLookUpTable
         }
         
         if (idx - 2 >= 0) {
-            return units.get(idx - 2);
+            return units.get(idx - 2).getCoveredText();
         }
         return BEGIN_OF_SEQUENCE;
     }

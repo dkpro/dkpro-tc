@@ -52,7 +52,7 @@ public class NextUnit
         }
         
         if (idx + 1 < units.size()) {
-            return units.get(idx + 1);
+            return units.get(idx + 1).getCoveredText();
         }
         return END_OF_SEQUENCE;
     }

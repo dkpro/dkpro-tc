@@ -50,7 +50,7 @@ public class TcuLookUpTable
 	protected   HashMap<Integer, TextClassificationUnit> begin2Unit = new HashMap<Integer, TextClassificationUnit>();
 	protected   HashMap<Integer, Integer> unitBegin2Idx = new HashMap<Integer, Integer>();
 	protected   HashMap<Integer, Integer> unitEnd2Idx = new HashMap<Integer, Integer>();
-	protected   List<String> units = new ArrayList<String>();
+	protected   List<TextClassificationUnit> units = new ArrayList<TextClassificationUnit>();
 
 	public Set<Feature> extract(JCas aView,
 			TextClassificationUnit aClassificationUnit)
@@ -62,7 +62,7 @@ public class TcuLookUpTable
 		unitBegin2Idx = new HashMap<Integer, Integer>();
 		idx2SequenceBegin = new HashMap<Integer, Boolean>();
 		idx2SequenceEnd = new HashMap<Integer, Boolean>();
-		units = new ArrayList<String>();
+		units = new ArrayList<TextClassificationUnit>();
 
 		int i = 0;
 		for (TextClassificationUnit t : JCasUtil.select(aView, TextClassificationUnit.class)) {
@@ -71,7 +71,7 @@ public class TcuLookUpTable
 			begin2Unit.put(begin, t);
 			unitBegin2Idx.put(begin, i);
 			unitEnd2Idx.put(end, i);
-			units.add(t.getCoveredText());
+			units.add(t);
 			i++;
 		}
 		for (TextClassificationSequence sequence : JCasUtil.select(aView, TextClassificationSequence.class)) {
