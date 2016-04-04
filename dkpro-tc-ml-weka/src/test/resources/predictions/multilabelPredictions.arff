@@ -1,0 +1,37 @@
+@relation '-C 5-meka.filters.unsupervised.attribute.MekaClassAttributes-R11-last-weka.filters.unsupervised.attribute.Add-TNOM-N__grain_prediction-L0,1-C6-weka.filters.unsupervised.attribute.Add-TNOM-N__earn_prediction-L0,1-C7-weka.filters.unsupervised.attribute.Add-TNOM-N__crude_prediction-L0,1-C8-weka.filters.unsupervised.attribute.Add-TNOM-N__corn_prediction-L0,1-C9-weka.filters.unsupervised.attribute.Add-TNOM-N__acq_prediction-L0,1-C10-weka.filters.unsupervised.attribute.Add-TSTR-NDKProTCInstanceID-Clast'
+
+@attribute __grain {0,1}
+@attribute __earn {0,1}
+@attribute __crude {0,1}
+@attribute __corn {0,1}
+@attribute __acq {0,1}
+@attribute __grain_prediction {0,1}
+@attribute __earn_prediction {0,1}
+@attribute __crude_prediction {0,1}
+@attribute __corn_prediction {0,1}
+@attribute __acq_prediction {0,1}
+@attribute ngram_american numeric
+@attribute ngram_about numeric
+@attribute ngram_any numeric
+@attribute ngram_american_express numeric
+@attribute ngram_acquisitions numeric
+@attribute ngram_analysts numeric
+@attribute ngram_analysts_said numeric
+@attribute ngram_26 numeric
+@attribute ngram_and numeric
+@attribute ngram_26_u45 numeric
+@attribute DKProTCInstanceID string
+
+@data
+1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,10209.txt
+1,0,0,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,10289.txt
+0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,10357.txt
+0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9628.txt
+0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9643.txt
+0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,9653.txt
+0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9659.txt
+1,0,0,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9737.txt
+0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9838.txt
+0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9856.txt
+0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,9865.txt
+1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,9888.txt

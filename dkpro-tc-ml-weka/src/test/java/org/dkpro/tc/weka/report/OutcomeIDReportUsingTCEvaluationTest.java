@@ -61,13 +61,13 @@ public class OutcomeIDReportUsingTCEvaluationTest
         File regressionFile;
         try {
             singleLabelFile = new File(this.getClass()
-                    .getResource("/predictions/singleLabelPredictions.arff").toURI());
+                    .getResource("/predictions/singlelabelPredictions.arff").toURI());
             multiLabelFile = new File(this.getClass()
-                    .getResource("/predictions/multiLabelPredictions.arff").toURI());
+                    .getResource("/predictions/multilabelPredictions.arff").toURI());
             regressionFile = new File(this.getClass()
                     .getResource("/predictions/regressionPredictions.arff").toURI());
             mlResults = new File(this.getClass()
-                    .getResource("/predictions/multiLabelEvaluation.bin").toURI());
+                    .getResource("/predictions/multilabelEvaluation.bin").toURI());
         }
         catch (URISyntaxException e) {
             throw new IOException(e);
@@ -109,7 +109,6 @@ public class OutcomeIDReportUsingTCEvaluationTest
 
     }
 
-    @Ignore
     @Test
     public void testGenerateOutcomeIdPropertiesMultiLabel() throws ClassNotFoundException, IOException
     {
@@ -120,18 +119,18 @@ public class OutcomeIDReportUsingTCEvaluationTest
 
         assertTrue(header.split("\n")[1].startsWith("labels"));
         assertEquals(labels, labelsFromProps);
-        assertEquals(8, props.size());
+        assertEquals(12, props.size());
 
-        assertEquals(0, Id2Outcome.classNamesToMapping(labelsFromProps).get("__oat_Comp").intValue());
-        assertEquals(2, Id2Outcome.classNamesToMapping(labelsFromProps).get("__crude_Comp").intValue());
-        assertEquals(4, Id2Outcome.classNamesToMapping(labelsFromProps).get("__acq_Comp").intValue());
+        assertEquals(0, Id2Outcome.classNamesToMapping(labelsFromProps).get("__grain").intValue());
+        assertEquals(2, Id2Outcome.classNamesToMapping(labelsFromProps).get("__crude").intValue());
+        assertEquals(4, Id2Outcome.classNamesToMapping(labelsFromProps).get("__acq").intValue());
 
-        assertEquals(1., getPrediction(props.getProperty("138.txt")).get(1), 0.1);
-        assertEquals(Arrays.asList(0, 1, 0, 1, 0), getGoldStandard(props.getProperty("138.txt")));
-        assertEquals(0., getPrediction(props.getProperty("151.txt")).get(0), 0.1);
-        assertEquals(Arrays.asList(0, 0, 1, 0, 0), getGoldStandard(props.getProperty("151.txt")));
-        assertEquals(0., getPrediction(props.getProperty("212.txt")).get(4), 0.1);
-        assertEquals(Arrays.asList(0, 0, 0, 0, 1), getGoldStandard(props.getProperty("212.txt")));
+        assertEquals(1., getPrediction(props.getProperty("10357.txt")).get(0), 0.1);
+        assertEquals(Arrays.asList(0, 0, 1, 0, 0), getGoldStandard(props.getProperty("10357.txt")));
+        assertEquals(0., getPrediction(props.getProperty("10289.txt")).get(1), 0.1);
+        assertEquals(Arrays.asList(1, 0, 0, 1, 0), getGoldStandard(props.getProperty("10289.txt")));
+        assertEquals(0., getPrediction(props.getProperty("9643.txt")).get(4), 0.1);
+        assertEquals(Arrays.asList(0, 0, 0, 0, 1), getGoldStandard(props.getProperty("9643.txt")));
 
     }
 
