@@ -52,9 +52,9 @@ public class OutcomeIDReportTest
         File regressionFile;
         try {
             singleLabelFile = new File(this.getClass()
-                    .getResource("/predictions/singleLabelPredictions.arff").toURI());
+                    .getResource("/predictions/singlelabelPredictions.arff").toURI());
             multiLabelFile = new File(this.getClass()
-                    .getResource("/predictions/multiLabelPredictions.arff").toURI());
+                    .getResource("/predictions/multilabelPredictions.arff").toURI());
             regressionFile = new File(this.getClass()
                     .getResource("/predictions/regressionPredictions.arff").toURI());
         }
@@ -85,10 +85,10 @@ public class OutcomeIDReportTest
     {
         Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false);
 
-        assertEquals(8, props.size());
-        assertEquals("__grain_Comp,__corn_Comp;__grain_Comp,__corn_Comp", props.getProperty("138.txt"));
-        assertEquals(";__crude_Comp", props.getProperty("151.txt"));
-        assertEquals(";__acq_Comp", props.getProperty("212.txt"));
+        assertEquals(12, props.size());
+        assertEquals("__grain,__crude,__corn;__acq", props.getProperty("9628.txt"));
+        assertEquals(";__grain,__corn", props.getProperty("9888.txt"));
+        assertEquals(";__acq", props.getProperty("9653.txt"));
     }
 
     @Test
