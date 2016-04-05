@@ -155,7 +155,7 @@ public class CRFSuiteTestTask
             // correctly, see class
             // LabelSubstitutor for more details
         }
-        FileUtils.writeStringToFile(predictionsFile, sb.toString());
+        FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
 
     }
 
@@ -202,9 +202,7 @@ public class CRFSuiteTestTask
         throws Exception
     {
         Process process = new ProcessBuilder().command(aTestModelCommand).start();
-
         String output = captureProcessOutput(process);
-
         return output;
 
     }
