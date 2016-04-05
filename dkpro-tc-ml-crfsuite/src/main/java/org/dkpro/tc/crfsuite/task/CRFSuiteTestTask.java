@@ -27,22 +27,21 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-
-import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.crfsuite.writer.LabelSubstitutor;
+
+import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
+import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class CRFSuiteTestTask
     extends ExecutableTaskBase
@@ -114,8 +113,7 @@ public class CRFSuiteTestTask
             LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
                     "Load binary for platform: [" + platform + "]");
 
-            runtimeProvider = new RuntimeProvider(
-                    "classpath:/org/dkpro/tc/crfsuite/");
+            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/crfsuite/");
         }
 
         String executablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
@@ -164,7 +162,8 @@ public class CRFSuiteTestTask
     {
         String precRecF1perClass = getPrecisionRecallF1PerClass();
         log(precRecF1perClass);
-        File precRecF1File =  aContext.getFile(FILE_PER_CLASS_PRECISION_RECALL_F1, AccessMode.READWRITE);
+        File precRecF1File = aContext.getFile(FILE_PER_CLASS_PRECISION_RECALL_F1,
+                AccessMode.READWRITE);
         FileUtils.write(precRecF1File, "\n" + precRecF1perClass);
     }
 
@@ -210,7 +209,7 @@ public class CRFSuiteTestTask
     private static String captureProcessOutput(Process aProcess)
     {
         InputStream src = aProcess.getInputStream();
-        Scanner sc = new Scanner(src);
+        Scanner sc = new Scanner(src, "utf-8");
         StringBuilder dest = new StringBuilder();
         while (sc.hasNextLine()) {
             String l = sc.nextLine();
@@ -251,14 +250,7 @@ public class CRFSuiteTestTask
         String tmpModelLocation = System.getProperty("java.io.tmpdir") + File.separator
                 + MODEL_CLASSIFIER;
         List<String> modelTrainCommand = buildTrainCommand(aContext, tmpModelLocation);
-
-        log("Start training model");
-        long time = System.currentTimeMillis();
         runTrain(modelTrainCommand);
-        long completedIn = System.currentTimeMillis() - time;
-        String formattedDuration = DurationFormatUtils.formatDuration(completedIn, "HH:mm:ss:SS");
-        log("Training finished after " + formattedDuration);
-
         return writeModel(aContext, tmpModelLocation);
     }
 
