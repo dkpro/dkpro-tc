@@ -164,7 +164,7 @@ public class CRFSuiteTestTask
         log(precRecF1perClass);
         File precRecF1File = aContext.getFile(FILE_PER_CLASS_PRECISION_RECALL_F1,
                 AccessMode.READWRITE);
-        FileUtils.write(precRecF1File, "\n" + precRecF1perClass);
+        FileUtils.write(precRecF1File, "\n" + precRecF1perClass, "utf-8");
     }
 
     private String getPrecisionRecallF1PerClass()
