@@ -90,7 +90,9 @@ public class LoadModelConnectorWeka
         try {
             loadClassifier();
             loadTrainingData();
-            loadClassLabels();
+            if(!learningMode.equals(Constants.LM_REGRESSION)){
+            	loadClassLabels();
+            }
 
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
             SaveModelUtils.writeFeatureMode(tcModelLocation, featureMode);
@@ -154,9 +156,14 @@ public class LoadModelConnectorWeka
                 throw new AnalysisEngineProcessException(e);
             }
 
-            String val = null;
+            Object val = null;
             try {
-                val = classLabels.get((int) cls.classifyInstance(wekaInstance));
+            	if(!isRegression){
+            		val = classLabels.get((int) cls.classifyInstance(wekaInstance));
+            	}
+            	else {
+            		val = cls.classifyInstance(wekaInstance);
+            	}
             }
             catch (Exception e) {
                 throw new AnalysisEngineProcessException(e);
@@ -169,7 +176,7 @@ public class LoadModelConnectorWeka
             else {
                 outcome = getOutcomeForFocus(jcas);
             }
-            outcome.setOutcome(val);
+            outcome.setOutcome(val.toString());
         }
         else {
             // multi-label
