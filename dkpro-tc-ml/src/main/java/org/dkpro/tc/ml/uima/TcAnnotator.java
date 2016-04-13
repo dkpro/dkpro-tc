@@ -35,6 +35,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.util.CasUtil;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -287,9 +288,11 @@ public class TcAnnotator
         throws AnalysisEngineProcessException
     {
         // we need an outcome annotation to be present
-        TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-        outcome.setOutcome("");
-        outcome.addToIndexes();
+    	if(!JCasUtil.exists(jcas, TextClassificationOutcome.class)){
+    		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+    		outcome.setOutcome("");
+    		outcome.addToIndexes();
+    	}
 
         // create new UIMA annotator in order to separate the parameter spaces
         // this annotator will get initialized with its own set of parameters loaded from the model

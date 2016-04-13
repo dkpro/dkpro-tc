@@ -127,6 +127,11 @@ public class SaveModelUtils
 
             // should never be reached
         }
+        
+        // might happen if the feature parameters dimension is not configured
+        if(aFeatureParameters == null){
+        	aFeatureParameters = new ArrayList<Object>();
+        }
 
         for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
 
