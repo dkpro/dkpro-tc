@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,14 +42,13 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
-
-import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.util.TaskUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
 /**
  * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
@@ -100,14 +100,7 @@ public class MetaInfoTask
             // i.e. CAS with a suffix > 1 are copies with a different unit set as AnnotationFocus and the MetaCollectors should not be executed for them
             // fixes issue #336
             if(featureMode.equals(Constants.FM_UNIT)) {
-                List<File> nonDuplicateCas = new ArrayList<File>();
-                for(File f : files){
-                    String name = f.getName().replaceAll(".bin", "");
-                    if(name.endsWith("_0")){
-                        nonDuplicateCas.add(f);
-                    }
-                }
-                files = nonDuplicateCas;
+                files = filterRedundantCasByName(files);
             }
 
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
@@ -115,9 +108,42 @@ public class MetaInfoTask
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
+
+         // fixes issue #336
+            Collection<File> files = toFile(files_training);
+            if(featureMode.equals(Constants.FM_UNIT)) {
+                files = filterRedundantCasByName(files);
+            }
+            
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
-                    files_training);
+                    files);
         }
+    }
+
+    private Collection<File> filterRedundantCasByName(Collection<File> files)
+    {
+        Set<String> seenNames = new HashSet<>();
+        List<File> nonDuplicateCas = new ArrayList<File>();
+        for(File f : files){
+            String fullName = f.getName();
+            int lastIndexOf = fullName.lastIndexOf("_");
+            String originalFileName = fullName.substring(0, lastIndexOf);
+            if(!seenNames.contains(originalFileName)){
+                nonDuplicateCas.add(f);
+                seenNames.add(originalFileName);
+            }
+        }
+        
+        return nonDuplicateCas;
+    }
+
+    private Collection<File> toFile(Collection<String> files_training)
+    {
+        List<File> files = new ArrayList<>();
+        for(String s : files_training){
+            files.add(new File(s));
+        }
+        return files;
     }
 
     @Override
