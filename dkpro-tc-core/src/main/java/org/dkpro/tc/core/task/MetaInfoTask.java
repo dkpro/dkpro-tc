@@ -43,6 +43,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.Constants;
@@ -94,6 +95,21 @@ public class MetaInfoTask
         if (filesRoot == null || files_training == null) {
             File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
             Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
+            
+            //prevents that the MetaCollectors are run N times on the same CAS by kicking out all CAS objects which do not end on a _0 suffix 
+            // i.e. CAS with a suffix > 1 are copies with a different unit set as AnnotationFocus and the MetaCollectors should not be executed for them
+            // fixes issue #336
+            if(featureMode.equals(Constants.FM_UNIT)) {
+                List<File> nonDuplicateCas = new ArrayList<File>();
+                for(File f : files){
+                    String name = f.getName().replaceAll(".bin", "");
+                    if(name.endsWith("_0")){
+                        nonDuplicateCas.add(f);
+                    }
+                }
+                files = nonDuplicateCas;
+            }
+
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
         }
