@@ -35,12 +35,14 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 
 import weka.classifiers.bayes.NaiveBayes;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.NERDemoReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
@@ -53,7 +55,8 @@ public class WekaNERUnitDemo
 
     public static final String LANGUAGE_CODE = "de";
     public static final int NUM_FOLDS = 2;
-    public static final String corpusFilePathTrain = "src/main/resources/data/germ_eval2014_ner/";
+    public static final String corpusFilePathTrain = "src/main/resources/data/germ_eval2014_ner/train";
+    public static final String corpusFilePathTest = "src/main/resources/data/germ_eval2014_ner/test";
 
     public static void main(String[] args)
         throws Exception
@@ -64,7 +67,7 @@ public class WekaNERUnitDemo
     	DemoUtils.setDkproHome(WekaNERUnitDemo.class.getSimpleName());
     	
         WekaNERUnitDemo demo = new WekaNERUnitDemo();
-        demo.runCrossValidation(getParameterSpace());
+        demo.runTrainTest(getParameterSpace());
     }
 
     // ##### CV #####
@@ -80,6 +83,17 @@ public class WekaNERUnitDemo
         // Run
         Lab.getInstance().run(batch);
     }
+    
+    // ##### TrainTest #####
+	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+        ExperimentTrainTest batch = new ExperimentTrainTest("NERDemoTrainTest", WekaClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        // Run
+        Lab.getInstance().run(batch);
+		
+	}
 
     public static ParameterSpace getParameterSpace()
     {
@@ -89,6 +103,13 @@ public class WekaNERUnitDemo
                 DIM_READER_TRAIN_PARAMS,
                 Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
                         NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        NERDemoReader.PARAM_PATTERNS,
+                        INCLUDE_PREFIX + "*.txt" }));
+        dimReaders.put(DIM_READER_TEST, NERDemoReader.class);
+        dimReaders.put(
+                DIM_READER_TEST_PARAMS,
+                Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
+                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                         NERDemoReader.PARAM_PATTERNS,
                         INCLUDE_PREFIX + "*.txt" }));
 
