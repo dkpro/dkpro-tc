@@ -33,6 +33,9 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <properties>
+      <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
     <build>
         <plugins>
             <plugin>
