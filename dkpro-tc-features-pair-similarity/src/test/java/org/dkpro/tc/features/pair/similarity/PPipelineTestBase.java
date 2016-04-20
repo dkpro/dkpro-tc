@@ -33,20 +33,20 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.rules.TemporaryFolder;
-
-import com.google.gson.Gson;
-
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.testing.TestPairReader;
+import org.junit.rules.TemporaryFolder;
+
+import com.google.gson.Gson;
+
+import de.tudarmstadt.ukp.dkpro.core.morpha.MorphaLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 
 public abstract class PPipelineTestBase
@@ -86,8 +86,8 @@ public abstract class PPipelineTestBase
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngineDescription stemmer = AnalysisEngineFactory.createEngineDescription(SnowballStemmer.class);
-        AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(StanfordLemmatizer.class);
-        AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(StanfordPosTagger.class);
+        AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(MorphaLemmatizer.class);
+        AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
