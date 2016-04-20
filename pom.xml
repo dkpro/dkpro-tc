@@ -45,28 +45,13 @@
 		<system>GitHub Issues</system>
 	</issueManagement>
 	<repositories>
-		<repository>
-			<id>ukp-oss</id>
-			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
-		</repository>
-		<!--  
-			- Required when using snapshot versions of DKPro Core -->
-		<repository>
-			<id>ukp-oss-snapshots</id>
-			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-snapshots-local/</url>
-		</repository>
-		
-		<!--
-			- Required when using snapshot versions of UIMA or uimaFIT -->
-			<repository>
-			<id>apache.snapshots</id>
-			<name>Apache Snapshot Repository</name>
-			<url>http://repository.apache.org/snapshots</url>
-			<releases>
-			<enabled>false</enabled>
-			</releases>
-			</repository>
-		
+        <repository>
+            <id>ukp-oss-model-releases</id>
+            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-model-releases-local</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
 	<developers>
 		<developer>
