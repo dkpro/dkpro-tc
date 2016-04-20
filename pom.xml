@@ -54,22 +54,11 @@
         </repository>
 	</repositories>
 	<developers>
-		<developer>
-			<id>oliver.ferschke</id>
-			<name>Oliver Ferschke</name>
-			<email>oliver.ferschke@googlemail.com</email>
-		</developer>
-		<developer>
-			<id>torsten.zesch</id>
-			<name>Torsten Zesch</name>
-			<email>torsten.zesch@googlemail.com</email>
-		</developer>
-		<developer>
-			<id>daxenberger@ukp.informatik.tu-darmstadt.de</id>
-			<name>Johannes Daxenberger</name>
-			<email>daxenberger@ukp.informatik.tu-darmstadt.de</email>
-		</developer>
-	</developers>
+        <developer>
+            <organization>DKPro TC Team</organization>
+            <organizationUrl>https://dkpro.github.io/dkpro-tc/</organizationUrl>
+        </developer>
+    </developers>
 	<modules>
 		<!-- Please keep in alphabetical order -->
 		<module>dkpro-tc-api</module>
