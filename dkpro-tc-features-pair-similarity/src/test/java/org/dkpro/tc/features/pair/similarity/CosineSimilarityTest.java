@@ -22,16 +22,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.dkpro.tc.features.pair.similarity.CosineFeatureExtractor;
-import org.dkpro.tc.features.pair.similarity.IdfPairMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.junit.Test;
 
 public class CosineSimilarityTest
     extends PPipelineTestBase
@@ -87,6 +85,7 @@ public class CosineSimilarityTest
         	assertEquals(0.2, (double)feat.getValue(), epsilon);
         }
     }
+
     @Test
     public void testCosSimWithLemmas()
         throws Exception
