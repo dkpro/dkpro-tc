@@ -25,7 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import org.dkpro.tc.groovyexamples.single.unit.BrownUnitPosDemo;
 import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
 
 /**
