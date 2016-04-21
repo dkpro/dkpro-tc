@@ -226,7 +226,7 @@ public class TwentyNewsgroupsDemo implements Constants {
     {
 		DemoUtils.setDkproHome(TwentyNewsgroupsDemo.getSimpleName());
         new TwentyNewsgroupsDemo().runTrainTest()
-        new TwentyNewsgroupsDemo().runCrossValidation()
+      //  new TwentyNewsgroupsDemo().runCrossValidation()
     }
 
 }

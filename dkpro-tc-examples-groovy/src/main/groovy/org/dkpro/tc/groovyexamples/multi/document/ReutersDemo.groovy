@@ -220,7 +220,7 @@ public class ReutersDemo implements Constants {
     {
 		DemoUtils.setDkproHome(ReutersDemo.name);
         new ReutersDemo().runTrainTest()
-        new ReutersDemo().runCrossValidation()
+        //new ReutersDemo().runCrossValidation()
     }
 
 }

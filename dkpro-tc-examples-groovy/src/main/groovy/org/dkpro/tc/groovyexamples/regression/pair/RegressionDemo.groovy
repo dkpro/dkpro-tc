@@ -164,6 +164,6 @@ public class RegressionDemo implements Constants {
     {
 		DemoUtils.setDkproHome(RegressionDemo.getSimpleName());
         new RegressionDemo().runTrainTest()
-        new RegressionDemo().runCrossValidation()
+      //  new RegressionDemo().runCrossValidation()
     }
 }

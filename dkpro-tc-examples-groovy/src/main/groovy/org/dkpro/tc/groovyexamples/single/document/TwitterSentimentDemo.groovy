@@ -140,5 +140,5 @@ public class TwitterSentimentDemo implements Constants {
      */
     public static void main(String[] args) {
 		DemoUtils.setDkproHome(TwitterSentimentDemo.getSimpleName());
-        new TwitterSentimentDemo().runCrossValidation()
+       // new TwitterSentimentDemo().runCrossValidation()
         new TwitterSentimentDemo().runTrainTest() } }
