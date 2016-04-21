@@ -10,7 +10,7 @@ Issue 296: Adding save-model TaskBase to TCMachineLearningAdapter
 
 == Major Version Enhancements ==
 DKPro Lab 0.12.0
-DKPro parent pom 13
+DKPro parent pom 14
 Java 8
 
 == Other Issues Fixed ==
