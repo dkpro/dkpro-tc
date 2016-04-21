@@ -18,8 +18,10 @@
 package org.dkpro.tc.ml.liblinear;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -28,6 +30,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.util.ReportConstants;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
@@ -90,8 +93,8 @@ public class LiblinearTestTask
         Problem test = Problem.readFromFile(fileTest, 1.0);
 
         // FIXME use evaluation module when available
-//        Integer correct = 0;
-//        Integer incorrect = 0;
+        Integer correct = 0;
+        Integer incorrect = 0;
         Feature[][] testInstances = test.x;
         List<Double> predictions = new ArrayList<Double>();
         for (int i = 0; i < testInstances.length; i++) {
@@ -99,14 +102,14 @@ public class LiblinearTestTask
             double prediction = Linear.predict(model, instance);
             predictions.add(prediction);
 
-//            if (test.y[i] == prediction) {
-//                correct++;
-//            }
-//            else {
-//                incorrect++;
-//            }
+            if (test.y[i] == prediction) {
+                correct++;
+            }
+            else {
+                incorrect++;
+            }
         }
-//        Double accuracy = (double) correct / (correct + incorrect);
+        Double accuracy = (double) correct / (correct + incorrect);
 
         // write predictions
         File predFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
@@ -118,19 +121,17 @@ public class LiblinearTestTask
         // evaluate and write results
 
         // file to hold prediction results
-//        File evalFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY,
-//                AccessMode.READWRITE);
-//        String evalFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
-//                AdapterNameEntries.evaluationFile);
-//        File evalFile = new File(evalFolder, evalFileName);
-//        
-//        Properties p = new Properties();
-//        p.setProperty(ReportConstants.CORRECT, correct.toString());
-//        p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
-//        p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
-//        
-//        FileOutputStream fos = new FileOutputStream(evalFile);
-//        p.store(fos, "results");
-//        fos.close();
+        File evalFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY,
+                AccessMode.READWRITE);
+        File evalFile = new File(evalFolder, Constants.RESULTS_FILENAME);
+        
+        Properties p = new Properties();
+        p.setProperty(ReportConstants.CORRECT, correct.toString());
+        p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
+        p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
+        
+        FileOutputStream fos = new FileOutputStream(evalFile);
+        p.store(fos, "results");
+        fos.close();
     }
 }

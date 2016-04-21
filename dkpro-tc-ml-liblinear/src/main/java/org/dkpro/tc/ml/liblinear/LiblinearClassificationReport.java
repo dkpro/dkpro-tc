@@ -42,6 +42,6 @@ public class LiblinearClassificationReport
 	    		Constants.RESULTS_FILENAME);  	
     	
     	File outputFolder = getContext().getFolder("", AccessMode.READWRITE);
-    	FileUtils.copyFile(evalFile, new File(outputFolder, Constants.RESULTS_FILENAME));
+    	FileUtils.moveFile(evalFile, new File(outputFolder, Constants.RESULTS_FILENAME));
     }
 }
