@@ -127,7 +127,7 @@ public class WekaTestTask
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
 
         // file to hold prediction results
-        File evalOutput = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.evaluationFile, AccessMode.READWRITE);
+        File evalOutput = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY, Constants.RESULTS_FILENAME, AccessMode.READWRITE);
 
         // evaluation & prediction generation
         if (multiLabel) {

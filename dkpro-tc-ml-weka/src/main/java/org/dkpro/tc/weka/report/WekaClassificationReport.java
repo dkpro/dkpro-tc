@@ -93,7 +93,7 @@ public class WekaClassificationReport
         double[][] confusionMatrix = null;
 
         File evaluationFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
-                AdapterNameEntries.evaluationFile, AccessMode.READONLY);
+                Constants.RESULTS_FILENAME, AccessMode.READONLY);
 
         if (multiLabel) {
             // ============= multi-label setup ======================

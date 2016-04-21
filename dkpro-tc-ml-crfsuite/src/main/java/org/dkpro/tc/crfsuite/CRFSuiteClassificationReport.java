@@ -24,10 +24,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.ReportConstants;
@@ -69,8 +67,7 @@ public class CRFSuiteClassificationReport
         }
         br.close();
         
-        String evalFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.evaluationFile);
+        String evalFileName = Constants.RESULTS_FILENAME;
         File accuracyFile = getContext().getFile(evalFileName, AccessMode.READWRITE);
         
         Double accuracy = correct/(correct+incorrect);
@@ -83,10 +80,5 @@ public class CRFSuiteClassificationReport
         FileOutputStream fos = new FileOutputStream(accuracyFile);
         p.store(fos, "Accuracy on test data");
         fos.close();
-        
-        
-        
-        //TODO: BatchTrainTestReport expects a file named Constants.RESULTS_FILENAME we copy the evaluationFile 
-        FileUtils.copyFile(accuracyFile, getContext().getFile(Constants.RESULTS_FILENAME, AccessMode.READWRITE));
     }
 }

@@ -1191,4 +1191,21 @@ public class WekaUtils
 
         return new File(pathToArff);
     }
+
+    /**
+     * Convenience method to get file described by a string value in a folder of the current context 
+     * @param aContext
+     * @param key
+     * @param entry
+     * @param mode
+     * @return
+     */
+    public static File getFile(TaskContext aContext, String key, String entry, AccessMode mode)
+    {
+        String path = aContext.getFolder(key, mode).getPath();
+        String pathToArff = path + "/" + entry;
+
+        return new File(pathToArff);
+    }
+
 }

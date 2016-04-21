@@ -65,7 +65,7 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         File arff = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
                 AdapterNameEntries.predictionsFile, AccessMode.READONLY);
         mlResults = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
-                AdapterNameEntries.evaluationFile, AccessMode.READONLY);
+                Constants.RESULTS_FILENAME, AccessMode.READONLY);
 
         boolean multiLabel = getDiscriminators().get(
                 WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(

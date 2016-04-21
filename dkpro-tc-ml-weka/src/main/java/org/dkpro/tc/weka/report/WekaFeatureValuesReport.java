@@ -69,7 +69,7 @@ public class WekaFeatureValuesReport
         
         File arff = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
                 AdapterNameEntries.predictionsFile, AccessMode.READONLY);
-        File evaluationFile =WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,AdapterNameEntries.evaluationFile, AccessMode.READONLY);
+        File evaluationFile =WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,Constants.RESULTS_FILENAME, AccessMode.READONLY);
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
       

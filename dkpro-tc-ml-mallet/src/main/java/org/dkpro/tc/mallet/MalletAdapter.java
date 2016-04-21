@@ -23,8 +23,8 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-
 import org.dkpro.tc.core.io.DataWriter;
+import org.dkpro.tc.core.ml.AdapterNameEntries;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
@@ -79,7 +79,6 @@ public class MalletAdapter
         switch (name) {
             case featureVectorsFile:  return "training-data.txt.gz";
             case predictionsFile      :  return "predictions.txt";
-            case evaluationFile       :  return "evaluation.txt";
             case featureSelectionFile :  return "attributeEvaluationResults.txt";
         }
         

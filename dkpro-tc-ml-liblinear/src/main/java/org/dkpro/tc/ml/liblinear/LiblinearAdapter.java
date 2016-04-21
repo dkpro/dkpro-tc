@@ -75,7 +75,6 @@ public class LiblinearAdapter
         switch (name) {
             case featureVectorsFile:  return "training-data.txt";
             case predictionsFile      :  return "predictions.txt";
-            case evaluationFile       :  return "evaluation.txt";
             case featureSelectionFile :  return "attributeEvaluationResults.txt";
         }
         

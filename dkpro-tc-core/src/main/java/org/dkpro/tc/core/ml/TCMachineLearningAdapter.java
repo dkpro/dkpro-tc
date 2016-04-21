@@ -44,11 +44,6 @@ public interface TCMachineLearningAdapter
          */
         predictionsFile,
 
-        /**
-         * Intended for storing evaluation of the task
-         */
-        evaluationFile,
-
         featureSelectionFile
     }
 

@@ -77,7 +77,6 @@ public class WekaPredictionAdapter
         switch (name) {
             case featureVectorsFile:  return "training-data.arff.gz";
             case predictionsFile      :  return "predictions.arff";
-            case evaluationFile       :  return "evaluation.bin";
             case featureSelectionFile :  return "attributeEvaluationResults.txt";
         }
         

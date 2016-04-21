@@ -23,7 +23,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 /**
  * Report that computes evaluation results given the classification results.
@@ -39,9 +38,8 @@ public class LiblinearClassificationReport
     {
     	// only a mock for now - this needs to be rewritten anyway once the evaluation module is ready
         File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-        String fileName = LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.evaluationFile);
     	File evalFile = new File(folder,
-	    		fileName);  	
+	    		Constants.RESULTS_FILENAME);  	
     	
     	File outputFolder = getContext().getFolder("", AccessMode.READWRITE);
     	FileUtils.copyFile(evalFile, new File(outputFolder, Constants.RESULTS_FILENAME));
