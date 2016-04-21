@@ -24,7 +24,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.AdapterNameEntries;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
