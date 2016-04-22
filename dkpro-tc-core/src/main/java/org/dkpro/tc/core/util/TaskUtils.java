@@ -507,6 +507,47 @@ public class TaskUtils
 
         return instances;
     }
+    
+    public static List<Instance> getUnitModeMultipleInstances(
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
+            boolean addInstanceId)
+        throws TextClassificationException
+    {
+        List<Instance> instances = new ArrayList<Instance>();
+
+        for (TextClassificationUnit unit : JCasUtil.select(jcas,
+                TextClassificationUnit.class)) {
+
+            Instance instance = new Instance();
+
+//            if (addInstanceId) {
+//                instance.addFeature(InstanceIdFeature.retrieve(jcas, unit, sequenceId));
+//            }
+
+            // execute feature extractors and add features to instance
+         
+                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
+                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                        throw new TextClassificationException(
+                                "Using non-unit FE in sequence mode: " + featExt.getResourceName());
+                    }
+                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
+                            jcas, unit));
+                }
+            
+
+
+            // set and write outcome label(s)
+            instance.setOutcomes(getOutcomes(jcas, unit));
+            instance.setWeight(getWeight(jcas, unit));
+//            instance.setSequenceId(sequenceId);
+            instance.setSequencePosition(unit.getId());
+
+            instances.add(instance);
+        }
+
+        return instances;
+    }
 
     public static List<Instance> getInstancesInSequence(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,

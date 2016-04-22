@@ -136,6 +136,9 @@ public class ExtractFeaturesConnector
                         sequenceId);
                 sequenceId++;
             }
+            else if(featureMode.equals(Constants.FM_UNIT)){
+                instances = TaskUtils.getUnitModeMultipleInstances(featureExtractors, jcas, addInstanceId);
+            }
             else {
                 instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
                         developerMode, addInstanceId));

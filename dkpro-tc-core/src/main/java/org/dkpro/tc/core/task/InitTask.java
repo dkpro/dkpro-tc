@@ -168,7 +168,7 @@ public class InitTask
             preprocessing = builder.createAggregateDescription();
         }
         // in unit or sequence mode, add cas multiplier
-        else if (featureMode.equals(Constants.FM_UNIT) || featureMode.equals(Constants.FM_SEQUENCE)) {
+        else if (featureMode.equals(Constants.FM_SEQUENCE)) {
             boolean useSequences = featureMode.equals(Constants.FM_SEQUENCE);
 
             AnalysisEngineDescription casMultiplier = createEngineDescription(
