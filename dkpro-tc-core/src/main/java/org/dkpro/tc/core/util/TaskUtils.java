@@ -56,10 +56,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
@@ -520,9 +520,10 @@ public class TaskUtils
 
             Instance instance = new Instance();
 
-//            if (addInstanceId) {
-//                instance.addFeature(InstanceIdFeature.retrieve(jcas, unit, sequenceId));
-//            }
+            if (addInstanceId) {
+                Feature feat = InstanceIdFeature.retrieve(jcas, unit);
+                instance.addFeature(feat);
+            }
 
             // execute feature extractors and add features to instance
          
