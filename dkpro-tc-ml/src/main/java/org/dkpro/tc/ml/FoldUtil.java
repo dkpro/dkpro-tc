@@ -1,6 +1,6 @@
 package org.dkpro.tc.ml;
 
-import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -12,21 +12,28 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class FoldUtil
 {
-    public static void foldUtil(String inputFolder)
+    public static String foldUtil(String inputFolder)
         throws Exception
     {
+
+        String output = inputFolder + "/split";
+
         CollectionReader createReader = CollectionReaderFactory.createReader(BinaryCasReader.class,
                 BinaryCasReader.PARAM_SOURCE_LOCATION, inputFolder, BinaryCasReader.PARAM_PATTERNS,
                 "*.bin");
-        AnalysisEngine multiplier = AnalysisEngineFactory.createEngine(
+        AnalysisEngineDescription multiplier = AnalysisEngineFactory.createEngineDescription(
                 ClassificationUnitCasMultiplier.class,
                 ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, false);
-        AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,
-                BinaryCasWriter.PARAM_TARGET_LOCATION, inputFolder + "/split",
+        AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(
+                BinaryCasWriter.class, BinaryCasWriter.PARAM_TARGET_LOCATION, output,
                 BinaryCasWriter.PARAM_FORMAT, "6+");
 
-        SimplePipeline.runPipeline(createReader, multiplier, xmiWriter);
+        AnalysisEngineDescription both = AnalysisEngineFactory.createEngineDescription(multiplier,
+                xmiWriter);
 
+        SimplePipeline.runPipeline(createReader, both);
+
+        return output;
     }
 
 }

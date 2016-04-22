@@ -152,7 +152,17 @@ public class ExperimentCrossValidation
                 }
 
                 if (fileNames.length < numFolds) {
+                    // split and rebuild information
                     xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot);
+                    files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
+                            true);
+                    fileNames = new String[files.size()];
+                    i = 0;
+                    for (File f : files) {
+                        // adding file paths, not names
+                        fileNames[i] = f.getAbsolutePath();
+                        i++;
+                    }
                 }
                 // don't change any names!!
                 FoldDimensionBundle<String> foldDim = getFoldDim(fileNames);
@@ -165,13 +175,11 @@ public class ExperimentCrossValidation
             private File createRequestedNumberOfCas(File xmiPathRoot)
             {
                 try {
-                    FoldUtil.foldUtil(xmiPathRoot.getAbsolutePath());
+                    return new File(FoldUtil.foldUtil(xmiPathRoot.getAbsolutePath()));
                 }
                 catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
-
-                return null;
             }
         };
 
