@@ -18,43 +18,48 @@
  */
 package org.dkpro.tc.groovyexamples.single.document;
 
-import java.io.File;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-
-import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
-
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+/*
+ * Test is out-commented to speed up Jenkins builds 
  */
-public class TwitterSentimentDemoTest extends GroovyDemosTest_Base
-{
-    TwitterSentimentDemo groovyExperiment;
 
-    @Before
-    public void setup()
-        throws Exception
-    {
-        super.setup();
-
-        groovyExperiment = new TwitterSentimentDemo();
-    }
-
-    @Test
-    public void testGroovyTrainTest()
-        throws Exception
-    {
-        groovyExperiment.runTrainTest();
-    }
-    
-    @Test
-    public void testGroovyCV()
-        throws Exception
-    {
-        groovyExperiment.runCrossValidation();
-    }
-}
+//
+//import java.io.File;
+//
+//import org.junit.Before;
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.rules.TestName;
+//
+//import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
+//
+///**
+// * This test just ensures that the experiment runs without throwing
+// * any exception.
+// */
+//public class TwitterSentimentDemoTest extends GroovyDemosTest_Base
+//{
+//    TwitterSentimentDemo groovyExperiment;
+//
+//    @Before
+//    public void setup()
+//        throws Exception
+//    {
+//        super.setup();
+//
+//        groovyExperiment = new TwitterSentimentDemo();
+//    }
+//
+//    @Test
+//    public void testGroovyTrainTest()
+//        throws Exception
+//    {
+//        groovyExperiment.runTrainTest();
+//    }
+//    
+//    @Test
+//    public void testGroovyCV()
+//        throws Exception
+//    {
+//        groovyExperiment.runCrossValidation();
+//    }
+//}

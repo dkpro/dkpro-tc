@@ -17,43 +17,46 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 package org.dkpro.tc.groovyexamples.single.document;
-
-import java.io.File;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-
-import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
-
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+/*
+ * Test is out-commented to speed up Jenkins builds 
  */
-public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
-{
-    TwentyNewsgroupsDemo groovyExperiment;
 
-    @Before
-    public void setup()
-        throws Exception
-    {
-        super.setup();
-        groovyExperiment = new TwentyNewsgroupsDemo();
-    }
-
-    @Test
-    public void testGroovyCrossValidation()
-        throws Exception
-    {
-        groovyExperiment.runCrossValidation();
-    }
-
-    @Test
-    public void testGroovyTrainTest()
-        throws Exception
-    {
-        groovyExperiment.runTrainTest();
-    }
-}
+//import java.io.File;
+//
+//import org.junit.Before;
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.rules.TestName;
+//
+//import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
+//
+///**
+// * This test just ensures that the experiment runs without throwing
+// * any exception.
+// */
+//public class TwentyNewsgroupsDemoTest extends GroovyDemosTest_Base
+//{
+//    TwentyNewsgroupsDemo groovyExperiment;
+//
+//    @Before
+//    public void setup()
+//        throws Exception
+//    {
+//        super.setup();
+//        groovyExperiment = new TwentyNewsgroupsDemo();
+//    }
+//
+//    @Test
+//    public void testGroovyCrossValidation()
+//        throws Exception
+//    {
+//        groovyExperiment.runCrossValidation();
+//    }
+//
+//    @Test
+//    public void testGroovyTrainTest()
+//        throws Exception
+//    {
+//        groovyExperiment.runTrainTest();
+//    }
+//}

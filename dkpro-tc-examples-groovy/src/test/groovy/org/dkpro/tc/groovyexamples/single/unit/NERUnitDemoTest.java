@@ -18,36 +18,36 @@
  */
 package org.dkpro.tc.groovyexamples.single.unit;
 
-import java.io.File;
+//import java.io.File;
+//
+//import org.junit.Before;
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.rules.TestName;
+//
+//import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-
-import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
-
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+/*
+ * Test is out-commented to speed up Jenkins builds 
  */
-public class NERUnitDemoTest extends GroovyDemosTest_Base
-{
-    NERUnitDemo groovyExperiment;
 
-    @Before
-    public void setup()
-        throws Exception
-    {
-        super.setup();
-        
-        groovyExperiment = new NERUnitDemo();
-    }
-
-    @Test
-    public void testGroovyCrossValidation()
-        throws Exception
-    {
-        groovyExperiment.runCrossValidation();
-    }
-}
+//public class NERUnitDemoTest extends GroovyDemosTest_Base
+//{
+//    NERUnitDemo groovyExperiment;
+//
+//    @Before
+//    public void setup()
+//        throws Exception
+//    {
+//        super.setup();
+//        
+//        groovyExperiment = new NERUnitDemo();
+//    }
+//
+//    @Test
+//    public void testGroovyCrossValidation()
+//        throws Exception
+//    {
+//        groovyExperiment.runCrossValidation();
+//    }
+//}
