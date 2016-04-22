@@ -45,7 +45,7 @@ import org.dkpro.tc.core.task.MetaInfoTask;
 public class ExperimentCrossValidation
     extends Experiment_ImplBase
 {
-    
+
     protected Comparator<String> comparator;
     protected int numFolds = 10;
 
@@ -153,9 +153,8 @@ public class ExperimentCrossValidation
 
                 if (fileNames.length < numFolds) {
                     // split and rebuild information
-                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot);
-                    files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
-                            true);
+                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length);
+                    files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
                     fileNames = new String[files.size()];
                     i = 0;
                     for (File f : files) {
@@ -172,14 +171,22 @@ public class ExperimentCrossValidation
                 setParameterSpace(pSpace);
             }
 
-            private File createRequestedNumberOfCas(File xmiPathRoot)
+            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas)
             {
+
                 try {
-                    return new File(FoldUtil.foldUtil(xmiPathRoot.getAbsolutePath()));
+                    return FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), numFolds, numAvailableJCas);
                 }
                 catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
+
+                // try {
+                // return new File(FoldUtil.foldUtil(xmiPathRoot.getAbsolutePath()));
+                // }
+                // catch (Exception e) {
+                // throw new IllegalStateException(e);
+                // }
             }
         };
 

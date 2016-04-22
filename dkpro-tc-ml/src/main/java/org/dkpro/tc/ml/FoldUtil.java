@@ -17,10 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
+import java.io.File;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
@@ -51,6 +55,19 @@ public class FoldUtil
         SimplePipeline.runPipeline(createReader, both);
 
         return output;
+    }
+
+    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas) throws Exception
+    {
+        CollectionReaderDescription createReader = CollectionReaderFactory.createReaderDescription(BinaryCasReader.class,
+                BinaryCasReader.PARAM_SOURCE_LOCATION, inputFolder, BinaryCasReader.PARAM_PATTERNS,
+                "*.bin");
+        
+        double splitNum = Math.ceil(numFolds/ (double) numAvailableJCas) ; 
+        
+        JCasIterable jCasIterable = new JCasIterable(createReader);
+        
+        return null;
     }
 
 }
