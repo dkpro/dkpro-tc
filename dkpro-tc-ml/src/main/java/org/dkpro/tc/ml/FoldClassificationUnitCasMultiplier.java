@@ -33,6 +33,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCopier;
 import org.dkpro.tc.api.type.TextClassificationFocus;
+import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
@@ -47,6 +48,10 @@ public class FoldClassificationUnitCasMultiplier
     extends JCasMultiplier_ImplBase
 {
 
+    public static final String PARAM_USE_SEQUENCES = "useSequences";
+    @ConfigurationParameter(name = PARAM_USE_SEQUENCES, mandatory = true, defaultValue = "false")
+    private boolean useSequences;
+
     public static final String PARAM_REQUESTED_SPLITS = "numSplitsReq";
     @ConfigurationParameter(name = PARAM_REQUESTED_SPLITS, mandatory = true)
     private int numReqSplits;
@@ -58,12 +63,12 @@ public class FoldClassificationUnitCasMultiplier
     private JCas jCas;
 
     private int subCASCounter;
-    private Integer unitCounter;
+    private Integer counter;
 
-    private List<AnnotationFS> unitBuf = new ArrayList<AnnotationFS>();
+    private List<AnnotationFS> buf = new ArrayList<AnnotationFS>();
 
     int totalNum = 0;
-    int unitsPerCas = 0;
+    int annosPerCas = 0;
 
     @Override
     public void process(JCas aJCas)
@@ -71,16 +76,21 @@ public class FoldClassificationUnitCasMultiplier
     {
         jCas = aJCas;
         subCASCounter = 0;
-        unitCounter = 0;
+        counter = 0;
 
-        annotations = JCasUtil.select(aJCas, TextClassificationUnit.class);
+        if (useSequences) {
+            annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
+        }
+        else {
+            annotations = JCasUtil.select(aJCas, TextClassificationUnit.class);
+        }
 
         Iterator<? extends AnnotationFS> all = annotations.iterator();
         while (all.hasNext()) {
             all.next();
             totalNum++;
         }
-        unitsPerCas = (int) (totalNum / (double) numReqSplits);
+        annosPerCas = (int) (totalNum / (double) numReqSplits);
         isUnitsGreaterZero();
 
         iterator = annotations.iterator();
@@ -92,10 +102,15 @@ public class FoldClassificationUnitCasMultiplier
 
     private void isUnitsGreaterZero()
     {
-        if (unitsPerCas <= 0) {
-            throw new IllegalStateException(
-                    "The number of TextClassificationUnits per CAS would have been lower than 0 units - total number units found ["
-                            + totalNum + "] number of folds requested [" + numReqSplits + "]");
+        String anno = TextClassificationUnit.class.getSimpleName();
+        if (useSequences) {
+            anno = TextClassificationSequence.class.getSimpleName();
+        }
+
+        if (annosPerCas <= 0) {
+            throw new IllegalStateException("The number of " + anno
+                    + " per CAS would have been lower than 0 units - total number units found ["
+                    + totalNum + "] number of folds requested [" + numReqSplits + "]");
         }
     }
 
@@ -103,14 +118,14 @@ public class FoldClassificationUnitCasMultiplier
     public boolean hasNext()
         throws AnalysisEngineProcessException
     {
-        unitBuf = new ArrayList<AnnotationFS>();
+        buf = new ArrayList<AnnotationFS>();
 
-        for (int i = 0; i < unitsPerCas && iterator.hasNext(); i++) {
+        for (int i = 0; i < annosPerCas && iterator.hasNext(); i++) {
             AnnotationFS next = iterator.next();
-            unitBuf.add(next);
+            buf.add(next);
         }
 
-        return !unitBuf.isEmpty();
+        return !buf.isEmpty();
     }
 
     @Override
@@ -162,18 +177,8 @@ public class FoldClassificationUnitCasMultiplier
         String currentDocUri = DocumentMetaData.get(jCas).getDocumentUri() + "_" + subCASCounter;
         DocumentMetaData.get(copyJCas).setDocumentUri(currentDocUri);
 
-        // delete all text classification units
-        for (TextClassificationUnit u : JCasUtil.select(copyJCas, TextClassificationUnit.class)) {
-            u.removeFromIndexes();
-        }
-
-        for (AnnotationFS a : unitBuf) {
-            TextClassificationUnit unit = new TextClassificationUnit(copyJCas, a.getBegin(),
-                    a.getEnd());
-            unit.addToIndexes();
-            unit.setId(unitCounter);
-            unitCounter++;
-        }
+        deleteOriginalAnnotation(copyJCas);
+        setTargetAnnotation(copyJCas);
 
         subCASCounter++;
 
@@ -183,5 +188,42 @@ public class FoldClassificationUnitCasMultiplier
         getLogger().debug("Creating CAS " + subCASCounter + " of " + annotations.size());
 
         return copyJCas;
+    }
+
+    private void setTargetAnnotation(JCas copyJCas)
+    {
+        if (useSequences) {
+            for (AnnotationFS a : buf) {
+                TextClassificationSequence unit = new TextClassificationSequence(copyJCas,
+                        a.getBegin(), a.getEnd());
+                unit.addToIndexes();
+                unit.setId(counter);
+                counter++;
+            }
+        }
+        else {
+            for (AnnotationFS a : buf) {
+                TextClassificationUnit unit = new TextClassificationUnit(copyJCas, a.getBegin(),
+                        a.getEnd());
+                unit.addToIndexes();
+                unit.setId(counter);
+                counter++;
+            }
+        }
+    }
+
+    private void deleteOriginalAnnotation(JCas copyJCas)
+    {
+        if (useSequences) {
+            for (TextClassificationSequence u : JCasUtil.select(copyJCas,
+                    TextClassificationSequence.class)) {
+                u.removeFromIndexes();
+            }
+        }
+        else {
+            for (TextClassificationUnit u : JCasUtil.select(copyJCas, TextClassificationUnit.class)) {
+                u.removeFromIndexes();
+            }
+        }
     }
 }
