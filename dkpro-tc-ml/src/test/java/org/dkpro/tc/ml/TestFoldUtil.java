@@ -53,21 +53,43 @@ public class TestFoldUtil
     }
 
     @Test
-    public void testSplitting()
+    public void testSplittingAllTcuIntoOneCas()
         throws Exception
     {
-        File output = FoldUtil.createMinimalSplit(tmpFold.getRoot().getAbsolutePath(), 4, 1);
+        File output = FoldUtil.createMinimalSplit(tmpFold.getRoot().getAbsolutePath(), 1, 1);
 
         List<File> writtenBins = getWrittenBins(output);
 
         List<Integer> numTcusCas = countNumberOfTextClassificationUnitsPerCas(writtenBins);
 
-        assertEquals(5, writtenBins.size());
-        assertEquals(new Integer(3), numTcusCas.get(0));
-        assertEquals(new Integer(3), numTcusCas.get(1));
-        assertEquals(new Integer(3), numTcusCas.get(2));
-        assertEquals(new Integer(3), numTcusCas.get(3));
+        assertEquals(1, writtenBins.size());
+        assertEquals(new Integer(13), numTcusCas.get(0));
+    }
+    
+    @Test
+    public void testSplittingOneTcuIntoOneCas()
+        throws Exception
+    {
+        File output = FoldUtil.createMinimalSplit(tmpFold.getRoot().getAbsolutePath(), 13, 1);
+
+        List<File> writtenBins = getWrittenBins(output);
+
+        List<Integer> numTcusCas = countNumberOfTextClassificationUnitsPerCas(writtenBins);
+
+        assertEquals(13, writtenBins.size());
+        assertEquals(new Integer(1), numTcusCas.get(0));
+        assertEquals(new Integer(1), numTcusCas.get(1));
+        assertEquals(new Integer(1), numTcusCas.get(2));
+        assertEquals(new Integer(1), numTcusCas.get(3));
         assertEquals(new Integer(1), numTcusCas.get(4));
+        assertEquals(new Integer(1), numTcusCas.get(5));
+        assertEquals(new Integer(1), numTcusCas.get(6));
+        assertEquals(new Integer(1), numTcusCas.get(7));
+        assertEquals(new Integer(1), numTcusCas.get(8));
+        assertEquals(new Integer(1), numTcusCas.get(9));
+        assertEquals(new Integer(1), numTcusCas.get(10));
+        assertEquals(new Integer(1), numTcusCas.get(11));
+        assertEquals(new Integer(1), numTcusCas.get(12));
     }
 
     private List<Integer> countNumberOfTextClassificationUnitsPerCas(List<File> writtenBins)
