@@ -24,7 +24,6 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 
@@ -57,17 +56,30 @@ public class FoldUtil
         return output;
     }
 
-    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas) throws Exception
+    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas)
+        throws Exception
     {
-        CollectionReaderDescription createReader = CollectionReaderFactory.createReaderDescription(BinaryCasReader.class,
-                BinaryCasReader.PARAM_SOURCE_LOCATION, inputFolder, BinaryCasReader.PARAM_PATTERNS,
-                "*.bin");
-        
-        double splitNum = Math.ceil(numFolds/ (double) numAvailableJCas) ; 
-        
-        JCasIterable jCasIterable = new JCasIterable(createReader);
-        
-        return null;
+        File outputFolder = new File(inputFolder, "output");
+        int splitNum = (int) Math.ceil(numFolds / (double) numAvailableJCas);
+
+        CollectionReaderDescription createReader = CollectionReaderFactory.createReaderDescription(
+                BinaryCasReader.class, BinaryCasReader.PARAM_SOURCE_LOCATION, inputFolder,
+                BinaryCasReader.PARAM_PATTERNS, "*.bin");
+
+        AnalysisEngineDescription multiplier = AnalysisEngineFactory.createEngineDescription(
+                org.dkpro.tc.ml.FoldClassificationUnitCasMultiplier.class,
+                org.dkpro.tc.ml.FoldClassificationUnitCasMultiplier.PARAM_REQUESTED_SPLITS, splitNum);
+
+        AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(
+                BinaryCasWriter.class, BinaryCasWriter.PARAM_TARGET_LOCATION,
+                outputFolder.getAbsolutePath(), BinaryCasWriter.PARAM_FORMAT, "6+");
+
+        AnalysisEngineDescription both = AnalysisEngineFactory.createEngineDescription(multiplier,
+                xmiWriter);
+
+        SimplePipeline.runPipeline(createReader, both);
+
+        return outputFolder;
     }
 
 }
