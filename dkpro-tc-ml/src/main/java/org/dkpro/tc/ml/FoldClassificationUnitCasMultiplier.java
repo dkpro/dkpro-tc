@@ -77,6 +77,7 @@ public class FoldClassificationUnitCasMultiplier
         jCas = aJCas;
         subCASCounter = 0;
         counter = 0;
+        totalNum=0;
 
         if (useSequences) {
             annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
