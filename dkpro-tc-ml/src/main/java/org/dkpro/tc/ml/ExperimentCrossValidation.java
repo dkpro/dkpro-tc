@@ -185,13 +185,6 @@ public class ExperimentCrossValidation
                 catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
-
-                // try {
-                // return new File(FoldUtil.foldUtil(xmiPathRoot.getAbsolutePath()));
-                // }
-                // catch (Exception e) {
-                // throw new IllegalStateException(e);
-                // }
             }
 
             private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
