@@ -175,7 +175,12 @@ public class ExperimentCrossValidation
             {
 
                 try {
-                    return FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), numFolds, numAvailableJCas);
+                    File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
+                            numFolds, numAvailableJCas);
+
+                    verfiyThatNeededNumberOfCasWasCreated(outputFolder);
+
+                    return outputFolder;
                 }
                 catch (Exception e) {
                     throw new IllegalStateException(e);
@@ -187,6 +192,22 @@ public class ExperimentCrossValidation
                 // catch (Exception e) {
                 // throw new IllegalStateException(e);
                 // }
+            }
+
+            private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
+            {
+                int numCas = 0;
+                for (File f : outputFolder.listFiles()) {
+                    if (f.getName().contains(".bin")) {
+                        numCas++;
+                    }
+                }
+
+                if (numCas < numFolds) {
+                    throw new IllegalStateException(
+                            "Not enough TextClassificationUnits found to create at least ["
+                                    + numFolds + "] folds");
+                }
             }
         };
 

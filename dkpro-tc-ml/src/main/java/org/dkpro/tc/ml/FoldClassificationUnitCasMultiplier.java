@@ -33,7 +33,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCopier;
 import org.dkpro.tc.api.type.TextClassificationFocus;
-import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
@@ -82,12 +81,22 @@ public class FoldClassificationUnitCasMultiplier
             totalNum++;
         }
         unitsPerCas = (int) (totalNum / (double) numReqSplits);
+        isUnitsGreaterZero();
 
         iterator = annotations.iterator();
 
         if (!iterator.hasNext())
             throw new AnalysisEngineProcessException(new RuntimeException(
                     "No annotations found in CAS for Units or Sequences."));
+    }
+
+    private void isUnitsGreaterZero()
+    {
+        if (unitsPerCas <= 0) {
+            throw new IllegalStateException(
+                    "The number of TextClassificationUnits per CAS would have been lower than 0 units - total number units found ["
+                            + totalNum + "] number of folds requested [" + numReqSplits + "]");
+        }
     }
 
     @Override

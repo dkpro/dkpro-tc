@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -43,8 +44,65 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class TestFoldUtil
 {
-    TemporaryFolder tmpFold;
+    private TemporaryFolder tmpFold;
     private JCas jcas;
+    
+    @Test(expected = AnalysisEngineProcessException.class)
+    public void testExceptionOnTooFewData() throws Exception{
+        FoldUtil.createMinimalSplit(tmpFold.getRoot().getAbsolutePath(), 14, 1);
+    }
+
+    @Test
+    public void testSplitting()
+        throws Exception
+    {
+        File output = FoldUtil.createMinimalSplit(tmpFold.getRoot().getAbsolutePath(), 4, 1);
+
+        List<File> writtenBins = getWrittenBins(output);
+
+        List<Integer> numTcusCas = countNumberOfTextClassificationUnitsPerCas(writtenBins);
+
+        assertEquals(5, writtenBins.size());
+        assertEquals(new Integer(3), numTcusCas.get(0));
+        assertEquals(new Integer(3), numTcusCas.get(1));
+        assertEquals(new Integer(3), numTcusCas.get(2));
+        assertEquals(new Integer(3), numTcusCas.get(3));
+        assertEquals(new Integer(1), numTcusCas.get(4));
+    }
+
+    private List<Integer> countNumberOfTextClassificationUnitsPerCas(List<File> writtenBins)
+        throws Exception
+    {
+        List<Integer> arrayList = new ArrayList<Integer>();
+        for (File f : writtenBins) {
+            JCas jcas = JCasFactory.createJCas();
+            CollectionReader createReader = createReader(jcas, f);
+            createReader.getNext(jcas.getCas());
+
+            Collection<TextClassificationUnit> units = JCasUtil.select(jcas,
+                    TextClassificationUnit.class);
+            arrayList.add(units.size());
+        }
+        return arrayList;
+    }
+
+    private CollectionReader createReader(JCas jcas, File f)
+        throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReader(BinaryCasReader.class,
+                BinaryCasReader.PARAM_SOURCE_LOCATION, f);
+    }
+
+    private List<File> getWrittenBins(File output)
+    {
+        List<File> bins = new ArrayList<File>();
+        for (File f : output.listFiles()) {
+            if (f.getName().endsWith(".bin")) {
+                bins.add(f);
+            }
+        }
+        return bins;
+    }
 
     @Before
     public void setUp()
@@ -86,50 +144,5 @@ public class TestFoldUtil
     {
         TextClassificationUnit tcu = new TextClassificationUnit(jcas, beg, end);
         tcu.addToIndexes();
-    }
-
-    @Test
-    public void doit()
-        throws Exception
-    {
-        File output = FoldUtil.createMinimalSplit(tmpFold.getRoot().getAbsolutePath(), 4, 1);
-
-        List<File> writtenBins = getWrittenBins(output);
-
-        List<Integer> numTcusCas = new ArrayList<Integer>();
-        for (File f : writtenBins) {
-            JCas jcas = JCasFactory.createJCas();
-            CollectionReader createReader = createReader(jcas, f);
-            createReader.getNext(jcas.getCas());
-
-            Collection<TextClassificationUnit> units = JCasUtil.select(jcas,
-                    TextClassificationUnit.class);
-            numTcusCas.add(units.size());
-        }
-
-        assertEquals(5, writtenBins.size());
-        assertEquals(new Integer(3), numTcusCas.get(0));
-        assertEquals(new Integer(3), numTcusCas.get(1));
-        assertEquals(new Integer(3), numTcusCas.get(2));
-        assertEquals(new Integer(3), numTcusCas.get(3));
-        assertEquals(new Integer(1), numTcusCas.get(4));
-    }
-
-    private CollectionReader createReader(JCas jcas, File f)
-        throws ResourceInitializationException
-    {
-        return CollectionReaderFactory.createReader(BinaryCasReader.class,
-                BinaryCasReader.PARAM_SOURCE_LOCATION, f);
-    }
-
-    private List<File> getWrittenBins(File output)
-    {
-        List<File> bins = new ArrayList<File>();
-        for (File f : output.listFiles()) {
-            if (f.getName().endsWith(".bin")) {
-                bins.add(f);
-            }
-        }
-        return bins;
     }
 }
