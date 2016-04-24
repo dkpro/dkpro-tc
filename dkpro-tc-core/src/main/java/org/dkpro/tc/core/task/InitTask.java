@@ -33,21 +33,20 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.FlowControllerFactory;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.ClassificationUnitCasMultiplier;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.CasDropFlowController;
 import org.dkpro.tc.core.task.uima.ConnectorBase;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
+
+import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 /**
  * Initialization of the TC pipeline
@@ -166,21 +165,6 @@ public class InitTask
                         viewName);
             }
             preprocessing = builder.createAggregateDescription();
-        }
-        // in unit or sequence mode, add cas multiplier
-        else if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            boolean useSequences = featureMode.equals(Constants.FM_SEQUENCE);
-
-            AnalysisEngineDescription casMultiplier = createEngineDescription(
-                    ClassificationUnitCasMultiplier.class,
-                    ClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, useSequences);
-
-            if (dropInvalidCases) {
-                return createEngineDescription(flowController, getPreValidityCheckEngine(aContext), emptyProblemChecker, preprocessing, casMultiplier, getPostValidityCheckEngine(aContext), xmiWriter);
-            }
-            else {
-                return createEngineDescription(getPreValidityCheckEngine(aContext), emptyProblemChecker, preprocessing, casMultiplier, getPostValidityCheckEngine(aContext), xmiWriter);
-            }            	
         }
         
         if (dropInvalidCases) {
