@@ -152,6 +152,7 @@ public class ExperimentCrossValidation
                 }
 
                 if (fileNames.length < numFolds) {
+                    //TODO: add Sequence flag check
                     // split and rebuild information
                     xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length);
                     files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
