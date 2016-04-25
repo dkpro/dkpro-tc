@@ -55,6 +55,7 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
     public void testRandomSVMHMM()
         throws Exception
     {
+        ContextMemoryReport.adapter = SVMHMMTestTask.class.getName();
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
     }
@@ -76,6 +77,6 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
         int e = fileContent.indexOf(end);
         
         Double result = Double.valueOf(fileContent.substring(s, e));
-        assertEquals(0.411, result, 0.0000001);
+        assertEquals(0.1, result, 0.0000001);
     }
 }

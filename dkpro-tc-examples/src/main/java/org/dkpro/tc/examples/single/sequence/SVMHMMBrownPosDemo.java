@@ -63,21 +63,20 @@ public class SVMHMMBrownPosDemo
         results.put(Constants.DIM_READER_TEST, BrownCorpusReader.class);
 
         if (trainTest) {
-            results.put(Constants.DIM_READER_TRAIN_PARAMS,
-                    Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
-                            "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS, "a01.xml"));
-            results.put(Constants.DIM_READER_TEST_PARAMS,
-                    Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
-                            "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS, "a02.xml"));
+            results.put(Constants.DIM_READER_TRAIN_PARAMS, Arrays.asList(
+                    BrownCorpusReader.PARAM_LANGUAGE, "en",
+                    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                    BrownCorpusReader.PARAM_PATTERNS, "a01.xml"));
+            results.put(Constants.DIM_READER_TEST_PARAMS, Arrays.asList(
+                    BrownCorpusReader.PARAM_LANGUAGE, "en",
+                    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                    BrownCorpusReader.PARAM_PATTERNS, "a02.xml"));
         }
         else {
-            results.put(Constants.DIM_READER_TRAIN_PARAMS,
-                    Arrays.asList(BrownCorpusReader.PARAM_LANGUAGE,
-                            "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS,
-                            Arrays.asList(INCLUDE_PREFIX + "*.xml")));
+            results.put(Constants.DIM_READER_TRAIN_PARAMS, Arrays.asList(
+                    BrownCorpusReader.PARAM_LANGUAGE, "en",
+                    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                    BrownCorpusReader.PARAM_PATTERNS, Arrays.asList(INCLUDE_PREFIX + "*.xml")));
         }
 
         return results;
@@ -91,44 +90,48 @@ public class SVMHMMBrownPosDemo
 
         // no parameters needed for now... see TwentyNewsgroupDemo for multiple parametrization
         // or pipeline
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(Constants.DIM_PIPELINE_PARAMS, Arrays.asList());
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
+                Constants.DIM_PIPELINE_PARAMS, Arrays.asList());
 
         // try different parametrization of C
-        Dimension<Double> dimClassificationArgsC = Dimension.create(
-                SVMHMMTestTask.PARAM_C, 1.0, 5.0);
-        //                SVMHMMTestTask.PARAM_C, 1.0, 5.0, 10.0);
+        Dimension<Double> dimClassificationArgsC = Dimension.create(SVMHMMTestTask.PARAM_C, 5.0);
+        // SVMHMMTestTask.PARAM_C, 1.0, 5.0, 10.0);
 
         // various orders of dependencies of transitions in HMM (max 3)
-        Dimension<Integer> dimClassificationArgsT = Dimension.create(
-                SVMHMMTestTask.PARAM_ORDER_T, 1);
-        //                SVMHMMTestTask.PARAM_ORDER_T, 1, 2, 3);
+        Dimension<Integer> dimClassificationArgsT = Dimension.create(SVMHMMTestTask.PARAM_ORDER_T,
+                1);
+        // SVMHMMTestTask.PARAM_ORDER_T, 1, 2, 3);
 
         // various orders of dependencies of emissions in HMM (max 1)
-        Dimension<Integer> dimClassificationArgsE = Dimension.create(
-                SVMHMMTestTask.PARAM_ORDER_E, 0);
-        //                SVMHMMTestTask.PARAM_ORDER_E, 0, 1);
+        Dimension<Integer> dimClassificationArgsE = Dimension.create(SVMHMMTestTask.PARAM_ORDER_E,
+                0);
+        // SVMHMMTestTask.PARAM_ORDER_E, 0, 1);
 
         // feature extractors
-        Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
+                Constants.DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
                         LuceneCharacterNGramUFE.class.getName(),
                         OriginalTextHolderFeatureExtractor.class.getName() }));
 
-        return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-                Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
-                dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgsC,
-                dimClassificationArgsT,
-                dimClassificationArgsE
-        );
+        // feature extractor parameters
+        Dimension<List<Object>> dimFeatureSetsParams = Dimension.create(
+                Constants.DIM_PIPELINE_PARAMS,
+                Arrays.asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 2,
+                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
+                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 2 }));
+
+        return new ParameterSpace(Dimension.createBundle("readers", dimReaders), Dimension.create(
+                Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
+                Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE), Dimension.create(
+                Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
+                dimPipelineParameters, dimFeatureSets, dimFeatureSetsParams,
+                dimClassificationArgsC, dimClassificationArgsT, dimClassificationArgsE);
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,
             Class<? extends TCMachineLearningAdapter> machineLearningAdapter)
-            throws Exception
+        throws Exception
     {
         final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
                 machineLearningAdapter, NUM_FOLDS);
@@ -141,7 +144,7 @@ public class SVMHMMBrownPosDemo
 
     protected void runTrainTest(ParameterSpace pSpace,
             Class<? extends TCMachineLearningAdapter> machineLearningAdapter)
-            throws Exception
+        throws Exception
     {
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter);
@@ -161,8 +164,10 @@ public class SVMHMMBrownPosDemo
         Logger.getRootLogger().setLevel(Level.INFO);
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
         DemoUtils.setDkproHome(SVMHMMBrownPosDemo.class.getSimpleName());
 
         // run cross-validation first
