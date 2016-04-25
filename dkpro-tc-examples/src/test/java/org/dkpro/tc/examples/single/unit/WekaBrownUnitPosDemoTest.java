@@ -72,8 +72,8 @@ public class WekaBrownUnitPosDemoTest extends JavaDemosTest_Base
         p.load(fs);
         fs.close();
         Double result = Double.valueOf(p.getProperty(ReportConstants.WGT_FMEASURE));
-        assertEquals(0.0482, result, 0.0001);
+        assertEquals(0.0340, result, 0.0001);
         result = Double.valueOf(p.getProperty(ReportConstants.PCT_CORRECT));
-        assertEquals(16.791, result, 0.0001);
+        assertEquals(13.9175, result, 0.0001);
     }
 }
