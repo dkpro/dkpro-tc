@@ -32,12 +32,12 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfCharsUFE;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -112,6 +112,7 @@ public class SVMHMMBrownPosDemo
         // feature extractors
         Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
+                        LuceneCharacterNGramUFE.class.getName(),
                         OriginalTextHolderFeatureExtractor.class.getName() }));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -145,6 +146,7 @@ public class SVMHMMBrownPosDemo
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
+        batch.addReport(ContextMemoryReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

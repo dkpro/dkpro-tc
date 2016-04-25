@@ -36,8 +36,10 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.WeightedTwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -182,6 +184,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
 //        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(ContextMemoryReport.class);
 //        batch.addReport(BatchTrainTestReport.class);
 //        batch.addReport(BatchOutcomeIDReport.class);
 //        batch.addReport(BatchRuntimeReport.class);

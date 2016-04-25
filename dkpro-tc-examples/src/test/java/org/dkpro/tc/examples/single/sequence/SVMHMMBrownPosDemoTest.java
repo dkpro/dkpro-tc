@@ -19,13 +19,19 @@
 package org.dkpro.tc.examples.single.sequence;
 
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
-import org.junit.Before;
-import org.junit.Test;
-import org.dkpro.tc.examples.single.sequence.SVMHMMBrownPosDemo;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
+import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -57,7 +63,19 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
     public void testActualSVMHMM()
         throws Exception
     {
+        ContextMemoryReport.adapter = SVMHMMTestTask.class.getName();
+        
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
+        
+        String fileContent = FileUtils.readFileToString(new File(ContextMemoryReport.out, "output/" + Constants.RESULTS_FILENAME));
+        String beg = "Macro F-measure: ";
+        String end = ",";
+        
+        int s = fileContent.indexOf(beg) + beg.length();
+        int e = fileContent.indexOf(end);
+        
+        Double result = Double.valueOf(fileContent.substring(s, e));
+        assertEquals(0.411, result, 0.0000001);
     }
 }
