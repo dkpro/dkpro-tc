@@ -52,11 +52,6 @@ This can be used to add additional information e.g. for identifying the unit.</d
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.dkpro.tc.api.type.TextClassificationFocus</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
       <name>org.dkpro.tc.api.type.TextClassificationSequence</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
