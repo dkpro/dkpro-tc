@@ -124,7 +124,6 @@ public class ExperimentCrossValidation
         initTask.setMlAdapter(mlAdapter);
         initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
-        initTask.setDropInvalidCases(dropInvalidCases);
         initTask.setType(initTask.getType() + "-" + experimentName);
 
         // inner batch task (carried out numFolds times)

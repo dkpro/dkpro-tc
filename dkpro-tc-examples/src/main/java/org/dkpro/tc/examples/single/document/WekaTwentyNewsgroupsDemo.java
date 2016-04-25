@@ -35,8 +35,10 @@ import org.dkpro.lab.task.ParameterSpace;
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -189,15 +191,10 @@ public class WekaTwentyNewsgroupsDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
-        // add a second report to TestTask which creates a report about average feature values for
-        // each outcome label
-//        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//        batch.addReport(BatchTrainTestReport.class);
-//        batch.addReport(BatchOutcomeIDReport.class);
-//        batch.addReport(BatchRuntimeReport.class);
+        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -212,7 +209,6 @@ public class WekaTwentyNewsgroupsDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//        batch.addReport(BatchStatisticsTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

@@ -33,14 +33,16 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This is an example for POS tagging as unit classification. Each POS is treated as a
@@ -83,6 +85,23 @@ public class WekaBrownUnitPosDemo
         // Run
         Lab.getInstance().run(batch);
     }
+    
+
+    // ##### Train Test #####
+    protected void runTrainTest(ParameterSpace pSpace)
+        throws Exception
+    {
+
+        ExperimentTrainTest batch = new ExperimentTrainTest("BrownPosDemoCV",
+                WekaClassificationAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(ContextMemoryReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
 
     public static ParameterSpace getParameterSpace()
     {
@@ -91,6 +110,14 @@ public class WekaBrownUnitPosDemo
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
         dimReaders.put(
                 DIM_READER_TRAIN_PARAMS,
+                Arrays.asList(new Object[] { BrownCorpusReader.PARAM_LANGUAGE, "en",
+                        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        BrownCorpusReader.PARAM_PATTERNS,
+                        new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" } }));
+        
+        dimReaders.put(DIM_READER_TEST, BrownCorpusReader.class);
+        dimReaders.put(
+                DIM_READER_TEST_PARAMS,
                 Arrays.asList(new Object[] { BrownCorpusReader.PARAM_LANGUAGE, "en",
                         BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                         BrownCorpusReader.PARAM_PATTERNS,

@@ -47,7 +47,6 @@ public abstract class Experiment_ImplBase
     protected List<String> operativeViews;
     protected List<Class<? extends Report>> innerReports;
     protected TCMachineLearningAdapter mlAdapter;
-    protected boolean dropInvalidCases;
 
     Log log = LogFactory.getLog(Experiment_ImplBase.class);
 
@@ -135,8 +134,4 @@ public abstract class Experiment_ImplBase
         innerReports.add(innerReport);
     }
 
-    public void setDropInvalidCases(boolean dropInvalidCases)
-    {
-        this.dropInvalidCases = dropInvalidCases;
-    }
 }

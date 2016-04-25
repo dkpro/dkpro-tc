@@ -74,7 +74,6 @@ public class ExperimentPrediction
         initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
-        initTaskTrain.setDropInvalidCases(dropInvalidCases);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
         // initialize the test data setup
@@ -83,7 +82,6 @@ public class ExperimentPrediction
         initTaskTest.setPreprocessing(getPreprocessing());
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setTesting(true);
-        initTaskTest.setDropInvalidCases(dropInvalidCases);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training

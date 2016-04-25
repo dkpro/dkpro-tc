@@ -21,6 +21,7 @@ package org.dkpro.tc.examples.single.sequence;
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
@@ -43,6 +43,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfCharsUFE;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentTrainTest;
 
 /**
  * Example for NER as sequence classification.
@@ -54,18 +55,23 @@ public class CRFSuiteNERSequenceDemo
     public static final String LANGUAGE_CODE = "de";
     public static final int NUM_FOLDS = 2;
     public static final String corpusFilePathTrain = "src/main/resources/data/germ_eval2014_ner/train";
+    public static final String corpusFilePathTest = "src/main/resources/data/germ_eval2014_ner/test";
+
+    public static File outputFolder = null;
 
     public static void main(String[] args)
         throws Exception
-    { 	
-    	// Suppress mallet logging output
-    	System.setProperty("java.util.logging.config.file","src/main/resources/logging.properties");
+    {
+        // Suppress mallet logging output
+        System.setProperty("java.util.logging.config.file", "src/main/resources/logging.properties");
 
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(CRFSuiteNERSequenceDemo.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(CRFSuiteNERSequenceDemo.class.getSimpleName());
+
         CRFSuiteNERSequenceDemo demo = new CRFSuiteNERSequenceDemo();
         demo.runCrossValidation(getParameterSpace());
     }
@@ -74,14 +80,29 @@ public class CRFSuiteNERSequenceDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
-        		CRFSuiteAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+                "NamedEntitySequenceDemoCV", CRFSuiteAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(CRFSuiteBatchCrossValidationReport.class);
-                
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
+    // ##### Train Test #####
+    protected void runTrainTest(ParameterSpace pSpace)
+        throws Exception
+    {
+        ExperimentTrainTest batch = new ExperimentTrainTest("NamedEntitySequenceDemoTrainTest",
+                CRFSuiteAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.addReport(ContextMemoryReport.class);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+
         // Run
         Lab.getInstance().run(batch);
     }
@@ -93,15 +114,20 @@ public class CRFSuiteNERSequenceDemo
         dimReaders.put(
                 DIM_READER_TRAIN_PARAMS,
                 Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
-                		NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                		NERDemoReader.PARAM_PATTERNS,
-                		INCLUDE_PREFIX + "*.txt" }));
+                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
+        dimReaders.put(DIM_READER_TEST, NERDemoReader.class);
+        dimReaders.put(
+                DIM_READER_TEST_PARAMS,
+                Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
+                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-        		Arrays.asList(new String[] { NrOfCharsUFE.class.getName(), 
-        				InitialCharacterUpperCaseUFE.class.getName()
-        		}));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
+                        InitialCharacterUpperCaseUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
@@ -109,11 +135,11 @@ public class CRFSuiteNERSequenceDemo
 
         return pSpace;
     }
-    
 
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
         return createEngineDescription(NoOpAnnotator.class);
     }
+
 }

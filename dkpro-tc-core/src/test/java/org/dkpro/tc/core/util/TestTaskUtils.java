@@ -1,5 +1,5 @@
-/*
- * Copyright 2015
+/**
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -26,20 +26,18 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationSequence;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.type.TextClassificationFocus;
-import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationUnit;
-import org.dkpro.tc.core.util.TaskUtils;
-
 public class TestTaskUtils
 {
-   
+
     @Test
     public void testInstanceMultiplicationWithUnitId()
         throws Exception
@@ -53,24 +51,27 @@ public class TestTaskUtils
         assertEquals(3, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_0_a", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
+        assertEquals("4711_0_0_a", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1_car", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
+        assertEquals("4711_0_1_car", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2_drives", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
+        assertEquals("4711_0_2_drives", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
     }
-    
+
     @Test
     public void testInstanceMultiplicationWithoutUnitId()
         throws Exception
@@ -84,19 +85,22 @@ public class TestTaskUtils
         assertEquals(3, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
+        assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
+        assertEquals("4711_0_1", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2", multipleInstances.get(idx).getFeatures().iterator().next().getValue());
+        assertEquals("4711_0_2", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
@@ -120,8 +124,8 @@ public class TestTaskUtils
             int end = start + tokens[i][0].length();
 
             TextClassificationUnit unit = new TextClassificationUnit(jCas, start, end);
-            if (setUnitIdAsPartOfTheInstanceId){
-            	unit.setSuffix(tokens[i][0]);
+            if (setUnitIdAsPartOfTheInstanceId) {
+                unit.setSuffix(tokens[i][0]);
             }
             unit.setId(i);
             unit.addToIndexes();
@@ -137,9 +141,10 @@ public class TestTaskUtils
         }
         String text = sb.toString();
         jCas.setDocumentLanguage(text);
-        TextClassificationFocus focus = new TextClassificationFocus(jCas, 0, text.length());
-        focus.addToIndexes();
         
+        TextClassificationSequence seq = new TextClassificationSequence(jCas, 0, text.length());
+        seq.addToIndexes();
+
         return jCas;
     }
 

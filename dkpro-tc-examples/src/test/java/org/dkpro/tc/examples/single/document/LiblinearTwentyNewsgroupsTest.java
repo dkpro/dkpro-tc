@@ -18,11 +18,21 @@
  */
 package org.dkpro.tc.examples.single.document;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import org.dkpro.lab.task.ParameterSpace;
 import org.junit.Before;
 import org.junit.Test;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.util.ReportConstants;
 import org.dkpro.tc.examples.single.document.LiblinearTwentyNewsgroups;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -47,7 +57,16 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
     public void testJavaTrainTest()
         throws Exception
     {
+        ContextMemoryReport.adapter = LiblinearTestTask.class.getName();
+        
         javaExperiment.runTrainTest(pSpace);
+        
+        Properties p = new Properties();
+        FileInputStream fs = new FileInputStream(new File(ContextMemoryReport.out, Constants.RESULTS_FILENAME));
+        p.load(fs);
+        fs.close();
+        Double result = Double.valueOf(p.getProperty(ReportConstants.PCT_CORRECT));
+        assertEquals(0.5, result, 0.01);
     }
     
     @Test

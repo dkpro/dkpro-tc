@@ -85,7 +85,6 @@ public class ExperimentTrainTest
         initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
-        initTaskTrain.setDropInvalidCases(dropInvalidCases);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 
         // init the test part of the experiment
@@ -94,7 +93,6 @@ public class ExperimentTrainTest
         initTaskTest.setMlAdapter(mlAdapter);
         initTaskTest.setPreprocessing(getPreprocessing());
         initTaskTest.setOperativeViews(operativeViews);
-        initTaskTest.setDropInvalidCases(dropInvalidCases);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
 
         // get some meta data depending on the whole document collection that we need for training

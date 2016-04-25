@@ -65,7 +65,6 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.api.type.TextClassificationFocus;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
@@ -321,78 +320,19 @@ public class TaskUtils
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
                 parameters.toArray());
     }
-
+    
+    
     /**
      * Should not be called directly, but always from a connector (UIMA context with parameters
      * initialized)
      */
-    public static Instance getSingleInstance(String featureMode,
+    public static Instance getSingleInstanceUnit(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-            boolean developerMode, boolean addInstanceId)
+            boolean developerMode, boolean addInstanceId, TextClassificationUnit unit)
         throws TextClassificationException
     {
-
         Instance instance = new Instance();
-
-        if (featureMode.equals(Constants.FM_DOCUMENT)) {
-
-            if (addInstanceId) {
-                instance.addFeature(InstanceIdFeature.retrieve(jcas));
-            }
-
-            for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                if (!(featExt instanceof DocumentFeatureExtractor)) {
-                    throw new TextClassificationException(
-                            "Using non-document FE in document mode: " + featExt.getResourceName());
-                }
-                instance.setOutcomes(getOutcomes(jcas, null));
-                instance.setWeight(getWeight(jcas, null));
-                instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
-            }
-
-        }
-        else if (featureMode.equals(Constants.FM_PAIR)) {
-            try {
-                if (addInstanceId) {
-                    instance.addFeature(InstanceIdFeature.retrieve(jcas));
-                }
-
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof PairFeatureExtractor)) {
-                        throw new TextClassificationException("Using non-pair FE in pair mode: "
-                                + featExt.getResourceName());
-                    }
-                    JCas view1 = jcas.getView(Constants.PART_ONE);
-                    JCas view2 = jcas.getView(Constants.PART_TWO);
-
-                    instance.setOutcomes(getOutcomes(jcas, null));
-                    instance.setWeight(getWeight(jcas, null));
-                    instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
-                }
-            }
-            catch (CASException e) {
-                throw new TextClassificationException(e);
-            }
-        }
-        else if (featureMode.equals(Constants.FM_UNIT)) {
-            TextClassificationFocus focus = JCasUtil.selectSingle(jcas,
-                    TextClassificationFocus.class);
-            Collection<TextClassificationUnit> classificationUnits = JCasUtil.selectCovered(jcas,
-                    TextClassificationUnit.class, focus);
-
-            TextClassificationUnit unit = null;
-            if (classificationUnits.size() != 1) {
-                unit = tryGetMatchingUnitForFocus(focus, classificationUnits);
-
-                if (unit == null) {
-                    throw new TextClassificationException(
-                            "JCas should contain exactly one text classification unit, but it contains "
-                                    + classificationUnits.size() + ".");
-                }
-            }
-            else {
-                unit = classificationUnits.iterator().next();
-            }
+        if (featureMode.equals(Constants.FM_UNIT)) {
 
             if (addInstanceId) {
                 instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
@@ -415,57 +355,77 @@ public class TaskUtils
                         unit));
             }
         }
-
         return instance;
     }
 
     /**
-     * Helper method to return a matching TC unit for the given focus, if possible, based on
-     * matching start and end points.
-     * 
-     * @param focus
-     *            The focus under consideration
-     * @param classificationUnits
-     *            The list of TC units covered by this focus.
-     * @return TC Unit that is identical with the focus range, if available. Null otherwise.
+     * Should not be called directly, but always from a connector (UIMA context with parameters
+     * initialized)
      */
-    public static TextClassificationUnit tryGetMatchingUnitForFocus(TextClassificationFocus focus,
-            Collection<TextClassificationUnit> classificationUnits)
+    public static Instance getSingleInstance(String featureMode,
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
+            boolean developerMode, boolean addInstanceId)
+        throws TextClassificationException
     {
-        if (focus == null || classificationUnits == null || classificationUnits.size() == 0) {
-            return null;
+
+        Instance instance = new Instance();
+
+        if (featureMode.equals(Constants.FM_DOCUMENT)) {
+            instance = getSingleInstanceDocument(instance, featureExtractors, jcas, addInstanceId);
         }
-
-        int focusBegin = focus.getBegin();
-        int focusEnd = focus.getEnd();
-        TextClassificationUnit foundUnit = null;
-
-        for (TextClassificationUnit unit : classificationUnits) {
-            if (unit.getBegin() == focusBegin && unit.getEnd() == focusEnd) {
-                foundUnit = unit;
-                break;
-            }
+        else if (featureMode.equals(Constants.FM_PAIR)) {
+            instance = getSingleInstancePair(instance, featureExtractors, jcas, addInstanceId);
         }
-
-        return foundUnit;
+       
+        return instance;
     }
 
-    /**
-     * Helper method to return a matching TC unit for the given focus and CAS, if possible, based on
-     * matching start and end points. Delegates to the other
-     * {@link #tryGetMatchingUnitForFocus(TextClassificationFocus, Collection)}
-     * 
-     * @param focus
-     *            The focus under consideration
-     * @return TC Unit that is identical with the focus range, if available. Null otherwise.
-     */
-    public static TextClassificationUnit tryGetMatchingUnitForFocus(JCas jcas,
-            TextClassificationFocus focus)
-    {
-        List<TextClassificationUnit> allUnitsUnderFocus = JCasUtil.selectCovered(jcas,
-                TextClassificationUnit.class, focus);
 
-        return tryGetMatchingUnitForFocus(focus, allUnitsUnderFocus);
+    private static Instance getSingleInstancePair(Instance instance,
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId) throws TextClassificationException
+    {
+        try {
+            if (addInstanceId) {
+                instance.addFeature(InstanceIdFeature.retrieve(jcas));
+            }
+
+            for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
+                if (!(featExt instanceof PairFeatureExtractor)) {
+                    throw new TextClassificationException("Using non-pair FE in pair mode: "
+                            + featExt.getResourceName());
+                }
+                JCas view1 = jcas.getView(Constants.PART_ONE);
+                JCas view2 = jcas.getView(Constants.PART_TWO);
+
+                instance.setOutcomes(getOutcomes(jcas, null));
+                instance.setWeight(getWeight(jcas, null));
+                instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
+            }
+        }
+        catch (CASException e) {
+            throw new TextClassificationException(e);
+        }
+        return instance;
+    }
+
+    private static Instance getSingleInstanceDocument(
+            Instance instance, FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId) throws TextClassificationException
+    {
+        if (addInstanceId) {
+            instance.addFeature(InstanceIdFeature.retrieve(jcas));
+        }
+
+        for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
+            if (!(featExt instanceof DocumentFeatureExtractor)) {
+                throw new TextClassificationException(
+                        "Using non-document FE in document mode: " + featExt.getResourceName());
+            }
+            instance.setOutcomes(getOutcomes(jcas, null));
+            instance.setWeight(getWeight(jcas, null));
+            instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
+        }
+
+        return instance;
     }
 
     public static List<Instance> getMultipleInstances(

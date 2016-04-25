@@ -34,7 +34,6 @@ public class FoldUtil
         throws Exception
     {
         File outputFolder = new File(inputFolder, "output");
-        //+1 to account for up/down rounding issues
         int splitNum = (int) Math.ceil(numFolds / (double) numAvailableJCas);
 
         CollectionReaderDescription createReader = CollectionReaderFactory.createReaderDescription(

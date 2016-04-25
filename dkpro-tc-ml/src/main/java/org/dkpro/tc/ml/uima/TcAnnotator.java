@@ -39,8 +39,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import org.dkpro.tc.api.type.TextClassificationFocus;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
@@ -200,19 +198,14 @@ public class TcAnnotator
         Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
         Collection<AnnotationFS> select = CasUtil.select(jcas.getCas(), type);
         List<AnnotationFS> unitAnnotation = new ArrayList<AnnotationFS>(select);
-        TextClassificationFocus tcf = null;
         TextClassificationOutcome tco = null;
         List<String> outcomes = new ArrayList<String>();
 
-        // iterate the units and set on each the focus with a prepared dummy
-        // outcome
+        // iterate the units and set on each a prepared dummy outcome
         for (AnnotationFS unit : unitAnnotation) {
             TextClassificationUnit tcs = new TextClassificationUnit(jcas, unit.getBegin(),
                     unit.getEnd());
             tcs.addToIndexes();
-
-            tcf = new TextClassificationFocus(jcas, unit.getBegin(), unit.getEnd());
-            tcf.addToIndexes();
 
             tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
             tco.setOutcome("dummyValue");
@@ -222,8 +215,7 @@ public class TcAnnotator
 
             // store the outcome
             outcomes.add(tco.getOutcome());
-
-            tcf.removeFromIndexes();
+            tcs.removeFromIndexes();
             tco.removeFromIndexes();
         }
 
@@ -292,6 +284,10 @@ public class TcAnnotator
     		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
     		outcome.setOutcome("");
     		outcome.addToIndexes();
+    	}
+    	if(!JCasUtil.exists(jcas, TextClassificationUnit.class)){
+    	    TextClassificationUnit unit = new TextClassificationUnit(jcas);
+    	    unit.addToIndexes();
     	}
 
         // create new UIMA annotator in order to separate the parameter spaces
