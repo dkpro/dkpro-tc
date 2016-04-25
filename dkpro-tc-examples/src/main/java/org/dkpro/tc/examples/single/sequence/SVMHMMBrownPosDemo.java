@@ -117,9 +117,9 @@ public class SVMHMMBrownPosDemo
         // feature extractor parameters
         Dimension<List<Object>> dimFeatureSetsParams = Dimension.create(
                 Constants.DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 2,
+                Arrays.asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 20,
                         LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 2 }));
+                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 3 }));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders), Dimension.create(
                 Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(

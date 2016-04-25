@@ -77,6 +77,6 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
         int e = fileContent.indexOf(end);
         
         Double result = Double.valueOf(fileContent.substring(s, e));
-        assertEquals(0.1, result, 0.0000001);
+        assertEquals(0.346, result, 0.0000001);
     }
 }
