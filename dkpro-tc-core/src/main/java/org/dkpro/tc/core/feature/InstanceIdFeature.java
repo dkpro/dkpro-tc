@@ -19,15 +19,12 @@ package org.dkpro.tc.core.feature;
 
 import static org.dkpro.tc.core.Constants.ID_FEATURE_NAME;
 
-import java.util.Arrays;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationUnit;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 public class InstanceIdFeature {
 
@@ -43,10 +40,6 @@ public class InstanceIdFeature {
 			throws TextClassificationException
 	{
 		String fullId = getFullId(jcas);
-		
-		String[] parts = fullId.split("_");
-		fullId = StringUtils.join(Arrays.copyOfRange(parts, 0, parts.length-1), "_");
-		
         fullId = fullId + "_" + unit.getId();
             
         String suffix = unit.getSuffix();
@@ -62,9 +55,6 @@ public class InstanceIdFeature {
 		throws TextClassificationException 		
 	{
 		String fullId = getFullId(jcas);
-
-		String[] parts = fullId.split("_");
-		fullId = StringUtils.join(Arrays.copyOfRange(parts, 0, parts.length-1), "_");
 
         fullId = fullId + "_" + sequenceId;
         fullId = fullId + "_" + unit.getId();
