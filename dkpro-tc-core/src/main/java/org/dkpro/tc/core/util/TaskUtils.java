@@ -428,7 +428,7 @@ public class TaskUtils
         return instance;
     }
 
-    public static List<Instance> getMultipleInstances(
+    public static List<Instance> getMultipleInstancesSequenceMode(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
             boolean addInstanceId)
         throws TextClassificationException
@@ -436,11 +436,15 @@ public class TaskUtils
         List<Instance> instances = new ArrayList<Instance>();
 
         int sequenceId=0;
+        int unitId=0;
         for (TextClassificationSequence seq : JCasUtil.select(jcas,
                 TextClassificationSequence.class)) {
+            unitId=0;
             for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
                     TextClassificationUnit.class, seq)) {
 
+                unit.setId(unitId++);
+                
                 Instance instance = new Instance();
 
                 if (addInstanceId) {
@@ -472,7 +476,7 @@ public class TaskUtils
         return instances;
     }
 
-    public static List<Instance> getUnitModeMultipleInstances(
+    public static List<Instance> getMultipleInstancesUnitMode(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId)
         throws TextClassificationException
     {

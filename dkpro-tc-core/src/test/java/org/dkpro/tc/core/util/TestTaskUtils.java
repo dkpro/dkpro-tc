@@ -38,6 +38,62 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 public class TestTaskUtils
 {
 
+    //test numeration for unit mode i.e. no sequence
+    @Test
+    public void testUnitModeInstanceNumbering()
+        throws Exception
+    {
+        JCas jCas = initJCas(true);
+
+        FeatureExtractorResource_ImplBase[] featureExtractors = {};
+        List<Instance> multipleInstances = TaskUtils.getMultipleInstancesUnitMode(
+                featureExtractors, jCas, true);
+
+        assertEquals(6, multipleInstances.size());
+
+        int idx = 0;
+        assertEquals("4711_0_a", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(0, multipleInstances.get(idx).getSequenceId());
+        assertEquals(0, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("DT", multipleInstances.get(idx).getOutcome());
+
+        idx = 1;
+        assertEquals("4711_1_car", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(0, multipleInstances.get(idx).getSequenceId());
+        assertEquals(1, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("NN", multipleInstances.get(idx).getOutcome());
+
+        idx = 2;
+        assertEquals("4711_2_drives", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(0, multipleInstances.get(idx).getSequenceId());
+        assertEquals(2, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
+
+        idx = 3;
+        assertEquals("4711_3_the", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(0, multipleInstances.get(idx).getSequenceId());
+        assertEquals(3, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("DT", multipleInstances.get(idx).getOutcome());
+
+        idx = 4;
+        assertEquals("4711_4_hedgehogs", multipleInstances.get(idx).getFeatures().iterator()
+                .next().getValue());
+        assertEquals(0, multipleInstances.get(idx).getSequenceId());
+        assertEquals(4, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("NN", multipleInstances.get(idx).getOutcome());
+
+        idx = 5;
+        assertEquals("4711_5_dies", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(0, multipleInstances.get(idx).getSequenceId());
+        assertEquals(5, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
+    }
+
     @Test
     public void testInstanceMultiplicationWithUnitId()
         throws Exception
@@ -45,10 +101,10 @@ public class TestTaskUtils
         JCas jCas = initJCas(true);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        List<Instance> multipleInstances = TaskUtils.getMultipleInstances(featureExtractors, jCas,
-                true);
+        List<Instance> multipleInstances = TaskUtils.getMultipleInstancesSequenceMode(
+                featureExtractors, jCas, true);
 
-        assertEquals(3, multipleInstances.size());
+        assertEquals(6, multipleInstances.size());
 
         int idx = 0;
         assertEquals("4711_0_0_a", multipleInstances.get(idx).getFeatures().iterator().next()
@@ -70,6 +126,27 @@ public class TestTaskUtils
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
+
+        idx = 3;
+        assertEquals("4711_1_0_the", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(1, multipleInstances.get(idx).getSequenceId());
+        assertEquals(0, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("DT", multipleInstances.get(idx).getOutcome());
+
+        idx = 4;
+        assertEquals("4711_1_1_hedgehogs", multipleInstances.get(idx).getFeatures().iterator()
+                .next().getValue());
+        assertEquals(1, multipleInstances.get(idx).getSequenceId());
+        assertEquals(1, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("NN", multipleInstances.get(idx).getOutcome());
+
+        idx = 5;
+        assertEquals("4711_1_2_dies", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(1, multipleInstances.get(idx).getSequenceId());
+        assertEquals(2, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
     }
 
     @Test
@@ -79,11 +156,12 @@ public class TestTaskUtils
         JCas jCas = initJCas(false);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        List<Instance> multipleInstances = TaskUtils.getMultipleInstances(featureExtractors, jCas,
-                true);
+        List<Instance> multipleInstances = TaskUtils.getMultipleInstancesSequenceMode(
+                featureExtractors, jCas, true);
 
-        assertEquals(3, multipleInstances.size());
+        assertEquals(6, multipleInstances.size());
 
+        // Sequence 1
         int idx = 0;
         assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().iterator().next()
                 .getValue());
@@ -104,6 +182,28 @@ public class TestTaskUtils
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
+
+        // Sequence 2
+        idx = 3;
+        assertEquals("4711_1_0", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(1, multipleInstances.get(idx).getSequenceId());
+        assertEquals(0, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("DT", multipleInstances.get(idx).getOutcome());
+
+        idx = 4;
+        assertEquals("4711_1_1", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(1, multipleInstances.get(idx).getSequenceId());
+        assertEquals(1, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("NN", multipleInstances.get(idx).getOutcome());
+
+        idx = 5;
+        assertEquals("4711_1_2", multipleInstances.get(idx).getFeatures().iterator().next()
+                .getValue());
+        assertEquals(1, multipleInstances.get(idx).getSequenceId());
+        assertEquals(2, multipleInstances.get(idx).getSequencePosition());
+        assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
     }
 
     private JCas initJCas(boolean setUnitIdAsPartOfTheInstanceId)
@@ -117,7 +217,9 @@ public class TestTaskUtils
         meta.setDocumentId("4711_0");
         meta.addToIndexes();
 
-        String[][] tokens = { { "a", "DT" }, { "car", "NN" }, { "drives", "VBZ" } };
+        String[][] tokens = { { "a", "DT" }, { "car", "NN" }, { "drives", "VBZ" }, // sequence 1
+                { "the", "DT" }, { "hedgehogs", "NN" }, { "dies", "VBZ" } // sequence 2
+        };
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tokens.length; i++) {
             int start = sb.length();
@@ -136,16 +238,19 @@ public class TestTaskUtils
 
             sb.append(tokens[i][0]);
             if (i + 1 < tokens.length) {
-                sb.append("");
+                sb.append(" ");
             }
         }
         String text = sb.toString();
-        jCas.setDocumentLanguage(text);
-        
-        TextClassificationSequence seq = new TextClassificationSequence(jCas, 0, text.length());
-        seq.addToIndexes();
+        jCas.setDocumentText(text);
+
+        int lenSeq1 = tokens[0][0].length() + 1 + tokens[1][0].length() + 1 + tokens[2][0].length();
+        TextClassificationSequence seq1 = new TextClassificationSequence(jCas, 0, lenSeq1);
+        seq1.addToIndexes();
+        TextClassificationSequence seq2 = new TextClassificationSequence(jCas, lenSeq1 + 1,
+                text.length());
+        seq2.addToIndexes();
 
         return jCas;
     }
-
 }

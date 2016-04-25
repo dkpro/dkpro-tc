@@ -128,10 +128,10 @@ public class ExtractFeaturesConnector
         List<Instance> instances = new ArrayList<Instance>();
         try {
             if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId);
+                instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId);
             }
             else if(featureMode.equals(Constants.FM_UNIT)){
-                instances = TaskUtils.getUnitModeMultipleInstances(featureExtractors, jcas, addInstanceId);
+                instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId);
             }
             else {
                 instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
