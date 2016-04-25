@@ -46,7 +46,7 @@ public class TestTaskUtils
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
         List<Instance> multipleInstances = TaskUtils.getMultipleInstances(featureExtractors, jCas,
-                true, 0);
+                true);
 
         assertEquals(3, multipleInstances.size());
 
@@ -80,7 +80,7 @@ public class TestTaskUtils
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
         List<Instance> multipleInstances = TaskUtils.getMultipleInstances(featureExtractors, jCas,
-                true, 0);
+                true);
 
         assertEquals(3, multipleInstances.size());
 

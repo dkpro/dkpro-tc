@@ -430,11 +430,12 @@ public class TaskUtils
 
     public static List<Instance> getMultipleInstances(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-            boolean addInstanceId, int sequenceId)
+            boolean addInstanceId)
         throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
 
+        int sequenceId=0;
         for (TextClassificationSequence seq : JCasUtil.select(jcas,
                 TextClassificationSequence.class)) {
             for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
@@ -465,6 +466,7 @@ public class TaskUtils
 
                 instances.add(instance);
             }
+            sequenceId++;
         }
 
         return instances;
