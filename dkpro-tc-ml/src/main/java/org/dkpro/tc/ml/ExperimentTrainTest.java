@@ -49,8 +49,6 @@ public class ExperimentTrainTest
     /**
      * Preconfigured train-test setup.
      * 
-     * @param aExperimentName
-     *            name of the experiment
      */
     public ExperimentTrainTest(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter)
             throws TextClassificationException
@@ -66,8 +64,6 @@ public class ExperimentTrainTest
      * directly in the constructor, because we want to be able to use setters instead of the
      * arguments in the constructor.
      * 
-     * @throws IllegalStateException
-     *             if not all necessary arguments have been set.
      */
     @Override
     protected void init()

@@ -62,11 +62,6 @@ public class ExperimentCrossValidation
 
     /**
      * Preconfigured crossvalidation setup. Pseudo-random assignment of instances to folds.
-     * 
-     * @param aExperimentName
-     *            name of the experiment
-     * @param aNumFolds
-     *            the number of folds for crossvalidation (default 10)
      */
     public ExperimentCrossValidation(String aExperimentName,
             Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds)
@@ -78,12 +73,6 @@ public class ExperimentCrossValidation
     /**
      * Use this constructor for CV fold control. The Comparator is used to determine which instances
      * must occur together in the same CV fold.
-     * 
-     * @param aExperimentName
-     * @param mlAdapter
-     * @param aNumFolds
-     * @param aComparator
-     * @throws TextClassificationException
      */
     public ExperimentCrossValidation(String aExperimentName,
             Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds,
@@ -102,9 +91,6 @@ public class ExperimentCrossValidation
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
-     * 
-     * @throws IllegalStateException
-     *             if no or invalid arguments have been provided
      */
     protected void init()
         throws IllegalStateException

@@ -37,10 +37,10 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
-/**
- * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} or
- * {@link TextClassificationSequence} annotation in the original JCas. All other
- * {@link TextClassificationUnit} and {@link TextClassificationUnitSequence} are removed.
+/*
+ * This JCasMultiplier creates a new JCas for each TextClassificationUnit or
+ * TextClassificationSequence annotation in the original JCas. All other
+ * TextClassificationUnit and TextClassificationUnitSequence are removed.
  */
 public class FoldClassificationUnitCasMultiplier
     extends JCasMultiplier_ImplBase
