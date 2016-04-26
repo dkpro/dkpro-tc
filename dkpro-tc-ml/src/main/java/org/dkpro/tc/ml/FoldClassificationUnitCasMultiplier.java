@@ -38,10 +38,9 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
- * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} annotation in the
- * original JCas. The newly created JCas contains one {@link TextClassificationFocus} annotation
- * that shows with TextClassificationUnit should be classified. All annotations in the original JCas
- * are copied to the new one.
+ * This JCasMultiplier creates a new JCas for each {@link TextClassificationUnit} or
+ * {@link TextClassificationSequence} annotation in the original JCas. All other
+ * {@link TextClassificationUnit} and {@link TextClassificationUnitSequence} are removed.
  */
 public class FoldClassificationUnitCasMultiplier
     extends JCasMultiplier_ImplBase
@@ -62,9 +61,11 @@ public class FoldClassificationUnitCasMultiplier
     private JCas jCas;
 
     private int subCASCounter;
-    private Integer counter;
+    private Integer unitCounter;
+    private Integer seqCounter;
 
     private List<AnnotationFS> buf = new ArrayList<AnnotationFS>();
+    private List<TextClassificationUnit> seqModeUnitsCoveredBySequenceAnno = new ArrayList<>();
 
     int totalNum = 0;
     int annosPerCas = 0;
@@ -75,8 +76,10 @@ public class FoldClassificationUnitCasMultiplier
     {
         jCas = aJCas;
         subCASCounter = 0;
-        counter = 0;
-        totalNum=0;
+        unitCounter = 0;
+        seqCounter = 0;
+        totalNum = 0;
+        seqModeUnitsCoveredBySequenceAnno = new ArrayList<>();
 
         if (useSequences) {
             annotations = JCasUtil.select(aJCas, TextClassificationSequence.class);
@@ -177,7 +180,7 @@ public class FoldClassificationUnitCasMultiplier
         String currentDocUri = DocumentMetaData.get(jCas).getDocumentUri() + "_" + subCASCounter;
         DocumentMetaData.get(copyJCas).setDocumentUri(currentDocUri);
 
-        deleteOriginalAnnotation(copyJCas);
+        deleteAllTextClassificationAnnotation(copyJCas);
         setTargetAnnotation(copyJCas);
 
         subCASCounter++;
@@ -193,30 +196,43 @@ public class FoldClassificationUnitCasMultiplier
     private void setTargetAnnotation(JCas copyJCas)
     {
         if (useSequences) {
-            for (AnnotationFS a : buf) {
-                TextClassificationSequence unit = new TextClassificationSequence(copyJCas,
-                        a.getBegin(), a.getEnd());
-                unit.addToIndexes();
-                unit.setId(counter);
-                counter++;
+            for (AnnotationFS s : buf) {
+                TextClassificationSequence seq = new TextClassificationSequence(copyJCas,
+                        s.getBegin(), s.getEnd());
+                seq.addToIndexes();
+                seq.setId(seqCounter++);
+                
+                //re-add the units that are covered by those sequences
+                for (TextClassificationUnit u : seqModeUnitsCoveredBySequenceAnno){
+                    u.addToIndexes();
+                }
+                seqModeUnitsCoveredBySequenceAnno = new ArrayList<>();
             }
         }
         else {
-            for (AnnotationFS a : buf) {
-                TextClassificationUnit unit = new TextClassificationUnit(copyJCas, a.getBegin(),
-                        a.getEnd());
+            for (AnnotationFS u : buf) {
+                TextClassificationUnit unit = new TextClassificationUnit(copyJCas, u.getBegin(),
+                        u.getEnd());
                 unit.addToIndexes();
-                unit.setId(counter);
-                counter++;
+                unit.setId(unitCounter);
+                unitCounter++;
             }
         }
     }
 
-    private void deleteOriginalAnnotation(JCas copyJCas)
+    private void deleteAllTextClassificationAnnotation(JCas copyJCas)
     {
         if (useSequences) {
-            for (TextClassificationSequence u : JCasUtil.select(copyJCas,
+            // record units covered by sequence
+            for (AnnotationFS seq : buf) {
+                seqModeUnitsCoveredBySequenceAnno.addAll(JCasUtil.selectCovered(copyJCas,
+                        TextClassificationUnit.class, seq.getBegin(), seq.getEnd()));
+            }
+            for (TextClassificationSequence s : JCasUtil.select(copyJCas,
                     TextClassificationSequence.class)) {
+                s.removeFromIndexes();
+            }
+            for(TextClassificationUnit u : JCasUtil.select(copyJCas, TextClassificationUnit.class)){
                 u.removeFromIndexes();
             }
         }

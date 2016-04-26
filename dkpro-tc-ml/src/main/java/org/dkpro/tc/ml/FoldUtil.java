@@ -30,7 +30,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class FoldUtil
 {
-    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas)
+    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas, boolean isSequence)
         throws Exception
     {
         File outputFolder = new File(inputFolder, "output");
@@ -41,8 +41,9 @@ public class FoldUtil
                 BinaryCasReader.PARAM_PATTERNS, "*.bin");
 
         AnalysisEngineDescription multiplier = AnalysisEngineFactory.createEngineDescription(
-                org.dkpro.tc.ml.FoldClassificationUnitCasMultiplier.class,
-                org.dkpro.tc.ml.FoldClassificationUnitCasMultiplier.PARAM_REQUESTED_SPLITS, splitNum);
+                FoldClassificationUnitCasMultiplier.class,
+                FoldClassificationUnitCasMultiplier.PARAM_REQUESTED_SPLITS, splitNum,
+                FoldClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES,isSequence);
 
         AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(
                 BinaryCasWriter.class, BinaryCasWriter.PARAM_TARGET_LOCATION,

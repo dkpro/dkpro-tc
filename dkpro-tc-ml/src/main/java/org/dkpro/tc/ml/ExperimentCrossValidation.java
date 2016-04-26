@@ -27,6 +27,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
@@ -129,6 +130,9 @@ public class ExperimentCrossValidation
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
+            @Discriminator
+            private String featureMode;
+            
             @Override
             public void initialize(TaskContext aContext)
             {
@@ -150,10 +154,11 @@ public class ExperimentCrossValidation
                     numFolds = fileNames.length;
                 }
 
+                
                 if (fileNames.length < numFolds) {
                     //TODO: add Sequence flag check
                     // split and rebuild information
-                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length);
+                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);
                     files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
                     fileNames = new String[files.size()];
                     i = 0;
@@ -171,12 +176,12 @@ public class ExperimentCrossValidation
                 setParameterSpace(pSpace);
             }
 
-            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas)
+            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode)
             {
 
                 try {
                     File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
-                            numFolds, numAvailableJCas);
+                            numFolds, numAvailableJCas, Constants.FM_SEQUENCE.equals(featureMode));
 
                     verfiyThatNeededNumberOfCasWasCreated(outputFolder);
 
