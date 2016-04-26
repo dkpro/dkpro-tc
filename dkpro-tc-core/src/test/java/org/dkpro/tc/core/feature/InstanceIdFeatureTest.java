@@ -53,9 +53,9 @@ public class InstanceIdFeatureTest {
 	        Feature feature = InstanceIdFeature.retrieve(jcas, unit1);
 	        Feature feature2 = InstanceIdFeature.retrieve(jcas);
 	        Feature feature3= InstanceIdFeature.retrieve(jcas, unit1, 5);
-	        assertEquals(feature.getValue(),"document_0");
+	        assertEquals(feature.getValue(),"document_123_0");
 	        assertEquals(feature2.getValue(), "document_123");
-	        assertEquals(feature3.getValue(), "document_5_0");   
+	        assertEquals(feature3.getValue(), "document_123_5_0");   
 			}
 		}        
 	        
