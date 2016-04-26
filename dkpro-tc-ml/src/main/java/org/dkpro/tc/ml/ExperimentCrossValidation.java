@@ -133,6 +133,9 @@ public class ExperimentCrossValidation
             @Discriminator
             private String featureMode;
             
+            @Discriminator
+            private boolean useCrossValidationManualFolds;
+            
             @Override
             public void initialize(TaskContext aContext)
             {
@@ -154,8 +157,8 @@ public class ExperimentCrossValidation
                     numFolds = fileNames.length;
                 }
 
-                
-                if (fileNames.length < numFolds) {
+                //is executed if we have less CAS than requested folds and manual mode is turned off
+                if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
                     //TODO: add Sequence flag check
                     // split and rebuild information
                     xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);

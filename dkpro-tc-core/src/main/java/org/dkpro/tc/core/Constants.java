@@ -68,7 +68,6 @@ public interface Constants
      * Name of the outcome value for instances in prediction mode
      */
     public static String UNKNOWN_OUTCOME = "UNKNOWN_OUTCOME";
-	
 
     /*
      * Discriminators
@@ -132,10 +131,11 @@ public interface Constants
     public static final String DIM_NUM_LABELS_TO_KEEP = "numLabelsToKeep";
 
     /**
-     * Name of the discriminator that stores the feature filters that are applied on the feature store
+     * Name of the discriminator that stores the feature filters that are applied on the feature
+     * store
      */
     public static final String DIM_FEATURE_FILTERS = "featureFilters";
-    
+
     /**
      * Name of the discriminator that stores whether the feature selection should be applied to
      * learning task or not
@@ -152,22 +152,22 @@ public interface Constants
      * Name of the class that implements {@link org.dkpro.tc.api.features.FeatureStore}
      */
     public static final String DIM_FEATURE_STORE = "featureStore";
-    
+
     /**
      * Name of the discriminator which holds the classifier and arguments which serve as baseline
      */
     public static final String DIM_BASELINE_CLASSIFICATION_ARGS = "baselineClassificationArgs";
-   
+
     /**
      * Name of the discriminator which holds the feature set which serves as base
      */
     public static final String DIM_BASELINE_FEATURE_SET = "baselineFeatureSet";
-    
+
     /**
      * Name of the discriminator which holds the feature parameters which serve as base
      */
     public static final String DIM_BASELINE_PIPELINE_PARAMS = "baselinePipelineParams";
-    
+
     /**
      * Name of the discriminator that stores whether the instance weighting should be applied to
      * learning task or not
@@ -271,13 +271,12 @@ public interface Constants
      */
     public static final String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.csv";
     /**
-     * Name of the global homogenized file which contains the classifier predictions and gold standard 
-     * for all test instances.
+     * Name of the global homogenized file which contains the classifier predictions and gold
+     * standard for all test instances.
      */
     public static final String ID_HOMOGENIZED_OUTCOME_KEY = "id2homogenizedOutcome.txt";
     /**
-     * Name of the meta task file which holds the tc unit text and context for all test
-     * instances.
+     * Name of the meta task file which holds the tc unit text and context for all test instances.
      */
     public static final String ID_CONTEXT_KEY = "id2context.txt";
     /**
@@ -297,8 +296,6 @@ public interface Constants
      */
     public static final String NGRAM_GLUE = "_";
 
-    
-    
     /*
      * Machine Learning (General)
      */
@@ -337,9 +334,8 @@ public interface Constants
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome
      */
-	public String TC_OUTCOME_DUMMY_VALUE = "dummyValue";
+    public String TC_OUTCOME_DUMMY_VALUE = "dummyValue";
 
-    
     /*
      * Machine Learning (Model)
      */
@@ -367,17 +363,17 @@ public interface Constants
      * Name of the file which holds the feature extractors
      */
     public static final String MODEL_FEATURE_EXTRACTORS = "featureExtractors.txt";
-    
+
     /**
      * Name of the file which holds the feature extractors
      */
     public static final String MODEL_FEATURE_CLASS_FOLDER = "featureClassFolder";
-    
+
     /**
      * Name of the file which holds the global UIMA parameters
      */
     public static final String MODEL_PARAMETERS = "parameters.txt";
-    
+
     /**
      * Name of the file which holds the classifier
      */
@@ -399,4 +395,15 @@ public interface Constants
      * Public name of the prediction map file
      */
     public static final String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
+
+    /*
+     * Misc
+     */
+    /**
+     * Used for cross validation setups to enforce that the folds are created from the CAS as
+     * written by the reader i.e. no attempts will be made to create more CAS objects this offers
+     * the opportunity to write as many CAS files as folds are requested and take direct influence
+     * on how the cross validation will be performed
+     */
+    public static final String DIM_CROSS_VALIDATION_MANUAL_FOLDS = "useCrossValidationManualFolds";
 }
