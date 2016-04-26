@@ -20,7 +20,6 @@ package org.dkpro.tc.weka.task.serialization;
 
 import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
 import static org.dkpro.tc.core.Constants.FM_PAIR;
-import static org.dkpro.tc.core.Constants.FM_UNIT;
 import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import static org.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
 
@@ -45,11 +44,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.type.TextClassificationFocus;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.util.SaveModelUtils;
+import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.util.WekaUtils;
 import org.dkpro.tc.weka.writer.WekaDataWriter;
@@ -133,10 +133,12 @@ public class LoadModelConnectorWeka
         throws AnalysisEngineProcessException
     {
 
+        TextClassificationUnit currUnit = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
+        
         Instance instance = null;
         try {
-            instance = org.dkpro.tc.core.util.TaskUtils.getSingleInstance(featureMode,
-                    featureExtractors, jcas, false, false);
+            instance = TaskUtils.getSingleInstanceUnit(featureMode,
+                    featureExtractors, jcas, false, false, currUnit);
         }
         catch (TextClassificationException e1) {
             throw new AnalysisEngineProcessException(e1);
@@ -169,13 +171,7 @@ public class LoadModelConnectorWeka
                 throw new AnalysisEngineProcessException(e);
             }
 
-            TextClassificationOutcome outcome = null;
-            if (!FM_UNIT.equals(featureMode)) {
-                outcome = JCasUtil.selectSingle(jcas, TextClassificationOutcome.class);
-            }
-            else {
-                outcome = getOutcomeForFocus(jcas);
-            }
+            TextClassificationOutcome outcome =  getOutcome(jcas, currUnit);
             outcome.setOutcome(val.toString());
         }
         else {
@@ -205,7 +201,7 @@ public class LoadModelConnectorWeka
                 }
             }
 
-            TextClassificationFocus focus = null;
+//            TextClassificationFocus focus = null;
             if (FM_DOCUMENT.equals(featureMode) || FM_PAIR.equals(featureMode)) {
                 Collection<TextClassificationOutcome> oldOutcomes = JCasUtil.select(jcas,
                         TextClassificationOutcome.class);
@@ -218,9 +214,9 @@ public class LoadModelConnectorWeka
                 }
             }
             else {
-                TextClassificationOutcome annotation = getOutcomeForFocus(jcas);
+                TextClassificationOutcome annotation = getOutcome(jcas, currUnit);
                 annotation.removeFromIndexes();
-                focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
+//                focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
             }
             if (outcomes.size() > 0) {
                 TextClassificationOutcome newOutcome = new TextClassificationOutcome(jcas);
@@ -232,10 +228,8 @@ public class LoadModelConnectorWeka
                 try {
                     for (int i = 1; i < outcomes.size(); i++) {
                         TextClassificationOutcome newOutcome = new TextClassificationOutcome(jcas);
-                        if (focus != null) {
-                            newOutcome.setBegin(focus.getBegin());
-                            newOutcome.setEnd(focus.getEnd());
-                        }
+                            newOutcome.setBegin(currUnit.getBegin());
+                            newOutcome.setEnd(currUnit.getEnd());
                         newOutcome.setOutcome(outcomes.get(i));
                         newOutcome.addToIndexes();
                     }
@@ -248,30 +242,17 @@ public class LoadModelConnectorWeka
                 }
             }
         }
-    }
+    } 
 
-    private TextClassificationOutcome getOutcomeForFocus(JCas jcas)
+    private TextClassificationOutcome getOutcome(JCas jcas, TextClassificationUnit currUnit)
     {
-        TextClassificationFocus focus = null;
-
-        try {
-            focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-        }
-        catch (Exception ex) {
-            String msg = "Error while trying to retrieve TC focus from CAS. Details: "
-                    + ex.getMessage();
-            Logger.getLogger(getClass()).error(msg, ex);
-            throw new RuntimeException(msg, ex);
-        }
-
-        List<TextClassificationOutcome> outcomes = JCasUtil.selectCovered(jcas,
-                TextClassificationOutcome.class, focus);
-
+        List<TextClassificationOutcome> outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, currUnit.getBegin(), currUnit.getEnd());
         if (outcomes.size() != 1) {
             throw new IllegalStateException(
                     "There should be exactly one TC outcome covered by the TC focus from "
-                            + focus.getBegin() + " to " + focus.getEnd());
+                            + currUnit.getBegin() + " to " + currUnit.getEnd());
         }
+        
         return outcomes.get(0);
     }
 }

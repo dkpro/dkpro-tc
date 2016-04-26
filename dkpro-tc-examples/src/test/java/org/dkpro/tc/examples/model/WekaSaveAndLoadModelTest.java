@@ -35,6 +35,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
@@ -387,9 +388,9 @@ public class WekaSaveAndLoadModelTest
     private static ParameterSpace unitGetParameterSpace()
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, TeiReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(TeiReader.PARAM_SOURCE_LOCATION,
-                unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS,
+        dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
+        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(BrownCorpusReader.PARAM_SOURCE_LOCATION,
+                unitTrainFolder, BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
                 Arrays.asList("*.xml")));
 
         @SuppressWarnings("unchecked")

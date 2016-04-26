@@ -27,11 +27,11 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -55,56 +55,48 @@ public class ExperimentCrossValidation
     protected ExtractFeaturesTask extractFeaturesTrainTask;
     protected ExtractFeaturesTask extractFeaturesTestTask;
     protected TaskBase testTask;
-    
+
     public ExperimentCrossValidation()
     {/* needed for Groovy */
     }
 
     /**
-     * Preconfigured crossvalidation setup.  Pseudo-random assignment of
-     * instances to folds.
+     * Preconfigured crossvalidation setup. Pseudo-random assignment of instances to folds.
      * 
      * @param aExperimentName
      *            name of the experiment
      * @param aNumFolds
      *            the number of folds for crossvalidation (default 10)
      */
-	public ExperimentCrossValidation(String aExperimentName,
-			Class<? extends TCMachineLearningAdapter> mlAdapter,
-			int aNumFolds)
-			throws TextClassificationException
-	{
-		this(aExperimentName,
-				mlAdapter,
-				aNumFolds,
-				null
-				);
-	}
-	
-	/**
-	 * Use this constructor for CV fold control.  The Comparator is
-	 * used to determine which instances must occur together in the same
-	 * CV fold.
-	 * 
-	 * @param aExperimentName
-	 * @param mlAdapter
-	 * @param aNumFolds
-	 * @param aComparator
-	 * @throws TextClassificationException
-	 */
-	public ExperimentCrossValidation(String aExperimentName,
-			Class<? extends TCMachineLearningAdapter> mlAdapter,
-			int aNumFolds,
-			Comparator<String> aComparator)
-			throws TextClassificationException
-	{
-		setExperimentName(aExperimentName);
-		setMachineLearningAdapter(mlAdapter);
-		setNumFolds(aNumFolds);
-		setComparator(aComparator);
-		// set name of overall batch task
-		setType("Evaluation-" + experimentName);
-	}
+    public ExperimentCrossValidation(String aExperimentName,
+            Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds)
+        throws TextClassificationException
+    {
+        this(aExperimentName, mlAdapter, aNumFolds, null);
+    }
+
+    /**
+     * Use this constructor for CV fold control. The Comparator is used to determine which instances
+     * must occur together in the same CV fold.
+     * 
+     * @param aExperimentName
+     * @param mlAdapter
+     * @param aNumFolds
+     * @param aComparator
+     * @throws TextClassificationException
+     */
+    public ExperimentCrossValidation(String aExperimentName,
+            Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds,
+            Comparator<String> aComparator)
+        throws TextClassificationException
+    {
+        setExperimentName(aExperimentName);
+        setMachineLearningAdapter(mlAdapter);
+        setNumFolds(aNumFolds);
+        setComparator(aComparator);
+        // set name of overall batch task
+        setType("Evaluation-" + experimentName);
+    }
 
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
@@ -112,20 +104,20 @@ public class ExperimentCrossValidation
      * three-argument constructor.
      * 
      * @throws IllegalStateException
-     *             if no or invalid arguments have been provided 
+     *             if no or invalid arguments have been provided
      */
     protected void init()
-        throws IllegalStateException    {
-    	
+        throws IllegalStateException
+    {
+
         if (experimentName == null) {
-            throw new IllegalStateException(
-                    "You must set an experiment name");
+            throw new IllegalStateException("You must set an experiment name");
         }
 
         if (numFolds < 2) {
             throw new IllegalStateException(
-                    "Number of folds is not configured correctly. Number of folds needs to be at " +
-                            "least 2 (but was " + numFolds + ")");
+                    "Number of folds is not configured correctly. Number of folds needs to be at "
+                            + "least 2 (but was " + numFolds + ")");
         }
 
         // initialize the setup
@@ -133,17 +125,22 @@ public class ExperimentCrossValidation
         initTask.setMlAdapter(mlAdapter);
         initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
-        initTask.setDropInvalidCases(dropInvalidCases);
         initTask.setType(initTask.getType() + "-" + experimentName);
 
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
+            @Discriminator
+            private String featureMode;
+            
+            @Discriminator
+            private boolean useCrossValidationManualFolds;
+            
             @Override
             public void initialize(TaskContext aContext)
             {
                 super.initialize(aContext);
-                
+
                 File xmiPathRoot = aContext.getFolder(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
                 Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
@@ -159,12 +156,59 @@ public class ExperimentCrossValidation
                 if (numFolds == Constants.LEAVE_ONE_OUT) {
                     numFolds = fileNames.length;
                 }
+
+                //is executed if we have less CAS than requested folds and manual mode is turned off
+                if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
+                    //TODO: add Sequence flag check
+                    // split and rebuild information
+                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);
+                    files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
+                    fileNames = new String[files.size()];
+                    i = 0;
+                    for (File f : files) {
+                        // adding file paths, not names
+                        fileNames[i] = f.getAbsolutePath();
+                        i++;
+                    }
+                }
                 // don't change any names!!
                 FoldDimensionBundle<String> foldDim = getFoldDim(fileNames);
                 Dimension<File> filesRootDim = Dimension.create("filesRoot", xmiPathRoot);
 
                 ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
                 setParameterSpace(pSpace);
+            }
+
+            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode)
+            {
+
+                try {
+                    File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
+                            numFolds, numAvailableJCas, Constants.FM_SEQUENCE.equals(featureMode));
+
+                    verfiyThatNeededNumberOfCasWasCreated(outputFolder);
+
+                    return outputFolder;
+                }
+                catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+
+            private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
+            {
+                int numCas = 0;
+                for (File f : outputFolder.listFiles()) {
+                    if (f.getName().contains(".bin")) {
+                        numCas++;
+                    }
+                }
+
+                if (numCas < numFolds) {
+                    throw new IllegalStateException(
+                            "Not enough TextClassificationUnits found to create at least ["
+                                    + numFolds + "] folds");
+                }
             }
         };
 
@@ -191,7 +235,7 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
-        
+
         // classification (numFolds times)
         testTask = mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
@@ -233,10 +277,10 @@ public class ExperimentCrossValidation
 
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
     {
-    	if(comparator != null){
-    		return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds,
-                    comparator);
-    	}
+        if (comparator != null) {
+            return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames),
+                    numFolds, comparator);
+        }
         return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
     }
 
@@ -244,7 +288,7 @@ public class ExperimentCrossValidation
     {
         this.numFolds = numFolds;
     }
-    
+
     public void setComparator(Comparator<String> aComparator)
     {
         comparator = aComparator;

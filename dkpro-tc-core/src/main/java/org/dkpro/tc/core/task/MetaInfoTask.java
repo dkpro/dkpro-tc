@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,7 +71,7 @@ public class MetaInfoTask
 
     @Discriminator
     protected List<String> featureSet;
-    
+
     @Discriminator
     private String featureMode;
 
@@ -95,55 +94,15 @@ public class MetaInfoTask
         if (filesRoot == null || files_training == null) {
             File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
             Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
-            
-            //prevents that the MetaCollectors are run N times on the same CAS by kicking out all CAS objects which do not end on a _0 suffix 
-            // i.e. CAS with a suffix > 1 are copies with a different unit set as AnnotationFocus and the MetaCollectors should not be executed for them
-            // fixes issue #336
-            if(featureMode.equals(Constants.FM_UNIT)) {
-                files = filterRedundantCasByName(files);
-            }
 
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
         }
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
-
-         // fixes issue #336
-            Collection<File> files = toFile(files_training);
-            if(featureMode.equals(Constants.FM_UNIT)) {
-                files = filterRedundantCasByName(files);
-            }
-            
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
-                    files);
+                    files_training);
         }
-    }
-
-    private Collection<File> filterRedundantCasByName(Collection<File> files)
-    {
-        Set<String> seenNames = new HashSet<>();
-        List<File> nonDuplicateCas = new ArrayList<File>();
-        for(File f : files){
-            String fullName = f.getName();
-            int lastIndexOf = fullName.lastIndexOf("_");
-            String originalFileName = fullName.substring(0, lastIndexOf);
-            if(!seenNames.contains(originalFileName)){
-                nonDuplicateCas.add(f);
-                seenNames.add(originalFileName);
-            }
-        }
-        
-        return nonDuplicateCas;
-    }
-
-    private Collection<File> toFile(Collection<String> files_training)
-    {
-        List<File> files = new ArrayList<>();
-        for(String s : files_training){
-            files.add(new File(s));
-        }
-        return files;
     }
 
     @Override
@@ -171,13 +130,14 @@ public class MetaInfoTask
         catch (IllegalAccessException e) {
             throw new ResourceInitializationException(e);
         }
-        
-        //if (featureMode.equals(Constants.FM_UNIT)) {
-            // add additional unit context meta collector that extracts the context around text classification units
-            // mainly used for error analysis purposes
-            //metaCollectorClasses.add(UnitContextMetaCollector.class);
-        //}
-        
+
+        // if (featureMode.equals(Constants.FM_UNIT)) {
+        // add additional unit context meta collector that extracts the context around text
+        // classification units
+        // mainly used for error analysis purposes
+        // metaCollectorClasses.add(UnitContextMetaCollector.class);
+        // }
+
         if (featureMode.equals(Constants.FM_SEQUENCE)) {
             metaCollectorClasses.add(SequenceContextMetaCollector.class);
         }
@@ -205,8 +165,7 @@ public class MetaInfoTask
         // extracted, as in the regression demo)
         // TODO better way to do this?
         if (parameterKeyPairs.size() == 0) {
-            File file = new File(aContext.getFolder(META_KEY, AccessMode.READONLY)
-                    .getPath());
+            File file = new File(aContext.getFolder(META_KEY, AccessMode.READONLY).getPath());
             file.mkdir();
         }
 

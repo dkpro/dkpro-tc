@@ -17,34 +17,39 @@
  ******************************************************************************/
 package org.dkpro.tc.core.feature;
 
+import java.util.Collection;
+
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.TextClassificationFocus;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
-
 public class SequenceContextMetaCollector
-	extends ContextMetaCollector_ImplBase
+    extends ContextMetaCollector_ImplBase
 {
-	
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-  
-		TextClassificationFocus focus = JCasUtil.selectSingle(jcas, TextClassificationFocus.class);
-		TextClassificationSequence sequence = JCasUtil.selectCovered(jcas, TextClassificationSequence.class, focus).get(0);
-		int id = sequence.getId();
-        for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas, TextClassificationUnit.class, sequence)) {
-            String idString;
-			try {
-				idString = (String) InstanceIdFeature.retrieve(jcas, unit, id).getValue();
-			} catch (TextClassificationException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-            ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
+
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+
+        Collection<TextClassificationSequence> sequences = JCasUtil.select(jcas,
+                TextClassificationSequence.class);
+        for (TextClassificationSequence seq : sequences) {
+            int id = seq.getId();
+            for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
+                    TextClassificationUnit.class, seq)) {
+                String idString;
+                try {
+                    idString = (String) InstanceIdFeature.retrieve(jcas, unit, id).getValue();
+                }
+                catch (TextClassificationException e) {
+                    throw new AnalysisEngineProcessException(e);
+                }
+                ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
+            }
         }
-	}
+    }
 }

@@ -101,8 +101,6 @@ public class ExtractFeaturesConnector
             defaultValue = "org.dkpro.tc.fstore.simple.DenseFeatureStore")
     private String featureStoreClass;
 
-    private int sequenceId;
-
     @Override
     public void initialize(UimaContext context)
             throws ResourceInitializationException
@@ -115,8 +113,6 @@ public class ExtractFeaturesConnector
         catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
-
-        sequenceId = 0;
 
         if (featureExtractors.length == 0) {
             context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
@@ -132,9 +128,10 @@ public class ExtractFeaturesConnector
         List<Instance> instances = new ArrayList<Instance>();
         try {
             if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                instances = TaskUtils.getMultipleInstances(featureExtractors, jcas, addInstanceId,
-                        sequenceId);
-                sequenceId++;
+                instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId);
+            }
+            else if(featureMode.equals(Constants.FM_UNIT)){
+                instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId);
             }
             else {
                 instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
