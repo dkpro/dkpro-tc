@@ -8,7 +8,7 @@
 #
 # Possible status: "stable", "unstable"
 
-version: 0.8.0
+- version: 0.8.0
   date: 2016-04-21
   status: stable
   groupId: org.dkpro.tc
