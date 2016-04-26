@@ -8,6 +8,12 @@
 #
 # Possible status: "stable", "unstable"
 
+- version: 0.7.0
+  date: 2015-04-08
+  status: stable
+  groupId: de.tudarmstadt.ukp.dkpro.tc
+  artifactId: dkpro-tc
+
 - version: 0.8.0
   date: 2016-04-21
   status: stable
