@@ -41,6 +41,7 @@ import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
@@ -150,6 +151,7 @@ public class SVMHMMBrownPosDemo
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
         batch.addReport(ContextMemoryReport.class);
+        batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
