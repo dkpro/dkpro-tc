@@ -69,7 +69,7 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
         
-        String fileContent = FileUtils.readFileToString(new File(ContextMemoryReport.out, "output/" + Constants.RESULTS_FILENAME));
+        String fileContent = FileUtils.readFileToString(new File(ContextMemoryReport.out, Constants.RESULTS_FILENAME));
         String beg = "Macro F-measure: ";
         String end = ",";
         
