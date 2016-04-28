@@ -138,7 +138,7 @@ public class ExtractFeaturesConnector
                         developerMode, addInstanceId));
             }
         }
-        catch (TextClassificationException e1) {
+        catch (Exception e1) {
             throw new AnalysisEngineProcessException(new IllegalStateException(e1.getMessage()));
         }
 

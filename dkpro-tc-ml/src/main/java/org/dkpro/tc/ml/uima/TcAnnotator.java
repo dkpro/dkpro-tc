@@ -291,10 +291,10 @@ public class TcAnnotator
             outcome.setOutcome("");
             outcome.addToIndexes();
         }
-        if (!JCasUtil.exists(jcas, TextClassificationUnit.class)) {
-            TextClassificationUnit unit = new TextClassificationUnit(jcas);
-            unit.addToIndexes();
-        }
+//        if (!JCasUtil.exists(jcas, TextClassificationUnit.class)) {
+//            TextClassificationUnit unit = new TextClassificationUnit(jcas);
+//            unit.addToIndexes();
+//        }
 
         // create new UIMA annotator in order to separate the parameter spaces
         // this annotator will get initialized with its own set of parameters loaded from the model
