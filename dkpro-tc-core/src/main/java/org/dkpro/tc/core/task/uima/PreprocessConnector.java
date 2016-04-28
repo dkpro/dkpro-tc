@@ -22,13 +22,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.JCasId;
 
 public class PreprocessConnector
     extends JCasAnnotator_ImplBase
 {
-
+    private int jcasId;
     private int nrofProcessCalls;
 
     @Override
@@ -44,6 +44,10 @@ public class PreprocessConnector
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
+        JCasId id =  new JCasId(aJCas);
+        id.setId(jcasId++);
+        id.addToIndexes();
+        
         nrofProcessCalls++;
     }
 

@@ -1,1 +1,1 @@
-classpath*:desc/type/TextClassification.xml
+classpath*:desc/type/*.xml

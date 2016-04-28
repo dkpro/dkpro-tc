@@ -25,10 +25,9 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.junit.Test;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 
 
@@ -46,16 +45,17 @@ public class InstanceIdFeatureTest {
 	        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 1);
 	        unit1.setId(0);
 	        unit1.addToIndexes();
-	        
-	        DocumentMetaData dmd = DocumentMetaData.create(jcas);
-	        dmd.setDocumentId("document_123");
+
+	        JCasId id = new JCasId(jcas);
+	        id.setId(123);
+	        id.addToIndexes();
 	        
 	        Feature feature = InstanceIdFeature.retrieve(jcas, unit1);
 	        Feature feature2 = InstanceIdFeature.retrieve(jcas);
 	        Feature feature3= InstanceIdFeature.retrieve(jcas, unit1, 5);
-	        assertEquals(feature.getValue(),"document_123_0");
-	        assertEquals(feature2.getValue(), "document_123");
-	        assertEquals(feature3.getValue(), "document_123_5_0");   
+	        assertEquals(feature.getValue(),"123_0");
+	        assertEquals(feature2.getValue(), "123");
+	        assertEquals(feature3.getValue(), "123_5_0");   
 			}
 		}        
 	        

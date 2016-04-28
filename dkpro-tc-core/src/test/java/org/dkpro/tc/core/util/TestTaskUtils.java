@@ -28,6 +28,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
@@ -211,6 +212,10 @@ public class TestTaskUtils
     {
         AnalysisEngine engine = AnalysisEngineFactory.createEngine(NoOpAnnotator.class);
         JCas jCas = engine.newJCas();
+        
+        JCasId id = new JCasId(jCas);
+        id.setId(4711);
+        id.addToIndexes();
 
         DocumentMetaData meta = new DocumentMetaData(jCas);
         meta.setDocumentTitle("title");

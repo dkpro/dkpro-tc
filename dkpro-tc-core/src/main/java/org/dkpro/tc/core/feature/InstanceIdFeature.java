@@ -19,63 +19,58 @@ package org.dkpro.tc.core.feature;
 
 import static org.dkpro.tc.core.Constants.ID_FEATURE_NAME;
 
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+public class InstanceIdFeature
+{
 
-public class InstanceIdFeature {
+    public static Feature retrieve(JCas jcas)
+        throws TextClassificationException
+    {
+        String fullId = getFullId(jcas);
+        return new Feature(ID_FEATURE_NAME, fullId);
+    };
 
-	
-	public static Feature retrieve(JCas jcas) 
-			throws TextClassificationException
-	{
-		String fullId = getFullId(jcas);
-		return new Feature(ID_FEATURE_NAME, fullId);
-	};
-	
-	public static Feature retrieve(JCas jcas, TextClassificationUnit unit)
-			throws TextClassificationException
-	{
-		String fullId = getFullId(jcas);
+    public static Feature retrieve(JCas jcas, TextClassificationUnit unit)
+        throws TextClassificationException
+    {
+        String fullId = getFullId(jcas);
         fullId = fullId + "_" + unit.getId();
-            
+
         String suffix = unit.getSuffix();
         if (suffix != null && suffix.length() > 0) {
             fullId = fullId + "_" + suffix;
-            
+
         }
-		
-		return new Feature(ID_FEATURE_NAME, fullId);
-	};
-	
-	public static Feature retrieve(JCas jcas, TextClassificationUnit unit, Integer sequenceId) 
-		throws TextClassificationException 		
-	{
-		String fullId = getFullId(jcas);
+
+        return new Feature(ID_FEATURE_NAME, fullId);
+    };
+
+    public static Feature retrieve(JCas jcas, TextClassificationUnit unit, Integer sequenceId)
+        throws TextClassificationException
+    {
+        String fullId = getFullId(jcas);
 
         fullId = fullId + "_" + sequenceId;
         fullId = fullId + "_" + unit.getId();
-            
+
         String suffix = unit.getSuffix();
         if (suffix != null && suffix.length() > 0) {
             fullId = fullId + "_" + suffix;
         }
-	    
-		return new Feature(ID_FEATURE_NAME, fullId);
-	};
-	
-	private static String getFullId(JCas jcas) 
-			throws TextClassificationException
-	{		
-		String fullId = DocumentMetaData.get(jcas).getDocumentId();	
-		
-		if (fullId == null) {
-			throw new TextClassificationException("DocumentId in DocumentMetaData cannot be null.");
-		}
-		
-		return fullId;
-	}
+
+        return new Feature(ID_FEATURE_NAME, fullId);
+    };
+
+    private static String getFullId(JCas jcas)
+        throws TextClassificationException
+    {
+        JCasId jcasId = JCasUtil.selectSingle(jcas, JCasId.class);
+        return "" + jcasId.getId();
+    }
 }

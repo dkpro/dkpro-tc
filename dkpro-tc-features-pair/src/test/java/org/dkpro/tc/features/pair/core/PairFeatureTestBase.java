@@ -23,14 +23,15 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
+import org.dkpro.tc.api.type.JCasId;
 
 public class PairFeatureTestBase
 {
-
+    int jcasId;
+    
     public Set<Feature> runExtractor(AnalysisEngine engine, PairFeatureExtractor extractor)
         throws ResourceInitializationException, TextClassificationException,
         AnalysisEngineProcessException
@@ -40,11 +41,19 @@ public class PairFeatureTestBase
         jcas1.setDocumentLanguage("en");
         jcas1.setDocumentText("This is the text of view 1");
         engine.process(jcas1);
+        
+        JCasId id = new JCasId(jcas1);
+        id.setId(jcasId++);
+        id.addToIndexes();
 
         JCas jcas2 = engine.newJCas();
         jcas2.setDocumentLanguage("en");
         jcas2.setDocumentText("This is the text of view 2");
         engine.process(jcas2);
+        
+        id = new JCasId(jcas2);
+        id.setId(jcasId++);
+        id.addToIndexes();
 
         return extractor.extract(jcas1, jcas2);
 

@@ -39,6 +39,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
@@ -76,6 +77,8 @@ public class TcAnnotator
 
     private AnalysisEngine engine;
 
+    private int jcasId;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -89,14 +92,13 @@ public class TcAnnotator
             featureMode = SaveModelUtils.initFeatureMode(tcModelLocation);
             learningMode = SaveModelUtils.initLearningMode(tcModelLocation);
             bipartitionThreshold = SaveModelUtils.initBipartitionThreshold(tcModelLocation);
-            
 
             validateUimaParameter();
 
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
-                    learningMode, featureMode, bipartitionThreshold, DenseFeatureStore.class.getName(),
-                    featureExtractors.toArray(new String[0]));
+                    learningMode, featureMode, bipartitionThreshold,
+                    DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
 
             engine = UIMAFramework.produceAnalysisEngine(connector,
                     SaveModelUtils.getModelFeatureAwareResourceManager(tcModelLocation), null);
@@ -117,10 +119,8 @@ public class TcAnnotator
             if (unitAnno) {
                 return;
             }
-            throw new IllegalArgumentException(
-                    "Learning mode ["
-                            + Constants.FM_UNIT
-                            + "] requires an annotation name for [unit] (e.g. Token)");
+            throw new IllegalArgumentException("Learning mode [" + Constants.FM_UNIT
+                    + "] requires an annotation name for [unit] (e.g. Token)");
         }
 
         case Constants.FM_SEQUENCE: {
@@ -156,8 +156,8 @@ public class TcAnnotator
                         convertedParameters);
 
         // add the rest of the necessary parameters with the correct types
-        parameters.addAll(Arrays.asList(PARAM_TC_MODEL_LOCATION,
-                tcModelLocation, ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
+        parameters.addAll(Arrays.asList(PARAM_TC_MODEL_LOCATION, tcModelLocation,
+                ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
                 ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
                 ModelSerialization_ImplBase.PARAM_BIPARTITION_THRESHOLD, bipartitionThreshold,
@@ -175,6 +175,12 @@ public class TcAnnotator
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+        if (!JCasUtil.exists(jcas, JCasId.class)) {
+            JCasId id = new JCasId(jcas);
+            id.setId(jcasId++);
+            id.addToIndexes();
+        }
+
         switch (featureMode) {
         case Constants.FM_DOCUMENT:
             processDocument(jcas);
@@ -280,15 +286,15 @@ public class TcAnnotator
         throws AnalysisEngineProcessException
     {
         // we need an outcome annotation to be present
-    	if(!JCasUtil.exists(jcas, TextClassificationOutcome.class)){
-    		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
-    		outcome.setOutcome("");
-    		outcome.addToIndexes();
-    	}
-    	if(!JCasUtil.exists(jcas, TextClassificationUnit.class)){
-    	    TextClassificationUnit unit = new TextClassificationUnit(jcas);
-    	    unit.addToIndexes();
-    	}
+        if (!JCasUtil.exists(jcas, TextClassificationOutcome.class)) {
+            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+            outcome.setOutcome("");
+            outcome.addToIndexes();
+        }
+        if (!JCasUtil.exists(jcas, TextClassificationUnit.class)) {
+            TextClassificationUnit unit = new TextClassificationUnit(jcas);
+            unit.addToIndexes();
+        }
 
         // create new UIMA annotator in order to separate the parameter spaces
         // this annotator will get initialized with its own set of parameters loaded from the model

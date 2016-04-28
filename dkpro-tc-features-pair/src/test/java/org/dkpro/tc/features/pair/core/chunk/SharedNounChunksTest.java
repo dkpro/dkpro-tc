@@ -36,6 +36,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
@@ -50,6 +51,8 @@ public class SharedNounChunksTest extends PPipelineTestBase
     private JCas jcas1;
     private JCas jcas2;
 
+    int jcasId;
+    
     @Before
     public void setUp()
         throws ResourceInitializationException, AnalysisEngineProcessException
@@ -60,11 +63,17 @@ public class SharedNounChunksTest extends PPipelineTestBase
         jcas1 = engine.newJCas();
         jcas1.setDocumentLanguage("en");
         jcas1.setDocumentText("This is the text of view 1");
+        JCasId id = new JCasId(jcas1);
+        id.setId(jcasId++);
+        id.addToIndexes();
         engine.process(jcas1);
 
         jcas2 = engine.newJCas();
         jcas2.setDocumentLanguage("en");
         jcas2.setDocumentText("This is the text of view 2");
+        id = new JCasId(jcas2);
+        id.setId(jcasId++);
+        id.addToIndexes();
         engine.process(jcas2);
     }
 

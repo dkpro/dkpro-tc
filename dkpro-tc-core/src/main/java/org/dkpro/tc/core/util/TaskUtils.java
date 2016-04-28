@@ -65,6 +65,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
@@ -332,6 +333,7 @@ public class TaskUtils
         throws TextClassificationException
     {
         Instance instance = new Instance();
+        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
         if (featureMode.equals(Constants.FM_UNIT)) {
 
             if (addInstanceId) {
@@ -351,6 +353,7 @@ public class TaskUtils
 
                 instance.setOutcomes(getOutcomes(jcas, unit));
                 instance.setWeight(getWeight(jcas, unit));
+                instance.setJcasId(jcasId);
                 instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(jcas,
                         unit));
             }
@@ -385,6 +388,7 @@ public class TaskUtils
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId) throws TextClassificationException
     {
         try {
+            int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
             if (addInstanceId) {
                 instance.addFeature(InstanceIdFeature.retrieve(jcas));
             }
@@ -399,6 +403,7 @@ public class TaskUtils
 
                 instance.setOutcomes(getOutcomes(jcas, null));
                 instance.setWeight(getWeight(jcas, null));
+                instance.setJcasId(jcasId);
                 instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
             }
         }
@@ -411,6 +416,8 @@ public class TaskUtils
     private static Instance getSingleInstanceDocument(
             Instance instance, FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId) throws TextClassificationException
     {
+        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
+        
         if (addInstanceId) {
             instance.addFeature(InstanceIdFeature.retrieve(jcas));
         }
@@ -422,6 +429,7 @@ public class TaskUtils
             }
             instance.setOutcomes(getOutcomes(jcas, null));
             instance.setWeight(getWeight(jcas, null));
+            instance.setJcasId(jcasId);
             instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
         }
 
@@ -435,6 +443,7 @@ public class TaskUtils
     {
         List<Instance> instances = new ArrayList<Instance>();
 
+        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
         int sequenceId=0;
         int unitId=0;
         for (TextClassificationSequence seq : JCasUtil.select(jcas,
@@ -465,6 +474,7 @@ public class TaskUtils
                 // set and write outcome label(s)
                 instance.setOutcomes(getOutcomes(jcas, unit));
                 instance.setWeight(getWeight(jcas, unit));
+                instance.setJcasId(jcasId);
                 instance.setSequenceId(sequenceId);
                 instance.setSequencePosition(unit.getId());
 
@@ -481,7 +491,7 @@ public class TaskUtils
         throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
-
+        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
         for (TextClassificationUnit unit : JCasUtil.select(jcas, TextClassificationUnit.class)) {
 
             Instance instance = new Instance();
@@ -505,6 +515,7 @@ public class TaskUtils
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(jcas, unit));
             instance.setWeight(getWeight(jcas, unit));
+            instance.setJcasId(jcasId);
             // instance.setSequenceId(sequenceId);
             instance.setSequencePosition(unit.getId());
 
@@ -520,6 +531,7 @@ public class TaskUtils
         throws Exception
     {
         List<Instance> instances = new ArrayList<Instance>();
+        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
         for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
                 TextClassificationUnit.class, sequence)) {
 
@@ -547,6 +559,7 @@ public class TaskUtils
             // set and write outcome label(s)
             instance.setOutcomes(getOutcomes(jcas, unit));
             instance.setWeight(getWeight(jcas, unit));
+            instance.setJcasId(jcasId);
             instance.setSequenceId(sequenceId);
             instance.setSequencePosition(unit.getId());
 

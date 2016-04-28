@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
@@ -52,52 +51,56 @@ public class CRFSuiteDataWriter
         FileUtils.writeStringToFile(mappingFile, outcomeMap2String(outcomeMapping));
     }
 
-    public static File getFeatureFilename(File outputDirectory) {
+    public static File getFeatureFilename(File outputDirectory)
+    {
         File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         return outputFile;
     }
-    
+
     public static void writeFeatureFile(FeatureStore featureStore, File outputFile)
         throws Exception
     {
         int totalCountOfInstances = featureStore.getNumberOfInstances();
 
-        BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile),"utf-8"));
-        
-        int lastSeenSeqId = -1;
+        BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                outputFile), "utf-8"));
+
+        String lastSeenSeqId = "ü+Ü**'?=?=)(ÖÄ:";
         boolean seqIdChanged = false;
         for (int ins = 0; ins < totalCountOfInstances; ins++) {
             Instance i = featureStore.getInstance(ins);
+            String id = getId(i);
 
-            if (i.getSequenceId() != lastSeenSeqId) {
+            if (!lastSeenSeqId.equals(id)) {
                 seqIdChanged = true;
-                lastSeenSeqId = i.getSequenceId();
+                lastSeenSeqId = getId(i);
             }
 
             bf.write(LabelSubstitutor.labelReplacement(i.getOutcome()));
             bf.write("\t");
 
             int idx = 0;
-            for (Feature f :  i.getFeatures()) {
-            	bf.write(f.getName() + "=" + f.getValue());
+            for (Feature f : i.getFeatures()) {
+                bf.write(f.getName() + "=" + f.getValue());
                 if (idx + 1 < i.getFeatures().size()) {
-                	bf.write("\t");
+                    bf.write("\t");
                 }
                 idx++;
             }
 
             // Mark first line of new sequence with an additional __BOS__
             if (seqIdChanged) {
-            	bf.write("\t");
-            	bf.write("__BOS__");
+                bf.write("\t");
+                bf.write("__BOS__");
                 seqIdChanged = false;
             }
 
             // Peak ahead - seqEnd reached?
             if (ins + 1 < totalCountOfInstances) {
                 Instance next = featureStore.getInstance(ins + 1);
-                if (next.getSequenceId() != lastSeenSeqId) {
+                String nextId = getId(next);
+                if (!lastSeenSeqId.equals(nextId)) {
                     appendEOS(bf);
                     continue;
                 }
@@ -110,15 +113,23 @@ public class CRFSuiteDataWriter
 
         bf.close();
     }
-    
+
+    private static String getId(Instance i)
+    {
+        int jcasId = i.getJcasId();
+        int sequenceId = i.getSequenceId();
+
+        return "" + jcasId + "_" + sequenceId;
+    }
+
     private static void appendEOS(BufferedWriter bf)
-            throws Exception
-        {
-            bf.append("\t");
-            bf.append("__EOS__");
-            bf.append("\n");
-            bf.append("\n");
-        }
+        throws Exception
+    {
+        bf.append("\t");
+        bf.append("__EOS__");
+        bf.append("\n");
+        bf.append("\n");
+    }
 
     public static String outcomeMap2String(Map<String, Integer> map)
     {
