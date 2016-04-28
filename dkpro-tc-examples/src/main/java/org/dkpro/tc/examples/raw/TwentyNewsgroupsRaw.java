@@ -53,6 +53,7 @@ public class TwentyNewsgroupsRaw
                         TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
+                createEngineDescription(JCasIdSetter.class),
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class),
                 // Feature extraction
