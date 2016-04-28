@@ -398,7 +398,7 @@ public final class SVMHMMUtils
         IOUtils.closeQuietly(csvPrinter);
 
         // and results
-        File evalFolder = context.getFolder(Constants.TEST_TASK_OUTPUT_KEY,
+        File evalFolder = context.getFolder("",
                 StorageService.AccessMode.READWRITE);
         File evaluationFile = new File(evalFolder, Constants.RESULTS_FILENAME);
 
