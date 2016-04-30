@@ -150,7 +150,6 @@ public class SVMHMMBrownPosDemo
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
-        ContextMemoryReport.adapter = machineLearningAdapter.getName();
         batch.addReport(ContextMemoryReport.class);
         batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
