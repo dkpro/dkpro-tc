@@ -94,6 +94,9 @@ public class FoldClassificationUnitCasMultiplier
             totalNum++;
         }
         annosPerCas = (int) (totalNum / (double) numReqSplits);
+        if (annosPerCas <= 0) {
+            annosPerCas = totalNum;
+        }
         isUnitsGreaterZero();
 
         iterator = annotations.iterator();
@@ -201,9 +204,9 @@ public class FoldClassificationUnitCasMultiplier
                         s.getBegin(), s.getEnd());
                 seq.addToIndexes();
                 seq.setId(seqCounter++);
-                
-                //re-add the units that are covered by those sequences
-                for (TextClassificationUnit u : seqModeUnitsCoveredBySequenceAnno){
+
+                // re-add the units that are covered by those sequences
+                for (TextClassificationUnit u : seqModeUnitsCoveredBySequenceAnno) {
                     u.addToIndexes();
                 }
                 seqModeUnitsCoveredBySequenceAnno = new ArrayList<>();
@@ -232,7 +235,7 @@ public class FoldClassificationUnitCasMultiplier
                     TextClassificationSequence.class)) {
                 s.removeFromIndexes();
             }
-            for(TextClassificationUnit u : JCasUtil.select(copyJCas, TextClassificationUnit.class)){
+            for (TextClassificationUnit u : JCasUtil.select(copyJCas, TextClassificationUnit.class)) {
                 u.removeFromIndexes();
             }
         }

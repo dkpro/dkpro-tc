@@ -54,7 +54,7 @@ public class SVMHMMBrownPosDemo
 {
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
-    private static final int NUM_FOLDS = 10;
+    private static final int NUM_FOLDS = 6;
 
     public static Map<String, Object> getDimReaders(boolean trainTest)
     {
@@ -150,6 +150,7 @@ public class SVMHMMBrownPosDemo
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
+        ContextMemoryReport.adapter = machineLearningAdapter.getName();
         batch.addReport(ContextMemoryReport.class);
         batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -158,7 +159,7 @@ public class SVMHMMBrownPosDemo
         Lab.getInstance().run(batch);
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         System.setProperty("org.apache.uima.logger.class",
                 "org.apache.uima.util.impl.Log4jLogger_impl");
@@ -173,7 +174,6 @@ public class SVMHMMBrownPosDemo
         DemoUtils.setDkproHome(SVMHMMBrownPosDemo.class.getSimpleName());
 
         // run cross-validation first
-        try {
             ParameterSpace pSpace = getParameterSpace(false);
 
             SVMHMMBrownPosDemo experiment = new SVMHMMBrownPosDemo();
@@ -181,24 +181,15 @@ public class SVMHMMBrownPosDemo
             experiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
             experiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // run train test
-        try {
-            ParameterSpace pSpace = getParameterSpace(true);
+            pSpace = getParameterSpace(true);
 
-            SVMHMMBrownPosDemo experiment = new SVMHMMBrownPosDemo();
+            experiment = new SVMHMMBrownPosDemo();
             // run with a random labeler
             experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
             experiment.runTrainTest(pSpace, SVMHMMAdapter.class);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }
