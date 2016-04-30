@@ -20,27 +20,20 @@ package org.dkpro.tc.crfsuite.writer;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-
-public class CRFSuiteDataWriterTest
+public class CRFSuiteFeatureStoreSequenceIteratorTest
 {
 
     @Rule
@@ -73,19 +66,24 @@ public class CRFSuiteDataWriterTest
         features2.add(new Feature("feature3", "Fanta"));
 
         Instance instance1 = new Instance(features1, "1");
+        instance1.setJcasId(0);
         instance1.setSequenceId(0);
         instance1.setSequencePosition(0);
         Instance instance2 = new Instance(features2, "2");
+        instance1.setJcasId(0);
         instance2.setSequenceId(0);
         instance2.setSequencePosition(1);
         Instance instance3 = new Instance(features1, "3");
+        instance1.setJcasId(0);
         instance3.setSequenceId(0);
         instance3.setSequencePosition(2);
 
         Instance instance4 = new Instance(features1, "4");
+        instance1.setJcasId(0);
         instance4.setSequenceId(1);
         instance4.setSequencePosition(0);
         Instance instance5 = new Instance(features2, "4");
+        instance1.setJcasId(0);
         instance5.setSequenceId(1);
         instance5.setSequencePosition(1);
 
@@ -97,42 +95,25 @@ public class CRFSuiteDataWriterTest
     }
 
     @Test
-    public void dataWriterTest()
+    public void sequenceIteratorTest()
         throws Exception
     {
-        writeFeaturesWithDataWriter();
-        List<String> fileContent = readDataBackIn();
 
-        assertEquals(5, fileContent.size());
-        assertEquals("1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__", fileContent.get(0));
-        assertEquals("2\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta", fileContent.get(1));
-        assertEquals("3\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__EOS__", fileContent.get(2));
+        CRFSuiteFeatureStoreSequenceIterator iterator = new CRFSuiteFeatureStoreSequenceIterator(fs);
 
-        assertEquals("4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__", fileContent.get(3));
-        assertEquals("4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__", fileContent.get(4));
-
-    }
-
-    private List<String> readDataBackIn()
-        throws Exception
-    {
-        File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-        BufferedReader br = new BufferedReader(new FileReader(outputFile));
-
-        List<String> lines = new ArrayList<String>();
-        String currentLine = null;
-        while ((currentLine = br.readLine()) != null) {
-            lines.add(currentLine);
+        List<String> output = new ArrayList<String>();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            output.add(next);
         }
-        br.close();
-        return lines;
+        assertEquals(2, output.size());
+        assertEquals("1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"
+                + "2\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta" + "\n"
+                + "3\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__EOS__" + "\n", output.get(0));
+
+        assertEquals("4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"
+                + "4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__" + "\n", output.get(1));
+
     }
 
-    private void writeFeaturesWithDataWriter()
-        throws Exception
-    {
-        CRFSuiteDataWriter writer = new CRFSuiteDataWriter();
-        writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL, false);
-    }
 }

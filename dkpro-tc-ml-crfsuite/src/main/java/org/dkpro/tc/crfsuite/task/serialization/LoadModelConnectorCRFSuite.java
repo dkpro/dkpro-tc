@@ -20,9 +20,11 @@ package org.dkpro.tc.crfsuite.task.serialization;
 
 import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,6 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
@@ -43,7 +44,7 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
+import org.dkpro.tc.crfsuite.writer.CRFSuiteFeatureStoreSequenceIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public class LoadModelConnectorCRFSuite
@@ -60,8 +61,8 @@ public class LoadModelConnectorCRFSuite
     private String featureStoreImpl;
 
     private File model = null;
-    private String executablePath = null;
-    private Path tmpFolderForFeatureFile = null;
+
+    private String executablePath;
 
     @Override
     public void initialize(UimaContext context)
@@ -70,11 +71,9 @@ public class LoadModelConnectorCRFSuite
         super.initialize(context);
 
         try {
-            tmpFolderForFeatureFile = Files
-                    .createTempDirectory("temp" + System.currentTimeMillis());
             executablePath = CRFSuiteTestTask.getExecutablePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
-            SaveModelUtils.verifyTcVersion(tcModelLocation,getClass());
+            SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -102,17 +101,60 @@ public class LoadModelConnectorCRFSuite
 
             }
 
-            File featureFile = CRFSuiteDataWriter.getFeatureFilename(tmpFolderForFeatureFile
-                    .toFile());
-            CRFSuiteDataWriter.writeFeatureFile(featureStore, featureFile);
+            CRFSuiteFeatureStoreSequenceIterator iterator = new CRFSuiteFeatureStoreSequenceIterator(
+                    featureStore);
 
-            String labels = classify(featureFile);
-            setPredictedOutcome(jcas, labels);
+            //takes 1000 sequences and classifies them - all results are hold in memory
+            StringBuilder output = new StringBuilder();
+            while (iterator.hasNext()) {
+
+                StringBuilder buffer = new StringBuilder();
+                int limit = 5000;
+                int idx = 0;
+                while (iterator.hasNext()) {
+                    String seqInfo = iterator.next();
+                    buffer.append(seqInfo);
+                    idx++;
+                    if (idx == limit) {
+                        break;
+                    }
+                }
+
+                List<String> command = buildCommand();
+                String out = runCommand(command, buffer.toString());
+                output.append(out);
+            }
+
+            setPredictedOutcome(jcas, output.toString());
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
 
+    }
+
+    private String runCommand(List<String> command, String buffer) throws IOException
+    {
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.redirectError(Redirect.INHERIT);
+        pb.command(command);
+        Process process = pb.start();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write(buffer.toString()+ "\n");
+        writer.close();
+        return CRFSuiteTestTask.captureProcessOutput(process);
+    }
+
+    private List<String> buildCommand() throws Exception
+    {
+        List<String> command = new ArrayList<String>();
+        command.add(executablePath);
+        command.add("tag");
+        command.add("-m");
+        command.add(model.getAbsolutePath());
+        command.add("-"); //Read from STDIN
+
+        return command;
     }
 
     private void setPredictedOutcome(JCas jcas, String aLabels)
@@ -133,29 +175,4 @@ public class LoadModelConnectorCRFSuite
 
     }
 
-    private String classify(File featureFile)
-        throws Exception
-    {
-        List<String> commandGoldPredictionOutput = CRFSuiteTestTask.wrapTestCommandAsList(
-                featureFile, executablePath, model.getAbsolutePath());
-
-        // remove 'print gold label' parameter
-        List<String> commandPredictionOutput = deleteGoldOutputFromParameterList(commandGoldPredictionOutput);
-
-        return CRFSuiteTestTask.runTest(commandPredictionOutput);
-    }
-
-    private static List<String> deleteGoldOutputFromParameterList(
-            List<String> aCommandGoldPredictionOutput)
-    {
-        List<String> command = new ArrayList<String>();
-        for (String parameter : aCommandGoldPredictionOutput) {
-            if (parameter.equals("-r")) {
-                continue;
-            }
-            command.add(parameter);
-        }
-
-        return command;
-    }
 }

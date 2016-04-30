@@ -206,7 +206,7 @@ public class CRFSuiteTestTask
 
     }
 
-    private static String captureProcessOutput(Process aProcess)
+    public static String captureProcessOutput(Process aProcess)
     {
         InputStream src = aProcess.getInputStream();
         Scanner sc = new Scanner(src, "utf-8");
