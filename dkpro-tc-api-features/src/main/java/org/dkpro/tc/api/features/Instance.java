@@ -37,14 +37,12 @@ public class Instance
     private double weight;
     private int sequenceId;
     private int sequencePosition;
+    private int jcasId; //id of the jcas for which this instance was created
 
     public Instance()  
     {
         this.features = new ArrayList<Feature>();
         this.outcomes = new ArrayList<String>();
-        this.weight = 0.0;
-        this.sequenceId = 0;
-        this.sequencePosition = 0;
     }
 
     public Instance(Collection<Feature> features, String outcome) 
@@ -53,9 +51,6 @@ public class Instance
         this.features.sort(getComparator());
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
-        this.weight = 0.0;
-        this.sequenceId = 0;
-        this.sequencePosition = 0;
     }
 
     public Instance(Collection<Feature> features, String... outcomes) 
@@ -63,18 +58,12 @@ public class Instance
         this.features = new ArrayList<Feature>(features);
         this.features.sort(getComparator());
         this.outcomes = Arrays.asList(outcomes);
-        this.weight = 0.0;
-        this.sequenceId = 0;
-        this.sequencePosition = 0;
     }
 
     public Instance(Collection<Feature> features, List<String> outcomes)  
     {
         this.features = new ArrayList<Feature>(features);
         this.outcomes = outcomes;
-        this.weight = 0.0;
-        this.sequenceId = 0;
-        this.sequencePosition = 0;
     }
 
     public void setOutcomes(Collection<String> outcomes)
@@ -122,6 +111,16 @@ public class Instance
     public void setWeight(double weight)
     {
         this.weight = weight;
+    }
+    
+    public void setJcasId(int id)
+    {
+        this.jcasId = id;
+    }
+    
+    public int getJcasId()
+    {
+        return this.jcasId;
     }
 
     public Collection<Feature> getFeatures()

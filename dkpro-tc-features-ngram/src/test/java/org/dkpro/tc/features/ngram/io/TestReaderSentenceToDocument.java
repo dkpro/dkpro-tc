@@ -35,7 +35,9 @@ import org.apache.uima.util.ProgressImpl;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
+
 import org.dkpro.tc.api.io.TCReaderSingleLabel;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 
 public class TestReaderSentenceToDocument
@@ -53,6 +55,7 @@ public class TestReaderSentenceToDocument
 	private int offset;
     private List<String> texts;    
     
+    int jcasId=0;
     
     @Override
     public void initialize(UimaContext context)
@@ -92,6 +95,11 @@ public class TestReaderSentenceToDocument
         dmd.setDocumentTitle("Sentence" + offset);
         dmd.setDocumentUri("Sentence" + offset);
         dmd.setDocumentId(String.valueOf(offset));
+        
+        JCasId id = new JCasId(aJCas);
+        id.setId(jcasId);
+        id.addToIndexes();
+        
 
         // setting the outcome / label for this document
         TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);

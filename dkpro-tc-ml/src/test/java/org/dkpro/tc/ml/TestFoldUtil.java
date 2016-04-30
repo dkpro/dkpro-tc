@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -55,7 +54,7 @@ public class TestFoldUtil
     private JCas jcasNoSequence;
     private JCas jcasSequence;
 
-    @Test(expected = AnalysisEngineProcessException.class)
+    @Test(expected = IllegalStateException.class)
     public void testSeqExceptionOnTooFewData()
         throws Exception
     {
@@ -146,7 +145,7 @@ public class TestFoldUtil
         assertEquals(new Integer(2), numTcusCas.get(1).get(9));
     }
 
-    @Test(expected = AnalysisEngineProcessException.class)
+    @Test(expected = IllegalStateException.class)
     public void testNoSeqExceptionOnTooFewData()
         throws Exception
     {

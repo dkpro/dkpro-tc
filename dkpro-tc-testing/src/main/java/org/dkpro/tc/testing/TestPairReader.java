@@ -34,8 +34,10 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.io.TCReaderMultiLabel;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.io.PairReader_ImplBase;
 
@@ -53,6 +55,8 @@ public class TestPairReader
 
     private int fileOffset;
 
+    int jcasid;
+    
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -93,6 +97,10 @@ public class TestPairReader
         throws IOException, CollectionException
     {
         super.getNext(jcas);
+        
+        JCasId id = new JCasId(jcas);
+        id.setId(jcasid++);
+        id.addToIndexes();
 
         for (String outcomeValue : getTextClassificationOutcomes(jcas)) {
             TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);

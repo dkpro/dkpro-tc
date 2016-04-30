@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
@@ -32,7 +33,6 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
@@ -47,7 +47,7 @@ import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
  * Converts features to the internal format for SVM HMM
  */
 public class SVMHMMDataWriter
-        implements DataWriter
+    implements DataWriter
 {
 
     // random prefix for all meta-data features
@@ -57,18 +57,24 @@ public class SVMHMMDataWriter
 
     static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
 
+    // a consecutive single number counter to identify a sequence over all CAS
+    Map<String, Integer> uniqueId = new HashMap<String, Integer>();
+    int consequtiveUniqueDocSeqId = 0;
+
     @Override
     public void write(File aOutputDirectory, FeatureStore featureStore, boolean aUseDenseInstances,
             String aLearningMode, boolean applyWeighting)
-            throws Exception
+        throws Exception
     {
         // map features to feature numbers
-        BidiMap featureNameToFeatureNumberMapping = SVMHMMUtils.mapVocabularyToIntegers(
-                featureStore.getFeatureNames());
+        BidiMap featureNameToFeatureNumberMapping = SVMHMMUtils
+                .mapVocabularyToIntegers(featureStore.getFeatureNames());
 
         // prepare output file
-        File outputFile = new File(aOutputDirectory, new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
+        File outputFile = new File(
+                aOutputDirectory,
+                new SVMHMMAdapter()
+                        .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
 
         BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
         PrintWriter pw = new PrintWriter(bf);
@@ -80,8 +86,8 @@ public class SVMHMMDataWriter
 
         if (featureStore instanceof SparseFeatureStore) {
             SparseFeatureStore sparseFeatureStore = (SparseFeatureStore) featureStore;
-            log.debug("Non-null feature sparsity ratio: " + sparseFeatureStore
-                    .getFeatureSparsityRatio());
+            log.debug("Non-null feature sparsity ratio: "
+                    + sparseFeatureStore.getFeatureSparsityRatio());
         }
 
         for (int i = 0; i < featureStore.getNumberOfInstances(); i++) {
@@ -116,7 +122,7 @@ public class SVMHMMDataWriter
                 // get original token stored in OriginalToken feature
                 if (OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT.equals(featureName)) {
                     // if original token/text was multi line, join it to a single line
-                    //                    originalToken = ((String) featureValue).replaceAll("\\n", " ");
+                    // originalToken = ((String) featureValue).replaceAll("\\n", " ");
                     originalToken = (String) featureValue;
                     continue;
                 }
@@ -149,25 +155,24 @@ public class SVMHMMDataWriter
 
             // print formatted output: label name and sequence id
             pw.printf(Locale.ENGLISH, "%s qid:%d ", instance.getOutcome(),
-                    instance.getSequenceId());
+                    getUniqueSequenceId(instance));
 
             // print sorted features
             for (Map.Entry<Integer, Number> entry : featureValues.entrySet()) {
                 if (entry.getValue() instanceof Double) {
                     // format double on 8 decimal places
-                    pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(),
-                            entry.getValue().doubleValue());
+                    pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(), entry.getValue()
+                            .doubleValue());
                 }
                 else {
                     // format as integer
-                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(),
-                            entry.getValue().intValue());
+                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(), entry.getValue().intValue());
                 }
             }
 
             // print original token and label as comment
-            pw.printf(Locale.ENGLISH, "# %s %d %s ",
-                    instance.getOutcome(), instance.getSequenceId(),
+            pw.printf(Locale.ENGLISH, "# %s %d %s ", instance.getOutcome(),
+                    instance.getSequenceId(),
                     (originalToken != null) ? (URLEncoder.encode(originalToken, "utf-8")) : "");
 
             // print meta-data features at the end
@@ -186,6 +191,17 @@ public class SVMHMMDataWriter
         SVMHMMUtils.saveMappingTextFormat(featureNameToFeatureNumberMapping, mappingFile);
 
         log.info("Finished writing features to file " + outputFile.getAbsolutePath());
+    }
+
+    private Integer getUniqueSequenceId(Instance instance)
+    {
+        String key = instance.getJcasId() + "-" + instance.getSequenceId();
+        Integer consecSeqId = uniqueId.get(key);
+        if (consecSeqId == null) {
+            consecSeqId = consequtiveUniqueDocSeqId++;
+            uniqueId.put(key, consecSeqId);
+        }
+        return consecSeqId;
     }
 
     protected boolean isMetaDataFeature(String featureName)

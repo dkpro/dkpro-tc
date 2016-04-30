@@ -25,7 +25,9 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
+
 import org.dkpro.tc.api.io.TCReaderSingleLabel;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 
 public class TestReaderRegression
@@ -33,6 +35,8 @@ public class TestReaderRegression
     implements TCReaderSingleLabel
 {
 
+    int jcasId;
+    
     @Override
     public void getNext(CAS aCAS)
         throws IOException, CollectionException
@@ -42,6 +46,9 @@ public class TestReaderRegression
         JCas jcas;
         try {
             jcas = aCAS.getJCas();
+            JCasId id = new JCasId(jcas);
+            id.setId(jcasId++);
+            id.addToIndexes();
         }
         catch (CASException e) {
             throw new CollectionException();
