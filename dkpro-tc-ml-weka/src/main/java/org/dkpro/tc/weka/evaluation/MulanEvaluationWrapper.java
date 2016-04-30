@@ -92,12 +92,7 @@ public class MulanEvaluationWrapper
                 Measure m = it.next();
                 if (!failed.contains(m)) {
                     try {
-                        try {
-                            m.update(prediction, actuals[instanceIndex]);
-                        }
-                        catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        m.update(prediction, actuals[instanceIndex]);
                     }
                     catch (Exception ex) {
                         failed.add(m); // mulan ignores a measure completely if there was somewhere

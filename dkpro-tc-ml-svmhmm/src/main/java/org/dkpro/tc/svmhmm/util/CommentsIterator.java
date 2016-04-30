@@ -44,7 +44,7 @@ public class CommentsIterator implements Iterator<List<String>> {
 			try {
 				line = br.readLine();
 			} catch (IOException e) {
-				e.printStackTrace();
+			    throw new UnsupportedOperationException(new IOException(e));
 			}
 
 			boolean result = line != null;
@@ -52,7 +52,7 @@ public class CommentsIterator implements Iterator<List<String>> {
 				try {
 					br.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+				    throw new UnsupportedOperationException(new IOException(e));
 				}
 			}
 
@@ -66,7 +66,7 @@ public class CommentsIterator implements Iterator<List<String>> {
 			try {
 				comment = extractComment(line);
 			} catch (Exception e1) {
-				e1.printStackTrace();
+			    throw new UnsupportedOperationException(e1);
 			}
 
 			List<String> list = new ArrayList<>();
@@ -81,7 +81,7 @@ public class CommentsIterator implements Iterator<List<String>> {
 					try {
 						s = URLDecoder.decode(trim, "utf-8");
 					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
+					    throw new UnsupportedOperationException(e);
 					}
 					list.add(s);
 				}

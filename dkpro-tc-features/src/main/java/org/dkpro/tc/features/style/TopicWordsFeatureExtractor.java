@@ -71,7 +71,7 @@ public class TopicWordsFeatureExtractor
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            throw new TextClassificationException(e);
         }
         return features;
     }
