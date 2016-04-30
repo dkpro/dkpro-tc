@@ -18,21 +18,35 @@
  */
 package org.dkpro.tc.examples.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.examples.io.BrownCorpusReader;
+import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.features.length.NrOfCharsUFE;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
+import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,16 +54,7 @@ import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.examples.io.BrownCorpusReader;
-import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public class CRFSuiteSaveAndLoadModelTest
     implements Constants
@@ -81,17 +86,18 @@ public class CRFSuiteSaveAndLoadModelTest
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
-        
+
         File tcversion = new File(modelFolder.getAbsolutePath() + "/" + MODEL_TC_VERSION);
         assertTrue(tcversion.exists());
-        
+
         File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
         assertTrue(featureMode.exists());
-        
+
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
-        
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
+
+        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/"
+                + MODEL_BIPARTITION_THRESHOLD);
         assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
@@ -100,8 +106,8 @@ public class CRFSuiteSaveAndLoadModelTest
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
-                CRFSuiteAdapter.class, aModelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", CRFSuiteAdapter.class,
+                aModelFolder);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
@@ -129,8 +135,10 @@ public class CRFSuiteSaveAndLoadModelTest
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfCharsUFE.class.getName(), }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(new String[] { LuceneCharacterNGramUFE.class.getName(),
+                        NrOfCharsUFE.class.getName(), }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
@@ -147,14 +155,33 @@ public class CRFSuiteSaveAndLoadModelTest
         ParameterSpace pSpace = getParameterSpace();
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
 
-        SimplePipeline.runPipeline(CollectionReaderFactory.createReader(StringReader.class,
-                StringReader.PARAM_DOCUMENT_TEXT, "This is an example text",
-                StringReader.PARAM_LANGUAGE, "en"), AnalysisEngineFactory
-                .createEngineDescription(BreakIteratorSegmenter.class), AnalysisEngineFactory
-                .createEngineDescription(TcAnnotator.class,
-                        TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                        TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION,
-                        Sentence.class.getName(), TcAnnotator.PARAM_NAME_UNIT_ANNOTATION,
-                        Token.class.getName()));
+        JCas jcas = JCasFactory.createJCas();
+        jcas.setDocumentText("This is an example text. It has 2 sentences.");
+        jcas.setDocumentLanguage("en");
+
+        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+
+        tokenizer.process(jcas);
+        tcAnno.process(jcas);
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas,
+                TextClassificationOutcome.class));
+        assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
+        assertEquals("AT", outcomes.get(0).getOutcome());
+        assertEquals("NN", outcomes.get(1).getOutcome());
+        assertEquals("IN", outcomes.get(2).getOutcome());
+        assertEquals("AT", outcomes.get(3).getOutcome());
+        assertEquals("NN", outcomes.get(4).getOutcome());
+        assertEquals("pct", outcomes.get(5).getOutcome());
+        assertEquals("PPS", outcomes.get(6).getOutcome());
+        assertEquals("NNS", outcomes.get(7).getOutcome());
+        assertEquals("pct", outcomes.get(8).getOutcome());
+        assertEquals("NNS", outcomes.get(9).getOutcome());
+        assertEquals("pct", outcomes.get(10).getOutcome());
     }
 }
