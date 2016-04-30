@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -30,7 +31,15 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class FoldUtil
 {
-    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas, boolean isSequence)
+    /**
+     * Takes the available CAS and creates more cases from them to conform to the minimal requested
+     * amount of CAS objects to have sufficient for running a cross-validation. Computes a
+     * rule-of-thumb value to split each of the found cas into N sub-cases and the end the total
+     * created number is compared to the requested number of CAS and an exception thrown if too few
+     * CAS were created.
+     */
+    public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas,
+            boolean isSequence)
         throws Exception
     {
         File outputFolder = new File(inputFolder, "output");
@@ -43,7 +52,7 @@ public class FoldUtil
         AnalysisEngineDescription multiplier = AnalysisEngineFactory.createEngineDescription(
                 FoldClassificationUnitCasMultiplier.class,
                 FoldClassificationUnitCasMultiplier.PARAM_REQUESTED_SPLITS, splitNum,
-                FoldClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES,isSequence);
+                FoldClassificationUnitCasMultiplier.PARAM_USE_SEQUENCES, isSequence);
 
         AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(
                 BinaryCasWriter.class, BinaryCasWriter.PARAM_TARGET_LOCATION,
@@ -54,7 +63,27 @@ public class FoldUtil
 
         SimplePipeline.runPipeline(createReader, both);
 
+        // final check - do we have at least as many folds as requested by "numFolds"?
+        isNumberOfCasCreatedLargerEqualNumFolds(outputFolder, numFolds);
+
         return outputFolder;
+    }
+
+    private static void isNumberOfCasCreatedLargerEqualNumFolds(File outputFolder, int numFolds)
+        throws Exception
+    {
+        File[] listFiles = outputFolder.listFiles(new FilenameFilter()
+        {
+
+            @Override
+            public boolean accept(File dir, String name)
+            {
+                return name.endsWith(".bin");
+            }
+        });
+        if (listFiles.length < numFolds) {
+            throw new IllegalStateException("Failed to create at least [" + numFolds + "] CAS");
+        }
     }
 
 }
