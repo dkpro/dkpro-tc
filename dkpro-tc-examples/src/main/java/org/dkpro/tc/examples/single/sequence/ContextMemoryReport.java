@@ -38,7 +38,7 @@ public class ContextMemoryReport extends BatchReportBase
         throws Exception
     {
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (subcontext.getType().contains(adapter)) {
+            if (adapter != null && subcontext.getType().contains(adapter)) {
                 StorageService storageService = getContext().getStorageService();
                 out = storageService.locateKey(subcontext.getId(), "");
                 return;
