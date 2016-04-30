@@ -31,7 +31,6 @@ import java.util.Properties;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.weka.task.WekaTestTask;
 import org.dkpro.tc.weka.util.WekaUtils;
 
@@ -48,7 +47,7 @@ public class WekaRegressionReport
     public void execute()
         throws Exception
     {
-        File evaluationFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY, Constants.RESULTS_FILENAME, AccessMode.READONLY);
+        File evaluationFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY, WekaTestTask.evaluationBin, AccessMode.READONLY);
         
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(evaluationFile.getAbsolutePath());
