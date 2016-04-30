@@ -71,6 +71,8 @@ public class WekaTestTask
     @Discriminator
     protected String threshold;
 
+    public static final String evaluationBin = "evaluation.bin";
+    
     @Override
     public void execute(TaskContext aContext)
         throws Exception
@@ -127,7 +129,7 @@ public class WekaTestTask
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
 
         // file to hold prediction results
-        File evalOutput = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY, Constants.RESULTS_FILENAME, AccessMode.READWRITE);
+        File evalOutput = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY, evaluationBin, AccessMode.READWRITE);
 
         // evaluation & prediction generation
         if (multiLabel) {
