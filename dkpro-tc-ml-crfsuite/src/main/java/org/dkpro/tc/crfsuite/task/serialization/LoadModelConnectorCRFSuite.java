@@ -104,7 +104,7 @@ public class LoadModelConnectorCRFSuite
             CRFSuiteFeatureStoreSequenceIterator iterator = new CRFSuiteFeatureStoreSequenceIterator(
                     featureStore);
 
-            //takes 1000 sequences and classifies them - all results are hold in memory
+            //takes N sequences and classifies them - all results are hold in memory
             StringBuilder output = new StringBuilder();
             while (iterator.hasNext()) {
 
