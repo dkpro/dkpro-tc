@@ -28,7 +28,7 @@ import org.dkpro.tc.api.features.Instance;
  * is to CrfSuite
  */
 public class CRFSuiteFeatureStoreSequenceIterator
-    implements Iterator<String>
+    implements Iterator<StringBuilder>
 {
     final String idInitVal = "ü+Ü**'?=?=)(ÖÄ:";
     int insIdx;
@@ -48,7 +48,7 @@ public class CRFSuiteFeatureStoreSequenceIterator
     }
 
     @Override
-    public String next()
+    public StringBuilder next()
     {
         StringBuilder sb = new StringBuilder();
 
@@ -107,7 +107,7 @@ public class CRFSuiteFeatureStoreSequenceIterator
             throw new UnsupportedOperationException(e);
         }
 
-        return sb.toString();
+        return sb;
     }
 
     private String getId(Instance i)

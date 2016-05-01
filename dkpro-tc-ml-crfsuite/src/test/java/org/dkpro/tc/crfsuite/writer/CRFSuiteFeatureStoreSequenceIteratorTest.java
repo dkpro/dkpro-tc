@@ -103,8 +103,8 @@ public class CRFSuiteFeatureStoreSequenceIteratorTest
 
         List<String> output = new ArrayList<String>();
         while (iterator.hasNext()) {
-            String next = iterator.next();
-            output.add(next);
+            StringBuilder next = iterator.next();
+            output.add(next.toString());
         }
         assertEquals(2, output.size());
         assertEquals("1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"

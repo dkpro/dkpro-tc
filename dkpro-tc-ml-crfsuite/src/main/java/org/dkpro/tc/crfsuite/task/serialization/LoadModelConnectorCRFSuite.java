@@ -112,7 +112,7 @@ public class LoadModelConnectorCRFSuite
                 int limit = 5000;
                 int idx = 0;
                 while (iterator.hasNext()) {
-                    String seqInfo = iterator.next();
+                    StringBuilder seqInfo = iterator.next();
                     buffer.append(seqInfo);
                     idx++;
                     if (idx == limit) {

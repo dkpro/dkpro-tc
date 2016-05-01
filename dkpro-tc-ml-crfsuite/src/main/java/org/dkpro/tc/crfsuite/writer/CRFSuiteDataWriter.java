@@ -60,13 +60,13 @@ public class CRFSuiteDataWriter
     public static void writeFeatureFile(FeatureStore featureStore, File outputFile)
         throws Exception
     {
-        Iterator<String> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(featureStore);
+        Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(featureStore);
 
         BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
                 outputFile), "utf-8"));
 
         while(sequenceIterator.hasNext()){
-            bf.write(sequenceIterator.next());
+            bf.write(sequenceIterator.next().toString());
         }
 
         bf.close();
