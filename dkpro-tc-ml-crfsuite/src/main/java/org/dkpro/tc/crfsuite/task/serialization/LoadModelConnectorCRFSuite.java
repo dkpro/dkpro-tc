@@ -121,7 +121,7 @@ public class LoadModelConnectorCRFSuite
                 }
 
                 List<String> command = buildCommand();
-                String out = runCommand(command, buffer.toString());
+                StringBuilder out = runCommand(command, buffer.toString());
                 output.append(out);
             }
 
@@ -133,14 +133,14 @@ public class LoadModelConnectorCRFSuite
 
     }
 
-    private String runCommand(List<String> command, String buffer) throws IOException
+    private StringBuilder runCommand(List<String> command, String buffer) throws IOException
     {
         ProcessBuilder pb = new ProcessBuilder();
         pb.redirectError(Redirect.INHERIT);
         pb.command(command);
         Process process = pb.start();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write(buffer.toString()+ "\n");
+        writer.write(buffer.toString());
         writer.close();
         return CRFSuiteTestTask.captureProcessOutput(process);
     }

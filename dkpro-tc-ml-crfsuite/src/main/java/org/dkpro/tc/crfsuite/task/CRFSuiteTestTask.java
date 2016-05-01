@@ -180,7 +180,7 @@ public class CRFSuiteTestTask
         evalCommand.add(testFile.getAbsolutePath());
 
         Process process = new ProcessBuilder().command(evalCommand).start();
-        String output = captureProcessOutput(process);
+        String output = captureProcessOutput(process).toString();
 
         return output;
     }
@@ -191,22 +191,22 @@ public class CRFSuiteTestTask
 
         List<String> testModelCommand = buildTestCommand(aContext);
         log("Testing model");
-        String output = runTest(testModelCommand);
+        String output = runTest(testModelCommand).toString();
         log("Testing model finished");
 
         return output;
     }
 
-    public static String runTest(List<String> aTestModelCommand)
+    public static StringBuilder runTest(List<String> aTestModelCommand)
         throws Exception
     {
         Process process = new ProcessBuilder().command(aTestModelCommand).start();
-        String output = captureProcessOutput(process);
+        StringBuilder output = captureProcessOutput(process);
         return output;
 
     }
 
-    public static String captureProcessOutput(Process aProcess)
+    public static StringBuilder captureProcessOutput(Process aProcess)
     {
         InputStream src = aProcess.getInputStream();
         Scanner sc = new Scanner(src, "utf-8");
@@ -216,7 +216,7 @@ public class CRFSuiteTestTask
             dest.append(l + "\n");
         }
         sc.close();
-        return dest.toString();
+        return dest;
     }
 
     private List<String> buildTestCommand(TaskContext aContext)
