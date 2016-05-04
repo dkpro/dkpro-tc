@@ -22,7 +22,6 @@ import java.util.Collection;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
@@ -44,11 +43,14 @@ public class SequenceContextMetaCollector
                 String idString;
                 try {
                     idString = (String) InstanceIdFeature.retrieve(jcas, unit, id).getValue();
+
+                    StringBuilder sb = new StringBuilder();
+                    ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
+                    bw.write(sb.toString());
                 }
-                catch (TextClassificationException e) {
+                catch (Exception e) {
                     throw new AnalysisEngineProcessException(e);
                 }
-                ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
             }
         }
     }
