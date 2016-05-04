@@ -155,7 +155,7 @@ public class InitTask
         }
 
         return createEngineDescription(getPreValidityCheckEngine(aContext), emptyProblemChecker,
-                preprocessing, getPostValidityCheckEngine(aContext), xmiWriter);
+                preprocessing, getPostValidityCheckEngine(aContext), xmiWriter, createEngineDescription(RunCompleteLogger.class));
     }
 
     private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
@@ -230,4 +230,5 @@ public class InitTask
     {
         this.operativeViews = operativeViews;
     }
+    
 }
