@@ -44,8 +44,6 @@ public abstract class ContextMetaCollector_ImplBase
     @ConfigurationParameter(name = PARAM_CONTEXT_FILE, mandatory = true)
     protected File contextFile;
 
-    // protected StringBuilder sb;
-
     protected BufferedWriter bw;
 
     @Override

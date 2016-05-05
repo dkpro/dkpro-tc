@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.core.feature;
 
-import org.apache.uima.jcas.JCas;
+import java.io.IOException;
+import java.io.Writer;
 
+import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
@@ -36,17 +38,17 @@ public class ContextMetaCollectorUtil {
     // Width of the context before and after a unit (in characters)
     public static final int CONTEXT_WIDTH = 30;
 
-	protected static void addContext(JCas jcas, TextClassificationUnit unit, String id, StringBuilder sb) {
-        sb.append(id);
-        sb.append(ID_CONTEXT_DELIMITER);
-        sb.append(getLeftContext(jcas, unit));
-        sb.append(LEFT_CONTEXT_SEPARATOR);
+	protected static void addContext(JCas jcas, TextClassificationUnit unit, String id, Writer w) throws IOException {
+        w.append(id);
+        w.append(ID_CONTEXT_DELIMITER);
+        w.append(getLeftContext(jcas, unit));
+        w.append(LEFT_CONTEXT_SEPARATOR);
         String unitText = unit.getCoveredText();
         unitText = unitText.replace("\n", " ");		// removing line breaks, to avoid problems with CSV-style output format
-    	sb.append(unitText);
-    	sb.append(RIGHT_CONTEXT_SEPARATOR);
-    	sb.append(getRightContext(jcas, unit));
-        sb.append("\n");
+    	w.append(unitText);
+    	w.append(RIGHT_CONTEXT_SEPARATOR);
+    	w.append(getRightContext(jcas, unit));
+        w.append("\n");
 	}
 	
 	private static String getLeftContext(JCas jcas, TextClassificationUnit unit) {

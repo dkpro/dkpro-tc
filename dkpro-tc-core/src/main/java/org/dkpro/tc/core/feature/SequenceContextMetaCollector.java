@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -43,10 +43,7 @@ public class SequenceContextMetaCollector
                 String idString;
                 try {
                     idString = (String) InstanceIdFeature.retrieve(jcas, unit, id).getValue();
-
-                    StringBuilder sb = new StringBuilder();
-                    ContextMetaCollectorUtil.addContext(jcas, unit, idString, sb);
-                    bw.write(sb.toString());
+                    ContextMetaCollectorUtil.addContext(jcas, unit, idString, bw);
                 }
                 catch (Exception e) {
                     throw new AnalysisEngineProcessException(e);
