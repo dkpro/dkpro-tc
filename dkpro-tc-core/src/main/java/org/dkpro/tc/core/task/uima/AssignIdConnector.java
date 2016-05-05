@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.task;
+package org.dkpro.tc.core.task.uima;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
@@ -24,13 +24,23 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.type.JCasId;
 
-public class RunCompleteLogger extends  JCasAnnotator_ImplBase{
+public class AssignIdConnector
+    extends JCasAnnotator_ImplBase
+{
+    private int jcasId;
 
     @Override
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        getLogger().log(Level.INFO, "--- validity check of CAS with id ["+ JCasUtil.selectSingle(aJCas, JCasId.class).getId() +"] complete ---");
+        JCasId id = new JCasId(aJCas);
+        id.setId(jcasId++);
+        id.addToIndexes();
+
+        getLogger().log(
+                Level.INFO,
+                "--- assigning CAS id ["
+                        + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
     }
-    
+
 }

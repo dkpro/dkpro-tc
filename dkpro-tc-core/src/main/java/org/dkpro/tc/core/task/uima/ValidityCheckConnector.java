@@ -21,23 +21,25 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.util.ValidityCheckUtils;
 
 /**
- * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on
- * the CAS.
+ * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on the CAS.
  * 
  */
 public class ValidityCheckConnector
@@ -82,6 +84,10 @@ public class ValidityCheckConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
+        getLogger().log(
+                Level.INFO,
+                "--- validation of CAS with id ["
+                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         // make sure this class is only called once per pipeline
         if (firstCall) {
@@ -93,14 +99,14 @@ public class ValidityCheckConnector
             }
 
             if (featureModeI == 0) {
-            	featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
+                featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
             }
 
             if (learningModeI == 0) {
-            	learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
+                learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
             }
 
-            getLogger().log(Level.INFO, "--- checking validity of experiment setup ---");
+            // getLogger().log(Level.INFO, "--- checking validity of experiment setup ---");
 
             // iff multi-label classification is active, no single-label data writer may be used
             if (learningModeI == 2) {
@@ -125,8 +131,7 @@ public class ValidityCheckConnector
                 catch (CASException e) {
                     throw new AnalysisEngineProcessException(new TextClassificationException(
                             "Your experiment is configured to be pair classification, but I could not find the two views "
-                                    + Constants.PART_ONE + " and "
-                                    + Constants.PART_TWO
+                                    + Constants.PART_ONE + " and " + Constants.PART_TWO
                                     + ". Please use a reader that inhereits from "
                                     + Constants.class.getName()));
                 }
@@ -199,6 +204,10 @@ public class ValidityCheckConnector
                 throw new AnalysisEngineProcessException(e);
             }
         }
+        getLogger().log(
+                Level.INFO,
+                "--- validation of CAS with id ["
+                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete---");
     }
 
     private static void testUnitFE(String[] featureExtractors, boolean developerMode)

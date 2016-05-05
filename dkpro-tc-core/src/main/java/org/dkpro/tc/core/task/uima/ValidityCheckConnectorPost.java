@@ -26,7 +26,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.core.Constants;
@@ -34,10 +36,10 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.util.ValidityCheckUtils;
 
 /**
- * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on
- * the CAS.
+ * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on the CAS.
  * 
- * This is called after initialization (which sets outcome and unit annotations) and executed for each CAS.
+ * This is called after initialization (which sets outcome and unit annotations) and executed for
+ * each CAS.
  */
 public class ValidityCheckConnectorPost
     extends ConnectorBase
@@ -51,27 +53,30 @@ public class ValidityCheckConnectorPost
 
     private int featureModeI;
     private int learningModeI;
-    
-	@Override
+
+    @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-    	
+
+        getLogger().log(
+                Level.INFO,
+                "--- Post validation for CAS with id ["
+                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+
         if (featureModeI == 0) {
-        	featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
+            featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
         }
 
         if (learningModeI == 0) {
-        	learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
+            learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
         }
 
-        getLogger().log(Level.FINE, "--- checking validity of experiment setup after initialization ---");
-        
         Collection<TextClassificationOutcome> outcomes = JCasUtil.select(jcas,
                 TextClassificationOutcome.class);
         Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
                 TextClassificationUnit.class);
-        
+
         // whether outcome annotation are present at all
         if (outcomes.size() == 0) {
             throw new AnalysisEngineProcessException(
@@ -111,5 +116,10 @@ public class ValidityCheckConnectorPost
                 }
             }
         }
+
+        getLogger().log(
+                Level.INFO,
+                "--- Post validation for CAS with id ["
+                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete ---");
     }
 }

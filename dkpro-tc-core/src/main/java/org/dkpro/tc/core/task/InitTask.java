@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -38,6 +38,9 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.uima.AssignIdConnector;
+import org.dkpro.tc.core.task.uima.PostWriterLoggerConnector;
+import org.dkpro.tc.core.task.uima.PreWriterLoggerConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -154,8 +157,11 @@ public class InitTask
             preprocessing = builder.createAggregateDescription();
         }
 
-        return createEngineDescription(getPreValidityCheckEngine(aContext), emptyProblemChecker,
-                preprocessing, getPostValidityCheckEngine(aContext), xmiWriter, createEngineDescription(RunCompleteLogger.class));
+        return createEngineDescription(createEngineDescription(AssignIdConnector.class),
+                getPreValidityCheckEngine(aContext), emptyProblemChecker, preprocessing,
+                getPostValidityCheckEngine(aContext),
+                createEngineDescription(PreWriterLoggerConnector.class), xmiWriter,
+                createEngineDescription(PostWriterLoggerConnector.class));
     }
 
     private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
@@ -230,5 +236,5 @@ public class InitTask
     {
         this.operativeViews = operativeViews;
     }
-    
+
 }
