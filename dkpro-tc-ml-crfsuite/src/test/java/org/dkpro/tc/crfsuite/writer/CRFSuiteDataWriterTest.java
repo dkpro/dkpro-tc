@@ -103,13 +103,14 @@ public class CRFSuiteDataWriterTest
         writeFeaturesWithDataWriter();
         List<String> fileContent = readDataBackIn();
 
-        assertEquals(5, fileContent.size());
+        assertEquals(7, fileContent.size());
         assertEquals("1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__", fileContent.get(0));
         assertEquals("2\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta", fileContent.get(1));
         assertEquals("3\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__EOS__", fileContent.get(2));
-
-        assertEquals("4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__", fileContent.get(3));
-        assertEquals("4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__", fileContent.get(4));
+        assertEquals("", fileContent.get(3));
+        assertEquals("4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__", fileContent.get(4));
+        assertEquals("4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__", fileContent.get(5));
+        assertEquals("", fileContent.get(6));
 
     }
 
