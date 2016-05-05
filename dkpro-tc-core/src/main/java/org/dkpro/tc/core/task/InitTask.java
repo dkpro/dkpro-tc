@@ -39,8 +39,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
-import org.dkpro.tc.core.task.uima.LoggerPostUserPreprocessing;
-import org.dkpro.tc.core.task.uima.LoggerPreUserPreprocessing;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -166,8 +164,7 @@ public class InitTask
                 emptyProblemChecker,
 
                 // user preprocessing
-                createEngineDescription(LoggerPreUserPreprocessing.class), preprocessing,
-                createEngineDescription(LoggerPostUserPreprocessing.class),
+                preprocessing,
 
                 // tc post validity check
                 getPostValidityCheckEngine(aContext),
