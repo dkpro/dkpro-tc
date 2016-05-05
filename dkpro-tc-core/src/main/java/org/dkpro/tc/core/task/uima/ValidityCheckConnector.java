@@ -85,7 +85,7 @@ public class ValidityCheckConnector
         throws AnalysisEngineProcessException
     {
         getLogger().log(
-                Level.INFO,
+                Level.FINE,
                 "--- pre-validation of CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
@@ -205,7 +205,7 @@ public class ValidityCheckConnector
             }
         }
         getLogger().log(
-                Level.INFO,
+                Level.FINE,
                 "--- pre-validation of CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete---");
     }

@@ -175,8 +175,7 @@ public class InitTask
                 getPostValidityCheckEngine(aContext),
 
                 // write CAS to HDD
-                createEngineDescription(LoggerPreWriter.class), xmiWriter,
-                createEngineDescription(LoggerPostWriter.class));
+                xmiWriter);
     }
 
     private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)

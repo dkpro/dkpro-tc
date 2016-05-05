@@ -60,7 +60,7 @@ public class ValidityCheckConnectorPost
     {
 
         getLogger().log(
-                Level.INFO,
+                Level.FINE,
                 "--- post-validation for CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
@@ -118,7 +118,7 @@ public class ValidityCheckConnectorPost
         }
 
         getLogger().log(
-                Level.INFO,
+                Level.FINE,
                 "--- post-validation for CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete ---");
     }

@@ -39,7 +39,7 @@ public class AssignIdConnector
 
         getLogger().log(
                 Level.INFO,
-                "--- assigning CAS id ["
+                "--- processing CAS with id ["
                         + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
     }
 

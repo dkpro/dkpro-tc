@@ -45,14 +45,14 @@ public class PreprocessConnector
         throws AnalysisEngineProcessException
     {
         getLogger().log(
-                Level.INFO,
+                Level.FINE,
                 "--- preprocessing of CAS with id ["
                         + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
         nrofProcessCalls++;
 
         getLogger().log(
-                Level.INFO,
+                Level.FINE,
                 "--- preprocessing of CAS with id ["
                         + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] complete ---");
     }
