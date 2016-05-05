@@ -24,7 +24,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.type.JCasId;
 
-public class PreWriterLoggerConnector
+public class LoggerPostWriter
     extends JCasAnnotator_ImplBase
 {
 
@@ -35,7 +35,7 @@ public class PreWriterLoggerConnector
         getLogger().log(
                 Level.INFO,
                 "--- writing CAS with id [" + JCasUtil.selectSingle(aJCas, JCasId.class).getId()
-                        + "] ---");
+                        + "] complete ---");
     }
 
 }

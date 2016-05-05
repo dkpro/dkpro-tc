@@ -24,7 +24,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.type.JCasId;
 
-public class PostWriterLoggerConnector
+public class LoggerPostUserPreprocessing
     extends JCasAnnotator_ImplBase
 {
 
@@ -34,8 +34,8 @@ public class PostWriterLoggerConnector
     {
         getLogger().log(
                 Level.INFO,
-                "--- writing CAS with id [" + JCasUtil.selectSingle(aJCas, JCasId.class).getId()
-                        + "] complete ---");
+                "--- run user pre-processing for CAS with id ["
+                        + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] complete ---");
     }
 
 }

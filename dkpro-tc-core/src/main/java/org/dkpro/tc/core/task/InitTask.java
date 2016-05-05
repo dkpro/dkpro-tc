@@ -39,8 +39,10 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
-import org.dkpro.tc.core.task.uima.PostWriterLoggerConnector;
-import org.dkpro.tc.core.task.uima.PreWriterLoggerConnector;
+import org.dkpro.tc.core.task.uima.LoggerPostUserPreprocessing;
+import org.dkpro.tc.core.task.uima.LoggerPostWriter;
+import org.dkpro.tc.core.task.uima.LoggerPreUserPreprocessing;
+import org.dkpro.tc.core.task.uima.LoggerPreWriter;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -157,11 +159,24 @@ public class InitTask
             preprocessing = builder.createAggregateDescription();
         }
 
-        return createEngineDescription(createEngineDescription(AssignIdConnector.class),
-                getPreValidityCheckEngine(aContext), emptyProblemChecker, preprocessing,
+        return createEngineDescription(
+                // assign each CAS an unique id
+                createEngineDescription(AssignIdConnector.class),
+
+                // tc pre validity check
+                getPreValidityCheckEngine(aContext),
+                emptyProblemChecker,
+
+                // user preprocessing
+                createEngineDescription(LoggerPreUserPreprocessing.class), preprocessing,
+                createEngineDescription(LoggerPostUserPreprocessing.class),
+
+                // tc post validity check
                 getPostValidityCheckEngine(aContext),
-                createEngineDescription(PreWriterLoggerConnector.class), xmiWriter,
-                createEngineDescription(PostWriterLoggerConnector.class));
+
+                // write CAS to HDD
+                createEngineDescription(LoggerPreWriter.class), xmiWriter,
+                createEngineDescription(LoggerPostWriter.class));
     }
 
     private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
