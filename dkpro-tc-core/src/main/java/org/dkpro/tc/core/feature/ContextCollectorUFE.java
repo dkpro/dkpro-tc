@@ -57,7 +57,7 @@ public class ContextCollectorUFE
     {
         boolean result = false;
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(contextFile)));
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(contextFile), "utf-8"));
             result = super.initialize(aSpecifier, aAdditionalParams);
         }
         catch (Exception e) {

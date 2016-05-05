@@ -61,9 +61,10 @@ public abstract class ContextMetaCollector_ImplBase
         super.initialize(context);
 
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(contextFile)));
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(contextFile),
+                    "utf-8"));
         }
-        catch (FileNotFoundException e) {
+        catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
     }
