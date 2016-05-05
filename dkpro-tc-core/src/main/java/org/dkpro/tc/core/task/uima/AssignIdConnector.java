@@ -33,14 +33,11 @@ public class AssignIdConnector
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
+        getLogger().log(Level.INFO, "--- processing CAS with id [" + jcasId + "] ---");
+
         JCasId id = new JCasId(aJCas);
         id.setId(jcasId++);
         id.addToIndexes();
-
-        getLogger().log(
-                Level.INFO,
-                "--- processing CAS with id ["
-                        + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
     }
 
 }
