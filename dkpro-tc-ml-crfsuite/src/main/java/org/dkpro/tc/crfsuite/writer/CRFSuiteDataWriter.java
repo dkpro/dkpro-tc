@@ -67,6 +67,7 @@ public class CRFSuiteDataWriter
 
         while(sequenceIterator.hasNext()){
             bf.write(sequenceIterator.next().toString());
+            bf.write("\n");
         }
 
         bf.close();
