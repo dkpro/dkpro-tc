@@ -19,7 +19,6 @@ package org.dkpro.tc.core.task.uima;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.type.JCasId;
