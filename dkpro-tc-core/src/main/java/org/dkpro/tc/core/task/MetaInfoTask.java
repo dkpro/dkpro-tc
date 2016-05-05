@@ -45,6 +45,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
+import org.dkpro.tc.core.feature.UnitContextMetaCollector;
 import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -85,6 +86,9 @@ public class MetaInfoTask
 
     @Discriminator
     private Collection<String> files_training;
+
+    @Discriminator
+    private boolean recordContext;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -131,15 +135,8 @@ public class MetaInfoTask
             throw new ResourceInitializationException(e);
         }
 
-        // if (featureMode.equals(Constants.FM_UNIT)) {
-        // add additional unit context meta collector that extracts the context around text
-        // classification units
-        // mainly used for error analysis purposes
-        // metaCollectorClasses.add(UnitContextMetaCollector.class);
-        // }
-
-        if (featureMode.equals(Constants.FM_SEQUENCE)) {
-            metaCollectorClasses.add(SequenceContextMetaCollector.class);
+        if (recordContext) {
+            addContextCollector();
         }
 
         // collect parameter/key pairs that need to be set
@@ -189,6 +186,20 @@ public class MetaInfoTask
             }
         }
         return builder.createAggregateDescription();
+    }
+
+    private void addContextCollector()
+    {
+        // Records the context i.e. as debugging help turned off by default set
+        // Dimension.create("recordContext", true) into your experiment to enable it
+
+        if (featureMode.equals(Constants.FM_UNIT)) {
+            metaCollectorClasses.add(UnitContextMetaCollector.class);
+        }
+
+        if (featureMode.equals(Constants.FM_SEQUENCE)) {
+            metaCollectorClasses.add(SequenceContextMetaCollector.class);
+        }
     }
 
     public void setOperativeViews(List<String> operativeViews)
