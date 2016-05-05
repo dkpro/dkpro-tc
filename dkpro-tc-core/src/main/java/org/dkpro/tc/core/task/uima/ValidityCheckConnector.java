@@ -86,7 +86,7 @@ public class ValidityCheckConnector
     {
         getLogger().log(
                 Level.INFO,
-                "--- validation of CAS with id ["
+                "--- pre-validation of CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         // make sure this class is only called once per pipeline
@@ -206,7 +206,7 @@ public class ValidityCheckConnector
         }
         getLogger().log(
                 Level.INFO,
-                "--- validation of CAS with id ["
+                "--- pre-validation of CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete---");
     }
 

@@ -61,7 +61,7 @@ public class ValidityCheckConnectorPost
 
         getLogger().log(
                 Level.INFO,
-                "--- Post validation for CAS with id ["
+                "--- post-validation for CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         if (featureModeI == 0) {
@@ -119,7 +119,7 @@ public class ValidityCheckConnectorPost
 
         getLogger().log(
                 Level.INFO,
-                "--- Post validation for CAS with id ["
+                "--- post-validation for CAS with id ["
                         + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete ---");
     }
 }

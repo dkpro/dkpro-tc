@@ -34,7 +34,7 @@ public class PostWriterLoggerConnector
     {
         getLogger().log(
                 Level.INFO,
-                "--- Writing CAS with id [" + JCasUtil.selectSingle(aJCas, JCasId.class).getId()
+                "--- writing CAS with id [" + JCasUtil.selectSingle(aJCas, JCasId.class).getId()
                         + "] complete ---");
     }
 

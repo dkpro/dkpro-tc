@@ -46,14 +46,14 @@ public class PreprocessConnector
     {
         getLogger().log(
                 Level.INFO,
-                "--- Preprocessing of CAS with id ["
+                "--- preprocessing of CAS with id ["
                         + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
         nrofProcessCalls++;
 
         getLogger().log(
                 Level.INFO,
-                "--- Preprocessing of CAS with id ["
+                "--- preprocessing of CAS with id ["
                         + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] complete ---");
     }
 
