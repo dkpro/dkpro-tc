@@ -28,14 +28,15 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
@@ -48,7 +49,7 @@ import org.dkpro.tc.fstore.filter.FeatureStoreFilter;
  * extractors on each CAS.
  */
 public class ExtractFeaturesConnector
-        extends ConnectorBase
+    extends ConnectorBase
 {
 
     /**
@@ -75,17 +76,15 @@ public class ExtractFeaturesConnector
     @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
     private String dataWriterClass;
 
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true,
-            defaultValue = Constants.LM_SINGLE_LABEL)
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
     private String learningMode;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true,
-            defaultValue = Constants.FM_DOCUMENT)
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
     private String featureMode;
 
     @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
     private boolean developerMode;
-    
+
     @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
     private boolean applyWeighting;
 
@@ -97,13 +96,12 @@ public class ExtractFeaturesConnector
     /*
      * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
      */
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true,
-            defaultValue = "org.dkpro.tc.fstore.simple.DenseFeatureStore")
+    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true, defaultValue = "org.dkpro.tc.fstore.simple.DenseFeatureStore")
     private String featureStoreClass;
 
     @Override
     public void initialize(UimaContext context)
-            throws ResourceInitializationException
+        throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -122,16 +120,22 @@ public class ExtractFeaturesConnector
 
     @Override
     public void process(JCas jcas)
-            throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
+        getLogger().log(
+                Level.INFO,
+                "--- feature extraction for CAS with id ["
+                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         List<Instance> instances = new ArrayList<Instance>();
         try {
             if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId);
+                instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas,
+                        addInstanceId);
             }
-            else if(featureMode.equals(Constants.FM_UNIT)){
-                instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId);
+            else if (featureMode.equals(Constants.FM_UNIT)) {
+                instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
+                        addInstanceId);
             }
             else {
                 instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
@@ -154,7 +158,7 @@ public class ExtractFeaturesConnector
 
     @Override
     public void collectionProcessComplete()
-            throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
 
@@ -164,17 +168,15 @@ public class ExtractFeaturesConnector
             FeatureStoreFilter filter;
             try {
                 filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
-                
+
                 if (filter.isApplicableForTraining() && !isTesting
-                        || filter.isApplicableForTesting() && isTesting)
-                {
+                        || filter.isApplicableForTesting() && isTesting) {
                     filter.applyFilter(featureStore);
-                }            
+                }
             }
-            catch (InstantiationException | IllegalAccessException | ClassNotFoundException  e) {
+            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 throw new AnalysisEngineProcessException(e);
             }
-
 
         }
 
@@ -208,7 +210,7 @@ public class ExtractFeaturesConnector
             }
         }
 
-        // FIXME if the feature store now determines whether to use dense or sparse instances, 
+        // FIXME if the feature store now determines whether to use dense or sparse instances,
         // we might get rid of the corresponding parameter here
         // addInstanceId requires dense instances
         try {

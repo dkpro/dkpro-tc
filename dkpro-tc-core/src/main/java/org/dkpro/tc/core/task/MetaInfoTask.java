@@ -46,6 +46,7 @@ import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
+import org.dkpro.tc.core.task.uima.MetaCollectionLogger;
 import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -173,6 +174,7 @@ public class MetaInfoTask
         }
 
         AggregateBuilder builder = new AggregateBuilder();
+        builder.add(createEngineDescription(MetaCollectionLogger.class));
 
         for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
             if (operativeViews != null) {
@@ -206,4 +208,5 @@ public class MetaInfoTask
     {
         this.operativeViews = operativeViews;
     }
+    
 }
