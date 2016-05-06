@@ -41,9 +41,9 @@ import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
 
@@ -138,6 +138,7 @@ public class SVMHMMBrownPosDemo
                 machineLearningAdapter, NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -151,7 +152,7 @@ public class SVMHMMBrownPosDemo
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
         batch.addReport(ContextMemoryReport.class);
-        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
@@ -177,17 +178,17 @@ public class SVMHMMBrownPosDemo
 
             SVMHMMBrownPosDemo experiment = new SVMHMMBrownPosDemo();
             // run with a random labeler
-            experiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
+//            experiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
             // run with an actual SVMHMM implementation
-            experiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
-
-        // run train test
+//            experiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
+//
+//        // run train test
             pSpace = getParameterSpace(true);
-
-            experiment = new SVMHMMBrownPosDemo();
-            // run with a random labeler
-            experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
-            // run with an actual SVMHMM implementation
+//
+//            experiment = new SVMHMMBrownPosDemo();
+//            // run with a random labeler
+//            experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
+//            // run with an actual SVMHMM implementation
             experiment.runTrainTest(pSpace, SVMHMMAdapter.class);
     }
 

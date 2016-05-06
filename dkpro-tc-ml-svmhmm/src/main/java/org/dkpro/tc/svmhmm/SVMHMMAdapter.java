@@ -29,7 +29,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.svmhmm.report.SVMHMMBatchCrossValidationReport;
+import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.svmhmm.report.SVMHMMClassificationReport;
 import org.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
@@ -62,7 +62,7 @@ public class SVMHMMAdapter
     @Override
     public Class<? extends ReportBase> getBatchTrainTestReportClass()
     {
-        return SVMHMMBatchCrossValidationReport.class;
+        return InnerBatchUsingTCEvaluationReport.class;
     }
 
     @SuppressWarnings("unchecked")
