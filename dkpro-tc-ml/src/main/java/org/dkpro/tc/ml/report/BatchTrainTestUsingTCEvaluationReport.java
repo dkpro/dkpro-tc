@@ -45,7 +45,7 @@ public class BatchTrainTestUsingTCEvaluationReport
     implements Constants
 {
     private final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
-            "files_validation", "files_training" });
+            DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
   	private boolean softEvaluation = true;
 	private boolean individualLabelMeasures = false;
 

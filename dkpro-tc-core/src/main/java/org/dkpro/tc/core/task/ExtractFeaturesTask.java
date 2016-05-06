@@ -44,6 +44,7 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
 import org.dkpro.tc.api.features.meta.MetaCollector;
+import static org.dkpro.tc.core.Constants.*;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.TaskUtils;
 
@@ -64,27 +65,27 @@ public class ExtractFeaturesTask
      */
     public static final String INPUT_KEY = "input";
 
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SET)
     private List<String> featureSet;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_FILTERS)
     private List<String> featureFilters = Collections.<String>emptyList();
-    @Discriminator
+    @Discriminator(name=DIM_PIPELINE_PARAMS)
     private List<Object> pipelineParameters;
-    @Discriminator
+    @Discriminator(name=DIM_FILES_ROOT)
     private File filesRoot;
-    @Discriminator
+    @Discriminator(name=DIM_FILES_TRAINING)
     private Collection<String> files_training;
-    @Discriminator
+    @Discriminator(name=DIM_FILES_VALIDATION)
     private Collection<String> files_validation;
-    @Discriminator
+    @Discriminator(name=DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_STORE)
     private String featureStore;
-    @Discriminator
+    @Discriminator(name=DIM_DEVELOPER_MODE)
     private boolean developerMode;
-    @Discriminator
+    @Discriminator(name=DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
 
     private boolean isTesting = false;

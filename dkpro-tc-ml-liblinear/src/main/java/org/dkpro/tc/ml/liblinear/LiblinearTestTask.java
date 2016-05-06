@@ -43,13 +43,13 @@ public class LiblinearTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-    @Discriminator
+    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     private List<String> classificationArguments;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator
+    @Discriminator(name=DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator
+    @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
     String threshold;
 
     @Override

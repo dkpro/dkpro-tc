@@ -19,6 +19,7 @@ package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.dkpro.tc.core.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +44,6 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
 import org.dkpro.tc.core.task.uima.MetaCollectionLogger;
@@ -71,24 +71,24 @@ public class MetaInfoTask
 
     private List<String> operativeViews;
 
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SET)
     protected List<String> featureSet;
 
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_MODE)
     private String featureMode;
 
-    @Discriminator
+    @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
 
     private Set<Class<? extends MetaCollector>> metaCollectorClasses;
 
-    @Discriminator
+    @Discriminator(name=DIM_FILES_ROOT)
     private File filesRoot;
 
-    @Discriminator
+    @Discriminator(name=DIM_FILES_TRAINING)
     private Collection<String> files_training;
 
-    @Discriminator
+    @Discriminator(name=DIM_RECORD_CONTEXT)
     private boolean recordContext;
 
     @Override
@@ -195,11 +195,11 @@ public class MetaInfoTask
         // Records the context i.e. as debugging help turned off by default set
         // Dimension.create("recordContext", true) into your experiment to enable it
 
-        if (featureMode.equals(Constants.FM_UNIT)) {
+        if (featureMode.equals(FM_UNIT)) {
             metaCollectorClasses.add(UnitContextMetaCollector.class);
         }
 
-        if (featureMode.equals(Constants.FM_SEQUENCE)) {
+        if (featureMode.equals(FM_SEQUENCE)) {
             metaCollectorClasses.add(SequenceContextMetaCollector.class);
         }
     }

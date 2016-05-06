@@ -55,7 +55,7 @@ public class BatchCrossValidationReport
     private static final String foldAveraged = " (average over all folds)";
     private static final String foldSum = " (sum over all folds)";
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
-            "files_validation", "files_training" });
+            DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
     private static final List<String> nonAveragedResultsMeasures = Arrays.asList(new String[] {
             ReportConstants.CORRECT, ReportConstants.INCORRECT, ReportConstants.NUMBER_EXAMPLES,
             ReportConstants.NUMBER_LABELS });

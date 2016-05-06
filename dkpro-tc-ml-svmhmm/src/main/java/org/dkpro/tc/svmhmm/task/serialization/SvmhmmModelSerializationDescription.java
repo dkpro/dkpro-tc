@@ -37,7 +37,7 @@ public class SvmhmmModelSerializationDescription
     implements Constants
 {
 
-    @Discriminator
+    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     private String[] classificationArguments;
 
 

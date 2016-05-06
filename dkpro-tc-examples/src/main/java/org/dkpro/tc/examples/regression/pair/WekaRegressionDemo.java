@@ -106,7 +106,7 @@ public class WekaRegressionDemo
                 Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle("readerTrain", dimReaders), Dimension.create(
+                Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders), Dimension.create(
                         Constants.DIM_FEATURE_MODE, Constants.FM_PAIR), Dimension.create(
                         Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION), dimFeatureSets,
                 dimClassificationArgs);

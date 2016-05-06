@@ -48,27 +48,27 @@ public class WekaTestTask
     implements Constants
 {
 
-    @Discriminator
+    @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
-    @Discriminator
+    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     protected List<String> classificationArguments;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SEARCHER_ARGS)
     protected List<String> featureSearcher;
-    @Discriminator
+    @Discriminator(name=DIM_ATTRIBUTE_EVALUATOR_ARGS)
     protected List<String> attributeEvaluator;
-    @Discriminator
+    @Discriminator(name=DIM_LABEL_TRANSFORMATION_METHOD)
     protected String labelTransformationMethod;
-    @Discriminator
+    @Discriminator(name=DIM_NUM_LABELS_TO_KEEP)
     protected int numLabelsToKeep;
-    @Discriminator
+    @Discriminator(name=DIM_APPLY_FEATURE_SELECTION)
     protected boolean applySelection;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SET)
     protected List<String> featureSet;
-    @Discriminator
+    @Discriminator(name=DIM_LEARNING_MODE)
     protected String learningMode;
-    @Discriminator
+    @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
     protected String threshold;
 
     public static final String evaluationBin = "evaluation.bin";

@@ -52,17 +52,17 @@ public class WekaModelSerializationDescription
 	    implements Constants
 {
     
-    @Discriminator
+    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     protected List<String> classificationArguments;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SEARCHER_ARGS)
     protected List<String> featureSearcher;
-    @Discriminator
+    @Discriminator(name=DIM_ATTRIBUTE_EVALUATOR_ARGS)
     protected List<String> attributeEvaluator;
-    @Discriminator
+    @Discriminator(name=DIM_LABEL_TRANSFORMATION_METHOD)
     protected String labelTransformationMethod;
-    @Discriminator
+    @Discriminator(name=DIM_NUM_LABELS_TO_KEEP)
     protected int numLabelsToKeep;
-    @Discriminator
+    @Discriminator(name=DIM_APPLY_FEATURE_SELECTION)
     protected boolean applySelection;
     
     public WekaModelSerializationDescription() {

@@ -214,7 +214,7 @@ public class TcAnnotator
             tcs.addToIndexes();
 
             tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
-            tco.setOutcome("dummyValue");
+            tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
             tco.addToIndexes();
 
             engine.process(jcas);
@@ -265,7 +265,7 @@ public class TcAnnotator
             tcs.addToIndexes();
             TextClassificationOutcome tco = new TextClassificationOutcome(jcas, unit.getBegin(),
                     unit.getEnd());
-            tco.setOutcome("dummyValue");
+            tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
             tco.addToIndexes();
         }
     }

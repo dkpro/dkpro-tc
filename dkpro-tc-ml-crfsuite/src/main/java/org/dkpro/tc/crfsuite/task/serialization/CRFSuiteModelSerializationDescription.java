@@ -39,7 +39,7 @@ public class CRFSuiteModelSerializationDescription
     implements Constants
 {
 
-    @Discriminator
+    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     private String[] classificationArguments;
 
     boolean trainModel = true;

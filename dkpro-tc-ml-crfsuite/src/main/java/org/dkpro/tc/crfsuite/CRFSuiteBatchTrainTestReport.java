@@ -43,7 +43,7 @@ public class CRFSuiteBatchTrainTestReport
 {
 
     private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
-            "files_validation", "files_training" });
+            DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
 
         @Override
         public void execute()

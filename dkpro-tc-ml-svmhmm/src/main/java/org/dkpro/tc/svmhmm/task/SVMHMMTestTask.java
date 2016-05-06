@@ -64,7 +64,7 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	/**
 	 * Learning mode discriminators; Only Constants.LM_SINGLE_LABEL is allowed
 	 */
-	@Discriminator
+	@Discriminator(name=DIM_LEARNING_MODE)
 	private String learningMode = LM_SINGLE_LABEL;
 
 	/**
@@ -77,7 +77,7 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 * equivalent to V1.01, multiply C by the number of training examples.
 	 */
 	public static final String PARAM_C = "paramC";
-	@Discriminator
+	@Discriminator(name=PARAM_C)
 	private double paramC = 5;
 
 	/**
@@ -88,15 +88,15 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 * not improve prediction accuracy.
 	 */
 	public static final String PARAM_EPSILON = "paramEpsilon";
-	@Discriminator
+	@Discriminator(name=PARAM_EPSILON)
 	private double paramEpsilon = 0.5;
 
 	/**
 	 * Parameter {@code "--t <ORDER_T>"}: Order of dependencies of transitions
 	 * in HMM. Can be any number larger than 1. (default 1)
 	 */
-	@Discriminator
 	public static final String PARAM_ORDER_T = "paramOrderT";
+	@Discriminator(name=PARAM_ORDER_T)
 	private int paramOrderT = 1;
 
 	/**
@@ -105,7 +105,7 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 * svm_struct_api.c: must be either 0 or 1; fails for &gt;1
 	 */
 	public static final String PARAM_ORDER_E = "paramOrderE";
-	@Discriminator
+	@Discriminator(name=PARAM_ORDER_E)
 	private int paramOrderE = 0;
 
 	/**
@@ -114,8 +114,8 @@ public class SVMHMMTestTask extends ExecutableTaskBase implements Constants {
 	 * most violated constraint, as well as for computing predictions. The value
 	 * is the width of the beam used (e.g. 100). (default 0).
 	 */
-	@Discriminator
 	public static final String PARAM_B = "paramB";
+	@Discriminator(name=PARAM_B)
 	private int paramB = 0;
 
 	// where the trained model is stored

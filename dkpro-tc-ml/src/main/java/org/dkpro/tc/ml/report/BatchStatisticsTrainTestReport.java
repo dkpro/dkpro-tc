@@ -79,10 +79,10 @@ public class BatchStatisticsTrainTestReport
                 String testFiles;
                 
                 // CV
-                if(!getDiscriminatorValue(discriminatorsMap, "files_training").equals("null") &&
-                        !getDiscriminatorValue(discriminatorsMap, "files_validation").equals("null")){
-                     trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_training").hashCode());
-                     testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, "files_validation").hashCode());
+                if(!getDiscriminatorValue(discriminatorsMap, DIM_FILES_TRAINING).equals("null") &&
+                        !getDiscriminatorValue(discriminatorsMap, DIM_FILES_VALIDATION).equals("null")){
+                     trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_FILES_TRAINING).hashCode());
+                     testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_FILES_VALIDATION).hashCode());
                 }
                 // TrainTest
                 else{

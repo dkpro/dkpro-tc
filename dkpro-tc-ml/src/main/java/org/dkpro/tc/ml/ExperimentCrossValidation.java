@@ -33,7 +33,7 @@ import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
+import static org.dkpro.tc.core.Constants.*;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
@@ -116,10 +116,10 @@ public class ExperimentCrossValidation
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
-            @Discriminator
+            @Discriminator(name=DIM_FEATURE_MODE)
             private String featureMode;
             
-            @Discriminator
+            @Discriminator(name=DIM_CROSS_VALIDATION_MANUAL_FOLDS)
             private boolean useCrossValidationManualFolds;
             
             @Override
@@ -139,14 +139,12 @@ public class ExperimentCrossValidation
                     i++;
                 }
                 Arrays.sort(fileNames);
-                if (numFolds == Constants.LEAVE_ONE_OUT) {
+                if (numFolds == LEAVE_ONE_OUT) {
                     numFolds = fileNames.length;
                 }
 
                 //is executed if we have less CAS than requested folds and manual mode is turned off
                 if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
-                    //TODO: add Sequence flag check
-                    // split and rebuild information
                     xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);
                     files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
                     fileNames = new String[files.size()];
@@ -159,7 +157,7 @@ public class ExperimentCrossValidation
                 }
                 // don't change any names!!
                 FoldDimensionBundle<String> foldDim = getFoldDim(fileNames);
-                Dimension<File> filesRootDim = Dimension.create("filesRoot", xmiPathRoot);
+                Dimension<File> filesRootDim = Dimension.create(DIM_FILES_ROOT, xmiPathRoot);
 
                 ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
                 setParameterSpace(pSpace);
@@ -170,7 +168,7 @@ public class ExperimentCrossValidation
 
                 try {
                     File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
-                            numFolds, numAvailableJCas, Constants.FM_SEQUENCE.equals(featureMode));
+                            numFolds, numAvailableJCas, FM_SEQUENCE.equals(featureMode));
 
                     verfiyThatNeededNumberOfCasWasCreated(outputFolder);
 
@@ -238,9 +236,9 @@ public class ExperimentCrossValidation
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+                TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
+                TEST_TASK_INPUT_KEY_TEST_DATA);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 

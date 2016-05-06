@@ -19,6 +19,7 @@ package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.dkpro.tc.core.Constants.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
@@ -55,25 +55,25 @@ public class InitTask
     extends UimaTaskBase
 {
 
-    @Discriminator
+    @Discriminator(name=DIM_READER_TRAIN)
     protected Class<? extends CollectionReader> readerTrain;
-    @Discriminator
+    @Discriminator(name=DIM_READER_TEST)
     protected Class<? extends CollectionReader> readerTest;
-    @Discriminator
+    @Discriminator(name=DIM_READER_TRAIN_PARAMS)
     protected List<Object> readerTrainParams;
-    @Discriminator
+    @Discriminator(name=DIM_READER_TEST_PARAMS)
     protected List<Object> readerTestParams;
-    @Discriminator
+    @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
-    @Discriminator
+    @Discriminator(name=DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator
+    @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
     private String threshold;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SET)
     protected List<String> featureSet;
-    @Discriminator
+    @Discriminator(name=DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
     private boolean isTesting = false;
@@ -139,12 +139,12 @@ public class InitTask
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
-        if (featureMode.equals(Constants.FM_PAIR)) {
+        if (featureMode.equals(FM_PAIR)) {
             AggregateBuilder builder = new AggregateBuilder();
             builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                    Constants.PART_ONE);
+                    PART_ONE);
             builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                    Constants.PART_TWO);
+                    PART_TWO);
             preprocessing = builder.createAggregateDescription();
         }
         else if (operativeViews != null) {

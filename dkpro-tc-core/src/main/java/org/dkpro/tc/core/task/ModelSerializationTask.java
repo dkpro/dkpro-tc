@@ -32,15 +32,15 @@ public abstract class ModelSerializationTask
     implements Constants
 {
     
-    @Discriminator
+    @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_SET)
     protected List<String> featureSet;
-    @Discriminator
+    @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
-    @Discriminator
+    @Discriminator(name=DIM_LEARNING_MODE)
     protected String learningMode;
-    @Discriminator
+    @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
     protected String threshold;
 
 	protected File outputFolder;

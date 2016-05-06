@@ -174,6 +174,25 @@ public interface Constants
      */
     public static final String DIM_APPLY_INSTANCE_WEIGHTING = "applyWeighting";
 
+    /**
+     * Developer mode enables it to use unit feature extractors in documents
+     */
+    public static final String DIM_DEVELOPER_MODE = "developerMode";
+    
+    /**
+     * Records the context of a unit/sequence in either unit mode or sequence mode as debugging help
+     */
+    public static final String DIM_RECORD_CONTEXT = "recordContext";
+    
+    /**
+     * Developer mode enables it to use unit feature extractors in documents
+     */
+    public static final String DIM_FILES_ROOT = "filesRoot";
+    
+    public static final String DIM_FILES_TRAINING = "files_training";
+    
+    public static final String DIM_FILES_VALIDATION = "files_validation";
+    
     /*
      * Learning modes
      */
@@ -406,4 +425,5 @@ public interface Constants
      * on how the cross validation will be performed
      */
     public static final String DIM_CROSS_VALIDATION_MANUAL_FOLDS = "useCrossValidationManualFolds";
+    
 }

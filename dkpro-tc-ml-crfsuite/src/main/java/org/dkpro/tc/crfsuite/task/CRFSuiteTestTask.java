@@ -47,9 +47,9 @@ public class CRFSuiteTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-    @Discriminator
+    @Discriminator(name=DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator
+    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     private String[] classificationArguments;
 
     public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
