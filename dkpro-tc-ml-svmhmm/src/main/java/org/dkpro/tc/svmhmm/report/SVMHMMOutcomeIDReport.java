@@ -19,29 +19,36 @@
 package org.dkpro.tc.svmhmm.report;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.io.IOUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
-
+import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
 public class SVMHMMOutcomeIDReport
-        extends ReportBase
-        implements Constants
+    extends ReportBase
+    implements Constants
 {
 
     protected List<String> goldLabels;
 
     protected List<String> predictedLabels;
+
+    public static final String SEPARATOR_CHAR = ";";
 
     /**
      * Returns the current test file
@@ -51,10 +58,10 @@ public class SVMHMMOutcomeIDReport
     protected File locateTestFile()
     {
         // test file with gold labels
-    	File testDataStorage = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
+        File testDataStorage = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
-        String fileName = new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+        String fileName = new SVMHMMAdapter()
+                .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
         return new File(testDataStorage, fileName);
     }
 
@@ -64,13 +71,13 @@ public class SVMHMMOutcomeIDReport
      * @throws IOException
      */
     protected void loadGoldAndPredictedLabels()
-            throws IOException
+        throws IOException
     {
         // predictions
-    	File predictionFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
+        File predictionFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
                 StorageService.AccessMode.READONLY);
-    	String predictionFileName = new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
+        String predictionFileName = new SVMHMMAdapter()
+                .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
         File predictionsFile = new File(predictionFolder, predictionFileName);
 
         // test file with gold labels
@@ -79,16 +86,15 @@ public class SVMHMMOutcomeIDReport
         // load the mappings from labels to integers
         File mappingFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
                 StorageService.AccessMode.READWRITE);
-        File mappingFile = new File(mappingFolder,
-                SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
+        File mappingFile = new File(mappingFolder, SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
         BidiMap labelsToIntegersMapping = SVMHMMUtils.loadMapping(mappingFile);
 
         // gold label tags
         goldLabels = SVMHMMUtils.extractOutcomeLabels(testFile);
 
         // predicted tags
-        predictedLabels = SVMHMMUtils
-                .extractOutcomeLabelsFromPredictions(predictionsFile, labelsToIntegersMapping);
+        predictedLabels = SVMHMMUtils.extractOutcomeLabelsFromPredictions(predictionsFile,
+                labelsToIntegersMapping);
 
         // sanity check
         if (goldLabels.size() != predictedLabels.size()) {
@@ -98,7 +104,7 @@ public class SVMHMMOutcomeIDReport
 
     @Override
     public void execute()
-            throws Exception
+        throws Exception
     {
         // load gold and predicted labels
         loadGoldAndPredictedLabels();
@@ -112,27 +118,68 @@ public class SVMHMMOutcomeIDReport
         List<Integer> sequenceIDs = SVMHMMUtils.extractOriginalSequenceIDs(testFile);
 
         // sanity check
-        if (goldLabels.size() != originalTokens.size() ||
-                goldLabels.size() != sequenceIDs.size()) {
+        if (goldLabels.size() != originalTokens.size() || goldLabels.size() != sequenceIDs.size()) {
             throw new IllegalStateException(
                     "Gold labels, original tokens or sequenceIDs differ in size!");
         }
 
-        File evaluationFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE);
-        File evaluationFile = new File(evaluationFolder, SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV);
+        File evaluationFolder = getContext().getFolder("",
+                AccessMode.READWRITE);
+        File evaluationFile = new File(evaluationFolder, ID_OUTCOME_KEY);
 
         // write results into CSV
         // form: gold;predicted;token;seqID
 
-        CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(evaluationFile), SVMHMMUtils.CSV_FORMAT);
-        csvPrinter.printComment(SVMHMMUtils.CSV_COMMENT);
+        // build header
+        Map<String, Integer> label2id = createLabel2IdMapping(goldLabels, predictedLabels);
+        String header = buildHeader(label2id);
 
+        Properties prop = new Properties();
         for (int i = 0; i < goldLabels.size(); i++) {
-            csvPrinter.printRecord(goldLabels.get(i), predictedLabels.get(i), originalTokens.get(i),
-                    sequenceIDs.get(i).toString());
+            String gold = goldLabels.get(i);
+            String pred = predictedLabels.get(i);
+
+            int g = label2id.get(gold);
+            int p = label2id.get(pred);
+            prop.setProperty("" + i, p + SEPARATOR_CHAR + g);
+        }
+        OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(evaluationFile));
+        prop.store(osw, header);
+        osw.close();
+    }
+
+    private String buildHeader(Map<String, Integer> label2id)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + "\n" + "labels" + " ");
+
+        List<String> keySet = new ArrayList<>(label2id.keySet());
+        for (int i = 0; i < keySet.size(); i++) {
+            String key = keySet.get(i);
+            sb.append(label2id.get(key) + "=" + key);
+            if (i + 1 < keySet.size()) {
+                sb.append(" ");
+            }
         }
 
-        IOUtils.closeQuietly(csvPrinter);
+        return sb.toString();
+    }
+
+    private Map<String, Integer> createLabel2IdMapping(List<String> goldLabels,
+            List<String> predictedLabels)
+    {
+        Set<String> all = new HashSet<>();
+        all.addAll(goldLabels);
+        all.addAll(predictedLabels);
+
+        Map<String, Integer> map = new HashMap<>();
+
+        Integer id = 0;
+        for (String label : all) {
+            map.put(label, id++);
+        }
+
+        return map;
     }
 }

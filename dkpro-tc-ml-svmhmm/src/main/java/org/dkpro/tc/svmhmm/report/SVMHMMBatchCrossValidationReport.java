@@ -35,7 +35,6 @@ import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.svmhmm.util.ConfusionMatrix;
@@ -104,10 +103,12 @@ public class SVMHMMBatchCrossValidationReport
         ConfusionMatrix cm = new ConfusionMatrix();
 
         for (List<String> singleInstanceOutcomeRow : allOutcomes) {
-            // first item is the gold label
-            String gold = singleInstanceOutcomeRow.get(0);
-            // second item is the predicted label
-            String predicted = singleInstanceOutcomeRow.get(1);
+            
+            String string = singleInstanceOutcomeRow.get(0);
+            String entry = string.split("=")[1];
+            String[] split = entry.split(SVMHMMOutcomeIDReport.SEPARATOR_CHAR);
+            String gold = split[0];
+            String predicted = split[1];
 
             cm.increaseValue(gold, predicted);
         }
@@ -124,7 +125,7 @@ public class SVMHMMBatchCrossValidationReport
     public void execute()
             throws Exception
     {
-        aggregateResults(SVMHMMUtils.GOLD_PREDICTED_OUTCOMES_CSV, "seq");
+        aggregateResults(Constants.ID_OUTCOME_KEY, "seq");
     }
 
     /**
