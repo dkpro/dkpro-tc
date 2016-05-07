@@ -26,12 +26,15 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-
-import de.bwaldvogel.liblinear.FeatureNode;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+
+import de.bwaldvogel.liblinear.FeatureNode;
 
 /**
  * Format is
@@ -48,7 +51,7 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 public class LiblinearDataWriter 
 	implements DataWriter
 {
-	
+    
 	@Override
 	public void write(File outputDirectory, FeatureStore featureStore,
 			boolean useDenseInstances, String learningMode, boolean applyWeighting) 

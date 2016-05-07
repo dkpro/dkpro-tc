@@ -63,5 +63,9 @@
   		<groupId>org.dkpro.lab</groupId>
   		<artifactId>dkpro-lab-core</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-ml</artifactId>
+  	</dependency>
   </dependencies>
 </project>

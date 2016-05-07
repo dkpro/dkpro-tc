@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -18,41 +18,47 @@
 package org.dkpro.tc.ml.liblinear;
 
 import java.io.File;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.tc.core.Constants;
 
 /**
- * Report that computes evaluation results given the classification results.
+ * Creates id 2 outcome report
  */
-@Deprecated
-public class LiblinearClassificationReport
+public class LiblinearOutcomeIdReport
     extends ReportBase
     implements Constants
 {
-//    @ExternalResource(api = TaskContextProvider.class) 
-//    private TaskContext ctx; 
+  @ExternalResource(api = TaskContextProvider.class) 
+  private TaskContext ctx; 
 
     @Override
     public void execute()
         throws Exception
     {
-        List<TaskContextMetadata> contexts = getContext().getStorageService().getContexts();
+     
+        File locateKey = ctx.getStorageService().locateKey(getContext().getId(), LiblinearAdapter.getOutcomeMappingFilename());
+        System.out.println(locateKey);
+        int a=0;
         
-        
-    	// only a mock for now - this needs to be rewritten anyway once the evaluation module is ready
-//        File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-//    	File evalFile = new File(folder,
-//	    		Constants.RESULTS_FILENAME);  	
-//    	
-//    	File outputFolder = getContext().getFolder("", AccessMode.READWRITE);
-//    	FileUtils.moveFile(evalFile, new File(outputFolder, Constants.RESULTS_FILENAME));
+//        
+//        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+//                new File(ID_OUTCOME_KEY)), "utf-8"));
+//
+//        String header = "ID=PREDICTION;GOLDSTANDARD" + "\n" + "labels" + " ";
+//
+//        File predFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+//        String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
+//                AdapterNameEntries.predictionsFile);
+//
+//        List<String> readLines = FileUtils.readLines(predFolder);
+//        for (int i = 1; i < readLines.size(); i++) {
+//
+//        }
+
     }
 }

@@ -17,11 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
+import java.io.OutputStreamWriter;
 import java.util.List;
-import java.util.Properties;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -30,7 +30,6 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.core.util.ReportConstants;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
@@ -43,14 +42,14 @@ public class LiblinearTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     private List<String> classificationArguments;
-    @Discriminator(name=DIM_FEATURE_MODE)
+    @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator(name=DIM_LEARNING_MODE)
+    @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
-    String threshold;
+    
+    private String SEPARATOR_CHAR=";";
 
     @Override
     public void execute(TaskContext aContext)
@@ -92,46 +91,30 @@ public class LiblinearTestTask
 
         Problem test = Problem.readFromFile(fileTest, 1.0);
 
-        // FIXME use evaluation module when available
-        Integer correct = 0;
-        Integer incorrect = 0;
-        Feature[][] testInstances = test.x;
-        List<Double> predictions = new ArrayList<Double>();
-        for (int i = 0; i < testInstances.length; i++) {
-            Feature[] instance = testInstances[i];
-            double prediction = Linear.predict(model, instance);
-            predictions.add(prediction);
+        predict(aContext, model, test);
+    }
 
-            if (test.y[i] == prediction) {
-                correct++;
-            }
-            else {
-                incorrect++;
-            }
-        }
-        Double accuracy = (double) correct / (correct + incorrect);
-
-        // write predictions
+    private void predict(TaskContext aContext, Model model, Problem test)
+        throws Exception
+    {
         File predFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
         String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
                 AdapterNameEntries.predictionsFile);
         File predictionsFile = new File(predFolder, predFileName);
-        LiblinearUtils.savePredictions(predictionsFile, predictions);
 
-        // evaluate and write results
-
-        // file to hold prediction results
-        File evalFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY,
-                AccessMode.READWRITE);
-        File evalFile = new File(evalFolder, Constants.RESULTS_FILENAME);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                predictionsFile), "utf-8"));
+        writer.append("PREDICTION;GOLD"+"\n");
         
-        Properties p = new Properties();
-        p.setProperty(ReportConstants.CORRECT, correct.toString());
-        p.setProperty(ReportConstants.INCORRECT, incorrect.toString());
-        p.setProperty(ReportConstants.PCT_CORRECT, accuracy.toString());
+        Feature[][] testInstances = test.x;
+        for (int i = 0; i < testInstances.length; i++) {
+            Feature[] instance = testInstances[i];
+            double prediction = Linear.predict(model, instance);
+            
+            writer.write(prediction+SEPARATOR_CHAR+test.y[i]);
+            writer.write("\n");
+        }
         
-        FileOutputStream fos = new FileOutputStream(evalFile);
-        p.store(fos, "results");
-        fos.close();
+        writer.close();
     }
 }
