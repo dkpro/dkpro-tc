@@ -52,6 +52,12 @@ public class SVMHMMOutcomeIDReport
 
     public static final String SEPARATOR_CHAR = ";";
 
+    /*
+     * Dummy value as threshold which is expected by the evaluation module but not created/needed by
+     * SvmHmm
+     */
+    private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+
     /**
      * Returns the current test file
      *
@@ -125,8 +131,7 @@ public class SVMHMMOutcomeIDReport
                     "Gold labels, original tokens or sequenceIDs differ in size!");
         }
 
-        File evaluationFolder = getContext().getFolder("",
-                AccessMode.READWRITE);
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
         File evaluationFile = new File(evaluationFolder, ID_OUTCOME_KEY);
 
         // write results into CSV
@@ -143,18 +148,21 @@ public class SVMHMMOutcomeIDReport
 
             int g = label2id.get(gold);
             int p = label2id.get(pred);
-            prop.setProperty("" + i, p + SEPARATOR_CHAR + g);
+            prop.setProperty("" + i, p + SEPARATOR_CHAR + g + SEPARATOR_CHAR
+                    + THRESHOLD_DUMMY_CONSTANT);
         }
         OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(evaluationFile));
         prop.store(osw, header);
         osw.close();
     }
 
-    private String buildHeader(Map<String, Integer> label2id) throws UnsupportedEncodingException
+    private String buildHeader(Map<String, Integer> label2id)
+        throws UnsupportedEncodingException
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + "\n" + "labels" + " ");
+        sb.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR + "THRESHOLD"
+                + "\n" + "labels" + " ");
 
         List<String> keySet = new ArrayList<>(label2id.keySet());
         for (int i = 0; i < keySet.size(); i++) {
