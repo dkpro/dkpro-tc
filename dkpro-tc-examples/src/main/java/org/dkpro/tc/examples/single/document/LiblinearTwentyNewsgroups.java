@@ -81,7 +81,7 @@ public class LiblinearTwentyNewsgroups
         ParameterSpace pSpace = getParameterSpace();
 
         LiblinearTwentyNewsgroups experiment = new LiblinearTwentyNewsgroups();
-//        experiment.runCrossValidation(pSpace);
+        experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 

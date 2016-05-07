@@ -89,7 +89,7 @@ public class LiblinearDataWriter
 	
 	private Map<String, Integer> getOutcomeMapping(Set<String> outcomes) {
 		Map<String, Integer> outcomeMapping = new HashMap<String, Integer>();
-		int i=1;
+		int i=0;
 		for (String outcome : outcomes) {
 			outcomeMapping.put(outcome, i);
 			i++;

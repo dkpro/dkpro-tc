@@ -47,7 +47,8 @@ public class LiblinearAdapter
 		return new LiblinearTestTask();
 	}
 
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public Class<? extends ReportBase> getClassificationReportClass() {
 		return LiblinearClassificationReport.class;
 	}

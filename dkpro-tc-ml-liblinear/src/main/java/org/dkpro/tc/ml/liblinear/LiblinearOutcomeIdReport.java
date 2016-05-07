@@ -43,6 +43,10 @@ public class LiblinearOutcomeIdReport
     implements Constants
 {
 
+    // constant dummy value for setting as threshold which is an expected field in the evaluation
+    // module but is not needed/provided by this module
+    private static final String THRESHOLD_CONSTANT = "-1";
+
     @Override
     public void execute()
         throws Exception
@@ -62,7 +66,8 @@ public class LiblinearOutcomeIdReport
             String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
             int pred = Integer.valueOf(split[0]);
             int gold = Integer.valueOf(split[1]);
-            prop.setProperty("" + lineCounter++, pred + LiblinearTestTask.SEPARATOR_CHAR + gold);
+            prop.setProperty("" + lineCounter++, pred + LiblinearTestTask.SEPARATOR_CHAR + gold
+                    + LiblinearTestTask.SEPARATOR_CHAR + THRESHOLD_CONSTANT);
         }
 
         File targetFile = getId2OutcomeFileLocation();
@@ -92,7 +97,7 @@ public class LiblinearOutcomeIdReport
         throws UnsupportedEncodingException
     {
         StringBuilder header = new StringBuilder();
-        header.append("ID=PREDICTION;GOLDSTANDARD" + "\n" + "labels" + " ");
+        header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
         int numKeys = id2label.keySet().size();
         List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
         for (int i = 0; i < numKeys; i++) {
