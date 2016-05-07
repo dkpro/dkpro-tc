@@ -47,6 +47,8 @@ public class CRFSuiteOutcomeIDReport
 
     private static final String ID_CONSTANT_VALUE = Constants.ID_FEATURE_NAME + "=";
 
+    private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+
     @Override
     public void execute()
         throws Exception
@@ -68,7 +70,8 @@ public class CRFSuiteOutcomeIDReport
 
         File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
 
-        String header = "#" + "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + "\n" +"#"+ sb.toString();
+        String header = "#" + "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
+                + "THRESHOLD" + "\n" + "#" + sb.toString();
 
         FileUtils.writeStringToFile(id2o, header + "\n" + entries, "utf-8");
     }
@@ -154,7 +157,7 @@ public class CRFSuiteOutcomeIDReport
             String id = extractTCId(featureEntry);
             int numGold = aMapping.get(split[0]);
             int numPred = aMapping.get(split[1]);
-            String e = id + "=" + numPred + SEPARATOR_CHAR + numGold;
+            String e = id + "=" + numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT;
             entries.add(e);
         }
 
