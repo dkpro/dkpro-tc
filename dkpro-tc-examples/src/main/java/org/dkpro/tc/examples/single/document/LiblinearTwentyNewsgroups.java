@@ -47,6 +47,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.LiblinearBatchTrainTestReport;
 import org.dkpro.tc.ml.liblinear.LiblinearClassificationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -135,10 +136,9 @@ public class LiblinearTwentyNewsgroups
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", LiblinearAdapter.class,
                 NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(LiblinearClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(LiblinearBatchTrainTestReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -151,10 +151,9 @@ public class LiblinearTwentyNewsgroups
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", LiblinearAdapter.class);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(LiblinearClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(LiblinearBatchTrainTestReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
         batch.addReport(ContextMemoryReport.class);
 
         // Run

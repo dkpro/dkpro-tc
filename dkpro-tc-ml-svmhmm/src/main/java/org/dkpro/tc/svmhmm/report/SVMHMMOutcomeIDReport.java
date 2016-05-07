@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -148,7 +150,7 @@ public class SVMHMMOutcomeIDReport
         osw.close();
     }
 
-    private String buildHeader(Map<String, Integer> label2id)
+    private String buildHeader(Map<String, Integer> label2id) throws UnsupportedEncodingException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -157,7 +159,7 @@ public class SVMHMMOutcomeIDReport
         List<String> keySet = new ArrayList<>(label2id.keySet());
         for (int i = 0; i < keySet.size(); i++) {
             String key = keySet.get(i);
-            sb.append(label2id.get(key) + "=" + key);
+            sb.append(label2id.get(key) + "=" + URLEncoder.encode(key, "UTF-8"));
             if (i + 1 < keySet.size()) {
                 sb.append(" ");
             }

@@ -48,8 +48,8 @@ public class LiblinearTestTask
     private String featureMode;
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
-    
-    private String SEPARATOR_CHAR=";";
+
+    public static String SEPARATOR_CHAR = ";";
 
     @Override
     public void execute(TaskContext aContext)
@@ -104,17 +104,17 @@ public class LiblinearTestTask
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
                 predictionsFile), "utf-8"));
-        writer.append("PREDICTION;GOLD"+"\n");
-        
+        writer.append("#PREDICTION;GOLD" + "\n");
+
         Feature[][] testInstances = test.x;
         for (int i = 0; i < testInstances.length; i++) {
             Feature[] instance = testInstances[i];
-            double prediction = Linear.predict(model, instance);
-            
-            writer.write(prediction+SEPARATOR_CHAR+test.y[i]);
+            Double prediction = Linear.predict(model, instance);
+
+            writer.write(prediction.intValue() + SEPARATOR_CHAR + new Double(test.y[i]).intValue());
             writer.write("\n");
         }
-        
+
         writer.close();
     }
 }

@@ -17,16 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
-import java.io.File;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.ReportBase;
-import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.TaskContextMetadata;
-import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -37,22 +28,11 @@ public class LiblinearClassificationReport
     extends ReportBase
     implements Constants
 {
-//    @ExternalResource(api = TaskContextProvider.class) 
-//    private TaskContext ctx; 
 
     @Override
     public void execute()
         throws Exception
     {
-        List<TaskContextMetadata> contexts = getContext().getStorageService().getContexts();
         
-        
-    	// only a mock for now - this needs to be rewritten anyway once the evaluation module is ready
-//        File folder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-//    	File evalFile = new File(folder,
-//	    		Constants.RESULTS_FILENAME);  	
-//    	
-//    	File outputFolder = getContext().getFolder("", AccessMode.READWRITE);
-//    	FileUtils.moveFile(evalFile, new File(outputFolder, Constants.RESULTS_FILENAME));
     }
 }

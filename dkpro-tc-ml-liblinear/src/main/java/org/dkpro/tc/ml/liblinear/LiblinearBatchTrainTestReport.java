@@ -41,6 +41,7 @@ import org.dkpro.tc.core.util.ReportUtils;
  * Collects the final evaluation results in a train/test setting.
  * 
  */
+@Deprecated
 public class LiblinearBatchTrainTestReport
     extends BatchReportBase
     implements Constants

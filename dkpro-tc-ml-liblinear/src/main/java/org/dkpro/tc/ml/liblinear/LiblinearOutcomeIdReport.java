@@ -18,13 +18,22 @@
 package org.dkpro.tc.ml.liblinear;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.dkpro.lab.engine.TaskContext;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 /**
  * Creates id 2 outcome report
@@ -33,32 +42,84 @@ public class LiblinearOutcomeIdReport
     extends ReportBase
     implements Constants
 {
-  @ExternalResource(api = TaskContextProvider.class) 
-  private TaskContext ctx; 
 
     @Override
     public void execute()
         throws Exception
     {
-     
-        File locateKey = ctx.getStorageService().locateKey(getContext().getId(), LiblinearAdapter.getOutcomeMappingFilename());
-        System.out.println(locateKey);
-        int a=0;
-        
-//        
-//        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-//                new File(ID_OUTCOME_KEY)), "utf-8"));
-//
-//        String header = "ID=PREDICTION;GOLDSTANDARD" + "\n" + "labels" + " ";
-//
-//        File predFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-//        String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
-//                AdapterNameEntries.predictionsFile);
-//
-//        List<String> readLines = FileUtils.readLines(predFolder);
-//        for (int i = 1; i < readLines.size(); i++) {
-//
-//        }
+        Map<Integer, String> id2label = getId2LabelMapping();
 
+        String header = buildHeader(id2label);
+
+        List<String> predictions = readPredictions();
+
+        Properties prop = new Properties();
+        int lineCounter = 0;
+        for (String line : predictions) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
+            String pred = id2label.get(Integer.valueOf(split[0]));
+            String gold = id2label.get(Integer.valueOf(split[1]));
+            prop.setProperty("" + lineCounter++, pred + LiblinearTestTask.SEPARATOR_CHAR + gold);
+        }
+
+        File targetFile = getId2OutcomeFileLocation();
+
+        FileWriterWithEncoding fw = new FileWriterWithEncoding(targetFile, "utf-8");
+        prop.store(fw, header);
+        fw.close();
+
+    }
+
+    private File getId2OutcomeFileLocation()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, ID_OUTCOME_KEY);
+    }
+
+    private List<String> readPredictions()
+        throws IOException
+    {
+        File predFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+        String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
+                AdapterNameEntries.predictionsFile);
+        return FileUtils.readLines(new File(predFolder, predFileName));
+    }
+
+    private String buildHeader(Map<Integer, String> id2label)
+        throws UnsupportedEncodingException
+    {
+        StringBuilder header = new StringBuilder();
+        header.append("ID=PREDICTION;GOLDSTANDARD" + "\n" + "labels" + " ");
+        int numKeys = id2label.keySet().size();
+        List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
+        for (int i = 0; i < numKeys; i++) {
+            Integer key = keys.get(i);
+            header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
+            if (i + 1 < numKeys) {
+                header.append(" ");
+            }
+        }
+        return header.toString();
+    }
+
+    private Map<Integer, String> getId2LabelMapping()
+        throws Exception
+    {
+        File mappingFile = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
+                StorageService.AccessMode.READONLY);
+        String fileName = LiblinearAdapter.getOutcomeMappingFilename();
+        File file = new File(mappingFile, fileName);
+        Map<Integer, String> map = new HashMap<Integer, String>();
+
+        List<String> lines = FileUtils.readLines(file);
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            map.put(Integer.valueOf(split[1]), split[0]);
+        }
+
+        return map;
     }
 }

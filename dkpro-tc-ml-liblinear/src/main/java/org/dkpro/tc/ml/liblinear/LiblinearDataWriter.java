@@ -26,9 +26,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.io.DataWriter;
