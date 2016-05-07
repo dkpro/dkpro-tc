@@ -37,6 +37,7 @@ import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 
+@Deprecated
 public class CRFSuiteBatchTrainTestReport
     extends BatchReportBase
     implements Constants

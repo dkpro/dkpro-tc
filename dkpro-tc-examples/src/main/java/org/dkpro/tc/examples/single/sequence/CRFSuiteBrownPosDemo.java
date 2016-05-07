@@ -33,16 +33,15 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensUFE;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -128,7 +127,7 @@ public class CRFSuiteBrownPosDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(CRFSuiteBatchCrossValidationReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);

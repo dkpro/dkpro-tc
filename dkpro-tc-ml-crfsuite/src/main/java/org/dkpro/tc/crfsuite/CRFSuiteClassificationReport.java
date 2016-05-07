@@ -30,6 +30,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.ReportConstants;
 
+@Deprecated
 public class CRFSuiteClassificationReport
     extends ReportBase
     implements Constants

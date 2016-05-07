@@ -36,14 +36,14 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport;
-import org.dkpro.tc.crfsuite.CRFSuiteClassificationReport;
 import org.dkpro.tc.examples.io.NERDemoReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfCharsUFE;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 
 /**
  * Example for NER as sequence classification.
@@ -74,6 +74,7 @@ public class CRFSuiteNERSequenceDemo
 
         CRFSuiteNERSequenceDemo demo = new CRFSuiteNERSequenceDemo();
         demo.runCrossValidation(getParameterSpace());
+        demo.runTrainTest(getParameterSpace());
     }
 
     // ##### CV #####
@@ -83,10 +84,9 @@ public class CRFSuiteNERSequenceDemo
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
                 "NamedEntitySequenceDemoCV", CRFSuiteAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(CRFSuiteClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(CRFSuiteBatchCrossValidationReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -101,6 +101,7 @@ public class CRFSuiteNERSequenceDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(ContextMemoryReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
