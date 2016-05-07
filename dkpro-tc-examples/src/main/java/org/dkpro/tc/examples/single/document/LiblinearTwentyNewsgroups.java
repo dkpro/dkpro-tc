@@ -48,6 +48,7 @@ import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.LiblinearBatchTrainTestReport;
 import org.dkpro.tc.ml.liblinear.LiblinearClassificationReport;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -153,7 +154,7 @@ public class LiblinearTwentyNewsgroups
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
         batch.addReport(ContextMemoryReport.class);
 
         // Run

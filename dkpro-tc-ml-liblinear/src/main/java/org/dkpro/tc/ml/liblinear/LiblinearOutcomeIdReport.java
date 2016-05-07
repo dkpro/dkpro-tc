@@ -60,8 +60,8 @@ public class LiblinearOutcomeIdReport
                 continue;
             }
             String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
-            String pred = id2label.get(Integer.valueOf(split[0]));
-            String gold = id2label.get(Integer.valueOf(split[1]));
+            int pred = Integer.valueOf(split[0]);
+            int gold = Integer.valueOf(split[1]);
             prop.setProperty("" + lineCounter++, pred + LiblinearTestTask.SEPARATOR_CHAR + gold);
         }
 
