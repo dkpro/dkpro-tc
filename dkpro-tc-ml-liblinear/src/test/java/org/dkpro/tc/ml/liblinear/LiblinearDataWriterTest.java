@@ -56,8 +56,8 @@ public class LiblinearDataWriterTest {
 		features2.add(new Feature("feature2", 0.5));
 		features2.add(new Feature("feature1", 0.5));
 		
-		Instance instance1 = new Instance(features1, "1");
-		Instance instance2 = new Instance(features2, "2");
+		Instance instance1 = new Instance(features1, "0");
+		Instance instance2 = new Instance(features2, "1");
 
 		fs.addInstance(instance1);
 		fs.addInstance(instance2);
@@ -70,6 +70,7 @@ public class LiblinearDataWriterTest {
 		Problem problem = Problem.readFromFile(outputFile, 1.0);
 		assertEquals(2, problem.l);
 		assertEquals(4, problem.n);
-		assertEquals(1.0, problem.y[0], 0.00001);
+		assertEquals(0.0, problem.y[0], 0.00001);
+		assertEquals(1.0, problem.y[1], 0.00001);
 	}
 }
