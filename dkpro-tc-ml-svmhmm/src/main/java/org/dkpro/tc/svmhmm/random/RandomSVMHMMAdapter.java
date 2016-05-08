@@ -20,7 +20,7 @@ package org.dkpro.tc.svmhmm.random;
 
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-
+import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 
 /**
@@ -36,6 +36,6 @@ public class RandomSVMHMMAdapter
 
     @Override public Class<? extends ReportBase> getBatchTrainTestReportClass()
     {
-        return RandomSVMHMMBatchCrossValidationReport.class;
+        return InnerBatchUsingTCEvaluationReport.class;
     }
 }
