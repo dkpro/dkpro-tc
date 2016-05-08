@@ -29,9 +29,8 @@ import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
+import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter
-import org.dkpro.tc.crfsuite.CRFSuiteBatchCrossValidationReport
-import org.dkpro.tc.crfsuite.CRFSuiteClassificationReport
 import org.dkpro.tc.examples.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.NrOfTokensUFE
@@ -78,7 +77,6 @@ implements Constants {
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:  getPreprocessing(),
             machineLearningAdapter: CRFSuiteAdapter,
-            innerReports: [CRFSuiteClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -87,7 +85,7 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                CRFSuiteBatchCrossValidationReport
+                BatchCrossValidationReport
             ],
             numFolds: NUM_FOLDS]
 
