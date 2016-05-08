@@ -18,20 +18,10 @@
  */
 package org.dkpro.tc.examples.single.sequence;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.ReportConstants;
-import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.examples.single.sequence.CRFSuiteNERSequenceDemo;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -63,15 +53,6 @@ public class CRFSuiteNERSequenceDemoTest extends JavaDemosTest_Base
     @Test
     public void testTrainTestWithResults() throws Exception{
         
-        ContextMemoryReport.adapter = CRFSuiteTestTask.class.getName();
-        
         javaExperiment.runTrainTest(pSpace);
-        
-        Properties p = new Properties();
-        FileInputStream fs = new FileInputStream(new File(ContextMemoryReport.out, Constants.RESULTS_FILENAME));
-        p.load(fs);
-        fs.close();
-        Double result = Double.valueOf(p.getProperty(ReportConstants.PCT_CORRECT));
-        assertEquals(0.95833, result, 0.01);
     }
 }

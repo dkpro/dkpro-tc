@@ -18,21 +18,10 @@
  */
 package org.dkpro.tc.examples.single.pair;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.ReportConstants;
-import org.dkpro.tc.examples.single.pair.WekaPairTwentyNewsgroupsDemo;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
-import org.dkpro.tc.weka.task.WekaTestTask;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -57,16 +46,6 @@ public class WekaPairTwentyNewsgroupsDemoTest extends JavaDemosTest_Base
     public void testJavaTrainTest()
         throws Exception
     {
-        ContextMemoryReport.adapter = WekaTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
-        
-        Properties p = new Properties();
-        FileInputStream fs = new FileInputStream(new File(ContextMemoryReport.out, Constants.RESULTS_FILENAME));
-        p.load(fs);
-        fs.close();
-        Double result = Double.valueOf(p.getProperty(ReportConstants.WGT_FMEASURE));
-        assertEquals(1.0, result, 0.0001);
-        result = Double.valueOf(p.getProperty(ReportConstants.PCT_CORRECT));
-        assertEquals(100.0, result, 0.0001);
     }
 }

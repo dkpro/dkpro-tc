@@ -25,12 +25,12 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.weka.report.WekaRegressionReport;
 import org.dkpro.tc.weka.task.WekaTestTask;
@@ -68,7 +68,7 @@ public class WekaRegressionAdapter
     @Override
     public Class<? extends ReportBase> getBatchTrainTestReportClass()
     {
-        return BatchTrainTestReport.class;
+        return InnerBatchUsingTCEvaluationReport.class;
     }
 
     @SuppressWarnings("unchecked")

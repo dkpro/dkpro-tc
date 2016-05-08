@@ -25,14 +25,12 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.junit.Before;
-import org.junit.Test;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportConstants;
-import org.dkpro.tc.examples.single.document.WekaTwentyNewsgroupsInstanceWeightingDemo;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.weka.task.WekaTestTask;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -57,17 +55,6 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemoTest extends JavaDemosTest
     public void testJavaTrainTest()
         throws Exception
     {
-        ContextMemoryReport.adapter = WekaTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
-        
-        Properties p = new Properties();
-        FileInputStream fs = new FileInputStream(new File(ContextMemoryReport.out, Constants.RESULTS_FILENAME));
-        p.load(fs);
-        fs.close();
-        
-        Double result = Double.valueOf(p.getProperty(ReportConstants.WGT_FMEASURE));
-        assertEquals(0.5309, result, 0.0001);
-        result = Double.valueOf(p.getProperty(ReportConstants.PCT_CORRECT));
-        assertEquals(57.3593, result, 0.0001);
     }
 }

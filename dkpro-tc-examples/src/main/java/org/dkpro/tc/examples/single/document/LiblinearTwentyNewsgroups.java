@@ -33,7 +33,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -152,7 +151,6 @@ public class LiblinearTwentyNewsgroups
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
-        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);

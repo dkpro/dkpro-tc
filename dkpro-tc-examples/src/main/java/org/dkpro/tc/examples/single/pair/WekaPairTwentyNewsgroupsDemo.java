@@ -27,18 +27,15 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * PairTwentyNewsgroupsExperiment, using Java
@@ -128,7 +125,6 @@ public class WekaPairTwentyNewsgroupsDemo
                 WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);

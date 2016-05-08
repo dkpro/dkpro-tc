@@ -19,17 +19,10 @@
 package org.dkpro.tc.examples.single.sequence;
 
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
-import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +48,6 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
     public void testRandomSVMHMM()
         throws Exception
     {
-        ContextMemoryReport.adapter = SVMHMMTestTask.class.getName();
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
     }
@@ -64,19 +56,7 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
     public void testActualSVMHMM()
         throws Exception
     {
-        ContextMemoryReport.adapter = SVMHMMTestTask.class.getName();
-        
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
-        
-        String fileContent = FileUtils.readFileToString(new File(ContextMemoryReport.out, Constants.RESULTS_FILENAME));
-        String beg = "Macro F-measure: ";
-        String end = ",";
-        
-        int s = fileContent.indexOf(beg) + beg.length();
-        int e = fileContent.indexOf(end);
-        
-        Double result = Double.valueOf(fileContent.substring(s, e));
-        assertEquals(0.346, result, 0.0000001);
     }
 }

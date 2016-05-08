@@ -100,7 +100,6 @@ public class CRFSuiteNERSequenceDemo
                 CRFSuiteAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(ContextMemoryReport.class);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 

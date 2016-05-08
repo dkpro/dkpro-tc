@@ -39,6 +39,7 @@ import weka.core.SerializationHelper;
 /**
  * Simple report for regression problems
  */
+@Deprecated
 public class WekaRegressionReport
     extends ReportBase
 {

@@ -50,6 +50,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
+import org.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a multi-label experiment,
@@ -171,7 +172,7 @@ public class MekaWekaComplexConfigurationMultiDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationAdapter.class);
+        		MekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
