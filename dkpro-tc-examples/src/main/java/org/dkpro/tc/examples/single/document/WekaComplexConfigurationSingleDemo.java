@@ -39,7 +39,7 @@ import org.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.Ranker;
@@ -157,7 +157,7 @@ public class WekaComplexConfigurationSingleDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME,
-        		WekaClassificationUsingTCEvaluationAdapter.class);
+        		WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);

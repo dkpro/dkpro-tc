@@ -39,7 +39,7 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -73,7 +73,7 @@ public class WekaSimpleDkproTCReaderDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "SimpleReaderDemoCV", WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+                "SimpleReaderDemoCV", WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

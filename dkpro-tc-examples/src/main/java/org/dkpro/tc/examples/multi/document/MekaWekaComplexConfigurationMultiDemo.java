@@ -43,7 +43,7 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.MekaClassificationAdapter;
 
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.classifiers.bayes.NaiveBayes;
@@ -169,7 +169,7 @@ public class MekaWekaComplexConfigurationMultiDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationUsingTCEvaluationAdapter.class);
+        		MekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

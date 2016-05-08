@@ -39,7 +39,7 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
@@ -176,7 +176,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());

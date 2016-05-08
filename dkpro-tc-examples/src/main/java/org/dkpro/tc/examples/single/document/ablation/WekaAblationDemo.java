@@ -41,7 +41,7 @@ import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaClassificationReport;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -119,7 +119,7 @@ public class WekaAblationDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
-                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+                WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);

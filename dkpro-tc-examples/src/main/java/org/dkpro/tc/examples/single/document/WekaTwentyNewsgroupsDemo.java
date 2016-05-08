@@ -42,7 +42,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
 
@@ -150,7 +150,7 @@ public class WekaTwentyNewsgroupsDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
-                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+                WekaClassificationAdapter.class, NUM_FOLDS);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.addInnerReport(WekaFeatureValuesReport.class);
@@ -186,7 +186,7 @@ public class WekaTwentyNewsgroupsDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -202,7 +202,7 @@ public class WekaTwentyNewsgroupsDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest-withStats",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

@@ -36,12 +36,12 @@ import org.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
 import org.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
 import org.dkpro.tc.weka.writer.WekaDataWriter;
 
-public class WekaClassificationUsingTCEvaluationAdapter 
+public class WekaClassificationAdapter 
 	implements TCMachineLearningAdapter
 {
 
 	public static TCMachineLearningAdapter getInstance() {
-		return new WekaClassificationUsingTCEvaluationAdapter();
+		return new WekaClassificationAdapter();
 	}
 	
 	@Override

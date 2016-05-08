@@ -42,7 +42,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -140,7 +140,7 @@ public class WekaReportUsageDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("ReportsCrossValidation",
-                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+                WekaClassificationAdapter.class, NUM_FOLDS);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());
@@ -161,7 +161,7 @@ public class WekaReportUsageDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("ReportsTrainTest",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());

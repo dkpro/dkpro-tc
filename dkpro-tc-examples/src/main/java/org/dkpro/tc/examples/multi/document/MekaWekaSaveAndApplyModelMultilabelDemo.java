@@ -53,7 +53,7 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.MekaClassificationAdapter;
 
 public class MekaWekaSaveAndApplyModelMultilabelDemo
     implements Constants
@@ -147,7 +147,7 @@ public class MekaWekaSaveAndApplyModelMultilabelDemo
         throws Exception
     {
     	ExperimentSaveModel batch = new ExperimentSaveModel(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationUsingTCEvaluationAdapter.class, modelPath);
+        		MekaClassificationAdapter.class, modelPath);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

@@ -39,7 +39,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
@@ -125,7 +125,7 @@ public class WekaTwitterSentimentDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV",
-                WekaClassificationUsingTCEvaluationAdapter.class, 3);
+                WekaClassificationAdapter.class, 3);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
@@ -139,7 +139,7 @@ public class WekaTwitterSentimentDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);

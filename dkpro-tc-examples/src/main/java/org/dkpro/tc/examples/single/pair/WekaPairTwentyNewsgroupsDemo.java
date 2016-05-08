@@ -33,7 +33,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -122,7 +122,7 @@ public class WekaPairTwentyNewsgroupsDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 

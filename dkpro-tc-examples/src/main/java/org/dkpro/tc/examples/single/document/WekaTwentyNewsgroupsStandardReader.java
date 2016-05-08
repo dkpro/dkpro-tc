@@ -44,7 +44,7 @@ import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
 
@@ -179,7 +179,7 @@ public class WekaTwentyNewsgroupsStandardReader
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());

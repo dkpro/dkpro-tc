@@ -48,7 +48,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.MekaClassificationAdapter;
 
 public class MekaWekaReutersUsingTCEvaluationDemo
     implements Constants
@@ -142,7 +142,7 @@ public class MekaWekaReutersUsingTCEvaluationDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationUsingTCEvaluationAdapter.class);
+        		MekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -157,7 +157,7 @@ public class MekaWekaReutersUsingTCEvaluationDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(EXPERIMENT_NAME + "-CV",
-                MekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+                MekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

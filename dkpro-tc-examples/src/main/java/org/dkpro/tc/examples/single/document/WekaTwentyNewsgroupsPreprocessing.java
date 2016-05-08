@@ -40,7 +40,7 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
@@ -113,7 +113,7 @@ public class WekaTwentyNewsgroupsPreprocessing
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
                 "TwentyNewsgroupsCV-preprocessing",
-                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS)
+                WekaClassificationAdapter.class, NUM_FOLDS)
         {
         	@Discriminator 
         	String segmenter;

@@ -45,7 +45,7 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
@@ -153,7 +153,7 @@ public class WekaSaveAndApplyModelSinglelabelDemo
         throws Exception
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("TwentyNewsgroupsSaveModel",
-                WekaClassificationUsingTCEvaluationAdapter.class, modelPath);
+                WekaClassificationAdapter.class, modelPath);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

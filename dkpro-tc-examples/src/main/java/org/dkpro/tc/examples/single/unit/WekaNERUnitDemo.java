@@ -40,7 +40,7 @@ import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -76,7 +76,7 @@ public class WekaNERUnitDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV",
-                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
+                WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -90,7 +90,7 @@ public class WekaNERUnitDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("NERDemoTrainTest",
-                WekaClassificationUsingTCEvaluationAdapter.class);
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
