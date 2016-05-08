@@ -37,7 +37,7 @@ import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
@@ -128,7 +128,7 @@ public class WekaTwitterSentimentDemo
                 WekaClassificationAdapter.class, 3);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);

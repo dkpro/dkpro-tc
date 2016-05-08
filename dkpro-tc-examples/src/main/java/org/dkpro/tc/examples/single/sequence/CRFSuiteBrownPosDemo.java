@@ -41,7 +41,7 @@ import org.dkpro.tc.features.length.NrOfTokensUFE;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -127,7 +127,7 @@ public class CRFSuiteBrownPosDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(batch);

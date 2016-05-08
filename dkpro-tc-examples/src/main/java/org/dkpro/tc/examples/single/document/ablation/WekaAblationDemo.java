@@ -39,7 +39,7 @@ import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaClassificationReport;
@@ -124,7 +124,7 @@ public class WekaAblationDemo
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
         batch.addReport(BatchRuntimeReport.class);
 
         // Run
