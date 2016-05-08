@@ -38,7 +38,7 @@ import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaRegressionAdapter;
 
 import weka.classifiers.functions.SMOreg;
@@ -137,7 +137,7 @@ public class WekaRegressionDemo
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

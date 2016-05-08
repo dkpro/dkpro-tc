@@ -43,7 +43,7 @@ import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Example for NER as sequence classification.
@@ -100,7 +100,7 @@ public class CRFSuiteNERSequenceDemo
                 CRFSuiteAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

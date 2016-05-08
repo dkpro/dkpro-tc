@@ -18,15 +18,11 @@
 package org.dkpro.tc.ml.report;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.reporting.FlexTable;
 import org.dkpro.lab.storage.StorageService;
@@ -34,63 +30,48 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 
+import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportUtils;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 
 /**
  * Collects the final evaluation results in a train/test setting.
  */
-@Deprecated
 public class BatchTrainTestReport
     extends BatchReportBase
     implements Constants
 {
-
-    private static final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
+    private final List<String> discriminatorsToExclude = Arrays.asList(new String[] {
             DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
+  	private boolean softEvaluation = true;
+	private boolean individualLabelMeasures = false;
 
+	
     @Override
     public void execute()
         throws Exception
     {
         StorageService store = getContext().getStorageService();
-
         FlexTable<String> table = FlexTable.forClass(String.class);
-
-        Map<String, List<Double>> key2resultValues = new HashMap<String, List<Double>>();
-        Map<List<String>, Double> confMatrixMap = new HashMap<List<String>, Double>();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             // FIXME this is a bad hack
             if (subcontext.getType().contains("TestTask")) {
-
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                Map<String, String> resultMap = store.retrieveBinary(subcontext.getId(),
-                        Constants.RESULTS_FILENAME, new PropertiesAdapter()).getMap();
-
-                File confMatrix = store.locateKey(subcontext.getId(),
-                        CONFUSIONMATRIX_KEY);
-
-                if (confMatrix.isFile()) {
-                    confMatrixMap = ReportUtils
-                            .updateAggregateMatrix(confMatrixMap, confMatrix);
-                }
-                else {
-                    confMatrix.delete();
-                }
-
-                String key = getKey(discriminatorsMap);
-
-                List<Double> results;
-                if (key2resultValues.get(key) == null) {
-                    results = new ArrayList<Double>();
-                }
-                else {
-                    results = key2resultValues.get(key);
-                }
-                key2resultValues.put(key, results);
+                String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), ID_OUTCOME_KEY);
+                Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
+                EvaluatorBase evaluator = EvaluatorFactory.createEvaluator(id2outcome, softEvaluation, individualLabelMeasures);
+                Map<String, Double> resultTempMap = evaluator.calculateEvaluationMeasures();
+                Map<String, String> resultMap = new HashMap<String, String>();
+                for (String key : resultTempMap.keySet()) {
+                	Double value = resultTempMap.get(key);
+					resultMap.put(key, String.valueOf(value));
+				}
 
                 Map<String, String> values = new HashMap<String, String>();
                 Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
@@ -106,7 +87,7 @@ public class BatchTrainTestReport
                 table.addRow(subcontext.getLabel(), values);
             }
         }
-
+        
         getContext().getLoggingService().message(getContextLabel(),
                 ReportUtils.getPerformanceOverview(table));
         // Excel cannot cope with more than 255 columns
@@ -122,17 +103,6 @@ public class BatchTrainTestReport
         }
         getContext().storeBinary(EVAL_FILE_NAME + SUFFIX_CSV, table.getCsvWriter());
 
-        // this report is reused in CV, and we only want to aggregate confusion matrices from folds
-        // in CV, and an aggregated OutcomeIdReport
-        if (getContext().getId().startsWith(ExperimentCrossValidation.class.getSimpleName())) {
-            // no confusion matrix for regression
-            if (confMatrixMap.size() > 0) {
-                FlexTable<String> confMatrix = ReportUtils
-                        .createOverallConfusionMatrix(confMatrixMap);
-                getContext().storeBinary(CONFUSIONMATRIX_KEY, confMatrix.getCsvWriter());
-            }
-        }
-
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
         File dummyFolder = store.locateKey(getContext().getId(), "dummy");
@@ -141,15 +111,15 @@ public class BatchTrainTestReport
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
         dummyFolder.delete();
     }
-
-    private String getKey(Map<String, String> discriminatorsMap)
-    {
-        Set<String> sortedDiscriminators = new TreeSet<String>(discriminatorsMap.keySet());
-
-        List<String> values = new ArrayList<String>();
-        for (String discriminator : sortedDiscriminators) {
-            values.add(discriminatorsMap.get(discriminator));
+    
+    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
+            throws TextClassificationException
+        {
+        	for (String key : discriminatorsMap.keySet()) {
+    			if(key.split("\\|")[1].equals(discriminatorName)){
+    				return discriminatorsMap.get(key);
+    			}
+    		}
+        	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
         }
-        return StringUtils.join(values, "_");
-    }
 }

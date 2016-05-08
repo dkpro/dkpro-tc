@@ -38,7 +38,7 @@ import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -183,7 +183,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
 //        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 //        batch.addReport(BatchRuntimeReport.class);
 
         // Run

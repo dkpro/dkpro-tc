@@ -42,7 +42,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
@@ -186,7 +186,7 @@ public class WekaTwentyNewsgroupsStandardReader
         // batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestReport.class);
         // batch.addReport(BatchRuntimeReport.class);
 
         // Run

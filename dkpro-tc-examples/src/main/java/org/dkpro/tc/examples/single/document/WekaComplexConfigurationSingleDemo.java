@@ -38,7 +38,7 @@ import org.dkpro.tc.features.length.NrOfCharsDFE;
 import org.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.attributeSelection.InfoGainAttributeEval;
@@ -160,7 +160,7 @@ public class WekaComplexConfigurationSingleDemo
         		WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

@@ -42,7 +42,7 @@ import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
@@ -151,7 +151,7 @@ public class SVMHMMBrownPosDemo
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
+        batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
