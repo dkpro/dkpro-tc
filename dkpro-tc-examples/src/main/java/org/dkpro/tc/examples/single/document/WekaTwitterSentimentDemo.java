@@ -34,6 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -41,6 +42,8 @@ import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
@@ -126,7 +129,7 @@ public class WekaTwitterSentimentDemo
         		WekaClassificationAdapter.class, 3);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-//        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -140,7 +143,7 @@ public class WekaTwitterSentimentDemo
         		WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-//        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);

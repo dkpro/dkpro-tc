@@ -35,6 +35,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ExperimentUtil;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
@@ -44,6 +45,7 @@ import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
 import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaClassificationReport;
@@ -131,7 +133,7 @@ public class WekaAblationDemo
         batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
         batch.addReport(BatchRuntimeReport.class);
 
         // Run

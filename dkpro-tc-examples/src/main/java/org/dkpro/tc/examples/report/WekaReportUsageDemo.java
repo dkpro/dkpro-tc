@@ -36,6 +36,7 @@ import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.initializer.TwentyNewsgroupsOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -45,9 +46,11 @@ import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchOutcomeIDReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaClassificationReport;
 import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
@@ -153,10 +156,8 @@ public class WekaReportUsageDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.addInnerReport(WekaFeatureValuesReport.class);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
         batch.addReport(BatchRuntimeReport.class);
 
         // Run
@@ -175,8 +176,7 @@ public class WekaReportUsageDemo
         batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
         batch.addReport(BatchRuntimeReport.class);
 
         // Run

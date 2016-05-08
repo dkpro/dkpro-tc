@@ -36,6 +36,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -43,6 +44,7 @@ import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 public class WekaTwentyNewsgroupsPreprocessing
@@ -141,7 +143,7 @@ public class WekaTwentyNewsgroupsPreprocessing
         batch.setPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//        batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
 
         Lab.getInstance().run(batch);
     }

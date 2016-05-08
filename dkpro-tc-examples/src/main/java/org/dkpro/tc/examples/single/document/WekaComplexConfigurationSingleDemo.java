@@ -40,6 +40,7 @@ import weka.classifiers.meta.Bagging;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -47,6 +48,7 @@ import org.dkpro.tc.features.length.NrOfCharsDFE;
 import org.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
@@ -159,7 +161,7 @@ public class WekaComplexConfigurationSingleDemo
         		WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
-//        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);
 
         // Run
         Lab.getInstance().run(batch);
