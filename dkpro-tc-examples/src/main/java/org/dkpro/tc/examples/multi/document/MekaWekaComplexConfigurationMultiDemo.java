@@ -35,11 +35,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.attributeSelection.InfoGainAttributeEval;
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -47,10 +42,12 @@ import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.MekaClassificationAdapter;
 import org.dkpro.tc.weka.MekaClassificationUsingTCEvaluationAdapter;
+
+import weka.attributeSelection.InfoGainAttributeEval;
+import weka.classifiers.bayes.NaiveBayes;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a multi-label experiment,

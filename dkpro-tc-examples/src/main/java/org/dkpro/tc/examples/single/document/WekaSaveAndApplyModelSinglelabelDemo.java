@@ -37,13 +37,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
-import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -52,8 +45,13 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
+import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
+import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * Demo to show-case how trained models can be persisted.

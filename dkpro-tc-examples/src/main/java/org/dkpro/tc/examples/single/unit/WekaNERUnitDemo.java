@@ -33,9 +33,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.NERDemoReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -43,8 +40,9 @@ import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This is an example for NER as unit classification. Each Entity is treated as a classification

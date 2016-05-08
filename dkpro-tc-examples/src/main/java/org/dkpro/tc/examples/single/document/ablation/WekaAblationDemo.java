@@ -41,7 +41,6 @@ import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 import org.dkpro.tc.weka.report.WekaClassificationReport;
 

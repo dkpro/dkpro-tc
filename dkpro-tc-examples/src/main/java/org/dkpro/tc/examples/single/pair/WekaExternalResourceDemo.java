@@ -33,18 +33,15 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.functions.SMO;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
+import weka.classifiers.functions.SMO;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
 import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
 

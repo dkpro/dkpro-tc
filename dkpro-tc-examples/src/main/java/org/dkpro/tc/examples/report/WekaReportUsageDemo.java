@@ -42,7 +42,6 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
 

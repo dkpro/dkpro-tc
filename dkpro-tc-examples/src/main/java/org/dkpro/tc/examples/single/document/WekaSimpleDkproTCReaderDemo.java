@@ -32,10 +32,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -43,8 +39,10 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * This demo uses the {@link SimpleDkproTCReader}.

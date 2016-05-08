@@ -31,23 +31,19 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.functions.SMOreg;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaRegressionAdapter;
+
+import weka.classifiers.functions.SMOreg;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * A demo for pair classification with a regression outcome.
