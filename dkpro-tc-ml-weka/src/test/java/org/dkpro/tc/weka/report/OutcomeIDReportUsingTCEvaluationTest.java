@@ -29,15 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.weka.util.WekaUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import weka.core.Instances;
-
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
-import org.dkpro.tc.weka.util.WekaUtils;
 
 /**
  * Tests the correct generation of the OutcomeIdReport for the internal DKPro TC evaluation with
