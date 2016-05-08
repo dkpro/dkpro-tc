@@ -52,11 +52,6 @@ public class MekaPredictionAdapter
 	}
 
 	@Override
-	public Class<? extends ReportBase> getClassificationReportClass() {
-        return null;
-	}
-
-	@Override
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
 		return WekaOutcomeIDReport.class;
 	}

@@ -28,7 +28,6 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.mallet.report.MalletBatchTrainTestReport;
-import org.dkpro.tc.mallet.report.MalletClassificationReport;
 import org.dkpro.tc.mallet.report.MalletOutcomeIDReport;
 import org.dkpro.tc.mallet.task.MalletTestTask;
 import org.dkpro.tc.mallet.util.MalletFoldDimensionBundle;
@@ -48,11 +47,6 @@ public class MalletAdapter
 	@Override
 	public ExecutableTaskBase getTestTask() {
 		return new MalletTestTask();
-	}
-
-	@Override
-	public Class<? extends ReportBase> getClassificationReportClass() {
-		return MalletClassificationReport.class;
 	}
 
 	@Override

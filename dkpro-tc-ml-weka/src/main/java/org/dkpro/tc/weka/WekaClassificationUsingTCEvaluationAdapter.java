@@ -25,13 +25,11 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
-import org.dkpro.tc.weka.report.WekaClassificationReport;
 import org.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
 import org.dkpro.tc.weka.task.WekaTestTask;
 import org.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
@@ -49,11 +47,6 @@ public class WekaClassificationUsingTCEvaluationAdapter
 	@Override
 	public ExecutableTaskBase getTestTask() {
 		return new WekaTestTask();
-	}
-
-	@Override
-	public Class<? extends ReportBase> getClassificationReportClass() {		
-		return WekaClassificationReport.class;
 	}
 
 	@Override

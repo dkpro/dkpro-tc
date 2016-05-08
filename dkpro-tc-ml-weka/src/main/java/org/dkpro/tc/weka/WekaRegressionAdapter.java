@@ -31,7 +31,6 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
-import org.dkpro.tc.weka.report.WekaRegressionReport;
 import org.dkpro.tc.weka.task.WekaTestTask;
 import org.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
 import org.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
@@ -50,12 +49,6 @@ public class WekaRegressionAdapter
     public ExecutableTaskBase getTestTask()
     {
         return new WekaTestTask();
-    }
-
-    @Override
-    public Class<? extends ReportBase> getClassificationReportClass()
-    {
-        return WekaRegressionReport.class;
     }
 
     @Override

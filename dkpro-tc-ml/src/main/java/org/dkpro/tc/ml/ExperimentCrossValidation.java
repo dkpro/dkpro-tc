@@ -230,8 +230,6 @@ public class ExperimentCrossValidation
             }
         }
 
-        // always add default report
-        testTask.addReport(mlAdapter.getClassificationReportClass());
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
 

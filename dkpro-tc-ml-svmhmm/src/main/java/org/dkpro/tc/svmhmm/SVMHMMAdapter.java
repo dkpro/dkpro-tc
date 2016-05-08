@@ -30,7 +30,6 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
-import org.dkpro.tc.svmhmm.report.SVMHMMClassificationReport;
 import org.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
@@ -45,12 +44,6 @@ public class SVMHMMAdapter
     public ExecutableTaskBase getTestTask()
     {
         return new SVMHMMTestTask();
-    }
-
-    @Override
-    public Class<? extends ReportBase> getClassificationReportClass()
-    {
-        return SVMHMMClassificationReport.class;
     }
 
     @Override

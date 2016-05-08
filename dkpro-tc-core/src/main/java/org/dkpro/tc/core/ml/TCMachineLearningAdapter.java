@@ -54,14 +54,6 @@ public interface TCMachineLearningAdapter
     public TaskBase getTestTask();
 
     /**
-     * This report is always added to {@code testTask} reports by default in
-     * ExperimentCrossValidation and ExperimentTrainTest.
-     *
-     * @return The report that computes the classification results.
-     */
-    public Class<? extends ReportBase> getClassificationReportClass();
-
-    /**
      * @return The data writer class that needs to be used with the corresponding ML framework
      */
     public Class<? extends DataWriter> getDataWriterClass();
