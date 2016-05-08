@@ -31,11 +31,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -45,13 +40,17 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 import org.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
 import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
+
+import weka.classifiers.bayes.NaiveBayes;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -75,16 +74,18 @@ public class WekaTwentyNewsgroupsDemo
     public static void main(String[] args)
         throws Exception
     {
-    	
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(WekaTwentyNewsgroupsDemo.class.getSimpleName());
-    	
+
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(WekaTwentyNewsgroupsDemo.class.getSimpleName());
+
         ParameterSpace pSpace = getParameterSpace();
 
         WekaTwentyNewsgroupsDemo experiment = new WekaTwentyNewsgroupsDemo();
-//        experiment.runCrossValidation(pSpace);
+        // experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 
@@ -95,59 +96,52 @@ public class WekaTwentyNewsgroupsDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders
-                .put(
-                        DIM_READER_TRAIN_PARAMS,
-                        Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                                corpusFilePathTrain,
-                                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                        + "*/*.txt")));
+        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt")));
         dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                        corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+        dimReaders.put(DIM_READER_TEST_PARAMS, Arrays.asList(
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 })
-                		);
+                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(new String[] {
-                		NrOfTokensDFE.class.getName(),
-                		LuceneNGramDFE.class.getName()
-                }
-        ));
-        
-        Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(DIM_BASELINE_CLASSIFICATION_ARGS,
-        		Arrays.asList(new String[]{NaiveBayes.class.getName()}));
-        
-        Dimension<List<String>> dimBaselinePipelineParameters = Dimension.create(DIM_BASELINE_FEATURE_SET,
-        		Arrays.asList(new String[]{NrOfTokensDFE.class.getName(),LuceneNGramDFE.class.getName()}));
+                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
+                        LuceneNGramDFE.class.getName() }));
 
-        Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(DIM_BASELINE_PIPELINE_PARAMS,
-        		Arrays.asList(new Object[]{
-        				NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3}));
+        Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(
+                DIM_BASELINE_CLASSIFICATION_ARGS,
+                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+
+        Dimension<List<String>> dimBaselinePipelineParameters = Dimension.create(
+                DIM_BASELINE_FEATURE_SET,
+                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
+                        LuceneNGramDFE.class.getName() }));
+
+        Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(
+                DIM_BASELINE_PIPELINE_PARAMS,
+                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets, dimBaselinePipelineParameters
-                );
+                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets,
+                dimBaselinePipelineParameters);
 
         return pSpace;
     }
@@ -157,8 +151,8 @@ public class WekaTwentyNewsgroupsDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
-                NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
+                WekaClassificationAdapter.class, NUM_FOLDS);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.addInnerReport(WekaFeatureValuesReport.class);
@@ -170,13 +164,14 @@ public class WekaTwentyNewsgroupsDemo
         // Run
         Lab.getInstance().run(batch);
     }
-    
+
     // ##### CV with STATS EVAL #####
     protected void runCrossValidationWithStatsEval(ParameterSpace pSpace)
         throws Exception
     {
-    	// demo for the statistical evaluation reports
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV-withStats", WekaStatisticsClassificationAdapter.class,
+        // demo for the statistical evaluation reports
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+                "TwentyNewsgroupsCV-withStats", WekaStatisticsClassificationAdapter.class,
                 NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
@@ -192,7 +187,8 @@ public class WekaTwentyNewsgroupsDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
+                WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -202,13 +198,14 @@ public class WekaTwentyNewsgroupsDemo
         // Run
         Lab.getInstance().run(batch);
     }
-    
+
     // ##### TRAIN-TEST with STATS EVAL #####
     protected void runTrainTestWithStatsEval(ParameterSpace pSpace)
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest-withStats", WekaStatisticsClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest-withStats",
+                WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

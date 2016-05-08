@@ -44,6 +44,7 @@ import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
 /**
  * This is an example for NER as unit classification. Each Entity is treated as a classification
@@ -61,11 +62,13 @@ public class WekaNERUnitDemo
     public static void main(String[] args)
         throws Exception
     {
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(WekaNERUnitDemo.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(WekaNERUnitDemo.class.getSimpleName());
+
         WekaNERUnitDemo demo = new WekaNERUnitDemo();
         demo.runTrainTest(getParameterSpace());
     }
@@ -75,7 +78,7 @@ public class WekaNERUnitDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV",
-        		WekaClassificationAdapter.class, NUM_FOLDS);
+                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -83,17 +86,20 @@ public class WekaNERUnitDemo
         // Run
         Lab.getInstance().run(batch);
     }
-    
+
     // ##### TrainTest #####
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-        ExperimentTrainTest batch = new ExperimentTrainTest("NERDemoTrainTest", WekaClassificationAdapter.class);
+    public void runTrainTest(ParameterSpace pSpace)
+        throws Exception
+    {
+        ExperimentTrainTest batch = new ExperimentTrainTest("NERDemoTrainTest",
+                WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         // Run
         Lab.getInstance().run(batch);
-		
-	}
+
+    }
 
     public static ParameterSpace getParameterSpace()
     {
@@ -103,15 +109,13 @@ public class WekaNERUnitDemo
                 DIM_READER_TRAIN_PARAMS,
                 Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
                         NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        NERDemoReader.PARAM_PATTERNS,
-                        INCLUDE_PREFIX + "*.txt" }));
+                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
         dimReaders.put(DIM_READER_TEST, NERDemoReader.class);
         dimReaders.put(
                 DIM_READER_TEST_PARAMS,
                 Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
                         NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                        NERDemoReader.PARAM_PATTERNS,
-                        INCLUDE_PREFIX + "*.txt" }));
+                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
@@ -119,18 +123,17 @@ public class WekaNERUnitDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(
-                        DIM_PIPELINE_PARAMS,
+                .create(DIM_PIPELINE_PARAMS,
                         Arrays.asList(new Object[] {
                                 IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { 
-                        InitialCharacterUpperCaseUFE.class.getName(),
+        Dimension<List<String>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(new String[] { InitialCharacterUpperCaseUFE.class.getName(),
                         IsSurroundedByCharsUFE.class.getName() }));
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
                         DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);

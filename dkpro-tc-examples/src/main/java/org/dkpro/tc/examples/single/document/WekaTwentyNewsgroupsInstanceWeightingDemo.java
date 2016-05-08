@@ -31,12 +31,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.WeightedTwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -45,9 +39,13 @@ import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * This is the TwentyNewsgroups demo with instance weighting.  With instance
@@ -179,7 +177,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationUsingTCEvaluationAdapter.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());

@@ -38,6 +38,7 @@ import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtract
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
 /**
  * PairTwentyNewsgroupsExperiment, using Java
@@ -124,7 +125,7 @@ public class WekaPairTwentyNewsgroupsDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-        		WekaClassificationAdapter.class);
+                WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(ContextMemoryReport.class);

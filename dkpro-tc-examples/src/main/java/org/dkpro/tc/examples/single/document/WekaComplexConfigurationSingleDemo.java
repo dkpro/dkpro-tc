@@ -31,6 +31,15 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.features.length.NrOfCharsDFE;
+import org.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
+import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.Ranker;
@@ -40,16 +49,6 @@ import weka.classifiers.meta.Bagging;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
-import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsDFE;
-import org.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
-import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a single-label experiment,
@@ -158,7 +157,7 @@ public class WekaComplexConfigurationSingleDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME,
-        		WekaClassificationAdapter.class);
+        		WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);

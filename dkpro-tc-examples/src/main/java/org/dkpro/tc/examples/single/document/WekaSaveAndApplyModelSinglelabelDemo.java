@@ -43,6 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -52,6 +53,7 @@ import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
 /**
  * Demo to show-case how trained models can be persisted.
@@ -153,7 +155,7 @@ public class WekaSaveAndApplyModelSinglelabelDemo
         throws Exception
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("TwentyNewsgroupsSaveModel",
-                WekaClassificationAdapter.class, modelPath);
+                WekaClassificationUsingTCEvaluationAdapter.class, modelPath);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

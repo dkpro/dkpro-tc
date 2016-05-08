@@ -30,11 +30,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -44,7 +39,11 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestUsingTCEvaluationReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
+
+import weka.classifiers.bayes.NaiveBayes;
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -126,7 +125,7 @@ public class WekaTwitterSentimentDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV",
-        		WekaClassificationAdapter.class, 3);
+                WekaClassificationUsingTCEvaluationAdapter.class, 3);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchCrossValidationUsingTCEvaluationReport.class);
@@ -140,7 +139,7 @@ public class WekaTwitterSentimentDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest",
-        		WekaClassificationAdapter.class);
+                WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestUsingTCEvaluationReport.class);

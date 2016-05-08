@@ -44,6 +44,7 @@ import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtract
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationUsingTCEvaluationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
 /**
  * This demo uses the {@link SimpleDkproTCReader}.
@@ -74,7 +75,7 @@ public class WekaSimpleDkproTCReaderDemo
         throws Exception
     {
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "SimpleReaderDemoCV", WekaClassificationAdapter.class, NUM_FOLDS);
+                "SimpleReaderDemoCV", WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

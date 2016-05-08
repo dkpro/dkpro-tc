@@ -41,6 +41,7 @@ import org.dkpro.tc.features.length.NrOfTokensUFE;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.weka.WekaClassificationUsingTCEvaluationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -77,7 +78,7 @@ public class WekaBrownUnitPosDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV",
-        		WekaClassificationAdapter.class, NUM_FOLDS);
+                WekaClassificationUsingTCEvaluationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -93,7 +94,7 @@ public class WekaBrownUnitPosDemo
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("BrownPosDemoCV",
-                WekaClassificationAdapter.class);
+                WekaClassificationUsingTCEvaluationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
