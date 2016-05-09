@@ -18,7 +18,17 @@
  */
 package org.dkpro.tc.examples.single.sequence;
 
+import static org.junit.Assert.*;
+
+import java.util.Map;
+
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
+import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +62,12 @@ public class CRFSuiteNERSequenceDemoTest extends JavaDemosTest_Base
     
     @Test
     public void testTrainTestWithResults() throws Exception{
-        
+        ContextMemoryReport.testTaskClass = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
+        
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double double1 = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        assertEquals(0.95833, double1, 0.0001);
     }
 }
