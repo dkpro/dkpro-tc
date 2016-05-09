@@ -18,9 +18,7 @@
  */
 package org.dkpro.tc.examples.single.sequence;
 
-import static org.junit.Assert.*;
-
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
