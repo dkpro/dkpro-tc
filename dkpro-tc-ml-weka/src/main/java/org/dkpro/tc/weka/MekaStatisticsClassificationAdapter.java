@@ -32,7 +32,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.weka.report.WekaOutcomeIDReport;
-import org.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport;
+import org.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.weka.task.WekaTestTask;
 import org.dkpro.tc.weka.task.serialization.LoadModelConnectorWeka;
 import org.dkpro.tc.weka.task.serialization.WekaModelSerializationDescription;
@@ -53,7 +53,7 @@ public class MekaStatisticsClassificationAdapter
 
 	@Override
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
-		return WekaOutcomeIDUsingTCEvaluationReport.class;
+		return WekaOutcomeIDReport.class;
 	}
 
 	@Override

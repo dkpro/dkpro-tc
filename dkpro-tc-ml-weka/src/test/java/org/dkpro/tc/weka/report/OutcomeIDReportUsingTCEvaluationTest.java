@@ -79,8 +79,8 @@ public class OutcomeIDReportUsingTCEvaluationTest
     public void testGenerateOutcomeIdPropertiesSingleLabel() throws ClassNotFoundException, IOException
     {
         List<String> labels = WekaUtils.getClassLabels(singleLabelData, false);
-        Properties props = WekaOutcomeIDUsingTCEvaluationReport.generateProperties(singleLabelData, false, false, labels, null);
-        String header = WekaOutcomeIDUsingTCEvaluationReport.generateHeader(labels);
+        Properties props = WekaOutcomeIDReport.generateProperties(singleLabelData, false, false, labels, null);
+        String header = WekaOutcomeIDReport.generateHeader(labels);
         List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
         assertTrue(header.split("\n")[1].startsWith("labels"));
@@ -110,8 +110,8 @@ public class OutcomeIDReportUsingTCEvaluationTest
     public void testGenerateOutcomeIdPropertiesMultiLabel() throws ClassNotFoundException, IOException
     {
         List<String> labels = WekaUtils.getClassLabels(multiLabelData, true);
-        Properties props = WekaOutcomeIDUsingTCEvaluationReport.generateProperties(multiLabelData, true, false, labels, mlResults);
-        String header = WekaOutcomeIDUsingTCEvaluationReport.generateHeader(labels);
+        Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false, labels, mlResults);
+        String header = WekaOutcomeIDReport.generateHeader(labels);
         List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
         assertTrue(header.split("\n")[1].startsWith("labels"));
@@ -134,7 +134,7 @@ public class OutcomeIDReportUsingTCEvaluationTest
     @Test
     public void testGenerateOutcomeIdPropertiesRegression() throws ClassNotFoundException, IOException
     {
-        Properties props = WekaOutcomeIDUsingTCEvaluationReport.generateProperties(regressionData, false, true, null, null);
+        Properties props = WekaOutcomeIDReport.generateProperties(regressionData, false, true, null, null);
 
         assertEquals(376, props.size());
         assertEquals(3.44168, getPrediction(props.getProperty("STS.input.MSRpar.txt-1")).get(0), 0.0001);
@@ -145,7 +145,7 @@ public class OutcomeIDReportUsingTCEvaluationTest
 
     private List<Double> getPrediction(String propsString)
     {
-        String[] s = propsString.split(WekaOutcomeIDUsingTCEvaluationReport.SEPARATOR_CHAR)[0].split(",");
+        String[] s = propsString.split(WekaOutcomeIDReport.SEPARATOR_CHAR)[0].split(",");
         List<Double> a = new ArrayList<Double>();
         for (String st : s) {
             a.add(Double.valueOf(st));
@@ -155,7 +155,7 @@ public class OutcomeIDReportUsingTCEvaluationTest
 
     private List<Integer> getGoldStandard(String propsString)
     {
-        String[] s = propsString.split(WekaOutcomeIDUsingTCEvaluationReport.SEPARATOR_CHAR)[1].split(",");
+        String[] s = propsString.split(WekaOutcomeIDReport.SEPARATOR_CHAR)[1].split(",");
         List<Integer> a = new ArrayList<Integer>();
         for (String st : s) {
             a.add(Integer.valueOf(st));

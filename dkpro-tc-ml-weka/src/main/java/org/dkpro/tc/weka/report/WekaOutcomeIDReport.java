@@ -45,7 +45,7 @@ import weka.core.Instances;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaOutcomeIDUsingTCEvaluationReport
+public class WekaOutcomeIDReport
     extends ReportBase
 {
     /**
