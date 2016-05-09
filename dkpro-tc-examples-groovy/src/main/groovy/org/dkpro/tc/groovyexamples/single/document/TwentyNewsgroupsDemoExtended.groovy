@@ -45,7 +45,7 @@ import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 import org.dkpro.tc.weka.report.WekaClassificationReport
-import org.dkpro.tc.weka.report.WekaOutcomeIDReport
+import org.dkpro.tc.weka.report.WekaOutcomeIDUsingTCEvaluationReport
 import org.dkpro.tc.weka.task.WekaTestTask
 
 /**
@@ -174,7 +174,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             type:"TestTask-TwentyNewsgroups",
             reports: [
                 WekaClassificationReport,
-                WekaOutcomeIDReport]
+                WekaOutcomeIDUsingTCEvaluationReport]
         ]
 
 
