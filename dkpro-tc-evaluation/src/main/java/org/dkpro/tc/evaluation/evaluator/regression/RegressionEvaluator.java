@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
 
 public class RegressionEvaluator
     extends EvaluatorBase
@@ -34,9 +35,12 @@ public class RegressionEvaluator
 	@Override
     public Map<String, Double> calculateEvaluationMeasures()
     {
-        // TODO add measures
-        return null;
+
+	    Map<String, Double> calculate = MeanAbsoluteError.calculate(id2Outcome);
+	    
+        return calculate;
     }
+
 
     @Override
     public Map<String, Double> calculateMicroEvaluationMeasures()

@@ -74,7 +74,7 @@ public class WekaRegressionDemo
         DemoUtils.setDkproHome(WekaRegressionDemo.class.getSimpleName());
 
         WekaRegressionDemo experiment = new WekaRegressionDemo();
-        experiment.runCrossValidation(getParameterSpace());
+//        experiment.runCrossValidation(getParameterSpace());
         experiment.runTrainTest(getParameterSpace());
     }
 

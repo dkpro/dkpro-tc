@@ -122,16 +122,30 @@ public class Id2Outcome implements Serializable
 					bipartitionThreshold = -1;
 				}
 
-                double[] goldstandard = new double[labelList.size()];
-                double[] predictions = new double[labelList.size()];
+                double[] goldstandard;
+                double[] predictions;
                 
-                if(predictionS.length == 1 && goldS.length == 1){
+                if(learningMode.equals(Constants.LM_REGRESSION)){
+                    goldstandard = new double[1];
+                    predictions = new double[1];
+                    goldstandard[0] = Double.parseDouble(goldS[0]);
+                    predictions[0] = Double.parseDouble(predictionS[0]);
+                    
+                }
+                else if(predictionS.length == 1 && goldS.length == 1){
+                    
+                    goldstandard = new double[labelList.size()];
+                    predictions = new double[labelList.size()];
+                    
                 	// singleLabel
                 	goldstandard[Integer.parseInt(goldS[0])] = 1.;
                 	predictions[Integer.parseInt(predictionS[0])] = 1.;
                 }
                 
                 else{
+                    goldstandard = new double[labelList.size()];
+                    predictions = new double[labelList.size()];
+                    
                 	// multiLabel
                 	for (int i = 0; i < predictions.length; i++) {
                 		predictions[i] = Double.parseDouble(predictionS[i]);
