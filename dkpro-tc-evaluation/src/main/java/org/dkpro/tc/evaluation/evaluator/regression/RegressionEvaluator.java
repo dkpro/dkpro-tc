@@ -17,30 +17,35 @@
  ******************************************************************************/
 package org.dkpro.tc.evaluation.evaluator.regression;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
+import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
 
 public class RegressionEvaluator
     extends EvaluatorBase
 {
 
     public RegressionEvaluator(Id2Outcome id2Outcome, boolean softEvaluation,
-			boolean individualLabelMeasures) {
-		super(id2Outcome, softEvaluation, individualLabelMeasures);	
-	}
-
-	@Override
-    public Map<String, Double> calculateEvaluationMeasures()
+            boolean individualLabelMeasures)
     {
-
-	    Map<String, Double> calculate = MeanAbsoluteError.calculate(id2Outcome);
-	    
-        return calculate;
+        super(id2Outcome, softEvaluation, individualLabelMeasures);
     }
 
+    @Override
+    public Map<String, Double> calculateEvaluationMeasures()
+    {
+        Map<String, Double> meanAbsoluteError = MeanAbsoluteError.calculate(id2Outcome);
+        Map<String, Double> rootMeanSquaredError = RootMeanSquaredError.calculate(id2Outcome);
+
+        Map<String, Double> results = new HashMap<>();
+        results.putAll(meanAbsoluteError);
+        results.putAll(rootMeanSquaredError);
+        return results;
+    }
 
     @Override
     public Map<String, Double> calculateMicroEvaluationMeasures()
