@@ -19,28 +19,34 @@
 package org.dkpro.tc.weka.report;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
+import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.weka.util.WekaUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import weka.core.Instances;
 
-import org.dkpro.tc.weka.report.WekaOutcomeIDReport;
-import org.dkpro.tc.weka.util.WekaUtils;
-
 /**
- * Tests the correct generation of the OutcomeIdReport for various setups.
+ * Tests the correct generation of the OutcomeIdReport for the internal DKPro TC evaluation with
+ * various setups.
  */
 public class OutcomeIDReportTest
 {
     Instances singleLabelData;
     Instances multiLabelData;
     Instances regressionData;
+
+    File mlResults;
 
     @Before
     public void initialize()
@@ -57,6 +63,8 @@ public class OutcomeIDReportTest
                     .getResource("/predictions/multilabelPredictions.arff").toURI());
             regressionFile = new File(this.getClass()
                     .getResource("/predictions/regressionPredictions.arff").toURI());
+            mlResults = new File(this.getClass()
+                    .getResource("/predictions/multilabelEvaluation.bin").toURI());
         }
         catch (URISyntaxException e) {
             throw new IOException(e);
@@ -68,38 +76,90 @@ public class OutcomeIDReportTest
     }
 
     @Test
-    public void testGenerateOutcomeIdPropertiesSingleLabel()
+    public void testGenerateOutcomeIdPropertiesSingleLabel() throws ClassNotFoundException, IOException
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(singleLabelData, false, false);
+        List<String> labels = WekaUtils.getClassLabels(singleLabelData, false);
+        Properties props = WekaOutcomeIDReport.generateProperties(singleLabelData, false, false, labels, null);
+        String header = WekaOutcomeIDReport.generateHeader(labels);
+        List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
+        assertTrue(header.split("\n")[1].startsWith("labels"));
+        assertEquals(labels, labelsFromProps);
         assertEquals(16, props.size());
-        assertEquals("comp.graphics;alt.atheism", props.getProperty("alt.atheism/53261.txt"));
-        assertEquals("comp.graphics;comp.sys.ibm.pc.hardware",
-                props.getProperty("comp.sys.ibm.pc.hardware/60738.txt"));
-        assertEquals("comp.os.ms-windows.misc;comp.os.ms-windows.misc",
-                props.getProperty("comp.os.ms-windows.misc/10006.txt"));
+
+        assertEquals(0, Id2Outcome.classNamesToMapping(labelsFromProps).get("alt.atheism").intValue());
+        assertEquals(3, Id2Outcome.classNamesToMapping(labelsFromProps).get("comp.sys.ibm.pc.hardware").intValue());
+        assertEquals(2, Id2Outcome.classNamesToMapping(labelsFromProps).get("comp.os.ms-windows.misc").intValue());
+
+        assertEquals(Arrays.asList(1.),
+                getPrediction(props.getProperty("alt.atheism/53261.txt")));
+        assertEquals(Arrays.asList(0),
+                getGoldStandard(props.getProperty("alt.atheism/53261.txt")));
+        assertEquals(Arrays.asList(1.),
+                getPrediction(props.getProperty("comp.sys.ibm.pc.hardware/60738.txt")));
+        assertEquals(Arrays.asList(3),
+                getGoldStandard(props.getProperty("comp.sys.ibm.pc.hardware/60738.txt")));
+        assertEquals(Arrays.asList(2.),
+                getPrediction(props.getProperty("comp.os.ms-windows.misc/10006.txt")));
+        assertEquals(Arrays.asList(2),
+                getGoldStandard(props.getProperty("comp.os.ms-windows.misc/10006.txt")));
+
     }
 
     @Test
-    public void testGenerateOutcomeIdPropertiesMultiLabel()
+    public void testGenerateOutcomeIdPropertiesMultiLabel() throws ClassNotFoundException, IOException
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false);
+        List<String> labels = WekaUtils.getClassLabels(multiLabelData, true);
+        Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false, labels, mlResults);
+        String header = WekaOutcomeIDReport.generateHeader(labels);
+        List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
+        assertTrue(header.split("\n")[1].startsWith("labels"));
+        assertEquals(labels, labelsFromProps);
         assertEquals(12, props.size());
-        assertEquals("__grain,__crude,__corn;__acq", props.getProperty("9628.txt"));
-        assertEquals(";__grain,__corn", props.getProperty("9888.txt"));
-        assertEquals(";__acq", props.getProperty("9653.txt"));
+
+        assertEquals(0, Id2Outcome.classNamesToMapping(labelsFromProps).get("__grain").intValue());
+        assertEquals(2, Id2Outcome.classNamesToMapping(labelsFromProps).get("__crude").intValue());
+        assertEquals(4, Id2Outcome.classNamesToMapping(labelsFromProps).get("__acq").intValue());
+
+        assertEquals(1., getPrediction(props.getProperty("10357.txt")).get(0), 0.1);
+        assertEquals(Arrays.asList(0, 0, 1, 0, 0), getGoldStandard(props.getProperty("10357.txt")));
+        assertEquals(0., getPrediction(props.getProperty("10289.txt")).get(1), 0.1);
+        assertEquals(Arrays.asList(1, 0, 0, 1, 0), getGoldStandard(props.getProperty("10289.txt")));
+        assertEquals(0., getPrediction(props.getProperty("9643.txt")).get(4), 0.1);
+        assertEquals(Arrays.asList(0, 0, 0, 0, 1), getGoldStandard(props.getProperty("9643.txt")));
+
     }
 
     @Test
-    public void testGenerateOutcomeIdPropertiesRegression()
+    public void testGenerateOutcomeIdPropertiesRegression() throws ClassNotFoundException, IOException
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(regressionData, false, true);
+        Properties props = WekaOutcomeIDReport.generateProperties(regressionData, false, true, null, null);
 
         assertEquals(376, props.size());
-        assertEquals("3.44168;3.75", props.getProperty("STS.input.MSRpar.txt-1"));
-        assertEquals("2.640227;1.75", props.getProperty("STS.input.MSRpar.txt-100"));
-        assertEquals("4.41385;5.0", props.getProperty("STS.input.MSRpar.txt-133"));
-        assertEquals("0.87415;0.0", props.getProperty("test"));
+        assertEquals(3.44168, getPrediction(props.getProperty("STS.input.MSRpar.txt-1")).get(0), 0.0001);
+        assertEquals(2.640227, getPrediction(props.getProperty("STS.input.MSRpar.txt-100")).get(0), 0.0001);
+        assertEquals(4.41385, getPrediction(props.getProperty("STS.input.MSRpar.txt-133")).get(0), 0.0001);
+        assertEquals(0.87415, getPrediction(props.getProperty("test")).get(0), 0.0001);
+    }
+
+    private List<Double> getPrediction(String propsString)
+    {
+        String[] s = propsString.split(WekaOutcomeIDReport.SEPARATOR_CHAR)[0].split(",");
+        List<Double> a = new ArrayList<Double>();
+        for (String st : s) {
+            a.add(Double.valueOf(st));
+        }
+        return a;
+    }
+
+    private List<Integer> getGoldStandard(String propsString)
+    {
+        String[] s = propsString.split(WekaOutcomeIDReport.SEPARATOR_CHAR)[1].split(",");
+        List<Integer> a = new ArrayList<Integer>();
+        for (String st : s) {
+            a.add(Integer.valueOf(st));
+        }
+        return a;
     }
 }
