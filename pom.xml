@@ -80,7 +80,6 @@
 		<module>dkpro-tc-ml</module>
         <module>dkpro-tc-ml-crfsuite</module>
         <module>dkpro-tc-ml-liblinear</module>
-        <module>dkpro-tc-ml-mallet</module>
         <module>dkpro-tc-ml-svmhmm</module>
         <module>dkpro-tc-ml-weka</module>
         <module>dkpro-tc-testing</module>
@@ -178,11 +177,6 @@
                 <artifactId>dkpro-tc-ml-liblinear</artifactId>
                 <version>0.9.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>org.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-mallet</artifactId>
-                <version>0.9.0-SNAPSHOT</version>
-            </dependency>
 			<dependency>
                 <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-svmhmm</artifactId>
@@ -263,11 +257,6 @@
 				<version>2.2.0</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>cc.mallet</groupId>
-				<artifactId>mallet</artifactId>
-				<version>2.0.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
@@ -447,10 +436,6 @@
 						<group>
 							<title>Pair feature extractors</title>
 							<packages>org.dkpro.tc.features.pair*</packages>
-						</group>
-						<group>
-							<title>Support for MALLET machine learning framework</title>
-							<packages>org.dkpro.tc.mallet*</packages>
 						</group>
 						<group>
 							<title>Support for WEKA machine learning framework</title>

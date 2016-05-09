@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -67,16 +68,19 @@ public class WekaOutcomeIDUsingTCEvaluationReport
         mlResults = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
                 WekaTestTask.evaluationBin, AccessMode.READONLY);
 
-        boolean multiLabel = getDiscriminators().get(
-                WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(
-                Constants.LM_MULTI_LABEL);
-        boolean regression = getDiscriminators().get(
-                WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(
-                Constants.LM_REGRESSION);
+        boolean multiLabel = getDiscriminators()
+                .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+                .equals(Constants.LM_MULTI_LABEL);
+        boolean regression = getDiscriminators()
+                .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+                .equals(Constants.LM_REGRESSION);
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
 
-        List<String> labels = WekaUtils.getClassLabels(predictions, multiLabel);
+        List<String> labels = new ArrayList<>();
+        if (!regression) {
+            labels = WekaUtils.getClassLabels(predictions, multiLabel);
+        }
 
         Properties props = generateProperties(predictions, multiLabel, regression, labels,
                 mlResults);
@@ -93,15 +97,15 @@ public class WekaOutcomeIDUsingTCEvaluationReport
 
         // add numbered indexing of labels: e.g. 0=NPg, 1=JJ
         for (int i = 0; i < labels.size(); i++) {
-            comment.append(" " + String.valueOf(i) + "="
-                    + URLEncoder.encode(labels.get(i), "UTF-8"));
+            comment.append(
+                    " " + String.valueOf(i) + "=" + URLEncoder.encode(labels.get(i), "UTF-8"));
         }
         return comment.toString();
     }
 
     protected static Properties generateProperties(Instances predictions, boolean isMultiLabel,
             boolean isRegression, List<String> labels, File mlResults)
-        throws ClassNotFoundException, IOException
+                throws ClassNotFoundException, IOException
     {
         Properties props = new Properties();
         String[] classValues = new String[predictions.numClasses()];
@@ -137,14 +141,13 @@ public class WekaOutcomeIDUsingTCEvaluationReport
             for (Instance inst : predictions) {
                 Double gold;
                 try {
-                    gold = new Double(inst.value(predictions
-                            .attribute(Constants.CLASS_ATTRIBUTE_NAME
-                                    + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
+                    gold = new Double(inst.value(predictions.attribute(
+                            Constants.CLASS_ATTRIBUTE_NAME + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
                 }
                 catch (NullPointerException e) {
                     // if train and test data have not been balanced
-                    gold = new Double(inst.value(predictions
-                            .attribute(Constants.CLASS_ATTRIBUTE_NAME)));
+                    gold = new Double(
+                            inst.value(predictions.attribute(Constants.CLASS_ATTRIBUTE_NAME)));
                 }
                 Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
                 Double prediction = new Double(inst.value(gsAtt));
