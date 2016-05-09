@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -31,16 +31,16 @@ import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
-
-import weka.core.Attribute;
-import weka.core.Instance;
-import weka.core.Instances;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.weka.task.WekaTestTask;
 import org.dkpro.tc.weka.util.MultilabelResult;
 import org.dkpro.tc.weka.util.WekaUtils;
+
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * Writes a instanceId / outcome data for each classification instance.
@@ -77,15 +77,21 @@ public class WekaOutcomeIDUsingTCEvaluationReport
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
 
-        List<String> labels = new ArrayList<String>();
-        if (!regression) {
-            labels = WekaUtils.getClassLabels(predictions, multiLabel);
-        }
+        List<String> labels = getLabels(predictions, multiLabel, regression);
 
         Properties props = generateProperties(predictions, multiLabel, regression, labels,
                 mlResults);
         getContext().storeBinary(ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, generateHeader(labels)));
+    }
+
+    private List<String> getLabels(Instances predictions, boolean multiLabel, boolean regression)
+    {
+        if (regression) {
+            return Collections.emptyList();
+        }
+
+        return WekaUtils.getClassLabels(predictions, multiLabel);
     }
 
     protected static String generateHeader(List<String> labels)
