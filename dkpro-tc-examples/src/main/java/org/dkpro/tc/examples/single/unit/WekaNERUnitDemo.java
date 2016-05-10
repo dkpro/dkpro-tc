@@ -35,6 +35,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.NERDemoReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
 import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
@@ -92,11 +93,11 @@ public class WekaNERUnitDemo
         ExperimentTrainTest batch = new ExperimentTrainTest("NERDemoTrainTest",
                 WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
+        batch.addReport(ContextMemoryReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         // Run
         Lab.getInstance().run(batch);
-
     }
 
     public static ParameterSpace getParameterSpace()

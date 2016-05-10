@@ -152,6 +152,7 @@ public class SVMHMMBrownPosDemo
                 machineLearningAdapter);
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(ContextMemoryReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

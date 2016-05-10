@@ -19,10 +19,18 @@
 package org.dkpro.tc.examples.single.sequence;
 
 
+import static org.junit.Assert.assertEquals;
+
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
+import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
+import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
+import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,6 +65,14 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
         throws Exception
     {
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
+        
+        ContextMemoryReport.testTaskClass = SVMHMMTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
+        
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        assertEquals(0.4838, result, 0.0001);
+        
     }
 }
