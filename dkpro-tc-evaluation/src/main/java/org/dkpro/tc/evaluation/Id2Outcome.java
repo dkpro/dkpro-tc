@@ -125,10 +125,15 @@ public class Id2Outcome implements Serializable
                 double [] goldstandard = new double[1];
                 double [] predictions = new double[1];
 
-                if(!learningMode.equals(Constants.LM_MULTI_LABEL)){
+                if(learningMode.equals(Constants.LM_REGRESSION)){
                     //one pair of pred/gold unless it is multi label 
                     goldstandard[0] = Double.parseDouble(goldS[0]);
                     predictions[0] = Double.parseDouble(predictionS[0]);
+                }
+                else if(predictionS.length == 1 && goldS.length == 1){
+                    // singleLabel
+                    goldstandard[Integer.parseInt(goldS[0])] = 1.;
+                    predictions[Integer.parseInt(predictionS[0])] = 1.;
                 }
                 else{
                     //re-init arrays to make enough space for the labels
