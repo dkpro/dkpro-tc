@@ -68,8 +68,8 @@ public class SVMHMMOutcomeIDReport
         // test file with gold labels
         File testDataStorage = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
-        String fileName = new SVMHMMAdapter()
-                .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+        String fileName = new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
         return new File(testDataStorage, fileName);
     }
 
@@ -94,7 +94,8 @@ public class SVMHMMOutcomeIDReport
         // load the mappings from labels to integers
         File mappingFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
                 StorageService.AccessMode.READWRITE);
-        File mappingFile = new File(mappingFolder, SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
+        File mappingFile = new File(mappingFolder,
+                SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
         BidiMap labelsToIntegersMapping = SVMHMMUtils.loadMapping(mappingFile);
 
         // gold label tags
@@ -134,29 +135,30 @@ public class SVMHMMOutcomeIDReport
         File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
         File evaluationFile = new File(evaluationFolder, ID_OUTCOME_KEY);
 
-        // write results into CSV
-        // form: gold;predicted;token;seqID
+        File mappingFile = getContext().getFile(
+                TEST_TASK_OUTPUT_KEY + "/" + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME,
+                AccessMode.READONLY);
+        BidiMap id2label = SVMHMMUtils.loadMapping(mappingFile);
 
-        // build header
-        Map<String, Integer> label2id = createLabel2IdMapping(goldLabels, predictedLabels);
-        String header = buildHeader(label2id);
+        String header = buildHeader(id2label);
 
         Properties prop = new Properties();
+        BidiMap label2id = id2label.inverseBidiMap();
+
         for (int i = 0; i < goldLabels.size(); i++) {
             String gold = goldLabels.get(i);
             String pred = predictedLabels.get(i);
-
-            int g = label2id.get(gold);
-            int p = label2id.get(pred);
-            prop.setProperty("" + i, p + SEPARATOR_CHAR + g + SEPARATOR_CHAR
-                    + THRESHOLD_DUMMY_CONSTANT);
+            int g = (int) label2id.getKey(gold);
+            int p = (int) label2id.getKey(pred);
+            prop.setProperty("" + i,
+                    p + SEPARATOR_CHAR + g + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
         OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(evaluationFile));
         prop.store(osw, header);
         osw.close();
     }
 
-    private String buildHeader(Map<String, Integer> label2id)
+    private String buildHeader(BidiMap label2id)
         throws UnsupportedEncodingException
     {
         StringBuilder sb = new StringBuilder();
@@ -164,6 +166,7 @@ public class SVMHMMOutcomeIDReport
         sb.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR + "THRESHOLD"
                 + "\n" + "labels" + " ");
 
+        @SuppressWarnings("unchecked")
         List<String> keySet = new ArrayList<>(label2id.keySet());
         for (int i = 0; i < keySet.size(); i++) {
             String key = keySet.get(i);
@@ -176,20 +179,4 @@ public class SVMHMMOutcomeIDReport
         return sb.toString();
     }
 
-    private Map<String, Integer> createLabel2IdMapping(List<String> goldLabels,
-            List<String> predictedLabels)
-    {
-        Set<String> all = new HashSet<>();
-        all.addAll(goldLabels);
-        all.addAll(predictedLabels);
-
-        Map<String, Integer> map = new HashMap<>();
-
-        Integer id = 0;
-        for (String label : all) {
-            map.put(label, id++);
-        }
-
-        return map;
-    }
 }
