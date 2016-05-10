@@ -150,6 +150,13 @@ public class SVMHMMOutcomeIDReport
             String pred = predictedLabels.get(i);
             int g = (int) label2id.getKey(gold);
             int p = (int) label2id.getKey(pred);
+
+            // we decrement all gold/pred labels by one because the evaluation modules seems to
+            // expect that the numbering starts with 0 which is seemingly a problem for SVMHMM -
+            // thus we decrement all labels and shifting the entire outcome numbering by one
+            g--;
+            p--;
+
             prop.setProperty("" + i,
                     p + SEPARATOR_CHAR + g + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
