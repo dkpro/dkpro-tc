@@ -30,7 +30,7 @@ public class SortedKeyProperties
     extends Properties
 {
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Enumeration keys()
     {
