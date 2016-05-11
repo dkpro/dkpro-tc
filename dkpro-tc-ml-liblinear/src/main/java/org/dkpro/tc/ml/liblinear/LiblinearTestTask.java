@@ -97,7 +97,7 @@ public class LiblinearTestTask
     private void predict(TaskContext aContext, Model model, Problem test)
         throws Exception
     {
-        File predFolder = aContext.getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+        File predFolder = aContext.getFolder("", AccessMode.READWRITE);
         String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
                 AdapterNameEntries.predictionsFile);
         File predictionsFile = new File(predFolder, predFileName);

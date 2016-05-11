@@ -88,7 +88,7 @@ public class LiblinearOutcomeIdReport
     private List<String> readPredictions()
         throws IOException
     {
-        File predFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+        File predFolder = getContext().getFolder("", AccessMode.READWRITE);
         String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
                 AdapterNameEntries.predictionsFile);
         return FileUtils.readLines(new File(predFolder, predFileName));
