@@ -34,6 +34,7 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
  * Creates id 2 outcome report
@@ -57,7 +58,7 @@ public class LiblinearOutcomeIdReport
 
         List<String> predictions = readPredictions();
 
-        Properties prop = new Properties();
+        Properties prop = new SortedKeyProperties();
         int lineCounter = 0;
         for (String line : predictions) {
             if (line.startsWith("#")) {
@@ -66,7 +67,7 @@ public class LiblinearOutcomeIdReport
             String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
             int pred = Integer.valueOf(split[0]);
             int gold = Integer.valueOf(split[1]);
-            prop.setProperty("" + lineCounter++, pred + LiblinearTestTask.SEPARATOR_CHAR + gold
+            prop.setProperty(String.format("%05d", lineCounter++), pred + LiblinearTestTask.SEPARATOR_CHAR + gold
                     + LiblinearTestTask.SEPARATOR_CHAR + THRESHOLD_CONSTANT);
         }
 

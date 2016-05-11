@@ -34,6 +34,7 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
@@ -138,12 +139,12 @@ public class SVMHMMOutcomeIDReport
 
         String header = buildHeader(id2label);
 
-        Properties prop = new Properties();
+        Properties prop = new SortedKeyProperties();
         BidiMap label2id = id2label.inverseBidiMap();
 
-        for (int i = 0; i < goldLabels.size(); i++) {
-            String gold = goldLabels.get(i);
-            String pred = predictedLabels.get(i);
+        for (int idx = 0; idx < goldLabels.size(); idx++) {
+            String gold = goldLabels.get(idx);
+            String pred = predictedLabels.get(idx);
             int g = (int) label2id.getKey(gold);
             int p = (int) label2id.getKey(pred);
 
@@ -153,10 +154,10 @@ public class SVMHMMOutcomeIDReport
             g--;
             p--;
 
-            prop.setProperty("" + i,
+            prop.setProperty("" + String.format("%05d",idx),
                     p + SEPARATOR_CHAR + g + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
-        OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(evaluationFile));
+        OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(evaluationFile), "utf-8");
         prop.store(osw, header);
         osw.close();
     }
@@ -173,7 +174,7 @@ public class SVMHMMOutcomeIDReport
         List<String> keySet = new ArrayList<>(label2id.keySet());
         for (int i = 0; i < keySet.size(); i++) {
             String key = keySet.get(i);
-            Integer id = Integer.valueOf((String) label2id.get(key));
+            Integer id = (Integer) label2id.get(key);
             id--; // SvmHmm starts label numbering at 1 - we need a label numbering starting with
                   // zero i.e. expected by the evaluation module
             sb.append(id + "=" + URLEncoder.encode(key, "UTF-8"));

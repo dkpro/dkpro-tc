@@ -19,12 +19,13 @@
 package org.dkpro.tc.crfsuite;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
@@ -32,6 +33,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
@@ -59,7 +61,7 @@ public class CRFSuiteOutcomeIDReport
 
         List<String> testData = getTestData();
 
-        String entries = generateProperties(mapping, labelGoldVsActual, testData);
+        Properties prop = generateProperties(mapping, labelGoldVsActual, testData);
 
         // add "#labels' line with all labels
         StringBuilder sb = new StringBuilder();
@@ -71,9 +73,11 @@ public class CRFSuiteOutcomeIDReport
         File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
 
         String header = "#" + "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
-                + "THRESHOLD" + "\n" + "#" + sb.toString();
+                + "THRESHOLD" + "\n" + "#" + sb.toString() + "\n#Key=jcas_id;sequence_id;unit_id";
 
-        FileUtils.writeStringToFile(id2o, header + "\n" + entries, "utf-8");
+        OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+        prop.store(fos, header);
+        fos.close();
     }
 
     private HashMap<String, Integer> createMappingLabel2Number(List<String> aLabelGoldVsActual)
@@ -118,10 +122,8 @@ public class CRFSuiteOutcomeIDReport
         File storage = getContext().getFolder(CRFSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY);
 
-        File testFile = new File(storage.getAbsolutePath()
-                + "/"
-                + CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.featureVectorsFile));
+        File testFile = new File(storage.getAbsolutePath() + "/" + CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
 
@@ -131,19 +133,18 @@ public class CRFSuiteOutcomeIDReport
     private List<String> getGoldAndPredictions()
         throws Exception
     {
-        File predictionFile = getContext().getFile(
-                CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.predictionsFile), AccessMode.READONLY);
+        File predictionFile = getContext().getFile(CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.predictionsFile), AccessMode.READONLY);
         List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
 
         return readLines;
     }
 
-    protected static String generateProperties(HashMap<String, Integer> aMapping,
+    protected static Properties generateProperties(HashMap<String, Integer> aMapping,
             List<String> predictions, List<String> testFeatures)
-        throws Exception
+                throws Exception
     {
-        List<String> entries = new ArrayList<String>();
+        Properties p = new SortedKeyProperties();
 
         int maxLines = predictions.size();
 
@@ -155,18 +156,17 @@ public class CRFSuiteOutcomeIDReport
             }
             String featureEntry = testFeatures.get(idx - 1);
             String id = extractTCId(featureEntry);
+            String[] idsplit = id.split("_");
+            // make ids sortable by enforcing zero-prefixing
+            String zeroPaddedId = String.format("%04d_%04d_%04d", Integer.valueOf(idsplit[0]),
+                    Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]));
             int numGold = aMapping.get(split[0]);
             int numPred = aMapping.get(split[1]);
-            String e = id + "=" + numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT;
-            entries.add(e);
+            p.setProperty(zeroPaddedId,
+                    numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
 
-        Collections.sort(entries);
-        StringBuilder builder = new StringBuilder();
-        for (String e : entries) {
-            builder.append(e + "\n");
-        }
-        return builder.toString();
+        return p;
     }
 
     private static String extractTCId(String line)
