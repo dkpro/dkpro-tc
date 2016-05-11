@@ -54,7 +54,7 @@ public class MeanAbsoluteErrorTest
 
         double result = MeanAbsoluteError.calculate(id2)
                 .get(MeanAbsoluteError.class.getSimpleName());
-        assertEquals(result, 0.65, 0.001);
+        assertEquals(result, 0.95, 0.000001);
     }
     
     @Test
