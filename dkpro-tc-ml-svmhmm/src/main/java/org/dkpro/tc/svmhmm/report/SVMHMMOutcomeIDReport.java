@@ -79,20 +79,16 @@ public class SVMHMMOutcomeIDReport
         throws IOException
     {
         // predictions
-        File predictionFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READONLY);
         String predictionFileName = new SVMHMMAdapter()
                 .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
-        File predictionsFile = new File(predictionFolder, predictionFileName);
+        
+        File predictionsFile = getContext().getFile(predictionFileName, AccessMode.READONLY);
 
         // test file with gold labels
         File testFile = locateTestFile();
 
         // load the mappings from labels to integers
-        File mappingFolder = getContext().getFolder(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE);
-        File mappingFile = new File(mappingFolder,
-                SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
+        File mappingFile = getContext().getFile(SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME, AccessMode.READONLY);
         BidiMap labelsToIntegersMapping = SVMHMMUtils.loadMapping(mappingFile);
 
         // gold label tags
@@ -132,8 +128,7 @@ public class SVMHMMOutcomeIDReport
         File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
         File evaluationFile = new File(evaluationFolder, ID_OUTCOME_KEY);
 
-        File mappingFile = getContext().getFile(
-                TEST_TASK_OUTPUT_KEY + "/" + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME,
+        File mappingFile = getContext().getFile(SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME,
                 AccessMode.READONLY);
         BidiMap id2label = SVMHMMUtils.loadMapping(mappingFile);
 

@@ -29,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
-
+import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
@@ -54,10 +54,8 @@ public class SVMHMMRandomTestTask
             throws Exception
     {
         // file to hold prediction results
-    	File predictionFolder = taskContext.getFolder(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE);
-        File predictionsFile = new File(predictionFolder, new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile));
+        File predictionsFile = taskContext.getFile(new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile), AccessMode.READWRITE); 
 
         // number of expected outcomes
         List<String> strings = FileUtils.readLines(testFile);

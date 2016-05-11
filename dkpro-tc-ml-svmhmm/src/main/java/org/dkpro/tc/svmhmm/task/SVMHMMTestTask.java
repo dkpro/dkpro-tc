@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 
@@ -158,7 +159,7 @@ public class SVMHMMTestTask
         labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
 
         // save mapping to file
-        File mappingFolder = taskContext.getFolder(TEST_TASK_OUTPUT_KEY,
+        File mappingFolder = taskContext.getFolder("",
                 StorageService.AccessMode.READWRITE);
         File mappingFile = new File(mappingFolder,
                 SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
@@ -225,11 +226,9 @@ public class SVMHMMTestTask
         throws Exception
     {
         // file to hold prediction results
-        File predictionFolder = taskContext.getFolder(TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE);
         String predictionFileName = new SVMHMMAdapter()
                 .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
-        File predictionsFile = new File(predictionFolder, predictionFileName);
+        File predictionsFile = taskContext.getFile(predictionFileName, AccessMode.READWRITE);
 
         // location of the trained model
         File modelFile = taskContext.getFile(MODEL_NAME, StorageService.AccessMode.READONLY);
