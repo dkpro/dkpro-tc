@@ -24,9 +24,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.bayes.NaiveBayes
-import weka.classifiers.functions.SMO
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
@@ -35,9 +32,11 @@ import org.dkpro.tc.examples.io.NERDemoReader
 import org.dkpro.tc.features.length.NrOfCharsUFE
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
+
+import weka.classifiers.bayes.NaiveBayes
+import weka.classifiers.functions.SMO
 
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification

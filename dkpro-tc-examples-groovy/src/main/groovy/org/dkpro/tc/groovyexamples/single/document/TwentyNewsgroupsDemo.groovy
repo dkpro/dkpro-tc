@@ -23,11 +23,6 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.bayes.NaiveBayes
-import weka.classifiers.functions.SMO
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
@@ -42,7 +37,11 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
+
+import weka.classifiers.bayes.NaiveBayes
+import weka.classifiers.functions.SMO
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment

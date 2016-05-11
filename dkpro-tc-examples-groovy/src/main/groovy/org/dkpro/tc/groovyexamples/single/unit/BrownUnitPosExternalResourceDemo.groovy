@@ -26,9 +26,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
 import org.apache.uima.resource.ExternalResourceDescription
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.bayes.NaiveBayes
-import weka.classifiers.functions.SMO
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
@@ -38,7 +35,9 @@ import org.dkpro.tc.features.length.NrOfTokensUFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
+
+import weka.classifiers.bayes.NaiveBayes
+import weka.classifiers.functions.SMO
 
 /**
  * This example is the same as {@link BrownUnitPosDemo}, except that it demonstrates how to

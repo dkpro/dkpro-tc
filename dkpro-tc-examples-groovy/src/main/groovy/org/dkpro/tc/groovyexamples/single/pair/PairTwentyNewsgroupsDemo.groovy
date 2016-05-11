@@ -23,10 +23,6 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.functions.SMO
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
@@ -38,7 +34,10 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
+
+import weka.classifiers.functions.SMO
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
 
 
 /**
