@@ -102,7 +102,7 @@ public class WekaTestTask
             if (featureSearcher != null && attributeEvaluator != null) {
                 AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext,
                         trainData, featureSearcher, attributeEvaluator);
-                File file = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY,
+                File file = WekaUtils.getFile(aContext, "",
                         AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE);
                 FileUtils.writeStringToFile(file, attSel.toResultsString());
                 if (applySelection) {
@@ -129,7 +129,7 @@ public class WekaTestTask
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
 
         // file to hold prediction results
-        File evalOutput = WekaUtils.getFile(aContext, TEST_TASK_OUTPUT_KEY, evaluationBin, AccessMode.READWRITE);
+        File evalOutput = WekaUtils.getFile(aContext, "", evaluationBin, AccessMode.READWRITE);
 
         // evaluation & prediction generation
         if (multiLabel) {
@@ -153,7 +153,7 @@ public class WekaTestTask
         }
 
         // Write out the predictions
-        File predictionFile = WekaUtils.getFile(aContext,TEST_TASK_OUTPUT_KEY, AdapterNameEntries.predictionsFile, AccessMode.READWRITE);
+        File predictionFile = WekaUtils.getFile(aContext,"", AdapterNameEntries.predictionsFile, AccessMode.READWRITE);
         DataSink.write(predictionFile.getAbsolutePath(), testData);
     }
 

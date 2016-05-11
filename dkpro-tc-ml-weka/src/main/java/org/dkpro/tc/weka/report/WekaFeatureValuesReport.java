@@ -67,9 +67,9 @@ public class WekaFeatureValuesReport
                 .equals(Constants.LM_MULTI_LABEL);
         Properties props = new Properties();
         
-        File arff = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+        File arff = WekaUtils.getFile(getContext(), "",
                 AdapterNameEntries.predictionsFile, AccessMode.READONLY);
-        File evaluationFile =WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,Constants.RESULTS_FILENAME, AccessMode.READONLY);
+        File evaluationFile =WekaUtils.getFile(getContext(), "",Constants.RESULTS_FILENAME, AccessMode.READONLY);
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
       

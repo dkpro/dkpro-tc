@@ -48,7 +48,7 @@ public class WekaRegressionReport
     public void execute()
         throws Exception
     {
-        File evaluationFile = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY, WekaTestTask.evaluationBin, AccessMode.READONLY);
+        File evaluationFile = WekaUtils.getFile(getContext(), "", WekaTestTask.evaluationBin, AccessMode.READONLY);
         
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(evaluationFile.getAbsolutePath());

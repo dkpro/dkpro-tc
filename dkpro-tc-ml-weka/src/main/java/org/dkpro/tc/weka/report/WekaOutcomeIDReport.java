@@ -64,9 +64,9 @@ public class WekaOutcomeIDReport
     public void execute()
         throws Exception
     {
-        File arff = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+        File arff = WekaUtils.getFile(getContext(), "",
                 AdapterNameEntries.predictionsFile, AccessMode.READONLY);
-        mlResults = WekaUtils.getFile(getContext(), WekaTestTask.TEST_TASK_OUTPUT_KEY,
+        mlResults = WekaUtils.getFile(getContext(), "",
                 WekaTestTask.evaluationBin, AccessMode.READONLY);
 
         boolean multiLabel = getDiscriminators()
