@@ -140,8 +140,8 @@ public class WekaOutcomeIDReport
                 }
                 String s = (StringUtils.join(predList, ",") + SEPARATOR_CHAR
                         + StringUtils.join(goldList, ",") + SEPARATOR_CHAR + bipartition);
-                Integer id = Integer.valueOf(predictions.get(i).stringValue(attOffset));
-                props.setProperty(String.format("%05d", id), s);
+                String stringValue = predictions.get(i).stringValue(attOffset);
+                props.setProperty(stringValue, s);
             }
         }
         // single-label
@@ -165,14 +165,14 @@ public class WekaOutcomeIDReport
                             .get(gsAtt.value(prediction.intValue()));
                     Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                     
-                    Integer id = Integer.valueOf(inst.stringValue(attOffset));
-                    props.setProperty(String.format("%05d", id), predictionAsNumber
+                    String stringValue = inst.stringValue(attOffset);
+                    props.setProperty(stringValue, predictionAsNumber
                             + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
                 }
                 else {
                     // the outcome is numeric
-                    Integer id = Integer.valueOf(inst.stringValue(attOffset));
-                    props.setProperty(String.format("%05d", id), prediction + SEPARATOR_CHAR
+                    String stringValue = inst.stringValue(attOffset);
+                    props.setProperty(stringValue, prediction + SEPARATOR_CHAR
                             + gold + SEPARATOR_CHAR + String.valueOf(0));
                 }
             }
