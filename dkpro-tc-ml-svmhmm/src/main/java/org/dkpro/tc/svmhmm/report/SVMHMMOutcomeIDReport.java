@@ -25,12 +25,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
 import org.dkpro.lab.reporting.ReportBase;
@@ -177,7 +173,10 @@ public class SVMHMMOutcomeIDReport
         List<String> keySet = new ArrayList<>(label2id.keySet());
         for (int i = 0; i < keySet.size(); i++) {
             String key = keySet.get(i);
-            sb.append(label2id.get(key) + "=" + URLEncoder.encode(key, "UTF-8"));
+            Integer id = Integer.valueOf((String) label2id.get(key));
+            id--; // SvmHmm starts label numbering at 1 - we need a label numbering starting with
+                  // zero i.e. expected by the evaluation module
+            sb.append(id + "=" + URLEncoder.encode(key, "UTF-8"));
             if (i + 1 < keySet.size()) {
                 sb.append(" ");
             }

@@ -74,6 +74,7 @@ public class SVMHMMRandomTestTask
 
     protected Integer getRandomOutcome()
     {
+        @SuppressWarnings("unchecked")
         List<Object> list = new ArrayList<Object>(this.labelsToIntegersMapping.values());
 
         // random label
