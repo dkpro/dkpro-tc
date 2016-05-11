@@ -347,22 +347,6 @@ public final class SVMHMMUtils
         return result;
     }
 
-    /**
-     * Given confusion matrix, it writes it in CSV and LaTeX form to the tasks output directory, and
-     * also prints evaluations (F-measure, Precision, Recall)
-     *
-     * @param context
-     *            task context
-     * @param confusionMatrix
-     *            confusion matrix
-     * @throws java.io.IOException
-     */
-    public static void writeOutputResults(TaskContext context, ConfusionMatrix confusionMatrix)
-        throws IOException
-    {
-        writeOutputResults(context, confusionMatrix, null);
-    }
-
 
     public static List<SortedMap<String, String>> extractMetaDataFeatures(File featureVectorsFile)
         throws IOException
