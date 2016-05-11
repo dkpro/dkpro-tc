@@ -37,10 +37,8 @@ public class MeanAbsoluteError
 	        for(SingleOutcome o : outcomes){
 	            double[] goldstandard = o.getGoldstandard();
 	            double[] prediction = o.getPrediction();
-	            sum+= (goldstandard[0] - prediction[0]);
+	            sum+= Math.abs(goldstandard[0] - prediction[0]);
 	        }
-	        
-	        sum = Math.abs(sum);
 	        
 		results.put(MeanAbsoluteError.class.getSimpleName(), sum / outcomes.size());
 		return results;	 	
