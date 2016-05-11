@@ -211,8 +211,8 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport
+                ]
         ]
 
         // Run

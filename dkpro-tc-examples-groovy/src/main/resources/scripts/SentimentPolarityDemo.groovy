@@ -24,7 +24,6 @@ import org.dkpro.tc.weka.writer.WekaDataWriter
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
@@ -156,8 +155,8 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport
+                ]
         ];
 
         // Run
