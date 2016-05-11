@@ -50,10 +50,6 @@ public class WekaOutcomeIDReport
     extends ReportBase
 {
     /**
-     * Name of the file where the instanceID / outcome pairs are stored
-     */
-    public static final String ID_OUTCOME_KEY = "id2outcome.txt";
-    /**
      * Character that is used for separating fields in the output file
      */
     public static final String SEPARATOR_CHAR = ";";
@@ -82,7 +78,7 @@ public class WekaOutcomeIDReport
 
         Properties props = generateProperties(predictions, multiLabel, regression, labels,
                 mlResults);
-        getContext().storeBinary(ID_OUTCOME_KEY,
+        getContext().storeBinary(Constants.ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, generateHeader(labels)));
     }
 

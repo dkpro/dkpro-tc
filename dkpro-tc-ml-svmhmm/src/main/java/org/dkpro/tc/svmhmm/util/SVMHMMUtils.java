@@ -363,51 +363,6 @@ public final class SVMHMMUtils
         writeOutputResults(context, confusionMatrix, null);
     }
 
-    /**
-     * Given confusion matrix, it writes it in CSV and LaTeX form to the tasks output directory, and
-     * also prints evaluations (F-measure, Precision, Recall)
-     *
-     * @param context
-     *            task context
-     * @param confusionMatrix
-     *            confusion matrix
-     * @param filePrefix
-     *            prefix of output files
-     * @throws java.io.IOException
-     */
-    public static void writeOutputResults(TaskContext context, ConfusionMatrix confusionMatrix,
-            String filePrefix)
-        throws IOException
-    {
-        // storing the results as latex confusion matrix
-        String confMatrixFileTex = (filePrefix != null ? filePrefix : "") + "confusionMatrix.tex";
-        File matrixFolderTex = context.getFolder(Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE);
-        File evaluationFileLaTeX = new File(matrixFolderTex, confMatrixFileTex);
-        FileUtils.writeStringToFile(evaluationFileLaTeX, confusionMatrix.toStringLatex());
-
-        // as CSV confusion matrix
-
-        String confMatrixFileCsv = (filePrefix != null ? filePrefix : "") + "confusionMatrix.csv";
-        File matrixFolder = context.getFolder(Constants.TEST_TASK_OUTPUT_KEY,
-                StorageService.AccessMode.READWRITE);
-        File evaluationFileCSV = new File(matrixFolder, confMatrixFileCsv);
-
-        CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(evaluationFileCSV), CSVFormat.DEFAULT);
-        csvPrinter.printRecords(confusionMatrix.toStringMatrix());
-        IOUtils.closeQuietly(csvPrinter);
-
-        // and results
-        File evalFolder = context.getFolder("",
-                StorageService.AccessMode.READWRITE);
-        File evaluationFile = new File(evalFolder, Constants.RESULTS_FILENAME);
-
-        PrintWriter pw = new PrintWriter(evaluationFile);
-        pw.println(confusionMatrix.printNiceResults());
-        pw.println(confusionMatrix.printLabelPrecRecFm());
-        pw.println(confusionMatrix.printClassDistributionGold());
-        IOUtils.closeQuietly(pw);
-    }
 
     public static List<SortedMap<String, String>> extractMetaDataFeatures(File featureVectorsFile)
         throws IOException

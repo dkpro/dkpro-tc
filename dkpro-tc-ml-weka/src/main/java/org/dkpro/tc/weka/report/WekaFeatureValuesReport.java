@@ -48,6 +48,7 @@ import org.dkpro.tc.weka.util.WekaUtils;
  * First line lists feature names, next lines class labels and class averages for each feature.
  * Currently implemented for numeric attributes/features only.
  */
+@Deprecated
 public class WekaFeatureValuesReport
     extends ReportBase
 {
@@ -69,8 +70,9 @@ public class WekaFeatureValuesReport
         
         File arff = WekaUtils.getFile(getContext(), "",
                 AdapterNameEntries.predictionsFile, AccessMode.READONLY);
-        File evaluationFile =WekaUtils.getFile(getContext(), "",Constants.RESULTS_FILENAME, AccessMode.READONLY);
-
+        //TODO: the file referenced below is no longer created - need to be fixed
+//        File evaluationFile =WekaUtils.getFile(getContext(), "",Constants.RESULTS_FILENAME, AccessMode.READONLY);
+        File evaluationFile=null;
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
       
         String[] classValues;

@@ -321,10 +321,6 @@ public interface Constants
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
-    public static final String RESULTS_FILENAME = "results.txt";
-    /**
-     * Name of the file which holds evaluation results from the machine learning framework
-     */
     public static final String FILENAME_FEATURES = "feature.names";
     /**
      * Name of the attribute/label which stores the prediction values

@@ -37,7 +37,6 @@ import org.dkpro.tc.integrationtest.io.LineInstanceReader
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
 
 /**
  * Testing with many instances.
@@ -99,9 +98,6 @@ public class ManyInstancesExperiment implements Constants {
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [
-                WekaClassificationReport
-            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

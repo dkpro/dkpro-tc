@@ -44,8 +44,6 @@ import org.dkpro.tc.ml.report.BatchOutcomeIDReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
-import org.dkpro.tc.weka.report.WekaClassificationReport;
-import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
 
 /**
  * Test case for issue 100.
@@ -179,10 +177,8 @@ public class SweeptingVsSingle
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
-        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
         batch.addReport(BatchOutcomeIDReport.class);

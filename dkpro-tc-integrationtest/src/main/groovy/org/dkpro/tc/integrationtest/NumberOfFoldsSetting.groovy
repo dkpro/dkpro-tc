@@ -36,7 +36,6 @@ import org.dkpro.tc.integrationtest.io.LineInstanceReader
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
 
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.

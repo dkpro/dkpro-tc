@@ -21,10 +21,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.bayes.NaiveBayes
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.tc.core.Constants
@@ -37,7 +33,10 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaClassificationReport
+
+import weka.classifiers.bayes.NaiveBayes
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
@@ -129,9 +128,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [
-                WekaClassificationReport
-            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -152,9 +148,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [
-                WekaClassificationReport
-            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -180,9 +173,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [
-                WekaClassificationReport
-            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -203,9 +193,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing: getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [
-                WekaClassificationReport
-            ],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

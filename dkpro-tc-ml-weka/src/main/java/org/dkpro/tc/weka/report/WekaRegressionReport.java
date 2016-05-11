@@ -66,6 +66,6 @@ public class WekaRegressionReport
         }
 
         // Write out properties
-        getContext().storeBinary(WekaTestTask.RESULTS_FILENAME, new PropertiesAdapter(props));
+        getContext().storeBinary("regression.txt", new PropertiesAdapter(props));
     }
 }
