@@ -172,7 +172,6 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         WekaTestTask testTask = [
             type:"TestTask-TwentyNewsgroups",
             reports: [
-                WekaClassificationReport,
                 WekaOutcomeIDReport]
         ]
 
