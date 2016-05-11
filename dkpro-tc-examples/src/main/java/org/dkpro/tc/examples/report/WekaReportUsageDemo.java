@@ -43,12 +43,11 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
-import org.dkpro.tc.weka.report.WekaFeatureValuesReport;
 
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This experiments the usage of various reports that can added as regular reports and inner reports
@@ -58,7 +57,7 @@ public class WekaReportUsageDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 3;
+    public static final int NUM_FOLDS = 2;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
@@ -147,7 +146,6 @@ public class WekaReportUsageDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
-        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.addReport(BatchCrossValidationReport.class);
         batch.addReport(BatchRuntimeReport.class);
 
@@ -165,7 +163,6 @@ public class WekaReportUsageDemo
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);

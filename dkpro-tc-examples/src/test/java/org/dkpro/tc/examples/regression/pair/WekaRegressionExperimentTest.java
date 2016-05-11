@@ -28,6 +28,7 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
+import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.weka.task.WekaTestTask;
@@ -70,12 +71,15 @@ public class WekaRegressionExperimentTest extends JavaDemosTest_Base
         //weka offers to calculate this value too - we take weka as "reference" value 
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(new File(ContextMemoryReport.id2outcome.getParent() + "/" +WekaTestTask.evaluationBin).getAbsolutePath());
-        double wekaGold = eval.meanAbsoluteError();
+        double wekaMeanAbsoluteError = eval.meanAbsoluteError();
+        double wekaMeanSquaredError = eval.rootMeanSquaredError();
         
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
+        Double meanAbsoluteError = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
+        assertEquals(wekaMeanAbsoluteError, meanAbsoluteError, 0.00001);
         
-        assertEquals(wekaGold, result, 0.00001);
+        Double rootMeanSquaredError = createEvaluator.calculateEvaluationMeasures().get(RootMeanSquaredError.class.getSimpleName());
+        assertEquals(wekaMeanSquaredError, rootMeanSquaredError, 0.00001);
     }
 }

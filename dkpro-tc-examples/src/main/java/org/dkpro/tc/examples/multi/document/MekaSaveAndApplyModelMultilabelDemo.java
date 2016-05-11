@@ -55,7 +55,7 @@ import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
 
-public class MekaWekaSaveAndApplyModelMultilabelDemo
+public class MekaSaveAndApplyModelMultilabelDemo
     implements Constants
 {
 
@@ -76,10 +76,10 @@ public class MekaWekaSaveAndApplyModelMultilabelDemo
     	// This is used to ensure that the required DKPRO_HOME environment variable is set.
     	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
     	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(MekaWekaSaveAndApplyModelMultilabelDemo.class.getSimpleName());
+    	DemoUtils.setDkproHome(MekaSaveAndApplyModelMultilabelDemo.class.getSimpleName());
     	
         ParameterSpace pSpace = getParameterSpace();
-        MekaWekaSaveAndApplyModelMultilabelDemo experiment = new MekaWekaSaveAndApplyModelMultilabelDemo();
+        MekaSaveAndApplyModelMultilabelDemo experiment = new MekaSaveAndApplyModelMultilabelDemo();
         experiment.runSaveModel(pSpace);
         experiment.applyStoredModel("An example sentence. And another one.");
     }

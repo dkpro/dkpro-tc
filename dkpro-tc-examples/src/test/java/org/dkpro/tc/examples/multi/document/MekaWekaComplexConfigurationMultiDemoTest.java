@@ -21,7 +21,7 @@ package org.dkpro.tc.examples.multi.document;
 import org.dkpro.lab.task.ParameterSpace;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.examples.multi.document.MekaWekaComplexConfigurationMultiDemo;
+import org.dkpro.tc.examples.multi.document.MekaComplexConfigurationMultiDemo;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
@@ -31,7 +31,7 @@ import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
  */
 public class MekaWekaComplexConfigurationMultiDemoTest extends JavaDemosTest_Base
 {
-    MekaWekaComplexConfigurationMultiDemo javaExperiment;
+    MekaComplexConfigurationMultiDemo javaExperiment;
     ParameterSpace pSpace;
     
     @Before
@@ -40,8 +40,8 @@ public class MekaWekaComplexConfigurationMultiDemoTest extends JavaDemosTest_Bas
     {
         super.setup();
         
-        javaExperiment = new MekaWekaComplexConfigurationMultiDemo();
-        pSpace = MekaWekaComplexConfigurationMultiDemo.getParameterSpace();
+        javaExperiment = new MekaComplexConfigurationMultiDemo();
+        pSpace = MekaComplexConfigurationMultiDemo.getParameterSpace();
     }
 
     @Test
