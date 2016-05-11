@@ -18,6 +18,7 @@
  */
 package org.dkpro.tc.groovyexamples.single.pair
 
+
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
@@ -119,7 +120,6 @@ class PairTwentyNewsgroupsDemo implements Constants {
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

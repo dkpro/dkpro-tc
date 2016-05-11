@@ -84,7 +84,6 @@ implements Constants {
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:  getPreprocessing(),
             machineLearningAdapter: WekaClassificationAdapter,
-            innerReports: [WekaClassificationReport],
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
