@@ -36,7 +36,6 @@ import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaRegressionAdapter
 
@@ -145,8 +144,8 @@ public class RegressionDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport
+                ]
         ]
 
         // Run

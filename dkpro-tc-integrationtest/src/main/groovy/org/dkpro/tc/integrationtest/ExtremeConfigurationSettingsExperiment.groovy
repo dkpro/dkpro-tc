@@ -30,7 +30,6 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 
@@ -157,8 +156,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimPipelineParametersEmpty
             ],
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport
+                ]
         ]
 
         // Run
@@ -202,8 +201,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimPipelineParameters
             ],
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport]
         ]
 
         // Run

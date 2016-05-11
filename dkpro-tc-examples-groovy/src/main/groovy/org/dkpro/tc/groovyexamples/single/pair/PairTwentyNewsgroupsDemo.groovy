@@ -32,7 +32,6 @@ import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentTrainTest
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 
@@ -129,8 +128,8 @@ class PairTwentyNewsgroupsDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport
+                ]
         ]
 
         // Run

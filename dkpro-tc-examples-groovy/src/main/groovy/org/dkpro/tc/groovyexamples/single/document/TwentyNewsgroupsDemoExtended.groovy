@@ -36,7 +36,6 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.NrOfTokensDFE
 import org.dkpro.tc.features.ngram.LuceneNGramDFE
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 import org.dkpro.tc.weka.report.WekaOutcomeIDReport

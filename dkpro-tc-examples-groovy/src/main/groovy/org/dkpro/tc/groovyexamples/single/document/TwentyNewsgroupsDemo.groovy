@@ -34,7 +34,6 @@ import org.dkpro.tc.features.ngram.LuceneNGramDFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 
@@ -204,8 +203,8 @@ public class TwentyNewsgroupsDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport,
-                BatchOutcomeIDReport]
+                BatchTrainTestReport
+                ]
         ]
 
         // Run

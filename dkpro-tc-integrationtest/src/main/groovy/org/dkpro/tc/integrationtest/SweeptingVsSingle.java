@@ -40,7 +40,6 @@ import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchOutcomeIDReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
@@ -181,7 +180,6 @@ public class SweeptingVsSingle
         // each outcome label
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(BatchOutcomeIDReport.class);
         batch.addReport(BatchRuntimeReport.class);
 
         // Run
