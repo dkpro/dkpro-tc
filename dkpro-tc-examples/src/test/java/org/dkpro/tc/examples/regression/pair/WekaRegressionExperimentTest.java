@@ -23,21 +23,18 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.junit.Before;
-import org.junit.Test;
-
-import weka.core.SerializationHelper;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
-import org.dkpro.tc.examples.regression.pair.WekaRegressionDemo;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.weka.task.WekaTestTask;
+import org.junit.Before;
+import org.junit.Test;
+
+import weka.core.SerializationHelper;
 
 /**
  * This test just ensures that the experiment runs without throwing
