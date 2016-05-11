@@ -34,6 +34,7 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.weka.task.WekaTestTask;
 import org.dkpro.tc.weka.util.MultilabelResult;
 import org.dkpro.tc.weka.util.WekaUtils;
@@ -113,7 +114,7 @@ public class WekaOutcomeIDReport
             boolean isRegression, List<String> labels, File mlResults)
                 throws ClassNotFoundException, IOException
     {
-        Properties props = new Properties();
+        Properties props = new SortedKeyProperties();
         String[] classValues = new String[predictions.numClasses()];
 
         for (int i = 0; i < predictions.numClasses(); i++) {
@@ -139,7 +140,8 @@ public class WekaOutcomeIDReport
                 }
                 String s = (StringUtils.join(predList, ",") + SEPARATOR_CHAR
                         + StringUtils.join(goldList, ",") + SEPARATOR_CHAR + bipartition);
-                props.setProperty(predictions.get(i).stringValue(attOffset), s);
+                Integer id = Integer.valueOf(predictions.get(i).stringValue(attOffset));
+                props.setProperty(String.format("%05d", id), s);
             }
         }
         // single-label
@@ -162,12 +164,15 @@ public class WekaOutcomeIDReport
                     Integer predictionAsNumber = class2number
                             .get(gsAtt.value(prediction.intValue()));
                     Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
-                    props.setProperty(inst.stringValue(attOffset), predictionAsNumber
+                    
+                    Integer id = Integer.valueOf(inst.stringValue(attOffset));
+                    props.setProperty(String.format("%05d", id), predictionAsNumber
                             + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
                 }
                 else {
                     // the outcome is numeric
-                    props.setProperty(inst.stringValue(attOffset), prediction + SEPARATOR_CHAR
+                    Integer id = Integer.valueOf(inst.stringValue(attOffset));
+                    props.setProperty(String.format("%05d", id), prediction + SEPARATOR_CHAR
                             + gold + SEPARATOR_CHAR + String.valueOf(0));
                 }
             }
