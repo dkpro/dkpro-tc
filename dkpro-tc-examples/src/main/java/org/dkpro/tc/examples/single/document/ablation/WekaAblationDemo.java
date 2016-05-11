@@ -42,11 +42,10 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
-import org.dkpro.tc.weka.report.WekaClassificationReport;
 
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * Shows how to use the ablation test feature sets.
@@ -121,7 +120,6 @@ public class WekaAblationDemo
         ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
                 WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
-        batch.addInnerReport(WekaClassificationReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
