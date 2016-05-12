@@ -57,6 +57,10 @@ public class TwitterSentimentDemo implements Constants {
      * @throws Exception
      */
     protected void runCrossValidation() throws Exception {
+        
+       def trainreader = createReaderDescription(LabeledTweetReader.class,
+             LabeledTweetReader.PARAM_SOURCE_LOCATION,  "src/main/resources/data/twitter/train/*/*.txt"
+          );
 
         ExperimentCrossValidation batchTask = [
             experimentName: "Twitter-Sentiment-CV",
@@ -67,11 +71,8 @@ public class TwitterSentimentDemo implements Constants {
             parameterSpace: [
                 // parameters in the parameter space with several values in a list will be swept
                 Dimension.createBundle("readers", [
-                    readerTrain: LabeledTweetReader,
-                    readerTrainParams: [
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/train/*/*.txt"
-                    ]]),
+                    readerTrain: trainreader,
+                    ]),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_SET, [
@@ -83,7 +84,7 @@ public class TwitterSentimentDemo implements Constants {
             reports: [
                 BatchCrossValidationReport
             ], // collects results from folds
-            numFolds: 3]
+            numFolds: 2]
 
         // Run
         Lab.getInstance().run(batchTask)
@@ -96,6 +97,14 @@ public class TwitterSentimentDemo implements Constants {
      * @throws Exception
      */
     protected void runTrainTest() throws Exception {
+        
+        def trainreader = createReaderDescription(LabeledTweetReader.class,
+            LabeledTweetReader.PARAM_SOURCE_LOCATION,  "src/main/resources/data/twitter/train/*/*.txt"
+         );
+     
+         def testreader= createReaderDescription(LabeledTweetReader.class,
+         LabeledTweetReader.PARAM_SOURCE_LOCATION,  "src/main/resources/data/twitter/test/*/*.txt"
+         );
 
         ExperimentTrainTest batchTask = [
             experimentName: "Twitter-Sentiment-TrainTest",
@@ -106,16 +115,8 @@ public class TwitterSentimentDemo implements Constants {
             parameterSpace: [
                 // parameters in the parameter space with several values in a list will be swept
                 Dimension.createBundle("readers", [
-                    readerTrain: LabeledTweetReader,
-                    readerTrainParams: [
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/train/*/*.txt"
-                    ],
-                    readerTest: LabeledTweetReader,
-                    readerTestParams: [
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/test/*/*.txt"
-                    ],
+                    readerTrain: trainreader,
+                    readerTest: testreader,
                 ]),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -140,5 +141,5 @@ public class TwitterSentimentDemo implements Constants {
      */
     public static void main(String[] args) {
 		DemoUtils.setDkproHome(TwitterSentimentDemo.getSimpleName());
-       // new TwitterSentimentDemo().runCrossValidation()
+        new TwitterSentimentDemo().runCrossValidation()
         new TwitterSentimentDemo().runTrainTest() } }

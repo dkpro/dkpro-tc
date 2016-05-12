@@ -67,21 +67,19 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     // === DIMENSIONS===========================================================
 
+    def testreader = createReaderDescription(PairTwentyNewsgroupsReader.class,
+         PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTest, 
+         PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode
+     );
+    
+     def trainreader = createReaderDescription(PairTwentyNewsgroupsReader.class,
+         PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTrain,
+         PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode
+     );
+    
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: PairTwentyNewsgroupsReader,
-        readerTestParams: [
-            PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-            listFilePathTest,
-            PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
-            languageCode
-        ],
-        readerTrain: PairTwentyNewsgroupsReader,
-        readerTrainParams: [
-            PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-            listFilePathTrain,
-            PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
-            languageCode
-        ]
+        readerTest: testreader,
+        readerTrain: trainreader,
     ])
 
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)

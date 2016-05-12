@@ -19,6 +19,7 @@
 package org.dkpro.tc.groovyexamples.single.unit
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription
 
@@ -59,20 +60,16 @@ implements Constants {
         NrOfTokensExternalResourceUFE.PARAM_DUMMY_RESOURCE,
         dummyResource
     ])
+    
+    def trainreader = createReaderDescription(BrownCorpusReader.class,
+        BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+        BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]
+    );
 
     def dimReaders = Dimension.createBundle("readers", [
-        readerTrain: BrownCorpusReader,
-        readerTrainParams: [
-            BrownCorpusReader.PARAM_LANGUAGE,
-            LANGUAGE_CODE,
-            BrownCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            BrownCorpusReader.PARAM_PATTERNS,
-            [
-                INCLUDE_PREFIX + "*.xml",
-                INCLUDE_PREFIX + "*.xml.gz"
-            ]
-        ]])
+        readerTrain: trainreader,
+        ])
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(

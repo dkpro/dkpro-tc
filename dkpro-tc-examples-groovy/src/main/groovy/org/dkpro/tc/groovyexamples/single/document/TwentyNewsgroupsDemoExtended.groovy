@@ -66,26 +66,22 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def languageCode = "en"
 
     // === DIMENSIONS===========================================================
+    
+    def testreader = createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
+        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+       );
+   
+   def trainreader = createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+       TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+       TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
+       TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+      );
 
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: TwentyNewsgroupsCorpusReader.class,
-        readerTestParams: [
-            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTest,
-            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-        ],
-        readerTrain: TwentyNewsgroupsCorpusReader.class,
-        readerTrainParams: [
-            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-        ]
+        readerTest: testreader,
+        readerTrain: trainreader,
     ])
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)

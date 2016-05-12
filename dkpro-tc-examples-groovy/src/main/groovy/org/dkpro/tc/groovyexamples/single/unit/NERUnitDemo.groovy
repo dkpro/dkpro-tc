@@ -20,6 +20,7 @@ package org.dkpro.tc.groovyexamples.single.unit
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
@@ -57,16 +58,16 @@ implements Constants {
         NrOfCharsUFE.name,
         InitialCharacterUpperCaseUFE.name
     ])
+    
+    def trainreader = createReaderDescription(NERDemoReader.class,
+       NERDemoReader.PARAM_LANGUAGE,  "de",
+       NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+       NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt"
+    );
+    
     def dimReaders = Dimension.createBundle("readers", [
-        readerTrain: NERDemoReader,
-        readerTrainParams: [
-            NERDemoReader.PARAM_LANGUAGE,
-            "de",
-            NERDemoReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            NERDemoReader.PARAM_PATTERNS,
-            INCLUDE_PREFIX + "*.txt"
-        ]])
+        readerTrain: trainreader,
+        ])
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [SMO.name],[NaiveBayes.name])
 

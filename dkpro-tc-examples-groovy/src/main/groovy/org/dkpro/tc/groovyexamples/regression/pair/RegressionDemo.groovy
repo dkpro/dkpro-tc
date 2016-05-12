@@ -19,6 +19,7 @@
 package org.dkpro.tc.groovyexamples.regression.pair
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
@@ -57,23 +58,21 @@ public class RegressionDemo implements Constants {
     def String inputFileTest = "src/main/resources/data/sts2012/STS.input.MSRvid.txt"
     def String goldFileTest = "src/main/resources/data/sts2012/STS.gs.MSRvid.txt"
 
-    // === DIMENSIONS===========================================================
+    // === DIMENSIONS ===========================================================
+    
+    def trainreader = CollectionReaderFactory.createReaderDescription(STSReader.class,
+        STSReader.PARAM_INPUT_FILE, inputFileTrain,
+        STSReader.PARAM_GOLD_FILE, goldFileTrain
+        );
+    
+    def testreader = CollectionReaderFactory.createReaderDescription(STSReader.class,
+         STSReader.PARAM_INPUT_FILE, inputFileTest,
+         STSReader.PARAM_GOLD_FILE, goldFileTest
+        );
 
     def dimReaders = Dimension.createBundle("readers", [
-        readerTrain: STSReader,
-        readerTrainParams: [
-            STSReader.PARAM_INPUT_FILE,
-            inputFileTrain,
-            STSReader.PARAM_GOLD_FILE,
-            goldFileTrain
-        ],
-        readerTest: STSReader,
-        readerTestParams: [
-            STSReader.PARAM_INPUT_FILE,
-            inputFileTest,
-            STSReader.PARAM_GOLD_FILE,
-            goldFileTest
-        ]
+        readerTrain: trainreader,
+        readerTest: testreader,
     ])
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION)
