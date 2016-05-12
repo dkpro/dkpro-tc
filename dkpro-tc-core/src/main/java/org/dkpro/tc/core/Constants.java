@@ -77,19 +77,12 @@ public interface Constants
      * Name of the discriminator that stores the reader for training data
      */
     public static final String DIM_READER_TRAIN = "readerTrain";
-    /**
-     * Name of the discriminator that stores the parameters for the training data reader
-     */
-    public static final String DIM_READER_TRAIN_PARAMS = "readerTrainParams";
+    
     /**
      * Name of the discriminator that stores the reader for test data
      */
     public static final String DIM_READER_TEST = "readerTest";
-    /**
-     * Name of the discriminator that stores the parameters for the test data reader
-     */
-    public static final String DIM_READER_TEST_PARAMS = "readerTestParams";
-
+    
     /**
      * Name of the discriminator that stores the set of feature extractors
      */
