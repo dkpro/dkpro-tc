@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -101,40 +103,38 @@ public class WekaNERUnitDemo
     }
 
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, NERDemoReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
-                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
-        dimReaders.put(DIM_READER_TEST, NERDemoReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
-                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
+                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
+                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTest);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(DIM_PIPELINE_PARAMS,
-                        Arrays.asList(new Object[] {
-                                IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
+                .asList(new Object[] { IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { InitialCharacterUpperCaseUFE.class.getName(),
                         IsSurroundedByCharsUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
 
         return pSpace;

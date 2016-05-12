@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -42,9 +44,9 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaRegressionAdapter;
 
-import weka.classifiers.functions.SMOreg;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.functions.SMOreg;
 
 /**
  * A demo for pair classification with a regression outcome.
@@ -53,7 +55,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
  * similarity features between document pairs and <br>
  * then learns a regression model that predicts similarity of unseen document pairs.
  */
-public class WekaRegressionDemo
+public class WekaRegressionDemo implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
     public static final int NUM_FOLDS = 2;
@@ -79,20 +81,20 @@ public class WekaRegressionDemo
         experiment.runTrainTest(getParameterSpace());
     }
 
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(Constants.DIM_READER_TRAIN, STSReader.class);
-        dimReaders.put(
-                Constants.DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { STSReader.PARAM_INPUT_FILE, inputFileTrain,
-                        STSReader.PARAM_GOLD_FILE, goldFileTrain }));
-        dimReaders.put(Constants.DIM_READER_TEST, STSReader.class);
-        dimReaders.put(
-                Constants.DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] { STSReader.PARAM_INPUT_FILE, inputFileTest,
-                        STSReader.PARAM_GOLD_FILE, goldFileTest }));
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                STSReader.class,STSReader.PARAM_INPUT_FILE, inputFileTrain,
+                STSReader.PARAM_GOLD_FILE, goldFileTrain );
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                STSReader.class,STSReader.PARAM_INPUT_FILE, inputFileTest,
+                STSReader.PARAM_GOLD_FILE, goldFileTest );
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(

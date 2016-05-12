@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -71,48 +73,40 @@ public class CRFSuiteBrownPosDemo
     }
 
     public static ParameterSpace getParameterSpace(String featureMode, String learningMode)
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, asList(BrownCorpusReader.PARAM_LANGUAGE,
-                "en", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
-                asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz")));
+                asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"));
+
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-        .create(DIM_PIPELINE_PARAMS,
-                        asList(new Object[] {
-                                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N,
-                                        2,
-                                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N,
-                                        4,
-                                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K,
-                                        50 }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
+                asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
+                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 4,
+                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
 
         @SuppressWarnings("unchecked")
-        /* If no algorithm is provided, CRFSuite takes lbfgs*/
+        /* If no algorithm is provided, CRFSuite takes lbfgs */
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON}));
+                asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON }));
 
-        
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { 
-                		NrOfTokensUFE.class.getName(),
-                		LuceneCharacterNGramUFE.class.getName()
-                		}));
+                asList(new String[] { NrOfTokensUFE.class.getName(),
+                        LuceneCharacterNGramUFE.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(
-        		Dimension.createBundle("readers", dimReaders),
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
                 Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
-                dimPipelineParameters,
-                dimFeatureSets,
-                dimClassificationArgs
-        );
+                dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }

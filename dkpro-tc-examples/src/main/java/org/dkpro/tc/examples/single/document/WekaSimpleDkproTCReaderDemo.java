@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -41,8 +43,8 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This demo uses the {@link SimpleDkproTCReader}.
@@ -83,18 +85,18 @@ public class WekaSimpleDkproTCReaderDemo
         Lab.getInstance().run(batch);
     }
 
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, SimpleDkproTCReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] {
-                        SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                        SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE,
-                        FILEPATH_GOLD_LABELS,
-                        SimpleDkproTCReader.PARAM_SENTENCES_FILE,
-                        FILEPATH_TRAIN + "/instances.txt"}));
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                SimpleDkproTCReader.class,
+                SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE,
+                FILEPATH_GOLD_LABELS,
+                SimpleDkproTCReader.PARAM_SENTENCES_FILE,
+                FILEPATH_TRAIN + "/instances.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(

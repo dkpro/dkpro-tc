@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
@@ -74,23 +77,26 @@ public class WekaPairTwentyNewsgroupsDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, PairTwentyNewsgroupsReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-                        listFilePathTrain,
-                        PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
-                        languageCode));
-        dimReaders.put(DIM_READER_TEST, PairTwentyNewsgroupsReader.class);
-        dimReaders.put(DIM_READER_TEST_PARAMS,
-                Arrays.asList(PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-                        listFilePathTest,
-                        PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
-                        languageCode));
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
+                listFilePathTrain,
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
+                languageCode);
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
+                listFilePathTest,
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE,
+                languageCode);
+        dimReaders.put(DIM_READER_TEST, readerTest);
+
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));

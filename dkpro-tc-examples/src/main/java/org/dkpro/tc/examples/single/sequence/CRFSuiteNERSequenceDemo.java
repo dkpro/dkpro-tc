@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -63,7 +65,8 @@ public class CRFSuiteNERSequenceDemo
         throws Exception
     {
         // Suppress mallet logging output
-        System.setProperty("java.util.logging.config.file", "src/main/resources/logging.properties");
+        System.setProperty("java.util.logging.config.file",
+                "src/main/resources/logging.properties");
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -81,8 +84,8 @@ public class CRFSuiteNERSequenceDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "NamedEntitySequenceDemoCV", CRFSuiteAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
+                CRFSuiteAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -109,30 +112,31 @@ public class CRFSuiteNERSequenceDemo
     }
 
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
+                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
+                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, NERDemoReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
-                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
-        dimReaders.put(DIM_READER_TEST, NERDemoReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] { NERDemoReader.PARAM_LANGUAGE, "de",
-                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt" }));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
                         InitialCharacterUpperCaseUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets);
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets);
 
         return pSpace;
     }

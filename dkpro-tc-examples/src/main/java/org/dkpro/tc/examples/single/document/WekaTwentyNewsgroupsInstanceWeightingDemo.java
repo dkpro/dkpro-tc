@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -41,10 +43,10 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
 
 /**
  * This is the TwentyNewsgroups demo with instance weighting.  With instance
@@ -100,32 +102,35 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, WeightedTwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                        corpusFilePathTrain,
-                        WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
-                        corpusFilePathTrain + weightsFile,
-                        WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                        WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                + "*/*.txt")));
-        dimReaders.put(DIM_READER_TEST, WeightedTwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                        corpusFilePathTest,
-                        WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
-                        corpusFilePathTest + weightsFile,
-                        WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE, WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                WeightedTwentyNewsgroupsCorpusReader.class,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
+                corpusFilePathTrain + weightsFile,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                Arrays.asList(WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
+                        + "*/*.txt"));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                WeightedTwentyNewsgroupsCorpusReader.class,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_WEIGHT_FILE_LOCATION,
+                corpusFilePathTest + weightsFile,
+                WeightedTwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
+                LANGUAGE_CODE, WeightedTwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
+        
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));

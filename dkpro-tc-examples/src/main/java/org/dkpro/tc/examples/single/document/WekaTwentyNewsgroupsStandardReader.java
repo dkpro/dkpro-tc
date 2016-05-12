@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -85,41 +87,42 @@ public class WekaTwentyNewsgroupsStandardReader
 
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, TextReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(TextReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TextReader.PARAM_PATTERNS, TextReader.INCLUDE_PREFIX + "*/*.txt"));
-        dimReaders.put(DIM_READER_TEST, TextReader.class);
-        dimReaders.put(DIM_READER_TEST_PARAMS, Arrays.asList(TextReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTest, TextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TextReader.PARAM_PATTERNS, TextReader.INCLUDE_PREFIX + "*/*.txt"));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                TextReader.class, TextReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TextReader.PARAM_LANGUAGE, LANGUAGE_CODE, TextReader.PARAM_PATTERNS,
+                TextReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                TextReader.class, TextReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                TextReader.PARAM_LANGUAGE, LANGUAGE_CODE, TextReader.PARAM_PATTERNS,
+                TextReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(
                 DIM_BASELINE_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<String>> dimBaselinePipelineParameters = Dimension.create(
-                DIM_BASELINE_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimBaselinePipelineParameters = Dimension
+                .create(DIM_BASELINE_FEATURE_SET, Arrays.asList(new String[] {
+                        NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(
                 DIM_BASELINE_PIPELINE_PARAMS,
@@ -128,10 +131,10 @@ public class WekaTwentyNewsgroupsStandardReader
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets,
-                dimBaselinePipelineParameters);
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs, dimBaselineClassificationArgs,
+                dimBaselineFeatureSets, dimBaselinePipelineParameters);
 
         return pSpace;
     }
@@ -210,8 +213,7 @@ public class WekaTwentyNewsgroupsStandardReader
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE),
                 createEngineDescription(TwentyNewsgroupsOutcomeAnnotator.class));

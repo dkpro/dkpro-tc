@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
@@ -41,9 +43,9 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This a pure Java-based experiment setup of the Twitter Sentiment experiment, as described in:
@@ -66,12 +68,14 @@ public class WekaTwitterSentimentDemo
     public static void main(String[] args)
         throws Exception
     {
-    	
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(WekaTwitterSentimentDemo.class.getSimpleName());
-    	
+
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(WekaTwitterSentimentDemo.class.getSimpleName());
+
         ParameterSpace pSpace = getParameterSpace();
 
         WekaTwitterSentimentDemo experiment = new WekaTwitterSentimentDemo();
@@ -81,40 +85,36 @@ public class WekaTwitterSentimentDemo
 
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
-        // The reader is also responsible for setting the labels/outcome on all 
+        // The reader is also responsible for setting the labels/outcome on all
         // documents/instances it creates.
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, LabeledTweetReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/train",
-                        LabeledTweetReader.PARAM_LANGUAGE,
-                        "en", LabeledTweetReader.PARAM_PATTERNS,
-                        LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt" }));
-        dimReaders.put(DIM_READER_TEST, LabeledTweetReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(new Object[] { LabeledTweetReader.PARAM_SOURCE_LOCATION,
-                        "src/main/resources/data/twitter/test",
-                        LabeledTweetReader.PARAM_LANGUAGE,
-                        "en", LabeledTweetReader.PARAM_PATTERNS,
-                        LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt" }));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                LabeledTweetReader.class, LabeledTweetReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/twitter/train", LabeledTweetReader.PARAM_LANGUAGE, "en",
+                LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                LabeledTweetReader.class, LabeledTweetReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/twitter/test", LabeledTweetReader.PARAM_LANGUAGE, "en",
+                LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { EmoticonRatioDFE.class.getName(),
                         NumberOfHashTagsDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
                 dimClassificationArgs);
 
         return pSpace;
@@ -152,8 +152,7 @@ public class WekaTwitterSentimentDemo
         throws ResourceInitializationException
     {
         return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(ArktweetPosTagger.class,
-                        ArktweetPosTagger.PARAM_LANGUAGE, "en",
-                        ArktweetPosTagger.PARAM_VARIANT, "default"));
+                createEngineDescription(ArktweetPosTagger.class, ArktweetPosTagger.PARAM_LANGUAGE,
+                        "en", ArktweetPosTagger.PARAM_VARIANT, "default"));
     }
 }
