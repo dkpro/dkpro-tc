@@ -117,7 +117,7 @@ public class WekaNERUnitDemo
                 NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
                 NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
-        dimReaders.put(DIM_READER_TRAIN, readerTest);
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
