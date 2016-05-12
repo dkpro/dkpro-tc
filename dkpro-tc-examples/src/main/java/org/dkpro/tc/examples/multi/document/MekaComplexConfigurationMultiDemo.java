@@ -25,11 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import meka.classifiers.multilabel.BR;
-import meka.classifiers.multilabel.CCq;
-import meka.classifiers.multilabel.PSUpdateable;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -45,9 +43,12 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
 
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
+import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.CCq;
+import meka.classifiers.multilabel.PSUpdateable;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 /**
  * This demo is to show-case a somewhat more complex experiment setup for a multi-label experiment,
@@ -76,11 +77,13 @@ public class MekaComplexConfigurationMultiDemo
         throws Exception
     {
 
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(MekaComplexConfigurationMultiDemo.class.getSimpleName());
-        
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(MekaComplexConfigurationMultiDemo.class.getSimpleName());
+
         ParameterSpace pSpace = getParameterSpace();
         MekaComplexConfigurationMultiDemo experiment = new MekaComplexConfigurationMultiDemo();
         experiment.runTrainTest(pSpace);
@@ -88,61 +91,50 @@ public class MekaComplexConfigurationMultiDemo
 
     /**
      * @return
+     * @throws ResourceInitializationException 
      */
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, ReutersCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS,
-                asList(ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                        FILEPATH_TRAIN,
-                        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-                        FILEPATH_GOLD_LABELS,
-                        ReutersCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE,
-                        ReutersCorpusReader.PARAM_PATTERNS,
-                        ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"));
-        dimReaders.put(DIM_READER_TEST, ReutersCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                asList(ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                        FILEPATH_TEST,
-                        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-                        FILEPATH_GOLD_LABELS,
-                        ReutersCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE,
-                        ReutersCorpusReader.PARAM_PATTERNS,
-                        ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                FILEPATH_TRAIN, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
+                ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION, FILEPATH_TEST,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
+                ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         // We configure 3 different classifiers, which will be swept, each with a special
         // configuration.
-        Dimension<List<String>> dimClassificationArgs = Dimension
-                .create(DIM_CLASSIFICATION_ARGS,
-                        // Config1: "-W" is used to set a base classifer
-                        asList(new String[] { BR.class.getName(), "-W",
-                                NaiveBayes.class.getName() }),
-                        // Config2: "-P" sets the downsampling ratio
-                        asList(new String[] { CCq.class.getName(), "-P", "0.9" }),
-                        // Config3: "-B": buffer size, "-S": max. num. of combs.
-                        asList(new String[] { PSUpdateable.class.getName(),
-                                "-B", "900", "-S", "9" }));
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                // Config1: "-W" is used to set a base classifer
+                asList(new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName() }),
+                // Config2: "-P" sets the downsampling ratio
+                asList(new String[] { CCq.class.getName(), "-P", "0.9" }),
+                // Config3: "-B": buffer size, "-S": max. num. of combs.
+                asList(new String[] { PSUpdateable.class.getName(), "-B", "900", "-S", "9" }));
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 asList(new String[] { NrOfTokensDFE.class.getName(),
                         LuceneNGramDFE.class.getName() }),
                 asList(new String[] { LuceneNGramDFE.class.getName() }));
 
         // parameters to configure feature extractors
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 asList(new Object[] {
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-                        "600", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, "600",
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         // multi-label feature selection (Mulan specific options), reduces the feature set to 10
@@ -155,11 +147,11 @@ public class MekaComplexConfigurationMultiDemo
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), Dimension.create(
-                        DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimPipelineParameters,
-                dimFeatureSets, dimClassificationArgs, Dimension.createBundle("featureSelection",
-                        dimFeatureSelection));
+                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD),
+                dimPipelineParameters, dimFeatureSets, dimClassificationArgs,
+                Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;
     }
@@ -169,7 +161,7 @@ public class MekaComplexConfigurationMultiDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationAdapter.class);
+                MekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

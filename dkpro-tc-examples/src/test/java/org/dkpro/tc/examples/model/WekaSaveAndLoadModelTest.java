@@ -34,11 +34,13 @@ import meka.classifiers.multilabel.MULAN;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
@@ -98,72 +100,71 @@ public class WekaSaveAndLoadModelTest
     }
 
     private ParameterSpace documentGetParameterSpaceSingleLabel()
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt")));
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs);
         return pSpace;
     }
 
     private ParameterSpace documentGetParameterSpaceMultiLabel()
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, ReutersCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
-                ReutersCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolderReuters,
-                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, documentGoldLabelsReuters,
-                ReutersCorpusReader.PARAM_LANGUAGE, "en", ReutersCorpusReader.PARAM_PATTERNS,
-                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                DIM_CLASSIFICATION_ARGS,
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { MULAN.class.getName(), "-S", "RAkEL2", "-W",
                         RandomForest.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"), dimClassificationArgs);
+                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"),
+                dimClassificationArgs);
         return pSpace;
     }
 
@@ -184,8 +185,8 @@ public class WekaSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_FEATURE_EXTRACTORS);
+        File usedFeaturesFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
         assertTrue(usedFeaturesFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
@@ -197,8 +198,8 @@ public class WekaSaveAndLoadModelTest
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_BIPARTITION_THRESHOLD);
+        File bipartitionThreshold = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
         assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
@@ -221,8 +222,8 @@ public class WekaSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_FEATURE_EXTRACTORS);
+        File usedFeaturesFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
         assertTrue(usedFeaturesFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
@@ -234,8 +235,8 @@ public class WekaSaveAndLoadModelTest
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_BIPARTITION_THRESHOLD);
+        File bipartitionThreshold = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
         assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
@@ -258,8 +259,8 @@ public class WekaSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_FEATURE_EXTRACTORS);
+        File usedFeaturesFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
         assertTrue(usedFeaturesFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
@@ -271,8 +272,8 @@ public class WekaSaveAndLoadModelTest
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_BIPARTITION_THRESHOLD);
+        File bipartitionThreshold = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
         assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
@@ -297,8 +298,8 @@ public class WekaSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_FEATURE_EXTRACTORS);
+        File usedFeaturesFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
         assertTrue(usedFeaturesFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
@@ -310,8 +311,8 @@ public class WekaSaveAndLoadModelTest
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_BIPARTITION_THRESHOLD);
+        File bipartitionThreshold = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
         assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
@@ -319,7 +320,7 @@ public class WekaSaveAndLoadModelTest
 
     private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder,
             boolean singlelabel)
-        throws Exception
+                throws Exception
     {
         ExperimentSaveModel batch;
         if (singlelabel) {
@@ -330,7 +331,8 @@ public class WekaSaveAndLoadModelTest
             batch = new ExperimentSaveModel("TestSaveModel", MekaClassificationAdapter.class,
                     modelFolder);
         }
-        batch.setPreprocessing(createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
+        batch.setPreprocessing(
+                createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
         batch.setParameterSpace(paramSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
@@ -341,7 +343,8 @@ public class WekaSaveAndLoadModelTest
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
                 WekaRegressionAdapter.class, modelFolder);
-        batch.setPreprocessing(createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
+        batch.setPreprocessing(
+                createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
         batch.setParameterSpace(paramSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
@@ -359,11 +362,14 @@ public class WekaSaveAndLoadModelTest
     }
 
     private static ParameterSpace pairGetParameterSpace()
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, STSReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(STSReader.PARAM_INPUT_FILE,
-                pairTrainFiles, STSReader.PARAM_GOLD_FILE, pairGoldFiles));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                STSReader.class, STSReader.PARAM_INPUT_FILE, pairTrainFiles,
+                STSReader.PARAM_GOLD_FILE, pairGoldFiles);
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
@@ -375,38 +381,37 @@ public class WekaSaveAndLoadModelTest
                 Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(
-                        DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
+                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
 
-    private static ParameterSpace unitGetParameterSpace()
+    private static ParameterSpace unitGetParameterSpace() throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
-                Arrays.asList("*.xml")));
-
+                Arrays.asList("*.xml"));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(DIM_PIPELINE_PARAMS,
-                        Arrays.asList(new Object[] {
-                                LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 20 }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
+                .asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 20 }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] { LuceneCharacterNGramUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs);
 
         return pSpace;
@@ -416,49 +421,47 @@ public class WekaSaveAndLoadModelTest
         throws Exception
     {
 
-        AnalysisEngine tokenizer = AnalysisEngineFactory
-                .createEngine(BreakIteratorSegmenter.class);
-        
-        AnalysisEngine tcAnno =  AnalysisEngineFactory
-                .createEngine(TcAnnotator.class, TcAnnotator.PARAM_TC_MODEL_LOCATION,
-                        modelFolder.getAbsolutePath());
-        
+        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentText("This is an example text");
         jcas.setDocumentLanguage("en");
-        
+
         tokenizer.process(jcas);
         tcAnno.process(jcas);
-        
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(1, outcomes.size());
         assertEquals("comp.graphics", outcomes.get(0).getOutcome());
     }
-    
-    private static void documentLoadModelMultiLabel(File modelFolder)
-            throws Exception
-        {
 
-            AnalysisEngine tokenizer = AnalysisEngineFactory
-                    .createEngine(BreakIteratorSegmenter.class);
-            
-            AnalysisEngine tcAnno =  AnalysisEngineFactory
-                    .createEngine(TcAnnotator.class, TcAnnotator.PARAM_TC_MODEL_LOCATION,
-                            modelFolder.getAbsolutePath());
-            
-            JCas jcas = JCasFactory.createJCas();
-            jcas.setDocumentText("This is an example text");
-            jcas.setDocumentLanguage("en");
-            
-            tokenizer.process(jcas);
-            tcAnno.process(jcas);
-            
-            List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
-            assertEquals(2, outcomes.size());
-            assertEquals("crude", outcomes.get(0).getOutcome());
-            assertEquals("acq", outcomes.get(1).getOutcome());
-            
-        }
+    private static void documentLoadModelMultiLabel(File modelFolder)
+        throws Exception
+    {
+
+        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+
+        JCas jcas = JCasFactory.createJCas();
+        jcas.setDocumentText("This is an example text");
+        jcas.setDocumentLanguage("en");
+
+        tokenizer.process(jcas);
+        tcAnno.process(jcas);
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+        assertEquals(2, outcomes.size());
+        assertEquals("crude", outcomes.get(0).getOutcome());
+        assertEquals("acq", outcomes.get(1).getOutcome());
+
+    }
 
     private static void pairLoadModelRegression(File modelFolder)
         throws Exception
@@ -466,20 +469,20 @@ public class WekaSaveAndLoadModelTest
         CollectionReader reader = CollectionReaderFactory.createReader(STSReader.class,
                 STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE,
                 pairGoldFiles);
-        
-        AnalysisEngine tcAnno =  AnalysisEngineFactory
-                .createEngine(TcAnnotator.class, TcAnnotator.PARAM_TC_MODEL_LOCATION,
-                        modelFolder.getAbsolutePath());
-        
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+
         JCas jcas = JCasFactory.createJCas();
 
         reader.getNext(jcas.getCas());
         tcAnno.process(jcas);
-        
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(1, outcomes.size());
         assertEquals("4.0958", outcomes.get(0).getOutcome());
-        
+
     }
 
     private static void unitLoadModel(File modelFolder)

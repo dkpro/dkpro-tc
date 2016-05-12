@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -76,17 +78,18 @@ public class WekaManualFoldCrossValidation implements Constants
         Lab.getInstance().run(batch);
     }
     
-    public static ParameterSpace getParameterSpace(boolean manualFolds)
+    public static ParameterSpace getParameterSpace(boolean manualFolds) throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(new Object[] { BrownCorpusReader.PARAM_LANGUAGE, "de",
-                        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        BrownCorpusReader.PARAM_PATTERNS,
-                        INCLUDE_PREFIX + "*.xml" }));
-
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "de",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                BrownCorpusReader.PARAM_PATTERNS,
+                INCLUDE_PREFIX + "*.xml" );
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));

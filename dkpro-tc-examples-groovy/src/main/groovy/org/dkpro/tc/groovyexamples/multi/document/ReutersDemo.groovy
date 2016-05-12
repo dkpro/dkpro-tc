@@ -23,6 +23,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import meka.classifiers.multilabel.BR
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException
 
 import weka.attributeSelection.InfoGainAttributeEval
@@ -64,29 +65,21 @@ public class ReutersDemo implements Constants {
 
     // === DIMENSIONS===========================================================
 
+    def testreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
+        ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest, 
+        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+        ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
+        ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+
+    def trainreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
+        ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+        ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
+        ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: ReutersCorpusReader,
-        readerTestParams: [
-            ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTest,
-            ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-            goldLabelFilePath,
-            ReutersCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            ReutersCorpusReader.PARAM_PATTERNS,
-            ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"
-        ],
-        readerTrain: ReutersCorpusReader,
-        readerTrainParams: [
-            ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-            goldLabelFilePath,
-            ReutersCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            ReutersCorpusReader.PARAM_PATTERNS,
-            ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"
-        ]
+        readerTest: testreader,
+        readerTrain: trainreader,
     ])
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL)
@@ -96,17 +89,11 @@ public class ReutersDemo implements Constants {
     def dimClassificationArgs =
     Dimension.create(
     DIM_CLASSIFICATION_ARGS,
-    [
-        BR.name,
-        "-W",
-        NaiveBayes.name
-    ])
+    [BR.name, "-W", NaiveBayes.name])
 
     def dimFeatureSelection = Dimension.createBundle("featureSelection", [
         labelTransformationMethod: "BinaryRelevanceAttributeEvaluator",
-        attributeEvaluator: [
-            InfoGainAttributeEval.name
-        ],
+        attributeEvaluator: [InfoGainAttributeEval.name],
         numLabelsToKeep: 100,
         applySelection: true
     ])
@@ -114,11 +101,7 @@ public class ReutersDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [
-        NrOfTokensDFE.name,
-        LuceneNGramDFE.name
-    ]
-    )
+    [NrOfTokensDFE.name, LuceneNGramDFE.name])
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
@@ -167,9 +150,7 @@ public class ReutersDemo implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [
-                BatchCrossValidationReport
-            ],
+            reports:         [BatchCrossValidationReport],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -199,9 +180,7 @@ public class ReutersDemo implements Constants {
                 dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [
-                BatchTrainTestReport]
-        ]
+            reports:         [BatchTrainTestReport]]
 
         // Run
         Lab.getInstance().run(batchTask)
@@ -211,14 +190,14 @@ public class ReutersDemo implements Constants {
     throws ResourceInitializationException
     {
         return createEngineDescription(
-        createEngineDescription(BreakIteratorSegmenter),
-        createEngineDescription(OpenNlpPosTagger)
-        )
+                createEngineDescription(BreakIteratorSegmenter),
+                createEngineDescription(OpenNlpPosTagger)
+                )
     }
 
     public static void main(String[] args)
     {
-		DemoUtils.setDkproHome(ReutersDemo.name);
+        DemoUtils.setDkproHome(ReutersDemo.name);
         new ReutersDemo().runTrainTest()
         //new ReutersDemo().runCrossValidation()
     }

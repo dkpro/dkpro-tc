@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
@@ -73,11 +75,13 @@ public class WekaComplexConfigurationSingleDemo
     public static void main(String[] args)
         throws Exception
     {
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(WekaComplexConfigurationSingleDemo.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(WekaComplexConfigurationSingleDemo.class.getSimpleName());
+
         ParameterSpace pSpace = getParameterSpace();
         WekaComplexConfigurationSingleDemo experiment = new WekaComplexConfigurationSingleDemo();
         experiment.runTrainTest(pSpace);
@@ -85,55 +89,51 @@ public class WekaComplexConfigurationSingleDemo
 
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders
-                .put(
-                        DIM_READER_TRAIN_PARAMS,
-                        Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                                CORPUS_FILEPATH_TRAIN,
-                                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                        + "*/*.txt")));
-        dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                        COPRUS_FILEPATH_TEST, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, CORPUS_FILEPATH_TRAIN,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, COPRUS_FILEPATH_TEST,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         // We configure 3 different classifiers, which will be swept, each with a special
         // configuration.
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 // "-C": complexity, "-K": kernel
-                asList(new String[] { SMO.class.getName(), "-C", "1.0",
-                        "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
+                asList(new String[] { SMO.class.getName(), "-C", "1.0", "-K",
+                        PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
                 // "-I": number of trees
                 asList(new String[] { RandomForest.class.getName(), "-I", "5" }),
                 // "W": base classifier
-                asList(new String[] { Bagging.class.getName(), "-I", "2",
-                        "-W", J48.class.getName(), "--", "-C", "0.5", "-M", "2" }));
+                asList(new String[] { Bagging.class.getName(), "-I", "2", "-W", J48.class.getName(),
+                        "--", "-C", "0.5", "-M", "2" }));
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensPerSentenceDFE.class.getName(), NrOfCharsDFE
-                        .class.getName(),
-                        LuceneNGramDFE.class.getName() }),
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                asList(new String[] { NrOfTokensPerSentenceDFE.class.getName(),
+                        NrOfCharsDFE.class.getName(), LuceneNGramDFE.class.getName() }),
                 asList(new String[] { LuceneNGramDFE.class.getName() }));
 
         // parameters to configure feature extractors
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                asList(new Object[] {
-                        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
-                        "50", LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
-                        LuceneNGramDFE.PARAM_NGRAM_MAX_N, 3 }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
+                asList(new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, "50",
+                        LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1, LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+                        3 }));
 
         // single-label feature selection (Weka specific options), reduces the feature set to 10
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
@@ -144,10 +144,10 @@ public class WekaComplexConfigurationSingleDemo
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs, Dimension.createBundle("featureSelection",
-                        dimFeatureSelection));
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs,
+                Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;
     }
@@ -157,7 +157,7 @@ public class WekaComplexConfigurationSingleDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME,
-        		WekaClassificationAdapter.class);
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);

@@ -31,6 +31,7 @@ import meka.classifiers.multilabel.MULAN;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
@@ -85,33 +86,36 @@ public class MekaSaveAndApplyModelMultilabelDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, ReutersCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS,
-                Arrays.asList(ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                        FILEPATH_TRAIN,
-                        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-                        FILEPATH_GOLD_LABELS,
-                        ReutersCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE,
-                        ReutersCorpusReader.PARAM_PATTERNS,
-                        ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"));
-        dimReaders.put(DIM_READER_TEST, ReutersCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                        FILEPATH_TEST,
-                        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-                        FILEPATH_GOLD_LABELS,
-                        ReutersCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE,
-                        ReutersCorpusReader.PARAM_PATTERNS,
-                        ReutersCorpusReader.INCLUDE_PREFIX + "*.txt"));
-
+        
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                FILEPATH_TRAIN,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                FILEPATH_GOLD_LABELS,
+                ReutersCorpusReader.PARAM_LANGUAGE,
+                LANGUAGE_CODE,
+                ReutersCorpusReader.PARAM_PATTERNS,
+                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        
+        
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                FILEPATH_TEST,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                FILEPATH_GOLD_LABELS,
+                ReutersCorpusReader.PARAM_LANGUAGE,
+                LANGUAGE_CODE,
+                ReutersCorpusReader.PARAM_PATTERNS,
+                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
+        
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(DIM_CLASSIFICATION_ARGS,
                         Arrays.asList(new String[] {         

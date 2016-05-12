@@ -41,25 +41,21 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 
     // === DIMENSIONS===========================================================
 
+    def testreader = createReaderDescription(MovieReviewCorpusReader.class,
+        MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+        MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
+        MovieReviewCorpusReader.PARAM_PATTERNS, MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+        );
+    
+    def trainreader = createReaderDescription(MovieReviewCorpusReader.class,
+        MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+        MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
+        MovieReviewCorpusReader.PARAM_PATTERNS, MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+        );
+    
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: MovieReviewCorpusReader.class,
-        readerTestParams: [
-            MovieReviewCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTest,
-            MovieReviewCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            MovieReviewCorpusReader.PARAM_PATTERNS,
-            MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-        ],
-        readerTrain: MovieReviewCorpusReader.class,
-        readerTrainParams: [
-            MovieReviewCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            MovieReviewCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            MovieReviewCorpusReader.PARAM_PATTERNS,
-            MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-        ]
+        readerTest: testreader,
+        readerTrain: trainreader,
     ]);
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);

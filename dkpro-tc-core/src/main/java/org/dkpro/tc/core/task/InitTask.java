@@ -18,8 +18,17 @@
 package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.*;
+import static org.dkpro.tc.core.Constants.DIM_BIPARTITION_THRESHOLD;
+import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
+import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
+import static org.dkpro.tc.core.Constants.DIM_PIPELINE_PARAMS;
+import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
+import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
+import static org.dkpro.tc.core.Constants.FM_PAIR;
+import static org.dkpro.tc.core.Constants.PART_ONE;
+import static org.dkpro.tc.core.Constants.PART_TWO;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +36,6 @@ import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -56,13 +64,9 @@ public class InitTask
 {
 
     @Discriminator(name=DIM_READER_TRAIN)
-    protected Class<? extends CollectionReader> readerTrain;
+    protected CollectionReaderDescription readerTrain;
     @Discriminator(name=DIM_READER_TEST)
-    protected Class<? extends CollectionReader> readerTest;
-    @Discriminator(name=DIM_READER_TRAIN_PARAMS)
-    protected List<Object> readerTrainParams;
-    @Discriminator(name=DIM_READER_TEST_PARAMS)
-    protected List<Object> readerTestParams;
+    protected CollectionReaderDescription readerTest;
     @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
     @Discriminator(name=DIM_LEARNING_MODE)
@@ -106,7 +110,7 @@ public class InitTask
                         "readerTrain is null"));
             }
 
-            readerDesc = createReaderDescription(readerTrain, readerTrainParams.toArray());
+            readerDesc = readerTrain;
         }
         else {
             if (readerTest == null) {
@@ -114,7 +118,7 @@ public class InitTask
                         "readerTest is null"));
             }
 
-            readerDesc = createReaderDescription(readerTest, readerTestParams.toArray());
+            readerDesc = readerTest;
         }
 
         return readerDesc;

@@ -26,15 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -46,6 +44,10 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
+
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -68,11 +70,13 @@ public class WekaNewTcEvaluationReportDemo
     public static void main(String[] args)
         throws Exception
     {
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(WekaNewTcEvaluationReportDemo.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(WekaNewTcEvaluationReportDemo.class.getSimpleName());
+
         ParameterSpace pSpace = getParameterSpace();
 
         WekaNewTcEvaluationReportDemo experiment = new WekaNewTcEvaluationReportDemo();
@@ -82,47 +86,43 @@ public class WekaNewTcEvaluationReportDemo
 
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders
-                .put(
-                        DIM_READER_TRAIN_PARAMS,
-                        Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                                corpusFilePathTrain,
-                                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX
-                                        + "*/*.txt")));
-        dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(
-                DIM_READER_TEST_PARAMS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-                        corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-                        LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                        TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                 Arrays.asList(new Object[] {
-                		NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
-                		NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
+                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
+                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
@@ -131,7 +131,8 @@ public class WekaNewTcEvaluationReportDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest", WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -140,13 +141,13 @@ public class WekaNewTcEvaluationReportDemo
         // Run
         Lab.getInstance().run(batch);
     }
-    
+
     // ##### CV #####
     protected void runCrossvalidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", WekaClassificationAdapter.class,
-                NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
+                WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -159,8 +160,7 @@ public class WekaNewTcEvaluationReportDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
     }

@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
@@ -110,7 +113,7 @@ public class SVMHMMSaveAndLoadModelTest
     }
 
     @SuppressWarnings("unchecked")
-    private ParameterSpace getParameterSpace()
+    private ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         DemoUtils.setDkproHome(this.getClass().getName());
 
@@ -120,10 +123,13 @@ public class SVMHMMSaveAndLoadModelTest
         // train/test will use both, while cross-validation will only use the
         // train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
+        
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, trainFolder,
-                BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS, "*.xml"));
+                BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS, "*.xml");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,

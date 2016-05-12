@@ -20,6 +20,7 @@ package org.dkpro.tc.groovyexamples.single.sequence
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
@@ -46,20 +47,16 @@ implements Constants {
     def NUM_FOLDS = 2
     def String corpusFilePathTrain = "src/main/resources/data/brown_tei/"
     def experimentName = "BrownPosDemo"
+    
+    def trainreader = createReaderDescription(BrownCorpusReader.class,
+        BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+        BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]
+    );
 
     def dimReaders = Dimension.createBundle("readers", [
-        readerTrain: BrownCorpusReader,
-        readerTrainParams: [
-            BrownCorpusReader.PARAM_LANGUAGE,
-            LANGUAGE_CODE,
-            BrownCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            BrownCorpusReader.PARAM_PATTERNS,
-            [
-                INCLUDE_PREFIX + "*.xml",
-                INCLUDE_PREFIX + "*.xml.gz"
-            ]
-        ]])
+        readerTrain: trainreader,
+        ])
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(

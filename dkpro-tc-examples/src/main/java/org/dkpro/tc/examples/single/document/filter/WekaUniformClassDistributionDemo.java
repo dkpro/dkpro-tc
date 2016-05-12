@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -86,44 +88,46 @@ public class WekaUniformClassDistributionDemo
 
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(DIM_READER_TRAIN_PARAMS, Arrays.asList(
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt")));
-        dimReaders.put(DIM_READER_TEST, TwentyNewsgroupsCorpusReader.class);
-        dimReaders.put(DIM_READER_TEST_PARAMS, Arrays.asList(
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,
                 Arrays.asList(new String[] { UniformClassDistributionFilter.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters, dimFeatureSets,
-                dimFeatureFilters, dimClassificationArgs);
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimFeatureFilters, dimClassificationArgs);
 
         return pSpace;
     }
@@ -174,8 +178,7 @@ public class WekaUniformClassDistributionDemo
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
     }
