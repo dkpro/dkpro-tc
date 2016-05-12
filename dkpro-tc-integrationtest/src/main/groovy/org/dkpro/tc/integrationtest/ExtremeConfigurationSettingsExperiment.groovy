@@ -18,7 +18,6 @@
 package org.dkpro.tc.integrationtest
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
@@ -32,10 +31,12 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
+import org.apache.uima.collection.CollectionReaderDescription;
 
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
@@ -55,24 +56,21 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
 
     // === DIMENSIONS===========================================================
 
+    def testreader = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
+        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+        );
+    
+    def trainreader = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+       TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+       TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
+       TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+        );
+    
     def dimReaders = Dimension.createBundle("readers", [
-        readerTest: TwentyNewsgroupsCorpusReader.class,
-        readerTestParams: [
-            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTest,
-            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
-        ],
-        readerTrain: TwentyNewsgroupsCorpusReader.class,
-        readerTrainParams: [
-            TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain,
-            TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE,
-            languageCode,
-            TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-            TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"]
+        readerTest: testreader,
+        readerTrain: trainreader,
     ])
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)

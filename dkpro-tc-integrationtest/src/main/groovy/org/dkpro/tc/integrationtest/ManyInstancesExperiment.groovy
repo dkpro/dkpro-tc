@@ -50,15 +50,16 @@ public class ManyInstancesExperiment implements Constants {
 
     def corpusFilePathTrain = "classpath:/data/smalltexts/smallInstances.txt.gz"
     def languageCode = "en"
-    def numFolds = 10
+    def numFolds = 2
 
     // === DIMENSIONS===========================================================
 
+    def trainreader = createReaderDescription(LineInstanceReader.class,
+       LineInstanceReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain
+         );
+    
     def dimReaders = Dimension.createBundle("readers", [
-        readerTrain: LineInstanceReader.class,
-        readerTrainParams: [
-            LineInstanceReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain]
+        readerTrain: trainreader,
     ])
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)

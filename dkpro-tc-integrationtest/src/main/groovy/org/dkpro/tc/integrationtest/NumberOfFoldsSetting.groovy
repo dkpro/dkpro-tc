@@ -22,6 +22,7 @@ import org.apache.uima.resource.ResourceInitializationException
 
 import org.dkpro.tc.core.Constants
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
@@ -53,11 +54,12 @@ public class NumberOfFoldsSetting implements Constants {
 
     // === DIMENSIONS===========================================================
 
+    def trainreader = CollectionReaderFactory.createReaderDescription(LineInstanceReader.class,
+        LineInstanceReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain
+          );
+    
     def dimReaders = Dimension.createBundle("readers", [
-        readerTrain: LineInstanceReader.class,
-        readerTrainParams: [
-            LineInstanceReader.PARAM_SOURCE_LOCATION,
-            corpusFilePathTrain]
+        readerTrain: trainreader,
     ])
 
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
