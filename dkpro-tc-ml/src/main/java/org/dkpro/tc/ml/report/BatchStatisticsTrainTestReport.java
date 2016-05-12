@@ -86,8 +86,8 @@ public class BatchStatisticsTrainTestReport
                 }
                 // TrainTest
                 else{
-                    trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_READER_TRAIN_PARAMS).hashCode());
-                    testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_READER_TEST_PARAMS).hashCode());
+                    trainFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_READER_TRAIN).hashCode());
+                    testFiles = String.valueOf(getDiscriminatorValue(discriminatorsMap, DIM_READER_TEST).hashCode());
                 }
                 
                 String experimentName = subcontext.getType().split("\\-")[1];
