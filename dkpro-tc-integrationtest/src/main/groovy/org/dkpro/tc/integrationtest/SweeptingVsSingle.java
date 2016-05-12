@@ -139,9 +139,6 @@ public class SweeptingVsSingle
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, asList("*/*.txt"));
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
