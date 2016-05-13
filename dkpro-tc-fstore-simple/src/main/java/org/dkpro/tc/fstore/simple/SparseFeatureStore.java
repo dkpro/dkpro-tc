@@ -18,36 +18,47 @@
 
 package org.dkpro.tc.fstore.simple;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
 
-import java.util.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 /**
- * Feature store that internally uses hash maps instead of arrays to store sparse features.
- * All instances retrieved from this FeatureStore by {@link #getInstance(int)} have the same
- * number and ordering of features, but some features might have {@code null} value.
+ * Feature store that internally uses hash maps instead of arrays to store sparse features. All
+ * instances retrieved from this FeatureStore by {@link #getInstance(int)} have the same number and
+ * ordering of features, but some features might have {@code null} value.
  *
  */
 public class SparseFeatureStore
-        implements FeatureStore
+    implements FeatureStore
 {
     static Logger log = Logger.getLogger(SparseFeatureStore.class);
 
     private List<Map<String, Object>> instanceList = new ArrayList<>();
     private List<List<String>> outcomeList = new ArrayList<>();
-    private List<Double> weightList = new ArrayList<>();
-    private List<Integer> sequenceIds = new ArrayList<>();
-    private List<Integer> sequencePositions = new ArrayList<>();
+    private DoubleArrayList weightList = new DoubleArrayList();
+    private IntArrayList sequenceIds = new IntArrayList();
+    private IntArrayList sequencePositions = new IntArrayList();
 
     /**
-     * If this flag is set to false, it is not possible to add another instances; this is set
-     * after first calling {@linkplain #getInstance(int)}. Adding another instance might then
-     * introduce new feature and thus make feature vectors of retrieved instances inconsistent.
+     * If this flag is set to false, it is not possible to add another instances; this is set after
+     * first calling {@linkplain #getInstance(int)}. Adding another instance might then introduce
+     * new feature and thus make feature vectors of retrieved instances inconsistent.
      */
     private boolean addingAnotherInstancesAllowed = true;
 
@@ -71,12 +82,12 @@ public class SparseFeatureStore
 
     @Override
     public void addInstance(Instance instance)
-            throws TextClassificationException
+        throws TextClassificationException
     {
         // check consistency of feature vectors
         if (!this.addingAnotherInstancesAllowed) {
-            throw new TextClassificationException("Not allowed to add another instance to the " +
-                    "feature store; getInstance() has been called already.");
+            throw new TextClassificationException("Not allowed to add another instance to the "
+                    + "feature store; getInstance() has been called already.");
         }
 
         // convert from List<Feature> to Map<name, value>
@@ -148,9 +159,9 @@ public class SparseFeatureStore
         }
 
         Instance result = new Instance(features, outcomeList.get(i));
-        result.setWeight(weightList.get(i));
-        result.setSequenceId(sequenceIds.get(i));
-        result.setSequencePosition(sequencePositions.get(i));
+        result.setWeight(weightList.getDouble(i));
+        result.setSequenceId(sequenceIds.getInt(i));
+        result.setSequencePosition(sequencePositions.getInt(i));
 
         return result;
     }
@@ -159,12 +170,13 @@ public class SparseFeatureStore
      * A much faster access to large sparse feature vectors. This methods returns instance with
      * feature vector that contains only features with non-null values.
      *
-     * @param i instance id
+     * @param i
+     *            instance id
      * @return instance
-     * @throws TextClassificationException 
+     * @throws TextClassificationException
      */
     public Instance getInstanceSparseFeatures(int i)
-    		throws TextClassificationException
+        throws TextClassificationException
     {
         // set flag to disable adding new instances
         this.addingAnotherInstancesAllowed = false;
@@ -181,9 +193,9 @@ public class SparseFeatureStore
         }
 
         Instance result = new Instance(features, outcomeList.get(i));
-        result.setWeight(weightList.get(i));
-        result.setSequenceId(sequenceIds.get(i));
-        result.setSequencePosition(sequencePositions.get(i));
+        result.setWeight(weightList.getDouble(i));
+        result.setSequenceId(sequenceIds.getInt(i));
+        result.setSequencePosition(sequencePositions.getInt(i));
 
         return result;
     }
@@ -205,11 +217,11 @@ public class SparseFeatureStore
     {
         return this.outcomeList.get(i);
     }
-    
+
     @Override
     public Double getWeight(int i)
     {
-        return this.weightList.get(i);
+        return this.weightList.getDouble(i);
     }
 
     @Override
@@ -227,15 +239,11 @@ public class SparseFeatureStore
     @Override
     public String toString()
     {
-        return "SparseFeatureStore{" +
-                "instanceList=" + instanceList +
-                ", outcomeList=" + outcomeList +
-                ", weightList=" + weightList +
-                ", sequenceIds=" + sequenceIds +
-                ", sequencePositions=" + sequencePositions +
-                ", addingAnotherInstancesAllowed=" + addingAnotherInstancesAllowed +
-                ", totalNonNullFeaturesCount=" + totalNonNullFeaturesCount +
-                '}';
+        return "SparseFeatureStore{" + "instanceList=" + instanceList + ", outcomeList="
+                + outcomeList + ", weightList=" + weightList + ", sequenceIds=" + sequenceIds
+                + ", sequencePositions=" + sequencePositions + ", addingAnotherInstancesAllowed="
+                + addingAnotherInstancesAllowed + ", totalNonNullFeaturesCount="
+                + totalNonNullFeaturesCount + '}';
     }
 
     @Override
@@ -266,11 +274,11 @@ public class SparseFeatureStore
             throw new IllegalStateException("Setting feature names is not allowed.");
         }
 
-        Set<String> deletedFeatures = new HashSet<>((Collection<String>) CollectionUtils
-                .subtract(this.allFeatureNames, featureNames));
+        Set<String> deletedFeatures = new HashSet<>(
+                (Collection<String>) CollectionUtils.subtract(this.allFeatureNames, featureNames));
 
-        log.debug(deletedFeatures.size() + " features from test data not seen in training data, " +
-                "removing features from the store.");
+        log.debug(deletedFeatures.size() + " features from test data not seen in training data, "
+                + "removing features from the store.");
 
         this.allFeatureNames = featureNames;
 
