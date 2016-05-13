@@ -37,7 +37,7 @@ import org.dkpro.tc.integrationtest.io.LineInstanceReader
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 /**
  * Testing with many instances.
  *
@@ -54,7 +54,7 @@ public class ManyInstancesExperiment implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def trainreader = createReaderDescription(LineInstanceReader.class,
+    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(LineInstanceReader.class,
        LineInstanceReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain
          );
     
