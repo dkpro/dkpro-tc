@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -91,7 +92,7 @@ public class WekaSimpleDkproTCReaderDemo
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 SimpleDkproTCReader.class, SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
                 SimpleDkproTCReader.PARAM_SENTENCES_FILE, FILEPATH_TRAIN + "/instances.txt");

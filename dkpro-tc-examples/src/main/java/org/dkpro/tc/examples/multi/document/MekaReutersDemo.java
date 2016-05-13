@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -86,14 +87,14 @@ public class MekaReutersDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
                 FILEPATH_TRAIN, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
                 ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION, FILEPATH_TEST,
                 ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
                 ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,

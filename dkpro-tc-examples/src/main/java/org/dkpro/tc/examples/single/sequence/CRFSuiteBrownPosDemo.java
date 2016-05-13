@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -77,7 +78,7 @@ public class CRFSuiteBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object newInstance = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+        CollectionReaderDescription newInstance = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
                 asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"));

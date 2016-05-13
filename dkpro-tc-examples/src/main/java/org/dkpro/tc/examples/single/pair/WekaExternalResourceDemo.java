@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -84,12 +85,12 @@ public class WekaExternalResourceDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
                 listFilePathTrain, PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
                 listFilePathTest, PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
         dimReaders.put(DIM_READER_TEST, readerTest);

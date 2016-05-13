@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -44,7 +45,8 @@ import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
-public class WekaManualFoldCrossValidation implements Constants
+public class WekaManualFoldCrossValidation
+    implements Constants
 {
     public static final String LANGUAGE_CODE = "de";
     public static final int NUM_FOLDS = 2;
@@ -53,7 +55,7 @@ public class WekaManualFoldCrossValidation implements Constants
     public static void main(String[] args)
         throws Exception
     {
-        
+
         WekaManualFoldCrossValidation demo = new WekaManualFoldCrossValidation();
         demo.runCrossValidation(getParameterSpace(true), NUM_FOLDS);
     }
@@ -63,10 +65,12 @@ public class WekaManualFoldCrossValidation implements Constants
         throws Exception
     {
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
         DemoUtils.setDkproHome(WekaManualFoldCrossValidation.class.getSimpleName());
-        
+
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV",
                 WekaClassificationAdapter.class, folds);
         batch.setPreprocessing(getPreprocessing());
@@ -76,44 +80,40 @@ public class WekaManualFoldCrossValidation implements Constants
         // Run
         Lab.getInstance().run(batch);
     }
-    
-    public static ParameterSpace getParameterSpace(boolean manualFolds) throws ResourceInitializationException
+
+    public static ParameterSpace getParameterSpace(boolean manualFolds)
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
-        
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "de",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS,
-                INCLUDE_PREFIX + "*.xml" );
+
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory
+                .createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE,
+                        "de", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        BrownCorpusReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-        
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(
-                        DIM_PIPELINE_PARAMS,
-                        Arrays.asList(new Object[] {
-                                IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
+                .asList(new Object[] { IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { 
-                        LuceneCharacterNGramUFE.class.getName() }));
+                Arrays.asList(new String[] { LuceneCharacterNGramUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
                 dimClassificationArgs,
                 /*
-                 * MANUAL CROSS VALIDATION FOLDS - i.e. the cas created by your reader will be used as is to make folds
+                 * MANUAL CROSS VALIDATION FOLDS - i.e. the cas created by your reader will be used
+                 * as is to make folds
                  */
-                Dimension.create(DIM_CROSS_VALIDATION_MANUAL_FOLDS, manualFolds)
-                );
+                Dimension.create(DIM_CROSS_VALIDATION_MANUAL_FOLDS, manualFolds));
 
         return pSpace;
     }

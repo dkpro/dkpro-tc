@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -87,12 +88,12 @@ public class WekaRegressionDemo
         // configure training data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 STSReader.class, STSReader.PARAM_INPUT_FILE, inputFileTrain,
                 STSReader.PARAM_GOLD_FILE, goldFileTrain);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 STSReader.class, STSReader.PARAM_INPUT_FILE, inputFileTest,
                 STSReader.PARAM_GOLD_FILE, goldFileTest);
         dimReaders.put(DIM_READER_TEST, readerTest);

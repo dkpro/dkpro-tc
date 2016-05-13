@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -91,7 +92,7 @@ public class WekaNewTcEvaluationReportDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
@@ -99,7 +100,7 @@ public class WekaNewTcEvaluationReportDemo
                 Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,

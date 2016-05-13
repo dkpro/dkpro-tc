@@ -29,7 +29,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -68,12 +67,12 @@ public class SVMHMMBrownPosDemo
 
         if (trainTest) {
 
-            Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+            CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                     BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                     BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                     BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
 
-            Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+            CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                     BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                     BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_SOURCE_LOCATION,
                     corpusFilePathTrain, BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
@@ -82,7 +81,7 @@ public class SVMHMMBrownPosDemo
             results.put(Constants.DIM_READER_TEST, readerTest);
         }
         else {
-            Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+            CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                     BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                     BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                     BrownCorpusReader.PARAM_PATTERNS, Arrays.asList(INCLUDE_PREFIX + "*.xml"));

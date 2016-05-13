@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
@@ -92,13 +93,13 @@ public class WekaTwitterSentimentDemo
         // documents/instances it creates.
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 LabeledTweetReader.class, LabeledTweetReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/twitter/train", LabeledTweetReader.PARAM_LANGUAGE, "en",
                 LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 LabeledTweetReader.class, LabeledTweetReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/twitter/test", LabeledTweetReader.PARAM_LANGUAGE, "en",
                 LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");
