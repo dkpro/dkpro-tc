@@ -30,7 +30,7 @@ import org.dkpro.lab.task.Discriminable;
 
 public class DiscriminableReaderCollectionFactory 
 {
-    public static Object newInstance(Object... ob) throws ResourceInitializationException {
+    public static Object createReaderDescription(Object... ob) throws ResourceInitializationException {
         
         List<Object> l = new ArrayList<Object>(Arrays.asList(ob));
         

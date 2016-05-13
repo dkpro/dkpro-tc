@@ -77,7 +77,7 @@ public class CRFSuiteBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object newInstance = DiscriminableReaderCollectionFactory.newInstance(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+        Object newInstance = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
                 asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"));
