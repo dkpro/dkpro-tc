@@ -27,15 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.NERDemoReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -107,13 +106,13 @@ public class WekaNERUnitDemo
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
                 NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
                 NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");

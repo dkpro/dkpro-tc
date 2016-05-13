@@ -19,6 +19,7 @@
 package org.dkpro.tc.groovyexamples.regression.pair
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
@@ -39,6 +40,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaRegressionAdapter
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 /**
  * A demo for pair classification with a regression outcome.
@@ -60,12 +62,12 @@ public class RegressionDemo implements Constants {
 
     // === DIMENSIONS ===========================================================
     
-    def trainreader = CollectionReaderFactory.createReaderDescription(STSReader.class,
+    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(STSReader.class,
         STSReader.PARAM_INPUT_FILE, inputFileTrain,
         STSReader.PARAM_GOLD_FILE, goldFileTrain
         );
     
-    def testreader = CollectionReaderFactory.createReaderDescription(STSReader.class,
+    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(STSReader.class,
          STSReader.PARAM_INPUT_FILE, inputFileTest,
          STSReader.PARAM_GOLD_FILE, goldFileTest
         );

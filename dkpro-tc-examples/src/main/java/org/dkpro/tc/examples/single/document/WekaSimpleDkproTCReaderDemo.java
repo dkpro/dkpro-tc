@@ -27,14 +27,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -61,11 +60,13 @@ public class WekaSimpleDkproTCReaderDemo
     public static void main(String[] args)
         throws Exception
     {
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(SimpleDkproTCReader.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(SimpleDkproTCReader.class.getSimpleName());
+
         WekaSimpleDkproTCReaderDemo demo = new WekaSimpleDkproTCReaderDemo();
         demo.runCrossValidation(getParameterSpace());
     }
@@ -74,8 +75,8 @@ public class WekaSimpleDkproTCReaderDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "SimpleReaderDemoCV", WekaClassificationAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("SimpleReaderDemoCV",
+                WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -85,45 +86,36 @@ public class WekaSimpleDkproTCReaderDemo
         Lab.getInstance().run(batch);
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                SimpleDkproTCReader.class,
-                SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE,
-                FILEPATH_GOLD_LABELS,
-                SimpleDkproTCReader.PARAM_SENTENCES_FILE,
-                FILEPATH_TRAIN + "/instances.txt");
+
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+                SimpleDkproTCReader.class, SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
+                SimpleDkproTCReader.PARAM_SENTENCES_FILE, FILEPATH_TRAIN + "/instances.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                DIM_CLASSIFICATION_ARGS,
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 asList(new String[] { LuceneNGramDFE.class.getName() }));
 
         // parameters to configure feature extractors
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(DIM_PIPELINE_PARAMS,
-                        asList(new Object[] {
-                                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-                                "50",
-                                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-                                2,
-                                FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
-                                3 }));
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
+                asList(new Object[] {
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, "50",
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(
-                "readers", dimReaders), Dimension.create(
-                DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
                 dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
@@ -132,8 +124,7 @@ public class WekaSimpleDkproTCReaderDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(createEngineDescription(
-                BreakIteratorSegmenter.class,
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class,
                 BreakIteratorSegmenter.PARAM_LANGUAGE, LANGUAGE_CODE));
     }
 }

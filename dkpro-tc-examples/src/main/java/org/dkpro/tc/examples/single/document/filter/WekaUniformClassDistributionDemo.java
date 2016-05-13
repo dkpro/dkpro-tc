@@ -26,14 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
@@ -45,9 +44,9 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -94,7 +93,7 @@ public class WekaUniformClassDistributionDemo
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
@@ -102,7 +101,7 @@ public class WekaUniformClassDistributionDemo
                 Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,

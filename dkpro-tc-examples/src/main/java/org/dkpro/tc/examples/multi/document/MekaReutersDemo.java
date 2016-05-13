@@ -25,22 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import meka.classifiers.multilabel.BR;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-
-import weka.attributeSelection.InfoGainAttributeEval;
-import weka.classifiers.bayes.NaiveBayes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
@@ -51,6 +43,12 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
+
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import meka.classifiers.multilabel.BR;
+import weka.attributeSelection.InfoGainAttributeEval;
+import weka.classifiers.bayes.NaiveBayes;
 
 public class MekaReutersDemo
     implements Constants
@@ -67,11 +65,13 @@ public class MekaReutersDemo
     public static void main(String[] args)
         throws Exception
     {
-    	// This is used to ensure that the required DKPRO_HOME environment variable is set.
-    	// Ensures that people can run the experiments even if they haven't read the setup instructions first :)
-    	// Don't use this in real experiments! Read the documentation and set DKPRO_HOME as explained there.
-    	DemoUtils.setDkproHome(MekaReutersDemo.class.getSimpleName());
-    	
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(MekaReutersDemo.class.getSimpleName());
+
         ParameterSpace pSpace = getParameterSpace();
         MekaReutersDemo experiment = new MekaReutersDemo();
         experiment.runTrainTest(pSpace);
@@ -79,58 +79,49 @@ public class MekaReutersDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                FILEPATH_TRAIN,
-                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-                FILEPATH_GOLD_LABELS,
-                ReutersCorpusReader.PARAM_LANGUAGE,
-                LANGUAGE_CODE,
-                ReutersCorpusReader.PARAM_PATTERNS,
-                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+                FILEPATH_TRAIN, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
+                ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                FILEPATH_TEST,
-                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
-                FILEPATH_GOLD_LABELS,
-                ReutersCorpusReader.PARAM_LANGUAGE,
-                LANGUAGE_CODE,
-                ReutersCorpusReader.PARAM_PATTERNS,
-                ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION, FILEPATH_TEST,
+                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
+                ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
-        
-        Dimension<List<String>> dimClassificationArgs = Dimension
-                .create(DIM_CLASSIFICATION_ARGS,
-                        Arrays.asList(new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName()}));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(
+                        new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName() }));
+
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] {
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-                        "100", FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-                        1, FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, "100",
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
+                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
-        dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD, "BinaryRelevanceAttributeEvaluator");
-        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS, Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
+        dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD,
+                "BinaryRelevanceAttributeEvaluator");
+        dimFeatureSelection.put(DIM_ATTRIBUTE_EVALUATOR_ARGS,
+                Arrays.asList(new String[] { InfoGainAttributeEval.class.getName() }));
         dimFeatureSelection.put(DIM_NUM_LABELS_TO_KEEP, 10);
         dimFeatureSelection.put(DIM_APPLY_FEATURE_SELECTION, true);
 
-        ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle("readers", dimReaders),
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD),
@@ -145,7 +136,7 @@ public class MekaReutersDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-        		MekaClassificationAdapter.class);
+                MekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -174,8 +165,7 @@ public class MekaReutersDemo
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
     }

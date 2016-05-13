@@ -36,6 +36,7 @@ import org.dkpro.tc.features.length.NrOfTokensUFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
@@ -61,7 +62,7 @@ implements Constants {
         dummyResource
     ])
     
-    def trainreader = createReaderDescription(BrownCorpusReader.class,
+    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class,
         BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
         BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]

@@ -45,6 +45,7 @@ import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
@@ -67,13 +68,13 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     // === DIMENSIONS===========================================================
     
-    def testreader = createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
         TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
         TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
        );
    
-   def trainreader = createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+   def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"

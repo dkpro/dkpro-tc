@@ -36,6 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -67,29 +68,24 @@ public class SVMHMMBrownPosDemo
 
         if (trainTest) {
 
-            CollectionReaderDescription readerTrain = CollectionReaderFactory
-                    .createReaderDescription(BrownCorpusReader.class,
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
+            Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+                    BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                    BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
 
-            CollectionReaderDescription readerTest = CollectionReaderFactory
-                    .createReaderDescription(BrownCorpusReader.class,
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
+            Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+                    BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                    BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_SOURCE_LOCATION,
+                    corpusFilePathTrain, BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
 
             results.put(Constants.DIM_READER_TRAIN, readerTrain);
             results.put(Constants.DIM_READER_TEST, readerTest);
         }
         else {
-            CollectionReaderDescription readerTrain = CollectionReaderFactory
-                    .createReaderDescription(BrownCorpusReader.class,
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS,
-                            Arrays.asList(INCLUDE_PREFIX + "*.xml"));
+            Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+                    BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                    BrownCorpusReader.PARAM_PATTERNS, Arrays.asList(INCLUDE_PREFIX + "*.xml"));
 
             results.put(Constants.DIM_READER_TRAIN, readerTrain);
         }
