@@ -31,6 +31,8 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /**
  * Data structure that holds instances.
  * 
@@ -38,7 +40,7 @@ import org.dkpro.tc.api.features.Instance;
 public class DenseFeatureStore
     implements FeatureStore
 {
-	private List<Instance> instanceList;
+	private ObjectArrayList<Instance> instanceList;
     private TreeSet<String> featureNames;
 
     /**
@@ -46,7 +48,7 @@ public class DenseFeatureStore
      */
     public DenseFeatureStore()
     {
-    	this.instanceList = new ArrayList<Instance>();
+    	this.instanceList = new ObjectArrayList<>();
         this.featureNames = null;
     }
 

@@ -51,7 +51,7 @@ public class SparseFeatureStore
 {
     static Logger log = Logger.getLogger(SparseFeatureStore.class);
 
-    private List<Map<String, Object>> instanceList = new ArrayList<>();
+    private ObjectArrayList<Map<String, Object>> instanceList = new ObjectArrayList<>();
 //    private List<List<String>> outcomeList = new ArrayList<>();
     private ObjectArrayList<String[]> outcomeList = new ObjectArrayList<>();
     private DoubleArrayList weightList = new DoubleArrayList();

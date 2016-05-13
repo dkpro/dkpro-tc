@@ -51,6 +51,7 @@ public class Instance
         this.features.sort(getComparator());
         this.outcomes = new ArrayList<String>();
         this.outcomes.add(outcome);
+        outcome.intern();
     }
 
     public Instance(Collection<Feature> features, String... outcomes) 
