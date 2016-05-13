@@ -19,6 +19,7 @@
 package org.dkpro.tc.fstore.simple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.dkpro.tc.api.features.Instance;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Feature store that internally uses hash maps instead of arrays to store sparse features. All
@@ -50,7 +52,8 @@ public class SparseFeatureStore
     static Logger log = Logger.getLogger(SparseFeatureStore.class);
 
     private List<Map<String, Object>> instanceList = new ArrayList<>();
-    private List<List<String>> outcomeList = new ArrayList<>();
+//    private List<List<String>> outcomeList = new ArrayList<>();
+    private ObjectArrayList<String[]> outcomeList = new ObjectArrayList<>();
     private DoubleArrayList weightList = new DoubleArrayList();
     private IntArrayList sequenceIds = new IntArrayList();
     private IntArrayList sequencePositions = new IntArrayList();
@@ -114,7 +117,7 @@ public class SparseFeatureStore
         }
 
         this.instanceList.add(currentInstanceFeatures);
-        this.outcomeList.add(instance.getOutcomes());
+        this.outcomeList.add(instance.getOutcomes().toArray(new String[0]));
         this.weightList.add(instance.getWeight());
         this.sequenceIds.add(instance.getSequenceId());
         this.sequencePositions.add(instance.getSequencePosition());
@@ -205,8 +208,8 @@ public class SparseFeatureStore
     {
         SortedSet<String> result = new TreeSet<>();
 
-        for (List<String> outcomes : outcomeList) {
-            result.addAll(outcomes);
+        for (String [] outcomes : outcomeList) {
+            result.addAll(Arrays.asList(outcomes));
         }
 
         return result;
@@ -215,7 +218,7 @@ public class SparseFeatureStore
     @Override
     public List<String> getOutcomes(int i)
     {
-        return this.outcomeList.get(i);
+        return new ArrayList<String>(Arrays.asList(this.outcomeList.get(i)));
     }
 
     @Override
