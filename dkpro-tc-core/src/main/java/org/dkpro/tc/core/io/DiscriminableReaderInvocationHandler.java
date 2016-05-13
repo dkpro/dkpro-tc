@@ -30,7 +30,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.dkpro.lab.task.Discriminable;
 
 public class DiscriminableReaderInvocationHandler
-    implements InvocationHandler, Discriminable, DiscriminableReaderDescription
+    implements InvocationHandler, Discriminable
 {
 
     private CollectionReaderDescription crd;
@@ -50,9 +50,6 @@ public class DiscriminableReaderInvocationHandler
         }
         if (method.getName().equals("getActualValue")) {
             return getActualValue();
-        }
-        if (method.getName().equals("getReaderDescription")) {
-            return getReaderDescription();
         }
 
         return method.invoke(crd, args);
@@ -113,12 +110,6 @@ public class DiscriminableReaderInvocationHandler
     public Object getActualValue()
     {
         return getDiscriminatorValue();
-    }
-
-    @Override
-    public CollectionReaderDescription getReaderDescription()
-    {
-        return crd;
     }
 
 }

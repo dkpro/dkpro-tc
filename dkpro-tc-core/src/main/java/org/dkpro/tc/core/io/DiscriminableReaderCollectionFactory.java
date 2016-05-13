@@ -41,6 +41,6 @@ public class DiscriminableReaderCollectionFactory
         CollectionReaderDescription readerDescription = CollectionReaderFactory.createReaderDescription(cdr, l.toArray());
         
         return Proxy.newProxyInstance(readerDescription.getClass().getClassLoader(),
-                new Class<?>[] { CollectionReaderDescription.class, Discriminable.class, DiscriminableReaderDescription.class }, new DiscriminableReaderInvocationHandler(readerDescription));
+                new Class<?>[] { CollectionReaderDescription.class, Discriminable.class }, new DiscriminableReaderInvocationHandler(readerDescription));
     }
 }

@@ -45,7 +45,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.io.DiscriminableReaderDescription;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
@@ -65,9 +64,9 @@ public class InitTask
 {
 
     @Discriminator(name=DIM_READER_TRAIN)
-    protected DiscriminableReaderDescription readerTrain;
+    protected CollectionReaderDescription readerTrain;
     @Discriminator(name=DIM_READER_TEST)
-    protected DiscriminableReaderDescription readerTest;
+    protected CollectionReaderDescription readerTest;
     @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
     @Discriminator(name=DIM_LEARNING_MODE)
@@ -111,7 +110,7 @@ public class InitTask
                         "readerTrain is null"));
             }
 
-            readerDesc = readerTrain.getReaderDescription();
+            readerDesc = readerTrain;
         }
         else {
             if (readerTest == null) {
@@ -119,7 +118,7 @@ public class InitTask
                         "readerTest is null"));
             }
 
-            readerDesc = readerTest.getReaderDescription();
+            readerDesc = readerTest;
         }
 
         return readerDesc;
