@@ -36,6 +36,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 /**
  * Running example as described in the paper:
@@ -58,7 +59,7 @@ public class TwitterSentimentDemo implements Constants {
      */
     protected void runCrossValidation() throws Exception {
         
-       def trainreader = createReaderDescription(LabeledTweetReader.class,
+       def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(LabeledTweetReader.class,
              LabeledTweetReader.PARAM_SOURCE_LOCATION,  "src/main/resources/data/twitter/train/*/*.txt"
           );
 
@@ -98,11 +99,11 @@ public class TwitterSentimentDemo implements Constants {
      */
     protected void runTrainTest() throws Exception {
         
-        def trainreader = createReaderDescription(LabeledTweetReader.class,
+        def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(LabeledTweetReader.class,
             LabeledTweetReader.PARAM_SOURCE_LOCATION,  "src/main/resources/data/twitter/train/*/*.txt"
          );
      
-         def testreader= createReaderDescription(LabeledTweetReader.class,
+         def testreader= DiscriminableReaderCollectionFactory.createReaderDescription(LabeledTweetReader.class,
          LabeledTweetReader.PARAM_SOURCE_LOCATION,  "src/main/resources/data/twitter/test/*/*.txt"
          );
 

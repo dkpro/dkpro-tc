@@ -2,6 +2,7 @@ package org.dkpro.tc.demo.sentimentpolarity;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
@@ -41,13 +42,13 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 
     // === DIMENSIONS===========================================================
 
-    def testreader = createReaderDescription(MovieReviewCorpusReader.class,
+    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(MovieReviewCorpusReader.class,
         MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
         MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
         MovieReviewCorpusReader.PARAM_PATTERNS, MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         );
     
-    def trainreader = createReaderDescription(MovieReviewCorpusReader.class,
+    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(MovieReviewCorpusReader.class,
         MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
         MovieReviewCorpusReader.PARAM_PATTERNS, MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"

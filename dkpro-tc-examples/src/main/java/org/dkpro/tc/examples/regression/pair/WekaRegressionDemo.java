@@ -26,14 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -55,7 +54,8 @@ import weka.classifiers.functions.SMOreg;
  * similarity features between document pairs and <br>
  * then learns a regression model that predicts similarity of unseen document pairs.
  */
-public class WekaRegressionDemo implements Constants
+public class WekaRegressionDemo
+    implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
     public static final int NUM_FOLDS = 2;
@@ -77,23 +77,24 @@ public class WekaRegressionDemo implements Constants
         DemoUtils.setDkproHome(WekaRegressionDemo.class.getSimpleName());
 
         WekaRegressionDemo experiment = new WekaRegressionDemo();
-//        experiment.runCrossValidation(getParameterSpace());
+        // experiment.runCrossValidation(getParameterSpace());
         experiment.runTrainTest(getParameterSpace());
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                STSReader.class,STSReader.PARAM_INPUT_FILE, inputFileTrain,
-                STSReader.PARAM_GOLD_FILE, goldFileTrain );
+
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+                STSReader.class, STSReader.PARAM_INPUT_FILE, inputFileTrain,
+                STSReader.PARAM_GOLD_FILE, goldFileTrain);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-        
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                STSReader.class,STSReader.PARAM_INPUT_FILE, inputFileTest,
-                STSReader.PARAM_GOLD_FILE, goldFileTest );
+
+        Object readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+                STSReader.class, STSReader.PARAM_INPUT_FILE, inputFileTest,
+                STSReader.PARAM_GOLD_FILE, goldFileTest);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
@@ -108,10 +109,10 @@ public class WekaRegressionDemo implements Constants
                 Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders), Dimension.create(
-                        Constants.DIM_FEATURE_MODE, Constants.FM_PAIR), Dimension.create(
-                        Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION), dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders),
+                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_PAIR),
+                Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION),
+                dimFeatureSets, dimClassificationArgs);
         return pSpace;
     }
 

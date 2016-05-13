@@ -38,7 +38,7 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
-
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 /**
  * PairTwentyNewsgroupsExperiment, using Groovy
@@ -67,12 +67,12 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def testreader = createReaderDescription(PairTwentyNewsgroupsReader.class,
+    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
          PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTest, 
          PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode
      );
     
-     def trainreader = createReaderDescription(PairTwentyNewsgroupsReader.class,
+     def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
          PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTrain,
          PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode
      );

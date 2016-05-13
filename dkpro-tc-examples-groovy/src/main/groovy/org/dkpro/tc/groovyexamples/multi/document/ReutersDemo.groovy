@@ -45,6 +45,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.MekaClassificationAdapter
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
@@ -65,13 +66,13 @@ public class ReutersDemo implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def testreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
+    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(ReutersCorpusReader.class,
         ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest, 
         ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
         ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
         ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
 
-    def trainreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
+    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(ReutersCorpusReader.class,
         ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
         ReutersCorpusReader.PARAM_LANGUAGE, languageCode,

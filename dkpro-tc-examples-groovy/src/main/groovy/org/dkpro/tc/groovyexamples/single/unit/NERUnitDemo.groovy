@@ -38,6 +38,7 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification
@@ -59,7 +60,7 @@ implements Constants {
         InitialCharacterUpperCaseUFE.name
     ])
     
-    def trainreader = createReaderDescription(NERDemoReader.class,
+    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(NERDemoReader.class,
        NERDemoReader.PARAM_LANGUAGE,  "de",
        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt"

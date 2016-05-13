@@ -27,15 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -78,13 +77,11 @@ public class CRFSuiteBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+        Object newInstance = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
                 asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"));
-
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        dimReaders.put(DIM_READER_TRAIN, newInstance);
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,

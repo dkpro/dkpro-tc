@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
@@ -39,6 +38,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
@@ -48,11 +48,11 @@ import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
-import weka.classifiers.bayes.NaiveBayes;
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * Demo to show-case how trained models can be persisted.
@@ -72,20 +72,18 @@ public class WekaSaveAndApplyModelSinglelabelDemo
      * output folder path
      */
     public static final File modelPath = new File("target/model");
-	/**
-	 * example text
-	 */
-	public static final String EXAMPLE_TEXT = "This is an exmaple.";
-	/**
-	 * example text id
-	 */
-	public static final String EXAMPLE_TEXT_ID = "example_text";
-	/**
-	 * path to where the prediction outcome is store 
-	 */
-	public static final File PREDICTION_PATH = new File("target/prediction");
-
-
+    /**
+     * example text
+     */
+    public static final String EXAMPLE_TEXT = "This is an exmaple.";
+    /**
+     * example text id
+     */
+    public static final String EXAMPLE_TEXT_ID = "example_text";
+    /**
+     * path to where the prediction outcome is store
+     */
+    public static final File PREDICTION_PATH = new File("target/prediction");
 
     /**
      * Start the demo.
@@ -111,13 +109,14 @@ public class WekaSaveAndApplyModelSinglelabelDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
@@ -125,27 +124,22 @@ public class WekaSaveAndApplyModelSinglelabelDemo
                 Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(
-        		Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
-                dimPipelineParameters, 
-                dimFeatureSets,
-                dimClassificationArgs);
-        
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs);
+
         return pSpace;
     }
 
@@ -167,26 +161,22 @@ public class WekaSaveAndApplyModelSinglelabelDemo
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
     }
-    
-    protected void applyStoredModel(String text) throws ResourceInitializationException, UIMAException, IOException{
-		SimplePipeline.runPipeline(
-				CollectionReaderFactory.createReader(
-						StringReader.class,
-						StringReader.PARAM_DOCUMENT_TEXT, text,
-						StringReader.PARAM_DOCUMENT_ID, EXAMPLE_TEXT_ID,
-						StringReader.PARAM_LANGUAGE, LANGUAGE_CODE),
-				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
-				AnalysisEngineFactory.createEngineDescription(
-						TcAnnotator.class,
-						TcAnnotator.PARAM_TC_MODEL_LOCATION,
-						modelPath),
-				AnalysisEngineFactory.createEngineDescription(
-						XmiWriter.class,
-						XmiWriter.PARAM_TARGET_LOCATION, PREDICTION_PATH));
+
+    protected void applyStoredModel(String text)
+        throws ResourceInitializationException, UIMAException, IOException
+    {
+        SimplePipeline.runPipeline(
+                CollectionReaderFactory.createReader(StringReader.class,
+                        StringReader.PARAM_DOCUMENT_TEXT, text, StringReader.PARAM_DOCUMENT_ID,
+                        EXAMPLE_TEXT_ID, StringReader.PARAM_LANGUAGE, LANGUAGE_CODE),
+                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
+                AnalysisEngineFactory.createEngineDescription(TcAnnotator.class,
+                        TcAnnotator.PARAM_TC_MODEL_LOCATION, modelPath),
+                AnalysisEngineFactory.createEngineDescription(XmiWriter.class,
+                        XmiWriter.PARAM_TARGET_LOCATION, PREDICTION_PATH));
     }
 }

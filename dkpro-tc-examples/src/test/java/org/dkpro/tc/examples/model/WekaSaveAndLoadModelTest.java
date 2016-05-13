@@ -30,11 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import meka.classifiers.multilabel.MULAN;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -47,6 +44,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.io.STSReader;
@@ -67,13 +65,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import meka.classifiers.multilabel.MULAN;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SMOreg;
 import weka.classifiers.trees.RandomForest;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * Round-trip tests for save/load model experiments. Tests all feature modes (document, pair, unit),
@@ -104,7 +103,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
@@ -138,7 +137,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
                 documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
                 documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
@@ -366,7 +365,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 STSReader.class, STSReader.PARAM_INPUT_FILE, pairTrainFiles,
                 STSReader.PARAM_GOLD_FILE, pairGoldFiles);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
@@ -391,7 +390,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
                 Arrays.asList("*.xml"));
