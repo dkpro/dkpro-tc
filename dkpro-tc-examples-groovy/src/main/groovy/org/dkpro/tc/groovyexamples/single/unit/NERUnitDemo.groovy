@@ -24,6 +24,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
@@ -38,8 +39,7 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
-
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification
  * unit. This is only a showcase of the concept.
@@ -60,7 +60,7 @@ implements Constants {
         InitialCharacterUpperCaseUFE.name
     ])
     
-    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(NERDemoReader.class,
+    def trainreader = CollectionReaderFactory.createReaderDescription(NERDemoReader.class,
        NERDemoReader.PARAM_LANGUAGE,  "de",
        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt"

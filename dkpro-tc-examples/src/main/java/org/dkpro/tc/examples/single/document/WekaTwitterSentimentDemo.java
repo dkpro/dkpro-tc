@@ -27,12 +27,12 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
@@ -93,13 +93,13 @@ public class WekaTwitterSentimentDemo
         // documents/instances it creates.
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 LabeledTweetReader.class, LabeledTweetReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/twitter/train", LabeledTweetReader.PARAM_LANGUAGE, "en",
                 LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 LabeledTweetReader.class, LabeledTweetReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/twitter/test", LabeledTweetReader.PARAM_LANGUAGE, "en",
                 LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");

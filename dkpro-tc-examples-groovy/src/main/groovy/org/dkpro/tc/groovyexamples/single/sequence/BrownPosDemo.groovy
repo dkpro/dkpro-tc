@@ -24,20 +24,19 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
-
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter
 import org.dkpro.tc.examples.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.NrOfTokensUFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
-
+import org.dkpro.tc.ml.report.BatchCrossValidationReport
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
  */
@@ -49,7 +48,7 @@ implements Constants {
     def String corpusFilePathTrain = "src/main/resources/data/brown_tei/"
     def experimentName = "BrownPosDemo"
     
-    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class,
+    def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
         BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
         BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]

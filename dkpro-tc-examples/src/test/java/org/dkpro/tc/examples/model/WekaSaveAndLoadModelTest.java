@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -44,7 +45,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.io.STSReader;
@@ -103,7 +103,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 TwentyNewsgroupsCorpusReader.class,
                 TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
                 TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
@@ -137,7 +137,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        Object readerTrain = CollectionReaderFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
                 documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
                 documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
@@ -365,7 +365,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        Object readerTrain = CollectionReaderFactory.createReaderDescription(
                 STSReader.class, STSReader.PARAM_INPUT_FILE, pairTrainFiles,
                 STSReader.PARAM_GOLD_FILE, pairGoldFiles);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
@@ -390,7 +390,7 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         
-        Object readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
                 Arrays.asList("*.xml"));

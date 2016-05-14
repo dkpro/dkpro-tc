@@ -28,13 +28,13 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -92,7 +92,7 @@ public class WekaSimpleDkproTCReaderDemo
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 SimpleDkproTCReader.class, SimpleDkproTCReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
                 SimpleDkproTCReader.PARAM_SENTENCES_FILE, FILEPATH_TRAIN + "/instances.txt");

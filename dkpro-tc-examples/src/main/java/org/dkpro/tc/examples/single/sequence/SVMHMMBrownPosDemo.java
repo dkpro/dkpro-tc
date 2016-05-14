@@ -29,13 +29,13 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -67,12 +67,12 @@ public class SVMHMMBrownPosDemo
 
         if (trainTest) {
 
-            CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+            CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                     BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                     BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                     BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
 
-            CollectionReaderDescription readerTest = DiscriminableReaderCollectionFactory.createReaderDescription(
+            CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                     BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                     BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_SOURCE_LOCATION,
                     corpusFilePathTrain, BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
@@ -81,7 +81,7 @@ public class SVMHMMBrownPosDemo
             results.put(Constants.DIM_READER_TEST, readerTest);
         }
         else {
-            CollectionReaderDescription readerTrain = DiscriminableReaderCollectionFactory.createReaderDescription(
+            CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                     BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                     BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                     BrownCorpusReader.PARAM_PATTERNS, Arrays.asList(INCLUDE_PREFIX + "*.xml"));

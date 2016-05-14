@@ -23,6 +23,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
@@ -38,8 +39,7 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
-
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * PairTwentyNewsgroupsExperiment, using Groovy
  *
@@ -67,12 +67,12 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
+    def testreader = CollectionReaderFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
          PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTest, 
          PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode
      );
     
-     def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
+     def trainreader = CollectionReaderFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
          PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTrain,
          PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode
      );

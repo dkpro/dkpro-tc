@@ -31,6 +31,7 @@ import static org.dkpro.tc.core.Constants.PART_ONE;
 import static org.dkpro.tc.core.Constants.PART_TWO;
 
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +43,11 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.Discriminable;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.core.io.DiscriminableReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
@@ -63,21 +66,21 @@ public class InitTask
     extends UimaTaskBase
 {
 
-    @Discriminator(name=DIM_READER_TRAIN)
+    @Discriminator(name = DIM_READER_TRAIN)
     protected CollectionReaderDescription readerTrain;
-    @Discriminator(name=DIM_READER_TEST)
+    @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    @Discriminator(name=DIM_PIPELINE_PARAMS)
+    @Discriminator(name = DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
-    @Discriminator(name=DIM_LEARNING_MODE)
+    @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator(name=DIM_FEATURE_MODE)
+    @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
+    @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private String threshold;
-    @Discriminator(name=DIM_FEATURE_SET)
+    @Discriminator(name = DIM_FEATURE_SET)
     protected List<String> featureSet;
-    @Discriminator(name=DIM_DEVELOPER_MODE)
+    @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
     private boolean isTesting = false;
@@ -106,22 +109,32 @@ public class InitTask
         CollectionReaderDescription readerDesc;
         if (!isTesting) {
             if (readerTrain == null) {
-                throw new ResourceInitializationException(new IllegalStateException(
-                        "readerTrain is null"));
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTrain is null"));
             }
 
-            readerDesc = readerTrain;
+            readerDesc = createDiscriminableReader(readerTrain);
         }
         else {
             if (readerTest == null) {
-                throw new ResourceInitializationException(new IllegalStateException(
-                        "readerTest is null"));
+                throw new ResourceInitializationException(
+                        new IllegalStateException("readerTest is null"));
             }
 
-            readerDesc = readerTest;
+            readerDesc = createDiscriminableReader(readerTest);
         }
 
         return readerDesc;
+    }
+
+    private CollectionReaderDescription createDiscriminableReader(
+            CollectionReaderDescription reader)
+    {
+        //use a dynamic proxy to inject a Discriminable interface
+        return (CollectionReaderDescription) Proxy.newProxyInstance(
+                reader.getClass().getClassLoader(),
+                new Class<?>[] { CollectionReaderDescription.class, Discriminable.class },
+                new DiscriminableReaderInvocationHandler(reader));
     }
 
     // what should actually be done in this task
@@ -145,16 +158,15 @@ public class InitTask
         // PART_TWO views
         if (featureMode.equals(FM_PAIR)) {
             AggregateBuilder builder = new AggregateBuilder();
-            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                    PART_ONE);
-            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
-                    PART_TWO);
+            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA, PART_ONE);
+            builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA, PART_TWO);
             preprocessing = builder.createAggregateDescription();
         }
         else if (operativeViews != null) {
             AggregateBuilder builder = new AggregateBuilder();
             for (String viewName : operativeViews) {
-                builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA, viewName);
+                builder.add(createEngineDescription(preprocessing), CAS.NAME_DEFAULT_SOFA,
+                        viewName);
             }
             preprocessing = builder.createAggregateDescription();
         }
@@ -163,17 +175,16 @@ public class InitTask
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
 
-                // tc pre validity check
-                getPreValidityCheckEngine(aContext),
-                emptyProblemChecker,
+        // tc pre validity check
+                getPreValidityCheckEngine(aContext), emptyProblemChecker,
 
-                // user preprocessing
+        // user preprocessing
                 preprocessing,
 
-                // tc post validity check
+        // tc post validity check
                 getPostValidityCheckEngine(aContext),
 
-                // write CAS to HDD
+        // write CAS to HDD
                 xmiWriter);
     }
 

@@ -20,14 +20,8 @@ package org.dkpro.tc.groovyexamples.regression.pair
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.functions.SMOreg
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
@@ -40,8 +34,11 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaRegressionAdapter
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
+import weka.classifiers.functions.SMOreg
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * A demo for pair classification with a regression outcome.
  *
@@ -62,12 +59,12 @@ public class RegressionDemo implements Constants {
 
     // === DIMENSIONS ===========================================================
     
-    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(STSReader.class,
+    def trainreader = CollectionReaderFactory.createReaderDescription(STSReader.class,
         STSReader.PARAM_INPUT_FILE, inputFileTrain,
         STSReader.PARAM_GOLD_FILE, goldFileTrain
         );
     
-    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(STSReader.class,
+    def testreader = CollectionReaderFactory.createReaderDescription(STSReader.class,
          STSReader.PARAM_INPUT_FILE, inputFileTest,
          STSReader.PARAM_GOLD_FILE, goldFileTest
         );

@@ -22,13 +22,10 @@ import org.apache.uima.resource.ResourceInitializationException
 
 import org.dkpro.tc.core.Constants
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.classifiers.bayes.NaiveBayes
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.tc.core.Constants
@@ -37,7 +34,10 @@ import org.dkpro.tc.integrationtest.io.LineInstanceReader
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
+
+import weka.classifiers.bayes.NaiveBayes
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.
  *
@@ -54,7 +54,7 @@ public class NumberOfFoldsSetting implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(LineInstanceReader.class,
+    def trainreader = CollectionReaderFactory.createReaderDescription(LineInstanceReader.class,
         LineInstanceReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain
           );
     

@@ -23,16 +23,9 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import meka.classifiers.multilabel.BR
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException
-
-import weka.attributeSelection.InfoGainAttributeEval
-import weka.classifiers.bayes.NaiveBayes
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
-import org.dkpro.lab.task.impl.DefaultBatchTask
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.ReutersCorpusReader
@@ -45,8 +38,12 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.MekaClassificationAdapter
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
+import weka.attributeSelection.InfoGainAttributeEval
+import weka.classifiers.bayes.NaiveBayes
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
  *
@@ -66,13 +63,13 @@ public class ReutersDemo implements Constants {
 
     // === DIMENSIONS===========================================================
 
-    def testreader = DiscriminableReaderCollectionFactory.createReaderDescription(ReutersCorpusReader.class,
+    def testreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
         ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest, 
         ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
         ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
         ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
 
-    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(ReutersCorpusReader.class,
+    def trainreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
         ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
         ReutersCorpusReader.PARAM_LANGUAGE, languageCode,

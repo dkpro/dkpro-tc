@@ -19,12 +19,13 @@
 package org.dkpro.tc.groovyexamples.single.unit
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ExternalResourceDescription
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
@@ -36,11 +37,10 @@ import org.dkpro.tc.features.length.NrOfTokensUFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
-
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * This example is the same as {@link BrownUnitPosDemo}, except that it demonstrates how to
  * pass an external resource to the feature extractor.  (In this case we pass a dummy
@@ -62,7 +62,7 @@ implements Constants {
         dummyResource
     ])
     
-    def trainreader = DiscriminableReaderCollectionFactory.createReaderDescription(BrownCorpusReader.class,
+    def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
         BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
         BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]
