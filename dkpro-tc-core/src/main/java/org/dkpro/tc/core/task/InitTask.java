@@ -47,7 +47,7 @@ import org.dkpro.lab.task.Discriminable;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.io.DiscriminableReaderInvocationHandler;
+import org.dkpro.tc.core.io.ReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
@@ -134,7 +134,7 @@ public class InitTask
         return (CollectionReaderDescription) Proxy.newProxyInstance(
                 reader.getClass().getClassLoader(),
                 new Class<?>[] { CollectionReaderDescription.class, Discriminable.class },
-                new DiscriminableReaderInvocationHandler(reader));
+                new ReaderInvocationHandler(reader));
     }
 
     // what should actually be done in this task

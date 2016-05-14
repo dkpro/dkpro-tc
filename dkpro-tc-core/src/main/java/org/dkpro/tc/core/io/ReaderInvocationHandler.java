@@ -29,13 +29,18 @@ import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.dkpro.lab.task.Discriminable;
 
-public class DiscriminableReaderInvocationHandler
+/**
+ * This class is called from within the @see ord.dkpro.tc.core.task.InitTask class to let the
+ * CollectionReaderDescription implement the Discriminable interface by using a dynamic proxy.
+ *
+ */
+public class ReaderInvocationHandler
     implements InvocationHandler, Discriminable
 {
 
     private CollectionReaderDescription crd;
 
-    public DiscriminableReaderInvocationHandler(Object crd)
+    public ReaderInvocationHandler(Object crd)
     {
         this.crd = (CollectionReaderDescription) crd;
     }
