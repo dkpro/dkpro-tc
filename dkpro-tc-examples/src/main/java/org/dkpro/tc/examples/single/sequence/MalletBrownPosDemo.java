@@ -42,12 +42,15 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensUFE;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
+import org.dkpro.tc.features.tcu.CurrentUnit;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.mallet.MalletAdapter;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+
+import com.sleepycat.collections.CurrentTransaction;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -95,23 +98,24 @@ public class MalletBrownPosDemo
                 asList(INCLUDE_PREFIX + "a02.xml"));
         dimReaders.put(DIM_READER_TEST, test);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 4,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
+//        @SuppressWarnings("unchecked")
+//        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
+//                asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
+//                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 4,
+//                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
 
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensUFE.class.getName(),
+                asList(new String[] { NrOfTokensUFE.class.getName(), CurrentUnit.class.getName(),
                         InitialCharacterUpperCaseUFE.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
                 Dimension.create(Constants.DIM_FEATURE_STORE, DenseFeatureStore.class.getName()),
-                dimPipelineParameters, dimFeatureSets);
+//                dimPipelineParameters,
+                dimFeatureSets);
 
         return pSpace;
     }
