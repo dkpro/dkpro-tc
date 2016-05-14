@@ -129,71 +129,45 @@ public class ConversionToFeatureVectorSequence extends Pipe
 	}
 
 	@Override
-    public Instance pipe (Instance carrier)
-	{
-		Object inputData = carrier.getData();
-		Alphabet features = getDataAlphabet();
-		LabelAlphabet labels;
-		LabelSequence target = null;
-		String [][] tokens;
-		if (inputData instanceof String)
-			tokens = parseSentence((String)inputData);
-		else if (inputData instanceof String[][])
-			tokens = (String[][])inputData;
-		else
-			throw new IllegalArgumentException("Not a String or String[][]; got "+inputData);
-		FeatureVector[] fvs = new FeatureVector[tokens.length];
-		if (isTargetProcessing())
-		{
-			labels = (LabelAlphabet)getTargetAlphabet();
-			target = new LabelSequence (labels, tokens.length);
-		}
-		
-		for (int l = 0; l < tokens.length; l++) {
-			int nFeatures;
-			if (isTargetProcessing())
-			{
-				if (tokens[l].length < 1)
-					throw new IllegalStateException ("Missing label at line " + l + " instance "+carrier.getName ());
-				nFeatures = tokens[l].length - 1;
-				target.add(tokens[l][nFeatures]);
-			}
-			else nFeatures = tokens[l].length;
-			ArrayList<Integer> featureIndices = new ArrayList<Integer>();
-			ArrayList<Double> featureValues = new ArrayList<Double>();
-			for (int f = 0; f < nFeatures; f++) {
-				int featureIndex = features.lookupIndex(tokens[l][f]);
-				// gdruck
-				// If the data alphabet's growth is stopped, featureIndex
-				// will be -1.  Ignore these features.
-				if (featureIndex >= 0) {
-					featureIndices.add(featureIndex);
-				}
-				featureValues.add(Double.parseDouble(tokens[l][f]));
-			}
-			int[] featureIndicesArr = new int[featureIndices.size()];
-			for (int index = 0; index < featureIndices.size(); index++) {
-				featureIndicesArr[index] = featureIndices.get(index);
-			}
-			double[] featureValuesArr = new double[featureValues.size()];
-			for (int index = 0; index < featureValues.size(); index++) {
-				featureValuesArr[index] = featureValues.get(index);
-			}
-			if (denseFeatureValues)
-				fvs[l] = new FeatureVector(features, featureValuesArr);
-			else
-				fvs[l] = new FeatureVector(features, featureIndicesArr);
-			//fvs[l] = featureInductionOption.value ? new AugmentableFeatureVector(features, featureIndicesArr, null, featureIndicesArr.length) : 
-			//        fvs[l] = featureInductionOption.value ? new AugmentableFeatureVector(features, featureIndicesArr, null, featureIndicesArr.length) : 
-			//        	new FeatureVector(features, featureValues);
-		}
-		carrier.setData(new FeatureVectorSequence(fvs));
-		if (isTargetProcessing())
-			carrier.setTarget(target);
-		else
-			carrier.setTarget(new LabelSequence(getTargetAlphabet()));
-		return carrier;
-	}
+	 public Instance pipe (Instance carrier)
+    {
+      Object inputData = carrier.getData();
+      Alphabet features = getDataAlphabet();
+      LabelAlphabet labels;
+      LabelSequence target = null;
+      String [][] tokens;
+      if (inputData instanceof String)
+        tokens = parseSentence((String)inputData);
+      else if (inputData instanceof String[][])
+        tokens = (String[][])inputData;
+      else
+        throw new IllegalArgumentException("Not a String or String[][]; got "+inputData);
+      FeatureVector[] fvs = new FeatureVector[tokens.length];
+      if (isTargetProcessing())
+      {
+        labels = (LabelAlphabet)getTargetAlphabet();
+        target = new LabelSequence (labels, tokens.length);
+      }
+      for (int l = 0; l < tokens.length; l++) {
+        int nFeatures;
+        if (isTargetProcessing())
+        {
+          if (tokens[l].length < 1)
+            throw new IllegalStateException ("Missing label at line " + l + " instance "+carrier.getName ());
+          nFeatures = tokens[l].length - 1;
+          target.add(tokens[l][nFeatures]);
+        }
+        else nFeatures = tokens[l].length;
+        int featureIndices[] = new int[nFeatures];
+        for (int f = 0; f < nFeatures; f++)
+          featureIndices[f] = features.lookupIndex(tokens[l][f]);
+        fvs[l] = new FeatureVector(features, featureIndices);
+      }
+      carrier.setData(new FeatureVectorSequence(fvs));
+      if (isTargetProcessing())
+        carrier.setTarget(target);
+      return carrier;
+    }
 	
 
 }

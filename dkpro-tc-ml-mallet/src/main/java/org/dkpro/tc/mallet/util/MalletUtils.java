@@ -106,30 +106,50 @@ public class MalletUtils
 	public static CRF trainCRF(InstanceList training, CRF crf, double gaussianPriorVariance, int iterations, String defaultLabel,
 			boolean fullyConnected, int[] orders) {
 
-		if (crf == null) {
-			crf = new CRF(training.getPipe(), (Pipe)null);
-			String startName =
-					crf.addOrderNStates(training, orders, null,
-							defaultLabel, null, null,
-							fullyConnected);
-			for (int i = 0; i < crf.numStates(); i++) {
-                crf.getState(i).setInitialWeight (Transducer.IMPOSSIBLE_WEIGHT);
-            }
-			crf.getState(startName).setInitialWeight(0.0);
-		}
-		//		logger.info("Training on " + training.size() + " instances");
+	    
+	    crf = new CRF(training.getPipe(), null);
+        //crf.addStatesForLabelsConnectedAsIn(trainingInstances);
+        crf.addStatesForThreeQuarterLabelsConnectedAsIn(training);
+        crf.addStartState();
 
-		CRFTrainerByLabelLikelihood crft = new CRFTrainerByLabelLikelihood (crf);
-		crft.setGaussianPriorVariance(gaussianPriorVariance);
-
-		boolean converged;
-		for (int i = 1; i <= iterations; i++) {
-			converged = crft.train (training, 1);
-			if (converged) {
+        CRFTrainerByLabelLikelihood trainer = 
+            new CRFTrainerByLabelLikelihood(crf);
+        trainer.setGaussianPriorVariance(10.0);
+        
+        boolean converged;
+      for (int i = 1; i <= iterations; i++) {
+          converged = trainer.train (training, 1);
+          if (converged) {
                 break;
             }
-		}
-		return crf;
+      }
+      return crf;
+        
+	    
+//		if (crf == null) {
+//			crf = new CRF(training.getPipe(), (Pipe)null);
+//			String startName =
+//					crf.addOrderNStates(training, orders, null,
+//							defaultLabel, null, null,
+//							fullyConnected);
+//			for (int i = 0; i < crf.numStates(); i++) {
+//                crf.getState(i).setInitialWeight (Transducer.IMPOSSIBLE_WEIGHT);
+//            }
+//			crf.getState(startName).setInitialWeight(0.0);
+//		}
+//		//		logger.info("Training on " + training.size() + " instances");
+//
+//		CRFTrainerByLabelLikelihood crft = new CRFTrainerByLabelLikelihood (crf);
+//		crft.setGaussianPriorVariance(gaussianPriorVariance);
+//
+//		boolean converged;
+//		for (int i = 1; i <= iterations; i++) {
+//			converged = crft.train (training, 1);
+//			if (converged) {
+//                break;
+//            }
+//		}
+//		return crf;
 	}
 
 	public static void runTrainCRF(File trainingFile, File modelFile, double var, int iterations, String defaultLabel,
