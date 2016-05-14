@@ -64,15 +64,14 @@ public class ReaderInvocationHandler
     public Object getDiscriminatorValue()
     {
         ResourceMetaData metaData = crd.getMetaData();
-        ConfigurationParameterSettings configurationParameterSettings = metaData
-                .getConfigurationParameterSettings();
-        NameValuePair[] parameterSettings = configurationParameterSettings.getParameterSettings();
+        ConfigurationParameterSettings settings = metaData.getConfigurationParameterSettings();
+        NameValuePair[] params = settings.getParameterSettings();
 
         String implementationName = crd.getImplementationName();
 
         List<String> entries = new ArrayList<>();
         entries.add(implementationName);
-        entries = addParameters(entries, parameterSettings);
+        entries = addParameters(entries, params);
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < entries.size(); i++) {
