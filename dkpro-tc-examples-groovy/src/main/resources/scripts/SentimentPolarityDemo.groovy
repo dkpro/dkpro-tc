@@ -2,7 +2,6 @@ package org.dkpro.tc.demo.sentimentpolarity;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
-import org.dkpro.tc.core.io.DiscriminableReaderCollectionFactory;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.resource.ResourceInitializationException
@@ -26,7 +25,6 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 /**
  * Groovy-Version of the SentimentPolarityExperiment
  */
@@ -42,13 +40,13 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 
     // === DIMENSIONS===========================================================
 
-    def testreader = CollectionReaderFactory.createReaderDescription(MovieReviewCorpusReader.class,
+    def testreader = createReaderDescription(MovieReviewCorpusReader.class,
         MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
         MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
         MovieReviewCorpusReader.PARAM_PATTERNS, MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
         );
     
-    def trainreader = CollectionReaderFactory.createReaderDescription(MovieReviewCorpusReader.class,
+    def trainreader = createReaderDescription(MovieReviewCorpusReader.class,
         MovieReviewCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
         MovieReviewCorpusReader.PARAM_LANGUAGE, languageCode,
         MovieReviewCorpusReader.PARAM_PATTERNS, MovieReviewCorpusReader.INCLUDE_PREFIX + "*/*.txt"
