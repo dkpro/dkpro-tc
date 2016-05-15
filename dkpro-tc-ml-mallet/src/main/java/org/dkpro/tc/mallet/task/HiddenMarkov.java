@@ -83,18 +83,17 @@ public class HiddenMarkov
         HMM hmm = (HMM) s.readObject();
         s.close();
 
-        List<Pipe> pipes = new ArrayList<Pipe>();
-
-        pipes.add(new SimpleTaggerSentence2TokenSequence());
-        pipes.add(new TokenSequence2FeatureSequence());
-        Pipe p = new SerialPipes(pipes);
-        // Pipe p = hmm.getInputPipe();
+//        List<Pipe> pipes = new ArrayList<Pipe>();
+//
+//        pipes.add(new SimpleTaggerSentence2TokenSequence());
+//        pipes.add(new TokenSequence2FeatureSequence());
+//        Pipe p = new SerialPipes(pipes);
+         Pipe p = hmm.getInputPipe();
         p.setTargetProcessing(true);
 
         InstanceList testData = new InstanceList(p);
         testData.addThruPipe(
                 new LineGroupIterator(testFileReader, Pattern.compile("^\\s*$"), true));
-
         writePrediction(new NoopTransducerTrainer(hmm), testData, prediction);
     }
 
