@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -18,90 +18,63 @@
 package org.dkpro.tc.mallet.task;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.mallet.util.MalletUtils;
-
-import cc.mallet.fst.TransducerEvaluator;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.mallet.MalletAdapter;
 
 public class MalletTestTask
     extends ExecutableTaskBase
+    implements Constants
 {
-	@Discriminator
-	private String tagger = "CRF"; //added to configure other taggers like HMM, although these are not supported
-	
-    @Discriminator
-    private double gaussianPriorVariance = 10.0; //Gaussian Prior Variance
+    public static final String MALLET_ALGO = "malletTrainingAlgo";
+    @Discriminator(name = MALLET_ALGO)
+    MalletAlgo malletAlgo;
+
+    private double gaussianPriorVariance = 10.0; // Gaussian Prior Variance
 
     @Discriminator
-	private int iterations = 1000; //Number of iterations
-
-    @Discriminator
-	private String defaultLabel = "O";
-    
-    @Discriminator
-    private int[] orders = new int[]{0, 1, 2, 3, 4};
-    
-    @Discriminator
-    private boolean denseFeatureValues = true;
-    
-	public static ArrayList<Double> precisionValues;
-
-	public static ArrayList<Double> recallValues;
-
-	public static ArrayList<Double> f1Values;
-
-	public static ArrayList<String> labels;
-
-	// TODO - most of that should be in Constants
-    public static final String PREDICTIONS_KEY = "predictions.txt";
-    public static final String TRAINING_DATA_KEY = "training-data.txt"; //TODO Issue 127: add from Constants
-    public static final String EVALUATION_DATA_KEY = "evaluation.csv";
-    public static final String CONFUSION_MATRIX_KEY = "confusionMatrix.csv";
-//    public static final String FEATURE_SELECTION_DATA_KEY = "attributeEvaluationResults.txt";
-    public static final String PREDICTION_CLASS_LABEL_NAME = "PredictedOutcome";
-    public static final String OUTCOME_CLASS_LABEL_NAME = "Outcome";
-    public static final String MALLET_MODEL_KEY = "mallet-model";
-
-    public static boolean MULTILABEL;
+    private int iterations = 100; // Number of iterations
 
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
 
-        File fileTrain = new File(aContext.getStorageLocation(Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_KEY);
-        File fileTest = new File(aContext.getStorageLocation(Constants.TEST_TASK_INPUT_KEY_TEST_DATA,
-                AccessMode.READONLY).getPath()
-                + "/" + TRAINING_DATA_KEY);
-     
-        File fileModel = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                .getPath() + "/" + MALLET_MODEL_KEY);
-        
-        TransducerEvaluator eval = MalletUtils.runTrainTest(fileTrain, fileTest, fileModel, gaussianPriorVariance, iterations, defaultLabel,
-    			false, orders, tagger, denseFeatureValues);
-        
-        
-        File filePredictions = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                .getPath() + "/" + PREDICTIONS_KEY);
-        
-        MalletUtils.outputPredictions(eval, fileTest, filePredictions, PREDICTION_CLASS_LABEL_NAME);
-        
-        File fileEvaluation = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                .getPath() + "/" + EVALUATION_DATA_KEY);
-        
-        MalletUtils.outputEvaluation(eval, fileEvaluation);
-        
-        File fileConfusionMatrix = new File(aContext.getStorageLocation(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE)
-                .getPath() + "/" + CONFUSION_MATRIX_KEY);
-        
-        MalletUtils.outputConfusionMatrix(eval, fileConfusionMatrix);
+        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        String fileName = MalletAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
+        File fileTrain = new File(trainFolder, fileName);
+
+        File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
+        File fileTest = new File(testFolder, fileName);
+
+        File fileModel = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READWRITE);
+
+        String pred = MalletAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.predictionsFile);
+        File predictions = aContext.getFile(pred, AccessMode.READWRITE);
+
+        String string = malletAlgo.toString();
+
+        if (string.startsWith("CRF")) {
+            ConditionalRandomFields crf = new ConditionalRandomFields(fileTrain, fileTest,
+                    fileModel, predictions, gaussianPriorVariance, iterations, malletAlgo);
+            crf.run();
+        }
+        else if (string.startsWith("HMM")) {
+            HiddenMarkov hmm = new HiddenMarkov(fileTrain, fileTest, fileModel, predictions,
+                    iterations);
+            hmm.run();
+        }
+        else {
+            throw new IllegalStateException("No algorithmen set");
+        }
     }
+
 }
