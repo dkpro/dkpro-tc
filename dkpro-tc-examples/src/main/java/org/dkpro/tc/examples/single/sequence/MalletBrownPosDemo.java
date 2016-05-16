@@ -37,6 +37,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
+import org.dkpro.tc.features.length.NrOfCharsUFE;
 import org.dkpro.tc.features.length.NrOfTokensUFE;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
@@ -106,8 +107,11 @@ public class MalletBrownPosDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensUFE.class.getName(), CurrentUnit.class.getName(),
-                        NextUnit.class.getName(), PrevUnit.class.getName(),
+                asList(new String[] { 
+                        NrOfCharsUFE.class.getName(), 
+//                        CurrentUnit.class.getName(),
+//                        NextUnit.class.getName(), 
+//                        PrevUnit.class.getName(),
                         InitialCharacterUpperCaseUFE.class.getName(),
 //                        LuceneCharacterNGramUFE.class.getName()
                         }));
@@ -115,7 +119,7 @@ public class MalletBrownPosDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
-                Dimension.create(MalletTestTask.MALLET_ALGO, MalletAlgo.CRF_LabelLikelihood_multiThreaded),
+                Dimension.create(MalletTestTask.MALLET_ALGO, MalletAlgo.HMM),
                 Dimension.create(Constants.DIM_FEATURE_STORE, DenseFeatureStore.class.getName()),
                 dimPipelineParameters, dimFeatureSets);
 
