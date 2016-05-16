@@ -119,7 +119,7 @@ public class MalletBrownPosDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
-                Dimension.create(MalletTestTask.MALLET_ALGO, MalletAlgo.CRF_LabelLikelihood_multiThreaded),
+                Dimension.create(MalletTestTask.MALLET_ALGO, MalletAlgo.HMM),
                 Dimension.create(Constants.DIM_FEATURE_STORE, DenseFeatureStore.class.getName()),
                 dimPipelineParameters, dimFeatureSets);
 
