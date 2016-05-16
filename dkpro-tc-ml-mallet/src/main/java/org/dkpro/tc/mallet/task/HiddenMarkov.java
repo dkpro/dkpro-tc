@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright 2016
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.dkpro.tc.mallet.task;
 
 import java.io.BufferedWriter;
@@ -19,7 +36,6 @@ import cc.mallet.fst.Transducer;
 import cc.mallet.fst.TransducerTrainer;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
-import cc.mallet.pipe.SimpleTaggerSentence2TokenSequence;
 import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Instance;
@@ -58,7 +74,7 @@ public class HiddenMarkov
 
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
 
-        pipes.add(new SimpleTaggerSentence2TokenSequence());
+        pipes.add(new TcFeatures2MalletSequence());
         pipes.add(new TokenSequence2FeatureSequence());
         Pipe p = new SerialPipes(pipes);
         p.setTargetProcessing(true);
@@ -83,12 +99,11 @@ public class HiddenMarkov
         HMM hmm = (HMM) s.readObject();
         s.close();
 
-//        List<Pipe> pipes = new ArrayList<Pipe>();
+        List<Pipe> pipes = new ArrayList<Pipe>();
 //
-//        pipes.add(new SimpleTaggerSentence2TokenSequence());
-//        pipes.add(new TokenSequence2FeatureSequence());
-//        Pipe p = new SerialPipes(pipes);
-         Pipe p = hmm.getInputPipe();
+        pipes.add(new TcFeatures2MalletSequence());
+        pipes.add(new TokenSequence2FeatureSequence());
+        Pipe p = new SerialPipes(pipes);
         p.setTargetProcessing(true);
 
         InstanceList testData = new InstanceList(p);

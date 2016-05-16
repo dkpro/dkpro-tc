@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -58,8 +58,8 @@ public class MalletDataWriter
         while (iterator.hasNext()) {
             Instance instance = iterator.next();
             if (currentSequenceId != instance.getSequenceId()) {
-                if(currentSequenceId!=-1){
-                bw.write("\n");
+                if (currentSequenceId != -1) {
+                    bw.write("\n");
                 }
                 currentSequenceId = instance.getSequenceId();
             }

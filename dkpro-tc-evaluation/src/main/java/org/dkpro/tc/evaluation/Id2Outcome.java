@@ -105,7 +105,7 @@ public class Id2Outcome implements Serializable
             else if (!line.startsWith("#")) {
                 if (labelList == null) {
                     br.close();
-                    throw new IOException("Wrong file format.");
+                    throw new IOException("Wrong file format in id2outcome file ["+id2outcomeFile.getAbsolutePath()+"]");
                 }
                 // line might contain several '=', split at the last one
                 int idxMostRightHandEqual = line.lastIndexOf("=");
@@ -167,7 +167,7 @@ public class Id2Outcome implements Serializable
         }
         br.close();
         if (outcomes.size() == 0) {
-            throw new IOException("Wrong file format.");
+            throw new IOException("id2outcome file contains no outcomes ["+id2outcomeFile.getAbsolutePath()+"]");
         }
     }
 

@@ -37,6 +37,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfCharsUFE;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
 import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
@@ -45,7 +46,6 @@ import org.dkpro.tc.features.tcu.NextUnit;
 import org.dkpro.tc.features.tcu.PrevUnit;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.mallet.MalletAdapter;
-import org.dkpro.tc.mallet.report.MalletAccuracyReport;
 import org.dkpro.tc.mallet.task.MalletAlgo;
 import org.dkpro.tc.mallet.task.MalletTestTask;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -59,8 +59,6 @@ public class MalletBrownPosDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 2;
-
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
     public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/";
 
@@ -71,8 +69,8 @@ public class MalletBrownPosDemo
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
-        // DemoUtils.setDkproHome(MalletBrownPosDemo.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop/");
+         DemoUtils.setDkproHome(MalletBrownPosDemo.class.getSimpleName());
+//        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop/");
 
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
 
