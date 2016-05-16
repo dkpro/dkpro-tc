@@ -89,7 +89,10 @@ public class MalletOutcomeIDReport
         sb.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR + "THRESHOLD");
         sb.append("\n");
         sb.append("#labels ");
-        keySet.forEach(x -> sb.append(x + "=" + map.get(x) + " "));
+        
+        for(String x : keySet){
+            sb.append(x + "=" + map.get(x) + " ");
+        }
 
         return sb.toString().trim();
     }
