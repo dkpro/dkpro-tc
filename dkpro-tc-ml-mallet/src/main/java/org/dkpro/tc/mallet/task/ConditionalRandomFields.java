@@ -205,7 +205,7 @@ public class ConditionalRandomFields
     private void crfLabelLikelihoodMultiThreaded(CRF crf, InstanceList trainingData)
     {
         CRFTrainerByThreadedLabelLikelihood trainer = new CRFTrainerByThreadedLabelLikelihood(crf,
-                4);
+                32);
         iterate(trainer, trainingData);
         trainer.shutdown();
     }
