@@ -38,7 +38,6 @@ import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
-import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.Target2Label;
@@ -100,12 +99,12 @@ public class MalletTestTask
     private void document(File fileTrain, File fileTest, File fileModel, File predictions)
         throws Exception
     {
+        
         Pipe instancePipe = new SerialPipes(new Pipe[] {
-                new Target2Label (),                              // Target String -> class label
-//                new Input2CharSequence (),                // Data File -> String containing contents
                 new CharSequence2TokenSequence(),
                 new TokenSequence2FeatureSequence(),
-                new FeatureSequence2FeatureVector() });
+                new Target2Label(),
+        });
 
         InstanceList trainData = new InstanceList(instancePipe);
         InstanceList testData = new InstanceList(instancePipe);
@@ -115,18 +114,16 @@ public class MalletTestTask
         // will have a File in the "data" slot, and a string from args[] in the "target" slot.
         Reader trainFileReader = new InputStreamReader(new FileInputStream(fileTrain), "UTF-8");
         trainData.addThruPipe(new LineGroupIterator(trainFileReader, Pattern.compile("^\\s*$"), true));
+        
+        Reader testFileReader = new InputStreamReader(new FileInputStream(fileTest), "UTF-8");
+        testData.addThruPipe(new LineGroupIterator(testFileReader, Pattern.compile("^\\s*$"), true));
 
         // Create a classifier trainer, and use it to create a classifier
+        @SuppressWarnings("rawtypes")
         ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer();
         Classifier classifier = naiveBayesTrainer.train(trainData);
         
-        ArrayList<Classification> classify = classifier.classify(testData);
-        
-        for(Classification c : classify){
-            LabelVector labelVector = c.getLabelVector();
-            Labeling labeling = c.getLabeling();
-            System.out.println();
-        }
+        //FIXME: evaluation
         
     }
 
