@@ -28,14 +28,22 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.mallet.util.CrfFeatureVectorSequenceConverter;
 
 import cc.mallet.fst.CRF;
+import cc.mallet.fst.CRFCacheStaleIndicator;
+import cc.mallet.fst.CRFOptimizableByBatchLabelLikelihood;
+import cc.mallet.fst.CRFOptimizableByLabelLikelihood;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
 import cc.mallet.fst.CRFTrainerByStochasticGradient;
+import cc.mallet.fst.CRFTrainerByThreadedLabelLikelihood;
+import cc.mallet.fst.CRFTrainerByValueGradients;
 import cc.mallet.fst.NoopTransducerTrainer;
+import cc.mallet.fst.ThreadedOptimizable;
 import cc.mallet.fst.Transducer;
 import cc.mallet.fst.TransducerTrainer;
+import cc.mallet.optimize.Optimizable;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Alphabet;
@@ -68,11 +76,11 @@ public class ConditionalRandomFields
     public void run()
         throws Exception
     {
-        runTrainCRF(trainFile, modelFile, false);
+        runTrainCRF(trainFile, modelFile);
         runTestCRF(testFile, modelFile, prediction);
     }
 
-    public void runTrainCRF(File trainingFile, File modelFile, boolean fullyConnected)
+    public void runTrainCRF(File trainingFile, File modelFile)
         throws Exception
     {
         Reader trainingFileReader = new InputStreamReader(new FileInputStream(trainingFile),
@@ -85,7 +93,7 @@ public class ConditionalRandomFields
         trainingData.addThruPipe(
                 new LineGroupIterator(trainingFileReader, Pattern.compile("^\\s*$"), true));
 
-        CRF crf = trainCRF(trainingData, fullyConnected);
+        CRF crf = trainCRF(trainingData);
 
         ObjectOutputStream s = new ObjectOutputStream(new FileOutputStream(modelFile));
         s.writeObject(crf);
@@ -145,35 +153,102 @@ public class ConditionalRandomFields
         writer.close();
     }
 
-    public CRF trainCRF(InstanceList training, boolean fullyConnected)
+    public CRF trainCRF(InstanceList trainingData)
         throws Exception
     {
 
-        CRF crf = new CRF(training.getPipe(), null);
-        crf.addStatesForLabelsConnectedAsIn(training);
+        CRF crf = new CRF(trainingData.getPipe(), null);
+        crf.addStatesForLabelsConnectedAsIn(trainingData);
         crf.addStartState();
 
-        TransducerTrainer trainer;
         switch (malletAlgo) {
         case CRF_StochasticGradient:
-            trainer = new CRFTrainerByStochasticGradient(crf, training);
+            crfStochasticGradient(crf, trainingData);
             break;
         case CRF_LabelLikelihood:
-            trainer = new CRFTrainerByLabelLikelihood(crf);
-            ((CRFTrainerByLabelLikelihood) trainer).setGaussianPriorVariance(gaussianPrior);
+            crfLabelLikelihood(crf, trainingData);
+            break;
+        case CRF_ValueGradient:
+            crfValueGradient(crf, trainingData);
+            break;
+        case CRF_ValueGradient_multiThreaded:
+            crfValueGradientMultiThreaded(crf, trainingData);
+            break;
+        case CRF_LabelLikelihood_multiThreaded:
+            crfLabelLikelihoodMultiThreaded(crf, trainingData);
             break;
         default:
-            throw new Exception("Not supported algorithm");
+            throw new UnsupportedOperationException(
+                    "[" + malletAlgo.toString() + "] is a not implemented algorithm");
         }
 
-        boolean converged;
-        for (int i = 1; i <= iterations; i++) {
-            converged = trainer.train(training, 100);
+        return crf;
+
+    }
+
+    private void crfValueGradientMultiThreaded(CRF crf, InstanceList trainingData)
+    {
+        int numThreads = 32;
+        CRFOptimizableByBatchLabelLikelihood batchOptLabel = new CRFOptimizableByBatchLabelLikelihood(
+                crf, trainingData, numThreads);
+        ThreadedOptimizable optLabel = new ThreadedOptimizable(batchOptLabel, trainingData,
+                crf.getParameters().getNumFactors(), new CRFCacheStaleIndicator(crf));
+
+        // CRF trainer
+        Optimizable.ByGradientValue[] opts = new Optimizable.ByGradientValue[] { optLabel };
+        // by default, use L-BFGS as the optimizer
+        CRFTrainerByValueGradients trainer = new CRFTrainerByValueGradients(crf, opts);
+        iterate(trainer, trainingData);
+        optLabel.shutdown();
+    }
+
+    private void crfLabelLikelihoodMultiThreaded(CRF crf, InstanceList trainingData)
+    {
+        CRFTrainerByThreadedLabelLikelihood trainer = new CRFTrainerByThreadedLabelLikelihood(crf,
+                4);
+        iterate(trainer, trainingData);
+        trainer.shutdown();
+    }
+
+    private void crfStochasticGradient(CRF crf, InstanceList trainingData)
+    {
+        CRFTrainerByStochasticGradient trainer = new CRFTrainerByStochasticGradient(crf,
+                trainingData);
+        iterate(trainer, trainingData);
+    }
+
+    private void crfLabelLikelihood(CRF crf, InstanceList trainingData)
+    {
+        CRFTrainerByLabelLikelihood trainer = new CRFTrainerByLabelLikelihood(crf);
+        trainer.setGaussianPriorVariance(gaussianPrior);
+        iterate(trainer, trainingData);
+    }
+
+    private void crfValueGradient(CRF crf, InstanceList trainingData)
+    {
+        CRFOptimizableByLabelLikelihood optLabel = new CRFOptimizableByLabelLikelihood(crf,
+                trainingData);
+        Optimizable.ByGradientValue[] opts = new Optimizable.ByGradientValue[] { optLabel };
+        // by default, use L-BFGS as the optimizer
+        CRFTrainerByValueGradients trainer = new CRFTrainerByValueGradients(crf, opts);
+        iterate(trainer, trainingData);
+    }
+
+    private void iterate(TransducerTrainer trainer, InstanceList trainingData)
+    {
+        boolean converged = false;
+        for (int i = 0; i <= iterations; i++) {
+            converged = trainer.train(trainingData, 1);
             if (converged) {
+                LogFactory.getLog(MalletTestTask.class.getName())
+                        .info("Training converged after [" + i + 1 + "] iterations");
                 break;
             }
         }
-        return crf;
-
+        if (!converged) {
+            LogFactory.getLog(MalletTestTask.class.getName())
+                    .info("Training did not converge after reaching iteration limit [" + iterations
+                            + "] ");
+        }
     }
 }

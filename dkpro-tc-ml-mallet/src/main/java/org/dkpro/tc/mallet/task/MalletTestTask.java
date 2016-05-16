@@ -37,8 +37,7 @@ public class MalletTestTask
 
     private double gaussianPriorVariance = 10.0; // Gaussian Prior Variance
 
-    @Discriminator
-    private int iterations = 100; // Number of iterations
+    private int iterations = 1000; 
 
     @Override
     public void execute(TaskContext aContext)

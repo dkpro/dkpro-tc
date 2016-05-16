@@ -20,5 +20,5 @@ package org.dkpro.tc.mallet.task;
 public enum MalletAlgo
 {
     CRF_StochasticGradient,
-    CRF_LabelLikelihood, HMM
+    CRF_LabelLikelihood, HMM, CRF_ValueGradient, CRF_LabelLikelihood_multiThreaded, CRF_ValueGradient_multiThreaded
 }

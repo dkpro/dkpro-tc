@@ -126,12 +126,15 @@ public class CrfFeatureVectorSequenceConverter
         LabelAlphabet labels;
         LabelSequence target = null;
         String[][] tokens;
-        if (inputData instanceof String)
+        if (inputData instanceof String) {
             tokens = parseSentence((String) inputData);
-        else if (inputData instanceof String[][])
+        }
+        else if (inputData instanceof String[][]) {
             tokens = (String[][]) inputData;
-        else
+        }
+        else {
             throw new IllegalArgumentException("Not a String or String[][]; got " + inputData);
+        }
         FeatureVector[] fvs = new FeatureVector[tokens.length];
         if (isTargetProcessing()) {
             labels = (LabelAlphabet) getTargetAlphabet();
@@ -146,16 +149,18 @@ public class CrfFeatureVectorSequenceConverter
                 nFeatures = tokens[l].length - 1;
                 target.add(tokens[l][nFeatures]);
             }
-            else
+            else {
                 nFeatures = tokens[l].length;
+            }
             int featureIndices[] = new int[nFeatures];
             for (int f = 0; f < nFeatures; f++)
                 featureIndices[f] = features.lookupIndex(tokens[l][f]);
             fvs[l] = new FeatureVector(features, featureIndices);
         }
         carrier.setData(new FeatureVectorSequence(fvs));
-        if (isTargetProcessing())
+        if (isTargetProcessing()) {
             carrier.setTarget(target);
+        }
         return carrier;
     }
 
