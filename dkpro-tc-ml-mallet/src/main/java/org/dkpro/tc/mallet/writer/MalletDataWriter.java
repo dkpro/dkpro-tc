@@ -58,8 +58,8 @@ public class MalletDataWriter
         while (iterator.hasNext()) {
             Instance instance = iterator.next();
             if (currentSequenceId != instance.getSequenceId()) {
-                if(currentSequenceId!=-1){
-                bw.write("\n");
+                if (currentSequenceId != -1) {
+                    bw.write("\n");
                 }
                 currentSequenceId = instance.getSequenceId();
             }
