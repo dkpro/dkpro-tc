@@ -66,8 +66,9 @@ public class MalletDataWriter
             List<Feature> features = new ArrayList<>(instance.getFeatures());
             for (int i = 0; i < features.size(); i++) {
                 Feature feature = features.get(i);
+                String featureName = feature.getName();
                 Object value = feature.getValue();
-                bw.write(value.toString());
+                bw.write(featureName + "=" + value.toString());
                 bw.write(" ");
             }
 
