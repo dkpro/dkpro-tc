@@ -105,7 +105,7 @@ public class Id2Outcome implements Serializable
             else if (!line.startsWith("#")) {
                 if (labelList == null) {
                     br.close();
-                    throw new IOException("Wrong file format.");
+                    throw new IOException("Wrong file format in file ["+id2outcomeFile.getAbsolutePath()+"]");
                 }
                 // line might contain several '=', split at the last one
                 int idxMostRightHandEqual = line.lastIndexOf("=");
