@@ -60,7 +60,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LuceneNgramUFETest
+public class LuceneNgramDFETest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -86,7 +86,7 @@ public class LuceneNgramUFETest
                 FileUtils.readFileToString(new File(output, JsonDataWriter.JSON_FILE_NAME)),
                 DenseFeatureStore.class);
 
-        assertEquals(8, fs.getNumberOfInstances());
+        assertEquals(1, fs.getNumberOfInstances());
         Iterator<Instance> iterator = fs.getInstances().iterator();
         int numFeatValueOne = 0;
         int numFeatValuesZero = 0;
@@ -108,8 +108,8 @@ public class LuceneNgramUFETest
             }
         }
 
-        assertEquals(2, numFeatValueOne);
-        assertEquals(6, numFeatValuesZero);
+        assertEquals(1, numFeatValueOne);
+        assertEquals(0, numFeatValuesZero);
     }
 
     private File runFeatureExtractor(File luceneFolder)
@@ -117,9 +117,9 @@ public class LuceneNgramUFETest
     {
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramUFE.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGramUFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramUFE.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGramUFE.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
+                LuceneNGramDFE.PARAM_NGRAM_MAX_N, 1, };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -130,15 +130,12 @@ public class LuceneNgramUFETest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription unitAnno = AnalysisEngineFactory
-                .createEngineDescription(EachTokenAsUnitAnnotator.class);
-
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_UNIT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LuceneNGramUFE.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, LuceneNGramDFE.class.getName());
 
-        SimplePipeline.runPipeline(reader, segmenter, unitAnno, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
         return outputPath;
     }
@@ -167,9 +164,9 @@ public class LuceneNgramUFETest
     private void runMetaCollection(File luceneFolder)
         throws Exception
     {
-        Object[] parameters = new Object[] { LuceneNGramUFE.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGramUFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramUFE.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGramUFE.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
+                LuceneNGramDFE.PARAM_NGRAM_MAX_N, 1, };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(

@@ -140,7 +140,7 @@ public class DenseFeatureStore
     @Override
     public String toString()
     {
-        return "SparseFeatureStore{" +
+        return "DenseFeatureStore{" +
                 "instanceList=" + instanceList +
                 '}';
     }
