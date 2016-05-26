@@ -55,7 +55,7 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
     public void testJavaTrainTest()
         throws Exception
     {
-        ContextMemoryReport.testTaskClass = LiblinearTestTask.class.getName();
+        ContextMemoryReport.key = LiblinearTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);

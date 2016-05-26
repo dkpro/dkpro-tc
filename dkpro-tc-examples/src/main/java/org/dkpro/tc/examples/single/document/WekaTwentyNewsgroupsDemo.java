@@ -35,6 +35,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensDFE;
 import org.dkpro.tc.features.ngram.LuceneNGramDFE;
@@ -65,7 +66,7 @@ public class WekaTwentyNewsgroupsDemo
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 2;
+    public static final int NUM_FOLDS = 3;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
@@ -159,6 +160,7 @@ public class WekaTwentyNewsgroupsDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -192,6 +194,7 @@ public class WekaTwentyNewsgroupsDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);

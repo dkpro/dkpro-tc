@@ -66,7 +66,7 @@ public class SVMHMMBrownPosDemoTest extends JavaDemosTest_Base
     {
         pSpace = SVMHMMBrownPosDemo.getParameterSpace(true);
         
-        ContextMemoryReport.testTaskClass = SVMHMMTestTask.class.getName();
+        ContextMemoryReport.key = SVMHMMTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
         
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);

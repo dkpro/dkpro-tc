@@ -62,7 +62,7 @@ public class WekaBrownUnitPosDemoTest extends JavaDemosTest_Base
     public void testTrainTest()
         throws Exception
     {
-        ContextMemoryReport.testTaskClass = WekaTestTask.class.getName();
+        ContextMemoryReport.key = WekaTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);

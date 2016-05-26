@@ -60,7 +60,7 @@ public class CRFSuiteNERSequenceDemoTest extends JavaDemosTest_Base
     
     @Test
     public void testTrainTestWithResults() throws Exception{
-        ContextMemoryReport.testTaskClass = CRFSuiteTestTask.class.getName();
+        ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);

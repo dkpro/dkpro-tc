@@ -26,12 +26,20 @@ import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 
 /**
- * This is a slightly ugly solution for recording the DKPro Lab output folder of an experiment to read result files in JUnit tests  
+ * This is a slightly ugly solution for recording the DKPro Lab output folder of an experiment to
+ * read result files in JUnit tests
  */
-public class ContextMemoryReport extends BatchReportBase
+public class ContextMemoryReport
+    extends BatchReportBase
 {
-    public static String testTaskClass; //this has to be set BEFORE the pipeline runs
-    
+
+    /**
+     * Name of the folder which will contain the id2outcome.txt that shall be used for evaluation
+     * for TrainTest scenarios this is the *TestTask class of the respective machine learning
+     * adapter e.g. Weka for CrossValidation experiments it is the ExperimentCrossValidation folder
+     */
+    public static String key; // this has to be set BEFORE the pipeline runs
+
     public static File id2outcome;
 
     @Override
@@ -39,9 +47,17 @@ public class ContextMemoryReport extends BatchReportBase
         throws Exception
     {
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (testTaskClass != null && subcontext.getType().contains(testTaskClass)) {
+            if (key != null && subcontext.getType().contains(key)) {
                 StorageService storageService = getContext().getStorageService();
-                id2outcome = storageService.locateKey(subcontext.getId(), Constants.ID_OUTCOME_KEY);
+
+                if (key.contains("TestTask")) {
+                    id2outcome = storageService.locateKey(subcontext.getId(),
+                            Constants.ID_OUTCOME_KEY);
+                }
+                else {
+                    id2outcome = storageService.locateKey(subcontext.getId(),
+                            "id2homogenizedOutcome.txt");
+                }
                 return;
             }
         }
