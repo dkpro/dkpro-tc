@@ -1,3 +1,11 @@
+<!-- Copyright 2016 Ubiquitous Knowledge Processing (UKP) Lab Technische 
+	Universität Darmstadt Licensed under the Apache License, Version 2.0 (the 
+	"License"); you may not use this file except in compliance with the License. 
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>Sample A17 from  Rocky Mountain News, [Denver, Colorado] </title><title type="sub"> April 21, 1961,  "Gala Opening Slated" by Dorothy Jane Burke
  May 16, 1961, p. 31 "Meet Skid Row's Mom Marr" by Marjorie Barret
  "All American Safari" by Inez Robb The Dallas Morning News, September 10, 1961, sec. 6, p.4Used by permission of the Dallas Morning News
