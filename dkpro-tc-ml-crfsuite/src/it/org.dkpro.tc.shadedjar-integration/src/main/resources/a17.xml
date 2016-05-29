@@ -1,0 +1,18 @@
+<TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>Sample A17 from  Rocky Mountain News, [Denver, Colorado] </title><title type="sub"> April 21, 1961,  "Gala Opening Slated" by Dorothy Jane Burke
+ May 16, 1961, p. 31 "Meet Skid Row's Mom Marr" by Marjorie Barret
+ "All American Safari" by Inez Robb The Dallas Morning News, September 10, 1961, sec. 6, p.4Used by permission of the Dallas Morning News
+ "Judith Gay..."
+ "Mason-Baker Rites" 
+ "Larry W. Mills"
+ "Mr. Loving..."
+</title></titleStmt><editionStmt><edition>A part  of the XML version of the Brown Corpus</edition></editionStmt><extent>2,005 words 68 (3.4%) quotes 7 symbols</extent><publicationStmt><idno>A17</idno><availability><p>Used by permission of Rocky Mountain News</p></availability></publicationStmt><sourceDesc><bibl> Rocky Mountain News, [Denver, Colorado] </bibl></sourceDesc></fileDesc><encodingDesc><p>Arbitrary Hyphen: over-night [1110]Typographical Error: or [for of] [1840]Illegible: Te ? er [0420] recorded as Teter</p></encodingDesc><revisionDesc><change when="2008-04-27">Header auto-generated for TEI version</change></revisionDesc></teiHeader>
+<text xml:id="A17" decls="A">
+<body><p><s n="1"><w type="CS">After</w> <w type="BEG">being</w> <w type="VBN">closed</w> <w type="IN">for</w> <w type="CD">seven</w> <w type="NNS">months</w> <c type="pct">,</c> <w type="AT">the</w> <w type="NN" subtype="TL">Garden</w> <w type="IN" subtype="TL">of</w> <w type="AT" subtype="TL">the</w> <w type="NNS" subtype="TL">Gods</w> <w type="NN" subtype="TL">Club</w> <w type="MD">will</w> <w type="HV">have</w> <w type="PPg">its</w> <w type="JJ">gala</w> <w type="NN">summer</w> <w type="NN">opening</w> <w type="NR">Saturday</w> <c type="pct">,</c> <w type="NP">June</w> <w type="CD">3</w> <c type="pct">.</c> </s>
+</p>
+<p><s n="2"><w type="NN">Music</w> <w type="IN">for</w> <w type="VBG">dancing</w> <w type="MD">will</w> <w type="BE">be</w> <w type="VBN">furnished</w> <w type="IN">by</w> <w type="NP">Allen</w> <w type="NP">Uhles</w> <w type="CC">and</w> <w type="PPg">his</w> <w type="NN">orchestra</w> <c type="pct">,</c> <w type="WPS">who</w> <w type="MD">will</w> <w type="VB">play</w> <w type="DT">each</w> <w type="NR">Saturday</w> <w type="IN">during</w> <w type="NP">June</w> <c type="pct">.</c> </s>
+</p>
+<p><s n="3"><w type="NNS">Members</w> <w type="CC">and</w> <w type="NNS">guests</w> <w type="MD">will</w> <w type="BE">be</w> <w type="RP">in</w> <w type="IN">for</w> <w type="AT">an</w> <w type="VBN">added</w> <w type="NN">surprise</w> <w type="IN">with</w> <w type="AT">the</w> <w type="JJ">new</w> <w type="NN">wing</w> <w type="VBG">containing</w> <w type="CD">40</w> <w type="NNS">rooms</w> <w type="CC">and</w> <w type="NNS">suites</w> <c type="pct">,</c> <w type="DT">each</w> <w type="IN">with</w> <w type="PPg">its</w> <w type="JJ">own</w> <w type="JJ">private</w> <w type="NN">patio</w> <c type="pct">.</c> </s>
+</p>
+<p><s n="4"><w type="NP">Gene</w> <w type="NP">Marshall</w> <c type="pct">,</c> <w type="JJ">genial</w> <w type="NN">manager</w> <w type="IN">of</w> <w type="AT">the</w> <w type="NN">club</w> <c type="pct">,</c> <w type="HVZ">has</w> <w type="VBN">announced</w> <w type="CS">that</w> <w type="AT">the</w> <w type="NN" subtype="TL">Garden</w> <w type="IN" subtype="TL">of</w> <w type="AT" subtype="TL">the</w> <w type="NNS" subtype="TL">Gods</w> <w type="MD">will</w> <w type="VB">open</w> <w type="IN">to</w> <w type="NNS">members</w> <w type="NR">Thursday</w> <c type="pct">,</c> <w type="NP">June</w> <w type="CD">1</w> <c type="pct">.</c> </s>
+</p>
+<p></p></body></text></TEI>
