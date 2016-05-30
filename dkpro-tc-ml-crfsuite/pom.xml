@@ -101,7 +101,6 @@
 				<configuration>
 					<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
 					<settingsFile>src/it/settings.xml</settingsFile>
-					<postBuildHookScript>verify</postBuildHookScript>
 					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
 				</configuration>
 				<executions>
@@ -114,6 +113,24 @@
 					</execution>
 				</executions>
 			</plugin>
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>1.5.0</version>
+    <executions>
+        <execution>
+            <phase>post-integration-test</phase>
+            <goals>
+                <goal>exec</goal>
+            </goals>
+            <configuration>
+                <executable>java</executable>
+                <workingDirectory>${project.build.directory}</workingDirectory>
+                <commandlineArgs>-jar ${project.build.directory}/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar ${project.build.directory}/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml ${project.build.directory}/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml</commandlineArgs>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>			
 		</plugins>
 		<pluginManagement>
 			<plugins>
