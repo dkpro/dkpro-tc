@@ -49,15 +49,8 @@ public class AccuracyReport
                 EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
                 Double double1 = createEvaluator.calculateEvaluationMeasures()
                         .get(Accuracy.class.getSimpleName());
-                
-                FileUtils.write(new File(ACC), double1+"");
-                
 
-                if (Math.abs(double1 - 0.218367) > 0.00001) {
-                    throw new IllegalStateException(
-                            "Integration test failed - expected accuracy of [" + 23.3
-                                    + "] but was [" + double1 + "]");
-                }
+                FileUtils.write(new File("target/" + ACC), double1 + "");
             }
         }
     }

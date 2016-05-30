@@ -21,25 +21,29 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 import org.apache.commons.io.*;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLUnit;
 
-try
-{
-	List command = new ArrayList();
+try {
+    double expected = 0.418367;
+
+    def command = new ArrayList();
     command.add("java");
     command.add("-jar");
-    command.add("target/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar src/main/resources/a15.xml src/main/resources/a17.xml");
-    ProcessBuilder probuilder = new ProcessBuilder(command);
-    Process p = probuilder.start();
-     
-    Double x = Double.valueOf(FileUtils.readFileToString(new File("accuracy.txt")));
-	if (x != 0.3){
-		throw new Exception(x);
-	}
+    command.add("target/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar");
+    command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml");
+    command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml");
+    def probuilder = new ProcessBuilder(command);
+    def p = probuilder.start();
+    p.waitFor();
+
+    Double actual = Double.valueOf(FileUtils.readFileToString(new File("target/accuracy.txt")));
+
+    if(Math.abs(actual - expected) > 0.00001){
+        throw new IllegalStateException(
+        "Integration test failed - expected accuracy of [" + expected
+        + "] but was [" + actual + "]");
+    }
 }
-catch( Throwable t )
-{
+catch( Throwable t ) {
     t.printStackTrace();
     return false;
 }
