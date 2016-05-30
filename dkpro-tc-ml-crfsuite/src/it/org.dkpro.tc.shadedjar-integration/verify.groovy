@@ -23,7 +23,7 @@ import java.util.regex.*;
 import org.apache.commons.io.*;
 
 try {
-    double expected = 0.418367;
+    double expected = 0.318367;
 
     def command = new ArrayList();
     command.add("java");
@@ -41,7 +41,7 @@ try {
     if(Math.abs(actual - expected) > 0.00001){
         throw new IllegalStateException(
         "Integration test failed - expected accuracy of [" + expected
-        + "] but was [" + actual + "]");
+        + "] but was [" + actual + "] i.e. see file ["+tmp+"]");
     }
 }
 catch( Throwable t ) {
