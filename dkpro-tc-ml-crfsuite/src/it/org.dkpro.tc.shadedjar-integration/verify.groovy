@@ -35,7 +35,7 @@ try {
     def p = probuilder.start();
     p.waitFor();
 
-    Double actual = Double.valueOf(FileUtils.readFileToString(new File("target/accuracy.txt")));
+    Double actual = Double.valueOf(FileUtils.readFileToString(new File("accuracy.txt")));
 
     if(Math.abs(actual - expected) > 0.00001){
         throw new IllegalStateException(
