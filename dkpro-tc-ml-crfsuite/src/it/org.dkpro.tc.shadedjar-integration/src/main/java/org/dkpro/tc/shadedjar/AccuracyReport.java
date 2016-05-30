@@ -50,7 +50,8 @@ public class AccuracyReport
                 Double double1 = createEvaluator.calculateEvaluationMeasures()
                         .get(Accuracy.class.getSimpleName());
 
-                FileUtils.write(new File(ACC), double1 + "");
+                String tmp = System.getProperty("java.io.tmpdir");
+                FileUtils.write(new File(tmp, ACC), double1 + "");
             }
         }
     }
