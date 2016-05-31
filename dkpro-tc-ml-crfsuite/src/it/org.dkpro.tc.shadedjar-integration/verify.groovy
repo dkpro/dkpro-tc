@@ -35,13 +35,12 @@ try {
     def p = probuilder.start();
     p.waitFor();
 
-    String tmp = System.getProperty("java.io.tmpdir");
-    Double actual = Double.valueOf(FileUtils.readFileToString(new File(tmp, "accuracy.txt")));
+    Double actual = Double.valueOf(FileUtils.readFileToString(new File("target", "accuracy.txt")));
 
     if(Math.abs(actual - expected) > 0.00001){
         throw new IllegalStateException(
         "Integration test failed - expected accuracy of [" + expected
-        + "] but was [" + actual + "] i.e. see file ["+tmp+"]");
+        + "] but was [" + actual + "]");
     }
 }
 catch( Throwable t ) {
