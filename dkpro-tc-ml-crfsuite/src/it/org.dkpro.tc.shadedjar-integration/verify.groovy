@@ -24,9 +24,8 @@ import org.apache.commons.io.*;
 import org.apache.commons.logging.LogFactory;
 
 try {
-    double eps = 0.00001;
-    double osx_expected   = 0.41836734693877553;
-    double linux_expected = 0.35714285714285715;
+    Double osx_expected   = 0.41836734693877553;
+    Double linux_expected = 0.35714285714285715;
 
     def command = new ArrayList();
     command.add("java");
@@ -44,7 +43,7 @@ try {
 //    throw new Exception(Math.abs(actual-osx_expected)  + " " +  Math.abs(actual-linux_expected) );    
 
     //The CRFsuite binary splits internally the training data this split dependes on a system dependend variable i.e. osx and linux will have different results for the same data sets
-    if(Math.abs(actual-osx_expected) > eps || Math.abs(actual-linux_expected) > eps){
+    if(actual.compareTo(osx_expected) == 0 || actual.compareTo(linux_expected) == 0){
         throw new IllegalStateException(
         "Integration test failed - expected accuracy of [" + osx_expected + " or " + linux_expected +
         "] but was [" + actual + "]");
