@@ -24,12 +24,12 @@ import org.apache.commons.io.*;
 import org.apache.commons.logging.LogFactory;
 
 try {
-    double expected = 0.418367;
+    double osx_expected   = 0.418367;
+    double linux_expected = 0.357142;
 
     def command = new ArrayList();
     command.add("java");
     command.add("-jar");
-//    command.add(new File(".").getAbsolutePath());
     command.add("dkpro-tc-ml-crfsuite/target/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar");
     command.add("dkpro-tc-ml-crfsuite/target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml");
     command.add("dkpro-tc-ml-crfsuite/target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml");
@@ -37,21 +37,11 @@ try {
     probuilder.inheritIO();
     def p = probuilder.start();
     p.waitFor();
-     
-    def reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "utf-8"));
-    while(reader.ready()){
-       LogFactory.getLog("verify.groovy").info(reader.readLine());
-    }
-        
-    def error = new BufferedReader(new InputStreamReader(p.getErrorStream(), "utf-8"));
-    while(error.ready()){
-       LogFactory.getLog("verify.groovy").info(error.readLine());
-    }
-    
-    
+
     Double actual = Double.valueOf(FileUtils.readFileToString(new File("target/accuracy.txt")));
 
-    if(Math.abs(actual - expected) > 0.00001){
+    //The CRFsuite binary splits internally the training data this split dependes on a system dependend variable i.e. osx and linux will have different results for the same data sets
+    if(actual==osx_expected || actual==linux_expected){
         throw new IllegalStateException(
         "Integration test failed - expected accuracy of [" + expected
         + "] but was [" + actual + "]");
