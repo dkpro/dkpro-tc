@@ -29,9 +29,10 @@ try {
     def command = new ArrayList();
     command.add("java");
     command.add("-jar");
-    command.add("target/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar");
-    command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml");
-    command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml");
+    command.add(new File(".").getAbsolutePath());
+//    command.add("target/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar");
+//    command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml");
+//    command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml");
     def probuilder = new ProcessBuilder(command);
     probuilder.inheritIO();
     def p = probuilder.start();
