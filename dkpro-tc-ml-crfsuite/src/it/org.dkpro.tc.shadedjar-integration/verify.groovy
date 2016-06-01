@@ -33,6 +33,7 @@ try {
     command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml");
     command.add("target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml");
     def probuilder = new ProcessBuilder(command);
+    probuilder.inheritIO();
     def p = probuilder.start();
     p.waitFor();
      
