@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 try {
     double eps = 0.00001;
-    double osx_expected   = 0.4836734693877553;
+    double osx_expected   = 0.41836734693877553;
     double linux_expected = 0.35714285714285715;
 
     def command = new ArrayList();
