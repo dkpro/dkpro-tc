@@ -21,9 +21,10 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 import org.apache.commons.io.*;
+import org.apache.commons.logging.LogFactory;
 
 try {
-    double expected = 0.318367;
+    double expected = 0.418367;
 
     def command = new ArrayList();
     command.add("java");
@@ -34,8 +35,15 @@ try {
     def probuilder = new ProcessBuilder(command);
     def p = probuilder.start();
     p.waitFor();
-
-    Double actual = Double.valueOf(FileUtils.readFileToString(new File("target", "accuracy.txt")));
+     
+        
+    def error = new BufferedReader(new InputStreamReader(p.getErrorStream(), "utf-8"));
+    while(error.ready()){
+       LogFactory.getLog("verify.groovy").info("Error-Out: " + error.readLine());
+    }
+    
+    
+    Double actual = Double.valueOf(FileUtils.readFileToString(new File("target/accuracy.txt")));
 
     if(Math.abs(actual - expected) > 0.00001){
         throw new IllegalStateException(

@@ -28,6 +28,7 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
+import org.apache.commons.logging.LogFactory;
 
 public class AccuracyReport
     extends BatchReportBase
@@ -50,7 +51,11 @@ public class AccuracyReport
                 Double double1 = createEvaluator.calculateEvaluationMeasures()
                         .get(Accuracy.class.getSimpleName());
 
-                FileUtils.write(new File("target", ACC), double1 + "");
+                File accuracy = new File("target/" + ACC);
+                FileUtils.write(accuracy, double1 + "");
+
+                LogFactory.getLog(getClass()).info(
+                        "Wrote accuracy file to location [" + accuracy.getAbsolutePath() + "]");
             }
         }
     }
