@@ -43,8 +43,9 @@ try {
     //The CRFsuite binary splits internally the training data this split dependes on a system dependend variable i.e. osx and linux will have different results for the same data sets
     if(actual==osx_expected || actual==linux_expected){
         throw new IllegalStateException(
-        "Integration test failed - expected accuracy of [" + expected
+        "Integration test failed - expected accuracy of [" + osx_expected " or " + linux_expected + 
         + "] but was [" + actual + "]");
+        return false;
     }
 }
 catch( Throwable t ) {
