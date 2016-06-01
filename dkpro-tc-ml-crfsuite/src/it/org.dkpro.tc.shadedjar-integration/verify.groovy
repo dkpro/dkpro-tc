@@ -36,10 +36,14 @@ try {
     def p = probuilder.start();
     p.waitFor();
      
+    def reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "utf-8"));
+    while(reader.ready()){
+       LogFactory.getLog("verify.groovy").info(reader.readLine());
+    }
         
     def error = new BufferedReader(new InputStreamReader(p.getErrorStream(), "utf-8"));
     while(error.ready()){
-       LogFactory.getLog("verify.groovy").info("Error-Out: " + error.readLine());
+       LogFactory.getLog("verify.groovy").info(error.readLine());
     }
     
     
