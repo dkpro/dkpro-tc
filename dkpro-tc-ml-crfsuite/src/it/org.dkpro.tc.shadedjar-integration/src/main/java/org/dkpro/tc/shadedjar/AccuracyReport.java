@@ -28,7 +28,7 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
-import org.apache.commons.logging.LogFactory;
+
 
 public class AccuracyReport
     extends BatchReportBase
@@ -40,24 +40,26 @@ public class AccuracyReport
     public void execute()
         throws Exception
     {
-        for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (subcontext.getType().contains("TestTask")) {
-                StorageService storageService = getContext().getStorageService();
-
-                File id2outcome = storageService.locateKey(subcontext.getId(),
-                        Constants.ID_OUTCOME_KEY);
-                Id2Outcome o = new Id2Outcome(id2outcome, Constants.LM_SINGLE_LABEL);
-                EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-                Double double1 = createEvaluator.calculateEvaluationMeasures()
-                        .get(Accuracy.class.getSimpleName());
-
-                File accuracy = new File("target/" + ACC);
-                FileUtils.write(accuracy, double1 + "");
-
-                LogFactory.getLog(getClass()).info(
-                        "Wrote accuracy file to location [" + accuracy.getAbsolutePath() + "]");
-            }
-        }
+        throw new IllegalStateException("DEBUG");
+        
+//        for (TaskContextMetadata subcontext : getSubtasks()) {
+//            if (subcontext.getType().contains("TestTask")) {
+//                StorageService storageService = getContext().getStorageService();
+//
+//                File id2outcome = storageService.locateKey(subcontext.getId(),
+//                        Constants.ID_OUTCOME_KEY);
+//                Id2Outcome o = new Id2Outcome(id2outcome, Constants.LM_SINGLE_LABEL);
+//                EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+//                Double double1 = createEvaluator.calculateEvaluationMeasures()
+//                        .get(Accuracy.class.getSimpleName());
+//
+//                File accuracy = new File("target/" + ACC);
+//                FileUtils.write(accuracy, double1 + "");
+//
+//                LogFactory.getLog(getClass()).info(
+//                        "Wrote accuracy file to location [" + accuracy.getAbsolutePath() + "]");
+//            }
+//        }
     }
 
 }
