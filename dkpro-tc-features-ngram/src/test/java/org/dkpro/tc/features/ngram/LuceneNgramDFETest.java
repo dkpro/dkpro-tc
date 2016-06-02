@@ -50,7 +50,6 @@ import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
-import org.dkpro.tc.features.ngram.util.EachTokenAsUnitAnnotator;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Rule;
 import org.junit.Test;
