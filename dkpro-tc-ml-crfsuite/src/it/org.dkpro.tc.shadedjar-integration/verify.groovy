@@ -30,9 +30,9 @@ try {
     def command = new ArrayList();
     command.add("java");
     command.add("-jar");
-    command.add("dkpro-tc-ml-crfsuite/target/it/org.dkpro.tc.shadedjar-integration/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar");
-    command.add("dkpro-tc-ml-crfsuite/target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a15.xml");
-    command.add("dkpro-tc-ml-crfsuite/target/it/org.dkpro.tc.shadedjar-integration/src/main/resources/a17.xml");
+    command.add(basedir.getAbsolutePath()+"/target/org.dkpro.tc.shadedjar-integration-0.0.1-SNAPSHOT-standalone.jar");
+    command.add(basedir.getAbsolutePath()+"/src/main/resources/a15.xml");
+    command.add(basedir.getAbsolutePath()+"/src/main/resources/a17.xml");
     def probuilder = new ProcessBuilder(command);
     probuilder.inheritIO();
     def p = probuilder.start();
@@ -40,7 +40,7 @@ try {
 
     int actual = Integer.valueOf(FileUtils.readFileToString(new File("target/accuracy.txt")));
 
-    //The CRFsuite binary splits internally the training data this split dependes on a system dependend variable i.e. osx and linux will have different results for the same data sets
+    //    //The CRFsuite binary splits internally the training data this split dependes on a system dependend variable i.e. osx and linux will have different results for the same data sets
     if(actual!=osx_expected && actual != linux_expected){
         throw new IllegalStateException(
         "Integration test failed - expected accuracy of [" + osx_expected + " or " + linux_expected +
