@@ -48,14 +48,16 @@ public class AccuracyReport
                         Constants.ID_OUTCOME_KEY);
                 Id2Outcome o = new Id2Outcome(id2outcome, Constants.LM_SINGLE_LABEL);
                 EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+                //integer accuracy is enough
                 Double double1 = createEvaluator.calculateEvaluationMeasures()
-                        .get(Accuracy.class.getSimpleName());
+                        .get(Accuracy.class.getSimpleName())*100;
+                int val = double1.intValue();
 
-                File accuracy = new File("target/" + ACC);
-                FileUtils.write(accuracy, double1 + "");
+                File accuracyAsInt = new File("target/" + ACC);
+                FileUtils.write(accuracyAsInt, val + "");
 
                 LogFactory.getLog(getClass()).info(
-                        "Wrote accuracy file to location [" + accuracy.getAbsolutePath() + "]");
+                        "Wrote accuracy file to location [" + accuracyAsInt.getAbsolutePath() + "]");
             }
         }
     }
