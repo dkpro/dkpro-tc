@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 try {
     Integer osx_expected   = 41;
-    Integer linux_expected = 36;
+    Integer linux_expected = 35;
 
     def command = new ArrayList();
     command.add("java");
