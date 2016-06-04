@@ -19,6 +19,7 @@ package org.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -30,7 +31,10 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
  */
 public class PrevUnit extends TcuLookUpTable
 {
-
+    public static final String PARAM_LOWER_CASE = "useLowerCase";
+    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = true, defaultValue="true")
+    protected boolean useLowerCase;
+    
     public static final String FEATURE_NAME = "prevUnit";
     final static String BEGIN_OF_SEQUENCE = "BOS";
 
@@ -40,10 +44,19 @@ public class PrevUnit extends TcuLookUpTable
         super.extract(aView, unit);
         Integer idx = unitBegin2Idx.get(unit.getBegin());
 
-        String featureVal = previousUnit(idx);
+        String featureVal = lowerCase(previousUnit(idx));
         return new Feature(FEATURE_NAME, featureVal).asSet();
     }
     
+    private String lowerCase(String token)
+    {
+        if(useLowerCase){
+            return token.toLowerCase();
+        }
+        
+        return token;
+    }
+
     private String previousUnit(Integer idx)
     {
         if (idx2SequenceBegin.get(idx) != null){
