@@ -36,6 +36,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.FrequencyDistributionNGramPMetaCollector;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
@@ -62,10 +63,16 @@ public class LuceneAndFDEquivalenceNGramPTest
         throws Exception
     {
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
         
         File frequencyDistFile = folder.newFile();
         File luceneFile = folder.newFolder();

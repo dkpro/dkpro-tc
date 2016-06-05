@@ -59,10 +59,10 @@ public class ExtractFeaturesConnectorTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { DenseFeatureStore.class }, {SparseFeatureStore.class}
-        });
+    public static Collection<Object[]> data()
+    {
+        return Arrays.asList(
+                new Object[][] { { DenseFeatureStore.class }, { SparseFeatureStore.class } });
     }
 
     private Class<? extends FeatureStore> featureStoreClass;
@@ -74,7 +74,7 @@ public class ExtractFeaturesConnectorTest
 
     @Test
     public void extractFeaturesConnectorSingleLabelTest()
-            throws Exception
+        throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -92,12 +92,16 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                featureStoreClass.getName(), true, false, false, false, NoopFeatureExtractor.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(), true,
+                false, false, false, NoopFeatureExtractor.class.getName());
 
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
@@ -106,13 +110,13 @@ public class ExtractFeaturesConnectorTest
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(1, fs.getUniqueOutcomes().size());
 
-        System.out.println(FileUtils.readFileToString(new File(outputPath,
-                JsonDataWriter.JSON_FILE_NAME)));
+        System.out.println(
+                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
     }
 
     @Test
     public void extractFeaturesConnectorMultiLabelTest()
-            throws Exception
+        throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -129,13 +133,17 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                true, false, false, false, NoopFeatureExtractor.class.getName());
+                Constants.LM_MULTI_LABEL, Constants.FM_DOCUMENT, featureStoreClass.getName(), true,
+                false, false, false, NoopFeatureExtractor.class.getName());
 
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
@@ -144,20 +152,20 @@ public class ExtractFeaturesConnectorTest
         assertEquals(2, fs.getNumberOfInstances());
         assertEquals(3, fs.getUniqueOutcomes().size());
 
-        System.out.println(FileUtils.readFileToString(new File(outputPath,
-                JsonDataWriter.JSON_FILE_NAME)));
+        System.out.println(
+                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
     }
 
     @Test
     public void extractFeaturesConnectorRegressionTest()
-            throws Exception
+        throws Exception
     {
 
         File outputPath = folder.newFolder();
 
         // we do not need parameters here, but in case we do :)
-        Object[] parameters = new Object[] {
-        		UnitContextMetaCollector.PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY
+        Object[] parameters = new Object[] { UnitContextMetaCollector.PARAM_CONTEXT_FILE,
+                Constants.ID_CONTEXT_KEY
                 // "NAME", "VALUE"
         };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
@@ -168,13 +176,17 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                true, false, false, false, NoopFeatureExtractor.class.getName());
+                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(), true,
+                false, false, false, NoopFeatureExtractor.class.getName());
 
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
@@ -184,7 +196,7 @@ public class ExtractFeaturesConnectorTest
         assertEquals(1, fs.getUniqueOutcomes().size());
         assertEquals("0.45", fs.getUniqueOutcomes().first());
 
-        System.out.println(FileUtils.readFileToString(new File(outputPath,
-                JsonDataWriter.JSON_FILE_NAME)));
+        System.out.println(
+                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
     }
 }
