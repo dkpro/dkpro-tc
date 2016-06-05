@@ -33,8 +33,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.tcu.CurrentUnit;
 import org.dkpro.tc.features.tcu.NextUnit;
 import org.dkpro.tc.features.tcu.PrevUnit;
@@ -92,7 +92,7 @@ public class ModelTrain
                         PrevUnit.class.getName(), CurrentUnit.class.getName(),
                         NextUnit.class.getName(),
 
-                LuceneCharacterNGramUFE.class.getName(), NrOfCharsUFE.class.getName() }));
+                LuceneCharacterNGram.class.getName(), NrOfChars.class.getName() }));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 asList(new String[] {
