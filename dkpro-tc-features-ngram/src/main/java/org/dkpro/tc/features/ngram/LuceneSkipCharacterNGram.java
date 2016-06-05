@@ -22,13 +22,14 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterSkipNgramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * Extracts characters skip-ngrams.
@@ -36,16 +37,16 @@ import org.dkpro.tc.features.ngram.util.NGramUtils;
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LuceneSkipCharacterNGram
     extends LuceneCharacterSkipNgramFeatureExtractorBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
 
-        FrequencyDistribution<String> charNgrams = NGramUtils.getCharacterSkipNgrams(jcas,
+        FrequencyDistribution<String> charNgrams = NGramUtils.getCharacterSkipNgrams(jcas, target,
                 charSkipToLowerCase, charSkipMinN, charSkipMaxN, charSkipSize);
 
         for (String topNgram : topKSet.getKeys()) {

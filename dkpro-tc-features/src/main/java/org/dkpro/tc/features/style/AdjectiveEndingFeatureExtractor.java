@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,12 +22,13 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Gender-Preferential Text Mining of E-mail Discourse
@@ -43,7 +44,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class AdjectiveEndingFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_ENDING1 = "EndingAble";
     public static final String FN_ENDING2 = "EndingAl";
@@ -56,7 +57,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String FN_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
     {
 
         int able = 0;
@@ -70,7 +71,7 @@ public class AdjectiveEndingFeatureExtractor
         int ly = 0;
 
         int n = 0;
-        for (ADJ adj : JCasUtil.select(jcas, ADJ.class)) {
+        for (ADJ adj : JCasUtil.selectCovered(jcas, ADJ.class, target)) {
             n++;
 
             String text = adj.getCoveredText().toLowerCase();

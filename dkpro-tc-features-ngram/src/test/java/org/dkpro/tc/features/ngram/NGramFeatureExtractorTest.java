@@ -35,6 +35,7 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
@@ -80,19 +81,24 @@ public class NGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
         ArrayList<Object> parametersLucene = new ArrayList<Object>(Arrays.asList(new Object[] {
-                LuceneNGram.PARAM_NGRAM_MIN_N, ngramNMin, LuceneNGram.PARAM_NGRAM_MAX_N,
-                ngramNMax, LuceneNGram.PARAM_LUCENE_DIR, luceneFolder }));
+                LuceneNGram.PARAM_NGRAM_MIN_N, ngramNMin, LuceneNGram.PARAM_NGRAM_MAX_N, ngramNMax,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder }));
 
         ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
                 Arrays.asList(new Object[] { FrequencyDistributionNGram.PARAM_NGRAM_MIN_N,
                         ngramNMin, FrequencyDistributionNGram.PARAM_NGRAM_MAX_N, ngramNMax,
                         FrequencyDistributionNGram.PARAM_NGRAM_FD_FILE, frequencyDistFile,
                         FrequencyDistributionNGram.PARAM_NGRAM_FREQ_THRESHOLD, ngramFreqThreshold,
-                        FrequencyDistributionNGram.PARAM_DFSTORE_FILE, dfStoreFile}));
-        
+                        FrequencyDistributionNGram.PARAM_DFSTORE_FILE, dfStoreFile }));
+
         AnalysisEngineDescription metaCollectorLucene = AnalysisEngineFactory
-                .createEngineDescription(LuceneNGramMetaCollector.class, parametersLucene.toArray());
+                .createEngineDescription(LuceneNGramMetaCollector.class,
+                        parametersLucene.toArray());
 
         AnalysisEngineDescription metaCollectorFrequencyDist = AnalysisEngineFactory
                 .createEngineDescription(NGramMetaCollector.class,
@@ -101,7 +107,8 @@ public class NGramFeatureExtractorTest
         AnalysisEngineDescription featExtractorConnectorLucene = TaskUtils
                 .getFeatureExtractorConnector(parametersLucene, outputPathLucene.getAbsolutePath(),
                         JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-                        Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false, false, false, false, LuceneNGram.class.getName());
+                        Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false, false,
+                        false, false, LuceneNGram.class.getName());
 
         AnalysisEngineDescription featExtractorConnectorFrequencyDist = TaskUtils
                 .getFeatureExtractorConnector(parametersFrequencyDist,
@@ -111,18 +118,22 @@ public class NGramFeatureExtractorTest
                         FrequencyDistributionNGram.class.getName());
 
         // run meta collectors
-        SimplePipeline.runPipeline(reader, segmenter, metaCollectorLucene);
-        SimplePipeline.runPipeline(reader, segmenter, metaCollectorFrequencyDist);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollectorLucene);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollectorFrequencyDist);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorLucene);
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorFrequencyDist);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnectorLucene);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnectorFrequencyDist);
 
         Gson gson = new Gson();
-        fsLucene = gson.fromJson(FileUtils.readFileToString(new File(outputPathLucene,
-                JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
-        fsFrequenceDist = gson.fromJson(FileUtils.readFileToString(new File(
-                outputPathFrequencyDist, JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
+        fsLucene = gson.fromJson(
+                FileUtils.readFileToString(
+                        new File(outputPathLucene, JsonDataWriter.JSON_FILE_NAME)),
+                DenseFeatureStore.class);
+        fsFrequenceDist = gson.fromJson(
+                FileUtils.readFileToString(
+                        new File(outputPathFrequencyDist, JsonDataWriter.JSON_FILE_NAME)),
+                DenseFeatureStore.class);
 
         assertEquals(1, fsLucene.getNumberOfInstances());
         assertEquals(1, fsFrequenceDist.getNumberOfInstances());
@@ -156,7 +167,7 @@ public class NGramFeatureExtractorTest
         assertFalse(fsLucene.getFeatureNames().contains("ngram_cats_eat"));
         assertTrue(fsLucene.getFeatureNames().contains("ngram_birds_chase_cats"));
     }
-    
+
     @Test
     public void nonDefaultRelFreqTest()
         throws Exception

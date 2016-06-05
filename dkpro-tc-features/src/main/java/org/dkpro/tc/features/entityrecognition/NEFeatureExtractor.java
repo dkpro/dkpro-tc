@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,35 +22,36 @@ import java.util.TreeSet;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Location;
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Organization;
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Person;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Extracts the ratio of named entities per sentence
  */
 public class NEFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas view)
+    public Set<Feature> extract(JCas view, TextClassificationUnit target)
         throws TextClassificationException
     {
 
         Set<Feature> featList = new TreeSet<Feature>();
 
-        int numOrgaNE = JCasUtil.select(view, Organization.class).size();
-        int numPersonNE = JCasUtil.select(view, Person.class).size();
-        int numLocNE = JCasUtil.select(view, Location.class).size();
-        int numSentences = JCasUtil.select(view, Sentence.class).size();
+        int numOrgaNE = JCasUtil.selectCovered(view, Organization.class, target).size();
+        int numPersonNE = JCasUtil.selectCovered(view, Person.class, target).size();
+        int numLocNE = JCasUtil.selectCovered(view, Location.class, target).size();
+        int numSentences = JCasUtil.selectCovered(view, Sentence.class, target).size();
 
         if (numSentences > 0) {
             featList.add(new Feature("NrOfOrganizationEntities", numOrgaNE));

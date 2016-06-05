@@ -44,6 +44,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.KeywordNGram;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
@@ -87,20 +88,23 @@ public class KeywordNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                KeywordNGramMetaCollector.class, parameterList.toArray());
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(KeywordNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                KeywordNGram.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, KeywordNGram.class.getName());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollector);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
         fs = gson.fromJson(
@@ -118,8 +122,8 @@ public class KeywordNGramFeatureExtractorTest
         assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
         assertTrue(fs.getFeatureNames().contains("keyNG_apricot_peach"));
         assertTrue(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames().contains(
-                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(fs.getFeatureNames()
+                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
         assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_CA"));
@@ -135,8 +139,8 @@ public class KeywordNGramFeatureExtractorTest
         assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
         assertFalse(fs.getFeatureNames().contains("keyNG_apricot_peach"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames().contains(
-                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(fs.getFeatureNames()
+                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
         assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
         assertTrue(fs.getFeatureNames().contains("keyNG_peach_CA"));
@@ -153,8 +157,8 @@ public class KeywordNGramFeatureExtractorTest
         assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
         assertTrue(fs.getFeatureNames().contains("keyNG_apricot_peach"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames().contains(
-                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(fs.getFeatureNames()
+                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
         assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_CA"));

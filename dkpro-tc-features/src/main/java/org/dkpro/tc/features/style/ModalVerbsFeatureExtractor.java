@@ -22,11 +22,12 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 
 /**
  * Counts the ratio of individual English modal verbs to all verbs:
@@ -40,7 +41,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class ModalVerbsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_CAN = "ModalVerbCan";
     public static final String FN_COULD = "ModalVerbCould";
@@ -55,7 +56,7 @@ public class ModalVerbsFeatureExtractor
     public static final String FN_UNCERT = "ModalVerbsUncertain";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
 
     {
 
@@ -71,7 +72,7 @@ public class ModalVerbsFeatureExtractor
 
         int n = 0;
         int modals = 0;
-        for (V verb : JCasUtil.select(jcas, V.class)) {
+        for (V verb : JCasUtil.selectCovered(jcas, V.class, target)) {
             n++;
 
             String text = verb.getCoveredText().toLowerCase();

@@ -31,20 +31,20 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Given a list of topic terms, extracts the ratio of topic terms to all terms.
  */
 public class TopicWordsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     // takes as parameter list of names of word-list-files in resources, outputs one attribute per
     // list
@@ -55,7 +55,7 @@ public class TopicWordsFeatureExtractor
     private String prefix;
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         if (topicFilePath == null || topicFilePath.isEmpty()) {
@@ -63,7 +63,7 @@ public class TopicWordsFeatureExtractor
         }
         List<String> topics = null;
         Set<Feature> features = new HashSet<Feature>();
-        List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
+        List<String> tokens = JCasUtil.toText(JCasUtil.selectCovered(jcas, Token.class, target));
         try {
             topics = FileUtils.readLines(new File(topicFilePath));
             for (String t : topics) {

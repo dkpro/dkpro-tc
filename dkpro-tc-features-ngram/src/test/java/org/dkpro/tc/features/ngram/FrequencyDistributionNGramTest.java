@@ -34,6 +34,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSentenceToDocument;
 import org.dkpro.tc.features.ngram.meta.NGramMetaCollector;
@@ -75,6 +76,10 @@ public class FrequencyDistributionNGramTest
                 "src/test/resources/fd/text1.txt");
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
                 Arrays.asList(new Object[] { FrequencyDistributionNGram.PARAM_NGRAM_MIN_N,
@@ -95,10 +100,10 @@ public class FrequencyDistributionNGramTest
                         FrequencyDistributionNGram.class.getName());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, metaCollectorFrequencyDist);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollectorFrequencyDist);
 
         // run FE
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorFrequencyDist);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnectorFrequencyDist);
 
         Gson gson = new Gson();
         fsFrequenceDist = gson.fromJson(FileUtils.readFileToString(new File(

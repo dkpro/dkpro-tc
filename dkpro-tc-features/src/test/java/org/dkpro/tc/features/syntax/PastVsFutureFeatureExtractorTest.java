@@ -34,6 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.syntax.PastVsFutureFeatureExtractor;
 
 public class PastVsFutureFeatureExtractorTest
@@ -52,9 +53,12 @@ public class PastVsFutureFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("They tested. We test. She tests. You will test.");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         PastVsFutureFeatureExtractor extractor = new PastVsFutureFeatureExtractor();
-        Set<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas, target);
 
         Assert.assertEquals(3, features.size());
         assertFeatures(PastVsFutureFeatureExtractor.FN_PAST_RATIO, 25.0, features, 0.01);

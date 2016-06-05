@@ -237,7 +237,7 @@ public class NGramUtils
 		return posNgrams;
 	}
 
-    public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas, int minN,
+    public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas, Annotation target, int minN,
             int maxN)
         throws TextClassificationException
     {
@@ -256,7 +256,7 @@ public class NGramUtils
         }
 
         FrequencyDistribution<String> phoneticNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : select(jcas, Sentence.class)) {
+        for (Sentence s : selectCovered(jcas, Sentence.class, target)) {
             List<String> phoneticStrings = new ArrayList<String>();
             for (Token t : JCasUtil.selectCovered(jcas, Token.class, s)) {
                 try {
@@ -371,11 +371,11 @@ public class NGramUtils
         return documentNgrams;
     }
 
-    public static FrequencyDistribution<String> getCharacterSkipNgrams(JCas jcas,
+    public static FrequencyDistribution<String> getCharacterSkipNgrams(JCas jcas, Annotation target,
             boolean lowerCaseNGrams, int minN, int maxN, int skipN)
     {
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
-        for (Token t : select(jcas, Token.class)) {
+        for (Token t : selectCovered(jcas, Token.class, target)) {
             String tokenText = t.getCoveredText();
             String[] charsTemp = tokenText.split("");
             String[] chars = new String[charsTemp.length + 1];

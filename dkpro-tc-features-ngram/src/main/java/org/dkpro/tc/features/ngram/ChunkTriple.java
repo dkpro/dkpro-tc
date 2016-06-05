@@ -30,16 +30,16 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * Extracts NP-VP-NP triples from chunked sentences.
@@ -48,7 +48,7 @@ import org.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
 public class ChunkTriple
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor, MetaDependent
+    implements ClassificationUnitFeatureExtractor, MetaDependent
 {
 
     public static final String PARAM_CHUNK_TRIPLE_FD_FILE = "chunkTripleFdFile";
@@ -68,7 +68,7 @@ public class ChunkTriple
     private FrequencyDistribution<String> trainingFD;
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         // if(focusAnnotation!=null){

@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor;
 
 public class SuperlativeRatioFeatureExtractorTest
@@ -55,9 +56,12 @@ public class SuperlativeRatioFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a normal test. This is the best, biggest, and greatest test ever.");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(2, features.size());
 

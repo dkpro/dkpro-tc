@@ -36,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.style.ContextualityMeasureFeatureExtractor;
 
 /*
@@ -63,9 +64,12 @@ public class ContextualityFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(9, features.size());
 

@@ -21,31 +21,32 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Extracts the type-token ration in the document
  */
 public class TypeTokenRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_TTR = "TypeTokenRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
 
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
 
-        for (Token token : JCasUtil.select(jcas, Token.class)) {
+        for (Token token : JCasUtil.selectCovered(jcas, Token.class, target)) {
             fd.inc(token.getCoveredText().toLowerCase());
         }
         double ttr = 0.0;

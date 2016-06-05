@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -21,13 +21,14 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.EMO;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * A feature extracting the ratio of emoticons to tokens in tweets.
@@ -43,14 +44,14 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class EmoticonRatio
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     @Override
-    public Set<Feature> extract(JCas jCas)
+    public Set<Feature> extract(JCas jCas, TextClassificationUnit target)
         throws TextClassificationException
     {
-        int nrOfEmoticons = JCasUtil.select(jCas, EMO.class).size();
-        int nrOfTokens = JCasUtil.select(jCas, Token.class).size();
+        int nrOfEmoticons = JCasUtil.selectCovered(jCas, EMO.class, target).size();
+        int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, target).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
         return new Feature(EmoticonRatio.class.getSimpleName(), ratio).asSet();
     }

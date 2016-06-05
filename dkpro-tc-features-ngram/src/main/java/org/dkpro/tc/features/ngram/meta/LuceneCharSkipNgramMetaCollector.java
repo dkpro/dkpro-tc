@@ -18,9 +18,12 @@
 package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterSkipNgramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -42,8 +45,9 @@ public class LuceneCharSkipNgramMetaCollector
     
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        TextClassificationUnit target = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
         return NGramUtils.getCharacterSkipNgrams(
-                jcas, ngramLowerCase, minN, maxN, skipSize);
+                jcas, target, ngramLowerCase, minN, maxN, skipSize);
     }
     
     @Override

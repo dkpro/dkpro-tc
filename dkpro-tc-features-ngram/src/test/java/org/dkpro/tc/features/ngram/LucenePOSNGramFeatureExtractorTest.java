@@ -46,6 +46,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.LucenePOSNGram;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
@@ -83,24 +84,26 @@ public class LucenePOSNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription posTagger = AnalysisEngineFactory
-                .createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        "en");
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
+        AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(
+                OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, "en");
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LucenePOSNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                LucenePOSNGram.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, LucenePOSNGram.class.getName());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, posTagger, metaCollector);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, posTagger, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, posTagger, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(

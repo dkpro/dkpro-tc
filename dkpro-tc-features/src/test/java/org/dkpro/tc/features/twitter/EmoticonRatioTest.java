@@ -38,9 +38,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 
-public class EmoticonRatioDFETest
+public class EmoticonRatioTest
 {
     @Test
     public void emoticonRatioFeatureExtractorTest()
@@ -61,9 +62,12 @@ public class EmoticonRatioDFETest
         emo.addToIndexes();
 
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         EmoticonRatio extractor = new EmoticonRatio();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 

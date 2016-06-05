@@ -34,6 +34,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.style.ExclamationFeatureExtractor;
 
 public class ExclamationFeatureExtractorTest
@@ -49,9 +50,12 @@ public class ExclamationFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("He is a tester!!! Tester! Is he? Oh yes.");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         ExclamationFeatureExtractor extractor = new ExclamationFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,32 +22,33 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Extracts the ratio adjectives and adverbs to the total number of adjectives and adverbs.
  */
 public class SuperlativeRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_SUPERLATIVE_RATIO_ADJ = "SuperlativeRatioAdj";
     public static final String FN_SUPERLATIVE_RATIO_ADV = "SuperlativeRatioAdv";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         double adjRatio = 0;
         int superlativeAdj = 0;
         int adjectives = 0;
-        for (ADJ tag : JCasUtil.select(jcas, ADJ.class)) {
+        for (ADJ tag : JCasUtil.selectCovered(jcas, ADJ.class, target)) {
             adjectives++;
             // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("JJS")) {
@@ -61,7 +62,7 @@ public class SuperlativeRatioFeatureExtractor
         double advRatio = 0;
         int superlativeAdv = 0;
         int adverbs = 0;
-        for (ADV tag : JCasUtil.select(jcas, ADV.class)) {
+        for (ADV tag : JCasUtil.selectCovered(jcas, ADV.class, target)) {
             adverbs++;
             // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("RBS")) {

@@ -34,6 +34,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.style.NumberWordsFeatureExtractor;
 
 public class NumberWordsFeatureExtractorTest
@@ -47,11 +48,15 @@ public class NumberWordsFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Where r u 2morrow? W8 4 me! Gonna have gr8 party face2face! 555 123 456");
+        jcas.setDocumentText(
+                "Where r u 2morrow? W8 4 me! Gonna have gr8 party face2face! 555 123 456");
         engine.process(jcas);
 
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+                jcas.getDocumentText().length());
+        target.addToIndexes();
         NumberWordsFeatureExtractor extractor = new NumberWordsFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 

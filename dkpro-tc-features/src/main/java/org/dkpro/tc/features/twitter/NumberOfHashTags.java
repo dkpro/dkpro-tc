@@ -22,18 +22,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.uima.jcas.JCas;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
  * A feature extracting the number of hashtags in a tweet.
  */
 public class NumberOfHashTags
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
 
     /**
@@ -42,10 +42,11 @@ public class NumberOfHashTags
     private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
 
     @Override
-    public Set<Feature> extract(JCas jCas)
+    public Set<Feature> extract(JCas jCas, TextClassificationUnit target)
         throws TextClassificationException
     {
-        Matcher hashTagMatcher = HASHTAG_PATTERN.matcher(jCas.getDocumentText());
+        Matcher hashTagMatcher = HASHTAG_PATTERN
+                .matcher(jCas.getDocumentText().substring(target.getBegin(), target.getEnd()));
         int numberOfHashTags = 0;
         while (hashTagMatcher.find()) {
             numberOfHashTags++;

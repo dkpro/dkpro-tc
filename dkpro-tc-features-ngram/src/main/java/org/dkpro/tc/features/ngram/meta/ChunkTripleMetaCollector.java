@@ -30,11 +30,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.NC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
+
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.ChunkTriple;
 
 public class ChunkTripleMetaCollector
@@ -56,11 +59,11 @@ public class ChunkTripleMetaCollector
         fd.incAll(triples);
     }
 
-    public static Set<String> getTriples(JCas jcas, boolean lowerCase)
+    public static Set<String> getTriples(JCas jcas,  boolean lowerCase)
     {
         Set<String> triples = new HashSet<String>();
-
-        for (Chunk vc : JCasUtil.select(jcas, VC.class)) {
+        TextClassificationUnit target = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
+        for (Chunk vc : JCasUtil.selectCovered(jcas, VC.class, target)) {
             String triple = getTriple(jcas, vc);
             if (lowerCase) {
                 triple = triple.toLowerCase();

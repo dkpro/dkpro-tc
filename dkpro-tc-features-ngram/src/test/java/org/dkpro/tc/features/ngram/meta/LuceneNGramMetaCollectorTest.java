@@ -36,6 +36,8 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,12 +67,16 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+        
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
                 LuceneNGram.PARAM_LUCENE_DIR, tmpDir
         );
 
-        for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
+        for (JCas jcas : new JCasIterable(reader, segmenter,doc, metaCollector)) {
 //            System.out.println(jcas.getDocumentText().length());
         }
         

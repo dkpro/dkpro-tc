@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.features.style;
 
-import static org.apache.uima.fit.util.JCasUtil.select;
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,40 +35,39 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
- * Heylighen &amp; Dewaele (2002): Variation in the contextuality of language
- * The contextuality measure can reach values 0-100
- * The higher value, the more formal (male) style the text is,
- * i.e. contains many nouns, verbs, determiners.
- * The lower value, the more contextual (female) style the text is,
- * i.e. contains many adverbs, pronouns and such.
+ * Heylighen &amp; Dewaele (2002): Variation in the contextuality of language The contextuality
+ * measure can reach values 0-100 The higher value, the more formal (male) style the text is, i.e.
+ * contains many nouns, verbs, determiners. The lower value, the more contextual (female) style the
+ * text is, i.e. contains many adverbs, pronouns and such.
  * <p>
  * Extracts also values for each pos class, as they are calculated anyway
  */
 public class ContextualityMeasureFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String CONTEXTUALITY_MEASURE_FN = "ContextualityMeasure";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         Set<Feature> featSet = new HashSet<Feature>();
 
-        double total = JCasUtil.select(jcas, POS.class).size();
-        double noun = select(jcas, N.class).size() / total;
-        double adj = select(jcas, ADJ.class).size() / total;
-        double prep = select(jcas, PP.class).size() / total;
-        double art = select(jcas, ART.class).size() / total;// !includes determiners
-        double pro = select(jcas, PR.class).size() / total;
-        double verb = select(jcas, V.class).size() / total;
-        double adv = select(jcas, ADV.class).size() / total;
+        double total = JCasUtil.selectCovered(jcas, POS.class, target).size();
+        double noun = selectCovered(jcas, N.class, target).size() / total;
+        double adj = selectCovered(jcas, ADJ.class, target).size() / total;
+        double prep = selectCovered(jcas, PP.class, target).size() / total;
+        double art = selectCovered(jcas, ART.class, target).size() / total;// !includes determiners
+        double pro = selectCovered(jcas, PR.class, target).size() / total;
+        double verb = selectCovered(jcas, V.class, target).size() / total;
+        double adv = selectCovered(jcas, ADV.class, target).size() / total;
 
         int interjCount = 0;
         for (POS tag : JCasUtil.select(jcas, O.class)) {
@@ -81,7 +80,8 @@ public class ContextualityMeasureFeatureExtractor
 
         // noun freq + adj.freq. + prepositions freq. + article freq. - pronoun freq. - verb f. -
         // adverb - interjection + 100
-        double contextualityMeasure = 0.5 * (noun + adj + prep + art - pro - verb - adv - interj + 100);
+        double contextualityMeasure = 0.5
+                * (noun + adj + prep + art - pro - verb - adv - interj + 100);
 
         featSet.add(new Feature("NounRate", noun));
         featSet.add(new Feature("AdjectiveRate", adj));

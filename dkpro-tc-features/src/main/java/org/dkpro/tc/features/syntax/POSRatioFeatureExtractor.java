@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -17,13 +17,17 @@
  ******************************************************************************/
 package org.dkpro.tc.features.syntax;
 
-import static org.apache.uima.fit.util.JCasUtil.select;
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
@@ -37,17 +41,13 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
- * Extracts the ratio of each universal POS tags to the total number of tags 
+ * Extracts the ratio of each universal POS tags to the total number of tags
  */
 public class POSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_ADJ_RATIO = "AdjRatioFeature";
     public static final String FN_ADV_RATIO = "AdvRatioFeature";
@@ -62,23 +62,23 @@ public class POSRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
 
-        double total = JCasUtil.select(jcas, POS.class).size();
-        double adj = select(jcas, ADJ.class).size() / total;
-        double adv = select(jcas, ADV.class).size() / total;
-        double art = select(jcas, ART.class).size() / total;
-        double card = select(jcas, CARD.class).size() / total;
-        double conj = select(jcas, CONJ.class).size() / total;
-        double noun = select(jcas, N.class).size() / total;
-        double other = select(jcas, O.class).size() / total;
-        double prep = select(jcas, PP.class).size() / total;
-        double pron = select(jcas, PR.class).size() / total;
-        double punc = select(jcas, PUNC.class).size() / total;
-        double verb = select(jcas, V.class).size() / total;
+        double total = selectCovered(jcas, POS.class, target).size();
+        double adj = selectCovered(jcas, ADJ.class, target).size() / total;
+        double adv = selectCovered(jcas, ADV.class, target).size() / total;
+        double art = selectCovered(jcas, ART.class, target).size() / total;
+        double card = selectCovered(jcas, CARD.class, target).size() / total;
+        double conj = selectCovered(jcas, CONJ.class, target).size() / total;
+        double noun = selectCovered(jcas, N.class, target).size() / total;
+        double other = selectCovered(jcas, O.class, target).size() / total;
+        double prep = selectCovered(jcas, PP.class, target).size() / total;
+        double pron = selectCovered(jcas, PR.class, target).size() / total;
+        double punc = selectCovered(jcas, PUNC.class, target).size() / total;
+        double verb = selectCovered(jcas, V.class, target).size() / total;
 
         features.add(new Feature(FN_ADJ_RATIO, adj));
         features.add(new Feature(FN_ADV_RATIO, adv));

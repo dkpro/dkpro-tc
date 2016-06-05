@@ -22,31 +22,34 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
 /**
- * Extracts token ngrams where tokens are first converted to their phonetic representation (e.g. Soundex).
+ * Extracts token ngrams where tokens are first converted to their phonetic representation (e.g.
+ * Soundex).
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LucenePhoneticNGram
     extends LucenePhoneticNGramFeatureExtractorBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
-    	
+
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentPhoneticNgrams(jcas, phoneticNgramMinN, phoneticNgramMaxN);
+        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentPhoneticNgrams(jcas,
+                target, phoneticNgramMinN, phoneticNgramMaxN);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {

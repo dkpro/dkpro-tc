@@ -36,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.style.LongWordsFeatureExtractor;
 
 public class LongWordsFeatureExtractorTest
@@ -51,10 +52,13 @@ public class LongWordsFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test of incredibly surprising long words.");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         LongWordsFeatureExtractor extractor = FeatureUtil.createResource(LongWordsFeatureExtractor.class);
 
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(2, features.size());
         Iterator<Feature> iter = features.iterator();

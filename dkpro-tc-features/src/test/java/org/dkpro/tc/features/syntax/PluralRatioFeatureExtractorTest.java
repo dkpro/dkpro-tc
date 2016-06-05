@@ -36,6 +36,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.syntax.PluralRatioFeatureExtractor;
 
 public class PluralRatioFeatureExtractorTest
@@ -55,8 +56,11 @@ public class PluralRatioFeatureExtractorTest
         jcas.setDocumentText("This is a test. These are tests and cars and flowers.");
         engine.process(jcas);
 
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
+        
         PluralRatioFeatureExtractor extractor = new PluralRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 

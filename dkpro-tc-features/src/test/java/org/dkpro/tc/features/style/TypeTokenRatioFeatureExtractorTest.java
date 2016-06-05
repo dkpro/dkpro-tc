@@ -35,6 +35,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.style.TypeTokenRatioFeatureExtractor;
 
 public class TypeTokenRatioFeatureExtractorTest
@@ -50,9 +51,12 @@ public class TypeTokenRatioFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("Is he a tester? He is a tester!");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
         TypeTokenRatioFeatureExtractor extractor = new TypeTokenRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 

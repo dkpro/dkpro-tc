@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,33 +22,33 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 
 /**
- * Quick, very simplified approximation of usage of past tense
- * in comparison to present/future tense in the text.
+ * Quick, very simplified approximation of usage of past tense in comparison to present/future tense
+ * in the text.
  * 
  * Works for Penn Treebank POS tags only.
  * 
- * Captures the ratio of all verbs to
- * "VBD" (verb praeterite) and "VBN" (verb past participle) as past and
- * "VB" (verb base form), "VBP" (verb present) and "VBZ" (verb present 3rd pers sg) as present/future.
- * The output is multiplied by 100 as the values are usually very small.
+ * Captures the ratio of all verbs to "VBD" (verb praeterite) and "VBN" (verb past participle) as
+ * past and "VB" (verb base form), "VBP" (verb present) and "VBZ" (verb present 3rd pers sg) as
+ * present/future. The output is multiplied by 100 as the values are usually very small.
  */
 public class PastVsFutureFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_PAST_RATIO = "PastVerbRatio";
     public static final String FN_FUTURE_RATIO = "FutureVerbRatio";
     public static final String FN_FUTURE_VS_PAST_RATIO = "FutureVsPastVerbRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
     {
         double pastRatio = 0.0;
         double futureRatio = 0.0;
@@ -57,7 +57,7 @@ public class PastVsFutureFeatureExtractor
         int futureVerbs = 0;
         int verbs = 0;
 
-        for (V tag : JCasUtil.select(jcas, V.class)) {
+        for (V tag : JCasUtil.selectCovered(jcas, V.class, target)) {
             verbs++;
             // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("VBD") || tag.getPosValue().contains("VBN")) {
