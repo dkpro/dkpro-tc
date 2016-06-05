@@ -37,9 +37,6 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
@@ -58,7 +55,6 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
@@ -72,6 +68,9 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -296,15 +295,6 @@ public class TaskUtils
             }
         }
 
-        // also add default FE for context extraction during meta collection
-        // TODO MW: Does not work here because field "contextFile" does not get initialised properly
-        /*
-         * try { String className = ContextCollectorUFE.class.getName();
-         * extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
-         * Class.forName(className).asSubclass(Resource.class), convertedParameters.toArray())); }
-         * catch (ClassNotFoundException e) { throw new ResourceInitializationException(e); }
-         */
-
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
                 ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
@@ -341,13 +331,8 @@ public class TaskUtils
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                 if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                    if (featExt instanceof DocumentFeatureExtractor && developerMode) {
-                        // we're ok
-                    }
-                    else {
-                        throw new TextClassificationException(
-                                "Using non-unit FE in unit mode: " + featExt.getResourceName());
-                    }
+                    throw new TextClassificationException(
+                            "Using non-unit FE in unit mode: " + featExt.getResourceName());
                 }
 
                 instance.setOutcomes(getOutcomes(jcas, unit));
@@ -402,13 +387,8 @@ public class TaskUtils
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
             if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                if (featExt instanceof DocumentFeatureExtractor && developerMode) {
-                    // we're ok
-                }
-                else {
-                    throw new TextClassificationException(
-                            "Using non-unit FE in unit mode: " + featExt.getResourceName());
-                }
+                throw new TextClassificationException(
+                        "Using non-unit FE in unit mode: " + featExt.getResourceName());
             }
 
             instance.setOutcomes(getOutcomes(jcas, unit));

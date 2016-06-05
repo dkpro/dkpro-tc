@@ -25,18 +25,16 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.util.ValidityCheckUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
  * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on the CAS.
@@ -178,7 +176,7 @@ public class ValidityCheckConnector
                                             + " is not a valid Pair Feature Extractor."));
                         }
                         if (featExtC instanceof PairFeatureExtractor
-                                && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof ClassificationUnitFeatureExtractor)) {
+                                &&  featExtC instanceof ClassificationUnitFeatureExtractor) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + ": Feature Extractors need to define a unique type."));
@@ -218,16 +216,11 @@ public class ValidityCheckConnector
             FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
                     .forName(featExt).newInstance();
             if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
-                if (developerMode && featExtC instanceof DocumentFeatureExtractor) {
-                    // we have the user carrying any consequences...
-                }
-                else {
                     throw new AnalysisEngineProcessException(new TextClassificationException(
                             featExt + " is not a valid Unit Feature Extractor."));
-                }
             }
             if (featExtC instanceof ClassificationUnitFeatureExtractor
-                    && (featExtC instanceof DocumentFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
+                    && (featExtC instanceof PairFeatureExtractor)) {
                 throw new AnalysisEngineProcessException(new TextClassificationException(featExt
                         + ": Feature Extractors need to define a unique type."));
             }
