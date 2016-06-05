@@ -35,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.readability.AvgLengthExtractor;
 
 public class AvgLengthExtractorTest
@@ -54,11 +55,14 @@ public class AvgLengthExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, text.length());
+        target.addToIndexes();
 
         AvgLengthExtractor extractor = new AvgLengthExtractor();
         
         int i=0;
-        for (Feature f : extractor.extract(jcas)) {
+        for (Feature f : extractor.extract(jcas,target)) {
         	if (f.getName().equals("AvgSentenceLength")) {
                 Assert.assertEquals((double) f.getValue(), 17.2, 0.1);
         	}

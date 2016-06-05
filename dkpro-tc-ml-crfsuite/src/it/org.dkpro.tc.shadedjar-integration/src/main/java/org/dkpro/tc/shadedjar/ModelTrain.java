@@ -99,10 +99,10 @@ public class ModelTrain
                         CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR }));
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_LOWER_CASE,
-                        true, LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 4,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 250 }));
+                Arrays.asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_LOWER_CASE,
+                        true, LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 250 }));
 
         CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, languageCode,

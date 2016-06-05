@@ -25,6 +25,10 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.ADJC;
@@ -32,13 +36,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.NC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.PC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 public class PhrasePatternExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     /**
      * This Extractor is inspired by the ParsePatternExtractor but relies only on chunking
@@ -52,7 +53,7 @@ public class PhrasePatternExtractor
     public static final String PCS_PER_SENTENCE = "PCsPerSentence";
     public static final String CHUNKS_PER_SENTENCE = "ChunksPerSentence";
 
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
     {
         int chunkSum = 0;
         double nrOfSentences = 0.0;
@@ -63,7 +64,7 @@ public class PhrasePatternExtractor
         int pcSum = 0;
         int sbarSum = 0;
 
-        Collection<Sentence> sents = JCasUtil.select(jcas, Sentence.class);
+        Collection<Sentence> sents = JCasUtil.selectCovered(jcas, Sentence.class, target);
         nrOfSentences = sents.size() * 1.0;
         Set<Feature> featSet = new HashSet<Feature>();
 

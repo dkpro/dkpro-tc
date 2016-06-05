@@ -29,7 +29,7 @@ import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.features.length.NrOfTokensDFE
+import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.integrationtest.io.LineInstanceReader
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
@@ -72,7 +72,7 @@ public class NumberOfFoldsSetting implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensDFE.class.name
+        NrOfTokens.class.name
     ])
 
     // === Test =========================================================

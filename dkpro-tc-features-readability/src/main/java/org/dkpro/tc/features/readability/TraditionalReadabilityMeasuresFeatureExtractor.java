@@ -25,19 +25,20 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.readability.measure.ReadabilityMeasures;
 import de.tudarmstadt.ukp.dkpro.core.readability.measure.ReadabilityMeasures.Measures;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 public class TraditionalReadabilityMeasuresFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     /**
      * Computes the readability measures ari, coleman_liau, flesch, fog, kincaid, lix and smog as
@@ -74,7 +75,7 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
     protected boolean smog;
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
 
@@ -84,9 +85,9 @@ public class TraditionalReadabilityMeasuresFeatureExtractor
             readability.setLanguage(jcas.getDocumentLanguage());
         }
 
-        int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
+        int nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size();
         List<String> words = new ArrayList<String>();
-        for (Token t : JCasUtil.select(jcas, Token.class)) {
+        for (Token t : JCasUtil.selectCovered(jcas, Token.class, target)) {
             words.add(t.getCoveredText());
         }
 

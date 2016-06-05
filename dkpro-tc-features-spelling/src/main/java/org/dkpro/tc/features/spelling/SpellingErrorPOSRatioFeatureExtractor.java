@@ -22,6 +22,11 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.anomaly.type.SpellingAnomaly;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
@@ -36,10 +41,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Computes for each coarse grained POS tag the ratio of being affected by a spelling error. For
@@ -48,7 +49,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class SpellingErrorPOSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements ClassificationUnitFeatureExtractor
 {
     public static final String FN_ADJ_ERROR_RATIO = "AdjErrorRatio";
     public static final String FN_ADV_ERROR_RATIO = "AdvErrorRatio";
@@ -63,7 +64,7 @@ public class SpellingErrorPOSRatioFeatureExtractor
     public static final String FN_V_ERROR_RATIO = "VerbErrorRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         Set<Feature> featSet = new HashSet<Feature>();
@@ -81,7 +82,7 @@ public class SpellingErrorPOSRatioFeatureExtractor
         int puncErrors = 0;
         int verbErrors = 0;
 
-        for (SpellingAnomaly anomaly : JCasUtil.select(jcas, SpellingAnomaly.class)) {
+        for (SpellingAnomaly anomaly : JCasUtil.selectCovered(jcas, SpellingAnomaly.class, target)) {
             for (POS pos : JCasUtil.selectCovered(jcas, POS.class, anomaly)) {
                 if (pos instanceof ADJ) {
                     adjErrors++;
