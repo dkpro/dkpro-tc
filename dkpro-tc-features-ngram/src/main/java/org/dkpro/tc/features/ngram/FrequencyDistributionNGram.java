@@ -22,14 +22,14 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
@@ -40,23 +40,49 @@ public class FrequencyDistributionNGram
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
-
-        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, classificationUnit, ngramLowerCase,
+        documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
-
-        for (String topNgram : topKSet.getKeys()) {
-            if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
+        
+        if (tfIdfCalculation == true) {
+        	double countCurrentDocumentNgrams = 0;
+            for (String ngram : documentNgrams.getKeys()) {
+            	countCurrentDocumentNgrams += documentNgrams.getCount(ngram);
             }
-            else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0));
+        	
+        	for (String topNgram : topKSet.getKeys()) {
+            	double tf = 0;
+            	double idf = 0;
+            	double tfIdf = 0;          	
+            	
+            	if (documentNgrams.getKeys().contains(topNgram)) {
+            		// calculate the TF value: the occurrences number of the current n-gram in the document
+                	// divided by the total number of n-gram occurrences in the document 
+            		tf = documentNgrams.getCount(topNgram) / countCurrentDocumentNgrams;
+            		
+                	// calculate the IDF value: natural logarithm of dividing the total number of documents 
+            		// by the number of documents containing the current top n-gram
+                	idf = Math.log((double) dfStore.getDocumentCount() / dfStore.getDf(topNgram));
+                			
+        			// calculate the TF-IDF value
+                	tfIdf = tf * idf;	
+                }            	
+            	features.add(new Feature(getFeaturePrefix() + "_" + topNgram, tfIdf));
+            }            
+    	} else if (tfIdfCalculation == false){
+    		for (String topNgram : topKSet.getKeys()) {
+                if (documentNgrams.getKeys().contains(topNgram)) {
+                    features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
+                }
+                else {
+                    features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0));
+                }
             }
-        }
+    	}        
         return features;
     }
 }
