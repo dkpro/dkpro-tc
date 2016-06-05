@@ -47,6 +47,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.CharacterNGramStringIterable;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 public class NGramUtils
 {
@@ -275,11 +276,13 @@ public class NGramUtils
         return phoneticNgrams;
     }
 
-    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas,
+    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas, 
             boolean lowerCaseNgrams, int minN, int maxN)
     {
+        TextClassificationUnit anno = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
-        for (String charNgram : new CharacterNGramStringIterable(jcas.getDocumentText(), minN, maxN)) {
+        String text = jcas.getDocumentText().substring(anno.getBegin(), anno.getEnd());
+        for (String charNgram : new CharacterNGramStringIterable(text, minN, maxN)) {
             if (lowerCaseNgrams) {
                 charNgram = charNgram.toLowerCase();
             }
@@ -346,12 +349,13 @@ public class NGramUtils
         }
     }
 
-    public static FrequencyDistribution<String> getDocumentSkipNgrams(JCas jcas,
+    public static FrequencyDistribution<String> getDocumentSkipNgrams(JCas jcas, 
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN, int skipN,
             Set<String> stopwords)
     {
+        TextClassificationUnit anno = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : select(jcas, Sentence.class)) {
+        for (Sentence s : selectCovered(jcas, Sentence.class, anno)) {
             for (List<String> ngram : new SkipNgramStringListIterable(toText(selectCovered(
                     Token.class, s)), minN, maxN, skipN)) {
                 if (lowerCaseNGrams) {

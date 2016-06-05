@@ -44,8 +44,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.LuceneNGramUFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
@@ -133,12 +133,12 @@ public class SVMHMMSaveAndLoadModelTest
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneNGramUFE.PARAM_NGRAM_USE_TOP_K, 500,
-                        LuceneNGramUFE.PARAM_NGRAM_MIN_N, 1,
-                        LuceneNGramUFE.PARAM_NGRAM_MAX_N, 3 }));
+                Arrays.asList(new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                        LuceneNGram.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneNGramUFE.class.getName(), NrOfCharsUFE.class.getName(), }));
+                Arrays.asList(new String[] { LuceneNGram.class.getName(), NrOfChars.class.getName(), }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(

@@ -45,7 +45,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.KeywordNGramDFE;
+import org.dkpro.tc.features.ngram.KeywordNGram;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
@@ -73,10 +73,10 @@ public class KeywordNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { KeywordNGramDFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt", KeywordNGramDFE.PARAM_LUCENE_DIR,
-                luceneFolder, KeywordNGramDFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
-                markSentenceLocation, KeywordNGramDFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
+        Object[] parameters = new Object[] { KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", KeywordNGram.PARAM_LUCENE_DIR,
+                luceneFolder, KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
+                markSentenceLocation, KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
                 includeComma };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -94,7 +94,7 @@ public class KeywordNGramFeatureExtractorTest
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
                 DenseFeatureStore.class.getName(), false, false, false, false,
-                KeywordNGramDFE.class.getName());
+                KeywordNGram.class.getName());
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);

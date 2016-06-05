@@ -50,6 +50,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.io.ReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -130,7 +131,7 @@ public class InitTask
     private CollectionReaderDescription createDiscriminableReader(
             CollectionReaderDescription reader)
     {
-        //use a dynamic proxy to inject a Discriminable interface
+        // use a dynamic proxy to inject a Discriminable interface
         return (CollectionReaderDescription) Proxy.newProxyInstance(
                 reader.getClass().getClassLoader(),
                 new Class<?>[] { CollectionReaderDescription.class, Discriminable.class },
@@ -172,6 +173,8 @@ public class InitTask
         }
 
         return createEngineDescription(
+                createEngineDescription(DocumentTextClassificationUnitAnnotator.class,
+                        DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, featureMode),
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -20,37 +20,34 @@ package org.dkpro.tc.features.ngram;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.ngram.base.LuceneNgramFeatureExtractorBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 /**
- * Extracts token n-grams.
+ * Extracts character n-grams.
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class LuceneNGramDFE
-    extends LuceneNgramFeatureExtractorBase
-    implements DocumentFeatureExtractor
+public class LuceneCharacterNGram
+    extends LuceneCharacterNGramFeatureExtractorBase
+    implements ClassificationUnitFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jCas, TextClassificationUnit aClassificationUnit)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentNgrams = null;
-        documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase,
-                filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+        FrequencyDistribution<String> documentCharNgrams = NGramUtils.getAnnotationCharacterNgrams(
+                aClassificationUnit, charNgramLowerCase, charNgramMinN, charNgramMaxN, '^', '$');
 
         for (String topNgram : topKSet.getKeys()) {
-            if (documentNgrams.getKeys().contains(topNgram)) {
+            if (documentCharNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
             }
             else {

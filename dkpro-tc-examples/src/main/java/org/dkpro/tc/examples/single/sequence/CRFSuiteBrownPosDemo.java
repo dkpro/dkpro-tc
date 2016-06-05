@@ -39,8 +39,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensUFE;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -86,9 +86,9 @@ public class CRFSuiteBrownPosDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 4,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
+                asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
 
         @SuppressWarnings("unchecked")
         /* If no algorithm is provided, CRFSuite takes lbfgs */
@@ -97,8 +97,8 @@ public class CRFSuiteBrownPosDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensUFE.class.getName(),
-                        LuceneCharacterNGramUFE.class.getName() }));
+                asList(new String[] { NrOfTokens.class.getName(),
+                        LuceneCharacterNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),

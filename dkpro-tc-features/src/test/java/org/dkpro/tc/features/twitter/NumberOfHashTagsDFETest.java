@@ -32,7 +32,7 @@ import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
+import org.dkpro.tc.features.twitter.NumberOfHashTags;
 
 public class NumberOfHashTagsDFETest
 {
@@ -49,13 +49,13 @@ public class NumberOfHashTagsDFETest
         jcas.setDocumentText("This is a very #emotional tweet ;-) #icouldcry #ILoveHashTags");
         engine.process(jcas);
 
-        NumberOfHashTagsDFE extractor = new NumberOfHashTagsDFE();
+        NumberOfHashTags extractor = new NumberOfHashTags();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
 
         Assert.assertEquals(1, features.size());
 
         for (Feature feature : features) {
-            assertFeature(NumberOfHashTagsDFE.class.getSimpleName(), 3, feature);
+            assertFeature(NumberOfHashTags.class.getSimpleName(), 3, feature);
         }
     }
 }

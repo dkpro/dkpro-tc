@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,44 +22,43 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.features.ngram.base.LuceneSkipNgramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
 /**
- * Extracts POS n-grams.
+ * Extracts token skip-ngrams.
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class LucenePOSNGramDFE
-    extends LucenePOSNGramFeatureExtractorBase
-    implements DocumentFeatureExtractor
+public class LuceneSkipNGram
+    extends LuceneSkipNgramFeatureExtractorBase
+    implements ClassificationUnitFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
-    	
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentPOSNgrams = null;
-        documentPOSNgrams = NGramUtils.getDocumentPosNgrams(jcas, posNgramMinN, posNgramMaxN, useCanonicalTags);
+
+        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentSkipNgrams(jcas,
+                skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipSize,
+                stopwords);
 
         for (String topNgram : topKSet.getKeys()) {
-            if (documentPOSNgrams.getKeys().contains(topNgram)) {
+            if (documentNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
             }
             else {
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0));
             }
         }
-        return features;   	
-    	
+        return features;
     }
 }
-
-

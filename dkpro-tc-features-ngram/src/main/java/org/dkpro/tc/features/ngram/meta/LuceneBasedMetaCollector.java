@@ -38,13 +38,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 
 public abstract class LuceneBasedMetaCollector
     extends MetaCollector
@@ -75,7 +75,8 @@ public abstract class LuceneBasedMetaCollector
         if (indexWriter == null) {
             try {
                 indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new ResourceInitializationException(e);
             }
         }
@@ -92,22 +93,19 @@ public abstract class LuceneBasedMetaCollector
         fieldType.freeze();
     }
 
-    protected void initializeDocument(JCas jcas) {
+    protected void initializeDocument(JCas jcas)
+    {
         if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
             currentDocumentId = getDocumentId(jcas);
             if (currentDocumentId == null) {
                 throw new IllegalArgumentException(
                         "Document has no id. id: " + DocumentMetaData.get(jcas).getDocumentId()
-                                + ", title: " +
-                                DocumentMetaData.get(jcas).getDocumentTitle() + ", uri: "
-                                + DocumentMetaData.get(jcas).getDocumentUri());
+                                + ", title: " + DocumentMetaData.get(jcas).getDocumentTitle()
+                                + ", uri: " + DocumentMetaData.get(jcas).getDocumentUri());
             }
             currentDocument = new Document();
-            currentDocument.add(new StringField(
-                    LUCENE_ID_FIELD,
-                    currentDocumentId,
-                    Field.Store.YES
-            ));
+            currentDocument
+                    .add(new StringField(LUCENE_ID_FIELD, currentDocumentId, Field.Store.YES));
         }
     }
 
@@ -115,19 +113,19 @@ public abstract class LuceneBasedMetaCollector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-
         initializeDocument(jcas);
         FrequencyDistribution<String> documentNGrams;
-        try{
+        try {
             documentNGrams = getNgramsFD(jcas);
-        }catch(TextClassificationException e){
+        }
+        catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
         }
 
         for (String ngram : documentNGrams.getKeys()) {
-            // As a result of discussion, we add a field for each ngram per doc, 
+            // As a result of discussion, we add a field for each ngram per doc,
             // not just each ngram type per doc.
-            for (int i=0;i<documentNGrams.getCount(ngram);i++){
+            for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
                 addField(jcas, getFieldName(), ngram);
             }
         }
@@ -141,27 +139,23 @@ public abstract class LuceneBasedMetaCollector
     }
 
     protected void addField(JCas jcas, String fieldName, String value)
-    	throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         if (currentDocument == null) {
-        	throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
-        			+ "Probably a lucene-based meta collector that calls addField() before initializeDocument()"));
+            throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
+                    + "Probably a lucene-based meta collector that calls addField() before initializeDocument()"));
         }
 
-        Field field = new Field(
-                fieldName,
-                value,
-                fieldType
-        );
+        Field field = new Field(fieldName, value, fieldType);
         currentDocument.add(field);
     }
 
     protected void writeToIndex()
         throws IOException
     {
-    	if (currentDocument == null) {
-    		throw new IOException("Lucene document not initialized. Fatal error.");
-    	}
+        if (currentDocument == null) {
+            throw new IOException("Lucene document not initialized. Fatal error.");
+        }
         indexWriter.addDocument(currentDocument);
     }
 
@@ -176,12 +170,15 @@ public abstract class LuceneBasedMetaCollector
                 indexWriter.commit();
                 indexWriter.close();
                 indexWriter = null;
-            } catch (AlreadyClosedException e) {
-                // ignore, as multiple meta collectors write in the same index 
+            }
+            catch (AlreadyClosedException e) {
+                // ignore, as multiple meta collectors write in the same index
                 // and will all try to close the index
-            } catch (CorruptIndexException e) {
+            }
+            catch (CorruptIndexException e) {
                 throw new AnalysisEngineProcessException(e);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new AnalysisEngineProcessException(e);
             }
         }
@@ -192,7 +189,7 @@ public abstract class LuceneBasedMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(LuceneNGramDFE.PARAM_LUCENE_DIR, LUCENE_DIR);
+        mapping.put(LuceneNGram.PARAM_LUCENE_DIR, LUCENE_DIR);
         return mapping;
     }
 
@@ -202,7 +199,7 @@ public abstract class LuceneBasedMetaCollector
     }
 
     protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas)
-            throws TextClassificationException;
+                throws TextClassificationException;
 
     protected abstract String getFieldName();
 }

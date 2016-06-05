@@ -42,7 +42,7 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
 
 /**
  * Pair keyword ngram feature extractor for
- * {@link org.dkpro.tc.features.ngram.KeywordNGramDFE
+ * {@link org.dkpro.tc.features.ngram.KeywordNGram
  * KeywordNGramDFE} Can be used to extract ngrams from one or both documents in the
  * pair, and parameters for each document (view 1's, view 2's) can be set separately, or both
  * documents can be treated together as one extended document. <br>

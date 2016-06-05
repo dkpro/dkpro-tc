@@ -17,21 +17,19 @@
  ******************************************************************************/
 package org.dkpro.tc.features.length;
 
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.length.NrOfCharsDFE;
+import junit.framework.Assert;
 
 public class NrOfCharsFeatureExtractorTest
 {
@@ -45,14 +43,16 @@ public class NrOfCharsFeatureExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test. This is a test.");
         engine.process(jcas);
+        
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
 
-        NrOfCharsDFE extractor = new NrOfCharsDFE();
-        Set<Feature> features = extractor.extract(jcas);
+        NrOfChars extractor = new NrOfChars();
+        Set<Feature> features = extractor.extract(jcas,target);
 
         Assert.assertEquals(3, features.size());
 
-        assertFeatures(NrOfCharsDFE.FN_NR_OF_CHARS, 31., features, 0.01);
-        assertFeatures(NrOfCharsDFE.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, features, 0.01);
-        assertFeatures(NrOfCharsDFE.FN_NR_OF_CHARS_PER_TOKEN, 3.1, features, 0.01);
+        assertFeatures(NrOfChars.FN_NR_OF_CHARS, 31., features, 0.01);
+        assertFeatures(NrOfChars.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, features, 0.01);
+        assertFeatures(NrOfChars.FN_NR_OF_CHARS_PER_TOKEN, 3.1, features, 0.01);
     }
 }

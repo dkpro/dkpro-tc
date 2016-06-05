@@ -37,8 +37,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -122,7 +122,7 @@ public class WekaTwentyNewsgroupsDemo
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(
                 DIM_BASELINE_CLASSIFICATION_ARGS,
@@ -130,7 +130,7 @@ public class WekaTwentyNewsgroupsDemo
 
         Dimension<List<String>> dimBaselinePipelineParameters = Dimension
                 .create(DIM_BASELINE_FEATURE_SET, Arrays.asList(new String[] {
-                        NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+                        NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(
                 DIM_BASELINE_PIPELINE_PARAMS,

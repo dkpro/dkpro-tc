@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -17,23 +17,21 @@
  ******************************************************************************/
 package org.dkpro.tc.features.length;
 
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
+import junit.framework.Assert;
 
 public class NrOfTokensFeatureExtractorTest
 {
@@ -48,13 +46,16 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
 
-        NrOfTokensDFE extractor = new NrOfTokensDFE();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+                jcas.getDocumentText().length());
+
+        NrOfTokens extractor = new NrOfTokens();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensDFE.FN_NR_OF_TOKENS, 5., iter.next());
+        assertFeature(NrOfTokens.FN_NR_OF_TOKENS, 5., iter.next());
     }
 
     @Test
@@ -68,12 +69,15 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentText("");
         engine.process(jcas);
 
-        NrOfTokensDFE extractor = new NrOfTokensDFE();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+                jcas.getDocumentText().length());
+
+        NrOfTokens extractor = new NrOfTokens();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokensDFE.FN_NR_OF_TOKENS, 0., iter.next());
+        assertFeature(NrOfTokens.FN_NR_OF_TOKENS, 0., iter.next());
     }
 }

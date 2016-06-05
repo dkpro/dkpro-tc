@@ -17,13 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.features.length;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
@@ -31,24 +32,28 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
- * Extracts the number of sentences in this classification unit
+ * Extracts the number of tokens in the classification unit
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class NrOfSentencesUFE
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+public class NrOfTokens
     extends FeatureExtractorResource_ImplBase
     implements ClassificationUnitFeatureExtractor
 {
 
     /**
-     * Public name of the feature "number of sentences in this unit"
+     * Public name of the feature "number of tokens" in this classification unit
      */
-    public static final String FN_NR_OF_SENTENCES = "NrofSentences";
+    public static final String FN_NR_OF_TOKENS = "NrofTokens";
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        return new Feature(FN_NR_OF_SENTENCES, JCasUtil.selectCovered(jcas, Sentence.class,
-                classificationUnit).size()).asSet();
+        Set<Feature> featList = new HashSet<Feature>();
+
+        double numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
+
+        featList.add(new Feature(FN_NR_OF_TOKENS, numTokens));
+        return featList;
     }
 }

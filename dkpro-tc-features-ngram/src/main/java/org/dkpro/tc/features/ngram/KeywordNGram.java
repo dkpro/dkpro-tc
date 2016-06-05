@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -27,16 +27,13 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.ngram.base.LuceneSkipNgramFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
+import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 
-/**
- * Extracts token skip-ngrams.
- */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class LuceneSkipNGramDFE
-    extends LuceneSkipNgramFeatureExtractorBase
+public class KeywordNGram
+    extends KeywordNGramFeatureExtractorBase
     implements DocumentFeatureExtractor
 {
 
@@ -46,9 +43,9 @@ public class LuceneSkipNGramDFE
     {
         Set<Feature> features = new HashSet<Feature>();
 
-        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentSkipNgrams(jcas,
-                skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipSize,
-                stopwords);
+        FrequencyDistribution<String> documentNgrams = KeywordNGramUtils.getDocumentKeywordNgrams(
+                jcas, keywordMinN, keywordMaxN, markSentenceBoundary, markSentenceLocation,
+                includeCommas, keywords);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {

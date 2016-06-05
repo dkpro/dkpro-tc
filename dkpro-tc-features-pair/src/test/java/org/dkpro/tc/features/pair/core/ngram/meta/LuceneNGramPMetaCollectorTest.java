@@ -37,17 +37,15 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
+import org.dkpro.tc.testing.TestPairReader;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
-import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
-import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
-import org.dkpro.tc.testing.TestPairReader;
 
 public class LuceneNGramPMetaCollectorTest
 {
@@ -90,7 +88,7 @@ public class LuceneNGramPMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(LuceneNGramDFE.LUCENE_NGRAM_FIELD);
+                Terms terms = fields.terms(LuceneNGram.LUCENE_NGRAM_FIELD);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
 

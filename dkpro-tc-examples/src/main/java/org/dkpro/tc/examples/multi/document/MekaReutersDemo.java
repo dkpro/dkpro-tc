@@ -36,8 +36,8 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -112,7 +112,7 @@ public class MekaReutersDemo
                         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
         dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD,

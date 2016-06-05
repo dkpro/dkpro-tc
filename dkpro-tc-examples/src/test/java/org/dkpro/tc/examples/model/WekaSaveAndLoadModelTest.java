@@ -50,9 +50,9 @@ import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentSaveModel;
@@ -123,7 +123,7 @@ public class WekaSaveAndLoadModelTest
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -157,7 +157,7 @@ public class WekaSaveAndLoadModelTest
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
@@ -402,11 +402,11 @@ public class WekaSaveAndLoadModelTest
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
-                .asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 20 }));
+                .asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 20 }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneCharacterNGramUFE.class.getName() }));
+                Arrays.asList(new String[] { LuceneCharacterNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

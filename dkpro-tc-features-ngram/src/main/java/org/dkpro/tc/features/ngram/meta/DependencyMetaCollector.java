@@ -25,19 +25,19 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.features.ngram.DependencyFeature;
 
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
-import org.dkpro.tc.features.ngram.DependencyDFE;
 
 public class DependencyMetaCollector
     extends FreqDistBasedMetaCollector
 {
     public static final String DEP_FD_KEY = "dep.ser";
 
-    @ConfigurationParameter(name = DependencyDFE.PARAM_DEP_FD_FILE, mandatory = true)
+    @ConfigurationParameter(name = DependencyFeature.PARAM_DEP_FD_FILE, mandatory = true)
     private File depFdFile;
 
-    @ConfigurationParameter(name = DependencyDFE.PARAM_LOWER_CASE_DEPS, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = DependencyFeature.PARAM_LOWER_CASE_DEPS, mandatory = false, defaultValue = "true")
     private boolean lowerCaseDeps;
 
     @Override
@@ -69,7 +69,7 @@ public class DependencyMetaCollector
     public Map<String, String> getParameterKeyPairs()
     {
         Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(DependencyDFE.PARAM_DEP_FD_FILE, DEP_FD_KEY);
+        mapping.put(DependencyFeature.PARAM_DEP_FD_FILE, DEP_FD_KEY);
         return mapping;
     }
 

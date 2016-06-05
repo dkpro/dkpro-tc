@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationUnit;
-import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
+import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 
 public class InitialCharacterUpperCaseFeatureExtractorTest
 {
@@ -54,8 +54,8 @@ public class InitialCharacterUpperCaseFeatureExtractorTest
 
         engine.process(jcas);
         
-        InitialCharacterUpperCaseUFE extractor = FeatureUtil.createResource(
-        		InitialCharacterUpperCaseUFE.class);
+        InitialCharacterUpperCase extractor = FeatureUtil.createResource(
+        		InitialCharacterUpperCase.class);
 
 
         TextClassificationUnit unit1 = new TextClassificationUnit(jcas);
@@ -70,13 +70,13 @@ public class InitialCharacterUpperCaseFeatureExtractorTest
 
         Assert.assertEquals(1, features1.size());
         for (Feature feature : features1) {
-            assertFeature(InitialCharacterUpperCaseUFE.INITIAL_CH_UPPER_CASE, true, feature);
+            assertFeature(InitialCharacterUpperCase.INITIAL_CH_UPPER_CASE, true, feature);
         }
 
         Set<Feature> features2 = extractor.extract(jcas, unit2);
         Assert.assertEquals(1, features2.size());
         for (Feature feature : features2) {
-            assertFeature(InitialCharacterUpperCaseUFE.INITIAL_CH_UPPER_CASE, false, feature);
+            assertFeature(InitialCharacterUpperCase.INITIAL_CH_UPPER_CASE, false, feature);
         }
     }
 }

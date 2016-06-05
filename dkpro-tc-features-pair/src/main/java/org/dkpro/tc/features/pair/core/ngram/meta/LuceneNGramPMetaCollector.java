@@ -25,13 +25,13 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneNGramPMetaCollector
 	extends LucenePMetaCollectorBase
@@ -125,7 +125,7 @@ public class LuceneNGramPMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneNGramDFE.LUCENE_NGRAM_FIELD;
+        return LuceneNGram.LUCENE_NGRAM_FIELD;
     }
 
     @Override

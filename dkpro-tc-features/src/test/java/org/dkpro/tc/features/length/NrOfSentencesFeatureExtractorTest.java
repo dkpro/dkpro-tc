@@ -17,24 +17,21 @@
  ******************************************************************************/
 package org.dkpro.tc.features.length;
 
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.length.NrOfSentencesDFE;
-import org.dkpro.tc.features.length.NrOfSentencesUFE;
+import junit.framework.Assert;
 
 public class NrOfSentencesFeatureExtractorTest
 {
@@ -49,12 +46,15 @@ public class NrOfSentencesFeatureExtractorTest
         jcas.setDocumentText("This is a test! Does it test sentences? Oh yes, it does!");
         engine.process(jcas);
 
-        NrOfSentencesDFE extractor = new NrOfSentencesDFE();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
+        TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+                jcas.getDocumentText().length());
+
+        NrOfSentences extractor = new NrOfSentences();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 
         Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfSentencesUFE.FN_NR_OF_SENTENCES, 3, iter.next());
+        assertFeature(NrOfSentences.FN_NR_OF_SENTENCES, 3, iter.next());
     }
 }

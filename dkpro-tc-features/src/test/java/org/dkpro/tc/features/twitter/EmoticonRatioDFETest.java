@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
+import org.dkpro.tc.features.twitter.EmoticonRatio;
 
 public class EmoticonRatioDFETest
 {
@@ -62,13 +62,13 @@ public class EmoticonRatioDFETest
 
         engine.process(jcas);
 
-        EmoticonRatioDFE extractor = new EmoticonRatioDFE();
+        EmoticonRatio extractor = new EmoticonRatio();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas));
 
         Assert.assertEquals(1, features.size());
 
         for (Feature feature : features) {
-            assertFeature(EmoticonRatioDFE.class.getSimpleName(), 0.14, feature, 0.01);
+            assertFeature(EmoticonRatio.class.getSimpleName(), 0.14, feature, 0.01);
         }
     }
 }

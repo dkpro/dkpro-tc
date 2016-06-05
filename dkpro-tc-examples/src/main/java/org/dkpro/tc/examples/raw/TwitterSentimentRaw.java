@@ -29,8 +29,8 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
-import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
-import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
+import org.dkpro.tc.features.twitter.EmoticonRatio;
+import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.weka.writer.WekaDataWriter;
 
 /**
@@ -72,7 +72,7 @@ public class TwitterSentimentRaw
                         ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[]{},
                         ExtractFeaturesConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
-                                createExternalResourceDescription(EmoticonRatioDFE.class),
-                                createExternalResourceDescription(NumberOfHashTagsDFE.class))));
+                                createExternalResourceDescription(EmoticonRatio.class),
+                                createExternalResourceDescription(NumberOfHashTags.class))));
     }
 }

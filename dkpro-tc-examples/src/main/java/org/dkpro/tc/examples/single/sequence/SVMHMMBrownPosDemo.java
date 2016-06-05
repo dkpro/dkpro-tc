@@ -39,8 +39,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -120,16 +120,16 @@ public class SVMHMMBrownPosDemo
 
         // feature extractors
         Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfCharsUFE.class.getName(),
-                        LuceneCharacterNGramUFE.class.getName(),
+                Arrays.asList(new String[] { NrOfChars.class.getName(),
+                        LuceneCharacterNGram.class.getName(),
                         OriginalTextHolderFeatureExtractor.class.getName() }));
 
         // feature extractor parameters
         Dimension<List<Object>> dimFeatureSetsParams = Dimension.create(
                 Constants.DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 20,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 3 }));
+                Arrays.asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 20,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 3 }));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),

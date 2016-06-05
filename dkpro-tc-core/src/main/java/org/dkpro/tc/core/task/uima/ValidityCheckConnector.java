@@ -152,13 +152,13 @@ public class ValidityCheckConnector
                     for (String featExt : featureExtractors) {
                         FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
                                 .forName(featExt).newInstance();
-                        if (!(featExtC instanceof DocumentFeatureExtractor)) {
+                        if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + " is not a valid Document Feature Extractor."));
                         }
-                        if (featExtC instanceof DocumentFeatureExtractor
-                                && (featExtC instanceof ClassificationUnitFeatureExtractor || featExtC instanceof PairFeatureExtractor)) {
+                        if (featExtC instanceof ClassificationUnitFeatureExtractor
+                                && (featExtC instanceof PairFeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + ": Feature Extractors need to define a unique type."));

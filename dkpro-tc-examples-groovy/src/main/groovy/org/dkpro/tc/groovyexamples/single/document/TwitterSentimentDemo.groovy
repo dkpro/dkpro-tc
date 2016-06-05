@@ -27,8 +27,8 @@ import org.dkpro.lab.task.Dimension
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.LabeledTweetReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.twitter.EmoticonRatioDFE
-import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE
+import org.dkpro.tc.features.twitter.EmoticonRatio
+import org.dkpro.tc.features.twitter.NumberOfHashTags
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
@@ -79,8 +79,8 @@ public class TwitterSentimentDemo implements Constants {
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_SET, [
-                    EmoticonRatioDFE.name,
-                    NumberOfHashTagsDFE.name
+                    EmoticonRatio.name,
+                    NumberOfHashTags.name
                 ]),
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
@@ -124,8 +124,8 @@ public class TwitterSentimentDemo implements Constants {
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_SET, [
-                    EmoticonRatioDFE.name,
-                    NumberOfHashTagsDFE.name
+                    EmoticonRatio.name,
+                    NumberOfHashTags.name
                 ]),
                 Dimension.create(DIM_CLASSIFICATION_ARGS, [NaiveBayes.name], [RandomForest.name])
             ],

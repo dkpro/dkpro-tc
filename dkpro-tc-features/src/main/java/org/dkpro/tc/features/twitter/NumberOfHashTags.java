@@ -15,42 +15,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.style;
+package org.dkpro.tc.features.twitter;
 
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
- * Extracts whether the first character of the classification unit is upper-case or not.
+ * A feature extracting the number of hashtags in a tweet.
  */
-public class InitialCharacterUpperCaseUFE
+public class NumberOfHashTags
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements DocumentFeatureExtractor
 {
+
     /**
-     * Public name of the feature "Initial character upper case"
+     * Pattern compiling a regex for twitter hashtags.
      */
-    public static final String INITIAL_CH_UPPER_CASE = "InitialCharacterUpperCaseUFE";
+    private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jCas)
         throws TextClassificationException
     {
-        String token = classificationUnit.getCoveredText();
-
-        boolean bool = false;
-        if (Character.isUpperCase(token.charAt(0))) {
-            return new Feature(INITIAL_CH_UPPER_CASE, !bool).asSet();
+        Matcher hashTagMatcher = HASHTAG_PATTERN.matcher(jCas.getDocumentText());
+        int numberOfHashTags = 0;
+        while (hashTagMatcher.find()) {
+            numberOfHashTags++;
         }
-        else {
-            return new Feature(INITIAL_CH_UPPER_CASE, bool).asSet();
-        }
+        return new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags).asSet();
     }
+
 }

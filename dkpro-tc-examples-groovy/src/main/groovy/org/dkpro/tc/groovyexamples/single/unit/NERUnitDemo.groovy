@@ -31,8 +31,8 @@ import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.NERDemoReader
-import org.dkpro.tc.features.length.NrOfCharsUFE
-import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE
+import org.dkpro.tc.features.length.NrOfChars
+import org.dkpro.tc.features.style.InitialCharacterUpperCase
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
@@ -56,8 +56,8 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
-        NrOfCharsUFE.name,
-        InitialCharacterUpperCaseUFE.name
+        NrOfChars.name,
+        InitialCharacterUpperCase.name
     ])
     
     def trainreader = CollectionReaderFactory.createReaderDescription(NERDemoReader.class,

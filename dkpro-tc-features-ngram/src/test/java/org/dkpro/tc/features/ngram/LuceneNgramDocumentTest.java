@@ -47,6 +47,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
@@ -59,7 +60,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LuceneNgramDFETest
+public class LuceneNgramDocumentTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -116,9 +117,9 @@ public class LuceneNgramDFETest
     {
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGramDFE.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -129,12 +130,16 @@ public class LuceneNgramDFETest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LuceneNGramDFE.class.getName());
+                false, false, false, false, LuceneNGram.class.getName());
 
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         return outputPath;
     }
@@ -163,9 +168,9 @@ public class LuceneNgramDFETest
     private void runMetaCollection(File luceneFolder)
         throws Exception
     {
-        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGramDFE.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -174,12 +179,16 @@ public class LuceneNgramDFETest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollector);
     }
 
     private int getTermFreq(File luceneFolder, String string)

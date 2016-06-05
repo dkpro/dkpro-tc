@@ -37,9 +37,9 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ExperimentUtil;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
-import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.twitter.EmoticonRatio;
+import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
@@ -108,8 +108,8 @@ public class WekaAblationDemo
         // ##############
         // this is where the feature set for the ablation test are created
         Dimension<List<String>> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
-                EmoticonRatioDFE.class.getName(), NumberOfHashTagsDFE.class.getName(),
-                NrOfTokensDFE.class.getName());
+                EmoticonRatio.class.getName(), NumberOfHashTags.class.getName(),
+                NrOfTokens.class.getName());
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(

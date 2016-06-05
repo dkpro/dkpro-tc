@@ -38,7 +38,7 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
  * (left and right boundary tokens).
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class IsSurroundedByCharsUFE
+public class IsSurroundedByChars
     extends FeatureExtractorResource_ImplBase
     implements ClassificationUnitFeatureExtractor
 {

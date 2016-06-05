@@ -17,14 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.features.length;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
@@ -32,28 +31,24 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 /**
- * Extracts the number of tokens in the classification unit
+ * Extracts the number of sentences in this classification unit
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class NrOfTokensUFE
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
+public class NrOfSentences
     extends FeatureExtractorResource_ImplBase
     implements ClassificationUnitFeatureExtractor
 {
 
     /**
-     * Public name of the feature "number of tokens" in this classification unit
+     * Public name of the feature "number of sentences in this unit"
      */
-    public static final String FN_NR_OF_TOKENS = "NrofTokens";
+    public static final String FN_NR_OF_SENTENCES = "NrofSentences";
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        Set<Feature> featList = new HashSet<Feature>();
-
-        double numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
-
-        featList.add(new Feature(FN_NR_OF_TOKENS, numTokens));
-        return featList;
+        return new Feature(FN_NR_OF_SENTENCES, JCasUtil.selectCovered(jcas, Sentence.class,
+                classificationUnit).size()).asSet();
     }
 }

@@ -36,8 +36,8 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -126,9 +126,9 @@ public class MekaComplexConfigurationMultiDemo
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensDFE.class.getName(),
-                        LuceneNGramDFE.class.getName() }),
-                asList(new String[] { LuceneNGramDFE.class.getName() }));
+                asList(new String[] { NrOfTokens.class.getName(),
+                        LuceneNGram.class.getName() }),
+                asList(new String[] { LuceneNGram.class.getName() }));
 
         // parameters to configure feature extractors
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,

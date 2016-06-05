@@ -36,8 +36,8 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.fstore.filter.UniformClassDistributionFilter;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
@@ -119,7 +119,7 @@ public class WekaUniformClassDistributionDemo
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,
                 Arrays.asList(new String[] { UniformClassDistributionFilter.class.getName() }));

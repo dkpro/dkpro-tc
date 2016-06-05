@@ -23,14 +23,16 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
-import org.dkpro.tc.features.length.NrOfSentencesDFE;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
+import org.dkpro.tc.features.length.NrOfSentences;
+import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.weka.writer.WekaDataWriter;
+
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * Example of "raw" usage of DKPro TC without DKPro Lab parts. This is for advanced users that do
@@ -67,7 +69,7 @@ public class TwentyNewsgroupsRaw
                         ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[]{},
                         ExtractFeaturesConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
-                                createExternalResourceDescription(NrOfTokensDFE.class),
-                                createExternalResourceDescription(NrOfSentencesDFE.class))));
+                                createExternalResourceDescription(NrOfTokens.class),
+                                createExternalResourceDescription(NrOfSentences.class))));
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -34,7 +34,7 @@ import org.dkpro.tc.features.ngram.util.NGramUtils;
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 @Deprecated
-public class FrequencyDistributionNGramUFE
+public class FrequencyDistributionNGram
     extends FrequencyDistributionNGramFeatureExtractorBase
     implements ClassificationUnitFeatureExtractor
 {

@@ -27,22 +27,19 @@ import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.FreqDistBasedMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 
 public class FrequencyDistributionNGramPMetaCollector
 	extends FreqDistBasedMetaCollector implements Constants

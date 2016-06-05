@@ -19,10 +19,10 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneCharacterNGramMetaCollector
     extends LuceneBasedMetaCollector

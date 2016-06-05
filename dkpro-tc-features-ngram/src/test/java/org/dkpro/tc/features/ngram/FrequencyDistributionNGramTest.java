@@ -46,7 +46,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class FrequencyDistributionNGramDFETest
+public class FrequencyDistributionNGramTest
 {
 
     FeatureStore fsFrequenceDist;
@@ -77,11 +77,11 @@ public class FrequencyDistributionNGramDFETest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         ArrayList<Object> parametersFrequencyDist = new ArrayList<Object>(
-                Arrays.asList(new Object[] { FrequencyDistributionNGramDFE.PARAM_NGRAM_MIN_N,
-                        ngramNMin, FrequencyDistributionNGramDFE.PARAM_NGRAM_MAX_N, ngramNMax,
-                        FrequencyDistributionNGramDFE.PARAM_NGRAM_FD_FILE, frequencyDistFile,
-                        FrequencyDistributionNGramDFE.PARAM_TF_IDF_CALCULATION, tfIdfCalculation,
-                        FrequencyDistributionNGramDFE.PARAM_DFSTORE_FILE, dfStoreFile}));
+                Arrays.asList(new Object[] { FrequencyDistributionNGram.PARAM_NGRAM_MIN_N,
+                        ngramNMin, FrequencyDistributionNGram.PARAM_NGRAM_MAX_N, ngramNMax,
+                        FrequencyDistributionNGram.PARAM_NGRAM_FD_FILE, frequencyDistFile,
+                        FrequencyDistributionNGram.PARAM_TF_IDF_CALCULATION, tfIdfCalculation,
+                        FrequencyDistributionNGram.PARAM_DFSTORE_FILE, dfStoreFile}));
 
         AnalysisEngineDescription metaCollectorFrequencyDist = AnalysisEngineFactory
                 .createEngineDescription(NGramMetaCollector.class,
@@ -92,7 +92,7 @@ public class FrequencyDistributionNGramDFETest
                         outputPathFrequencyDist.getAbsolutePath(), JsonDataWriter.class.getName(),
                         Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
                         DenseFeatureStore.class.getName(), false, false, false, false,
-                        FrequencyDistributionNGramDFE.class.getName());
+                        FrequencyDistributionNGram.class.getName());
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollectorFrequencyDist);

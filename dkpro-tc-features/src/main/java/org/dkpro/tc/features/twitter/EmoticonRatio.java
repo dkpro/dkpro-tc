@@ -18,39 +18,40 @@
 package org.dkpro.tc.features.twitter;
 
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.EMO;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
- * A feature extracting the number of hashtags in a tweet.
+ * A feature extracting the ratio of emoticons to tokens in tweets.
+ * 
+ * This example is taken from the paper:
+ * 
+ * <pre>
+ * Johannes Daxenberger and Oliver Ferschke and Iryna Gurevych and Torsten Zesch (2014).
+ * DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data.
+ * In: Proceedings of the 52nd Annual Meeting of the ACL.
+ * </pre>
+ * 
  */
-public class NumberOfHashTagsDFE
+public class EmoticonRatio
     extends FeatureExtractorResource_ImplBase
     implements DocumentFeatureExtractor
 {
-
-    /**
-     * Pattern compiling a regex for twitter hashtags.
-     */
-    private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
-
     @Override
     public Set<Feature> extract(JCas jCas)
         throws TextClassificationException
     {
-        Matcher hashTagMatcher = HASHTAG_PATTERN.matcher(jCas.getDocumentText());
-        int numberOfHashTags = 0;
-        while (hashTagMatcher.find()) {
-            numberOfHashTags++;
-        }
-        return new Feature(NumberOfHashTagsDFE.class.getSimpleName(), numberOfHashTags).asSet();
+        int nrOfEmoticons = JCasUtil.select(jCas, EMO.class).size();
+        int nrOfTokens = JCasUtil.select(jCas, Token.class).size();
+        double ratio = (double) nrOfEmoticons / nrOfTokens;
+        return new Feature(EmoticonRatio.class.getSimpleName(), ratio).asSet();
     }
-
 }

@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationUnit;
-import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
+import org.dkpro.tc.features.style.IsSurroundedByChars;
 
 public class IsSurroundedByCharsFeatureExtractorTest
 {
@@ -54,9 +54,9 @@ public class IsSurroundedByCharsFeatureExtractorTest
 
         engine.process(jcas);
         
-        IsSurroundedByCharsUFE extractor = FeatureUtil.createResource(
-        		IsSurroundedByCharsUFE.class,
-                IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"");
+        IsSurroundedByChars extractor = FeatureUtil.createResource(
+        		IsSurroundedByChars.class,
+                IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"");
 
 
         TextClassificationUnit unit1 = new TextClassificationUnit(jcas);
@@ -71,14 +71,14 @@ public class IsSurroundedByCharsFeatureExtractorTest
 
         Assert.assertEquals(1, features1.size());
         for (Feature feature : features1) {
-            assertFeature(IsSurroundedByCharsUFE.SURROUNDED_BY_CHARS, false, feature);
+            assertFeature(IsSurroundedByChars.SURROUNDED_BY_CHARS, false, feature);
         }
 
         Set<Feature> features2 = extractor.extract(jcas, unit2);
         Assert.assertEquals(1, features2.size());
 
         for (Feature feature : features2) {
-            assertFeature(IsSurroundedByCharsUFE.SURROUNDED_BY_CHARS, true, feature);
+            assertFeature(IsSurroundedByChars.SURROUNDED_BY_CHARS, true, feature);
         }
     }
 }

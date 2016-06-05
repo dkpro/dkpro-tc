@@ -60,7 +60,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LuceneNgramUFETest
+public class LuceneNgramUnitTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -117,9 +117,9 @@ public class LuceneNgramUFETest
     {
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramUFE.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGramUFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramUFE.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGramUFE.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -136,7 +136,7 @@ public class LuceneNgramUFETest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_UNIT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LuceneNGramUFE.class.getName());
+                false, false, false, false, LuceneNGram.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, unitAnno, featExtractorConnector);
 
@@ -167,9 +167,9 @@ public class LuceneNgramUFETest
     private void runMetaCollection(File luceneFolder)
         throws Exception
     {
-        Object[] parameters = new Object[] { LuceneNGramUFE.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGramUFE.PARAM_LUCENE_DIR, luceneFolder, LuceneNGramUFE.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGramUFE.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(

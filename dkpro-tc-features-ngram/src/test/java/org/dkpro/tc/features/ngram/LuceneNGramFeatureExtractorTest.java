@@ -33,6 +33,14 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,15 +49,6 @@ import org.junit.rules.TemporaryFolder;
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class LuceneNGramFeatureExtractorTest
 {
@@ -71,8 +70,8 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 3,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 3,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -83,20 +82,23 @@ public class LuceneNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramMetaCollector.class, parameterList.toArray());
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                LuceneNGramDFE.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, LuceneNGram.class.getName());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollector);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
@@ -114,7 +116,7 @@ public class LuceneNGramFeatureExtractorTest
         // System.out.println(FileUtils.readFileToString(new File(outputPath,
         // JsonDataWriter.JSON_FILE_NAME)));
     }
-    
+
     @Test
     public void luceneNGramFeatureExtractorNonDefaultFrequencyThresholdTest()
         throws Exception
@@ -123,10 +125,10 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, 3,
-                LuceneNGramDFE.PARAM_LUCENE_DIR, luceneFolder,
-                LuceneNGramDFE.PARAM_NGRAM_FREQ_THRESHOLD, 0.1f};
-        
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 3,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD,
+                0.1f };
+
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -136,20 +138,23 @@ public class LuceneNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramMetaCollector.class, parameterList.toArray());
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                LuceneNGramDFE.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, LuceneNGram.class.getName());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollector);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(

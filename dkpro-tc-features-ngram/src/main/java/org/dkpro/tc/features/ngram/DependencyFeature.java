@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -27,63 +27,70 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.features.ngram.meta.ChunkTripleMetaCollector;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.features.ngram.meta.DependencyMetaCollector;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 
 /**
- * Extracts NP-VP-NP triples from chunked sentences.
- * Uses all triples that appeared in the training data with a frequency above the threshold as features.
+ * Extracts dependency triples (governor, dependent, type) from a dependency parsed document. Uses
+ * all triples that appeared in the training data with a frequency above the threshold as features.
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" })
-public class ChunkTripleDFE
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" })
+public class DependencyFeature
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor, MetaDependent
+    implements ClassificationUnitFeatureExtractor, MetaDependent
 {
 
-    public static final String PARAM_CHUNK_TRIPLE_FD_FILE = "chunkTripleFdFile";
-    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_FD_FILE, mandatory = true)
-    private String chunkTripleFdFile;
+    public static final String PARAM_DEP_FD_FILE = "depFdFile";
+    @ConfigurationParameter(name = PARAM_DEP_FD_FILE, mandatory = true)
+    private String depFdFile;
 
-    public static final String PARAM_CHUNK_TRIPLE_THRESHOLD = "chunkTripleThreshold";
-    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_THRESHOLD, mandatory = false, defaultValue = "2")
-    private int chunkTripleThreshold;
+    public static final String PARAM_DEP_FREQ_THRESHOLD = "depFreqThreshold";
+    @ConfigurationParameter(name = PARAM_DEP_FREQ_THRESHOLD, mandatory = false, defaultValue = "2")
+    private int depFreqThreshold;
 
-    public static final String PARAM_CHUNK_TRIPLE_LOWER_CASE = "chunkTripleLowerCase";
-    @ConfigurationParameter(name = PARAM_CHUNK_TRIPLE_LOWER_CASE, mandatory = false, defaultValue = "true")
-    private boolean chunkTripleLowerCase;
+    public static final String PARAM_LOWER_CASE_DEPS = "lowerCaseDeps";
+    @ConfigurationParameter(name = PARAM_LOWER_CASE_DEPS, mandatory = false, defaultValue = "true")
+    private boolean lowerCaseDeps;
 
-    protected Set<String> tripleSet;
+    protected Set<String> depSet;
 
-    private FrequencyDistribution<String> trainingFD;
+    private FrequencyDistribution<String> trainingDepsFD;
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
     {
-        // if(focusAnnotation!=null){
-        // throw new TextClassificationException(new
-        // UnsupportedOperationException("FocusAnnotation not yet supported!"));
-        // }
         Set<Feature> features = new HashSet<Feature>();
 
-        Set<String> triples = ChunkTripleMetaCollector.getTriples(jcas, chunkTripleLowerCase);
-        for (String featureTriple : tripleSet) {
-            if (triples.contains(featureTriple)) {
-                features.add(new Feature("lexicalTriple_" + featureTriple, 1));
+        Set<String> depStrings = new HashSet<String>();
+        for (Dependency dep : JCasUtil.selectCovered(jcas, Dependency.class, target)) {
+            String type = dep.getDependencyType();
+            String governor = dep.getGovernor().getCoveredText();
+            String dependent = dep.getDependent().getCoveredText();
+
+            depStrings.add(DependencyMetaCollector.getDependencyString(governor, dependent, type,
+                    lowerCaseDeps));
+        }
+
+        for (String topDep : depSet) {
+            if (depStrings.contains(topDep)) {
+                features.add(new Feature(topDep, 1));
             }
             else {
-                features.add(new Feature("lexicalTriple_" + featureTriple, 0));
+                features.add(new Feature(topDep, 0));
             }
         }
 
@@ -99,20 +106,18 @@ public class ChunkTripleDFE
             return false;
         }
 
-        tripleSet = loadTriples();
+        depSet = getTopDeps();
 
         return true;
     }
 
-    private Set<String> loadTriples()
+    private Set<String> getTopDeps()
         throws ResourceInitializationException
     {
-
-        Set<String> tripleSet = new HashSet<String>();
-
+        Set<String> depSet = new HashSet<String>();
         try {
-            trainingFD = new FrequencyDistribution<String>();
-            trainingFD.load(new File(chunkTripleFdFile));
+            trainingDepsFD = new FrequencyDistribution<String>();
+            trainingDepsFD.load(new File(depFdFile));
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);
@@ -121,20 +126,20 @@ public class ChunkTripleDFE
             throw new ResourceInitializationException(e);
         }
 
-        for (String key : trainingFD.getKeys()) {
-            if (trainingFD.getCount(key) > chunkTripleThreshold) {
-                tripleSet.add(key);
+        for (String key : trainingDepsFD.getKeys()) {
+            if (trainingDepsFD.getCount(key) > depFreqThreshold) {
+                depSet.add(key);
             }
         }
 
-        return tripleSet;
+        return depSet;
     }
 
     @Override
     public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
     {
         List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(ChunkTripleMetaCollector.class);
+        metaCollectorClasses.add(DependencyMetaCollector.class);
 
         return metaCollectorClasses;
     }

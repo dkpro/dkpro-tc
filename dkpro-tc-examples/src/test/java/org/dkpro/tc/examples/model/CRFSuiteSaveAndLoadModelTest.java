@@ -45,8 +45,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -143,8 +143,8 @@ public class CRFSuiteSaveAndLoadModelTest
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneCharacterNGramUFE.class.getName(),
-                        NrOfCharsUFE.class.getName(), }));
+                Arrays.asList(new String[] { LuceneCharacterNGram.class.getName(),
+                        NrOfChars.class.getName(), }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(

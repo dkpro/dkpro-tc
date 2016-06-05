@@ -35,7 +35,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.mallet.MalletAdapter;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -104,7 +104,7 @@ public class MalletTwentyNewsgroupsDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokensDFE.class.getName() }));
+                Arrays.asList(new String[] { NrOfTokens.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

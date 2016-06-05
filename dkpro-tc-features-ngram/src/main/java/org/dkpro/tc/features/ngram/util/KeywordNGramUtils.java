@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.util;
 
-import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
 import java.util.ArrayList;
@@ -25,7 +24,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -38,103 +39,104 @@ public class KeywordNGramUtils
     public static final String COMMA = "CA";
     public static final String GLUE = "_";
     public static final String MIDNGRAMGLUE = "_A";
-    
-    //all tokens should be already lowercased
+
+    // all tokens should be already lowercased
     /**
-     * Finds all minN- to maxN-length ngrams of tokens occurring in the keyword list.
-     * All tokens should already be lowercased, if applicable.
-     * The keyword list can contain multi-token words like "Brussel sprouts".  If keyword list
-     * contains both "Brussel" and "Brussel sprouts", then only "Brussel sprouts" will be added.
-     * Otherwise, the smallest multiword matching keyword will be added.
+     * Finds all minN- to maxN-length ngrams of tokens occurring in the keyword list. All tokens
+     * should already be lowercased, if applicable. The keyword list can contain multi-token words
+     * like "Brussel sprouts". If keyword list contains both "Brussel" and "Brussel sprouts", then
+     * only "Brussel sprouts" will be added. Otherwise, the smallest multiword matching keyword will
+     * be added.
      * 
      * @param jcas
-     * @param minN minimum ngram length
-     * @param maxN maximum ngram length
+     * @param minN
+     *            minimum ngram length
+     * @param maxN
+     *            maximum ngram length
      * @param markSentenceBoundary
      * @param markSentenceLocation
      * @param includeCommas
-     * @param keywords list of keywords
+     * @param keywords
+     *            list of keywords
      * @return all ngrams of keywords in jcas
      */
-    public static FrequencyDistribution<String> getDocumentKeywordNgrams(
-            JCas jcas,
-            int minN,
-            int maxN,
-            boolean markSentenceBoundary,
-            boolean markSentenceLocation,
-            boolean includeCommas,
-            Set<String> keywords)
+    public static FrequencyDistribution<String> getDocumentKeywordNgrams(JCas jcas, 
+            int minN, int maxN, boolean markSentenceBoundary, boolean markSentenceLocation,
+            boolean includeCommas, Set<String> keywords)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         List<String> keywordList = new ArrayList<String>();
         int sentenceNumber = 0;
-        int totalSentences = select(jcas, Sentence.class).size();
-        for (Sentence s : select(jcas, Sentence.class)) {
-        	List<Token> sentence = selectCovered(Token.class, s);
-        	for(int tokenpointer=0;tokenpointer<sentence.size();tokenpointer++){
-        		String token = sentence.get(tokenpointer).getCoveredText();
+        TextClassificationUnit anno = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
+        int totalSentences = selectCovered(jcas, Sentence.class, anno).size();
+        for (Sentence s : selectCovered(jcas, Sentence.class, anno)) {
+            List<Token> sentence = selectCovered(Token.class, s);
+            for (int tokenpointer = 0; tokenpointer < sentence.size(); tokenpointer++) {
+                String token = sentence.get(tokenpointer).getCoveredText();
                 token = token.toLowerCase();
-            	String compositeNgram = "";
-            	boolean foundComposite = false;
-            	for(int i=tokenpointer;i>=0;i--){
-            		compositeNgram = sentence.get(i).getCoveredText().toLowerCase() + " " + compositeNgram;
-            		if(compositeNgram.endsWith(" ")){
-            			compositeNgram = compositeNgram.replace(" ", "");
-            		}
-            		if(keywords.contains(compositeNgram)){
+                String compositeNgram = "";
+                boolean foundComposite = false;
+                for (int i = tokenpointer; i >= 0; i--) {
+                    compositeNgram = sentence.get(i).getCoveredText().toLowerCase() + " "
+                            + compositeNgram;
+                    if (compositeNgram.endsWith(" ")) {
+                        compositeNgram = compositeNgram.replace(" ", "");
+                    }
+                    if (keywords.contains(compositeNgram)) {
                         keywordList.add(compositeNgram.replace(" ", MIDNGRAMGLUE));
                         foundComposite = true;
-            		}
-            	}
-            	if(!foundComposite && keywords.contains(token)){
+                    }
+                }
+                if (!foundComposite && keywords.contains(token)) {
                     keywordList.add(token);
-            	}else if(includeCommas && token.equals(",")){
+                }
+                else if (includeCommas && token.equals(",")) {
                     keywordList.add(COMMA);
                 }
             }
             String sentenceBoundary = SENTENCE_BOUNDARY;
-            if(markSentenceLocation){
-                if(((double) sentenceNumber / totalSentences) < 0.25){
+            if (markSentenceLocation) {
+                if (((double) sentenceNumber / totalSentences) < 0.25) {
                     sentenceBoundary = sentenceBoundary + "BEG";
-                }else if(((double) sentenceNumber / totalSentences) > 0.75){
+                }
+                else if (((double) sentenceNumber / totalSentences) > 0.75) {
                     sentenceBoundary = sentenceBoundary + "END";
-                }else{
+                }
+                else {
                     sentenceBoundary = sentenceBoundary + "MID";
                 }
             }
-            if(markSentenceBoundary){
-            	keywordList.add(sentenceBoundary);
+            if (markSentenceBoundary) {
+                keywordList.add(sentenceBoundary);
             }
             sentenceNumber++;
         }
-        for (List<String> ngram : new NGramStringListIterable(keywordList.toArray(new String[keywordList.size()]), minN, maxN)) {
+        for (List<String> ngram : new NGramStringListIterable(
+                keywordList.toArray(new String[keywordList.size()]), minN, maxN)) {
             String ngramString = StringUtils.join(ngram, GLUE);
             documentNgrams.inc(ngramString);
         }
         return documentNgrams;
     }
-    public static FrequencyDistribution<String> getMultipleViewKeywordNgrams(
-            List<JCas> jcases,
-            int minN,
-            int maxN,
-            boolean markSentenceBoundary,
-            boolean markSentenceLocation,
-            boolean includeCommas,
-            Set<String> keywords){
-    	
+
+    public static FrequencyDistribution<String> getMultipleViewKeywordNgrams(List<JCas> jcases,
+            int minN, int maxN, boolean markSentenceBoundary, boolean markSentenceLocation,
+            boolean includeCommas, Set<String> keywords)
+    {
+
         FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
-        
-        for(JCas view: jcases){
+
+        for (JCas view : jcases) {
             FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
-            oneViewsNgrams = getDocumentKeywordNgrams(
-                    view, minN, maxN, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+            oneViewsNgrams = getDocumentKeywordNgrams(view, minN, maxN,
+                    markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
             // This is a hack because there's no method to combine 2 FD's
-            for(String key: oneViewsNgrams.getKeys()){
+            for (String key : oneViewsNgrams.getKeys()) {
                 viewNgramsTotal.addSample(key, oneViewsNgrams.getCount(key));
             }
         }
-    	
-    	return viewNgramsTotal;
-    	
+
+        return viewNgramsTotal;
+
     }
 }

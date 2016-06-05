@@ -23,6 +23,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import meka.classifiers.multilabel.BR
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
@@ -30,8 +31,6 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.ReutersCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.length.NrOfTokensDFE
-import org.dkpro.tc.features.ngram.LuceneNGramDFE
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
@@ -43,7 +42,9 @@ import weka.attributeSelection.InfoGainAttributeEval
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.dkpro.tc.features.length.*
+import org.dkpro.tc.features.ngram.*
+
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
  *
@@ -99,7 +100,7 @@ public class ReutersDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [NrOfTokensDFE.name, LuceneNGramDFE.name])
+    [NrOfTokens.name, LuceneNGram.name])
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,

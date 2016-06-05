@@ -34,8 +34,6 @@ import org.dkpro.tc.core.task.InitTask
 import org.dkpro.tc.core.task.MetaInfoTask
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.length.NrOfTokensDFE
-import org.dkpro.tc.features.ngram.LuceneNGramDFE
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
@@ -47,6 +45,10 @@ import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+
+import org.dkpro.tc.features.length.*
+import org.dkpro.tc.features.ngram.*
+
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
  *

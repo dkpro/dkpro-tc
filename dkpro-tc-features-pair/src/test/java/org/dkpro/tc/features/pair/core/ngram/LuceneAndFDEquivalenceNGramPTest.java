@@ -31,6 +31,16 @@ import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.pair.core.ngram.meta.FrequencyDistributionNGramPMetaCollector;
+import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.testing.TestPairReader;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -39,19 +49,6 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.pair.core.ngram.FrequencyDistributionNGramPFE;
-import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
-import org.dkpro.tc.features.pair.core.ngram.meta.FrequencyDistributionNGramPMetaCollector;
-import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.testing.TestPairReader;
 
 public class LuceneAndFDEquivalenceNGramPTest
 {

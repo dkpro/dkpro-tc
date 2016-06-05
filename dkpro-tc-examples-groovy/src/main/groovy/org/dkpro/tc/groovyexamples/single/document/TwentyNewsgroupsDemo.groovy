@@ -22,6 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
+import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
@@ -29,8 +30,6 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.length.NrOfTokensDFE
-import org.dkpro.tc.features.ngram.LuceneNGramDFE
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
@@ -41,7 +40,8 @@ import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.dkpro.tc.features.length.*
+import org.dkpro.tc.features.ngram.*
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
  *
@@ -90,8 +90,8 @@ public class TwentyNewsgroupsDemo implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensDFE.class.name,
-        LuceneNGramDFE.class.name
+        NrOfTokens.class.name,
+        LuceneNGram.class.name
         //        NGramFeatureExtractor.class.name
 
     ]
@@ -120,19 +120,19 @@ public class TwentyNewsgroupsDemo implements Constants {
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
+        LuceneNGram.PARAM_NGRAM_USE_TOP_K,
         "50",
-        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGram.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGram.PARAM_NGRAM_MAX_N,
         3
     ],
     [
-        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
+        LuceneNGram.PARAM_NGRAM_USE_TOP_K,
         "100",
-        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGram.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGram.PARAM_NGRAM_MAX_N,
         3
     ]
     )
