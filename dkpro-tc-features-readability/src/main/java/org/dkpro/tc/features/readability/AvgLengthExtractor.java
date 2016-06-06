@@ -59,7 +59,7 @@ public class AvgLengthExtractor
         int nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size();
 
         WordSyllableCounter counter = new WordSyllableCounter(
-                jcas.getDocumentLanguage().substring(target.getBegin(), target.getEnd()));
+                jcas.getDocumentLanguage());
 
         for (Token t : JCasUtil.select(jcas, Token.class)) {
 
