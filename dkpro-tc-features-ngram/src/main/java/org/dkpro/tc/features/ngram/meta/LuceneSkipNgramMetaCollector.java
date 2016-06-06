@@ -70,9 +70,10 @@ public class LuceneSkipNgramMetaCollector
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        return NGramUtils.getDocumentSkipNgrams(jcas, target, ngramLowerCase,
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        return NGramUtils.getDocumentSkipNgrams(jcas, fullDoc, ngramLowerCase,
                 filterPartialStopwordMatches, minN, maxN, skipSize, stopwords);
     }
 

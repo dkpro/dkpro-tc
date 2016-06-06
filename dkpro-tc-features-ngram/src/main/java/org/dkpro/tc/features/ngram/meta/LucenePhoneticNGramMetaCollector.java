@@ -39,10 +39,12 @@ public class LucenePhoneticNGramMetaCollector
     private int phoneticNgramMaxN;
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
-        return NGramUtils.getDocumentPhoneticNgrams(jcas, target, phoneticNgramMinN,
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0,
+                jcas.getDocumentText().length());
+        return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, phoneticNgramMinN,
                 phoneticNgramMaxN);
     }
 

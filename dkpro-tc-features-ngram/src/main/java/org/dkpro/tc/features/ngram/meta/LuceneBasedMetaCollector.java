@@ -19,7 +19,6 @@ package org.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +36,10 @@ import org.apache.lucene.util.Version;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 
@@ -118,9 +115,8 @@ public abstract class LuceneBasedMetaCollector
     {
         initializeDocument(jcas);
         FrequencyDistribution<String> documentNGrams;
-        TextClassificationUnit target = new ArrayList<TextClassificationUnit>(JCasUtil.select(jcas, TextClassificationUnit.class)).get(0);
         try {
-            documentNGrams = getNgramsFD(jcas, target);
+            documentNGrams = getNgramsFD(jcas);
         }
         catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
@@ -202,7 +198,7 @@ public abstract class LuceneBasedMetaCollector
         return DocumentMetaData.get(jcas).getDocumentId();
     }
 
-    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas)
                 throws TextClassificationException;
 
     protected abstract String getFieldName();

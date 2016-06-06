@@ -42,9 +42,10 @@ public class LuceneCharSkipNgramMetaCollector
 
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target){
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
         return NGramUtils.getCharacterSkipNgrams(
-                jcas, target, ngramLowerCase, minN, maxN, skipSize);
+                jcas, fullDoc, ngramLowerCase, minN, maxN, skipSize);
     }
     
     @Override

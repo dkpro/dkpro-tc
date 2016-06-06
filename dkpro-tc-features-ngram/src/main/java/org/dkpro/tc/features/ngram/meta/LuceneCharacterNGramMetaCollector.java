@@ -39,8 +39,9 @@ public class LuceneCharacterNGramMetaCollector
     private boolean lowerCase;
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target){
-        return NGramUtils.getDocumentCharacterNgrams(jcas, target, lowerCase,
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        return NGramUtils.getDocumentCharacterNgrams(jcas, fullDoc, lowerCase,
                 charNgramMinN, charNgramMaxN);
     }
     

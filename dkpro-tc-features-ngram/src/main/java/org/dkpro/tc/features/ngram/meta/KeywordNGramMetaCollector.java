@@ -70,9 +70,10 @@ public class KeywordNGramMetaCollector
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas,TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, target, minN, maxN,
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, fullDoc, minN, maxN,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
 

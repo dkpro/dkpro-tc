@@ -69,10 +69,12 @@ public class LuceneNGramMetaCollector
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target) throws TextClassificationException{
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException{
     	
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        
     	FrequencyDistribution<String> fd = null;
-    	fd = NGramUtils.getDocumentNgrams(jcas, target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+    	fd = NGramUtils.getDocumentNgrams(jcas, fullDoc, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
  
         return fd;
     }

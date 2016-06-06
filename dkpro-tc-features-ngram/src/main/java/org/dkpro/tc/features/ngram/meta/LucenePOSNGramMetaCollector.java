@@ -41,9 +41,12 @@ public class LucenePOSNGramMetaCollector
     private boolean useCanonical;
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        return NGramUtils.getDocumentPosNgrams(jcas, target, posNgramMinN, posNgramMaxN,
+        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0,
+                jcas.getDocumentText().length());
+        
+        return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, posNgramMinN, posNgramMaxN,
                 useCanonical);
     }
 
