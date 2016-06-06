@@ -32,6 +32,7 @@ import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -43,6 +44,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.ngram.util.TermFreqTuple;
 import org.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
@@ -124,9 +126,13 @@ public class LuceneNGramCPFE
     {
     	FrequencyDistribution<String> view1Ngrams = null;
     	FrequencyDistribution<String> view2Ngrams = null;
-        view1Ngrams = NGramUtils.getDocumentNgrams(view1, ngramLowerCase, filterPartialStopwordMatches,
+    	
+    	  TextClassificationUnit target1 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
+          TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
+    	
+        view1Ngrams = NGramUtils.getDocumentNgrams(view1, target1,ngramLowerCase, filterPartialStopwordMatches,
                 ngramMinN1, ngramMaxN1, stopwords);
-        view2Ngrams = NGramUtils.getDocumentNgrams(view2, ngramLowerCase, filterPartialStopwordMatches,
+        view2Ngrams = NGramUtils.getDocumentNgrams(view2, target2, ngramLowerCase, filterPartialStopwordMatches,
                 ngramMinN2, ngramMaxN2, stopwords);
 
         FrequencyDistribution<String> documentComboNgrams = ComboUtils

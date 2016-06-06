@@ -28,10 +28,12 @@ import java.util.Set;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.FreqDistBasedMetaCollector;
@@ -140,8 +142,9 @@ public class FrequencyDistributionNGramPMetaCollector
 	    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1)
 	        throws TextClassificationException
 	    {
+	        TextClassificationUnit target = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
 	    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
-	    	              view1, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
+	    	              view1, target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
 	    	              ngramMaxN, stopwords);
 	        return fd;
 	    }
@@ -149,8 +152,9 @@ public class FrequencyDistributionNGramPMetaCollector
 	    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2)
 	        throws TextClassificationException
 	    {
+	        TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
 	    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
-	    	              view2, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
+	    	              view2, target2, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
 	    	              ngramMaxN, stopwords);
 	        return fd;
 	    }

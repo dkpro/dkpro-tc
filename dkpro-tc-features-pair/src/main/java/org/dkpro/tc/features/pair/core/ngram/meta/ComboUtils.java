@@ -22,11 +22,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class ComboUtils
@@ -85,8 +87,9 @@ public class ComboUtils
         
         for(JCas view: jcases){
             FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
+            TextClassificationUnit target = JCasUtil.selectSingle(view, TextClassificationUnit.class);
             if (classificationUnit == null) {
-                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,
+                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,target,
                         ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
             }
             else {

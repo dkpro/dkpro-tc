@@ -66,7 +66,7 @@ public class LuceneAndFDEquivalenceNGramPTest
         
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
                 DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
@@ -182,11 +182,11 @@ public class LuceneAndFDEquivalenceNGramPTest
 
         assertEquals(9, view1features.getKeys().size());
         for (String sample : view1features.getKeys()) {
-            assertTrue(view1features.getCount(sample) == 2);
+            assertEquals(2, view1features.getCount(sample));
         }
         assertEquals(9, view2features.getKeys().size());
         for (String sample : view2features.getKeys()) {
-            assertTrue(view2features.getCount(sample) == 2);
+            assertEquals(2, view2features.getCount(sample));
         }
     }
 }

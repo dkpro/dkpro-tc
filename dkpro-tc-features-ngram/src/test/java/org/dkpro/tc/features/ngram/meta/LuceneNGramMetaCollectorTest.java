@@ -133,12 +133,15 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
+        AnalysisEngineDescription doc = AnalysisEngineFactory
+                .createEngineDescription(DocumentTextClassificationUnitAnnotator.class, DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+        
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
                 LuceneNGram.PARAM_LUCENE_DIR, tmpDir
         );
 
-        for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
+        for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {
 //            System.out.println(jcas.getDocumentText().length());
         }
     }

@@ -25,12 +25,15 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.core.Constants;
 
 /**
- *  Sets a single TCU if the processing mode is document
+ * Document or Pair are a special kind of unit processing in which only one target which spans over
+ * the entire text span from 0 to documentTextLength(). If the feature mode is either document or
+ * pair we set such an annotation automatically
  */
 public class DocumentTextClassificationUnitAnnotator
-    extends JCasAnnotator_ImplBase implements Constants
+    extends JCasAnnotator_ImplBase
+    implements Constants
 {
-    public static String PARAM_FEATURE_MODE="PARAM_FEATURE_MODE";
+    public static String PARAM_FEATURE_MODE = "PARAM_FEATURE_MODE";
     @ConfigurationParameter(name = "PARAM_FEATURE_MODE", mandatory = true)
     private String featureMode;
 
@@ -38,9 +41,10 @@ public class DocumentTextClassificationUnitAnnotator
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        if(featureMode.equals(Constants.FM_DOCUMENT)){
-        TextClassificationUnit unit = new TextClassificationUnit(aJCas, 0, aJCas.getDocumentText().length());
-        unit.addToIndexes();
+        if (featureMode.equals(Constants.FM_DOCUMENT) || featureMode.equals(Constants.FM_PAIR)) {
+            TextClassificationUnit unit = new TextClassificationUnit(aJCas, 0,
+                    aJCas.getDocumentText().length());
+            unit.addToIndexes();
         }
     }
 

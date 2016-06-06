@@ -46,7 +46,7 @@ public class FrequencyDistributionNGramPFE
         Set<Feature> features = new HashSet<Feature>();
         
         TextClassificationUnit target1 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
-        TextClassificationUnit target2 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
+        TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
 
         viewPrefix = "ngrams_" + view1.getViewName();
         features.addAll(super.extract(view1,target1));

@@ -38,6 +38,7 @@ import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 import org.dkpro.tc.testing.TestPairReader;
@@ -59,26 +60,28 @@ public class LuceneNGramPMetaCollectorTest
         File tmpDir = folder.newFolder();
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestPairReader.class,
-                TestPairReader.PARAM_INPUT_FILE, "src/test/resources/data/textpairs.txt"
-                );
+                TestPairReader.class, TestPairReader.PARAM_INPUT_FILE,
+                "src/test/resources/data/textpairs.txt");
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentTextClassificationUnitAnnotator.class,
+                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
+
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramPMetaCollector.class,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, tmpDir
-                );
+                LuceneNGramPMetaCollector.class, LuceneNGramPFE.PARAM_LUCENE_DIR, tmpDir);
 
         // test fails if for-loop removed
         for (@SuppressWarnings("unused")
-        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(),
-                metaCollector)) {
+        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
             // System.out.println(jcas.getDocumentText().length());
         }
 

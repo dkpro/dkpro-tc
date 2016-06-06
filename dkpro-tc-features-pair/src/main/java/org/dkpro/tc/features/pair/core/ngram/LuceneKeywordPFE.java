@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -35,6 +36,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
@@ -184,9 +186,11 @@ public class LuceneKeywordPFE
     public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, ngramMinN1, ngramMaxN1,
+        TextClassificationUnit target1 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
+        TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
+        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, target1, ngramMinN1, ngramMaxN1,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, ngramMinN2, ngramMaxN2,
+        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, target2, ngramMinN2, ngramMaxN2,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
         FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
         
