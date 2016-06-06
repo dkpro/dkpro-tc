@@ -85,15 +85,9 @@ public abstract class PPipelineTestBase
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
-        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
-
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
-        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
-        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         getMetaCollector(parameterList);
 
