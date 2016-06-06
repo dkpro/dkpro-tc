@@ -27,6 +27,7 @@ import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
@@ -57,6 +58,9 @@ public class TwitterSentimentRaw
                         LabeledTweetReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
+                createEngineDescription(DocumentTextClassificationUnitAnnotator.class,
+                        DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE,
+                        Constants.FM_DOCUMENT),
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(ArktweetPosTagger.class,
                         ArktweetPosTagger.PARAM_LANGUAGE, "en",
