@@ -41,7 +41,7 @@ public class DocumentTextClassificationUnitAnnotator
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        if (featureMode.equals(Constants.FM_DOCUMENT)) {
+        if (featureMode.equals(Constants.FM_DOCUMENT) || featureMode.equals(Constants.FM_PAIR)) {
             TextClassificationUnit unit = new TextClassificationUnit(aJCas, 0,
                     aJCas.getDocumentText().length());
             unit.addToIndexes();
