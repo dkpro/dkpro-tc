@@ -37,6 +37,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.testing.TestPairReader;
 import org.junit.rules.TemporaryFolder;
@@ -88,10 +89,13 @@ public abstract class PPipelineTestBase
         AnalysisEngineDescription stemmer = AnalysisEngineFactory.createEngineDescription(SnowballStemmer.class);
         AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(MorphaLemmatizer.class);
         AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class);
+        AnalysisEngineDescription pairAnno = AnalysisEngineFactory.createEngineDescription(DocumentTextClassificationUnitAnnotator.class, DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(pairAnno, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(pairAnno, Constants.INITIAL_VIEW, Constants.PART_TWO);        
         builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_TWO);
         builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_ONE);
