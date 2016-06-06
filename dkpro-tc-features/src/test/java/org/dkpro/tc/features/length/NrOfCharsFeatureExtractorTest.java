@@ -18,9 +18,10 @@
 package org.dkpro.tc.features.length;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -47,12 +48,10 @@ public class NrOfCharsFeatureExtractorTest
         TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
 
         NrOfChars extractor = new NrOfChars();
-        Set<Feature> features = extractor.extract(jcas,target);
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas,target));
 
-        Assert.assertEquals(3, features.size());
+        Assert.assertEquals(1, features.size());
 
-        assertFeatures(NrOfChars.FN_NR_OF_CHARS, 31., features, 0.01);
-        assertFeatures(NrOfChars.FN_NR_OF_CHARS_PER_SENTENCE, 15.5, features, 0.01);
-        assertFeatures(NrOfChars.FN_NR_OF_CHARS_PER_TOKEN, 3.1, features, 0.01);
+        assertEquals(new Integer(31), features.get(0).getValue());
     }
 }
