@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -17,72 +17,35 @@
  ******************************************************************************/
 package org.dkpro.tc.features.length;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.MissingValue;
-import org.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-
 /**
- * Extracts the number of characters in the document, per sentence, and per token
+ * Extracts the number of characters in the unit (basically, its length).
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NrOfChars
     extends FeatureExtractorResource_ImplBase
     implements ClassificationUnitFeatureExtractor
 {
-
     /**
      * Public name of the feature "number of characters"
      */
-    public static final String FN_NR_OF_CHARS = "NrofChars";
-    /**
-     * Public name of the feature "number of characters per sentence"
-     */
-    public static final String FN_NR_OF_CHARS_PER_SENTENCE = "NrofCharsPerSentence";
-    /**
-     * Public name of the feature "number of characters per token"
-     */
-    public static final String FN_NR_OF_CHARS_PER_TOKEN = "NrofCharsPerToken";
+    public static final String NR_OF_CHARS = "NrofChars";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit u)
+    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
         throws TextClassificationException
     {
-        double nrOfChars = jcas.getDocumentText().length();
-        double nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, u).size();
-        double nrOfTokens = JCasUtil.selectCovered(jcas, Token.class, u).size();
-
-        Set<Feature> features = new HashSet<Feature>();
-        features.add(new Feature(FN_NR_OF_CHARS, nrOfChars));
-
-        if (nrOfSentences == 0) {
-            features.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE,
-                    new MissingValue(MissingValueNonNominalType.NUMERIC)));
-        }
-        else {
-            features.add(new Feature(FN_NR_OF_CHARS_PER_SENTENCE, nrOfChars / nrOfSentences));
-        }
-
-        if (nrOfTokens == 0) {
-            features.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN,
-                    new MissingValue(MissingValueNonNominalType.NUMERIC)));
-        }
-        else {
-            features.add(new Feature(FN_NR_OF_CHARS_PER_TOKEN, nrOfChars / nrOfTokens));
-        }
-        return features;
+        int nrOfChars = classificationUnit.getEnd() - classificationUnit.getBegin();
+        return new Feature(NR_OF_CHARS, nrOfChars).asSet();
     }
 }
