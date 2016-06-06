@@ -37,6 +37,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.dkpro.tc.api.exception.TextClassificationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathException;
 import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
@@ -46,8 +47,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.CharacterNGramStringIterable;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.TextClassificationUnit;
 
 public class NGramUtils
 {
@@ -113,12 +112,12 @@ public class NGramUtils
      * @param maxN
      * @return
      */
-    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation target,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
         throws TextClassificationException
     {
         Set<String> empty = Collections.emptySet();
-        return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
+        return getDocumentNgrams(jcas, target, lowerCaseNGrams, filterPartialMatches, minN, maxN, empty);
     }
 
     /**
@@ -132,12 +131,12 @@ public class NGramUtils
      * @param stopwords
      * @return
      */
-    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation target,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords)
         throws TextClassificationException
     {
-        return getDocumentNgrams(jcas, lowerCaseNGrams, filterPartialMatches, minN, maxN,
+        return getDocumentNgrams(jcas,target, lowerCaseNGrams, filterPartialMatches, minN, maxN,
                 stopwords, Token.class);
     }
 
@@ -155,13 +154,13 @@ public class NGramUtils
      *            annotation type of the ngram
      * @return
      */
-    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas,
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation annotation,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords, Class<? extends Annotation> annotationClass)
         throws TextClassificationException
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : select(jcas, Sentence.class)) {
+        for (Sentence s : selectCovered(jcas, Sentence.class, annotation)) {
             List<String> strings = valuesToText(jcas, s, annotationClass.getName());
             for (List<String> ngram : new NGramStringListIterable(strings, minN, maxN)) {
                 if (lowerCaseNGrams) {
@@ -276,10 +275,9 @@ public class NGramUtils
         return phoneticNgrams;
     }
 
-    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas, 
+    public static FrequencyDistribution<String> getDocumentCharacterNgrams(JCas jcas, Annotation anno, 
             boolean lowerCaseNgrams, int minN, int maxN)
     {
-        TextClassificationUnit anno = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
         String text = jcas.getDocumentText().substring(anno.getBegin(), anno.getEnd());
         for (String charNgram : new CharacterNGramStringIterable(text, minN, maxN)) {
@@ -349,11 +347,10 @@ public class NGramUtils
         }
     }
 
-    public static FrequencyDistribution<String> getDocumentSkipNgrams(JCas jcas, 
+    public static FrequencyDistribution<String> getDocumentSkipNgrams(JCas jcas, Annotation anno, 
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN, int skipN,
             Set<String> stopwords)
     {
-        TextClassificationUnit anno = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : selectCovered(jcas, Sentence.class, anno)) {
             for (List<String> ngram : new SkipNgramStringListIterable(toText(selectCovered(

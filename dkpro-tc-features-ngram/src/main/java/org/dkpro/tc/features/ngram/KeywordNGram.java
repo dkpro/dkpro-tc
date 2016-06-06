@@ -45,7 +45,7 @@ public class KeywordNGram
         Set<Feature> features = new HashSet<Feature>();
 
         FrequencyDistribution<String> documentNgrams = KeywordNGramUtils.getDocumentKeywordNgrams(
-                jcas, keywordMinN, keywordMaxN, markSentenceBoundary, markSentenceLocation,
+                jcas, target, keywordMinN, keywordMaxN, markSentenceBoundary, markSentenceLocation,
                 includeCommas, keywords);
 
         for (String topNgram : topKSet.getKeys()) {

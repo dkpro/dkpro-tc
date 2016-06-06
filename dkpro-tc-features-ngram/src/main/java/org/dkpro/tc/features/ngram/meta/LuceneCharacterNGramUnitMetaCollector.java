@@ -41,11 +41,10 @@ public class LuceneCharacterNGramUnitMetaCollector
     private boolean lowerCase;
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
     {
-        
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
-        for (Annotation a : JCasUtil.select(jcas, TextClassificationUnit.class)) {
+        for (Annotation a : JCasUtil.select(jcas, target.getClass())) {
             FrequencyDistribution<String> ngramDist = NGramUtils.getAnnotationCharacterNgrams(a,
                     lowerCase, charNgramMinN, charNgramMaxN, '^','$');
             for (String condition : ngramDist.getKeys()) {

@@ -48,7 +48,7 @@ public class LuceneSkipNGram
         Set<Feature> features = new HashSet<Feature>();
 
         FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentSkipNgrams(jcas,
-                skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipSize,
+                target, skipToLowerCase, filterPartialStopwordMatches, skipMinN, skipMaxN, skipSize,
                 stopwords);
 
         for (String topNgram : topKSet.getKeys()) {

@@ -25,6 +25,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 
@@ -69,9 +70,9 @@ public class KeywordNGramMetaCollector
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas,TextClassificationUnit target)
     {
-        return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, minN, maxN,
+        return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, target, minN, maxN,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
 

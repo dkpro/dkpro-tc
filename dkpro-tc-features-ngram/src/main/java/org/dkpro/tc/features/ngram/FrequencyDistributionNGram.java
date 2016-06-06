@@ -45,7 +45,7 @@ public class FrequencyDistributionNGram
     {
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
-        documentNgrams = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase,
+        documentNgrams = NGramUtils.getDocumentNgrams(jcas, target, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
         
         if (tfIdfCalculation == true) {

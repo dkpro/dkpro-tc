@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -60,14 +61,13 @@ public class KeywordNGramUtils
      *            list of keywords
      * @return all ngrams of keywords in jcas
      */
-    public static FrequencyDistribution<String> getDocumentKeywordNgrams(JCas jcas, 
+    public static FrequencyDistribution<String> getDocumentKeywordNgrams(JCas jcas, Annotation anno,
             int minN, int maxN, boolean markSentenceBoundary, boolean markSentenceLocation,
             boolean includeCommas, Set<String> keywords)
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         List<String> keywordList = new ArrayList<String>();
         int sentenceNumber = 0;
-        TextClassificationUnit anno = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
         int totalSentences = selectCovered(jcas, Sentence.class, anno).size();
         for (Sentence s : selectCovered(jcas, Sentence.class, anno)) {
             List<Token> sentence = selectCovered(Token.class, s);
@@ -128,7 +128,9 @@ public class KeywordNGramUtils
 
         for (JCas view : jcases) {
             FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
-            oneViewsNgrams = getDocumentKeywordNgrams(view, minN, maxN,
+            TextClassificationUnit target = JCasUtil.selectSingle(view,
+                    TextClassificationUnit.class);
+            oneViewsNgrams = getDocumentKeywordNgrams(view, target, minN, maxN,
                     markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
             // This is a hack because there's no method to combine 2 FD's
             for (String key : oneViewsNgrams.getKeys()) {

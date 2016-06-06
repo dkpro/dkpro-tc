@@ -19,6 +19,7 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -38,8 +39,8 @@ public class LuceneCharacterNGramMetaCollector
     private boolean lowerCase;
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
-        return NGramUtils.getDocumentCharacterNgrams(jcas, lowerCase,
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target){
+        return NGramUtils.getDocumentCharacterNgrams(jcas, target, lowerCase,
                 charNgramMinN, charNgramMaxN);
     }
     

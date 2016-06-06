@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -23,6 +23,8 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
+import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -37,35 +39,18 @@ public class LucenePOSNGramMetaCollector
 
     @ConfigurationParameter(name = LucenePOSNGramFeatureExtractorBase.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
     private boolean useCanonical;
-    
+
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
-        return NGramUtils.getDocumentPosNgrams(jcas,
-                posNgramMinN, posNgramMaxN, useCanonical);
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    {
+        return NGramUtils.getDocumentPosNgrams(jcas, target, posNgramMinN, posNgramMaxN,
+                useCanonical);
     }
-    
+
     @Override
-    protected String getFieldName(){
+    protected String getFieldName()
+    {
         return LUCENE_POS_NGRAM_FIELD;
     }
 
-//    @Override
-//    public void process(JCas jcas)
-//        throws AnalysisEngineProcessException
-//    {
-//    	initializeDocument(jcas);
-//    	
-//        FrequencyDistribution<String> documentPOSNGrams = getNgramsFD(jcas);
-//
-//        for (String ngram : documentPOSNGrams.getKeys()) {
-//			addField(jcas, getFieldName(), ngram);// under discussion: binary records per doc
-//        }
-//       
-//        try {
-//            writeToIndex();
-//        }
-//        catch (IOException e) {
-//            throw new AnalysisEngineProcessException(e);
-//        }
-//    }
 }

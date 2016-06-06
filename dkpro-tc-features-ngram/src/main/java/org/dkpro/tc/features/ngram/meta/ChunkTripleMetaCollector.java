@@ -30,15 +30,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
+import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.features.ngram.ChunkTriple;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.NC;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
-
-import org.dkpro.tc.api.type.TextClassificationUnit;
-import org.dkpro.tc.features.ngram.ChunkTriple;
 
 public class ChunkTripleMetaCollector
     extends FreqDistBasedMetaCollector

@@ -20,14 +20,13 @@ package org.dkpro.tc.features.ngram.meta;
 import static org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase.LUCENE_PHONETIC_NGRAM_FIELD;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationUnit;
 import org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LucenePhoneticNGramMetaCollector
     extends LuceneBasedMetaCollector
@@ -40,11 +39,11 @@ public class LucenePhoneticNGramMetaCollector
     private int phoneticNgramMaxN;
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
         throws TextClassificationException
-    {TextClassificationUnit target = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
-        return NGramUtils.getDocumentPhoneticNgrams(jcas,target,
-                phoneticNgramMinN, phoneticNgramMaxN);
+    {
+        return NGramUtils.getDocumentPhoneticNgrams(jcas, target, phoneticNgramMinN,
+                phoneticNgramMaxN);
     }
 
     @Override
