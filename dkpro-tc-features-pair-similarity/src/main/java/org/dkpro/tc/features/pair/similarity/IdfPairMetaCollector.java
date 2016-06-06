@@ -77,12 +77,8 @@ public class IdfPairMetaCollector<T extends Annotation>
         FrequencyDistribution<String> document1NGrams;
         FrequencyDistribution<String> document2NGrams;
         try {
-            TextClassificationUnit target1 = JCasUtil.selectSingle(view1,
-                    TextClassificationUnit.class);
-            TextClassificationUnit target2 = JCasUtil.selectSingle(view2,
-                    TextClassificationUnit.class);
-            document1NGrams = getNgramsFD(view1, target1);
-            document2NGrams = getNgramsFD(view2, target2);
+            document1NGrams = getNgramsFD(view1);
+            document2NGrams = getNgramsFD(view2);
         }
         catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
@@ -114,9 +110,12 @@ public class IdfPairMetaCollector<T extends Annotation>
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
+        TextClassificationUnit target = JCasUtil.selectSingle(jcas,
+                TextClassificationUnit.class);
+        
         FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(jcas, target, true,
                 false, 1, 1, stopwords, ngramAnnotationType);
         return toReturn;

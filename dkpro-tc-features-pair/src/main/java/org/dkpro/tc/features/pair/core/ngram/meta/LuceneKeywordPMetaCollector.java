@@ -97,7 +97,7 @@ public class LuceneKeywordPMetaCollector
      * are ready.
      */
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
         return null;
