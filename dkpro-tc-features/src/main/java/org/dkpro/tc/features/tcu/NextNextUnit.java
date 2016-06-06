@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -19,6 +19,7 @@ package org.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -31,7 +32,10 @@ import org.dkpro.tc.api.type.TextClassificationUnit;
 public class NextNextUnit 
 	extends TcuLookUpTable
 {
-
+    public static final String PARAM_LOWER_CASE = "useLowerCase";
+    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = true, defaultValue = "true")
+    protected boolean useLowerCase;
+    
     public static final String FEATURE_NAME = "nextNextUnit";
     final static String END_OF_SEQUENCE = "EOS";
 
@@ -41,11 +45,19 @@ public class NextNextUnit
         super.extract(aView, unit);
         Integer idx = unitBegin2Idx.get(unit.getBegin());
         
-        String featureVal = nextToken(idx);
+        String featureVal = lowerCase(nextNextToken(idx));
         return new Feature(FEATURE_NAME, featureVal).asSet();
     }
     
-    private String nextToken(Integer idx)
+    private String lowerCase(String token)
+    {
+        if(useLowerCase){
+            return token.toLowerCase();
+        }
+        return token;
+    }
+
+    private String nextNextToken(Integer idx)
     {
         if (idx2SequenceEnd.get(idx) != null){
             return END_OF_SEQUENCE;
