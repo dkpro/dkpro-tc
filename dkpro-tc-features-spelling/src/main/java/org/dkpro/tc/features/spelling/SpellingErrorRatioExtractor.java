@@ -25,7 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.anomaly.type.SpellingAnomaly;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -41,7 +41,7 @@ public class SpellingErrorRatioExtractor
     // TODO Issue 125: could be generalized to AnnotationRatioFE
     
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationUnit target)
+    public Set<Feature> extract(JCas view, TextClassificationTarget target)
         throws TextClassificationException
     {
         int nrOfSpellingErrors = JCasUtil.selectCovered(view, SpellingAnomaly.class, target).size();

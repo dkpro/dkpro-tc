@@ -37,7 +37,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  *         We would prefer to have the wordListLocation and the feature name as parameters.
@@ -87,7 +87,7 @@ public abstract class IsInWordListUFE
     }
 
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas view, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
 

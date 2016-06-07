@@ -26,7 +26,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Sets the text of the current TextClassificationUnit as feature value
@@ -41,7 +41,7 @@ public class CurrentUnit
 
     public final static String FEATURE_NAME = "currUnit";
 
-    public Set<Feature> extract(JCas aView, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas aView, TextClassificationTarget aClassificationUnit)
         throws TextClassificationException
     {
         String token = lowerCase(aClassificationUnit.getCoveredText());

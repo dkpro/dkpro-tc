@@ -23,7 +23,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class SequenceContextMetaCollector
     extends ContextMetaCollector_ImplBase
@@ -38,8 +38,8 @@ public class SequenceContextMetaCollector
                 TextClassificationSequence.class);
         for (TextClassificationSequence seq : sequences) {
             int id = seq.getId();
-            for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
-                    TextClassificationUnit.class, seq)) {
+            for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas,
+                    TextClassificationTarget.class, seq)) {
                 String idString;
                 try {
                     idString = (String) InstanceIdFeature.retrieve(jcas, unit, id).getValue();

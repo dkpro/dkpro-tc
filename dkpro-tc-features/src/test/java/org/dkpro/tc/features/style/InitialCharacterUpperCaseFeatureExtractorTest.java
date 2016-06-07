@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 
 public class InitialCharacterUpperCaseFeatureExtractorTest
@@ -58,11 +58,11 @@ public class InitialCharacterUpperCaseFeatureExtractorTest
         		InitialCharacterUpperCase.class);
 
 
-        TextClassificationUnit unit1 = new TextClassificationUnit(jcas);
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas);
         unit1.setBegin(0);
         unit1.setEnd(2);
 
-        TextClassificationUnit unit2 = new TextClassificationUnit(jcas);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas);
         unit2.setBegin(3);
         unit2.setEnd(5);
 

@@ -31,7 +31,7 @@ import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Provides speedy access to the TextClassificationUnits (TCU) covered by a TextClassificationSequence.
@@ -47,25 +47,25 @@ public class TcuLookUpTable
 	protected   HashMap<Integer, Boolean> idx2SequenceBegin = new HashMap<Integer, Boolean>();
 	protected   HashMap<Integer, Boolean> idx2SequenceEnd = new HashMap<Integer, Boolean>();
 
-	protected   HashMap<Integer, TextClassificationUnit> begin2Unit = new HashMap<Integer, TextClassificationUnit>();
+	protected   HashMap<Integer, TextClassificationTarget> begin2Unit = new HashMap<Integer, TextClassificationTarget>();
 	protected   HashMap<Integer, Integer> unitBegin2Idx = new HashMap<Integer, Integer>();
 	protected   HashMap<Integer, Integer> unitEnd2Idx = new HashMap<Integer, Integer>();
-	protected   List<TextClassificationUnit> units = new ArrayList<TextClassificationUnit>();
+	protected   List<TextClassificationTarget> units = new ArrayList<TextClassificationTarget>();
 
 	public Set<Feature> extract(JCas aView,
-			TextClassificationUnit aClassificationUnit)
+			TextClassificationTarget aClassificationUnit)
 			throws TextClassificationException {
 		if (isTheSameDocument(aView)) {
 			return null;
 		}
-		begin2Unit = new HashMap<Integer, TextClassificationUnit>();
+		begin2Unit = new HashMap<Integer, TextClassificationTarget>();
 		unitBegin2Idx = new HashMap<Integer, Integer>();
 		idx2SequenceBegin = new HashMap<Integer, Boolean>();
 		idx2SequenceEnd = new HashMap<Integer, Boolean>();
-		units = new ArrayList<TextClassificationUnit>();
+		units = new ArrayList<TextClassificationTarget>();
 
 		int i = 0;
-		for (TextClassificationUnit t : JCasUtil.select(aView, TextClassificationUnit.class)) {
+		for (TextClassificationTarget t : JCasUtil.select(aView, TextClassificationTarget.class)) {
 			Integer begin = t.getBegin();
 			Integer end = t.getEnd();
 			begin2Unit.put(begin, t);

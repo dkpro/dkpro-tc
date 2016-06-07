@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import org.dkpro.tc.api.io.TCReaderSequence;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Reads the Brown corpus and sets POS tags for each tokens as classification outcome.
@@ -71,7 +71,7 @@ public class BrownCorpusReader
             sequence.addToIndexes();
             
             for (Token token : JCasUtil.selectCovered(jcas, Token.class, sentence)) {
-                TextClassificationUnit unit = new TextClassificationUnit(jcas, token.getBegin(), token.getEnd());
+                TextClassificationTarget unit = new TextClassificationTarget(jcas, token.getBegin(), token.getEnd());
                 // will add the token content as a suffix to the ID of this unit 
                 unit.setSuffix(token.getCoveredText());
                 unit.addToIndexes();
@@ -84,7 +84,7 @@ public class BrownCorpusReader
     }
     
     @Override
-    public String getTextClassificationOutcome(JCas jcas, TextClassificationUnit unit)
+    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
         throws CollectionException
     {
         List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, unit);

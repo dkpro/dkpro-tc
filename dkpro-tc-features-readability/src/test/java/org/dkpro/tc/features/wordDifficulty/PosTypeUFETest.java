@@ -39,7 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.wordDifficulty.PosTypeUFE;
 
 
@@ -56,31 +56,31 @@ public class PosTypeUFETest {
 	        engine.process(jcas);
 	        
 	        
-	        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 1);
+	        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 1);
 	        new ADJ(jcas, 0, 1).addToIndexes();
 	      
-	        TextClassificationUnit unit2 = new TextClassificationUnit(jcas, 2, 3);
+	        TextClassificationTarget unit2 = new TextClassificationTarget(jcas, 2, 3);
 	        new ADV(jcas, 2, 3).addToIndexes();
 	        
-	        TextClassificationUnit unit3 = new TextClassificationUnit(jcas, 4, 5);
+	        TextClassificationTarget unit3 = new TextClassificationTarget(jcas, 4, 5);
 	        new ART(jcas, 4, 5).addToIndexes();
 	        
-	        TextClassificationUnit unit4 = new TextClassificationUnit(jcas, 6, 7);
+	        TextClassificationTarget unit4 = new TextClassificationTarget(jcas, 6, 7);
 	        new CONJ(jcas, 6, 7).addToIndexes();
 	        
-	        TextClassificationUnit unit5 = new TextClassificationUnit(jcas, 8, 9);
+	        TextClassificationTarget unit5 = new TextClassificationTarget(jcas, 8, 9);
 	        new NN(jcas, 8, 9).addToIndexes();
 	        
-	        TextClassificationUnit unit6 = new TextClassificationUnit(jcas, 10, 11);
+	        TextClassificationTarget unit6 = new TextClassificationTarget(jcas, 10, 11);
 	        new NP(jcas, 10, 11).addToIndexes();
 
-	        TextClassificationUnit unit7 = new TextClassificationUnit(jcas, 12, 13);
+	        TextClassificationTarget unit7 = new TextClassificationTarget(jcas, 12, 13);
 	        new PP(jcas, 12, 13).addToIndexes();
 	        
-	        TextClassificationUnit unit8 = new TextClassificationUnit(jcas, 14, 15);
+	        TextClassificationTarget unit8 = new TextClassificationTarget(jcas, 14, 15);
 	        new PR(jcas, 14, 15).addToIndexes();
 	        
-	        TextClassificationUnit unit9 = new TextClassificationUnit(jcas, 16, 17);
+	        TextClassificationTarget unit9 = new TextClassificationTarget(jcas, 16, 17);
 	        new V(jcas, 16, 17).addToIndexes();
 	    
 

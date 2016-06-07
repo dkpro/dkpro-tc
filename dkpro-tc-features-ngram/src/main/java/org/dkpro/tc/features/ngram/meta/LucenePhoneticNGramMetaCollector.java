@@ -22,7 +22,7 @@ import static org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtract
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -42,7 +42,7 @@ public class LucenePhoneticNGramMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
-        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0,
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
         return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, phoneticNgramMinN,
                 phoneticNgramMaxN);

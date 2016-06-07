@@ -46,7 +46,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.ngram.util.TermFreqTuple;
@@ -183,8 +183,8 @@ public class LuceneNGramPFE
     	FrequencyDistribution<String> view2Ngrams = null;
     	FrequencyDistribution<String> allNgrams = null;
     	
-    	  TextClassificationUnit target1 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
-          TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
+    	  TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+          TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
     	
         view1Ngrams = NGramUtils.getDocumentNgrams(view1, target1, ngramLowerCase, filterPartialStopwordMatches,
                 ngramMinN1, ngramMaxN1, stopwords);

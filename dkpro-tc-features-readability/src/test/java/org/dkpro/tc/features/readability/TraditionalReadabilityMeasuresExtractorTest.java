@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.TraditionalReadabilityMeasuresFeatureExtractor;
 
 public class TraditionalReadabilityMeasuresExtractorTest
@@ -66,7 +66,7 @@ public class TraditionalReadabilityMeasuresExtractorTest
         jcas.setDocumentText(testDocument);
         engine.process(jcas);
 
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, testDocument.length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, testDocument.length());
         target.addToIndexes();
         
         TraditionalReadabilityMeasuresFeatureExtractor extractor = FeatureUtil.createResource(

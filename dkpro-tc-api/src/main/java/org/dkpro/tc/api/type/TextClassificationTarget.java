@@ -27,15 +27,15 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Mar 26 14:18:53 CET 2016
+ * Updated by JCasGen Tue Jun 07 08:16:55 CEST 2016
  * XML source: /Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
-public class TextClassificationUnit extends Annotation {
+public class TextClassificationTarget extends Annotation {
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(TextClassificationUnit.class);
+  public final static int typeIndexID = JCasRegistry.register(TextClassificationTarget.class);
   /** @generated
    * @ordered 
    */
@@ -49,14 +49,14 @@ public class TextClassificationUnit extends Annotation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected TextClassificationUnit() {/* intentionally empty block */}
+  protected TextClassificationTarget() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
    * @param addr low level Feature Structure reference
    * @param type the type of this Feature Structure 
    */
-  public TextClassificationUnit(int addr, TOP_Type type) {
+  public TextClassificationTarget(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
@@ -64,7 +64,7 @@ public class TextClassificationUnit extends Annotation {
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
-  public TextClassificationUnit(JCas jcas) {
+  public TextClassificationTarget(JCas jcas) {
     super(jcas);
     readObject();   
   } 
@@ -74,7 +74,7 @@ public class TextClassificationUnit extends Annotation {
    * @param begin offset to the begin spot in the SofA
    * @param end offset to the end spot in the SofA 
   */  
-  public TextClassificationUnit(JCas jcas, int begin, int end) {
+  public TextClassificationTarget(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
@@ -100,9 +100,9 @@ This can be used to add additional information e.g. for identifying the unit.
    * @return value of the feature 
    */
   public String getSuffix() {
-    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_suffix == null)
-      jcasType.jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationUnit");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_suffix);}
+    if (TextClassificationTarget_Type.featOkTst && ((TextClassificationTarget_Type)jcasType).casFeat_suffix == null)
+      jcasType.jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationTarget");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((TextClassificationTarget_Type)jcasType).casFeatCode_suffix);}
     
   /** setter for suffix - sets A customizable suffix that will be attached to the instance id.
 
@@ -111,9 +111,9 @@ This can be used to add additional information e.g. for identifying the unit.
    * @param v value to set into the feature 
    */
   public void setSuffix(String v) {
-    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_suffix == null)
-      jcasType.jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationUnit");
-    jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_suffix, v);}    
+    if (TextClassificationTarget_Type.featOkTst && ((TextClassificationTarget_Type)jcasType).casFeat_suffix == null)
+      jcasType.jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationTarget");
+    jcasType.ll_cas.ll_setStringValue(addr, ((TextClassificationTarget_Type)jcasType).casFeatCode_suffix, v);}    
    
     
   //*--------------*
@@ -124,18 +124,18 @@ This can be used to add additional information e.g. for identifying the unit.
    * @return value of the feature 
    */
   public int getId() {
-    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
-      jcasType.jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationUnit");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id);}
+    if (TextClassificationTarget_Type.featOkTst && ((TextClassificationTarget_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationTarget");
+    return jcasType.ll_cas.ll_getIntValue(addr, ((TextClassificationTarget_Type)jcasType).casFeatCode_id);}
     
   /** setter for id - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setId(int v) {
-    if (TextClassificationUnit_Type.featOkTst && ((TextClassificationUnit_Type)jcasType).casFeat_id == null)
-      jcasType.jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationUnit");
-    jcasType.ll_cas.ll_setIntValue(addr, ((TextClassificationUnit_Type)jcasType).casFeatCode_id, v);}    
+    if (TextClassificationTarget_Type.featOkTst && ((TextClassificationTarget_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationTarget");
+    jcasType.ll_cas.ll_setIntValue(addr, ((TextClassificationTarget_Type)jcasType).casFeatCode_id, v);}    
   }
 
     

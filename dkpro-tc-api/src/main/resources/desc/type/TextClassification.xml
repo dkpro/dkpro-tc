@@ -33,7 +33,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.dkpro.tc.api.type.TextClassificationUnit</name>
+      <name>org.dkpro.tc.api.type.TextClassificationTarget</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     <features>

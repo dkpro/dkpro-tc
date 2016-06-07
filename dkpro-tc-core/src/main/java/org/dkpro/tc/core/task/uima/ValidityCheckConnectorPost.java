@@ -30,7 +30,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.util.ValidityCheckUtils;
@@ -74,8 +74,8 @@ public class ValidityCheckConnectorPost
 
         Collection<TextClassificationOutcome> outcomes = JCasUtil.select(jcas,
                 TextClassificationOutcome.class);
-        Collection<TextClassificationUnit> classificationUnits = JCasUtil.select(jcas,
-                TextClassificationUnit.class);
+        Collection<TextClassificationTarget> classificationUnits = JCasUtil.select(jcas,
+                TextClassificationTarget.class);
 
         // whether outcome annotation are present at all
         if (outcomes.size() == 0) {
@@ -104,7 +104,7 @@ public class ValidityCheckConnectorPost
                                 "Your experiment is configured to have classification units. Please add classification unit annotations to the CAS while reading your initial files."));
             }
             else {
-                for (TextClassificationUnit classificationUnit : classificationUnits) {
+                for (TextClassificationTarget classificationUnit : classificationUnits) {
                     if (JCasUtil.selectCovered(jcas, TextClassificationOutcome.class,
                             classificationUnit).size() == 0) {
                         throw new AnalysisEngineProcessException(

@@ -32,7 +32,7 @@ import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
 
 public class NumberOfHashTagsDFETest
@@ -50,7 +50,7 @@ public class NumberOfHashTagsDFETest
         jcas.setDocumentText("This is a very #emotional tweet ;-) #icouldcry #ILoveHashTags");
         engine.process(jcas);
         
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
         NumberOfHashTags extractor = new NumberOfHashTags();

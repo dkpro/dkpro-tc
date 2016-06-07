@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.spelling.SpellingErrorPOSRatioFeatureExtractor;
 
 public class SpellingErrorPOSRatioFeatureExtractorTest
@@ -62,7 +62,7 @@ public class SpellingErrorPOSRatioFeatureExtractorTest
         jcas.setDocumentText("As tthe pope leavess the Vatican for the papal residenze of Castel Gandolfo – and becomes the first pontiff to resign in 600 years – the operation to choose his successor begins.");
         engine.process(jcas);
         
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
         SpellingErrorPOSRatioFeatureExtractor extractor = new SpellingErrorPOSRatioFeatureExtractor();

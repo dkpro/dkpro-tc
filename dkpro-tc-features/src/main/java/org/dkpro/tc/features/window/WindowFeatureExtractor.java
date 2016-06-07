@@ -30,7 +30,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 
 public abstract class WindowFeatureExtractor<T extends Annotation>
@@ -75,7 +75,7 @@ public abstract class WindowFeatureExtractor<T extends Annotation>
 
 
 	@Override 
-    public Set<Feature> extract(JCas jCas, TextClassificationUnit textClassificationUnit)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget textClassificationUnit)
             throws TextClassificationException
     {
 //    	List<Feature> features = new LinkedList<Feature>();

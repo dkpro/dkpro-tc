@@ -31,7 +31,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
@@ -230,7 +230,7 @@ public class TestTaskUtils
             int start = sb.length();
             int end = start + tokens[i][0].length();
 
-            TextClassificationUnit unit = new TextClassificationUnit(jCas, start, end);
+            TextClassificationTarget unit = new TextClassificationTarget(jCas, start, end);
             if (setUnitIdAsPartOfTheInstanceId) {
                 unit.setSuffix(tokens[i][0]);
             }

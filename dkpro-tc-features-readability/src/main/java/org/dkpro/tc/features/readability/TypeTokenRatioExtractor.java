@@ -29,7 +29,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -74,7 +74,7 @@ public class TypeTokenRatioExtractor
 
     public static final String TYPE_TOKEN_RATIO = "Type_Token_Ratio";
 
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
         int numberOfTokens = 0;
         // int numberOfVerbs = 0;

@@ -25,7 +25,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
@@ -42,7 +42,7 @@ public class EachTokenAsUnitAnnotator
         List<Token> tokens = new ArrayList<Token>(JCasUtil.select(aJCas, Token.class));
 
         for (Token token : tokens) {
-            TextClassificationUnit unit = new TextClassificationUnit(aJCas, token.getBegin(),
+            TextClassificationTarget unit = new TextClassificationTarget(aJCas, token.getBegin(),
                     token.getEnd());
             unit.setId(tcId++);
             unit.setSuffix(token.getCoveredText());

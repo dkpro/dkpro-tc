@@ -64,7 +64,7 @@ import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
@@ -318,7 +318,7 @@ public class TaskUtils
      */
     public static Instance getSingleInstanceUnit(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean developerMode,
-            boolean addInstanceId, TextClassificationUnit unit)
+            boolean addInstanceId, TextClassificationTarget unit)
                 throws TextClassificationException
     {
         Instance instance = new Instance();
@@ -379,7 +379,7 @@ public class TaskUtils
                 throws Exception
     {
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        TextClassificationUnit unit = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
+        TextClassificationTarget unit = JCasUtil.selectSingle(jcas, TextClassificationTarget.class);
 
         if (addInstanceId) {
             instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
@@ -436,8 +436,8 @@ public class TaskUtils
     {
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
 
-        TextClassificationUnit documentTcu = JCasUtil.selectSingle(jcas,
-                TextClassificationUnit.class);
+        TextClassificationTarget documentTcu = JCasUtil.selectSingle(jcas,
+                TextClassificationTarget.class);
 
         if (addInstanceId) {
             instance.addFeature(InstanceIdFeature.retrieve(jcas));
@@ -471,8 +471,8 @@ public class TaskUtils
         for (TextClassificationSequence seq : JCasUtil.select(jcas,
                 TextClassificationSequence.class)) {
             unitId = 0;
-            for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
-                    TextClassificationUnit.class, seq)) {
+            for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas,
+                    TextClassificationTarget.class, seq)) {
 
                 unit.setId(unitId++);
 
@@ -514,7 +514,7 @@ public class TaskUtils
     {
         List<Instance> instances = new ArrayList<Instance>();
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        for (TextClassificationUnit unit : JCasUtil.select(jcas, TextClassificationUnit.class)) {
+        for (TextClassificationTarget unit : JCasUtil.select(jcas, TextClassificationTarget.class)) {
 
             Instance instance = new Instance();
 
@@ -554,8 +554,8 @@ public class TaskUtils
     {
         List<Instance> instances = new ArrayList<Instance>();
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
-                TextClassificationUnit.class, sequence)) {
+        for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas,
+                TextClassificationTarget.class, sequence)) {
 
             Instance instance = new Instance();
 

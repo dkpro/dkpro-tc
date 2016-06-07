@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -128,8 +128,8 @@ public class KeywordNGramUtils
 
         for (JCas view : jcases) {
             FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
-            TextClassificationUnit target = JCasUtil.selectSingle(view,
-                    TextClassificationUnit.class);
+            TextClassificationTarget target = JCasUtil.selectSingle(view,
+                    TextClassificationTarget.class);
             oneViewsNgrams = getDocumentKeywordNgrams(view, target, minN, maxN,
                     markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
             // This is a hack because there's no method to combine 2 FD's

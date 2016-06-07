@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.AdjectiveEndingFeatureExtractor;
 
 public class AdjectiveEndingFeatureExtractorTest
@@ -54,7 +54,7 @@ public class AdjectiveEndingFeatureExtractorTest
         jcas.setDocumentText("Lovable phenomenal beautiful incredible fantastic gorgeous positive nice good mainly harmless.");
         engine.process(jcas);
         
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
         AdjectiveEndingFeatureExtractor extractor = new AdjectiveEndingFeatureExtractor();

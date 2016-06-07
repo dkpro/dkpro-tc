@@ -36,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.wordDifficulty.IsInflectedWordUFE;
 
 
@@ -54,27 +54,27 @@ public class IsInflectedWordUFETest {
         jcas.setDocumentText("the happiest animals were there.");
         engine.process(jcas);
         
-        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 3);
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 3);
         new ART(jcas, 0, 3).addToIndexes();
         Lemma l1 =new Lemma(jcas, 0, 3);
         addAnnotations(l1, jcas, "the", 0, 3);
         
-        TextClassificationUnit unit2 = new TextClassificationUnit(jcas, 4, 12);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas, 4, 12);
         new ADJ(jcas, 4, 12).addToIndexes();
         Lemma l2 = new Lemma(jcas, 4, 12);
         addAnnotations(l2, jcas, "happy", 4, 12);
         
-        TextClassificationUnit unit3 = new TextClassificationUnit(jcas, 13, 20);
+        TextClassificationTarget unit3 = new TextClassificationTarget(jcas, 13, 20);
         new NN(jcas, 13, 20).addToIndexes();
         Lemma l3= new Lemma(jcas, 13, 20);
         addAnnotations(l3, jcas, "animal", 13, 20);
         
-        TextClassificationUnit unit4 = new TextClassificationUnit(jcas, 21, 25);
+        TextClassificationTarget unit4 = new TextClassificationTarget(jcas, 21, 25);
         new V(jcas, 21, 25).addToIndexes();
         Lemma l4=new Lemma(jcas, 21, 25);
         addAnnotations(l4, jcas, "be", 21, 25);
         
-        TextClassificationUnit unit5 = new TextClassificationUnit(jcas, 26, 31);
+        TextClassificationTarget unit5 = new TextClassificationTarget(jcas, 26, 31);
         new ADV(jcas, 26, 31).addToIndexes();
         Lemma l5= new Lemma(jcas, 26, 31);
         addAnnotations(l5, jcas, "there", 26, 31);

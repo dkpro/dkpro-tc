@@ -19,7 +19,7 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -40,7 +40,7 @@ public class LuceneCharacterNGramMetaCollector
     
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
-        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         return NGramUtils.getDocumentCharacterNgrams(jcas, fullDoc, lowerCase,
                 charNgramMinN, charNgramMaxN);
     }

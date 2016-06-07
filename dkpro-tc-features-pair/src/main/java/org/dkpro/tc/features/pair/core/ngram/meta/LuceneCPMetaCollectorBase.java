@@ -25,7 +25,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -57,8 +57,8 @@ public abstract class LuceneCPMetaCollectorBase
         FrequencyDistribution<String> view2NGrams;
         FrequencyDistribution<String> documentNGrams;
         try{
-            TextClassificationUnit target1 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
-            TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
+            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
             view1NGrams = getNgramsFDView1(view1,target1);
             view2NGrams = getNgramsFDView2(view2, target2);
             documentNGrams = getNgramsFD(jcases);

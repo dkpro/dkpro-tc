@@ -31,7 +31,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Extracts information about whether the classification unit is situated between two characters
@@ -60,7 +60,7 @@ public class IsSurroundedByChars
     public static final String SURROUNDED_BY_CHARS = "SurroundedByChars";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
         Set<Feature> featSet = new HashSet<Feature>();

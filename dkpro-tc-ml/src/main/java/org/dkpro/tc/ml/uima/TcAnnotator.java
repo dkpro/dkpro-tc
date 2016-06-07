@@ -42,7 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -207,7 +207,7 @@ public class TcAnnotator
 
         // iterate the units and set on each a prepared dummy outcome
         for (AnnotationFS unit : unitAnnotation) {
-            TextClassificationUnit tcs = new TextClassificationUnit(jcas, unit.getBegin(),
+            TextClassificationTarget tcs = new TextClassificationTarget(jcas, unit.getBegin(),
                     unit.getEnd());
             tcs.addToIndexes();
 
@@ -258,7 +258,7 @@ public class TcAnnotator
 
         Collection<AnnotationFS> unitAnnotation = CasUtil.select(jcas.getCas(), type);
         for (AnnotationFS unit : unitAnnotation) {
-            TextClassificationUnit tcs = new TextClassificationUnit(jcas, unit.getBegin(),
+            TextClassificationTarget tcs = new TextClassificationTarget(jcas, unit.getBegin(),
                     unit.getEnd());
             tcs.addToIndexes();
             TextClassificationOutcome tco = new TextClassificationOutcome(jcas, unit.getBegin(),
@@ -283,8 +283,8 @@ public class TcAnnotator
     private void processDocument(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        if (!JCasUtil.exists(jcas, TextClassificationUnit.class)) {
-            TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+        if (!JCasUtil.exists(jcas, TextClassificationTarget.class)) {
+            TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
                     jcas.getDocumentText().length());
             target.addToIndexes();
         }

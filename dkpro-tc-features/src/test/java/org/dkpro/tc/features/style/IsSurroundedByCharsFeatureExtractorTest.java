@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.IsSurroundedByChars;
 
 public class IsSurroundedByCharsFeatureExtractorTest
@@ -59,11 +59,11 @@ public class IsSurroundedByCharsFeatureExtractorTest
                 IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"");
 
 
-        TextClassificationUnit unit1 = new TextClassificationUnit(jcas);
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas);
         unit1.setBegin(10);
         unit1.setEnd(11);
 
-        TextClassificationUnit unit2 = new TextClassificationUnit(jcas);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas);
         unit2.setBegin(32);
         unit2.setEnd(35);
 

@@ -24,7 +24,7 @@ import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Sets the text of the following TextClassificationUnit as feature value 
@@ -39,7 +39,7 @@ public class NextUnit
     public static final String FEATURE_NAME = "nextUnit";
     final static String END_OF_SEQUENCE = "EOS";
 
-    public Set<Feature> extract(JCas aView, TextClassificationUnit unit)
+    public Set<Feature> extract(JCas aView, TextClassificationTarget unit)
         throws TextClassificationException
     {
         super.extract(aView, unit);

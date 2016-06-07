@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.ModalVerbsFeatureExtractor;
 
 public class ModalVerbsFeatureExtractorTest
@@ -54,7 +54,7 @@ public class ModalVerbsFeatureExtractorTest
         jcas.setDocumentText("I can. I could. You might. You may. I must. He should. He must. We will. They would. You shall.");
         engine.process(jcas);
         
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
         ModalVerbsFeatureExtractor extractor = new ModalVerbsFeatureExtractor();

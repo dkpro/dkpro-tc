@@ -35,7 +35,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import dkpro.similarity.algorithms.api.SimilarityException;
@@ -120,8 +120,8 @@ public class CosineFeatureExtractor<T extends Annotation>
     {
         try {
             
-            TextClassificationUnit target1 = JCasUtil.selectSingle(view1, TextClassificationUnit.class);
-            TextClassificationUnit target2 = JCasUtil.selectSingle(view2, TextClassificationUnit.class);
+            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
             
         	//Note: getSimilarity(String, String) is *not* a convenience 
         	// method for getSimilarity(Collection<String>, Collection<String>).

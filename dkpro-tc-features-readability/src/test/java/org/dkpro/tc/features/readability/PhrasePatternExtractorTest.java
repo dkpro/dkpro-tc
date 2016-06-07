@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.PhrasePatternExtractor;
 
 public class PhrasePatternExtractorTest
@@ -59,7 +59,7 @@ public class PhrasePatternExtractorTest
         jcas.setDocumentText(text);
         engine.process(jcas);
 
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, text.length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
         target.addToIndexes();
 
         PhrasePatternExtractor extractor = new PhrasePatternExtractor();

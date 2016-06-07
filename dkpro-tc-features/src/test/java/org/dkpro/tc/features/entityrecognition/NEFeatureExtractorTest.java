@@ -26,7 +26,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Location;
@@ -46,7 +46,7 @@ public class NEFeatureExtractorTest
         JCas jcas = engine.newJCas();
         engine.process(jcas);
 
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, 22);
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, 22);
         target.addToIndexes();
 
         Location l1 = new Location(jcas, 0, 5);

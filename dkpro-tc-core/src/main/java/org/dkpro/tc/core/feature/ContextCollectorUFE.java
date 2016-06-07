@@ -37,7 +37,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
@@ -77,7 +77,7 @@ public class ContextCollectorUFE
     };
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit unit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget unit)
         throws TextClassificationException
     {
         try {

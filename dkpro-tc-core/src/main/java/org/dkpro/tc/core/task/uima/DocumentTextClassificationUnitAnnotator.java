@@ -21,7 +21,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -42,7 +42,7 @@ public class DocumentTextClassificationUnitAnnotator
         throws AnalysisEngineProcessException
     {
         if (featureMode.equals(Constants.FM_DOCUMENT)) {
-            TextClassificationUnit unit = new TextClassificationUnit(aJCas, 0,
+            TextClassificationTarget unit = new TextClassificationTarget(aJCas, 0,
                     aJCas.getDocumentText().length());
             unit.addToIndexes();
         }

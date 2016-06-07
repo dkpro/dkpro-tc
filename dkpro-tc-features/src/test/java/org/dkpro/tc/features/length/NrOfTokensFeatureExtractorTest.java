@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -46,7 +46,7 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
 
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
 
         NrOfTokens extractor = new NrOfTokens();
@@ -69,7 +69,7 @@ public class NrOfTokensFeatureExtractorTest
         jcas.setDocumentText("");
         engine.process(jcas);
 
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0,
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
 
         NrOfTokens extractor = new NrOfTokens();

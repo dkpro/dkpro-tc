@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.uima.fit.factory.JCasBuilder;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.junit.Test;
 
@@ -89,7 +89,7 @@ public class NGramUtilsTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
         
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, text.length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
         target.addToIndexes();
         
         JCasBuilder cb = new JCasBuilder(jcas);
@@ -117,7 +117,7 @@ public class NGramUtilsTest
         for (String token : text.split(" ")) {
             cb.add(token, Token.class);
         }
-        TextClassificationUnit tu = new TextClassificationUnit(jcas, 2, 7);
+        TextClassificationTarget tu = new TextClassificationTarget(jcas, 2, 7);
         tu.addToIndexes();
 
         FrequencyDistribution<String> ngrams = NGramUtils.getAnnotationCharacterNgrams(tu, false,

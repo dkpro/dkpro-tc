@@ -24,7 +24,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -43,7 +43,7 @@ public class LucenePOSNGramMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0,
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
         
         return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, posNgramMinN, posNgramMaxN,

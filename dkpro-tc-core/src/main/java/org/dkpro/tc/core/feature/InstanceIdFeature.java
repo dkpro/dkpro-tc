@@ -24,7 +24,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.JCasId;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class InstanceIdFeature
 {
@@ -36,7 +36,7 @@ public class InstanceIdFeature
         return new Feature(ID_FEATURE_NAME, fullId);
     };
 
-    public static Feature retrieve(JCas jcas, TextClassificationUnit unit)
+    public static Feature retrieve(JCas jcas, TextClassificationTarget unit)
         throws TextClassificationException
     {
         String fullId = getFullId(jcas);
@@ -51,7 +51,7 @@ public class InstanceIdFeature
         return new Feature(ID_FEATURE_NAME, fullId);
     };
 
-    public static Feature retrieve(JCas jcas, TextClassificationUnit unit, Integer sequenceId)
+    public static Feature retrieve(JCas jcas, TextClassificationTarget unit, Integer sequenceId)
         throws TextClassificationException
     {
         String fullId = getFullId(jcas);

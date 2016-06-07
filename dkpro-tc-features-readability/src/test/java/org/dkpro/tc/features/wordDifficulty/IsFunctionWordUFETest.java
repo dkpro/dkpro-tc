@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.wordDifficulty.IsFunctionWordUFE;
 
 
@@ -52,19 +52,19 @@ public class IsFunctionWordUFETest {
         engine.process(jcas);
         
         
-        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 2);
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 2);
         new PR(jcas, 0, 2).addToIndexes();
       
-        TextClassificationUnit unit2 = new TextClassificationUnit(jcas, 3, 4);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas, 3, 4);
         new NN(jcas, 3, 4).addToIndexes();
         
-        TextClassificationUnit unit3 = new TextClassificationUnit(jcas, 5, 6);
+        TextClassificationTarget unit3 = new TextClassificationTarget(jcas, 5, 6);
         new PP(jcas, 5, 6).addToIndexes();
         
-        TextClassificationUnit unit4 = new TextClassificationUnit(jcas, 7, 8);
+        TextClassificationTarget unit4 = new TextClassificationTarget(jcas, 7, 8);
         new CONJ(jcas, 7, 8).addToIndexes();
         
-        TextClassificationUnit unit5 = new TextClassificationUnit(jcas, 9, 10);
+        TextClassificationTarget unit5 = new TextClassificationTarget(jcas, 9, 10);
         new ART(jcas, 9, 10).addToIndexes();
         
         

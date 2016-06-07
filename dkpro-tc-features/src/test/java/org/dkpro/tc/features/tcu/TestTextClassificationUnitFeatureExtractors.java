@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.tcu.CurrentUnit;
 import org.dkpro.tc.features.tcu.NextNextUnit;
 import org.dkpro.tc.features.tcu.NextUnit;
@@ -46,7 +46,7 @@ public class TestTextClassificationUnitFeatureExtractors {
 		
 		Object [] o = setUp();
 		JCas jcas = (JCas) o[0];
-		TextClassificationUnit tcu = (TextClassificationUnit)o[1];
+		TextClassificationTarget tcu = (TextClassificationTarget)o[1];
 
 		PrevPrevUnit pp = new PrevPrevUnit();
 		Set<Feature> extract = pp.extract(jcas, tcu);
@@ -90,27 +90,27 @@ public class TestTextClassificationUnitFeatureExtractors {
 				jcas, Token.class));
 		
 		Token bb = arrayList.get(0);
-		TextClassificationUnit tcbb = new TextClassificationUnit(jcas,
+		TextClassificationTarget tcbb = new TextClassificationTarget(jcas,
 				bb.getBegin(), bb.getEnd());
 		tcbb.addToIndexes();
 		
 		Token b = arrayList.get(1);
-		TextClassificationUnit tcb = new TextClassificationUnit(jcas,
+		TextClassificationTarget tcb = new TextClassificationTarget(jcas,
 				b.getBegin(), b.getEnd());
 		tcb.addToIndexes();
 		
 		Token c = arrayList.get(2);
-		TextClassificationUnit tcu = new TextClassificationUnit(jcas,
+		TextClassificationTarget tcu = new TextClassificationTarget(jcas,
 				c.getBegin(), c.getEnd());
 		tcu.addToIndexes();
 		
 		Token n = arrayList.get(3);
-		TextClassificationUnit tcn = new TextClassificationUnit(jcas,
+		TextClassificationTarget tcn = new TextClassificationTarget(jcas,
 				n.getBegin(), n.getEnd());
 		tcn.addToIndexes();
 		
 		Token nn = arrayList.get(4);
-		TextClassificationUnit tcnn = new TextClassificationUnit(jcas,
+		TextClassificationTarget tcnn = new TextClassificationTarget(jcas,
 				nn.getBegin(), nn.getEnd());
 		tcnn.addToIndexes();
 		

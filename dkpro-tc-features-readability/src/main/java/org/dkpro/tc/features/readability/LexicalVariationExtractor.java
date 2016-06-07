@@ -38,7 +38,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
@@ -77,7 +77,7 @@ public class LexicalVariationExtractor
     public static final String LEXICAL_DENSITY = "LexicalDensity";
     public static final String LEXICAL_VARIATION = "LexicalVariation";
 
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
         double nrOfLexicalWords = 0.0;
         double nrOfNonLexicalWords = 0.0;

@@ -29,7 +29,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneKeywordCPFE;
@@ -120,7 +120,7 @@ public void initialize(UimaContext context)
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget target)
         throws TextClassificationException
     {
         return KeywordNGramUtils.getDocumentKeywordNgrams(
@@ -128,7 +128,7 @@ public void initialize(UimaContext context)
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationUnit target)
+    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget target)
         throws TextClassificationException
     {
         return KeywordNGramUtils.getDocumentKeywordNgrams(

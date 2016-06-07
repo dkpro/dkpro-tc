@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * A static utility class for common methods and constants
@@ -38,7 +38,7 @@ public class ContextMetaCollectorUtil {
     // Width of the context before and after a unit (in characters)
     public static final int CONTEXT_WIDTH = 30;
 
-	protected static void addContext(JCas jcas, TextClassificationUnit unit, String id, Writer w) throws IOException {
+	protected static void addContext(JCas jcas, TextClassificationTarget unit, String id, Writer w) throws IOException {
         w.append(id);
         w.append(ID_CONTEXT_DELIMITER);
         w.append(getLeftContext(jcas, unit));
@@ -51,7 +51,7 @@ public class ContextMetaCollectorUtil {
         w.append("\n");
 	}
 	
-	private static String getLeftContext(JCas jcas, TextClassificationUnit unit) {
+	private static String getLeftContext(JCas jcas, TextClassificationTarget unit) {
 		int leftOffset = unit.getBegin() - CONTEXT_WIDTH;
 		
 		if (leftOffset < 0) {
@@ -64,7 +64,7 @@ public class ContextMetaCollectorUtil {
 		return context;
 	}
 	
-	private static String getRightContext(JCas jcas, TextClassificationUnit unit) {
+	private static String getRightContext(JCas jcas, TextClassificationTarget unit) {
 		int rightOffset = unit.getEnd() + CONTEXT_WIDTH;
 		
 		if (rightOffset > jcas.getDocumentText().length()) {

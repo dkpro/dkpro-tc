@@ -27,7 +27,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -42,7 +42,7 @@ public class LucenePOSNGram
 {
 
 	@Override
-	public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+	public Set<Feature> extract(JCas view, TextClassificationTarget classificationUnit)
 			throws TextClassificationException {
     	
         Set<Feature> features = new HashSet<Feature>();

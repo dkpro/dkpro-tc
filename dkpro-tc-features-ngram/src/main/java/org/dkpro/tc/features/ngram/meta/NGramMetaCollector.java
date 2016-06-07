@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
 import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
@@ -88,7 +88,7 @@ public class NGramMetaCollector
     {
     	try{
     		dfStore.registerNewDocument();
-    		TextClassificationUnit target = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
+    		TextClassificationTarget target = JCasUtil.selectSingle(jcas, TextClassificationTarget.class);
 	        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
 	                jcas, target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);  
 	        for (String ngram : documentNGrams.getKeys()) {

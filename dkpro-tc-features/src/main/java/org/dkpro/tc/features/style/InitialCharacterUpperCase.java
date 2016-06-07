@@ -25,7 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Extracts whether the first character of the classification unit is upper-case or not.
@@ -40,7 +40,7 @@ public class InitialCharacterUpperCase
     public static final String INITIAL_CH_UPPER_CASE = "InitialCharacterUpperCaseUFE";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
         String token = classificationUnit.getCoveredText();

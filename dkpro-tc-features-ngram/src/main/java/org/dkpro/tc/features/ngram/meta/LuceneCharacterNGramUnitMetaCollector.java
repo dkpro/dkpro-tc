@@ -23,7 +23,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -44,7 +44,7 @@ public class LuceneCharacterNGramUnitMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
-        for (Annotation a : JCasUtil.select(jcas, TextClassificationUnit.class)) {
+        for (Annotation a : JCasUtil.select(jcas, TextClassificationTarget.class)) {
             FrequencyDistribution<String> ngramDist = NGramUtils.getAnnotationCharacterNgrams(a,
                     lowerCase, charNgramMinN, charNgramMaxN, '^','$');
             for (String condition : ngramDist.getKeys()) {

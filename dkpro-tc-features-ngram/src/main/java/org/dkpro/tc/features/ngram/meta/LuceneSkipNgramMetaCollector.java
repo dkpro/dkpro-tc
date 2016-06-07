@@ -25,7 +25,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneSkipNgramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
@@ -72,7 +72,7 @@ public class LuceneSkipNgramMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        TextClassificationUnit fullDoc = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         return NGramUtils.getDocumentSkipNgrams(jcas, fullDoc, ngramLowerCase,
                 filterPartialStopwordMatches, minN, maxN, skipSize, stopwords);
     }

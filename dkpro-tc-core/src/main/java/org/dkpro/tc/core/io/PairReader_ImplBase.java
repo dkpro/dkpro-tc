@@ -26,7 +26,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -75,7 +75,7 @@ public abstract class PairReader_ImplBase
         view.setDocumentText(text);
         view.setDocumentLanguage(language);
         
-        TextClassificationUnit target = new TextClassificationUnit(view, 0, text.length());
+        TextClassificationTarget target = new TextClassificationTarget(view, 0, text.length());
         target.addToIndexes();
 
         DocumentMetaData baseMetaData = DocumentMetaData.get(jCas);

@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor;
 
 public class QuestionRatioFeatureExtractorTest
@@ -52,7 +52,7 @@ public class QuestionRatioFeatureExtractorTest
         jcas.setDocumentText("Is he a tester???? Really?? He is a tester! Oh yes.");
         engine.process(jcas);
         
-        TextClassificationUnit target = new TextClassificationUnit(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
         QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();

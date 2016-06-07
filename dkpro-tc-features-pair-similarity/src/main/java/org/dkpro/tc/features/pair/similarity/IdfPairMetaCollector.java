@@ -31,7 +31,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
@@ -113,8 +113,8 @@ public class IdfPairMetaCollector<T extends Annotation>
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
-        TextClassificationUnit target = JCasUtil.selectSingle(jcas,
-                TextClassificationUnit.class);
+        TextClassificationTarget target = JCasUtil.selectSingle(jcas,
+                TextClassificationTarget.class);
         
         FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(jcas, target, true,
                 false, 1, 1, stopwords, ngramAnnotationType);

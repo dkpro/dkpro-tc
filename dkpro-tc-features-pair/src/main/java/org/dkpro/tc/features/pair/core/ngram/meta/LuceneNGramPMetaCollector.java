@@ -27,7 +27,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
@@ -103,7 +103,7 @@ public class LuceneNGramPMetaCollector
 
     @Override
     protected FrequencyDistribution<String> getNgramsFDView1(JCas view1,
-            TextClassificationUnit target)
+            TextClassificationTarget target)
                 throws TextClassificationException
     {
         FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view1, target,
@@ -114,7 +114,7 @@ public class LuceneNGramPMetaCollector
 
     @Override
     protected FrequencyDistribution<String> getNgramsFDView2(JCas view2,
-            TextClassificationUnit target)
+            TextClassificationTarget target)
                 throws TextClassificationException
     {
         FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view2, target,

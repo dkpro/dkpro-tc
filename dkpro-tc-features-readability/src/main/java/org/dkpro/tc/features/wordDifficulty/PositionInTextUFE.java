@@ -30,7 +30,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class PositionInTextUFE
     extends FeatureExtractorResource_ImplBase
@@ -45,7 +45,7 @@ public class PositionInTextUFE
     public static final String REL_POSITION = "RelativePositionOfWord";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
         Set<Feature> featSet = new HashSet<Feature>();

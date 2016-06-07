@@ -28,7 +28,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Extracts the number of sentences in this classification unit
@@ -45,7 +45,7 @@ public class NrOfSentences
     public static final String FN_NR_OF_SENTENCES = "NrofSentences";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
         return new Feature(FN_NR_OF_SENTENCES, JCasUtil.selectCovered(jcas, Sentence.class,

@@ -31,9 +31,9 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Mar 26 14:18:53 CET 2016
+ * Updated by JCasGen Tue Jun 07 08:16:55 CEST 2016
  * @generated */
-public class TextClassificationUnit_Type extends Annotation_Type {
+public class TextClassificationTarget_Type extends Annotation_Type {
   /** @generated 
    * @return the generator for this type
    */
@@ -43,25 +43,25 @@ public class TextClassificationUnit_Type extends Annotation_Type {
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (TextClassificationUnit_Type.this.useExistingInstance) {
+  			 if (TextClassificationTarget_Type.this.useExistingInstance) {
   			   // Return eq fs instance if already created
-  		     FeatureStructure fs = TextClassificationUnit_Type.this.jcas.getJfsFromCaddr(addr);
+  		     FeatureStructure fs = TextClassificationTarget_Type.this.jcas.getJfsFromCaddr(addr);
   		     if (null == fs) {
-  		       fs = new TextClassificationUnit(addr, TextClassificationUnit_Type.this);
-  			   TextClassificationUnit_Type.this.jcas.putJfsFromCaddr(addr, fs);
+  		       fs = new TextClassificationTarget(addr, TextClassificationTarget_Type.this);
+  			   TextClassificationTarget_Type.this.jcas.putJfsFromCaddr(addr, fs);
   			   return fs;
   		     }
   		     return fs;
-        } else return new TextClassificationUnit(addr, TextClassificationUnit_Type.this);
+        } else return new TextClassificationTarget(addr, TextClassificationTarget_Type.this);
   	  }
     };
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = TextClassificationUnit.typeIndexID;
+  public final static int typeIndexID = TextClassificationTarget.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.dkpro.tc.api.type.TextClassificationUnit");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.dkpro.tc.api.type.TextClassificationTarget");
 
 
 
@@ -75,7 +75,7 @@ public class TextClassificationUnit_Type extends Annotation_Type {
    */ 
   public String getSuffix(int addr) {
         if (featOkTst && casFeat_suffix == null)
-      jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationUnit");
+      jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationTarget");
     return ll_cas.ll_getStringValue(addr, casFeatCode_suffix);
   }
   /** @generated
@@ -84,7 +84,7 @@ public class TextClassificationUnit_Type extends Annotation_Type {
    */    
   public void setSuffix(int addr, String v) {
         if (featOkTst && casFeat_suffix == null)
-      jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationUnit");
+      jcas.throwFeatMissing("suffix", "org.dkpro.tc.api.type.TextClassificationTarget");
     ll_cas.ll_setStringValue(addr, casFeatCode_suffix, v);}
     
   
@@ -99,7 +99,7 @@ public class TextClassificationUnit_Type extends Annotation_Type {
    */ 
   public int getId(int addr) {
         if (featOkTst && casFeat_id == null)
-      jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationUnit");
+      jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationTarget");
     return ll_cas.ll_getIntValue(addr, casFeatCode_id);
   }
   /** @generated
@@ -108,7 +108,7 @@ public class TextClassificationUnit_Type extends Annotation_Type {
    */    
   public void setId(int addr, int v) {
         if (featOkTst && casFeat_id == null)
-      jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationUnit");
+      jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationTarget");
     ll_cas.ll_setIntValue(addr, casFeatCode_id, v);}
     
   
@@ -120,7 +120,7 @@ public class TextClassificationUnit_Type extends Annotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public TextClassificationUnit_Type(JCas jcas, Type casType) {
+  public TextClassificationTarget_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 

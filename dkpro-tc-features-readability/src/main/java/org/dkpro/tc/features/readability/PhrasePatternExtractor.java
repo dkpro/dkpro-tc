@@ -28,7 +28,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.ADJC;
@@ -53,7 +53,7 @@ public class PhrasePatternExtractor
     public static final String PCS_PER_SENTENCE = "PCsPerSentence";
     public static final String CHUNKS_PER_SENTENCE = "ChunksPerSentence";
 
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
         int chunkSum = 0;
         double nrOfSentences = 0.0;

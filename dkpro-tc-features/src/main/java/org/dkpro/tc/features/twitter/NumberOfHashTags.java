@@ -26,7 +26,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * A feature extracting the number of hashtags in a tweet.
@@ -42,7 +42,7 @@ public class NumberOfHashTags
     private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
 
     @Override
-    public Set<Feature> extract(JCas jCas, TextClassificationUnit target)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
         throws TextClassificationException
     {
         Matcher hashTagMatcher = HASHTAG_PATTERN

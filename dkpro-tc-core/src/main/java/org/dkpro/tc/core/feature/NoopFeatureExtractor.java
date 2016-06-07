@@ -25,7 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class NoopFeatureExtractor
 	extends FeatureExtractorResource_ImplBase
@@ -33,7 +33,7 @@ public class NoopFeatureExtractor
 {
 
 	@Override
-	public Set<Feature> extract(JCas view, TextClassificationUnit target) throws TextClassificationException {
+	public Set<Feature> extract(JCas view, TextClassificationTarget target) throws TextClassificationException {
 		return Collections.<Feature>emptySet();
 	}
 
