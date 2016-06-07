@@ -15,53 +15,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.style;
+package org.dkpro.tc.features.length;
 
-import static org.dkpro.tc.features.style.TypeTokenRatioFeatureExtractor.FN_TTR;
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import junit.framework.Assert;
 
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.TypeTokenRatioFeatureExtractor;
-
-public class TypeTokenRatioFeatureExtractorTest
+public class NrOfSentencesTest
 {
     @Test
-    public void posContextFeatureExtractorTest()
+    public void nrOfSentencesFeatureExtractorTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-        AnalysisEngine engine = createEngine(desc);
+        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Is he a tester? He is a tester!");
+        jcas.setDocumentText("This is a test! Does it test sentences? Oh yes, it does!");
         engine.process(jcas);
-        
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
 
-        TypeTokenRatioFeatureExtractor extractor = new TypeTokenRatioFeatureExtractor();
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
+
+        NrOfSentences extractor = new NrOfSentences();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 
-        for (Feature feature : features) {
-            assertFeature(FN_TTR, 0.6, feature);
-        }
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(NrOfSentences.FN_NR_OF_SENTENCES, 3, iter.next());
     }
 }

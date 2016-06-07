@@ -17,13 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.features.syntax;
 
-import static org.dkpro.tc.features.syntax.PluralRatioFeatureExtractor.FN_PLURAL_RATIO;
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -37,12 +35,12 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.syntax.PluralRatioFeatureExtractor;
+import org.dkpro.tc.features.syntax.PastVsFutureFeatureExtractor;
 
-public class PluralRatioFeatureExtractorTest
+public class PastVsFutureTest
 {
     @Test
-    public void posContextFeatureExtractorTest()
+    public void pastVsFutureFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
@@ -53,19 +51,19 @@ public class PluralRatioFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test. These are tests and cars and flowers.");
+        jcas.setDocumentText("They tested. We test. She tests. You will test.");
         engine.process(jcas);
-
+        
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
-        
-        PluralRatioFeatureExtractor extractor = new PluralRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(1, features.size());
+        PastVsFutureFeatureExtractor extractor = new PastVsFutureFeatureExtractor();
+        Set<Feature> features = extractor.extract(jcas, target);
 
-        for (Feature feature : features) {
-            assertFeature(FN_PLURAL_RATIO, 0.75, feature);
-        }
+        Assert.assertEquals(3, features.size());
+        assertFeatures(PastVsFutureFeatureExtractor.FN_PAST_RATIO, 25.0, features, 0.01);
+        assertFeatures(PastVsFutureFeatureExtractor.FN_FUTURE_RATIO, 75.0, features, 0.01);
+        assertFeatures(PastVsFutureFeatureExtractor.FN_FUTURE_VS_PAST_RATIO, 3.0, features, 0.01);
+
     }
 }

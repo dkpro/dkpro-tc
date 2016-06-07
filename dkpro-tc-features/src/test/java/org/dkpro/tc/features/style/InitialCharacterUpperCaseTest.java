@@ -21,8 +21,7 @@ import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -34,33 +33,50 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.ExclamationFeatureExtractor;
+import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 
-public class ExclamationFeatureExtractorTest
+public class InitialCharacterUpperCaseTest
 {
+
     @Test
-    public void exclamationRatioFeatureExtractorTest()
+    public void initialCharacterUpperCaseTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-        AnalysisEngine engine = createEngine(desc);
 
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
+
+        AnalysisEngine engine = createEngine(desc);
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("He is a tester!!! Tester! Is he? Oh yes.");
+        jcas.setDocumentText("It is a very unusual test");
+
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        InitialCharacterUpperCase extractor = FeatureUtil.createResource(
+        		InitialCharacterUpperCase.class);
 
-        ExclamationFeatureExtractor extractor = new ExclamationFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(1, features.size());
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas);
+        unit1.setBegin(0);
+        unit1.setEnd(2);
 
-        for (Feature feature : features) {
-            assertFeature(ExclamationFeatureExtractor.FEATURE_NAME, 0.5, feature);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas);
+        unit2.setBegin(3);
+        unit2.setEnd(5);
+
+    	Set<Feature> features1 = extractor.extract(jcas, unit1);
+
+        Assert.assertEquals(1, features1.size());
+        for (Feature feature : features1) {
+            assertFeature(InitialCharacterUpperCase.INITIAL_CH_UPPER_CASE, true, feature);
+        }
+
+        Set<Feature> features2 = extractor.extract(jcas, unit2);
+        Assert.assertEquals(1, features2.size());
+        for (Feature feature : features2) {
+            assertFeature(InitialCharacterUpperCase.INITIAL_CH_UPPER_CASE, false, feature);
         }
     }
 }

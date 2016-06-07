@@ -37,7 +37,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.AdjectiveEndingFeatureExtractor;
 
-public class AdjectiveEndingFeatureExtractorTest
+public class AdjectiveEndingTest
 {
     @Test
     public void adjectiveEndingFeatureExtractorTest()

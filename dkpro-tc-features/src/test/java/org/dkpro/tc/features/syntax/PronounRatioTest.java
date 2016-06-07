@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.style;
+package org.dkpro.tc.features.syntax;
 
-import static org.dkpro.tc.features.style.ContextualityMeasureFeatureExtractor.CONTEXTUALITY_MEASURE_FN;
+import static org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor.FN_HE_RATIO;
+import static org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor.FN_WE_RATIO;
 import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
@@ -37,18 +38,9 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.ContextualityMeasureFeatureExtractor;
+import org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor;
 
-/*
- * Heylighen & Dewaele (2002): Variation in the contextuality of language
- * The contextuality measure can reach values 0-100
- * The higher value, the more formal (male) style the text is,
- * i.e. contains many nouns, verbs, determiners.
- * The lower value, the more contextual (female) style the text is,
- * i.e. contains many adverbs, pronouns and such.
- */
-
-public class ContextualityFeatureExtractorTest
+public class PronounRatioTest
 {
     @Test
     public void posContextFeatureExtractorTest()
@@ -62,20 +54,23 @@ public class ContextualityFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test.");
+        jcas.setDocumentText("He is no tester. I am a tester.");
         engine.process(jcas);
-        
+
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
-
-        ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
+        
+        PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(9, features.size());
+        Assert.assertEquals(7, features.size());
 
         for (Feature feature : features) {
-            if (feature.getName().equals(CONTEXTUALITY_MEASURE_FN)) {
-                assertFeature(CONTEXTUALITY_MEASURE_FN, 50.2, feature);
+            if (feature.getName().equals(FN_HE_RATIO)) {
+                assertFeature(FN_HE_RATIO, 0.5, feature);
+            }
+            else if (feature.getName().equals(FN_WE_RATIO)) {
+                assertFeature(FN_WE_RATIO, 0.0, feature);
             }
         }
     }

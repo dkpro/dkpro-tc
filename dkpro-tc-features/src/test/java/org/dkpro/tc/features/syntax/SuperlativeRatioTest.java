@@ -15,13 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.style;
+package org.dkpro.tc.features.syntax;
 
+import static org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADJ;
+import static org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADV;
 import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -30,55 +33,45 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.IsSurroundedByChars;
+import org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor;
 
-public class IsSurroundedByCharsFeatureExtractorTest
+public class SuperlativeRatioTest
 {
-
     @Test
-    public void configureAggregatedExample()
+    public void posContextFeatureExtractorTest()
         throws Exception
     {
-
-        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-
+        AnalysisEngineDescription desc = createEngineDescription(
+                createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
+                        "en"));
         AnalysisEngine engine = createEngine(desc);
+
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("He said: \"I am a Tester.\" That \"was\" all.");
-
+        jcas.setDocumentText("This is a normal test. This is the best, biggest, and greatest test ever.");
         engine.process(jcas);
         
-        IsSurroundedByChars extractor = FeatureUtil.createResource(
-        		IsSurroundedByChars.class,
-                IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"");
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
+        SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        TextClassificationTarget unit1 = new TextClassificationTarget(jcas);
-        unit1.setBegin(10);
-        unit1.setEnd(11);
+        Assert.assertEquals(2, features.size());
 
-        TextClassificationTarget unit2 = new TextClassificationTarget(jcas);
-        unit2.setBegin(32);
-        unit2.setEnd(35);
-
-        Set<Feature> features1 = extractor.extract(jcas, unit1);
-
-        Assert.assertEquals(1, features1.size());
-        for (Feature feature : features1) {
-            assertFeature(IsSurroundedByChars.SURROUNDED_BY_CHARS, false, feature);
-        }
-
-        Set<Feature> features2 = extractor.extract(jcas, unit2);
-        Assert.assertEquals(1, features2.size());
-
-        for (Feature feature : features2) {
-            assertFeature(IsSurroundedByChars.SURROUNDED_BY_CHARS, true, feature);
+        for (Feature feature : features) {
+            if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADJ)) {
+                assertFeature(FN_SUPERLATIVE_RATIO_ADJ, 0.75, feature);
+            }
+            else if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADV)) {
+                assertFeature(FN_SUPERLATIVE_RATIO_ADV, 0.0, feature);
+            }
         }
     }
 }

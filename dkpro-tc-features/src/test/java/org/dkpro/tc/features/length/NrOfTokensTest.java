@@ -15,53 +15,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.style;
+package org.dkpro.tc.features.length;
 
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import junit.framework.Assert;
 
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.NumberWordsFeatureExtractor;
-
-public class NumberWordsFeatureExtractorTest
+public class NrOfTokensTest
 {
     @Test
-    public void numberWordsFeatureExtractorTest()
+    public void nrOfTokensFeatureExtractorTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-        AnalysisEngine engine = createEngine(desc);
+        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText(
-                "Where r u 2morrow? W8 4 me! Gonna have gr8 party face2face! 555 123 456");
+        jcas.setDocumentText("This is a test.");
         engine.process(jcas);
 
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        target.addToIndexes();
-        NumberWordsFeatureExtractor extractor = new NumberWordsFeatureExtractor();
+
+        NrOfTokens extractor = new NrOfTokens();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
 
-        for (Feature feature : features) {
-            assertFeature(NumberWordsFeatureExtractor.FEATURE_NAME, 0.44, feature, 0.01);
-        }
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(NrOfTokens.FN_NR_OF_TOKENS, 5., iter.next());
+    }
+
+    @Test
+    public void nrOfTokensExteremeFeatureExtractorTest()
+        throws Exception
+    {
+        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
+
+        JCas jcas = engine.newJCas();
+        jcas.setDocumentLanguage("en");
+        jcas.setDocumentText("");
+        engine.process(jcas);
+
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
+
+        NrOfTokens extractor = new NrOfTokens();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+
+        Assert.assertEquals(1, features.size());
+
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(NrOfTokens.FN_NR_OF_TOKENS, 0., iter.next());
     }
 }

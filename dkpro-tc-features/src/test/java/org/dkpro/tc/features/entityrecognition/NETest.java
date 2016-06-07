@@ -34,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Organization;
 import de.tudarmstadt.ukp.dkpro.core.api.ner.type.Person;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
-public class NEFeatureExtractorTest
+public class NETest
 {
     @Test
     public void nEFeatureExtractorTest()

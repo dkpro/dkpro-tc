@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import junit.framework.Assert;
 
-public class NrOfTokensPerSentenceFeatureExtractorTest
+public class NrOfTokensPerSentenceTest
 {
     @Test
     public void nrOfTokensPerSentenceFeatureExtractorTest()

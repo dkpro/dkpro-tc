@@ -21,7 +21,9 @@ import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -35,48 +37,32 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.InitialCharacterUpperCase;
+import org.dkpro.tc.features.style.LongWordsFeatureExtractor;
 
-public class InitialCharacterUpperCaseFeatureExtractorTest
+public class LongWordsTest
 {
-
     @Test
-    public void initialCharacterUpperCaseTest()
+    public void longWordsFeatureExtractorTest()
         throws Exception
     {
-
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-
         AnalysisEngine engine = createEngine(desc);
+
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("It is a very unusual test");
-
+        jcas.setDocumentText("This is a test of incredibly surprising long words.");
         engine.process(jcas);
         
-        InitialCharacterUpperCase extractor = FeatureUtil.createResource(
-        		InitialCharacterUpperCase.class);
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        target.addToIndexes();
 
+        LongWordsFeatureExtractor extractor = FeatureUtil.createResource(LongWordsFeatureExtractor.class);
 
-        TextClassificationTarget unit1 = new TextClassificationTarget(jcas);
-        unit1.setBegin(0);
-        unit1.setEnd(2);
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        TextClassificationTarget unit2 = new TextClassificationTarget(jcas);
-        unit2.setBegin(3);
-        unit2.setEnd(5);
-
-    	Set<Feature> features1 = extractor.extract(jcas, unit1);
-
-        Assert.assertEquals(1, features1.size());
-        for (Feature feature : features1) {
-            assertFeature(InitialCharacterUpperCase.INITIAL_CH_UPPER_CASE, true, feature);
-        }
-
-        Set<Feature> features2 = extractor.extract(jcas, unit2);
-        Assert.assertEquals(1, features2.size());
-        for (Feature feature : features2) {
-            assertFeature(InitialCharacterUpperCase.INITIAL_CH_UPPER_CASE, false, feature);
-        }
+        Assert.assertEquals(2, features.size());
+        Iterator<Feature> iter = features.iterator();
+        assertFeature(LongWordsFeatureExtractor.FN_LW_RATIO, 0.2, iter.next());
+        assertFeature(LongWordsFeatureExtractor.FN_SW_RATIO, 0.4, iter.next());
     }
 }

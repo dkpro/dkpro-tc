@@ -18,10 +18,9 @@
 package org.dkpro.tc.features.length;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -33,51 +32,26 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import junit.framework.Assert;
 
-public class NrOfTokensFeatureExtractorTest
+public class NrOfCharsTest
 {
     @Test
-    public void nrOfTokensFeatureExtractorTest()
+    public void nrOfCharsFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test.");
+        jcas.setDocumentText("This is a test. This is a test.");
         engine.process(jcas);
+        
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
 
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
-                jcas.getDocumentText().length());
-
-        NrOfTokens extractor = new NrOfTokens();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+        NrOfChars extractor = new NrOfChars();
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas,target));
 
         Assert.assertEquals(1, features.size());
 
-        Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokens.FN_NR_OF_TOKENS, 5., iter.next());
-    }
-
-    @Test
-    public void nrOfTokensExteremeFeatureExtractorTest()
-        throws Exception
-    {
-        AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
-
-        JCas jcas = engine.newJCas();
-        jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("");
-        engine.process(jcas);
-
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
-                jcas.getDocumentText().length());
-
-        NrOfTokens extractor = new NrOfTokens();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
-
-        Assert.assertEquals(1, features.size());
-
-        Iterator<Feature> iter = features.iterator();
-        assertFeature(NrOfTokens.FN_NR_OF_TOKENS, 0., iter.next());
+        assertEquals(new Integer(31), features.get(0).getValue());
     }
 }

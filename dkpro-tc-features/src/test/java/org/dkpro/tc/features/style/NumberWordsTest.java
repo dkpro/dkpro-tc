@@ -22,7 +22,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -35,14 +34,13 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.LongWordsFeatureExtractor;
+import org.dkpro.tc.features.style.NumberWordsFeatureExtractor;
 
-public class LongWordsFeatureExtractorTest
+public class NumberWordsTest
 {
     @Test
-    public void longWordsFeatureExtractorTest()
+    public void numberWordsFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
@@ -50,19 +48,20 @@ public class LongWordsFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a test of incredibly surprising long words.");
+        jcas.setDocumentText(
+                "Where r u 2morrow? W8 4 me! Gonna have gr8 party face2face! 555 123 456");
         engine.process(jcas);
-        
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         target.addToIndexes();
-
-        LongWordsFeatureExtractor extractor = FeatureUtil.createResource(LongWordsFeatureExtractor.class);
-
+        NumberWordsFeatureExtractor extractor = new NumberWordsFeatureExtractor();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(2, features.size());
-        Iterator<Feature> iter = features.iterator();
-        assertFeature(LongWordsFeatureExtractor.FN_LW_RATIO, 0.2, iter.next());
-        assertFeature(LongWordsFeatureExtractor.FN_SW_RATIO, 0.4, iter.next());
+        Assert.assertEquals(1, features.size());
+
+        for (Feature feature : features) {
+            assertFeature(NumberWordsFeatureExtractor.FEATURE_NAME, 0.44, feature, 0.01);
+        }
     }
 }

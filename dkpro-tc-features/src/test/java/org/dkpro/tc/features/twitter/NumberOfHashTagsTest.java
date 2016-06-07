@@ -35,7 +35,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
 
-public class NumberOfHashTagsDFETest
+public class NumberOfHashTagsTest
 {
     @Test
     public void numberOfHashTagsFeatureExtractorTest()

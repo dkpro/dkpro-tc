@@ -15,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.syntax;
+package org.dkpro.tc.features.style;
 
-import static org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor.FN_QUESTION_RATIO;
 import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -35,33 +33,52 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor;
+import org.dkpro.tc.features.style.IsSurroundedByChars;
 
-public class QuestionRatioFeatureExtractorTest
+public class IsSurroundedByCharsTest
 {
+
     @Test
-    public void questionRatioFeatureExtractorTest()
+    public void configureAggregatedExample()
         throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
-        AnalysisEngine engine = createEngine(desc);
 
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
+
+        AnalysisEngine engine = createEngine(desc);
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Is he a tester???? Really?? He is a tester! Oh yes.");
+        jcas.setDocumentText("He said: \"I am a Tester.\" That \"was\" all.");
+
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        IsSurroundedByChars extractor = FeatureUtil.createResource(
+        		IsSurroundedByChars.class,
+                IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"");
 
-        QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(1, features.size());
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas);
+        unit1.setBegin(10);
+        unit1.setEnd(11);
 
-        for (Feature feature : features) {
-            assertFeature(FN_QUESTION_RATIO, 0.5, feature);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas);
+        unit2.setBegin(32);
+        unit2.setEnd(35);
+
+        Set<Feature> features1 = extractor.extract(jcas, unit1);
+
+        Assert.assertEquals(1, features1.size());
+        for (Feature feature : features1) {
+            assertFeature(IsSurroundedByChars.SURROUNDED_BY_CHARS, false, feature);
+        }
+
+        Set<Feature> features2 = extractor.extract(jcas, unit2);
+        Assert.assertEquals(1, features2.size());
+
+        for (Feature feature : features2) {
+            assertFeature(IsSurroundedByChars.SURROUNDED_BY_CHARS, true, feature);
         }
     }
 }

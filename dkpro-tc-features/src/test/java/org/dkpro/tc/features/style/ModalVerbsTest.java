@@ -15,16 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.syntax;
+package org.dkpro.tc.features.style;
 
-import static org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADJ;
-import static org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor.FN_SUPERLATIVE_RATIO_ADV;
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -38,12 +35,12 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.syntax.SuperlativeRatioFeatureExtractor;
+import org.dkpro.tc.features.style.ModalVerbsFeatureExtractor;
 
-public class SuperlativeRatioFeatureExtractorTest
+public class ModalVerbsTest
 {
     @Test
-    public void posContextFeatureExtractorTest()
+    public void modalVerbsFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
@@ -54,24 +51,31 @@ public class SuperlativeRatioFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("This is a normal test. This is the best, biggest, and greatest test ever.");
+        jcas.setDocumentText("I can. I could. You might. You may. I must. He should. He must. We will. They would. You shall.");
         engine.process(jcas);
         
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
-        SuperlativeRatioFeatureExtractor extractor = new SuperlativeRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+        ModalVerbsFeatureExtractor extractor = new ModalVerbsFeatureExtractor();
+        Set<Feature> features = extractor.extract(jcas, target);
 
-        Assert.assertEquals(2, features.size());
+        Assert.assertEquals(11, features.size());
 
-        for (Feature feature : features) {
-            if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADJ)) {
-                assertFeature(FN_SUPERLATIVE_RATIO_ADJ, 0.75, feature);
-            }
-            else if (feature.getName().equals(FN_SUPERLATIVE_RATIO_ADV)) {
-                assertFeature(FN_SUPERLATIVE_RATIO_ADV, 0.0, feature);
-            }
-        }
+        assertFeatures(ModalVerbsFeatureExtractor.FN_CAN, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_COULD, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_MIGHT, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_MAY, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_MUST, 20.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_SHOULD, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_WILL, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_WOULD, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_SHALL, 10.0, features, 0.001);
+        assertFeatures(ModalVerbsFeatureExtractor.FN_ALL, 100.0, features, 0.001); // all verbs are modal
+                                                                              // here
+        assertFeatures(ModalVerbsFeatureExtractor.FN_UNCERT, 70.0, features, 0.001); // 70% of the verbs
+                                                                                // express
+                                                                                // uncertainty
+
     }
 }

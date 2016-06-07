@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.features.style;
 
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
+import static org.dkpro.tc.features.style.ContextualityMeasureFeatureExtractor.CONTEXTUALITY_MEASURE_FN;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -35,12 +37,21 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.ModalVerbsFeatureExtractor;
+import org.dkpro.tc.features.style.ContextualityMeasureFeatureExtractor;
 
-public class ModalVerbsFeatureExtractorTest
+/*
+ * Heylighen & Dewaele (2002): Variation in the contextuality of language
+ * The contextuality measure can reach values 0-100
+ * The higher value, the more formal (male) style the text is,
+ * i.e. contains many nouns, verbs, determiners.
+ * The lower value, the more contextual (female) style the text is,
+ * i.e. contains many adverbs, pronouns and such.
+ */
+
+public class ContextualityTest
 {
     @Test
-    public void modalVerbsFeatureExtractorTest()
+    public void posContextFeatureExtractorTest()
         throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
@@ -51,31 +62,21 @@ public class ModalVerbsFeatureExtractorTest
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("I can. I could. You might. You may. I must. He should. He must. We will. They would. You shall.");
+        jcas.setDocumentText("This is a test.");
         engine.process(jcas);
         
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
-        ModalVerbsFeatureExtractor extractor = new ModalVerbsFeatureExtractor();
-        Set<Feature> features = extractor.extract(jcas, target);
+        ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(11, features.size());
+        Assert.assertEquals(9, features.size());
 
-        assertFeatures(ModalVerbsFeatureExtractor.FN_CAN, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_COULD, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_MIGHT, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_MAY, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_MUST, 20.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_SHOULD, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_WILL, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_WOULD, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_SHALL, 10.0, features, 0.001);
-        assertFeatures(ModalVerbsFeatureExtractor.FN_ALL, 100.0, features, 0.001); // all verbs are modal
-                                                                              // here
-        assertFeatures(ModalVerbsFeatureExtractor.FN_UNCERT, 70.0, features, 0.001); // 70% of the verbs
-                                                                                // express
-                                                                                // uncertainty
-
+        for (Feature feature : features) {
+            if (feature.getName().equals(CONTEXTUALITY_MEASURE_FN)) {
+                assertFeature(CONTEXTUALITY_MEASURE_FN, 50.2, feature);
+            }
+        }
     }
 }

@@ -15,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.syntax;
+package org.dkpro.tc.features.style;
 
-import static org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor.FN_HE_RATIO;
-import static org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor.FN_WE_RATIO;
+import static org.dkpro.tc.features.style.TypeTokenRatioFeatureExtractor.FN_TTR;
 import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
@@ -33,45 +32,36 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor;
+import org.dkpro.tc.features.style.TypeTokenRatioFeatureExtractor;
 
-public class PronounRatioFeatureExtractorTest
+public class TypeTokenRatioTest
 {
     @Test
     public void posContextFeatureExtractorTest()
         throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        "en"));
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("He is no tester. I am a tester.");
+        jcas.setDocumentText("Is he a tester? He is a tester!");
         engine.process(jcas);
-
+        
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
-        
-        PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
+
+        TypeTokenRatioFeatureExtractor extractor = new TypeTokenRatioFeatureExtractor();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(7, features.size());
+        Assert.assertEquals(1, features.size());
 
         for (Feature feature : features) {
-            if (feature.getName().equals(FN_HE_RATIO)) {
-                assertFeature(FN_HE_RATIO, 0.5, feature);
-            }
-            else if (feature.getName().equals(FN_WE_RATIO)) {
-                assertFeature(FN_WE_RATIO, 0.0, feature);
-            }
+            assertFeature(FN_TTR, 0.6, feature);
         }
     }
 }

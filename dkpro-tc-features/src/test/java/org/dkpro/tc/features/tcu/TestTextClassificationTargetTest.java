@@ -40,7 +40,7 @@ import org.dkpro.tc.features.tcu.NextUnit;
 import org.dkpro.tc.features.tcu.PrevPrevUnit;
 import org.dkpro.tc.features.tcu.PrevUnit;
 
-public class TestTextClassificationUnitFeatureExtractors {
+public class TestTextClassificationTargetTest {
 	@Test
 	public void testTokenFeatureExtractors() throws Exception {
 		
