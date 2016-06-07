@@ -21,12 +21,11 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Extracts the number of characters in the unit (basically, its length).
@@ -42,10 +41,10 @@ public class NrOfChars
     public static final String NR_OF_CHARS = "NrofChars";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
-        int nrOfChars = classificationUnit.getEnd() - classificationUnit.getBegin();
+        int nrOfChars = target.getEnd() - target.getBegin();
         return new Feature(NR_OF_CHARS, nrOfChars).asSet();
     }
 }

@@ -22,14 +22,14 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneNgramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * Extracts token n-grams within the given text classification unit
@@ -42,13 +42,13 @@ public class LuceneNGram
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
 
-        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, classificationUnit, ngramLowerCase,
+        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, target, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
 
         for (String topNgram : topKSet.getKeys()) {

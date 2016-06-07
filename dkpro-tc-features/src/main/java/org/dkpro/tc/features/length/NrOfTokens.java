@@ -23,13 +23,13 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Extracts the number of tokens in the classification unit
@@ -46,12 +46,12 @@ public class NrOfTokens
     public static final String FN_NR_OF_TOKENS = "NrofTokens";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
         Set<Feature> featList = new HashSet<Feature>();
 
-        double numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
+        double numTokens = JCasUtil.selectCovered(jcas, Token.class, target).size();
 
         featList.add(new Feature(FN_NR_OF_TOKENS, numTokens));
         return featList;

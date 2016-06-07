@@ -21,14 +21,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * Extracts character n-grams.
@@ -39,12 +39,12 @@ public class LuceneCharacterNGram
 {
 
     @Override
-    public Set<Feature> extract(JCas jCas, TextClassificationUnit aClassificationUnit)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentCharNgrams = NGramUtils.getAnnotationCharacterNgrams(
-                aClassificationUnit, charNgramLowerCase, charNgramMinN, charNgramMaxN, '^', '$');
+                target, charNgramLowerCase, charNgramMinN, charNgramMaxN, '^', '$');
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentCharNgrams.getKeys().contains(topNgram)) {
