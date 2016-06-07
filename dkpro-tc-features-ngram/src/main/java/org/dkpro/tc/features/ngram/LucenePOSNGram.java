@@ -25,7 +25,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
@@ -38,7 +38,7 @@ import org.dkpro.tc.features.ngram.util.NGramUtils;
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LucenePOSNGram
     extends LucenePOSNGramFeatureExtractorBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
 
 	@Override

@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -50,7 +50,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
  */
 public class ContextualityMeasureFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String CONTEXTUALITY_MEASURE_FN = "ContextualityMeasure";
 

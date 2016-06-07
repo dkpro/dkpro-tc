@@ -26,7 +26,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.core.readability.measure.ReadabilityMeasures.Mea
 
 public class TraditionalReadabilityMeasuresFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      * Computes the readability measures ari, coleman_liau, flesch, fog, kincaid, lix and smog as

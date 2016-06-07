@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -39,7 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.VP;
 
 public class ParsePatternExtractor
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      * Extracts parse features to estimate syntactic complexity. The features are described in

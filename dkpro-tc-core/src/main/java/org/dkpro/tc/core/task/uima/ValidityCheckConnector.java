@@ -26,7 +26,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.type.JCasId;
@@ -150,12 +150,12 @@ public class ValidityCheckConnector
                     for (String featExt : featureExtractors) {
                         FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
                                 .forName(featExt).newInstance();
-                        if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
+                        if (!(featExtC instanceof FeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + " is not a valid Document Feature Extractor."));
                         }
-                        if (featExtC instanceof ClassificationUnitFeatureExtractor
+                        if (featExtC instanceof FeatureExtractor
                                 && (featExtC instanceof PairFeatureExtractor)) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
@@ -176,7 +176,7 @@ public class ValidityCheckConnector
                                             + " is not a valid Pair Feature Extractor."));
                         }
                         if (featExtC instanceof PairFeatureExtractor
-                                &&  featExtC instanceof ClassificationUnitFeatureExtractor) {
+                                &&  featExtC instanceof FeatureExtractor) {
                             throw new AnalysisEngineProcessException(
                                     new TextClassificationException(featExt
                                             + ": Feature Extractors need to define a unique type."));
@@ -215,11 +215,11 @@ public class ValidityCheckConnector
         for (String featExt : featureExtractors) {
             FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
                     .forName(featExt).newInstance();
-            if (!(featExtC instanceof ClassificationUnitFeatureExtractor)) {
+            if (!(featExtC instanceof FeatureExtractor)) {
                     throw new AnalysisEngineProcessException(new TextClassificationException(
                             featExt + " is not a valid Unit Feature Extractor."));
             }
-            if (featExtC instanceof ClassificationUnitFeatureExtractor
+            if (featExtC instanceof FeatureExtractor
                     && (featExtC instanceof PairFeatureExtractor)) {
                 throw new AnalysisEngineProcessException(new TextClassificationException(featExt
                         + ": Feature Extractors need to define a unique type."));

@@ -23,7 +23,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -33,7 +33,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
  */
 public class CurrentUnit
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String PARAM_LOWER_CASE = "useLowerCase";
     @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = true, defaultValue = "true")

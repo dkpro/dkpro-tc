@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -39,7 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.VC;
 
 public class PhrasePatternExtractor
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      * This Extractor is inspired by the ParsePatternExtractor but relies only on chunking

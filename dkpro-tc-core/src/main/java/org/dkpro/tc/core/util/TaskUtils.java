@@ -54,7 +54,7 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
@@ -330,7 +330,7 @@ public class TaskUtils
             }
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                if (!(featExt instanceof FeatureExtractor)) {
                     throw new TextClassificationException(
                             "Using non-unit FE in unit mode: " + featExt.getResourceName());
                 }
@@ -339,7 +339,7 @@ public class TaskUtils
                 instance.setWeight(getWeight(jcas, unit));
                 instance.setJcasId(jcasId);
                 instance.addFeatures(
-                        ((ClassificationUnitFeatureExtractor) featExt).extract(jcas, unit));
+                        ((FeatureExtractor) featExt).extract(jcas, unit));
             }
         }
         return instance;
@@ -386,7 +386,7 @@ public class TaskUtils
         }
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-            if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+            if (!(featExt instanceof FeatureExtractor)) {
                 throw new TextClassificationException(
                         "Using non-unit FE in unit mode: " + featExt.getResourceName());
             }
@@ -395,7 +395,7 @@ public class TaskUtils
             instance.setWeight(getWeight(jcas, unit));
             instance.setJcasId(jcasId);
             instance.addFeatures(
-                    ((ClassificationUnitFeatureExtractor) featExt).extract(jcas, unit));
+                    ((FeatureExtractor) featExt).extract(jcas, unit));
         }
         return instance;
     }
@@ -444,7 +444,7 @@ public class TaskUtils
         }
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-            if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+            if (!(featExt instanceof FeatureExtractor)) {
                 throw new TextClassificationException(
                         "Using incompatible feature in document mode: "
                                 + featExt.getResourceName());
@@ -453,7 +453,7 @@ public class TaskUtils
             instance.setWeight(getWeight(jcas, null));
             instance.setJcasId(jcasId);
             instance.addFeatures(
-                    ((ClassificationUnitFeatureExtractor) featExt).extract(jcas, documentTcu));
+                    ((FeatureExtractor) featExt).extract(jcas, documentTcu));
         }
 
         return instance;
@@ -485,12 +485,12 @@ public class TaskUtils
                 // execute feature extractors and add features to instance
 
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                    if (!(featExt instanceof FeatureExtractor)) {
                         throw new TextClassificationException(
                                 "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                     }
                     instance.addFeatures(
-                            ((ClassificationUnitFeatureExtractor) featExt).extract(jcas, unit));
+                            ((FeatureExtractor) featExt).extract(jcas, unit));
                 }
 
                 // set and write outcome label(s)
@@ -526,12 +526,12 @@ public class TaskUtils
             // execute feature extractors and add features to instance
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                if (!(featExt instanceof FeatureExtractor)) {
                     throw new TextClassificationException(
                             "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                 }
                 instance.addFeatures(
-                        ((ClassificationUnitFeatureExtractor) featExt).extract(jcas, unit));
+                        ((FeatureExtractor) featExt).extract(jcas, unit));
             }
 
             // set and write outcome label(s)
@@ -566,12 +566,12 @@ public class TaskUtils
             // execute feature extractors and add features to instance
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                    if (!(featExt instanceof FeatureExtractor)) {
                         throw new TextClassificationException(
                                 "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                     }
                     instance.addFeatures(
-                            ((ClassificationUnitFeatureExtractor) featExt).extract(jcas, unit));
+                            ((FeatureExtractor) featExt).extract(jcas, unit));
                 }
             }
             catch (TextClassificationException e) {
