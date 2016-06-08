@@ -44,7 +44,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
  */
 public class FeatureUtil
 {
-    /**
+    /*
      * Escapes the names, as Weka does not seem to like special characters in attribute names.
      */
     public static String escapeFeatureName(String name) {
