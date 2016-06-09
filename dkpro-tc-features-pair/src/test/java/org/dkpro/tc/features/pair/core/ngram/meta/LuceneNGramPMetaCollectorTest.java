@@ -38,7 +38,7 @@ import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 import org.dkpro.tc.testing.TestPairReader;
@@ -67,8 +67,8 @@ public class LuceneNGramPMetaCollectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);

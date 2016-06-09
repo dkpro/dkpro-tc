@@ -47,7 +47,6 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
@@ -126,7 +125,8 @@ public class LuceneNgramUnitTest
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt");
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt",
+                TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, true);
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
@@ -179,15 +179,12 @@ public class LuceneNgramUnitTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
-        
-        AnalysisEngineDescription doc = AnalysisEngineFactory
-                .createEngineDescription(DocumentTextClassificationUnitAnnotator.class, DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
     }
 
     private int getTermFreq(File luceneFolder, String string)

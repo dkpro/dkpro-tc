@@ -29,7 +29,7 @@ import org.dkpro.tc.core.Constants;
  * the entire text span from 0 to documentTextLength(). If the feature mode is either document or
  * pair we set such an annotation automatically
  */
-public class DocumentTextClassificationUnitAnnotator
+public class DocumentModeAnnotator
     extends JCasAnnotator_ImplBase
     implements Constants
 {

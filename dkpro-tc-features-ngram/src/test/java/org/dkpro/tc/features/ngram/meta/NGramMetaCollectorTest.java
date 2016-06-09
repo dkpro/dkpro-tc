@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
@@ -70,7 +70,7 @@ public class NGramMetaCollectorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
         AnalysisEngineDescription doc = AnalysisEngineFactory
-                .createEngineDescription(DocumentTextClassificationUnitAnnotator.class, DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 NGramMetaCollector.class,

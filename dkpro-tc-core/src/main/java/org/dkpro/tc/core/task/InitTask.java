@@ -50,7 +50,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.io.ReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -173,8 +173,8 @@ public class InitTask
         }
 
         return createEngineDescription(
-                createEngineDescription(DocumentTextClassificationUnitAnnotator.class,
-                        DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, featureMode),
+                createEngineDescription(DocumentModeAnnotator.class,
+                        DocumentModeAnnotator.PARAM_FEATURE_MODE, featureMode),
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
 
