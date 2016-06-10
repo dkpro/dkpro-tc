@@ -23,16 +23,16 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
-import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.weka.writer.WekaDataWriter;
+
+import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
  * Example of "raw" usage of DKPro TC without DKPro Lab parts. This is for advanced users that do
@@ -58,9 +58,6 @@ public class TwitterSentimentRaw
                         LabeledTweetReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
-                createEngineDescription(DocumentTextClassificationUnitAnnotator.class,
-                        DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE,
-                        Constants.FM_DOCUMENT),
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(ArktweetPosTagger.class,
                         ArktweetPosTagger.PARAM_LANGUAGE, "en",

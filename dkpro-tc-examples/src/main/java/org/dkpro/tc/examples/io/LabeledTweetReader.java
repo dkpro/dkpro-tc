@@ -33,6 +33,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import org.dkpro.tc.api.io.TCReaderSingleLabel;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Reads plain text tweets, labels each tweet as sentence, and assigns parent folder labels to them.
@@ -63,6 +64,8 @@ public class LabeledTweetReader
         TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
         outcome.setOutcome(getTextClassificationOutcome(jcas));
         outcome.addToIndexes();
+        
+        new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length()).addToIndexes();
     }
 
     @Override

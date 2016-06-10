@@ -93,8 +93,8 @@ public class ExtractFeaturesConnectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
@@ -135,8 +135,8 @@ public class ExtractFeaturesConnectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
         
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
@@ -178,8 +178,8 @@ public class ExtractFeaturesConnectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
         
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),

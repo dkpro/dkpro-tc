@@ -37,7 +37,7 @@ import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,8 +68,8 @@ public class LuceneNGramMetaCollectorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
@@ -134,7 +134,7 @@ public class LuceneNGramMetaCollectorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
         AnalysisEngineDescription doc = AnalysisEngineFactory
-                .createEngineDescription(DocumentTextClassificationUnitAnnotator.class, DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,

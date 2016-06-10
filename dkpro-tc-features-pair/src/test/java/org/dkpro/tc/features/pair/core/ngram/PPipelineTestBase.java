@@ -42,7 +42,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.testing.TestPairReader;

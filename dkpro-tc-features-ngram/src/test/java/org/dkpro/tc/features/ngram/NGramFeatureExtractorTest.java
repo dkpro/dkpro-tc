@@ -35,7 +35,6 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
@@ -81,10 +80,6 @@ public class NGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
-
         ArrayList<Object> parametersLucene = new ArrayList<Object>(Arrays.asList(new Object[] {
                 LuceneNGram.PARAM_NGRAM_MIN_N, ngramNMin, LuceneNGram.PARAM_NGRAM_MAX_N, ngramNMax,
                 LuceneNGram.PARAM_LUCENE_DIR, luceneFolder }));
@@ -118,12 +113,12 @@ public class NGramFeatureExtractorTest
                         FrequencyDistributionNGram.class.getName());
 
         // run meta collectors
-        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollectorLucene);
-        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollectorFrequencyDist);
+        SimplePipeline.runPipeline(reader, segmenter, metaCollectorLucene);
+        SimplePipeline.runPipeline(reader, segmenter, metaCollectorFrequencyDist);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnectorLucene);
-        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnectorFrequencyDist);
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorLucene);
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnectorFrequencyDist);
 
         Gson gson = new Gson();
         fsLucene = gson.fromJson(

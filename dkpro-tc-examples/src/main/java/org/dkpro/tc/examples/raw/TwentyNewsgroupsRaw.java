@@ -25,7 +25,6 @@ import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternal
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.features.length.NrOfSentences;
@@ -56,9 +55,6 @@ public class TwentyNewsgroupsRaw
                         TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
-                createEngineDescription(DocumentTextClassificationUnitAnnotator.class,
-                        DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE,
-                        Constants.FM_DOCUMENT),
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class),
                 // Feature extraction

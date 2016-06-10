@@ -30,6 +30,13 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.meta.LucenePhoneticNGramMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,16 +45,6 @@ import org.junit.rules.TemporaryFolder;
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.task.uima.DocumentTextClassificationUnitAnnotator;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.LucenePhoneticNGram;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LucenePhoneticNGramMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class LucenePhoneticNGramFeatureExtractorTest
 {
@@ -80,10 +77,6 @@ public class LucenePhoneticNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentTextClassificationUnitAnnotator.class,
-                DocumentTextClassificationUnitAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
-        
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
         		LucenePhoneticNGramMetaCollector.class, parameterList.toArray());
 
@@ -94,10 +87,10 @@ public class LucenePhoneticNGramFeatureExtractorTest
                 LucenePhoneticNGram.class.getName());
 
         // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, doc, metaCollector);
+        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
 
         // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
         Gson gson = new Gson();
         FeatureStore fs = gson.fromJson(
