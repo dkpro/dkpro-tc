@@ -27,7 +27,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * Creates a frequency distribution over all characters occurring in the entire document text i.e. index zero to document-length.
- * For considering only a subset of the document text and working with several target annotations {@link org.dkpro.tc.features.ngram.meta.LuceneCharacterUniNGramMetaCollector}
+ * For considering only a subset of the document text and working with several target annotations {@link org.dkpro.tc.features.ngram.meta.LuceneCharacterNGramUnitMetaCollector}
  */
 public class LuceneCharacterNGramMetaCollector
     extends LuceneBasedMetaCollector

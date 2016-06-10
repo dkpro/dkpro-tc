@@ -107,6 +107,8 @@ public class NGramUtils
      * 
      * @param jcas
      *            a jcas
+     * @param target
+     *            the target span             
      * @param lowerCaseNGrams
      *            lower caseing
      * @param filterPartialMatches
@@ -116,6 +118,8 @@ public class NGramUtils
      * @param maxN
      *            maximal n
      * @return a frequency distribution
+     * @throws TextClassificationException
+     *         if an exception occurs
      */
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation target,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN)
@@ -131,6 +135,8 @@ public class NGramUtils
      * 
      * @param jcas
      *            a jcas
+     * @param target
+     *            the target span            
      * @param lowerCaseNGrams
      *            lower caseing
      * @param filterPartialMatches
@@ -158,6 +164,8 @@ public class NGramUtils
      * 
      * @param jcas
      *            a jcas
+     * @param target            
+     *            target annotation span
      * @param lowerCaseNGrams
      *            lower caseing
      * @param filterPartialMatches
@@ -175,13 +183,13 @@ public class NGramUtils
      * @throws TextClassificationException
      *             when an exception occurs
      */
-    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation annotation,
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation target,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords, Class<? extends Annotation> annotationClass)
                 throws TextClassificationException
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : selectCovered(jcas, Sentence.class, annotation)) {
+        for (Sentence s : selectCovered(jcas, Sentence.class, target)) {
             List<String> strings = valuesToText(jcas, s, annotationClass.getName());
             for (List<String> ngram : new NGramStringListIterable(strings, minN, maxN)) {
                 if (lowerCaseNGrams) {
