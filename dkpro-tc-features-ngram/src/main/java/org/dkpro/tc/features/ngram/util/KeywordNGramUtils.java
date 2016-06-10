@@ -50,13 +50,17 @@ public class KeywordNGramUtils
      * be added.
      * 
      * @param jcas
+     *            a jcas
      * @param minN
      *            minimum ngram length
      * @param maxN
      *            maximum ngram length
      * @param markSentenceBoundary
+     *            mark the boundary of a sentence
      * @param markSentenceLocation
+     *            mark the location of a sentence
      * @param includeCommas
+     *            include commas
      * @param keywords
      *            list of keywords
      * @return all ngrams of keywords in jcas
