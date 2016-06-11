@@ -184,8 +184,8 @@ public class CRFSuiteSaveAndLoadModelTest
         assertEquals("AT", outcomes.get(3).getOutcome());
         assertEquals("NN", outcomes.get(4).getOutcome());
         assertEquals("pct", outcomes.get(5).getOutcome());
-        assertEquals("IN", outcomes.get(6).getOutcome());
-        assertEquals("AT", outcomes.get(7).getOutcome());
+        assertEquals("pct", outcomes.get(6).getOutcome());
+        assertEquals("NNS", outcomes.get(7).getOutcome());
         assertEquals("pct", outcomes.get(8).getOutcome());
         assertEquals("NNS", outcomes.get(9).getOutcome());
         assertEquals("pct", outcomes.get(10).getOutcome());

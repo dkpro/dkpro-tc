@@ -174,17 +174,17 @@ public class SVMHMMSaveAndLoadModelTest
         
         List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
-        assertEquals("DT", outcomes.get(0).getOutcome());
-        assertEquals("NN", outcomes.get(1).getOutcome());
-        assertEquals("NN", outcomes.get(2).getOutcome());
+        assertEquals("NN", outcomes.get(0).getOutcome());
+        assertEquals("IN", outcomes.get(1).getOutcome());
+        assertEquals("AT", outcomes.get(2).getOutcome());
         assertEquals("NN", outcomes.get(3).getOutcome());
-        assertEquals("NN", outcomes.get(4).getOutcome());
-        assertEquals("pct", outcomes.get(5).getOutcome());
-        assertEquals("PPS", outcomes.get(6).getOutcome());
-        assertEquals("DOD", outcomes.get(7).getOutcome());
-        assertEquals("VB", outcomes.get(8).getOutcome());
-        assertEquals("NNS", outcomes.get(9).getOutcome());
-        assertEquals("pct", outcomes.get(10).getOutcome());
+        assertEquals("IN", outcomes.get(4).getOutcome());
+        assertEquals("AT", outcomes.get(5).getOutcome());
+        assertEquals("NN", outcomes.get(6).getOutcome());
+        assertEquals("IN", outcomes.get(7).getOutcome());
+        assertEquals("AT", outcomes.get(8).getOutcome());
+        assertEquals("NN", outcomes.get(9).getOutcome());
+        assertEquals("IN", outcomes.get(10).getOutcome());
 
     }
 }

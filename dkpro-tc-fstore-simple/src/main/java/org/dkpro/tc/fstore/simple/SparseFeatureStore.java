@@ -55,6 +55,7 @@ public class SparseFeatureStore
     // private List<List<String>> outcomeList = new ArrayList<>();
     private ObjectArrayList<String[]> outcomeList = new ObjectArrayList<>();
     private DoubleArrayList weightList = new DoubleArrayList();
+    private IntArrayList casIds = new IntArrayList();
     private IntArrayList sequenceIds = new IntArrayList();
     private IntArrayList sequencePositions = new IntArrayList();
 
@@ -119,6 +120,7 @@ public class SparseFeatureStore
         this.instanceList.add(currentInstanceFeatures);
         this.outcomeList.add(instance.getOutcomes().toArray(new String[0]));
         this.weightList.add(instance.getWeight());
+        this.casIds.add(instance.getJcasId());
         this.sequenceIds.add(instance.getSequenceId());
         this.sequencePositions.add(instance.getSequencePosition());
     }
@@ -166,6 +168,7 @@ public class SparseFeatureStore
 
         Instance result = new Instance(features, outcomeList.get(i));
         result.setWeight(weightList.getDouble(i));
+        result.setJcasId(casIds.getInt(i));
         result.setSequenceId(sequenceIds.getInt(i));
         result.setSequencePosition(sequencePositions.getInt(i));
 
@@ -200,6 +203,7 @@ public class SparseFeatureStore
 
         Instance result = new Instance(features, outcomeList.get(i));
         result.setWeight(weightList.getDouble(i));
+        result.setJcasId(casIds.getInt(i));
         result.setSequenceId(sequenceIds.getInt(i));
         result.setSequencePosition(sequencePositions.getInt(i));
 

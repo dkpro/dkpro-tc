@@ -47,7 +47,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 
 public class TcAnnotator
     extends JCasAnnotator_ImplBase
@@ -98,7 +98,7 @@ public class TcAnnotator
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
                     learningMode, featureMode, bipartitionThreshold,
-                    DenseFeatureStore.class.getName(), featureExtractors.toArray(new String[0]));
+                    mlAdapter.getFeatureStore(), featureExtractors.toArray(new String[0]));
 
             engine = UIMAFramework.produceAnalysisEngine(connector,
                     SaveModelUtils.getModelFeatureAwareResourceManager(tcModelLocation), null);
