@@ -295,4 +295,10 @@ public class SparseFeatureStore
         }
     }
 
+    @Override
+    public boolean supportsSparseFeatures()
+    {
+        return true;
+    }
+
 }

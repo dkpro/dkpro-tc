@@ -70,5 +70,7 @@ public interface FeatureStore
      */
     public void setFeatureNames(TreeSet<String> featureNames)
             throws IllegalStateException;
+    
+    public boolean supportsSparseFeatures();
 
 }

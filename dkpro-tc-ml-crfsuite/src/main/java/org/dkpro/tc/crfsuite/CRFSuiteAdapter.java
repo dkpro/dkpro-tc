@@ -32,6 +32,7 @@ import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
 import org.dkpro.tc.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
 import org.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
+import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
 public class CRFSuiteAdapter
@@ -134,4 +135,10 @@ public class CRFSuiteAdapter
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 		return CRFSuiteModelSerializationDescription.class;
 	}
+
+    @Override
+    public String getFeatureStore()
+    {
+        return SparseFeatureStore.class.getName();
+    }
 }

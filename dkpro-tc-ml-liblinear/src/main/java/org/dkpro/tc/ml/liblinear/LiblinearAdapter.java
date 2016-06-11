@@ -28,6 +28,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
 public class LiblinearAdapter 
@@ -91,4 +92,10 @@ public class LiblinearAdapter
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 		throw new UnsupportedOperationException("Model serialization is not yet implemented for this ML adapter");
 	}
+
+    @Override
+    public String getFeatureStore()
+    {
+        return DenseFeatureStore.class.getName();
+    }
 }

@@ -131,7 +131,7 @@ public class ExtractFeaturesConnector
         try {
             if (featureMode.equals(Constants.FM_SEQUENCE)) {
                 instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas,
-                        addInstanceId);
+                        addInstanceId, featureStore.supportsSparseFeatures());
             }
             else if (featureMode.equals(Constants.FM_UNIT)) {
                 instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,

@@ -161,4 +161,10 @@ public class DenseFeatureStore
     {
         throw new IllegalStateException("Method not allowed in this feature store");
     }
+
+    @Override
+    public boolean supportsSparseFeatures()
+    {
+        return false;
+    }
 }

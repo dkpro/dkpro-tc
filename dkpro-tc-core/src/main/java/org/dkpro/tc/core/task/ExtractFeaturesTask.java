@@ -81,8 +81,6 @@ public class ExtractFeaturesTask
     private String learningMode;
     @Discriminator(name=DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator(name=DIM_FEATURE_STORE)
-    private String featureStore;
     @Discriminator(name=DIM_DEVELOPER_MODE)
     private boolean developerMode;
     @Discriminator(name=DIM_APPLY_INSTANCE_WEIGHTING)
@@ -166,7 +164,7 @@ public class ExtractFeaturesTask
         
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName() , learningMode, featureMode,
-                featureStore, true, developerMode, isTesting, featureFilters, applyWeighting, featureSet.toArray(new String[0]));
+                mlAdapter.getFeatureStore(), true, developerMode, isTesting, featureFilters, applyWeighting, featureSet.toArray(new String[0]));
 
         return connector;
     }
