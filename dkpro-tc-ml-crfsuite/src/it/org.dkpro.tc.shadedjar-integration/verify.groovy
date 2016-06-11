@@ -24,7 +24,7 @@ import org.apache.commons.io.*;
 import org.apache.commons.logging.LogFactory;
 
 try {
-    Integer osx_expected   = 41;
+    Integer osx_expected   = 44;
     Integer linux_expected = 48;
 
     def command = new ArrayList();
