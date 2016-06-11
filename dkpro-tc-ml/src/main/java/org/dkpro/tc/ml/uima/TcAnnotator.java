@@ -47,7 +47,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 
 public class TcAnnotator
     extends JCasAnnotator_ImplBase

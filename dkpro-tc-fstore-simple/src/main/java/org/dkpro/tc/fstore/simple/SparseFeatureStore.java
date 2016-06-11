@@ -143,51 +143,6 @@ public class SparseFeatureStore
     @Override
     public Instance getInstance(int i)
     {
-        // set flag to disable adding new instances
-        this.addingAnotherInstancesAllowed = false;
-
-        List<Feature> features = new ArrayList<>();
-
-        // feature values of the required instance (mapping featureName: featureValue)
-        Map<String, Object> instanceFeatureValues = instanceList.get(i);
-
-        for (String featureName : getFeatureNames()) {
-            // create default null-valued feature
-            Feature feature = new Feature(featureName, null);
-
-            // if the feature is present in the current instance, set the correct value
-            if (instanceFeatureValues.containsKey(featureName)) {
-                feature.setValue(instanceFeatureValues.get(featureName));
-            }
-
-            //if the value remains null this feature is not set
-            if (feature.getValue() != null) {
-                features.add(feature);
-            }
-        }
-
-        Instance result = new Instance(features, outcomeList.get(i));
-        result.setWeight(weightList.getDouble(i));
-        result.setJcasId(casIds.getInt(i));
-        result.setSequenceId(sequenceIds.getInt(i));
-        result.setSequencePosition(sequencePositions.getInt(i));
-
-        return result;
-    }
-
-    /**
-     * A much faster access to large sparse feature vectors. This methods returns instance with
-     * feature vector that contains only features with non-null values.
-     *
-     * @param i
-     *            instance id
-     * @return instance
-     * @throws TextClassificationException
-     */
-    public Instance getInstanceSparseFeatures(int i)
-        throws TextClassificationException
-    {
-        // set flag to disable adding new instances
         this.addingAnotherInstancesAllowed = false;
 
         List<Feature> features = new ArrayList<>();

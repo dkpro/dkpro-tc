@@ -64,17 +64,15 @@ public class SVMHMMDataWriter
     @Override
     public void write(File aOutputDirectory, FeatureStore featureStore, boolean aUseDenseInstances,
             String aLearningMode, boolean applyWeighting)
-        throws Exception
+                throws Exception
     {
         // map features to feature numbers
         BidiMap featureNameToFeatureNumberMapping = SVMHMMUtils
                 .mapVocabularyToIntegers(featureStore.getFeatureNames());
 
         // prepare output file
-        File outputFile = new File(
-                aOutputDirectory,
-                new SVMHMMAdapter()
-                        .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
+        File outputFile = new File(aOutputDirectory, new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
 
         BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
         PrintWriter pw = new PrintWriter(bf);
@@ -93,14 +91,7 @@ public class SVMHMMDataWriter
         for (int i = 0; i < featureStore.getNumberOfInstances(); i++) {
             Instance instance;
 
-            // getInstance() is time-consuming for dense features
-            // check whether can we use only sparse features
-            if (featureStore instanceof SparseFeatureStore) {
-                instance = ((SparseFeatureStore) featureStore).getInstanceSparseFeatures(i);
-            }
-            else {
-                instance = featureStore.getInstance(i);
-            }
+            instance = featureStore.getInstance(i);
 
             // placeholder for original token
             String originalToken = null;
@@ -161,12 +152,13 @@ public class SVMHMMDataWriter
             for (Map.Entry<Integer, Number> entry : featureValues.entrySet()) {
                 if (entry.getValue() instanceof Double) {
                     // format double on 8 decimal places
-                    pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(), entry.getValue()
-                            .doubleValue());
+                    pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(),
+                            entry.getValue().doubleValue());
                 }
                 else {
                     // format as integer
-                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(), entry.getValue().intValue());
+                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(),
+                            entry.getValue().intValue());
                 }
             }
 
