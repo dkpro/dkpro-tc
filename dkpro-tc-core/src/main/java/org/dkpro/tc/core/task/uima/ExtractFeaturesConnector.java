@@ -135,11 +135,11 @@ public class ExtractFeaturesConnector
             }
             else if (featureMode.equals(Constants.FM_UNIT)) {
                 instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                        addInstanceId);
+                        addInstanceId,featureStore.supportsSparseFeatures());
             }
             else {
                 instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
-                        developerMode, addInstanceId));
+                        developerMode, addInstanceId, featureStore.supportsSparseFeatures()));
             }
         }
         catch (Exception e1) {
@@ -161,7 +161,63 @@ public class ExtractFeaturesConnector
         throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
+        
+        applyFilter();
 
+        // write feature names file if in training mode
+        if (!isTesting) {
+            writeFeatureNames();
+        }
+        // apply the feature names filter
+        else {
+           applyFeatureNameFilter();
+        }
+
+        // FIXME if the feature store now determines whether to use dense or sparse instances,
+        // we might get rid of the corresponding parameter here
+        // addInstanceId requires dense instances
+        try {
+            DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
+            writer.write(outputDirectory, featureStore, !featureStore.supportsSparseFeatures(), learningMode, applyWeighting);
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private void applyFeatureNameFilter() throws AnalysisEngineProcessException
+    {
+        File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+        TreeSet<String> trainFeatureNames;
+        try {
+            trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+        AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
+        // if feature space from training set and test set differs, apply the filter
+        // to keep only features seen during training
+        if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
+            filter.setFeatureNames(trainFeatureNames);
+            filter.applyFilter(featureStore);
+        }        
+    }
+
+    private void writeFeatureNames() throws AnalysisEngineProcessException
+    {
+        try {
+            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
+                    featureStore.getFeatureNames());
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }        
+    }
+
+    private void applyFilter() throws AnalysisEngineProcessException
+    {
         // apply filters that influence the whole feature store
         // filters are applied in the order that they appear as parameters
         for (String filterString : featureFilters) {
@@ -174,51 +230,9 @@ public class ExtractFeaturesConnector
                     filter.applyFilter(featureStore);
                 }
             }
-            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            catch (Exception e) {
                 throw new AnalysisEngineProcessException(e);
             }
-
-        }
-
-        // write feature names file if in training mode
-        if (!isTesting) {
-            try {
-                FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
-                        featureStore.getFeatureNames());
-            }
-            catch (IOException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-        // apply the feature names filter
-        else {
-            File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-            TreeSet<String> trainFeatureNames;
-            try {
-                trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
-            }
-            catch (IOException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-
-            AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
-            // if feature space from training set and test set differs, apply the filter
-            // to keep only features seen during training
-            if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
-                filter.setFeatureNames(trainFeatureNames);
-                filter.applyFilter(featureStore);
-            }
-        }
-
-        // FIXME if the feature store now determines whether to use dense or sparse instances,
-        // we might get rid of the corresponding parameter here
-        // addInstanceId requires dense instances
-        try {
-            DataWriter writer = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            writer.write(outputDirectory, featureStore, true, learningMode, applyWeighting);
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+        }        
     }
 }

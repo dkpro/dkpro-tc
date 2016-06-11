@@ -154,7 +154,7 @@ public class WekaExtractFeaturesAndPredictConnector
         try {
             Instance instance = org.dkpro.tc.core.util.TaskUtils.getSingleInstance(
                 featureMode, featureExtractors, jcas,
-                developerMode, false);
+                developerMode, false, false);
   
             if (!isMultiLabel) {
                 wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, trainingData,

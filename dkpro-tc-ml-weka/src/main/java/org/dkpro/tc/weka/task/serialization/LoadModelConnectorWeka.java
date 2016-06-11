@@ -42,10 +42,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -79,6 +81,8 @@ public class LoadModelConnectorWeka
     private Instances trainingData;
     private List<String> classLabels;
 
+    boolean useSparse = false;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -86,6 +90,12 @@ public class LoadModelConnectorWeka
         super.initialize(context);
 
         try {
+            TCMachineLearningAdapter initMachineLearningAdapter = SaveModelUtils
+                    .initMachineLearningAdapter(tcModelLocation);
+            FeatureStore featureStore = (FeatureStore) Class
+                    .forName(initMachineLearningAdapter.getFeatureStore()).newInstance();
+            useSparse = featureStore.supportsSparseFeatures();
+
             loadClassifier();
             loadTrainingData();
             if (!learningMode.equals(Constants.LM_REGRESSION)) {
@@ -105,7 +115,8 @@ public class LoadModelConnectorWeka
         throws IOException
     {
         classLabels = new ArrayList<>();
-        for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
+        for (String classLabel : FileUtils
+                .readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
             classLabels.add(classLabel);
         }
     }
@@ -113,8 +124,8 @@ public class LoadModelConnectorWeka
     private void loadTrainingData()
         throws IOException, ClassNotFoundException
     {
-        ObjectInputStream inT = new ObjectInputStream(new FileInputStream(new File(tcModelLocation,
-                "training_data")));
+        ObjectInputStream inT = new ObjectInputStream(
+                new FileInputStream(new File(tcModelLocation, "training_data")));
         trainingData = (Instances) inT.readObject();
         inT.close();
     }
@@ -122,8 +133,8 @@ public class LoadModelConnectorWeka
     private void loadClassifier()
         throws Exception
     {
-        cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation,
-                MODEL_CLASSIFIER).getAbsolutePath());
+        cls = (Classifier) weka.core.SerializationHelper
+                .read(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
     }
 
     @Override
@@ -134,7 +145,7 @@ public class LoadModelConnectorWeka
         Instance instance = null;
         try {
             instance = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,
-                    false);
+                    false, useSparse);
         }
         catch (Exception e1) {
             throw new AnalysisEngineProcessException(e1);
@@ -241,8 +252,8 @@ public class LoadModelConnectorWeka
 
     private TextClassificationOutcome getOutcome(JCas jcas)
     {
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas,
-                TextClassificationOutcome.class));
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
         if (outcomes.size() != 1) {
             throw new IllegalStateException("There should be exactly one TC outcome");
         }
