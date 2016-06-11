@@ -56,7 +56,7 @@ public class LuceneNGram
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true));
             }
         }
         return features;

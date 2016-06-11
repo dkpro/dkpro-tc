@@ -90,7 +90,7 @@ public class DependencyFeature
                 features.add(new Feature(topDep, 1));
             }
             else {
-                features.add(new Feature(topDep, 0));
+                features.add(new Feature(topDep, 0, true));
             }
         }
 

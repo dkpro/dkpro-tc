@@ -83,7 +83,7 @@ public class ChunkTriple
                 features.add(new Feature("lexicalTriple_" + featureTriple, 1));
             }
             else {
-                features.add(new Feature("lexicalTriple_" + featureTriple, 0));
+                features.add(new Feature("lexicalTriple_" + featureTriple, 0, true));
             }
         }
 
