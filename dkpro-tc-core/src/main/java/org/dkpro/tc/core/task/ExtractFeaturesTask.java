@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -65,25 +66,27 @@ public class ExtractFeaturesTask
      */
     public static final String INPUT_KEY = "input";
 
-    @Discriminator(name=DIM_FEATURE_SET)
+    @Discriminator(name = DIM_FEATURE_SET)
     private List<String> featureSet;
-    @Discriminator(name=DIM_FEATURE_FILTERS)
-    private List<String> featureFilters = Collections.<String>emptyList();
-    @Discriminator(name=DIM_PIPELINE_PARAMS)
+    @Discriminator(name = DIM_FEATURE_FILTERS)
+    private List<String> featureFilters = Collections.<String> emptyList();
+    @Discriminator(name = DIM_PIPELINE_PARAMS)
     private List<Object> pipelineParameters;
-    @Discriminator(name=DIM_FILES_ROOT)
+    @Discriminator(name = DIM_FILES_ROOT)
     private File filesRoot;
-    @Discriminator(name=DIM_FILES_TRAINING)
+    @Discriminator(name = DIM_FILES_TRAINING)
     private Collection<String> files_training;
-    @Discriminator(name=DIM_FILES_VALIDATION)
+    @Discriminator(name = DIM_FILES_VALIDATION)
     private Collection<String> files_validation;
-    @Discriminator(name=DIM_LEARNING_MODE)
+    @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator(name=DIM_FEATURE_MODE)
+    @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator(name=DIM_DEVELOPER_MODE)
+    @Discriminator(name = DIM_FEATURE_STORE)
+    private String featureStore;
+    @Discriminator(name = DIM_DEVELOPER_MODE)
     private boolean developerMode;
-    @Discriminator(name=DIM_APPLY_INSTANCE_WEIGHTING)
+    @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
 
     private boolean isTesting = false;
@@ -94,14 +97,15 @@ public class ExtractFeaturesTask
     // could be used to automatically configure preprocessing
     @SuppressWarnings("unused")
     private Set<String> requiredTypes;
-    
+
     private TCMachineLearningAdapter mlAdapter;
 
-	public void setMlAdapter(TCMachineLearningAdapter mlAdapter) {
-		this.mlAdapter = mlAdapter;
-	}
+    public void setMlAdapter(TCMachineLearningAdapter mlAdapter)
+    {
+        this.mlAdapter = mlAdapter;
+    }
 
-	/**
+    /**
      * @param isTesting
      */
     public void setTesting(boolean isTesting)
@@ -118,11 +122,12 @@ public class ExtractFeaturesTask
         // automatically determine the required metaCollector classes from the provided feature
         // extractors
         try {
-        	// also add default FE for context extraction during meta collection
-        	// if (featureMode.equals(Constants.FM_UNIT))
-        	//    featureSet.add(UnitContextMetaCollector.class.getName()); // TODO MW: Not working -> UnsupportedOperationException
-        	
-        	metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
+            // also add default FE for context extraction during meta collection
+            // if (featureMode.equals(Constants.FM_UNIT))
+            // featureSet.add(UnitContextMetaCollector.class.getName()); // TODO MW: Not working ->
+            // UnsupportedOperationException
+
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
             requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureSet);
         }
         catch (ClassNotFoundException e) {
@@ -161,12 +166,25 @@ public class ExtractFeaturesTask
                     entry.getValue());
             parametersCopy.addAll(Arrays.asList(entry.getKey(), file.getAbsolutePath()));
         }
-        
-        AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                parametersCopy, outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName() , learningMode, featureMode,
-                mlAdapter.getFeatureStore(), true, developerMode, isTesting, featureFilters, applyWeighting, featureSet.toArray(new String[0]));
+
+        AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(parametersCopy,
+                outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
+                featureMode, getFeatureStore(), true, developerMode, isTesting, featureFilters,
+                applyWeighting, featureSet.toArray(new String[0]));
 
         return connector;
+    }
+
+    private String getFeatureStore()
+    {
+        if (featureStore != null) {
+            LogFactory.getLog(getClass())
+                    .info("Will use feature store [" + featureStore
+                            + "] and override feature store defined in machine learning adapter i.e. ["
+                            + mlAdapter.getFeatureStore() + "]");
+            return featureStore;
+        }
+        return mlAdapter.getFeatureStore();
     }
 
     @Override
