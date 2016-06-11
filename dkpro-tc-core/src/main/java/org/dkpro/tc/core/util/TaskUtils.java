@@ -488,10 +488,10 @@ public class TaskUtils
                                 "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                     }
                     if (supportSparseFeatures) {
-                        instances.add(getSparseFeatures(jcas, unit, instance, featExt));
+                        instance.addFeatures(getSparseFeatures(jcas, unit, featExt));
                     }
                     else {
-                        instances.add(getDenseFeatures(jcas, unit, instance, featExt));
+                        instance.addFeatures(getDenseFeatures(jcas, unit, instance, featExt));
                     }
                 }
 
@@ -510,22 +510,26 @@ public class TaskUtils
         return instances;
     }
 
-    private static Instance getDenseFeatures(JCas jcas, TextClassificationTarget unit,
+    private static Set<Feature> getDenseFeatures(JCas jcas, TextClassificationTarget unit,
             Instance instance, FeatureExtractorResource_ImplBase featExt)
                 throws TextClassificationException
     {
-        Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, unit);
-        features.stream().forEach(e -> instance.addFeature(e));
-        return instance;
+        return ((FeatureExtractor) featExt).extract(jcas, unit);
     }
 
-    private static Instance getSparseFeatures(JCas jcas, TextClassificationTarget unit,
-            Instance instance, FeatureExtractorResource_ImplBase featExt)
+    private static Set<Feature> getSparseFeatures(JCas jcas, TextClassificationTarget unit,
+            FeatureExtractorResource_ImplBase featExt)
                 throws TextClassificationException
     {
         Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, unit);
-        features.stream().filter(e -> !e.isDefaultValue()).forEach(e -> instance.addFeature(e));
-        return instance;
+        Set<Feature> filtered = new HashSet<>();
+        for(Feature f : features){
+            if(!f.isDefaultValue()){
+                filtered.add(f);
+            }
+        }
+        
+        return filtered;
     }
 
     public static List<Instance> getMultipleInstancesUnitMode(

@@ -52,7 +52,7 @@ public class SparseFeatureStore
     static Logger log = Logger.getLogger(SparseFeatureStore.class);
 
     private ObjectArrayList<Map<String, Object>> instanceList = new ObjectArrayList<>();
-//    private List<List<String>> outcomeList = new ArrayList<>();
+    // private List<List<String>> outcomeList = new ArrayList<>();
     private ObjectArrayList<String[]> outcomeList = new ObjectArrayList<>();
     private DoubleArrayList weightList = new DoubleArrayList();
     private IntArrayList sequenceIds = new IntArrayList();
@@ -158,7 +158,10 @@ public class SparseFeatureStore
                 feature.setValue(instanceFeatureValues.get(featureName));
             }
 
-            features.add(feature);
+            //if the value remains null this feature is not set
+            if (feature.getValue() != null) {
+                features.add(feature);
+            }
         }
 
         Instance result = new Instance(features, outcomeList.get(i));
@@ -208,7 +211,7 @@ public class SparseFeatureStore
     {
         SortedSet<String> result = new TreeSet<>();
 
-        for (String [] outcomes : outcomeList) {
+        for (String[] outcomes : outcomeList) {
             result.addAll(Arrays.asList(outcomes));
         }
 
