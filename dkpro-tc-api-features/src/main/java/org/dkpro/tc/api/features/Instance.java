@@ -162,6 +162,8 @@ public class Instance
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(jcasId);
+        sb.append("-");
         sb.append(sequenceId);
         sb.append(" - ");
         sb.append(sequencePosition);

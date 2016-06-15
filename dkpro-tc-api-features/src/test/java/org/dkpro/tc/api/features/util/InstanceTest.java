@@ -18,34 +18,22 @@
 package org.dkpro.tc.api.features.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
+import org.junit.Test;
 
 public class InstanceTest {
-
-    @Ignore
-	@Test(expected=TextClassificationException.class)
-	public void doubleInstanceTest() throws Exception {
-		Feature f1 = new Feature("feature", "value");
-		Feature f2 = new Feature("feature", "value");
-		List<Feature> features = new ArrayList<>();
-		features.add(f1);
-		features.add(f2);
-		Instance instance = new Instance(features, "outcome");
-		assertEquals(1, instance.getFeatures().size());
-	}
 
 	@Test
 	public void instanceInitializationByListTest() throws Exception {
@@ -238,5 +226,20 @@ public class InstanceTest {
         if (!next.getName().equals("feature4") && !next2.getName().equals("feature4")){
             fail("Expected to find a feature named [feature4]");
         }
+	}
+	
+	@Test
+	public void testSetterAndGetter(){
+	    Instance i = new Instance(Arrays.asList(new Feature("dummy", 0)), "RESULT");
+	    i.setJcasId(4711);
+	    i.setSequenceId(234);
+	    i.setWeight(2.0);
+	    i.setSequencePosition(3);
+	    
+	    assertEquals(4711, i.getJcasId());
+	    assertEquals(234, i.getSequenceId());
+	    assertEquals(2.0, i.getWeight(), 0.001);
+	    assertEquals(3, i.getSequencePosition());
+	    assertTrue(i.toString().startsWith("4711-234"));
 	}
 }
