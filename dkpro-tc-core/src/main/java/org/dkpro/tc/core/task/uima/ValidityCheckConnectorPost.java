@@ -24,9 +24,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
@@ -34,6 +31,8 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.util.ValidityCheckUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
  * UIMA analysis engine that is used in the {@link InitTask} to test error conditions on the CAS.
@@ -59,10 +58,8 @@ public class ValidityCheckConnectorPost
         throws AnalysisEngineProcessException
     {
 
-        getLogger().log(
-                Level.FINE,
-                "--- post-validation for CAS with id ["
-                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+        getLogger().log(Level.FINE, "--- post-validation for CAS with id ["
+                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         if (featureModeI == 0) {
             featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
@@ -78,48 +75,65 @@ public class ValidityCheckConnectorPost
                 TextClassificationTarget.class);
 
         // whether outcome annotation are present at all
-        if (outcomes.size() == 0) {
-            throw new AnalysisEngineProcessException(
-                    new TextClassificationException(
-                            "No TextClassificationOutcome annotation found. "
-                                    + "The reader must make sure that the expected outcome of the classification is annotated accordingly."));
-        }
-        // iff single-label is configured, there may not be more than one outcome annotation per
-        // CAS, except the experiment is unit or sequence classification
-        if (learningModeI != 2 && featureModeI != 2 && featureModeI != 4 && outcomes.size() > 2) {
-            throw new AnalysisEngineProcessException(
-                    new TextClassificationException(
-                            "Your experiment is configured to be single-label, but I found more than one outcome annotation for "
-                                    + DocumentMetaData.get(jcas).getDocumentUri()
-                                    + ". Please configure your project to be multi-label or make sure to have only one outcome per instance."));
-        }
+        checkErrorConditionZeroOutcomes(outcomes);
 
+        checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(jcas, outcomes);
+
+        checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(jcas, classificationUnits,
+                outcomes);
+
+        getLogger().log(Level.FINE, "--- post-validation for CAS with id ["
+                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete ---");
+    }
+
+    private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(JCas jcas,
+            Collection<TextClassificationTarget> classificationUnits,
+            Collection<TextClassificationOutcome> outcomes)
+                throws AnalysisEngineProcessException
+    {
         // iff unit/sequence classification is active, there must be classificationUnit
         // annotations, each
         // labeled with an outcome annotation
         if (featureModeI == 2 || featureModeI == 4) {
             if (classificationUnits.size() == 0) {
-                throw new AnalysisEngineProcessException(
-                        new TextClassificationException(
-                                "Your experiment is configured to have classification units. Please add classification unit annotations to the CAS while reading your initial files."));
+                throw new AnalysisEngineProcessException(new TextClassificationException(
+                        "Your experiment is configured to have classification units. Please add classification unit annotations to the CAS while reading your initial files."));
             }
             else {
                 for (TextClassificationTarget classificationUnit : classificationUnits) {
                     if (JCasUtil.selectCovered(jcas, TextClassificationOutcome.class,
                             classificationUnit).size() == 0) {
-                        throw new AnalysisEngineProcessException(
-                                new TextClassificationException(
-                                        "I did not find an outcome annotation for "
-                                                + classificationUnit.getCoveredText()
-                                                + ". Please add outcome annotations for all classification units."));
+                        throw new AnalysisEngineProcessException(new TextClassificationException(
+                                "I did not find an outcome annotation for "
+                                        + classificationUnit.getCoveredText()
+                                        + ". Please add outcome annotations for all classification units."));
                     }
                 }
             }
         }
+    }
 
-        getLogger().log(
-                Level.FINE,
-                "--- post-validation for CAS with id ["
-                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete ---");
+    private void checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(JCas jcas,
+            Collection<TextClassificationOutcome> outcomes)
+                throws AnalysisEngineProcessException
+    {
+        // iff single-label is configured, there may not be more than one outcome annotation per
+        // CAS, except the experiment is unit or sequence classification
+        if (learningModeI != 2 && featureModeI != 2 && featureModeI != 4 && outcomes.size() > 2) {
+            throw new AnalysisEngineProcessException(new TextClassificationException(
+                    "Your experiment is configured to be single-label, but I found more than one outcome annotation for "
+                            + DocumentMetaData.get(jcas).getDocumentUri()
+                            + ". Please configure your project to be multi-label or make sure to have only one outcome per instance."));
+        }
+    }
+
+    private void checkErrorConditionZeroOutcomes(Collection<TextClassificationOutcome> outcomes)
+        throws AnalysisEngineProcessException
+    {
+        if (outcomes.size() == 0) {
+            throw new AnalysisEngineProcessException(new TextClassificationException(
+                    "No TextClassificationOutcome annotation found. "
+                            + "The reader must make sure that the expected outcome of the classification is annotated accordingly."));
+        }
     }
 }
