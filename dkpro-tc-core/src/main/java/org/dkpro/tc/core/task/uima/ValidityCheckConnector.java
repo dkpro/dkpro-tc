@@ -82,10 +82,8 @@ public class ValidityCheckConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        getLogger().log(
-                Level.FINE,
-                "--- pre-validation of CAS with id ["
-                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+        getLogger().log(Level.FINE, "--- pre-validation of CAS with id ["
+                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         // make sure this class is only called once per pipeline
         if (firstCall) {
@@ -109,14 +107,12 @@ public class ValidityCheckConnector
             // iff multi-label classification is active, no single-label data writer may be used
             if (learningModeI == 2) {
                 if (dataWriter.equals("org.dkpro.tc.weka.WekaDataWriter")) {
-                    throw new AnalysisEngineProcessException(
-                            new TextClassificationException(
-                                    "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
+                    throw new AnalysisEngineProcessException(new TextClassificationException(
+                            "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
                 }
                 if (bipartitionThreshold == null) {
-                    throw new AnalysisEngineProcessException(
-                            new TextClassificationException(
-                                    "Your experiment is configured to be multi-label. Please set a bipartition threshold."));
+                    throw new AnalysisEngineProcessException(new TextClassificationException(
+                            "Your experiment is configured to be multi-label. Please set a bipartition threshold."));
                 }
             }
 
@@ -138,53 +134,24 @@ public class ValidityCheckConnector
             // iff sequence classification is enabled, we currently only support single-label
             // classification
             if (featureModeI == 4 && learningModeI != 1) {
-                throw new AnalysisEngineProcessException(
-                        new TextClassificationException(
-                                "In sequence mode, only single-label learning is possible. Please set the learning mode to single-label."));
+                throw new AnalysisEngineProcessException(new TextClassificationException(
+                        "In sequence mode, only single-label learning is possible. Please set the learning mode to single-label."));
             }
 
             // verify feature extractors are valid within the specified mode
             try {
                 switch (featureModeI) {
                 case 1:
-                    for (String featExt : featureExtractors) {
-                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
-                                .forName(featExt).newInstance();
-                        if (!(featExtC instanceof FeatureExtractor)) {
-                            throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt
-                                            + " is not a valid Document Feature Extractor."));
-                        }
-                        if (featExtC instanceof FeatureExtractor
-                                && (featExtC instanceof PairFeatureExtractor)) {
-                            throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt
-                                            + ": Feature Extractors need to define a unique type."));
-                        }
-                    }
+                    verifyDocumentMode(featureExtractors);
                     break;
                 case 2:
-                    testUnitFE(featureExtractors, developerMode);
+                    verifyUnitOrSequenceMode(featureExtractors);
                     break;
                 case 3:
-                    for (String featExt : featureExtractors) {
-                        FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
-                                .forName(featExt).newInstance();
-                        if (!(featExtC instanceof PairFeatureExtractor)) {
-                            throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt
-                                            + " is not a valid Pair Feature Extractor."));
-                        }
-                        if (featExtC instanceof PairFeatureExtractor
-                                &&  featExtC instanceof FeatureExtractor) {
-                            throw new AnalysisEngineProcessException(
-                                    new TextClassificationException(featExt
-                                            + ": Feature Extractors need to define a unique type."));
-                        }
-                    }
+                    verifyPairMode(featureExtractors);
                     break;
                 case 4:
-                    testUnitFE(featureExtractors, developerMode);
+                    verifyUnitOrSequenceMode(featureExtractors);
                     break;
                 default:
                     throw new AnalysisEngineProcessException("Please set a valid learning mode",
@@ -192,37 +159,76 @@ public class ValidityCheckConnector
 
                 }
             }
-            catch (ClassNotFoundException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (InstantiationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (IllegalAccessException e) {
+            catch (Exception e) {
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        getLogger().log(
-                Level.FINE,
-                "--- pre-validation of CAS with id ["
-                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete---");
+        getLogger().log(Level.FINE, "--- pre-validation of CAS with id ["
+                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete---");
     }
 
-    private static void testUnitFE(String[] featureExtractors, boolean developerMode)
-        throws AnalysisEngineProcessException, InstantiationException, IllegalAccessException,
-        ClassNotFoundException
+    private void verifyPairMode(String[] featureExtractors2) throws Exception
     {
         for (String featExt : featureExtractors) {
             FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
                     .forName(featExt).newInstance();
-            if (!(featExtC instanceof FeatureExtractor)) {
-                    throw new AnalysisEngineProcessException(new TextClassificationException(
-                            featExt + " is not a valid Unit Feature Extractor."));
-            }
+            checkIfIsPairFeatureExtractor(featExt, featExtC);
+            checkIfFeatureExtractorInterfacesAreInConflict(featExt, featExtC);
+        }        
+    }
+
+    private void checkIfIsPairFeatureExtractor(String featExt,
+            FeatureExtractorResource_ImplBase featExtC) throws AnalysisEngineProcessException
+    {
+        if (!(featExtC instanceof PairFeatureExtractor)) {
+            throw new AnalysisEngineProcessException(
+                    new TextClassificationException(
+                            featExt + " is not a valid Pair Feature Extractor."));
+        }        
+    }
+
+    private void verifyDocumentMode(String[] featureExtractors)
+        throws Exception
+    {
+        for (String featExt : featureExtractors) {
+            FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
+                    .forName(featExt).newInstance();
+            checkIfFeatureExtractorImplementsCorrectInterface(featExt, featExtC);
+            checkIfFeatureExtractorInterfacesAreInConflict(featExt, featExtC);
+        }
+    }
+
+    private void checkIfFeatureExtractorInterfacesAreInConflict(String featExt,
+            FeatureExtractorResource_ImplBase featExtC)
+                throws AnalysisEngineProcessException
+    {
+        if (featExtC instanceof FeatureExtractor && (featExtC instanceof PairFeatureExtractor)) {
+            throw new AnalysisEngineProcessException(new TextClassificationException(
+                    featExt + ": Feature Extractors need to define a unique type."));
+        }
+    }
+
+    private void checkIfFeatureExtractorImplementsCorrectInterface(String featExt,
+            FeatureExtractorResource_ImplBase featExtC)
+                throws AnalysisEngineProcessException
+    {
+        if (!(featExtC instanceof FeatureExtractor)) {
+            throw new AnalysisEngineProcessException(new TextClassificationException(
+                    featExt + " is not a valid feature extractor."));
+        }
+    }
+
+    private void verifyUnitOrSequenceMode(String[] featureExtractors)
+        throws Exception
+    {
+        for (String featExt : featureExtractors) {
+            FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
+                    .forName(featExt).newInstance();
+            checkIfFeatureExtractorImplementsCorrectInterface(featExt, featExtC);
             if (featExtC instanceof FeatureExtractor
                     && (featExtC instanceof PairFeatureExtractor)) {
-                throw new AnalysisEngineProcessException(new TextClassificationException(featExt
-                        + ": Feature Extractors need to define a unique type."));
+                throw new AnalysisEngineProcessException(new TextClassificationException(
+                        featExt + ": Feature Extractors need to define a unique type."));
             }
         }
     }
