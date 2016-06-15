@@ -108,7 +108,7 @@ public class ExtractFeaturesConnector
         try {
             featureStore = (FeatureStore) Class.forName(featureStoreClass).newInstance();
         }
-        catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
 
