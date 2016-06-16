@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -50,6 +51,8 @@ public class LiblinearTestTask
     private String learningMode;
 
     public static String SEPARATOR_CHAR = ";";
+    private static final double EPISILON_DEFAULT = 0.01;
+    private static final double PARAM_C_DEFAULT = 1.0;
 
     @Override
     public void execute(TaskContext aContext)
@@ -64,13 +67,13 @@ public class LiblinearTestTask
 
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.featureVectorsFile);
+        String trainFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
         File fileTrain = new File(trainFolder, trainFileName);
 
         File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        String testFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.featureVectorsFile);
+        String testFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
         File fileTest = new File(testFolder, testFileName);
 
         // default for bias is -1, documentation says to set it to 1 in order to get results closer
@@ -79,10 +82,9 @@ public class LiblinearTestTask
         // deactivate it there
         Problem train = Problem.readFromFile(fileTrain, 1.0);
 
-        // FIXME this should be configurable over the classificationArgs
-        SolverType solver = SolverType.L2R_LR; // -s 0
-        double C = 1.0; // cost of constraints violation
-        double eps = 0.01; // stopping criteria
+        SolverType solver = selectSolver();
+        double C = setParameterC();
+        double eps = setParameterEpsilon();
 
         Linear.setDebugOutput(null);
 
@@ -94,16 +96,147 @@ public class LiblinearTestTask
         predict(aContext, model, test);
     }
 
+    private double setParameterEpsilon()
+    {
+        if (classificationArguments == null) {
+            return EPISILON_DEFAULT;
+        }
+        
+        for (int i = 0; i < classificationArguments.size(); i++) {
+            String e = classificationArguments.get(i);
+            if (e.equals("-e")) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found parameter [-e] but no value was specified");
+                }
+
+                Double value;
+                try {
+                    value = Double.valueOf(classificationArguments.get(i + 1));
+                }
+                catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException(
+                            "The value of parameter -e has to be a floating point value but was ["
+                                    + classificationArguments.get(i + 1) + "]",
+                            ex);
+                }
+                return value;
+            }
+        }
+
+        LogFactory.getLog(getClass()).info("Parameter epsilon is set to [0.01]");
+        return EPISILON_DEFAULT;
+    }
+
+    private double setParameterC()
+    {
+        if (classificationArguments == null) {
+            return PARAM_C_DEFAULT;
+        }
+        
+        for (int i = 0; i < classificationArguments.size(); i++) {
+            String e = classificationArguments.get(i);
+            if (e.equals("-c")) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found parameter [-c] but no value was specified");
+                }
+
+                Double value;
+                try {
+                    value = Double.valueOf(classificationArguments.get(i + 1));
+                }
+                catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException(
+                            "The value of parameter -c has to be a floating point value but was ["
+                                    + classificationArguments.get(i + 1) + "]",
+                            ex);
+                }
+                return value;
+            }
+        }
+
+        LogFactory.getLog(getClass()).info("Parameter c is set to default value ["+PARAM_C_DEFAULT+"]");
+        return PARAM_C_DEFAULT;
+    }
+
+    private SolverType selectSolver()
+    {
+        if (classificationArguments == null) {
+            return SolverType.L2R_LR;
+        }
+
+        SolverType type = null;
+        for (int i = 0; i < classificationArguments.size(); i++) {
+            String e = classificationArguments.get(i);
+            if (e.equals("-s")) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found parameter [-s] but no solver type was specified");
+                }
+
+                String algo = classificationArguments.get(i + 1);
+                switch (algo) {
+                case SOLVER_L2R_LR:
+                    type = SolverType.L2R_LR;
+                    break;
+                case SOLVER_L2R_L1LOSS_SVC_DUAL:
+                    type = SolverType.L2R_L1LOSS_SVC_DUAL;
+                    break;
+                case SOLVER_L2R_L2LOSS_SVC_DUAL:
+                    type = SolverType.L2R_L2LOSS_SVC_DUAL;
+                    break;
+                case SOLVER_L2R_L2LOSS_SVC:
+                    type = SolverType.L2R_L2LOSS_SVC;
+                    break;
+                case SOLVER_MCSVM_CS:
+                    type = SolverType.MCSVM_CS;
+                    break;
+                case SOLVER_L1R_L2LOSS_SVC:
+                    type = SolverType.L1R_L2LOSS_SVC;
+                    break;
+                case SOLVER_L1R_LR:
+                    type = SolverType.L1R_LR;
+                    break;
+                case SOLVER_L2R_LR_DUAL:
+                    type = SolverType.L2R_LR_DUAL;
+                    break;
+                case SOLVER_L2R_L2LOSS_SVR:
+                    type = SolverType.L2R_L2LOSS_SVR;
+                    break;
+                case SOLVER_L2R_L2LOSS_SVR_DUAL:
+                    type = SolverType.L2R_L2LOSS_SVR_DUAL;
+                    break;
+                case SOLVER_L2R_L1LOSS_SVR_DUAL:
+                    type = SolverType.L2R_L1LOSS_SVR_DUAL;
+                    break;
+                default:
+                    throw new IllegalArgumentException("An unknown solver was specified [" + algo
+                            + "] which is unknown i.e. check parameter [-s] in your configuration");
+                }
+
+            }
+        }
+
+        if (type == null) {
+            // parameter -s was not specified in the parameters so we set a default value
+            type = SolverType.L2R_LR;
+        }
+
+        LogFactory.getLog(getClass()).info("Will use solver " + type.toString() + ")");
+        return type;
+    }
+
     private void predict(TaskContext aContext, Model model, Problem test)
         throws Exception
     {
         File predFolder = aContext.getFolder("", AccessMode.READWRITE);
-        String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.predictionsFile);
+        String predFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.predictionsFile);
         File predictionsFile = new File(predFolder, predFileName);
 
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                predictionsFile), "utf-8"));
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
         writer.append("#PREDICTION;GOLD" + "\n");
 
         Feature[][] testInstances = test.x;
@@ -117,4 +250,92 @@ public class LiblinearTestTask
 
         writer.close();
     }
+
+    /**
+     * Parameter {@code "-c <C>"}: Typical SVM parameter C trading-off slack vs. magnitude of the
+     * weight-vector. NOTE: The default value for this parameter is unlikely to work well for your
+     * particular problem. A good value for C must be selected via cross-validation, ideally
+     * exploring values over several orders of magnitude.
+     */
+    public static final String PARAM_C = "-c";
+
+    /**
+     * Parameter {@code "-e <EPSILON>"}: This specifies the tolerance of termination criterion.
+     */
+    public static final String PARAM_EPSILON = "-e";
+
+    /**
+     * L2-regularized logistic regression (primal)
+     *
+     * (fka L2_LR)
+     */
+    public static final String SOLVER_L2R_LR = "L2R_LR";
+
+    /**
+     * L2-regularized L2-loss support vector classification (dual)
+     *
+     * (fka L2LOSS_SVM_DUAL)
+     */
+    public static final String SOLVER_L2R_L2LOSS_SVC_DUAL = "L2R_L2LOSS_SVC_DUAL";
+
+    /**
+     * L2-regularized L2-loss support vector classification (primal)
+     *
+     * (fka L2LOSS_SVM)
+     */
+    public static final String SOLVER_L2R_L2LOSS_SVC = "L2R_L2LOSS_SVC";
+
+    /**
+     * L2-regularized L1-loss support vector classification (dual)
+     *
+     * (fka L1LOSS_SVM_DUAL)
+     */
+    public static final String SOLVER_L2R_L1LOSS_SVC_DUAL = "L2R_L1LOSS_SVC_DUAL";
+
+    /**
+     * multi-class support vector classification by Crammer and Singer
+     */
+    public static final String SOLVER_MCSVM_CS = "MCSVM_CS";
+
+    /**
+     * L1-regularized L2-loss support vector classification
+     *
+     * @since 1.5
+     */
+    public static final String SOLVER_L1R_L2LOSS_SVC = "L1R_L2LOSS_SVC";
+
+    /**
+     * L1-regularized logistic regression
+     *
+     * @since 1.5
+     */
+    public static final String SOLVER_L1R_LR = "L1R_LR";
+
+    /**
+     * L2-regularized logistic regression (dual)
+     *
+     * @since 1.7
+     */
+    public static final String SOLVER_L2R_LR_DUAL = "L2R_LR_DUAL";
+
+    /**
+     * L2-regularized L2-loss support vector regression (dual)
+     *
+     * @since 1.91
+     */
+    public static final String SOLVER_L2R_L2LOSS_SVR = "L2R_L2LOSS_SVR";
+
+    /**
+     * L2-regularized L1-loss support vector regression (dual)
+     *
+     * @since 1.91
+     */
+    public static final String SOLVER_L2R_L2LOSS_SVR_DUAL = "L2R_L2LOSS_SVR_DUAL";
+
+    /**
+     * L2-regularized L2-loss support vector regression (primal)
+     *
+     * @since 1.91
+     */
+    public static final String SOLVER_L2R_L1LOSS_SVR_DUAL = "L2R_L1LOSS_SVR_DUAL";
 }
