@@ -76,8 +76,8 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
         
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { LiblinearTestTask.PARAM_C, "100",
-                        LiblinearTestTask.PARAM_EPSILON, "1.0",
+                asList(new String[] { LiblinearTestTask.PARAM_C, "5",
+                        LiblinearTestTask.PARAM_EPSILON, "0.2",
                         LiblinearTestTask.PARAM_SOLVER_TYPE,
                         LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC }));
         
