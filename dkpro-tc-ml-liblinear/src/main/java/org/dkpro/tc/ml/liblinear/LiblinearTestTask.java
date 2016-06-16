@@ -30,7 +30,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.liblinear.util.LiblinearUtil;
+import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
@@ -82,9 +82,9 @@ public class LiblinearTestTask
         // deactivate it there
         Problem train = Problem.readFromFile(fileTrain, 1.0);
 
-        SolverType solver = LiblinearUtil.getSolver(classificationArguments);
-        double C = LiblinearUtil.getParameterC(classificationArguments);
-        double eps = LiblinearUtil.getParameterEpsilon(classificationArguments);
+        SolverType solver = LiblinearUtils.getSolver(classificationArguments);
+        double C = LiblinearUtils.getParameterC(classificationArguments);
+        double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
 
         Linear.setDebugOutput(null);
 
@@ -95,12 +95,6 @@ public class LiblinearTestTask
 
         predict(aContext, model, test);
     }
-
-   
-
-    
-
-    
 
     private void predict(TaskContext aContext, Model model, Problem test)
         throws Exception

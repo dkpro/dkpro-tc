@@ -17,14 +17,25 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear.util;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.*;
-import org.apache.commons.logging.LogFactory;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.ml.liblinear.FeatureNodeArrayEncoder;
+
+import de.bwaldvogel.liblinear.FeatureNode;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearUtil
+public class LiblinearUtils
 {
     public static SolverType getSolver(List<String> classificationArguments)
     {
@@ -89,7 +100,7 @@ public class LiblinearUtil
             type = SolverType.L2R_LR;
         }
 
-        LogFactory.getLog(LiblinearUtil.class).info("Will use solver " + type.toString() + ")");
+        LogFactory.getLog(LiblinearUtils.class).info("Will use solver " + type.toString() + ")");
         return type;
     }
 
@@ -121,7 +132,7 @@ public class LiblinearUtil
             }
         }
 
-        LogFactory.getLog(LiblinearUtil.class)
+        LogFactory.getLog(LiblinearUtils.class)
                 .info("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
         return PARAM_C_DEFAULT;
     }
@@ -154,7 +165,40 @@ public class LiblinearUtil
             }
         }
 
-        LogFactory.getLog(LiblinearUtil.class).info("Parameter epsilon is set to [0.01]");
+        LogFactory.getLog(LiblinearUtils.class).info("Parameter epsilon is set to [0.01]");
         return EPISILON_DEFAULT;
+    }
+    
+    public static String outcomeMap2String(Map<String, Integer> map) {
+        StringBuilder sb = new StringBuilder();
+        for (Entry<String, Integer> entry : map.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("\t");
+            sb.append(entry.getValue());
+            sb.append("\n");
+        }
+        
+        return sb.toString();
+    }
+    
+    public static Map<String, Integer> string2outcomeMap(String s) {
+        Map<String, Integer> outcomeMap = new HashMap<String, Integer>();
+        for (String line : s.split("\n")) {
+            String[] parts = line.split("\t");
+            outcomeMap.put(parts[0], Integer.parseInt(parts[1]));
+        }
+        
+        return outcomeMap;
+    }
+    
+    public static void savePredictions(File outputFile, List<Double> predictions) 
+            throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Double prediction : predictions) {
+            sb.append(prediction);
+            sb.append("\n");
+        }
+        FileUtils.writeStringToFile(outputFile, sb.toString());
     }
 }

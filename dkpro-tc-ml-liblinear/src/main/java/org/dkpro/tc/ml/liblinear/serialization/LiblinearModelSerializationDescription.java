@@ -21,6 +21,7 @@ package org.dkpro.tc.ml.liblinear.serialization;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -28,7 +29,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.util.LiblinearUtil;
+import org.dkpro.tc.ml.liblinear.LiblinearDataWriter;
+import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -41,7 +43,7 @@ public class LiblinearModelSerializationDescription
     implements Constants
 {
 
-    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     private List<String> classificationArguments;
 
     boolean trainModel = true;
@@ -51,25 +53,25 @@ public class LiblinearModelSerializationDescription
         throws Exception
     {
 
-//        if (trainModel) {
-            trainAndStoreModel(aContext);
-//        }
-//        else {
-//            copyAlreadyTrainedModel(aContext);
-//        }
+        // if (trainModel) {
+        trainAndStoreModel(aContext);
+        // }
+        // else {
+        // copyAlreadyTrainedModel(aContext);
+        // }
 
         writeModelConfiguration(aContext, LiblinearAdapter.class.getName());
     }
 
-//    private void copyAlreadyTrainedModel(TaskContext aContext)
-//        throws Exception
-//    {
-//        File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-//
-//        FileInputStream fis = new FileInputStream(file);
-//        FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
-//        IOUtils.copy(fis, fos);
-//    }
+    // private void copyAlreadyTrainedModel(TaskContext aContext)
+    // throws Exception
+    // {
+    // File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
+    //
+    // FileInputStream fis = new FileInputStream(file);
+    // FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
+    // IOUtils.copy(fis, fos);
+    // }
 
     private void trainAndStoreModel(TaskContext aContext)
         throws Exception
@@ -79,33 +81,23 @@ public class LiblinearModelSerializationDescription
         String trainFileName = LiblinearAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
         File fileTrain = new File(trainFolder, trainFileName);
-        
+
         Problem train = Problem.readFromFile(fileTrain, 1.0);
 
-        SolverType solver = LiblinearUtil.getSolver(classificationArguments);
-        double C = LiblinearUtil.getParameterC(classificationArguments);
-        double eps = LiblinearUtil.getParameterEpsilon(classificationArguments);
+        SolverType solver = LiblinearUtils.getSolver(classificationArguments);
+        double C = LiblinearUtils.getParameterC(classificationArguments);
+        double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
 
         Linear.setDebugOutput(null);
 
         Parameter parameter = new Parameter(solver, C, eps);
         Model model = Linear.train(train, parameter);
-        model.save(new File(outputFolder,MODEL_CLASSIFIER));
-        
-//        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-//                AccessMode.READONLY);
-//        String trainFileName = LiblinearAdapter.getInstance().getFrameworkFilename(
-//                AdapterNameEntries.featureVectorsFile);
-//
-//        String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
-//        String trainingDataPath = trainFolder.getPath() + "/" + trainFileName;
-//        String classificationArgs = classificationArguments != null ? classificationArguments[0]
-//                : null;
-//        List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(classifierPath,
-//                trainingDataPath, classificationArgs);
-//
-//        Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
-//        process.waitFor();
+        model.save(new File(outputFolder, MODEL_CLASSIFIER));
+
+        File mappingFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+        File mappingFile = new File(mappingFolder,LiblinearAdapter.getOutcomeMappingFilename());
+        FileUtils.copyFile(mappingFile,
+                new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename()));
     }
 
     public void trainModel(boolean b)
