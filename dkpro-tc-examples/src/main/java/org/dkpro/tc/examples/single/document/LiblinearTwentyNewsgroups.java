@@ -18,6 +18,7 @@
  */
 package org.dkpro.tc.examples.single.document;
 
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
@@ -42,6 +43,7 @@ import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -78,15 +80,16 @@ public class LiblinearTwentyNewsgroups
         // explained there.
         DemoUtils.setDkproHome(LiblinearTwentyNewsgroups.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace(null);
 
         LiblinearTwentyNewsgroups experiment = new LiblinearTwentyNewsgroups();
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
+        experiment.runTrainTestParametrization();
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -114,13 +117,23 @@ public class LiblinearTwentyNewsgroups
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets);
+        ParameterSpace pSpace;
+
+        if (dimClassificationArgs == null) {
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                    dimFeatureSets);
+        }
+        else {
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                    dimFeatureSets, dimClassificationArgs);
+        }
 
         return pSpace;
     }
@@ -150,6 +163,30 @@ public class LiblinearTwentyNewsgroups
                 LiblinearAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(ContextMemoryReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
+    // ##### TRAIN-TEST #####
+    protected void runTrainTestParametrization()
+        throws Exception
+    {
+
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                asList(new String[] { LiblinearTestTask.PARAM_C, "100",
+                        LiblinearTestTask.PARAM_EPSILON, "0.001",
+                        LiblinearTestTask.PARAM_SOLVER_TYPE,
+                        LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC }));
+
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
+                LiblinearAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(getParameterSpace(dimClassificationArgs));
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
         batch.addReport(ContextMemoryReport.class);

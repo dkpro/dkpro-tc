@@ -101,7 +101,7 @@ public class LiblinearTestTask
         if (classificationArguments == null) {
             return EPISILON_DEFAULT;
         }
-        
+
         for (int i = 0; i < classificationArguments.size(); i++) {
             String e = classificationArguments.get(i);
             if (e.equals("-e")) {
@@ -133,7 +133,7 @@ public class LiblinearTestTask
         if (classificationArguments == null) {
             return PARAM_C_DEFAULT;
         }
-        
+
         for (int i = 0; i < classificationArguments.size(); i++) {
             String e = classificationArguments.get(i);
             if (e.equals("-c")) {
@@ -156,7 +156,8 @@ public class LiblinearTestTask
             }
         }
 
-        LogFactory.getLog(getClass()).info("Parameter c is set to default value ["+PARAM_C_DEFAULT+"]");
+        LogFactory.getLog(getClass())
+                .info("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
         return PARAM_C_DEFAULT;
     }
 
@@ -265,6 +266,12 @@ public class LiblinearTestTask
     public static final String PARAM_EPSILON = "-e";
 
     /**
+     * Parameter {@code "-s <SOLVER>"}: This specifies the solver type - available solver are
+     * defined as constant values beginning with SOLVER* in this class
+     */
+    public static final String PARAM_SOLVER_TYPE = "-s";
+
+    /**
      * L2-regularized logistic regression (primal)
      *
      * (fka L2_LR)
@@ -299,43 +306,32 @@ public class LiblinearTestTask
 
     /**
      * L1-regularized L2-loss support vector classification
-     *
-     * @since 1.5
      */
     public static final String SOLVER_L1R_L2LOSS_SVC = "L1R_L2LOSS_SVC";
 
     /**
      * L1-regularized logistic regression
-     *
-     * @since 1.5
      */
     public static final String SOLVER_L1R_LR = "L1R_LR";
 
     /**
      * L2-regularized logistic regression (dual)
-     *
-     * @since 1.7
      */
     public static final String SOLVER_L2R_LR_DUAL = "L2R_LR_DUAL";
 
     /**
      * L2-regularized L2-loss support vector regression (dual)
-     *
-     * @since 1.91
      */
     public static final String SOLVER_L2R_L2LOSS_SVR = "L2R_L2LOSS_SVR";
 
     /**
      * L2-regularized L1-loss support vector regression (dual)
-     *
-     * @since 1.91
      */
     public static final String SOLVER_L2R_L2LOSS_SVR_DUAL = "L2R_L2LOSS_SVR_DUAL";
 
     /**
      * L2-regularized L2-loss support vector regression (primal)
-     *
-     * @since 1.91
      */
     public static final String SOLVER_L2R_L1LOSS_SVR_DUAL = "L2R_L1LOSS_SVR_DUAL";
+
 }

@@ -18,8 +18,12 @@
  */
 package org.dkpro.tc.examples.single.document;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
@@ -48,7 +52,7 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
         super.setup();
         
         javaExperiment = new LiblinearTwentyNewsgroups();
-        pSpace = LiblinearTwentyNewsgroups.getParameterSpace();
+        pSpace = LiblinearTwentyNewsgroups.getParameterSpace(null);
     }
 
     @Test
@@ -62,6 +66,27 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
         assertEquals(0.5, result, 0.0001);
+    }
+    
+    @Test
+    public void testJavaTrainTestWithParametrization()
+        throws Exception
+    {
+        ContextMemoryReport.key = LiblinearTestTask.class.getName();
+        
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+                asList(new String[] { LiblinearTestTask.PARAM_C, "100",
+                        LiblinearTestTask.PARAM_EPSILON, "1.0",
+                        LiblinearTestTask.PARAM_SOLVER_TYPE,
+                        LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC }));
+        
+        javaExperiment.runTrainTest(LiblinearTwentyNewsgroups.getParameterSpace(dimClassificationArgs));
+        
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        assertEquals(0.875, result, 0.0001);
     }
     
     @Test
