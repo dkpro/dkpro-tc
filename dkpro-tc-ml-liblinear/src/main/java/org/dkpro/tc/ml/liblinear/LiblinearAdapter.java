@@ -29,6 +29,7 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
 public class LiblinearAdapter 
@@ -84,13 +85,12 @@ public class LiblinearAdapter
 	
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		// FIXME to be implemented
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 	@Override
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-		throw new UnsupportedOperationException("Model serialization is not yet implemented for this ML adapter");
+	    return LiblinearModelSerializationDescription.class;
 	}
 
     @Override
