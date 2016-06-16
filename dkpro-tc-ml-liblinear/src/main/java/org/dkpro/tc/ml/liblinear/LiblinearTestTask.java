@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -31,6 +30,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.liblinear.util.LiblinearUtil;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
@@ -51,8 +51,8 @@ public class LiblinearTestTask
     private String learningMode;
 
     public static String SEPARATOR_CHAR = ";";
-    private static final double EPISILON_DEFAULT = 0.01;
-    private static final double PARAM_C_DEFAULT = 1.0;
+    public static final double EPISILON_DEFAULT = 0.01;
+    public static final double PARAM_C_DEFAULT = 1.0;
 
     @Override
     public void execute(TaskContext aContext)
@@ -82,9 +82,9 @@ public class LiblinearTestTask
         // deactivate it there
         Problem train = Problem.readFromFile(fileTrain, 1.0);
 
-        SolverType solver = selectSolver();
-        double C = setParameterC();
-        double eps = setParameterEpsilon();
+        SolverType solver = LiblinearUtil.getSolver(classificationArguments);
+        double C = LiblinearUtil.getParameterC(classificationArguments);
+        double eps = LiblinearUtil.getParameterEpsilon(classificationArguments);
 
         Linear.setDebugOutput(null);
 
@@ -96,137 +96,11 @@ public class LiblinearTestTask
         predict(aContext, model, test);
     }
 
-    private double setParameterEpsilon()
-    {
-        if (classificationArguments == null) {
-            return EPISILON_DEFAULT;
-        }
+   
 
-        for (int i = 0; i < classificationArguments.size(); i++) {
-            String e = classificationArguments.get(i);
-            if (e.equals("-e")) {
-                if (i + 1 >= classificationArguments.size()) {
-                    throw new IllegalArgumentException(
-                            "Found parameter [-e] but no value was specified");
-                }
+    
 
-                Double value;
-                try {
-                    value = Double.valueOf(classificationArguments.get(i + 1));
-                }
-                catch (NumberFormatException ex) {
-                    throw new IllegalArgumentException(
-                            "The value of parameter -e has to be a floating point value but was ["
-                                    + classificationArguments.get(i + 1) + "]",
-                            ex);
-                }
-                return value;
-            }
-        }
-
-        LogFactory.getLog(getClass()).info("Parameter epsilon is set to [0.01]");
-        return EPISILON_DEFAULT;
-    }
-
-    private double setParameterC()
-    {
-        if (classificationArguments == null) {
-            return PARAM_C_DEFAULT;
-        }
-
-        for (int i = 0; i < classificationArguments.size(); i++) {
-            String e = classificationArguments.get(i);
-            if (e.equals("-c")) {
-                if (i + 1 >= classificationArguments.size()) {
-                    throw new IllegalArgumentException(
-                            "Found parameter [-c] but no value was specified");
-                }
-
-                Double value;
-                try {
-                    value = Double.valueOf(classificationArguments.get(i + 1));
-                }
-                catch (NumberFormatException ex) {
-                    throw new IllegalArgumentException(
-                            "The value of parameter -c has to be a floating point value but was ["
-                                    + classificationArguments.get(i + 1) + "]",
-                            ex);
-                }
-                return value;
-            }
-        }
-
-        LogFactory.getLog(getClass())
-                .info("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
-        return PARAM_C_DEFAULT;
-    }
-
-    private SolverType selectSolver()
-    {
-        if (classificationArguments == null) {
-            return SolverType.L2R_LR;
-        }
-
-        SolverType type = null;
-        for (int i = 0; i < classificationArguments.size(); i++) {
-            String e = classificationArguments.get(i);
-            if (e.equals("-s")) {
-                if (i + 1 >= classificationArguments.size()) {
-                    throw new IllegalArgumentException(
-                            "Found parameter [-s] but no solver type was specified");
-                }
-
-                String algo = classificationArguments.get(i + 1);
-                switch (algo) {
-                case SOLVER_L2R_LR:
-                    type = SolverType.L2R_LR;
-                    break;
-                case SOLVER_L2R_L1LOSS_SVC_DUAL:
-                    type = SolverType.L2R_L1LOSS_SVC_DUAL;
-                    break;
-                case SOLVER_L2R_L2LOSS_SVC_DUAL:
-                    type = SolverType.L2R_L2LOSS_SVC_DUAL;
-                    break;
-                case SOLVER_L2R_L2LOSS_SVC:
-                    type = SolverType.L2R_L2LOSS_SVC;
-                    break;
-                case SOLVER_MCSVM_CS:
-                    type = SolverType.MCSVM_CS;
-                    break;
-                case SOLVER_L1R_L2LOSS_SVC:
-                    type = SolverType.L1R_L2LOSS_SVC;
-                    break;
-                case SOLVER_L1R_LR:
-                    type = SolverType.L1R_LR;
-                    break;
-                case SOLVER_L2R_LR_DUAL:
-                    type = SolverType.L2R_LR_DUAL;
-                    break;
-                case SOLVER_L2R_L2LOSS_SVR:
-                    type = SolverType.L2R_L2LOSS_SVR;
-                    break;
-                case SOLVER_L2R_L2LOSS_SVR_DUAL:
-                    type = SolverType.L2R_L2LOSS_SVR_DUAL;
-                    break;
-                case SOLVER_L2R_L1LOSS_SVR_DUAL:
-                    type = SolverType.L2R_L1LOSS_SVR_DUAL;
-                    break;
-                default:
-                    throw new IllegalArgumentException("An unknown solver was specified [" + algo
-                            + "] which is unknown i.e. check parameter [-s] in your configuration");
-                }
-
-            }
-        }
-
-        if (type == null) {
-            // parameter -s was not specified in the parameters so we set a default value
-            type = SolverType.L2R_LR;
-        }
-
-        LogFactory.getLog(getClass()).info("Will use solver " + type.toString() + ")");
-        return type;
-    }
+    
 
     private void predict(TaskContext aContext, Model model, Problem test)
         throws Exception
