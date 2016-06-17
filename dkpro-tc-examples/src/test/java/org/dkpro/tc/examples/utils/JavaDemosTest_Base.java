@@ -27,11 +27,6 @@ import org.junit.rules.TestName;
 
 public class JavaDemosTest_Base
 {
-    @Before
-    public void setupLogging()
-    {
-        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
-    }
     
     @Before
     public void setup()
