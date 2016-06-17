@@ -30,6 +30,7 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
+import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
 public class LiblinearAdapter 
@@ -85,7 +86,7 @@ public class LiblinearAdapter
 	
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return null;
+		return LoadModelConnectorLiblinear.class;
 	}
 
 	@Override
