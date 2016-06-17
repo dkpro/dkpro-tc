@@ -19,7 +19,8 @@
 package org.dkpro.tc.examples.model;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -79,7 +81,7 @@ public class LiblinearSaveAndLoadModelTest
         DemoUtils.setDkproHome(LiblinearSaveAndLoadModelTest.class.getSimpleName());
     }
 
-    private ParameterSpace documentGetParameterSpaceSingleLabel()
+    private ParameterSpace documentGetParameterSpaceSingleLabel(boolean useClassificationArguments)
         throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -99,13 +101,26 @@ public class LiblinearSaveAndLoadModelTest
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         @SuppressWarnings("unchecked")
+        Dimension<List<Object>> dimClassificationArguments = Dimension.create(
+                DIM_CLASSIFICATION_ARGS, Arrays.asList("-s", LiblinearTestTask.SOLVER_L1R_LR));
+
+        @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
                 .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets);
+        ParameterSpace pSpace;
+        if (useClassificationArguments) {
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                    dimClassificationArguments, dimFeatureSets);
+        }
+        else {
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                    dimFeatureSets);
+        }
         return pSpace;
     }
 
@@ -117,16 +132,21 @@ public class LiblinearSaveAndLoadModelTest
         DemoUtils.setDkproHome(LiblinearSaveAndLoadModelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
-        ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel();
+        ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel(false);
         documentTrainAndStoreModel(docParamSpace, modelFolder);
-        documentVerifyCreatedModel(modelFolder);
+        documentLoadAndUseModel(modelFolder, false);
+        documentVerifyCreatedModelFiles(modelFolder);
+        
+        docParamSpace = documentGetParameterSpaceSingleLabel(true);
+        documentTrainAndStoreModel(docParamSpace, modelFolder);
+        documentLoadAndUseModel(modelFolder, true);
 
-        documentLoadAndUseModel(modelFolder);
+        
 
         modelFolder.deleteOnExit();
     }
 
-    private void documentVerifyCreatedModel(File modelFolder)
+    private void documentVerifyCreatedModelFiles(File modelFolder)
     {
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
@@ -161,8 +181,9 @@ public class LiblinearSaveAndLoadModelTest
         Lab.getInstance().run(batch);
     }
 
-    private static void documentLoadAndUseModel(File modelFolder)
-        throws Exception
+    private static void documentLoadAndUseModel(File modelFolder,
+            boolean evaluateWithClassificationArgs)
+                throws Exception
     {
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
@@ -187,10 +208,21 @@ public class LiblinearSaveAndLoadModelTest
         }
 
         assertEquals(4, outcomes.size());
-        assertEquals("neutral", outcomes.get(0).getOutcome());
-        assertEquals("emotional", outcomes.get(1).getOutcome());
-        assertEquals("emotional", outcomes.get(2).getOutcome());
-        assertEquals("emotional", outcomes.get(3).getOutcome());
+
+        if (evaluateWithClassificationArgs) {
+            assertEquals(4, outcomes.size());
+            assertEquals("neutral", outcomes.get(0).getOutcome());
+            assertEquals("neutral", outcomes.get(1).getOutcome());
+            assertEquals("neutral", outcomes.get(2).getOutcome());
+            assertEquals("neutral", outcomes.get(3).getOutcome());
+        }
+        else {
+            assertEquals(4, outcomes.size());
+            assertEquals("neutral", outcomes.get(0).getOutcome());
+            assertEquals("emotional", outcomes.get(1).getOutcome());
+            assertEquals("emotional", outcomes.get(2).getOutcome());
+            assertEquals("emotional", outcomes.get(3).getOutcome());          
+        }
     }
 
 }
