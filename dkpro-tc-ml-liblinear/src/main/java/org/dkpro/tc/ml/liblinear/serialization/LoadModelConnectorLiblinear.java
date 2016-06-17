@@ -33,11 +33,13 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.SaveModelUtils;
@@ -64,7 +66,7 @@ public class LoadModelConnectorLiblinear
 
     @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
     private String featureStoreImpl;
-    
+
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
 
@@ -80,7 +82,7 @@ public class LoadModelConnectorLiblinear
         try {
             // TODO: Load mapping
             liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
-            outcomeMapping=loadOutcome2IntegerMapping(tcModelLocation);
+            outcomeMapping = loadOutcome2IntegerMapping(tcModelLocation);
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
         }
         catch (Exception e) {
@@ -110,9 +112,9 @@ public class LoadModelConnectorLiblinear
             FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
                     .newInstance();
 
-                Instance inst = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false, true, featureStore.supportsSparseFeatures());
-                    featureStore.addInstance(inst);
-
+            Instance inst = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,
+                    true, featureStore.supportsSparseFeatures());
+            featureStore.addInstance(inst);
 
             FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
             FeatureNode[][] nodes = encoder.featueStore2FeatureNode(featureStore);
@@ -130,14 +132,14 @@ public class LoadModelConnectorLiblinear
                         elements.add(index + ":" + value);
                     }
                 }
-                sb.append("999999999"); //DUMMY value for our outcome
+                sb.append("-1"); // DUMMY value for our outcome
                 sb.append("\t");
                 sb.append(StringUtils.join(elements, "\t"));
                 sb.append("\n");
             }
 
-            File inputData = File.createTempFile("libLinearePrediction",LiblinearAdapter.getInstance()
-                    .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+            File inputData = File.createTempFile("libLinearePrediction", LiblinearAdapter
+                    .getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
             FileUtils.writeStringToFile(inputData, sb.toString());
 
             Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
@@ -146,7 +148,13 @@ public class LoadModelConnectorLiblinear
             for (int i = 0; i < testInstances.length; i++) {
                 Feature[] instance = testInstances[i];
                 Double prediction = Linear.predict(liblinearModel, instance);
-                System.out.println(prediction);
+
+                String predictedLabel = outcomeMapping.get(prediction.intValue());
+
+                TextClassificationOutcome outcome = JCasUtil.selectSingle(jcas,
+                        TextClassificationOutcome.class);
+                outcome.setOutcome(predictedLabel);
+                System.out.println(predictedLabel);
             }
 
         }

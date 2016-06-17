@@ -19,8 +19,7 @@
 package org.dkpro.tc.examples.model;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,7 +67,8 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 public class LiblinearSaveAndLoadModelTest
     implements Constants
 {
-    static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/debug";
+    static String documentTrainFolder = "src/main/resources/data/twitter/train";
+    static String documentTestFolder = "src/main/resources/data/twitter/test";
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -118,15 +118,15 @@ public class LiblinearSaveAndLoadModelTest
         File modelFolder = folder.newFolder();
 
         ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel();
-        trainAndStoreModel(docParamSpace, modelFolder);
-        verifyCreatedModel(modelFolder);
+        documentTrainAndStoreModel(docParamSpace, modelFolder);
+        documentVerifyCreatedModel(modelFolder);
 
-//        loadAndUseModel(modelFolder);
+        documentLoadAndUseModel(modelFolder);
 
         modelFolder.deleteOnExit();
     }
 
-    private void verifyCreatedModel(File modelFolder)
+    private void documentVerifyCreatedModel(File modelFolder)
     {
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
@@ -149,7 +149,7 @@ public class LiblinearSaveAndLoadModelTest
         assertTrue(bipartitionThreshold.exists());
     }
 
-    private static void trainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
+    private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", LiblinearAdapter.class,
@@ -161,7 +161,7 @@ public class LiblinearSaveAndLoadModelTest
         Lab.getInstance().run(batch);
     }
 
-    private static void loadAndUseModel(File modelFolder)
+    private static void documentLoadAndUseModel(File modelFolder)
         throws Exception
     {
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
@@ -170,24 +170,27 @@ public class LiblinearSaveAndLoadModelTest
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
 
         CollectionReader reader = CollectionReaderFactory.createReader(TextReader.class,
-                TextReader.PARAM_SOURCE_LOCATION, documentTrainFolder, TextReader.PARAM_LANGUAGE,
+                TextReader.PARAM_SOURCE_LOCATION, documentTestFolder, TextReader.PARAM_LANGUAGE,
                 "en", TextReader.PARAM_PATTERNS,
-                Arrays.asList(TextReader.INCLUDE_PREFIX + "comp.graphics/*.txt",
-                        TextReader.INCLUDE_PREFIX + "alt.atheism/*.txt"));
+                Arrays.asList(TextReader.INCLUDE_PREFIX + "*/*.txt"));
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>();
         while (reader.hasNext()) {
             JCas jcas = JCasFactory.createJCas();
             reader.getNext(jcas.getCas());
-//             jcas.setDocumentText("");
             jcas.setDocumentLanguage("en");
 
             tokenizer.process(jcas);
             tcAnno.process(jcas);
+
+            outcomes.add(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class));
         }
 
-        // List<TextClassificationOutcome> outcomes = new ArrayList<>(
-        // JCasUtil.select(jcas, TextClassificationOutcome.class));
-        // assertEquals(1, outcomes.size());
-        // assertEquals("comp.graphics", outcomes.get(0).getOutcome());
+        assertEquals(4, outcomes.size());
+        assertEquals("neutral", outcomes.get(0).getOutcome());
+        assertEquals("emotional", outcomes.get(1).getOutcome());
+        assertEquals("emotional", outcomes.get(2).getOutcome());
+        assertEquals("emotional", outcomes.get(3).getOutcome());
     }
 
 }
