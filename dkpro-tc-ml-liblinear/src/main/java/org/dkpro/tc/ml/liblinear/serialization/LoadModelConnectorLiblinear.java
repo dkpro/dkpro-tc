@@ -80,7 +80,6 @@ public class LoadModelConnectorLiblinear
         super.initialize(context);
 
         try {
-            // TODO: Load mapping
             liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
             outcomeMapping = loadOutcome2IntegerMapping(tcModelLocation);
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
