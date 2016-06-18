@@ -47,7 +47,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 
 import de.bwaldvogel.liblinear.SolverType;
@@ -197,28 +196,6 @@ public class LiblinearUtils
         }
 
         return sb.toString();
-    }
-
-    public static Map<String, Integer> string2outcomeMap(String s)
-    {
-        Map<String, Integer> outcomeMap = new HashMap<String, Integer>();
-        for (String line : s.split("\n")) {
-            String[] parts = line.split("\t");
-            outcomeMap.put(parts[0], Integer.parseInt(parts[1]));
-        }
-
-        return outcomeMap;
-    }
-
-    public static void savePredictions(File outputFile, List<Double> predictions)
-        throws IOException
-    {
-        StringBuilder sb = new StringBuilder();
-        for (Double prediction : predictions) {
-            sb.append(prediction);
-            sb.append("\n");
-        }
-        FileUtils.writeStringToFile(outputFile, sb.toString());
     }
 
     public static Map<String, Integer> createMapping(File... files)
