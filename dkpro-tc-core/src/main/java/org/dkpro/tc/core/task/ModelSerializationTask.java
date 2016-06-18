@@ -54,11 +54,6 @@ public abstract class ModelSerializationTask
 	
 	public void writeModelConfiguration(TaskContext aContext, String mlAdapter) throws Exception{
 		
-		// bipartition threshold is optional
-		if(threshold == null){
-			threshold = "0.5";
-		}
-		
         SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
         SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
         SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
@@ -66,7 +61,6 @@ public abstract class ModelSerializationTask
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
         SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
         SaveModelUtils.writeLearningMode(outputFolder, learningMode);
-        SaveModelUtils.writeBipartitionThreshold(outputFolder, threshold);
 	}
    
 }

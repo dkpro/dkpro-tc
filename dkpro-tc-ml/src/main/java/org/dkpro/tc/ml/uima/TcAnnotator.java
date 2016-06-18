@@ -66,7 +66,6 @@ public class TcAnnotator
 
     private String learningMode;
     private String featureMode;
-    private String bipartitionThreshold;
 
     // private List<FeatureExtractorResource_ImplBase> featureExtractors;
     private List<String> featureExtractors;
@@ -90,14 +89,13 @@ public class TcAnnotator
             featureExtractors = SaveModelUtils.initFeatureExtractors(tcModelLocation);
             featureMode = SaveModelUtils.initFeatureMode(tcModelLocation);
             learningMode = SaveModelUtils.initLearningMode(tcModelLocation);
-            bipartitionThreshold = SaveModelUtils.initBipartitionThreshold(tcModelLocation);
 
             validateUimaParameter();
 
             AnalysisEngineDescription connector = getSaveModelConnector(parameters,
                     tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
-                    learningMode, featureMode, bipartitionThreshold,
-                    mlAdapter.getFeatureStore(), featureExtractors.toArray(new String[0]));
+                    learningMode, featureMode, mlAdapter.getFeatureStore(),
+                    featureExtractors.toArray(new String[0]));
 
             engine = UIMAFramework.produceAnalysisEngine(connector,
                     SaveModelUtils.getModelFeatureAwareResourceManager(tcModelLocation), null);
@@ -142,7 +140,7 @@ public class TcAnnotator
      */
     private AnalysisEngineDescription getSaveModelConnector(List<Object> parameters,
             String outputPath, String dataWriter, String learningMode, String featureMode,
-            String bipartitionThreshold, String featureStore, String... featureExtractorClassNames)
+            String featureStore, String... featureExtractorClassNames)
                 throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
@@ -157,7 +155,6 @@ public class TcAnnotator
                 ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
                 ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
-                ModelSerialization_ImplBase.PARAM_BIPARTITION_THRESHOLD, bipartitionThreshold,
                 ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, extractorResources,
                 ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,
                 ModelSerialization_ImplBase.PARAM_IS_TESTING, true,

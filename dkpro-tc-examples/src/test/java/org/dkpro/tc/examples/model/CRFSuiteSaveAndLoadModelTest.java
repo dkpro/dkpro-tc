@@ -99,10 +99,6 @@ public class CRFSuiteSaveAndLoadModelTest
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_BIPARTITION_THRESHOLD);
-        assertTrue(bipartitionThreshold.exists());
-
         modelFolder.deleteOnExit();
     }
 

@@ -18,18 +18,15 @@
  */
 package org.dkpro.tc.weka.task.serialization;
 
-import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
-import static org.dkpro.tc.core.Constants.FM_PAIR;
-import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
-import static org.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -58,15 +55,11 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 public class LoadModelConnectorWeka
-    extends ModelSerialization_ImplBase
+    extends ModelSerialization_ImplBase implements Constants
 {
 
     @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
-
-    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
-    @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
-    private String bipartitionThreshold;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -83,6 +76,8 @@ public class LoadModelConnectorWeka
 
     boolean useSparse = false;
 
+    private String bipartitionThreshold;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -92,6 +87,7 @@ public class LoadModelConnectorWeka
         try {
             TCMachineLearningAdapter initMachineLearningAdapter = SaveModelUtils
                     .initMachineLearningAdapter(tcModelLocation);
+            bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
             FeatureStore featureStore = (FeatureStore) Class
                     .forName(initMachineLearningAdapter.getFeatureStore()).newInstance();
             useSparse = featureStore.supportsSparseFeatures();
@@ -110,6 +106,19 @@ public class LoadModelConnectorWeka
             throw new ResourceInitializationException(e);
         }
     }
+    
+    private String initBipartitionThreshold(File tcModelLocation)
+            throws FileNotFoundException, IOException
+        {
+            File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
+            Properties prop = new Properties();
+
+            FileInputStream fis = new FileInputStream(file);
+            prop.load(fis);
+            fis.close();
+
+            return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+        }
 
     private void loadClassLabels()
         throws IOException
