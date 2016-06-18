@@ -243,7 +243,8 @@ public class LiblinearUtils
     {
         Set<String> outcomes = new HashSet<>();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), "utf-8"));
 
         String line = null;
         while (((line = br.readLine()) != null)) {
