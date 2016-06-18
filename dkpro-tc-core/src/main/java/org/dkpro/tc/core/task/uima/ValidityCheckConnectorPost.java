@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.uima;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -69,10 +71,10 @@ public class ValidityCheckConnectorPost
             learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
         }
 
-        Collection<TextClassificationOutcome> outcomes = JCasUtil.select(jcas,
-                TextClassificationOutcome.class);
-        Collection<TextClassificationTarget> classificationUnits = JCasUtil.select(jcas,
-                TextClassificationTarget.class);
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+        List<TextClassificationTarget> classificationUnits = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationTarget.class));
 
         // whether outcome annotation are present at all
         checkErrorConditionZeroOutcomes(outcomes);
@@ -87,30 +89,40 @@ public class ValidityCheckConnectorPost
     }
 
     private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(JCas jcas,
-            Collection<TextClassificationTarget> classificationUnits,
-            Collection<TextClassificationOutcome> outcomes)
+            List<TextClassificationTarget> targets, List<TextClassificationOutcome> outcomes)
                 throws AnalysisEngineProcessException
     {
         // iff unit/sequence classification is active, there must be classificationUnit
         // annotations, each
         // labeled with an outcome annotation
         if (featureModeI == 2 || featureModeI == 4) {
-            if (classificationUnits.size() == 0) {
+            if (targets.size() == 0) {
                 throw new AnalysisEngineProcessException(new TextClassificationException(
                         "Your experiment is configured to have classification units. Please add classification unit annotations to the CAS while reading your initial files."));
             }
             else {
-                for (TextClassificationTarget classificationUnit : classificationUnits) {
-                    if (JCasUtil.selectCovered(jcas, TextClassificationOutcome.class,
-                            classificationUnit).size() == 0) {
-                        throw new AnalysisEngineProcessException(new TextClassificationException(
-                                "I did not find an outcome annotation for "
-                                        + classificationUnit.getCoveredText()
-                                        + ". Please add outcome annotations for all classification units."));
+                if (targets.size() != outcomes.size()) {
+                    throwException("Number of targets [" + targets.size()
+                            + "] != number of outcomes [" + outcomes.size() + "]");
+                }
+
+                for (int i = 0; i < targets.size(); i++) {
+                    TextClassificationTarget t = targets.get(i);
+                    TextClassificationOutcome o = outcomes.get(i);
+                    if (t.getBegin() != o.getBegin() || t.getEnd() != o.getEnd()) {
+                        throwException("Index of target and outcome do not match taget span: ["
+                                + t.getBegin() + " - " + t.getEnd() + "] != outcome span "
+                                + o.getBegin() + " - " + o.getEnd());
                     }
                 }
             }
         }
+    }
+
+    private void throwException(String message)
+        throws AnalysisEngineProcessException
+    {
+        throw new AnalysisEngineProcessException(new TextClassificationException(message));
     }
 
     private void checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(JCas jcas,
