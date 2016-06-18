@@ -289,8 +289,8 @@ public class WekaSaveAndLoadModelTest
         DemoUtils.setDkproHome(WekaSaveAndLoadModelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
-        ParameterSpace docParamSpace = unitGetParameterSpace();
-        unitExecuteSaveModel(docParamSpace, modelFolder);
+        ParameterSpace unitParamSpace = unitGetParameterSpace();
+        unitExecuteSaveModel(unitParamSpace, modelFolder);
         unitLoadModel(modelFolder);
 
         // verify that all expected files have been created
