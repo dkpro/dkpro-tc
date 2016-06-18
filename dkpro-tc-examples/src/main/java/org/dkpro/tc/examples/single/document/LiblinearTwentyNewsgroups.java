@@ -47,7 +47,6 @@ import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
@@ -198,9 +197,6 @@ public class LiblinearTwentyNewsgroups
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-
-        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        LANGUAGE_CODE));
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 }

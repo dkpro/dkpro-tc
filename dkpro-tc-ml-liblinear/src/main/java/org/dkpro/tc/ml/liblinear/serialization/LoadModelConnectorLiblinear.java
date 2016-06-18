@@ -111,9 +111,11 @@ public class LoadModelConnectorLiblinear
             FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
                     .newInstance();
 
-            Instance inst = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,
+            List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
                     true, featureStore.supportsSparseFeatures());
-            featureStore.addInstance(inst);
+            for (Instance i : inst) {
+                featureStore.addInstance(i);
+            }
 
             FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
             FeatureNode[][] nodes = encoder.featueStore2FeatureNode(featureStore);
@@ -143,6 +145,7 @@ public class LoadModelConnectorLiblinear
 
             Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
 
+            List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
             Feature[][] testInstances = predictionProblem.x;
             for (int i = 0; i < testInstances.length; i++) {
                 Feature[] instance = testInstances[i];
@@ -150,9 +153,7 @@ public class LoadModelConnectorLiblinear
 
                 String predictedLabel = outcomeMapping.get(prediction.intValue());
 
-                TextClassificationOutcome outcome = JCasUtil.selectSingle(jcas,
-                        TextClassificationOutcome.class);
-                outcome.setOutcome(predictedLabel);
+                outcomes.get(i).setOutcome(predictedLabel);
             }
 
         }
