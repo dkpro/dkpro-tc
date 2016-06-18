@@ -81,6 +81,7 @@
         <module>dkpro-tc-ml-crfsuite</module>
         <module>dkpro-tc-ml-mallet</module>
         <module>dkpro-tc-ml-liblinear</module>
+        <module>dkpro-tc-ml-libsvm</module>
         <module>dkpro-tc-ml-svmhmm</module>
         <module>dkpro-tc-ml-weka</module>
         <module>dkpro-tc-testing</module>
@@ -181,6 +182,11 @@
             <dependency>
                 <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-liblinear</artifactId>
+                <version>0.9.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dkpro.tc</groupId>
+                <artifactId>dkpro-tc-ml-libsvm</artifactId>
                 <version>0.9.0-SNAPSHOT</version>
             </dependency>
 			<dependency>

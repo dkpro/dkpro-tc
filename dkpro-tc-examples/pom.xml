@@ -193,6 +193,10 @@
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml-mallet</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml-libsvm</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
