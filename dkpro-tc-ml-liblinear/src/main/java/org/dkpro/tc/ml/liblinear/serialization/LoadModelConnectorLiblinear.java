@@ -154,7 +154,6 @@ public class LoadModelConnectorLiblinear
                 TextClassificationOutcome outcome = JCasUtil.selectSingle(jcas,
                         TextClassificationOutcome.class);
                 outcome.setOutcome(predictedLabel);
-                System.out.println(predictedLabel);
             }
 
         }

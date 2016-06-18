@@ -114,10 +114,10 @@ public class LiblinearOutcomeIdReport
     private Map<Integer, String> getId2LabelMapping()
         throws Exception
     {
-        File mappingFile = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
+        File mappingFolder = getContext().getFolder("",
                 StorageService.AccessMode.READONLY);
         String fileName = LiblinearAdapter.getOutcomeMappingFilename();
-        File file = new File(mappingFile, fileName);
+        File file = new File(mappingFolder, fileName);
         Map<Integer, String> map = new HashMap<Integer, String>();
 
         List<String> lines = FileUtils.readLines(file);

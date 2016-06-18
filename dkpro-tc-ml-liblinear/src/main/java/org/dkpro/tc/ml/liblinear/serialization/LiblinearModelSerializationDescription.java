@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.liblinear.serialization;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -29,7 +30,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.LiblinearDataWriter;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Linear;
@@ -52,37 +52,22 @@ public class LiblinearModelSerializationDescription
     public void execute(TaskContext aContext)
         throws Exception
     {
-
-        // if (trainModel) {
         trainAndStoreModel(aContext);
-        // }
-        // else {
-        // copyAlreadyTrainedModel(aContext);
-        // }
 
         writeModelConfiguration(aContext, LiblinearAdapter.class.getName());
     }
 
-    // private void copyAlreadyTrainedModel(TaskContext aContext)
-    // throws Exception
-    // {
-    // File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-    //
-    // FileInputStream fis = new FileInputStream(file);
-    // FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
-    // IOUtils.copy(fis, fos);
-    // }
-
     private void trainAndStoreModel(TaskContext aContext)
         throws Exception
     {
-        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        String trainFileName = LiblinearAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File fileTrain = new File(trainFolder, trainFileName);
+        //create mapping and persist mapping
+        File fileTrain = getTrainFile(aContext);
+        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(fileTrain);
+        File mappedTrainFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTrain, outcomeMapping);
+        File mappingFile = new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename());
+        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));        
 
-        Problem train = Problem.readFromFile(fileTrain, 1.0);
+        Problem train = Problem.readFromFile(mappedTrainFile, 1.0);
 
         SolverType solver = LiblinearUtils.getSolver(classificationArguments);
         double C = LiblinearUtils.getParameterC(classificationArguments);
@@ -93,11 +78,17 @@ public class LiblinearModelSerializationDescription
         Parameter parameter = new Parameter(solver, C, eps);
         Model model = Linear.train(train, parameter);
         model.save(new File(outputFolder, MODEL_CLASSIFIER));
+    }
+    
+    private File getTrainFile(TaskContext aContext)
+    {
+        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        String trainFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
+        File fileTrain = new File(trainFolder, trainFileName);
 
-        File mappingFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-        File mappingFile = new File(mappingFolder,LiblinearAdapter.getOutcomeMappingFilename());
-        FileUtils.copyFile(mappingFile,
-                new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename()));
+        return fileTrain;
     }
 
     public void trainModel(boolean b)

@@ -20,9 +20,12 @@ package org.dkpro.tc.ml.liblinear;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -65,22 +68,19 @@ public class LiblinearTestTask
                     "Multi-label requested, but LIBLINEAR only supports single label setups.");
         }
 
-        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        String trainFileName = LiblinearAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File fileTrain = new File(trainFolder, trainFileName);
+        File fileTrain = getTrainFile(aContext);
+        File fileTest = getTestFile(aContext);
 
-        File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        String testFileName = LiblinearAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File fileTest = new File(testFolder, testFileName);
+        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(fileTrain, fileTest);
+        File idMappedTrainFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTrain, outcomeMapping);
+        File idMappedTestFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTest, outcomeMapping);
+        writeMapping(aContext, outcomeMapping);
 
         // default for bias is -1, documentation says to set it to 1 in order to get results closer
         // to libsvm
         // writer adds bias, so if we de-activate that here for some reason, we need to also
         // deactivate it there
-        Problem train = Problem.readFromFile(fileTrain, 1.0);
+        Problem train = Problem.readFromFile(idMappedTrainFile, 1.0);
 
         SolverType solver = LiblinearUtils.getSolver(classificationArguments);
         double C = LiblinearUtils.getParameterC(classificationArguments);
@@ -91,9 +91,39 @@ public class LiblinearTestTask
         Parameter parameter = new Parameter(solver, C, eps);
         Model model = Linear.train(train, parameter);
 
-        Problem test = Problem.readFromFile(fileTest, 1.0);
+        Problem test = Problem.readFromFile(idMappedTestFile, 1.0);
 
         predict(aContext, model, test);
+    }
+
+    private void writeMapping(TaskContext aContext, Map<String, Integer> outcomeMapping) throws IOException
+    {
+        File mappingFile = new File(aContext.getFolder("", AccessMode.READWRITE), LiblinearAdapter.getOutcomeMappingFilename());
+        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));        
+    }
+
+    
+
+    
+
+    private File getTestFile(TaskContext aContext)
+    {
+        File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
+        String testFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
+        File fileTest = new File(testFolder, testFileName);
+        return fileTest;
+    }
+
+    private File getTrainFile(TaskContext aContext)
+    {
+        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        String trainFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
+        File fileTrain = new File(trainFolder, trainFileName);
+
+        return fileTrain;
     }
 
     private void predict(TaskContext aContext, Model model, Problem test)

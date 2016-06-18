@@ -17,22 +17,39 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear.util;
 
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.EPISILON_DEFAULT;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.PARAM_C_DEFAULT;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L1R_LR;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L1LOSS_SVC_DUAL;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L1LOSS_SVR_DUAL;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVC;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVC_DUAL;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVR;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVR_DUAL;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_LR;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_LR_DUAL;
+import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_MCSVM_CS;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.*;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.ml.liblinear.FeatureNodeArrayEncoder;
 
-import de.bwaldvogel.liblinear.FeatureNode;
 import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearUtils
@@ -201,4 +218,61 @@ public class LiblinearUtils
         }
         FileUtils.writeStringToFile(outputFile, sb.toString());
     }
+    
+    public static Map<String, Integer> createMapping(File ...files)
+            throws IOException
+        {
+            Set<String> uniqueOutcomes = new HashSet<>();
+            for(File f : files){
+            uniqueOutcomes.addAll(pickOutcomes(f));
+            }
+
+            Map<String, Integer> mapping = new HashMap<>();
+            int id = 0;
+            for (String o : uniqueOutcomes) {
+                mapping.put(o, id++);
+            }
+
+            return mapping;
+        }
+
+        private static Collection<? extends String> pickOutcomes(File file)
+            throws IOException
+        {
+            Set<String> outcomes = new HashSet<>();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+
+            String line = null;
+            while (((line = br.readLine()) != null)) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+                int firstTabIdx = line.indexOf("\t");
+                outcomes.add(line.substring(0, firstTabIdx));
+            }
+            br.close();
+            return outcomes;
+        }
+        
+        public static File replaceOutcomeByIntegerValue(File file, Map<String, Integer> outcomeMapping) throws IOException
+        {
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            File outFile = File.createTempFile("liblinear"+System.nanoTime(), ".tmp"); 
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
+
+            String line = null;
+            while (((line = br.readLine()) != null)) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+                int firstTabIdx = line.indexOf("\t");
+                Integer id = outcomeMapping.get(line.substring(0, firstTabIdx));
+                bw.write(id+line.substring(firstTabIdx)+"\n");
+            }
+            br.close();
+            bw.close();
+            
+            return outFile;
+        }
 }

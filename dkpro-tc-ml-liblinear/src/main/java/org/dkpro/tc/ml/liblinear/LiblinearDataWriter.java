@@ -19,10 +19,7 @@ package org.dkpro.tc.ml.liblinear;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +27,6 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.FeatureNode;
 
@@ -57,9 +53,6 @@ public class LiblinearDataWriter
 	{
 		FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
 		FeatureNode[][] nodes = encoder.featueStore2FeatureNode(featureStore);
-	
-		// liblinear only supports integer outcomes, thus we need to create a mapping
-		Map<String, Integer> outcomeMapping = getOutcomeMapping(featureStore.getUniqueOutcomes());
 		
 		StringBuilder sb = new StringBuilder();
 		for (int i=0; i<nodes.length; i++) {
@@ -75,7 +68,7 @@ public class LiblinearDataWriter
 					elements.add(index + ":" + value);
 				}
 			}
-			sb.append(outcomeMapping.get(instance.getOutcome()));
+			sb.append(instance.getOutcome());
 			sb.append("\t");
 			sb.append(StringUtils.join(elements, "\t"));
 			sb.append("\n");
@@ -83,20 +76,5 @@ public class LiblinearDataWriter
 		
 		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 		FileUtils.writeStringToFile(outputFile, sb.toString());
-		
-		File mappingFile = new File(outputDirectory, LiblinearAdapter.getOutcomeMappingFilename());
-		FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));
 	}
-	
-	private Map<String, Integer> getOutcomeMapping(Set<String> outcomes) {
-		Map<String, Integer> outcomeMapping = new HashMap<String, Integer>();
-		int i=0;
-		for (String outcome : outcomes) {
-			outcomeMapping.put(outcome, i);
-			i++;
-		}
-		return outcomeMapping;
-	}
-	
-
 }
