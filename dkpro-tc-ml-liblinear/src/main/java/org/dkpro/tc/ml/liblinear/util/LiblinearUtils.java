@@ -153,7 +153,7 @@ public class LiblinearUtils
                 .info("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
         return PARAM_C_DEFAULT;
     }
-    
+
     public static double getParameterEpsilon(List<String> classificationArguments)
     {
         if (classificationArguments == null) {
@@ -185,8 +185,9 @@ public class LiblinearUtils
         LogFactory.getLog(LiblinearUtils.class).info("Parameter epsilon is set to [0.01]");
         return EPISILON_DEFAULT;
     }
-    
-    public static String outcomeMap2String(Map<String, Integer> map) {
+
+    public static String outcomeMap2String(Map<String, Integer> map)
+    {
         StringBuilder sb = new StringBuilder();
         for (Entry<String, Integer> entry : map.entrySet()) {
             sb.append(entry.getKey());
@@ -194,22 +195,23 @@ public class LiblinearUtils
             sb.append(entry.getValue());
             sb.append("\n");
         }
-        
+
         return sb.toString();
     }
-    
-    public static Map<String, Integer> string2outcomeMap(String s) {
+
+    public static Map<String, Integer> string2outcomeMap(String s)
+    {
         Map<String, Integer> outcomeMap = new HashMap<String, Integer>();
         for (String line : s.split("\n")) {
             String[] parts = line.split("\t");
             outcomeMap.put(parts[0], Integer.parseInt(parts[1]));
         }
-        
+
         return outcomeMap;
     }
-    
-    public static void savePredictions(File outputFile, List<Double> predictions) 
-            throws IOException
+
+    public static void savePredictions(File outputFile, List<Double> predictions)
+        throws IOException
     {
         StringBuilder sb = new StringBuilder();
         for (Double prediction : predictions) {
@@ -218,61 +220,64 @@ public class LiblinearUtils
         }
         FileUtils.writeStringToFile(outputFile, sb.toString());
     }
-    
-    public static Map<String, Integer> createMapping(File ...files)
-            throws IOException
-        {
-            Set<String> uniqueOutcomes = new HashSet<>();
-            for(File f : files){
+
+    public static Map<String, Integer> createMapping(File... files)
+        throws IOException
+    {
+        Set<String> uniqueOutcomes = new HashSet<>();
+        for (File f : files) {
             uniqueOutcomes.addAll(pickOutcomes(f));
-            }
-
-            Map<String, Integer> mapping = new HashMap<>();
-            int id = 0;
-            for (String o : uniqueOutcomes) {
-                mapping.put(o, id++);
-            }
-
-            return mapping;
         }
 
-        private static Collection<? extends String> pickOutcomes(File file)
-            throws IOException
-        {
-            Set<String> outcomes = new HashSet<>();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-
-            String line = null;
-            while (((line = br.readLine()) != null)) {
-                if (line.isEmpty()) {
-                    continue;
-                }
-                int firstTabIdx = line.indexOf("\t");
-                outcomes.add(line.substring(0, firstTabIdx));
-            }
-            br.close();
-            return outcomes;
+        Map<String, Integer> mapping = new HashMap<>();
+        int id = 0;
+        for (String o : uniqueOutcomes) {
+            mapping.put(o, id++);
         }
-        
-        public static File replaceOutcomeByIntegerValue(File file, Map<String, Integer> outcomeMapping) throws IOException
-        {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            File outFile = File.createTempFile("liblinear"+System.nanoTime(), ".tmp"); 
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
 
-            String line = null;
-            while (((line = br.readLine()) != null)) {
-                if (line.isEmpty()) {
-                    continue;
-                }
-                int firstTabIdx = line.indexOf("\t");
-                Integer id = outcomeMapping.get(line.substring(0, firstTabIdx));
-                bw.write(id+line.substring(firstTabIdx)+"\n");
+        return mapping;
+    }
+
+    private static Collection<? extends String> pickOutcomes(File file)
+        throws IOException
+    {
+        Set<String> outcomes = new HashSet<>();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+
+        String line = null;
+        while (((line = br.readLine()) != null)) {
+            if (line.isEmpty()) {
+                continue;
             }
-            br.close();
-            bw.close();
-            
-            return outFile;
+            int firstTabIdx = line.indexOf("\t");
+            outcomes.add(line.substring(0, firstTabIdx));
         }
+        br.close();
+        return outcomes;
+    }
+
+    public static File replaceOutcomeByIntegerValue(File file, Map<String, Integer> outcomeMapping)
+        throws IOException
+    {
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), "utf-8"));
+        File outFile = File.createTempFile("liblinear" + System.nanoTime(), ".tmp");
+        BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+
+        String line = null;
+        while (((line = br.readLine()) != null)) {
+            if (line.isEmpty()) {
+                continue;
+            }
+            int firstTabIdx = line.indexOf("\t");
+            Integer id = outcomeMapping.get(line.substring(0, firstTabIdx));
+            bw.write(id + line.substring(firstTabIdx) + "\n");
+        }
+        br.close();
+        bw.close();
+
+        return outFile;
+    }
 }
