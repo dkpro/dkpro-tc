@@ -29,6 +29,7 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
+import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
 public class LibsvmAdapter
@@ -48,6 +49,16 @@ public class LibsvmAdapter
     public static String getFeaturenameMappingFilename()
     {
         return "featurename-mapping.txt";
+    }
+    
+    public static String getOutcomes()
+    {
+        return "outcomes.txt";
+    }
+    
+    public static String getFeatureNames()
+    {
+        return "featurenames.txt";
     }
 
     @Override
@@ -106,7 +117,7 @@ public class LibsvmAdapter
     @Override
     public Class<? extends ModelSerializationTask> getSaveModelTask()
     {
-        return null;
+        return LibsvmModelSerializationDescription.class;
     }
 
     @Override
@@ -114,4 +125,5 @@ public class LibsvmAdapter
     {
         return SparseFeatureStore.class.getName();
     }
+    
 }

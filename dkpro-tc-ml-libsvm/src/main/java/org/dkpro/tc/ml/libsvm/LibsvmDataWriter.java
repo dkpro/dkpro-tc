@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
@@ -42,7 +43,6 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 public class LibsvmDataWriter
     implements DataWriter
 {
-    private Map<String, Integer> outcome2id = new HashMap<>();
     private Map<String, Integer> featName2id = new HashMap<>();
 
     @Override
@@ -51,8 +51,8 @@ public class LibsvmDataWriter
                 throws Exception
     {
 
-        createAndPersistOutcomeMap(featureStore, outputDirectory);
-        createAndPersistFeatureNameMap(featureStore,outputDirectory);
+        writeOutcomes(featureStore, outputDirectory);
+        createAndPersistFeatureNameMap(featureStore, outputDirectory);
 
         String fileName = LibsvmAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
@@ -61,10 +61,11 @@ public class LibsvmDataWriter
 
         for (Instance i : featureStore.getInstances()) {
             String outcome = i.getOutcome();
-            Integer integer = outcome2id.get(outcome);
-            bw.write(integer.toString());
+            bw.write(outcome);
             for (Feature f : i.getFeatures()) {
-                sanityCheckValue(f);
+                if(!sanityCheckValue(f)){
+                    continue;
+                }
                 bw.write("\t");
                 bw.write(featName2id.get(f.getName()) + ":" + f.getValue());
             }
@@ -73,11 +74,15 @@ public class LibsvmDataWriter
         bw.close();
     }
 
-    private void sanityCheckValue(Feature f)
+    private boolean sanityCheckValue(Feature f)
     {
         if (f.getValue() instanceof Number) {
-            return;
+            return true;
         }
+        if(f.getName().equals(Constants.ID_FEATURE_NAME)){
+            return false;
+        }
+        
         try {
             Double.valueOf((String) f.getValue());
         }
@@ -86,39 +91,41 @@ public class LibsvmDataWriter
                     "Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]",
                     e);
         }
+        return false;
     }
 
-    private void createAndPersistFeatureNameMap(FeatureStore featureStore, File outputDirectory) throws IOException
+    private void createAndPersistFeatureNameMap(FeatureStore featureStore, File outputDirectory)
+        throws IOException
     {
         int i = 0;
         for (String n : featureStore.getFeatureNames()) {
             featName2id.put(n, i++);
         }
-        
+
         String s = map2String(featName2id);
         File outcomeMap = new File(outputDirectory, LibsvmAdapter.getFeaturenameMappingFilename());
         FileUtils.write(outcomeMap, s, "utf-8");
     }
 
-    private void createAndPersistOutcomeMap(FeatureStore featureStore, File outputDirectory) throws IOException
+    private void writeOutcomes(FeatureStore featureStore, File outputDirectory)
+        throws IOException
     {
-        int i = 0;
+        StringBuilder sb = new StringBuilder();
         for (String o : featureStore.getUniqueOutcomes()) {
-            outcome2id.put(o, i++);
+            sb.append(o + "\n");
         }
-        
-        String s = map2String(outcome2id);
-        File outcomeMap = new File(outputDirectory, LibsvmAdapter.getOutcomeMappingFilename());
-        FileUtils.write(outcomeMap, s, "utf-8");
+
+        File outcomeMap = new File(outputDirectory, LibsvmAdapter.getOutcomes());
+        FileUtils.write(outcomeMap, sb.toString(), "utf-8");
     }
 
     private String map2String(Map<String, Integer> map)
     {
         StringBuilder sb = new StringBuilder();
-        for(String k : map.keySet()){
-            sb.append(k + "\t"+map.get(k)+"\n");
+        for (String k : map.keySet()) {
+            sb.append(k + "\t" + map.get(k) + "\n");
         }
-        
+
         return sb.toString();
     }
 }

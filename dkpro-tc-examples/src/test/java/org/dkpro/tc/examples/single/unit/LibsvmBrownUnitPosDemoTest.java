@@ -16,14 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.single.document;
+package org.dkpro.tc.examples.single.unit;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
-import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
@@ -37,12 +33,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing any exception.
+ * This test just ensures that the experiment runs without throwing
+ * any exception.
  */
-public class LibsvmTwentyNewsgroupsTest
-    extends JavaDemosTest_Base
+public class LibsvmBrownUnitPosDemoTest extends JavaDemosTest_Base
 {
-    LibsvmTwentyNewsgroups javaExperiment;
+    LibsvmBrownUnitPosDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -50,47 +46,9 @@ public class LibsvmTwentyNewsgroupsTest
         throws Exception
     {
         super.setup();
-
-        javaExperiment = new LibsvmTwentyNewsgroups();
-        pSpace = LibsvmTwentyNewsgroups.getParameterSpace(null);
-    }
-
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
-    {
-        ContextMemoryReport.key = LibsvmTestTask.class.getName();
-        javaExperiment.runTrainTest(pSpace);
-
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures()
-                .get(Accuracy.class.getSimpleName());
-        assertEquals(0.5, result, 0.0001);
-    }
-
-    @Test
-    public void testJavaTrainTestParametrization()
-        throws Exception
-    {
-        ContextMemoryReport.key = LibsvmTestTask.class.getName();
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS,
-                        asList(new String[] { "-s",
-                                LibsvmTestTask.PARAM_SVM_TYPE_NU_SVC_MULTI_CLASS, "-c", "1000",
-                                "-t", LibsvmTestTask.PARAM_KERNEL_RADIAL_BASED }));
-
-        pSpace = LibsvmTwentyNewsgroups.getParameterSpace(dimClassificationArgs);
-
-        javaExperiment.runTrainTest(pSpace);
-
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures()
-                .get(Accuracy.class.getSimpleName());
-        assertEquals(0.25, result, 0.0001);
+        
+        javaExperiment = new LibsvmBrownUnitPosDemo();
+        pSpace = LibsvmBrownUnitPosDemo.getParameterSpace();
     }
 
     @Test
@@ -98,5 +56,18 @@ public class LibsvmTwentyNewsgroupsTest
         throws Exception
     {
         javaExperiment.runCrossValidation(pSpace);
+    }
+    
+    @Test
+    public void testTrainTest()
+        throws Exception
+    {
+        ContextMemoryReport.key = LibsvmTestTask.class.getName();
+        javaExperiment.runTrainTest(pSpace);
+        
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        assertEquals(0.1391752, result, 0.0001);
     }
 }

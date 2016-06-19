@@ -27,7 +27,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
@@ -73,6 +77,8 @@ public class LibsvmTestTask
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
 
+    private Map<String, Integer> outcome2id = new HashMap<>();
+
     @Override
     public void execute(TaskContext aContext)
         throws Exception
@@ -83,7 +89,8 @@ public class LibsvmTestTask
             throw new TextClassificationException("Multi-label is not yet implemented");
         }
 
-        File fileTrain = getTrainFile(aContext);
+        buildOutcome2IntegerMap(aContext);
+        File fileTrain = replaceOutcomeByIntegers(getTrainFile(aContext));
 
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
                 Constants.MODEL_CLASSIFIER);
@@ -91,6 +98,59 @@ public class LibsvmTestTask
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(buildParameters(fileTrain, model));
         prediction(model, aContext);
+        
+        writeMapping(aContext);
+    }
+
+    private void writeMapping(TaskContext aContext) throws IOException
+    {
+        String map2String = map2String(outcome2id);
+        File file = aContext.getFile(LibsvmAdapter.getOutcomeMappingFilename(), AccessMode.READWRITE);
+        FileUtils.writeStringToFile(file, map2String, "utf-8");
+    }
+
+    private File replaceOutcomeByIntegers(File trainFile)
+        throws IOException
+    {
+        File createTempFile = FileUtil.createTempFile("libsvmTrainFile", ".tmp_libsvm");
+        BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
+
+        for (String s : FileUtils.readLines(trainFile)) {
+            if(s.isEmpty()){
+                continue;
+            }
+            int indexOf = s.indexOf("\t");
+            Integer integer = outcome2id.get(s.substring(0,indexOf));
+            bw.write(integer.toString());
+            bw.write(s.substring(indexOf));
+            bw.write("\n");
+        }
+
+        bw.close();
+        
+        return createTempFile;
+    }
+
+    private void buildOutcome2IntegerMap(TaskContext aContext)
+        throws IOException
+    {
+        String outcomes = LibsvmAdapter.getOutcomes();
+
+        File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+        File trainOutcomes = new File(folder, outcomes);
+
+        folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
+        File testOutcomes = new File(folder, outcomes);
+
+        Set<String> uniqueOutcomes = new HashSet<>();
+        uniqueOutcomes.addAll(FileUtils.readLines(testOutcomes));
+        uniqueOutcomes.addAll(FileUtils.readLines(trainOutcomes));
+
+        int i = 0;
+        for (String o : uniqueOutcomes) {
+            outcome2id.put(o, i++);
+        }
     }
 
     private String[] buildParameters(File fileTrain, File model)
@@ -109,13 +169,12 @@ public class LibsvmTestTask
     private void prediction(File model, TaskContext aContext)
         throws Exception
     {
-        File fileTest = getTestFile(aContext);
+        File fileTest = replaceOutcomeByIntegers(getTestFile(aContext));
         LibsvmPredict predictor = new LibsvmPredict();
 
         BufferedReader r = new BufferedReader(
                 new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
         File prediction = getPredictionFile(aContext);
-
         File predTmp = createTemporaryPredictionFile(aContext);
 
         DataOutputStream output = new DataOutputStream(new FileOutputStream(predTmp));
@@ -124,19 +183,8 @@ public class LibsvmTestTask
         output.close();
 
         mergePredictedValuesWithExpected(fileTest, predTmp, prediction);
-        copyOutcomeMappingToThisFolder(aContext);
     }
 
-    private void copyOutcomeMappingToThisFolder(TaskContext aContext)
-        throws IOException
-    {
-        File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        String mapping = LibsvmAdapter.getOutcomeMappingFilename();
-
-        File outFolder = aContext.getFolder("", AccessMode.READWRITE);
-        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outFolder, mapping));
-    }
 
     // We only get the predicted values but we loose the information which value was expected - we
     // thus use the test file and restore the expected values from there
@@ -205,6 +253,16 @@ public class LibsvmTestTask
         File fileTrain = new File(trainFolder, trainFileName);
 
         return fileTrain;
+    }
+
+    private String map2String(Map<String, Integer> map)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String k : map.keySet()) {
+            sb.append(k + "\t" + map.get(k) + "\n");
+        }
+
+        return sb.toString();
     }
 
     /** SVM type is set by switch [-s] */
