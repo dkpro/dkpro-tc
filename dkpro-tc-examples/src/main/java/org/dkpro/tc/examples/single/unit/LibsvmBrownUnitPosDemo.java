@@ -19,6 +19,7 @@
 package org.dkpro.tc.examples.single.unit;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
@@ -72,7 +73,7 @@ public class LibsvmBrownUnitPosDemo
         DemoUtils.setDkproHome(LibsvmBrownUnitPosDemo.class.getSimpleName());
 
         new LibsvmBrownUnitPosDemo().runTrainTest(getParameterSpace());
-//        new LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
+        new LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
     }
 
     // ##### CV #####
@@ -80,11 +81,12 @@ public class LibsvmBrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV",
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("LibsvmCrossvalidationBrownPosDemo",
                 LibsvmAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -95,7 +97,7 @@ public class LibsvmBrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("BrownPosDemoCV",
+        ExperimentTrainTest batch = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo",
                 LibsvmAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
@@ -125,6 +127,12 @@ public class LibsvmBrownUnitPosDemo
                 BrownCorpusReader.PARAM_PATTERNS,
                 new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
         dimReaders.put(DIM_READER_TEST, readerTest);
+        
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS,
+                        asList(new String[] { 
+                                "-c", "10"}));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
@@ -132,7 +140,9 @@ public class LibsvmBrownUnitPosDemo
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets
+                ,dimClassificationArgs
+                );
 
         return pSpace;
     }
