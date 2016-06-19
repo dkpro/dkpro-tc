@@ -24,14 +24,4 @@
   		<artifactId>dkpro-tc-fstore-simple</artifactId>
   	</dependency>
   </dependencies>
-  <dependencyManagement>
-  	<dependencies>
-  		<dependency>
-  			<groupId>com.datumbox</groupId>
-  			<artifactId>libsvm</artifactId>
-  			<version>3.21</version>
-  			<scope>import</scope>
-  		</dependency>
-  	</dependencies>
-  </dependencyManagement>
 </project>
