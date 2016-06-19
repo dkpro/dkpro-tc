@@ -28,73 +28,90 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
-public class LibsvmAdapter 
-	implements TCMachineLearningAdapter
+public class LibsvmAdapter
+    implements TCMachineLearningAdapter
 {
 
-	public static TCMachineLearningAdapter getInstance() {
-		return new LibsvmAdapter();
-	}
-	
-	public static String getOutcomeMappingFilename() {
-		return "outcome-mapping.txt";
-	}
-	
-	@Override
-	public ExecutableTaskBase getTestTask() {
-		return new LibsvmTestTask();
-	}
+    public static TCMachineLearningAdapter getInstance()
+    {
+        return new LibsvmAdapter();
+    }
 
-	@Override
-	public Class<? extends ReportBase> getOutcomeIdReportClass() {
-		return null;
-	}
+    public static String getOutcomeMappingFilename()
+    {
+        return "outcome-mapping.txt";
+    }
+    
+    public static String getFeaturenameMappingFilename()
+    {
+        return "featurename-mapping.txt";
+    }
 
-	@Override
-	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
-		return InnerBatchUsingTCEvaluationReport.class;
-	}
-
-	@SuppressWarnings("unchecked")
     @Override
-	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
-			String[] files, int folds) {
-		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
-	}
-	
-	@Override
-	public String getFrameworkFilename(AdapterNameEntries name) {
+    public ExecutableTaskBase getTestTask()
+    {
+        return new LibsvmTestTask();
+    }
+
+    @Override
+    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    {
+        return LibsvmOutcomeIdReport.class;
+    }
+
+    @Override
+    public Class<? extends ReportBase> getBatchTrainTestReportClass()
+    {
+        return InnerBatchUsingTCEvaluationReport.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds)
+    {
+        return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
+    }
+
+    @Override
+    public String getFrameworkFilename(AdapterNameEntries name)
+    {
 
         switch (name) {
-            case featureVectorsFile:  return "training-data.txt";
-            case predictionsFile      :  return "predictions.txt";
-            case featureSelectionFile :  return "attributeEvaluationResults.txt";
+        case featureVectorsFile:
+            return "training-data.txt";
+        case predictionsFile:
+            return "predictions.txt";
+        case featureSelectionFile:
+            return "attributeEvaluationResults.txt";
         }
-        
+
         return null;
-	}
+    }
 
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return LibsvmDataWriter.class;
-	}
-	
-	@Override
-	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return null;
-	}
+    @Override
+    public Class<? extends DataWriter> getDataWriterClass()
+    {
+        return LibsvmDataWriter.class;
+    }
 
-	@Override
-	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-	    return null;
-	}
+    @Override
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
+    {
+        return null;
+    }
+
+    @Override
+    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    {
+        return null;
+    }
 
     @Override
     public String getFeatureStore()
     {
-        return DenseFeatureStore.class.getName();
+        return SparseFeatureStore.class.getName();
     }
 }

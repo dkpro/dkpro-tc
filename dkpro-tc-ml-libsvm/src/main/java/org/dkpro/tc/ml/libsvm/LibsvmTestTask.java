@@ -65,16 +65,13 @@ public class LibsvmTestTask
 
         File fileTrain = getTrainFile(aContext);
         File fileTest = getTestFile(aContext);
-
-        Map<String, Integer> outcomeMapping = LibsvmUtils.createMapping(fileTrain, fileTest);
-        File idMappedTrainFile = LibsvmUtils.replaceOutcomeByIntegerValue(fileTrain, outcomeMapping);
-        File idMappedTestFile = LibsvmUtils.replaceOutcomeByIntegerValue(fileTest, outcomeMapping);
-        writeMapping(aContext, outcomeMapping);
         
         File model = new File(aContext.getFolder("", AccessMode.READWRITE), Constants.MODEL_CLASSIFIER);
 
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(new String [] {fileTrain.getAbsolutePath(), model.getAbsolutePath()});
+
+        
         
     }
 

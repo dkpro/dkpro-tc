@@ -17,38 +17,108 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.libsvm;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 /**
- * Format is
- * outcome TAB index:value TAB index:value TAB ...
+ * Format is outcome TAB index:value TAB index:value TAB ...
  * 
- * Zeros are omitted.
- * Indexes need to be sorted.
+ * Zeros are omitted. Indexes need to be sorted.
  * 
- * For example:
- *  1 1:1  3:1  4:1   6:1
- *  2 2:1  3:1  5:1   7:1
- *  1 3:1  5:1
+ * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
-public class LibsvmDataWriter 
-	implements DataWriter
+public class LibsvmDataWriter
+    implements DataWriter
 {
-    
-	@Override
-	public void write(File outputDirectory, FeatureStore featureStore,
-			boolean useDenseInstances, String learningMode, boolean applyWeighting) 
-			        throws Exception 
-	{
-	 
-	}
+    private Map<String, Integer> outcome2id = new HashMap<>();
+    private Map<String, Integer> featName2id = new HashMap<>();
+
+    @Override
+    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
+            String learningMode, boolean applyWeighting)
+                throws Exception
+    {
+
+        createAndPersistOutcomeMap(featureStore, outputDirectory);
+        createAndPersistFeatureNameMap(featureStore,outputDirectory);
+
+        String fileName = LibsvmAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
+
+        for (Instance i : featureStore.getInstances()) {
+            String outcome = i.getOutcome();
+            Integer integer = outcome2id.get(outcome);
+            bw.write(integer.toString());
+            for (Feature f : i.getFeatures()) {
+                sanityCheckValue(f);
+                bw.write("\t");
+                bw.write(featName2id.get(f.getName()) + ":" + f.getValue());
+            }
+            bw.write("\n");
+        }
+        bw.close();
+    }
+
+    private void sanityCheckValue(Feature f)
+    {
+        if (f.getValue() instanceof Number) {
+            return;
+        }
+        try {
+            Double.valueOf((String) f.getValue());
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]",
+                    e);
+        }
+    }
+
+    private void createAndPersistFeatureNameMap(FeatureStore featureStore, File outputDirectory) throws IOException
+    {
+        int i = 0;
+        for (String n : featureStore.getFeatureNames()) {
+            featName2id.put(n, i++);
+        }
+        
+        String s = map2String(featName2id);
+        File outcomeMap = new File(outputDirectory, LibsvmAdapter.getFeaturenameMappingFilename());
+        FileUtils.write(outcomeMap, s, "utf-8");
+    }
+
+    private void createAndPersistOutcomeMap(FeatureStore featureStore, File outputDirectory) throws IOException
+    {
+        int i = 0;
+        for (String o : featureStore.getUniqueOutcomes()) {
+            outcome2id.put(o, i++);
+        }
+        
+        String s = map2String(outcome2id);
+        File outcomeMap = new File(outputDirectory, LibsvmAdapter.getOutcomeMappingFilename());
+        FileUtils.write(outcomeMap, s, "utf-8");
+    }
+
+    private String map2String(Map<String, Integer> map)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(String k : map.keySet()){
+            sb.append(k + "\t"+map.get(k)+"\n");
+        }
+        
+        return sb.toString();
+    }
 }
