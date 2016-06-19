@@ -32,6 +32,7 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,5 +87,17 @@ public class LibsvmTwentyNewsgroupsTest extends JavaDemosTest_Base
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
         assertEquals(0.5, result, 0.0001);
+    }
+    
+    @Test
+    public void testJavaCrossValidation()
+        throws Exception
+    {
+        ContextMemoryReport.key = ExperimentCrossValidation.class.getName();
+        javaExperiment.runCrossValidation(pSpace);
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        assertEquals(0.3333333, result, 0.0001);
     }
 }

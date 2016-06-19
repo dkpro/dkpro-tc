@@ -145,6 +145,7 @@ public class LibsvmTwentyNewsgroups
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
+        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);
