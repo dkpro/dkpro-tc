@@ -64,10 +64,10 @@ public class LibsvmOutcomeIdReport
                 continue;
             }
             String[] split = line.split(";");
-            int pred = Integer.valueOf(split[0]);
-            int gold = Integer.valueOf(split[1]);
-            prop.setProperty(String.format("%05d", lineCounter++), pred + LibsvmTestTask.SEPARATOR_CHAR + gold
-                    + LibsvmTestTask.SEPARATOR_CHAR + THRESHOLD_CONSTANT);
+            int pred = Double.valueOf(split[0]).intValue();
+            int gold = Double.valueOf(split[1]).intValue();
+            prop.setProperty(String.format("%05d", lineCounter++),
+                    pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
         }
 
         File targetFile = getId2OutcomeFileLocation();
@@ -88,8 +88,8 @@ public class LibsvmOutcomeIdReport
         throws IOException
     {
         File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-        String predFileName = LibsvmAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.predictionsFile);
+        String predFileName = LibsvmAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.predictionsFile);
         return FileUtils.readLines(new File(predFolder, predFileName));
     }
 
@@ -113,8 +113,7 @@ public class LibsvmOutcomeIdReport
     private Map<Integer, String> getId2LabelMapping()
         throws Exception
     {
-        File mappingFolder = getContext().getFolder("",
-                StorageService.AccessMode.READONLY);
+        File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
         String fileName = LibsvmAdapter.getOutcomeMappingFilename();
         File file = new File(mappingFolder, fileName);
         Map<Integer, String> map = new HashMap<Integer, String>();
@@ -128,5 +127,4 @@ public class LibsvmOutcomeIdReport
         return map;
     }
 
- 
 }

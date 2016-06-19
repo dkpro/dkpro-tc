@@ -18,8 +18,12 @@
  */
 package org.dkpro.tc.examples.single.document;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
@@ -56,6 +60,26 @@ public class LibsvmTwentyNewsgroupsTest extends JavaDemosTest_Base
         throws Exception
     {
         ContextMemoryReport.key = LibsvmTestTask.class.getName();
+        javaExperiment.runTrainTest(pSpace);
+        
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        assertEquals(0.5, result, 0.0001);
+    }
+    
+    @Test
+    public void testJavaTrainTestParametrization()
+        throws Exception
+    {
+        ContextMemoryReport.key = LibsvmTestTask.class.getName();
+        
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+                asList(new String[] { "-c", "1000", "-t", "3" }));
+        
+        pSpace = LibsvmTwentyNewsgroups.getParameterSpace(dimClassificationArgs);
+        
         javaExperiment.runTrainTest(pSpace);
         
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
