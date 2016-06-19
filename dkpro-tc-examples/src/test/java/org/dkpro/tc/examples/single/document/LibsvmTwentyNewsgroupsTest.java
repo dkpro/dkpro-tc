@@ -32,7 +32,6 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
 import org.junit.Test;

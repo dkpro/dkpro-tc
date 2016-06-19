@@ -218,13 +218,13 @@ public class LibsvmTestTask
     /** SVM type is set by switch [-s] */
     public static final String PARAM_SVM_TYPE_NU_SVR_REGRESSION = "4";
 
-    /** Polynomial kernel -> u'*v, set by switch [-t] (default) */
+    /** Polynomial kernel = u'*v, set by switch [-t] (default) */
     public static final String PARAM_KERNEL_LINEAR = "0";
-    /** Polynomial kernel -> (gamma*u'*v + coef0)^degree, set by switch [-t] */
+    /** Polynomial kernel = (gamma*u'*v + coef0)^degree, set by switch [-t] */
     public static final String PARAM_KERNEL_POLYNOMIAL = "1";
-    /** Radial based -> exp(-gamma*|u-v|^2), set by switch [-t] */
+    /** Radial based = exp(-gamma*|u-v|^2), set by switch [-t] */
     public static final String PARAM_KERNEL_RADIAL_BASED = "2";
-    /** sigmoid -> tanh(gamma*u'*v + coef0), set by switch [-t] */
+    /** sigmoid = tanh(gamma*u'*v + coef0), set by switch [-t] */
     public static final String PARAM_KERNEL_SIGMOID = "3";
     /** precomputed kernel (kernel values in training_set_file), set by switch [-t] */
     public static final String PARAM_KERNEL_PRE_COMPUTED = "4";
