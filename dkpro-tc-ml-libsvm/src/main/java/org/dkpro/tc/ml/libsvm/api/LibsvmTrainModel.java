@@ -17,9 +17,18 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.libsvm.api;
 
-import libsvm.*;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+import libsvm.svm_print_interface;
+import libsvm.svm_problem;
 
 public class LibsvmTrainModel
 {
@@ -65,15 +74,14 @@ public class LibsvmTrainModel
     }
 
     public void run(String argv[])
-        throws IOException
+        throws Exception
     {
         parse_command_line(argv);
         read_problem();
         error_msg = svm.svm_check_parameter(prob, param);
 
         if (error_msg != null) {
-            System.err.print("ERROR: " + error_msg + "\n");
-            System.exit(1);
+            throw new Exception(error_msg);
         }
 
         model = svm.svm_train(prob, param);
@@ -84,8 +92,7 @@ public class LibsvmTrainModel
     {
         double d = Double.valueOf(s).doubleValue();
         if (Double.isNaN(d) || Double.isInfinite(d)) {
-            System.err.print("NaN or Infinity in input\n");
-            System.exit(1);
+            throw new IllegalArgumentException("NaN or Infinity in input\n");
         }
         return (d);
     }
@@ -182,8 +189,7 @@ public class LibsvmTrainModel
                 param.weight[param.nr_weight - 1] = atof(argv[i]);
                 break;
             default:
-                System.err.print("Unknown option: " + argv[i - 1] + "\n");
-                exit_with_help();
+                throw new IllegalArgumentException("Unknown option: " + argv[i - 1] + "\n");
             }
         }
 
@@ -234,6 +240,7 @@ public class LibsvmTrainModel
                 max_index = Math.max(max_index, x[m - 1].index);
             vx.addElement(x);
         }
+        fp.close();
 
         prob = new svm_problem();
         prob.l = vy.size();
@@ -250,16 +257,13 @@ public class LibsvmTrainModel
         if (param.kernel_type == svm_parameter.PRECOMPUTED)
             for (int i = 0; i < prob.l; i++) {
                 if (prob.x[i][0].index != 0) {
-                    System.err.print(
+                    throw new IllegalArgumentException(
                             "Wrong kernel matrix: first column must be 0:sample_serial_number\n");
-                    System.exit(1);
                 }
                 if ((int) prob.x[i][0].value <= 0 || (int) prob.x[i][0].value > max_index) {
-                    System.err.print("Wrong input format: sample_serial_number out of range\n");
-                    System.exit(1);
+                    throw new IllegalArgumentException("Wrong input format: sample_serial_number out of range\n");
                 }
             }
 
-        fp.close();
     }
 }

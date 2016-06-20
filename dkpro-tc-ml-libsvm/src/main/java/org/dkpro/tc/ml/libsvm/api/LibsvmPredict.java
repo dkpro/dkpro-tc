@@ -164,41 +164,35 @@ public class LibsvmPredict
                 i--;
                 break;
             default:
-                System.err.print("Unknown option: " + argv[i - 1] + "\n");
-                exit_with_help();
+                throw new IllegalArgumentException("Unknown option: " + argv[i - 1] + "\n");
             }
         }
         if (i >= argv.length - 2)
             exit_with_help();
-        try {
-            BufferedReader input = new BufferedReader(new FileReader(argv[i]));
-            DataOutputStream output = new DataOutputStream(
-                    new BufferedOutputStream(new FileOutputStream(argv[i + 2])));
-            svm_model model = svm.svm_load_model(argv[i + 1]);
-            if (model == null) {
-                System.err.print("can't open model file " + argv[i + 1] + "\n");
-                System.exit(1);
-            }
-            if (predict_probability == 1) {
-                if (svm.svm_check_probability_model(model) == 0) {
-                    System.err.print("Model does not support probabiliy estimates\n");
-                    System.exit(1);
-                }
-            }
-            else {
-                if (svm.svm_check_probability_model(model) != 0) {
-                    info("Model supports probability estimates, but disabled in prediction.\n");
-                }
-            }
-            predict(input, output, model, predict_probability);
+        BufferedReader input = new BufferedReader(new FileReader(argv[i]));
+        DataOutputStream output = new DataOutputStream(
+                new BufferedOutputStream(new FileOutputStream(argv[i + 2])));
+        svm_model model = svm.svm_load_model(argv[i + 1]);
+        if (model == null) {
             input.close();
             output.close();
+            throw new IOException("can't open model file " + argv[i + 1] + "\n");
         }
-        catch (FileNotFoundException e) {
-            exit_with_help();
+        if (predict_probability == 1) {
+            if (svm.svm_check_probability_model(model) == 0) {
+                input.close();
+                output.close();
+                throw new IllegalArgumentException("Model does not support probabiliy estimates\n");
+            }
         }
-        catch (ArrayIndexOutOfBoundsException e) {
-            exit_with_help();
+        else {
+            if (svm.svm_check_probability_model(model) != 0) {
+                info("Model supports probability estimates, but disabled in prediction.\n");
+            }
         }
+        predict(input, output, model, predict_probability);
+        input.close();
+        output.close();
+
     }
 }
