@@ -33,28 +33,30 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.testing.TestPairReader;
+import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
-import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.testing.TestPairReader;
 
 
 public abstract class PPipelineTestBase
 {
+    @ClassRule
+    public static TemporaryFolder folder = new TemporaryFolder();
+    
 	protected List<Instance> instanceList;
 	protected List<List<String>> outcomeList;
 	protected TreeSet<String> featureNames;
 	
-    protected TemporaryFolder folder;
     protected File lucenePath;
     protected File outputPath;
     protected Object[] parameters;
@@ -62,7 +64,6 @@ public abstract class PPipelineTestBase
     protected AnalysisEngineDescription featExtractorConnector;
     
     protected void initialize() throws Exception{
-    	folder = new TemporaryFolder();
         lucenePath = folder.newFolder();
         outputPath = folder.newFolder();
         
