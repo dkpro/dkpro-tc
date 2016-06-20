@@ -19,12 +19,10 @@
 /* First created by JCasGen Tue May 06 17:51:57 CEST 2014 */
 package org.dkpro.tc.api.type;
 
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 
 /** 
