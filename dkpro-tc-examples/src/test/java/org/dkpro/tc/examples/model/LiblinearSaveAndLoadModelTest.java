@@ -66,11 +66,6 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-/**
- * Round-trip tests for save/load model experiments. Tests all feature modes (document, pair, unit),
- * as well as all learning models (single-label, multi-label, regression).
- *
- */
 public class LiblinearSaveAndLoadModelTest
     implements Constants
 {

@@ -63,6 +63,8 @@ public class LoadModelConnectorLibsvm
     extends ModelSerialization_ImplBase
 {
 
+    private static final String OUTCOME_PLACEHOLDER = "-1";
+
     @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
 
@@ -77,10 +79,8 @@ public class LoadModelConnectorLibsvm
 
     private svm_model model;
 
-    private Map<Integer, String> outcome2IntMapping;
-    private Map<Integer, String> featName2id;
-
-    private Map<Integer, String> integer2OutcomeMapping;
+    private Map<String, String> integer2OutcomeMapping;
+    private Map<String, Integer> featName2id;
 
     @Override
     public void initialize(UimaContext context)
@@ -91,8 +91,7 @@ public class LoadModelConnectorLibsvm
         try {
             model = svm
                     .svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
-            outcome2IntMapping = loadOutcome2IntegerMapping(tcModelLocation);
-            integer2OutcomeMapping= loadInteger2OutcomeMapping(tcModelLocation);
+            integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
             featName2id = loadFeatureName2IntegerMapping(tcModelLocation);
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
         }
@@ -102,41 +101,28 @@ public class LoadModelConnectorLibsvm
 
     }
 
-    private Map<Integer, String> loadInteger2OutcomeMapping(File tcModelLocation)
+    private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation)
         throws IOException
     {
-        Map<Integer, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         List<String> readLines = FileUtils
                 .readLines(new File(tcModelLocation, LibsvmAdapter.getOutcomeMappingFilename()));
         for (String l : readLines) {
             String[] split = l.split("\t");
-            map.put(Integer.valueOf(split[1]), split[0]);
+            map.put(split[1], split[0]);
         }
         return map;
     }
-    
-    private Map<Integer, String> loadOutcome2IntegerMapping(File tcModelLocation)
-            throws IOException
-        {
-            Map<Integer, String> map = new HashMap<>();
-            List<String> readLines = FileUtils
-                    .readLines(new File(tcModelLocation, LibsvmAdapter.getOutcomeMappingFilename()));
-            for (String l : readLines) {
-                String[] split = l.split("\t");
-                map.put(Integer.valueOf(split[0]), split[1]);
-            }
-            return map;
-        }
 
-    private Map<Integer, String> loadFeatureName2IntegerMapping(File tcModelLocation)
+    private Map<String, Integer> loadFeatureName2IntegerMapping(File tcModelLocation)
         throws IOException
     {
-        Map<Integer, String> map = new HashMap<>();
-        List<String> readLines = FileUtils
-                .readLines(new File(tcModelLocation, LibsvmAdapter.getFeatureNames()));
+        Map<String, Integer> map = new HashMap<>();
+        List<String> readLines = FileUtils.readLines(
+                new File(tcModelLocation, LibsvmAdapter.getFeaturenameMappingFilename()));
         for (String l : readLines) {
             String[] split = l.split("\t");
-            map.put(Integer.valueOf(split[1]), split[0]);
+            map.put(split[0], Integer.valueOf(split[1]));
         }
         return map;
     }
@@ -149,51 +135,18 @@ public class LoadModelConnectorLibsvm
             FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
                     .newInstance();
 
-            File tempFile = FileUtil.createTempFile("libsvm", ".tmp_libsvm");
-            BufferedWriter bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
+            File tempFile = createInputFileFromFeatureStore(jcas, featureStore);
+            
+            File prediction = runPrediction(tempFile);
+            
+            List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
+            List<String> writtenPredictions = FileUtils.readLines(prediction);
 
-            List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                    true, featureStore.supportsSparseFeatures());
-            for (Instance i : inst) {
-                featureStore.addInstance(i);
-            }
+            checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,writtenPredictions);
 
-            for (Instance i : featureStore.getInstances()) {
-                String outcome = i.getOutcome();
-                bw.write(outcome2IntMapping.get(outcome));
-                for (Feature f : i.getFeatures()) {
-                    if (!sanityCheckValue(f)) {
-                        continue;
-                    }
-                    bw.write("\t");
-                    bw.write(featName2id.get(f.getName()) + ":" + f.getValue());
-                }
-                bw.write("\n");
-            }
-            bw.close();
-
-            LibsvmPredict predictor = new LibsvmPredict();
-            BufferedReader r = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
-            File prediction = FileUtil.createTempFile("libsvmPrediction", "libsvm");
-
-            DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction));
-            predictor.predict(r, output, model, 0);
-            output.close();
-
-            List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                    JCasUtil.select(jcas, TextClassificationOutcome.class));
-            List<String> readLines = FileUtils.readLines(prediction);
-
-            if (outcomes.size() != readLines.size()) {
-                throw new IllegalStateException("Expected [" + outcomes.size()
-                        + "] predictions but were [" + readLines.size() + "]");
-            }
-
-            for (int i=0; i  < outcomes.size(); i++) {
-                String string = readLines.get(i);
-                String pred = integer2OutcomeMapping.get(string);
+            for (int i = 0; i < outcomes.size(); i++) {
+                String val = writtenPredictions.get(i).replaceAll("\\.0", "");
+                String pred = integer2OutcomeMapping.get(val);
                 outcomes.get(i).setOutcome(pred);
             }
 
@@ -202,6 +155,63 @@ public class LoadModelConnectorLibsvm
             throw new AnalysisEngineProcessException(e);
         }
 
+    }
+
+    private List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas)
+    {
+        return new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+    }
+
+    private void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(
+            List<TextClassificationOutcome> outcomes, List<String> readLines)
+    {
+        if (outcomes.size() != readLines.size()) {
+            throw new IllegalStateException("Expected [" + outcomes.size()
+                    + "] predictions but were [" + readLines.size() + "]");
+        }        
+    }
+
+    private File runPrediction(File tempFile) throws Exception
+    {
+        File prediction = FileUtil.createTempFile("libsvmPrediction", "libsvm");
+        LibsvmPredict predictor = new LibsvmPredict();
+        BufferedReader r = new BufferedReader(
+                new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
+
+        DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction));
+        predictor.predict(r, output, model, 0);
+        output.close();
+
+        return prediction;
+    }
+
+    private File createInputFileFromFeatureStore(JCas jcas, FeatureStore featureStore) throws Exception
+    {
+        File tempFile = FileUtil.createTempFile("libsvm", ".tmp_libsvm");
+        BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
+
+        List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
+                true, featureStore.supportsSparseFeatures());
+        for (Instance i : inst) {
+            featureStore.addInstance(i);
+        }
+
+        for (Instance i : featureStore.getInstances()) {
+            bw.write(OUTCOME_PLACEHOLDER); 
+            for (Feature f : i.getFeatures()) {
+                if (!sanityCheckValue(f)) {
+                    continue;
+                }
+                bw.write("\t");
+                bw.write(featName2id.get(f.getName()) + ":" + f.getValue());
+            }
+            bw.write("\n");
+        }
+        bw.close();
+        
+        return tempFile;
     }
 
     private boolean sanityCheckValue(Feature f)

@@ -32,6 +32,7 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,8 +80,8 @@ public class LibsvmTwentyNewsgroupsTest
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(Constants.DIM_CLASSIFICATION_ARGS,
                         asList(new String[] { "-s",
-                                LibsvmTestTask.PARAM_SVM_TYPE_NU_SVC_MULTI_CLASS, "-c", "1000",
-                                "-t", LibsvmTestTask.PARAM_KERNEL_RADIAL_BASED }));
+                                LibsvmAdapter.PARAM_SVM_TYPE_NU_SVC_MULTI_CLASS, "-c", "1000",
+                                "-t", LibsvmAdapter.PARAM_KERNEL_RADIAL_BASED }));
 
         pSpace = LibsvmTwentyNewsgroups.getParameterSpace(dimClassificationArgs);
 

@@ -18,12 +18,20 @@
 
 package org.dkpro.tc.ml.libsvm.serialization;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -44,6 +52,8 @@ public class LibsvmModelSerializationDescription
 
     boolean trainModel = true;
 
+    private Map<String, Integer> outcome2id = new HashMap<>();
+
     @Override
     public void execute(TaskContext aContext)
         throws Exception
@@ -61,25 +71,66 @@ public class LibsvmModelSerializationDescription
             throw new TextClassificationException("Multi-label is not yet implemented");
         }
 
-        File fileTrain = getTrainFile(aContext);
+        buildOutcome2IntegerMap(aContext);
+        File fileTrain = replaceOutcomeByIntegers(getTrainFile(aContext));
 
-        File model = new File(aContext.getFolder("", AccessMode.READWRITE),
-                Constants.MODEL_CLASSIFIER);
+        File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
 
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(buildParameters(fileTrain, model));
-        copyOutcomeMappingToThisFolder(aContext);
+        writeOutcomeMappingToThisFolder(aContext);
         copyFeatureNameMappingToThisFolder(aContext);
     }
 
-    private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException
+    private File replaceOutcomeByIntegers(File trainFile)
+        throws IOException
+    {
+        File createTempFile = FileUtil.createTempFile("libsvmTrainFile", ".tmp_libsvm");
+        BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
+
+        for (String s : FileUtils.readLines(trainFile)) {
+            if (s.isEmpty()) {
+                continue;
+            }
+            int indexOf = s.indexOf("\t");
+            String outcome = s.substring(0, indexOf);
+            Integer integer = outcome2id.get(outcome);
+            bw.write(integer.toString());
+            bw.write(s.substring(indexOf));
+            bw.write("\n");
+        }
+
+        bw.close();
+
+        return createTempFile;
+    }
+
+    private void buildOutcome2IntegerMap(TaskContext aContext)
+        throws IOException
+    {
+        String outcomes = LibsvmAdapter.getOutcomes();
+
+        File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+        File trainOutcomes = new File(folder, outcomes);
+
+        Set<String> uniqueOutcomes = new HashSet<>();
+        uniqueOutcomes.addAll(FileUtils.readLines(trainOutcomes));
+
+        int i = 0;
+        for (String o : uniqueOutcomes) {
+            outcome2id.put(o, i++);
+        }
+    }
+
+    private void copyFeatureNameMappingToThisFolder(TaskContext aContext)
+        throws IOException
     {
         File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
         String mapping = LibsvmAdapter.getFeaturenameMappingFilename();
 
-        File outFolder = aContext.getFolder("", AccessMode.READWRITE);
-        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outFolder, mapping));        
+        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
     }
 
     private File getTrainFile(TaskContext aContext)
@@ -106,15 +157,23 @@ public class LibsvmModelSerializationDescription
         return parameters.toArray(new String[0]);
     }
 
-    private void copyOutcomeMappingToThisFolder(TaskContext aContext)
+    private void writeOutcomeMappingToThisFolder(TaskContext aContext)
         throws IOException
     {
-        File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
         String mapping = LibsvmAdapter.getOutcomeMappingFilename();
 
-        File outFolder = aContext.getFolder("", AccessMode.READWRITE);
-        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outFolder, mapping));
+        String map2String = map2String(outcome2id);
+        FileUtils.writeStringToFile(new File(outputFolder, mapping), map2String, "utf-8");
+    }
+
+    private String map2String(Map<String, Integer> map)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String k : map.keySet()) {
+            sb.append(k + "\t" + map.get(k) + "\n");
+        }
+
+        return sb.toString();
     }
 
 }
