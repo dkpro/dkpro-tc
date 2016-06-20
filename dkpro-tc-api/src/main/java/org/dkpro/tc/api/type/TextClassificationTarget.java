@@ -22,8 +22,9 @@ package org.dkpro.tc.api.type;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.tcas.Annotation;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 
 /** 
@@ -136,6 +137,18 @@ This can be used to add additional information e.g. for identifying the unit.
     if (TextClassificationTarget_Type.featOkTst && ((TextClassificationTarget_Type)jcasType).casFeat_id == null)
       jcasType.jcas.throwFeatMissing("id", "org.dkpro.tc.api.type.TextClassificationTarget");
     jcasType.ll_cas.ll_setIntValue(addr, ((TextClassificationTarget_Type)jcasType).casFeatCode_id, v);}    
-  }
+  
+	/**
+	 * Get a {@link TextClassificationTarget} covering the full JCAS.
+	 *
+	 * @param aJCas
+	 *            the JCas.
+	 * @return the {@link TextClassificationTarget} covering the full JCAS.
 
+	 */
+	public static TextClassificationTarget get(final JCas aJCas)
+	{
+		return new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length());
+	}
+}
     

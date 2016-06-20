@@ -45,10 +45,9 @@ public class AvgNrOfCharsPerSentenceTest
         jcas.setDocumentText("This is a test. This is a test.");
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
 
         AvgNrOfCharsPerSentence extractor = new AvgNrOfCharsPerSentence();
-        List<Feature> features = new ArrayList<>(extractor.extract(jcas,target));
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas, TextClassificationTarget.get(jcas)));
 
         Assert.assertEquals(1, features.size());
 
