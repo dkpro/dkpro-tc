@@ -40,6 +40,7 @@ import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.testing.TestPairReader;
+import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.gson.Gson;
@@ -52,11 +53,13 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public abstract class PPipelineTestBase
 {
+    @ClassRule
+    public static TemporaryFolder folder = new TemporaryFolder();
+    
 	protected List<Instance> instanceList;
 	protected List<List<String>> outcomeList;
 	protected TreeSet<String> featureNames;
 	
-    protected TemporaryFolder folder;
     protected File lucenePath;
     protected File outputPath;
     protected Object[] parameters;
@@ -64,7 +67,6 @@ public abstract class PPipelineTestBase
     protected AnalysisEngineDescription featExtractorConnector;
     
     protected void initialize() throws Exception{
-    	folder = new TemporaryFolder();
         lucenePath = folder.newFolder();
         outputPath = folder.newFolder();
         
