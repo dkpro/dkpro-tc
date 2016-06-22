@@ -59,15 +59,15 @@ import de.bwaldvogel.liblinear.SolverType;
    -c cost : set the parameter C (default 1)
    -e epsilon : set tolerance of termination criterion
      -s 0 and 2
-         |f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,
+         |f'(w)|_2 &lt;= eps*min(pos,neg)/l*|f'(w0)|_2,
          where f is the primal function and pos/neg are # of
          positive/negative data (default 0.01)
      -s 1, 3, 4 and 7
         Dual maximal violation <= eps; similar to libsvm (default 0.1)
      -s 5 and 6
-        |f'(w)|_inf <= eps*min(pos,neg)/l*|f'(w0)|_inf,
+        |f'(w)|_inf &le; eps*min(pos,neg)/l*|f'(w0)|_inf,
         where f is the primal function (default 0.01)
-   -B bias : if bias >= 0, instance x becomes [x; bias]; if < 0, no bias term added (default -1)
+   -B bias : if bias &ge 0, instance x becomes [x; bias]; if &lt; 0, no bias term added (default -1)
    -wi weight: weights adjust the parameter C of different classes (see README for details)
   </pre>
  */
