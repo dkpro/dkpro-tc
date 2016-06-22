@@ -19,17 +19,6 @@ package org.dkpro.tc.ml.liblinear.util;
 
 import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.EPISILON_DEFAULT;
 import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.PARAM_C_DEFAULT;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L1R_LR;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L1LOSS_SVC_DUAL;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L1LOSS_SVR_DUAL;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVC;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVC_DUAL;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVR;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_L2LOSS_SVR_DUAL;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_LR;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_L2R_LR_DUAL;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.SOLVER_MCSVM_CS;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -70,37 +59,37 @@ public class LiblinearUtils
 
                 String algo = classificationArguments.get(i + 1);
                 switch (algo) {
-                case SOLVER_L2R_LR:
+                case "0":
                     type = SolverType.L2R_LR;
                     break;
-                case SOLVER_L2R_L1LOSS_SVC_DUAL:
-                    type = SolverType.L2R_L1LOSS_SVC_DUAL;
-                    break;
-                case SOLVER_L2R_L2LOSS_SVC_DUAL:
+                case "1":
                     type = SolverType.L2R_L2LOSS_SVC_DUAL;
                     break;
-                case SOLVER_L2R_L2LOSS_SVC:
+                case "2":
                     type = SolverType.L2R_L2LOSS_SVC;
                     break;
-                case SOLVER_MCSVM_CS:
+                case "3":
+                    type = SolverType.L2R_L1LOSS_SVC_DUAL;
+                    break;
+                case "4":
                     type = SolverType.MCSVM_CS;
                     break;
-                case SOLVER_L1R_L2LOSS_SVC:
+                case "5":
                     type = SolverType.L1R_L2LOSS_SVC;
                     break;
-                case SOLVER_L1R_LR:
+                case "6":
                     type = SolverType.L1R_LR;
                     break;
-                case SOLVER_L2R_LR_DUAL:
+                case "7":
                     type = SolverType.L2R_LR_DUAL;
                     break;
-                case SOLVER_L2R_L2LOSS_SVR:
+                case "11":
                     type = SolverType.L2R_L2LOSS_SVR;
                     break;
-                case SOLVER_L2R_L2LOSS_SVR_DUAL:
+                case "12":
                     type = SolverType.L2R_L2LOSS_SVR_DUAL;
                     break;
-                case SOLVER_L2R_L1LOSS_SVR_DUAL:
+                case "13":
                     type = SolverType.L2R_L1LOSS_SVR_DUAL;
                     break;
                 default:

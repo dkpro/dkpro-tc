@@ -42,6 +42,35 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
+/**
+ <pre>
+   -s type : set type of solver (default 1)
+    0 -- L2-regularized logistic regression (primal)
+    1 -- L2-regularized L2-loss support vector classification (dual)
+    2 -- L2-regularized L2-loss support vector classification (primal)
+    3 -- L2-regularized L1-loss support vector classification (dual)
+    4 -- multi-class support vector classification by Crammer and Singer
+    5 -- L1-regularized L2-loss support vector classification
+    6 -- L1-regularized logistic regression
+    7 -- L2-regularized logistic regression (dual)
+   11 -- L2-regularized L2-loss support vector regression (dual)
+   12 -- L2-regularized L1-loss support vector regression (dual)
+   13 -- L2-regularized L2-loss support vector regression (primal)
+   -c cost : set the parameter C (default 1)
+   -e epsilon : set tolerance of termination criterion
+     -s 0 and 2
+         |f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,
+         where f is the primal function and pos/neg are # of
+         positive/negative data (default 0.01)
+     -s 1, 3, 4 and 7
+        Dual maximal violation <= eps; similar to libsvm (default 0.1)
+     -s 5 and 6
+        |f'(w)|_inf <= eps*min(pos,neg)/l*|f'(w0)|_inf,
+        where f is the primal function (default 0.01)
+   -B bias : if bias >= 0, instance x becomes [x; bias]; if < 0, no bias term added (default -1)
+   -wi weight: weights adjust the parameter C of different classes (see README for details)
+  </pre>
+ */
 public class LiblinearTestTask
     extends ExecutableTaskBase
     implements Constants
@@ -72,8 +101,10 @@ public class LiblinearTestTask
         File fileTest = getTestFile(aContext);
 
         Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(fileTrain, fileTest);
-        File idMappedTrainFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTrain, outcomeMapping);
-        File idMappedTestFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTest, outcomeMapping);
+        File idMappedTrainFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTrain,
+                outcomeMapping);
+        File idMappedTestFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTest,
+                outcomeMapping);
         writeMapping(aContext, outcomeMapping);
 
         // default for bias is -1, documentation says to set it to 1 in order to get results closer
@@ -96,15 +127,13 @@ public class LiblinearTestTask
         predict(aContext, model, test);
     }
 
-    private void writeMapping(TaskContext aContext, Map<String, Integer> outcomeMapping) throws IOException
+    private void writeMapping(TaskContext aContext, Map<String, Integer> outcomeMapping)
+        throws IOException
     {
-        File mappingFile = new File(aContext.getFolder("", AccessMode.READWRITE), LiblinearAdapter.getOutcomeMappingFilename());
-        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));        
+        File mappingFile = new File(aContext.getFolder("", AccessMode.READWRITE),
+                LiblinearAdapter.getOutcomeMappingFilename());
+        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));
     }
-
-    
-
-    
 
     private File getTestFile(TaskContext aContext)
     {
@@ -149,87 +178,5 @@ public class LiblinearTestTask
 
         writer.close();
     }
-
-    /**
-     * Parameter {@code "-c <C>"}: Typical SVM parameter C trading-off slack vs. magnitude of the
-     * weight-vector. NOTE: The default value for this parameter is unlikely to work well for your
-     * particular problem. A good value for C must be selected via cross-validation, ideally
-     * exploring values over several orders of magnitude.
-     */
-    public static final String PARAM_C = "-c";
-
-    /**
-     * Parameter {@code "-e <EPSILON>"}: This specifies the tolerance of termination criterion.
-     */
-    public static final String PARAM_EPSILON = "-e";
-
-    /**
-     * Parameter {@code "-s <SOLVER>"}: This specifies the solver type - available solver are
-     * defined as constant values beginning with SOLVER* in this class
-     */
-    public static final String PARAM_SOLVER_TYPE = "-s";
-
-    /**
-     * L2-regularized logistic regression (primal)
-     *
-     * (fka L2_LR)
-     */
-    public static final String SOLVER_L2R_LR = "L2R_LR";
-
-    /**
-     * L2-regularized L2-loss support vector classification (dual)
-     *
-     * (fka L2LOSS_SVM_DUAL)
-     */
-    public static final String SOLVER_L2R_L2LOSS_SVC_DUAL = "L2R_L2LOSS_SVC_DUAL";
-
-    /**
-     * L2-regularized L2-loss support vector classification (primal)
-     *
-     * (fka L2LOSS_SVM)
-     */
-    public static final String SOLVER_L2R_L2LOSS_SVC = "L2R_L2LOSS_SVC";
-
-    /**
-     * L2-regularized L1-loss support vector classification (dual)
-     *
-     * (fka L1LOSS_SVM_DUAL)
-     */
-    public static final String SOLVER_L2R_L1LOSS_SVC_DUAL = "L2R_L1LOSS_SVC_DUAL";
-
-    /**
-     * multi-class support vector classification by Crammer and Singer
-     */
-    public static final String SOLVER_MCSVM_CS = "MCSVM_CS";
-
-    /**
-     * L1-regularized L2-loss support vector classification
-     */
-    public static final String SOLVER_L1R_L2LOSS_SVC = "L1R_L2LOSS_SVC";
-
-    /**
-     * L1-regularized logistic regression
-     */
-    public static final String SOLVER_L1R_LR = "L1R_LR";
-
-    /**
-     * L2-regularized logistic regression (dual)
-     */
-    public static final String SOLVER_L2R_LR_DUAL = "L2R_LR_DUAL";
-
-    /**
-     * L2-regularized L2-loss support vector regression (dual)
-     */
-    public static final String SOLVER_L2R_L2LOSS_SVR = "L2R_L2LOSS_SVR";
-
-    /**
-     * L2-regularized L1-loss support vector regression (dual)
-     */
-    public static final String SOLVER_L2R_L2LOSS_SVR_DUAL = "L2R_L2LOSS_SVR_DUAL";
-
-    /**
-     * L2-regularized L2-loss support vector regression (primal)
-     */
-    public static final String SOLVER_L2R_L1LOSS_SVR_DUAL = "L2R_L1LOSS_SVR_DUAL";
 
 }
