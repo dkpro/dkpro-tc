@@ -44,18 +44,19 @@ import de.bwaldvogel.liblinear.SolverType;
 
 /**
  <pre>
+ {@literal
    -s type : set type of solver (default 1)
-    0 -- L2-regularized logistic regression (primal)
-    1 -- L2-regularized L2-loss support vector classification (dual)
-    2 -- L2-regularized L2-loss support vector classification (primal)
-    3 -- L2-regularized L1-loss support vector classification (dual)
-    4 -- multi-class support vector classification by Crammer and Singer
-    5 -- L1-regularized L2-loss support vector classification
-    6 -- L1-regularized logistic regression
-    7 -- L2-regularized logistic regression (dual)
-   11 -- L2-regularized L2-loss support vector regression (dual)
-   12 -- L2-regularized L1-loss support vector regression (dual)
-   13 -- L2-regularized L2-loss support vector regression (primal)
+       0 -- L2-regularized logistic regression (primal)
+       1 -- L2-regularized L2-loss support vector classification (dual)
+       2 -- L2-regularized L2-loss support vector classification (primal)
+       3 -- L2-regularized L1-loss support vector classification (dual)
+       4 -- multi-class support vector classification by Crammer and Singer
+       5 -- L1-regularized L2-loss support vector classification
+       6 -- L1-regularized logistic regression
+       7 -- L2-regularized logistic regression (dual)
+      11 -- L2-regularized L2-loss support vector regression (dual)
+      12 -- L2-regularized L1-loss support vector regression (dual)
+      13 -- L2-regularized L2-loss support vector regression (primal)
    -c cost : set the parameter C (default 1)
    -e epsilon : set tolerance of termination criterion
      -s 0 and 2
@@ -69,6 +70,7 @@ import de.bwaldvogel.liblinear.SolverType;
         where f is the primal function (default 0.01)
    -B bias : if bias &ge 0, instance x becomes [x; bias]; if &lt; 0, no bias term added (default -1)
    -wi weight: weights adjust the parameter C of different classes (see README for details)
+   }
   </pre>
  */
 public class LiblinearTestTask
