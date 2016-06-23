@@ -381,6 +381,11 @@ public final class SVMHMMUtils
         if (p == -1) {
             return 1.0;
         }
+        
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter C is < 0");
+        }
+        
         return p;
     }
 
@@ -389,6 +394,9 @@ public final class SVMHMMUtils
         double p = getDoubleParameter(classificationArguments, "-e");
         if (p == -1) {
             return 0.5;
+        }
+        if(p < 0){
+            throw new IllegalArgumentException("Epsilon is < 0");
         }
         return p;
     }
@@ -400,6 +408,11 @@ public final class SVMHMMUtils
         if (p == -1) {
             return 1;
         }
+        
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter order-t is < 0");
+        }
+        
         return p;
     }
 
@@ -413,6 +426,11 @@ public final class SVMHMMUtils
             throw new IllegalArgumentException(
                     "Dependency of emission parameter [-e] has to be either zero (default) or one");
         }
+        
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter order-e is < 0");
+        }
+        
         return p;
     }
     
@@ -421,6 +439,9 @@ public final class SVMHMMUtils
         int p = getIntegerParameter(classificationArguments, "-b");
         if (p == -1) {
             return 0;
+        }
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter beam width is < 0");
         }
         return p;
     }

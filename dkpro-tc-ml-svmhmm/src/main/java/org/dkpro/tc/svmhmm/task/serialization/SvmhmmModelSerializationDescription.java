@@ -18,6 +18,7 @@
 package org.dkpro.tc.svmhmm.task.serialization;
 
 import java.io.File;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.collections.BidiMap;
@@ -32,14 +33,19 @@ import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
-public class SvmhmmModelSerializationDescription  
+public class SvmhmmModelSerializationDescription
     extends ModelSerializationTask
     implements Constants
 {
 
-    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
-    private String[] classificationArguments;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<String> classificationArguments;
 
+    private double paramC;
+    private double paramEpsilon;
+    private int paramOrderE;
+    private int paramOrderT;
+    private int paramB;
 
     @Override
     public void execute(TaskContext aContext)
@@ -53,13 +59,15 @@ public class SvmhmmModelSerializationDescription
         throws Exception
     {
 
+        processParameters(classificationArguments);
+
         File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 StorageService.AccessMode.READONLY);
 
         // file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND
         // TESTING!!!!!!
-        String fileName = new SVMHMMAdapter()
-                .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+        String fileName = new SVMHMMAdapter().getFrameworkFilename(
+                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
 
         File trainingFile = new File(trainingDataStorage, fileName);
 
@@ -68,8 +76,8 @@ public class SvmhmmModelSerializationDescription
         BidiMap labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
 
         // // save mapping to file
-        File mappingFile = new File(outputFolder.toString() + "/"
-                + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
+        File mappingFile = new File(
+                outputFolder.toString() + "/" + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
         SVMHMMUtils.saveMapping(labelsToIntegersMapping, mappingFile);
 
         File augmentedTrainingFile = SVMHMMUtils.replaceLabelsWithIntegers(trainingFile,
@@ -77,7 +85,27 @@ public class SvmhmmModelSerializationDescription
 
         File classifier = new File(outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         // train the model
-        new SVMHMMTestTask().trainModel(classifier, augmentedTrainingFile);
+        new SVMHMMTestTask().trainModel(classifier, augmentedTrainingFile, paramC, paramOrderE,
+                paramOrderT, paramEpsilon, paramB);
+    }
+
+    private void processParameters(List<String> classificationArguments)
+    {
+        if (classificationArguments == null) {
+            paramC = 5.0;
+            paramEpsilon = 0.5;
+            paramOrderT = 1;
+            paramOrderE = 0;
+            paramB = 0;
+            return;
+        }
+
+        paramC = SVMHMMUtils.getParameterC(classificationArguments);
+        paramEpsilon = SVMHMMUtils.getParameterEpsilon(classificationArguments);
+        paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(classificationArguments);
+        paramOrderT = SVMHMMUtils
+                .getParameterOrderT_dependencyOfTransitions(classificationArguments);
+        paramB = SVMHMMUtils.getParameterBeamWidth(classificationArguments);
     }
 
 }
