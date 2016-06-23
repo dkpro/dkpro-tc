@@ -296,8 +296,10 @@ public class SVMHMMTestTask
     private String toString(List<String> modelTrainCommand)
     {
         StringBuilder sb = new StringBuilder();
-        modelTrainCommand.forEach(x -> sb.append(x + " "));
-        return sb.toString();
+        for(String s : modelTrainCommand){
+            sb.append(s + " ");
+        }
+        return sb.toString().trim();
     }
 
     /**
