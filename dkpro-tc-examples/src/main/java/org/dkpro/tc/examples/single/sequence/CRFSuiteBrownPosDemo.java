@@ -22,6 +22,7 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,9 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
@@ -66,34 +69,36 @@ public class CRFSuiteBrownPosDemo
         // instructions first :)
         DemoUtils.setDkproHome(CRFSuiteBrownPosDemo.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL);
+        @SuppressWarnings("unchecked")
+        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()));
 
         CRFSuiteBrownPosDemo experiment = new CRFSuiteBrownPosDemo();
         experiment.runCrossValidation(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace(String featureMode, String learningMode)
+    public static ParameterSpace getParameterSpace(String featureMode, String learningMode, Dimension<List<String>> dimClassificationArgs)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription newInstance = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS,
-                asList(INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"));
-        dimReaders.put(DIM_READER_TRAIN, newInstance);
+                asList(INCLUDE_PREFIX + "a01.xml"));
+        dimReaders.put(DIM_READER_TRAIN, train);
+        
+        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                BrownCorpusReader.PARAM_PATTERNS,
+                asList(INCLUDE_PREFIX + "a02.xml"));
+        dimReaders.put(DIM_READER_TEST, test);
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
                         LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
                         LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
-
-        @SuppressWarnings("unchecked")
-        /* If no algorithm is provided, CRFSuite takes lbfgs */
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
@@ -129,5 +134,16 @@ public class CRFSuiteBrownPosDemo
         throws ResourceInitializationException
     {
         return createEngineDescription(NoOpAnnotator.class);
+    }
+
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    {
+        ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTest", CRFSuiteAdapter.class);
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(ContextMemoryReport.class);
+        
+        Lab.getInstance().run(batch);
     }
 }

@@ -18,6 +18,7 @@
  */
 package org.dkpro.tc.examples.model;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -76,15 +77,20 @@ public class CRFSuiteSaveAndLoadModelTest
     public void saveModel()
         throws Exception
     {
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                asList());
+        
         File modelFolder = folder.newFolder();
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
 
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_FEATURE_EXTRACTORS);
+        File usedFeaturesFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
         assertTrue(usedFeaturesFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
@@ -114,7 +120,8 @@ public class CRFSuiteSaveAndLoadModelTest
     }
 
     @SuppressWarnings("unchecked")
-    private ParameterSpace getParameterSpace() throws ResourceInitializationException
+    private ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
+        throws ResourceInitializationException
     {
         DemoUtils.setDkproHome(this.getClass().getName());
 
@@ -123,7 +130,7 @@ public class CRFSuiteSaveAndLoadModelTest
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
+
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, trainFolder,
@@ -131,30 +138,35 @@ public class CRFSuiteSaveAndLoadModelTest
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
+        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
                 Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneCharacterNGram.class.getName(),
-                        NrOfChars.class.getName(), }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                new String[] { LuceneCharacterNGram.class.getName(), NrOfChars.class.getName(), }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_SEQUENCE), dimPipelineParameters, dimFeatureSets);
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimPipelineParameters,
+                dimFeatureSets, dimClassificationArgs);
         return pSpace;
     }
 
     @Test
-    public void loadModel()
+    public void loadModelArow()
         throws Exception
     {
+        
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                asList(new String[] {
+                        CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR}));
+        
         // create a model
         File modelFolder = folder.newFolder();
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
 
         JCas jcas = JCasFactory.createJCas();
@@ -171,19 +183,66 @@ public class CRFSuiteSaveAndLoadModelTest
         tokenizer.process(jcas);
         tcAnno.process(jcas);
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas,
-                TextClassificationOutcome.class));
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         assertEquals("AT", outcomes.get(0).getOutcome());
         assertEquals("NN", outcomes.get(1).getOutcome());
-        assertEquals("IN", outcomes.get(2).getOutcome());
-        assertEquals("AT", outcomes.get(3).getOutcome());
+        assertEquals("CC", outcomes.get(2).getOutcome());
+        assertEquals("JJ", outcomes.get(3).getOutcome());
         assertEquals("NN", outcomes.get(4).getOutcome());
         assertEquals("pct", outcomes.get(5).getOutcome());
-        assertEquals("pct", outcomes.get(6).getOutcome());
+        assertEquals("PPS", outcomes.get(6).getOutcome());
         assertEquals("NNS", outcomes.get(7).getOutcome());
         assertEquals("pct", outcomes.get(8).getOutcome());
-        assertEquals("NNS", outcomes.get(9).getOutcome());
+        assertEquals("NN", outcomes.get(9).getOutcome());
+        assertEquals("pct", outcomes.get(10).getOutcome());
+    }
+    
+    @Test
+    public void loadModelArowParameters()
+        throws Exception
+    {
+        
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                asList(new String[] {
+                        CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+                        "feature.minfreq=2", "-p", "gamma=2.0", "-p", "variance=3.000" }));
+        
+        // create a model
+        File modelFolder = folder.newFolder();
+        ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
+        executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
+
+        JCas jcas = JCasFactory.createJCas();
+        jcas.setDocumentText("This is an example text. It has 2 sentences.");
+        jcas.setDocumentLanguage("en");
+
+        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+
+        tokenizer.process(jcas);
+        tcAnno.process(jcas);
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+        assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
+        assertEquals("AT", outcomes.get(0).getOutcome());
+        assertEquals("NN", outcomes.get(1).getOutcome());
+        assertEquals("PPS", outcomes.get(2).getOutcome());
+        assertEquals("VBG", outcomes.get(3).getOutcome());
+        assertEquals("HVD", outcomes.get(4).getOutcome());
+        assertEquals("pct", outcomes.get(5).getOutcome());
+        assertEquals("VBN", outcomes.get(6).getOutcome());
+        assertEquals("IN", outcomes.get(7).getOutcome());
+        assertEquals("AT", outcomes.get(8).getOutcome());
+        assertEquals("NN", outcomes.get(9).getOutcome());
         assertEquals("pct", outcomes.get(10).getOutcome());
     }
 }
