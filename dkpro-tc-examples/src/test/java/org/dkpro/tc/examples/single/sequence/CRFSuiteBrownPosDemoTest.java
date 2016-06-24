@@ -19,7 +19,7 @@
 package org.dkpro.tc.examples.single.sequence;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -67,11 +67,11 @@ public class CRFSuiteBrownPosDemoTest
         javaExperiment.runCrossValidation(pSpace);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testTrainTest()
         throws Exception
     {
-        @SuppressWarnings("unchecked")
         // Random parameters for demonstration!
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
@@ -84,32 +84,25 @@ public class CRFSuiteBrownPosDemoTest
 
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double double1 = createEvaluator.calculateEvaluationMeasures()
+        Double resultNoParams = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
-        assertEquals(0.3225806, double1, 0.0001);
-    }
 
-    @Test
-    public void testTrainTestWithParametrization()
-        throws Exception
-    {
-        @SuppressWarnings("unchecked")
         // Random parameters for demonstration!
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new String[] {
-                        CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                        "feature.minfreq=3", "-p", "gamma=5.0", "-p", "max_iterations=15" }));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(Constants.FM_SEQUENCE,
+        dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+                asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+                        "feature.minfreq=3", "-p", "gamma=5.0", "-p", "max_iterations=15"));
+        pSpace = CRFSuiteBrownPosDemo.getParameterSpace(Constants.FM_SEQUENCE,
                 Constants.LM_SINGLE_LABEL, dimClassificationArgs);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
 
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double double1 = createEvaluator.calculateEvaluationMeasures()
+        o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double resultParams = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
-        assertEquals(0.290322, double1, 0.0001);
+
+        // if the parameters work something should change in the end result
+        assertTrue(Math.abs(resultNoParams - resultParams) > 0.00001);
     }
 }
