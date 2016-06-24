@@ -23,7 +23,9 @@ import java.util.Map;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
+import org.dkpro.tc.evaluation.measures.regression.PearsonCorrelation;
 import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
+import org.dkpro.tc.evaluation.measures.regression.SpearmanCorrelation;
 
 public class RegressionEvaluator
     extends EvaluatorBase
@@ -40,10 +42,14 @@ public class RegressionEvaluator
     {
         Map<String, Double> meanAbsoluteError = MeanAbsoluteError.calculate(id2Outcome);
         Map<String, Double> rootMeanSquaredError = RootMeanSquaredError.calculate(id2Outcome);
+        Map<String, Double> pearsonCorrelation = PearsonCorrelation.calculate(id2Outcome);
+        Map<String, Double> spearmanCorrelation = SpearmanCorrelation.calculate(id2Outcome);
 
         Map<String, Double> results = new HashMap<>();
         results.putAll(meanAbsoluteError);
         results.putAll(rootMeanSquaredError);
+        results.putAll(pearsonCorrelation);
+        results.putAll(spearmanCorrelation);
         return results;
     }
 

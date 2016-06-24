@@ -221,7 +221,47 @@ public class Id2Outcome implements Serializable
     {
         return outcomes;
     }
+    
+    /**
+     * Add a single outcome.
+     * Mainly used for testing.
+     * 
+     * @param outcome a single outcome
+     */
+    public void addOutcome(SingleOutcome outcome) {
+    	outcomes.add(outcome);
+    }
 
+    /**
+     * Returns all predictions in a single array.
+     * 
+     * @return the array of predictions 
+     */
+    public double[] getPredictions() {
+    	double[] predictions = new double[outcomes.size()];
+    	int i=0;
+    	for (SingleOutcome outcome : outcomes) {
+    		predictions[i] = outcome.getPrediction()[0];
+    		i++;
+    	}
+    	return predictions;
+    }
+    
+    /**
+     * Returns all gold standard values in a single array.
+     * 
+     * @return the array of gold standard values 
+     */
+    public double[] getGoldValues() {
+    	double[] golds = new double[outcomes.size()];
+    	int i=0;
+    	for (SingleOutcome outcome : outcomes) {
+    		golds[i] = outcome.getGoldstandard()[0];
+    		i++;
+    	}
+    	return golds;
+    }
+    
     /**
      * Adds another {@link Id2Outcome} object to this {@link Id2Outcome}, effectively adding the
      * individual outcomes and setting the learning mode.
