@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -41,12 +40,8 @@ import java.util.TreeSet;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualTreeBidiMap;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.storage.StorageService;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
 public final class SVMHMMUtils
@@ -131,8 +126,8 @@ public final class SVMHMMUtils
     public static File replaceLabelsWithIntegers(File featureVectorsFile, BidiMap labelsToIntegers)
         throws IOException
     {
-        File result = new File(featureVectorsFile.getParent(), "mappedLabelsToInt_"
-                + featureVectorsFile.getName());
+        File result = new File(featureVectorsFile.getParent(),
+                "mappedLabelsToInt_" + featureVectorsFile.getName());
         PrintWriter pw = new PrintWriter(new FileOutputStream(result));
 
         BufferedReader br = new BufferedReader(new FileReader(featureVectorsFile));
@@ -169,8 +164,8 @@ public final class SVMHMMUtils
     public static void saveMapping(BidiMap mapping, File outputFile)
         throws IOException
     {
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(
-                outputFile));
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                new FileOutputStream(outputFile));
         objectOutputStream.writeObject(mapping);
 
         IOUtils.closeQuietly(objectOutputStream);
@@ -196,8 +191,8 @@ public final class SVMHMMUtils
         SortedSet<Object> featureIndexes = new TreeSet<Object>(mapping.values());
 
         for (Object featureIndex : featureIndexes) {
-            pw.printf(Locale.ENGLISH, "%5d %s%n", (int) featureIndex, mapping.getKey(featureIndex)
-                    .toString());
+            pw.printf(Locale.ENGLISH, "%5d %s%n", (int) featureIndex,
+                    mapping.getKey(featureIndex).toString());
         }
 
         IOUtils.closeQuietly(pw);
@@ -290,7 +285,8 @@ public final class SVMHMMUtils
             throw new IllegalArgumentException(
                     "SvmHmm requires the feature ["
                             + OriginalTextHolderFeatureExtractor.class.getSimpleName()
-                            + "] to be in the feature space otherwise this exception might be thrown.", e);
+                            + "] to be in the feature space otherwise this exception might be thrown.",
+                    e);
         }
         return result;
     }
@@ -308,7 +304,7 @@ public final class SVMHMMUtils
      */
     public static List<String> extractOutcomeLabelsFromPredictions(File predictionsFile,
             BidiMap labelsToIntegersMapping)
-        throws IOException
+                throws IOException
     {
         List<String> result = new ArrayList<>();
 
@@ -347,7 +343,6 @@ public final class SVMHMMUtils
         return result;
     }
 
-
     public static List<SortedMap<String, String>> extractMetaDataFeatures(File featureVectorsFile)
         throws IOException
     {
@@ -379,4 +374,126 @@ public final class SVMHMMUtils
 
         return result;
     }
+
+    public static double getParameterC(List<String> classificationArguments)
+    {
+        double p = getDoubleParameter(classificationArguments, "-c");
+        if (p == -1) {
+            return 1.0;
+        }
+        
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter C is < 0");
+        }
+        
+        return p;
+    }
+
+    public static double getParameterEpsilon(List<String> classificationArguments)
+    {
+        double p = getDoubleParameter(classificationArguments, "-e");
+        if (p == -1) {
+            return 0.5;
+        }
+        if(p < 0){
+            throw new IllegalArgumentException("Epsilon is < 0");
+        }
+        return p;
+    }
+
+    public static int getParameterOrderT_dependencyOfTransitions(
+            List<String> classificationArguments)
+    {
+        int p = getIntegerParameter(classificationArguments, "-t");
+        if (p == -1) {
+            return 1;
+        }
+        
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter order-t is < 0");
+        }
+        
+        return p;
+    }
+
+    public static int getParameterOrderE_dependencyOfEmissions(List<String> classificationArguments)
+    {
+        int p = getIntegerParameter(classificationArguments, "-m");
+        if (p == -1) {
+            return 0;
+        }
+        if (p != 0 && p != 1) {
+            throw new IllegalArgumentException(
+                    "Dependency of emission parameter [-e] has to be either zero (default) or one");
+        }
+        
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter order-e is < 0");
+        }
+        
+        return p;
+    }
+    
+    public static int getParameterBeamWidth(List<String> classificationArguments)
+    {
+        int p = getIntegerParameter(classificationArguments, "-b");
+        if (p == -1) {
+            return 0;
+        }
+        if(p < 0){
+            throw new IllegalArgumentException("Parameter beam width is < 0");
+        }
+        return p;
+    }
+
+    static int getIntegerParameter(List<String> classificationArguments, String sw)
+    {
+        for (int i = 0; i < classificationArguments.size(); i++) {
+            String e = classificationArguments.get(i);
+            if (e.equals(sw)) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found switch [" + sw + "] but no value was specified");
+                }
+                Integer val = 0;
+                String stringVal = classificationArguments.get(i + 1);
+                try {
+                    val = Integer.valueOf(stringVal);
+                }
+                catch (Exception ex) {
+                    throw new IllegalArgumentException("The provided parameter for [" + sw
+                            + "] is not an integer value [" + stringVal + "]");
+                }
+                return val;
+            }
+        }
+
+        return -1;
+    }
+
+    static double getDoubleParameter(List<String> classificationArguments, String sw)
+    {
+        for (int i = 0; i < classificationArguments.size(); i++) {
+            String e = classificationArguments.get(i);
+            if (e.equals(sw)) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found switch [" + sw + "] but no value was specified");
+                }
+                Double val = 0.0;
+                String stringVal = classificationArguments.get(i + 1);
+                try {
+                    val = Double.valueOf(stringVal);
+                }
+                catch (Exception ex) {
+                    throw new IllegalArgumentException("The provided parameter for [" + sw
+                            + "] is not a double value [" + stringVal + "]");
+                }
+                return val;
+            }
+        }
+
+        return -1;
+    }
+
 }

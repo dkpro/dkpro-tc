@@ -37,24 +37,27 @@ import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
  * Random classifier for sequence labeling build upon SVMhmm adapter
  */
 public class SVMHMMRandomTestTask
-        extends SVMHMMTestTask
+    extends SVMHMMTestTask
 {
     static Random random = new Random(System.currentTimeMillis());
 
     @Override
-    public void trainModel(TaskContext taskContext, File trainingFile)
-            throws Exception
+    public void trainModel(TaskContext taskContext, File trainingFile, double paramC,
+            int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
+                throws Exception
     {
         // no training
     }
 
     @Override
     public void testModel(TaskContext taskContext, File testFile)
-            throws Exception
+        throws Exception
     {
         // file to hold prediction results
-        File predictionsFile = taskContext.getFile(new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.predictionsFile), AccessMode.READWRITE); 
+        File predictionsFile = taskContext.getFile(
+                new SVMHMMAdapter().getFrameworkFilename(
+                        TCMachineLearningAdapter.AdapterNameEntries.predictionsFile),
+                AccessMode.READWRITE);
 
         // number of expected outcomes
         List<String> strings = FileUtils.readLines(testFile);

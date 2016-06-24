@@ -54,7 +54,6 @@ import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -103,7 +102,7 @@ public class LiblinearSaveAndLoadModelTest
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArguments = Dimension.create(
-                DIM_CLASSIFICATION_ARGS, Arrays.asList("-s", LiblinearTestTask.SOLVER_L1R_LR));
+                DIM_CLASSIFICATION_ARGS, Arrays.asList("-s", "6"));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays

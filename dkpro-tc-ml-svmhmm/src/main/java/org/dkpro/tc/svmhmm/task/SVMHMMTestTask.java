@@ -48,10 +48,6 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
 
-/**
- * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult
- * {@code http://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html} for parameter settings.
- */
 public class SVMHMMTestTask
     extends ExecutableTaskBase
     implements Constants
@@ -69,52 +65,17 @@ public class SVMHMMTestTask
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode = LM_SINGLE_LABEL;
 
-    /**
-     * Parameter {@code "-c <C>"}: Typical SVM parameter C trading-off slack vs. magnitude of the
-     * weight-vector. NOTE: The default value for this parameter is unlikely to work well for your
-     * particular problem. A good value for C must be selected via cross-validation, ideally
-     * exploring values over several orders of magnitude. NOTE: Unlike in V1.01, the value of C is
-     * divided by the number of training examples. So, to get results equivalent to V1.01, multiply
-     * C by the number of training examples.
-     */
-    public static final String PARAM_C = "paramC";
-    @Discriminator(name = PARAM_C)
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<String> classificationArguments;
+
     private double paramC = 5;
 
-    /**
-     * Parameter "-e &lt;EPSILON&gt;": This specifies the precision to which constraints are
-     * required to be satisfied by the solution. The smaller EPSILON, the longer and the more memory
-     * training takes, but the solution is more precise. However, solutions more accurate than 0.5
-     * typically do not improve prediction accuracy.
-     */
-    public static final String PARAM_EPSILON = "paramEpsilon";
-    @Discriminator(name = PARAM_EPSILON)
     private double paramEpsilon = 0.5;
 
-    /**
-     * Parameter {@code "--t <ORDER_T>"}: Order of dependencies of transitions in HMM. Can be any
-     * number larger than 1. (default 1)
-     */
-    public static final String PARAM_ORDER_T = "paramOrderT";
-    @Discriminator(name = PARAM_ORDER_T)
     private int paramOrderT = 1;
 
-    /**
-     * Parameter "--e &lt;ORDER_E&gt;": Order of dependencies of emissions in HMM. Can be any number
-     * larger than 0. (default 0) UPDATE: according to svm_struct_api.c: must be either 0 or 1;
-     * fails for &gt;1
-     */
-    public static final String PARAM_ORDER_E = "paramOrderE";
-    @Discriminator(name = PARAM_ORDER_E)
     private int paramOrderE = 0;
 
-    /**
-     * Parameter "--b &lt;WIDTH&gt;": A non-zero value turns on (approximate) beam search to replace
-     * the exact Viterbi algorithm both for finding the most violated constraint, as well as for
-     * computing predictions. The value is the width of the beam used (e.g. 100). (default 0).
-     */
-    public static final String PARAM_B = "paramB";
-    @Discriminator(name = PARAM_B)
     private int paramB = 0;
 
     // where the trained model is stored
@@ -130,7 +91,7 @@ public class SVMHMMTestTask
     public void execute(TaskContext taskContext)
         throws Exception
     {
-        checkParameters();
+        processParameters(classificationArguments);
 
         // where the training date are located
         File trainingDataStorage = taskContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
@@ -159,8 +120,7 @@ public class SVMHMMTestTask
         labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
 
         // save mapping to file
-        File mappingFolder = taskContext.getFolder("",
-                StorageService.AccessMode.READWRITE);
+        File mappingFolder = taskContext.getFolder("", StorageService.AccessMode.READWRITE);
         File mappingFile = new File(mappingFolder,
                 SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
         SVMHMMUtils.saveMapping(labelsToIntegersMapping, mappingFile);
@@ -172,43 +132,21 @@ public class SVMHMMTestTask
                 labelsToIntegersMapping);
 
         // train the model
-        trainModel(taskContext, augmentedTrainingFile);
+        trainModel(taskContext, augmentedTrainingFile, paramC, paramOrderE, paramOrderT,
+                paramEpsilon, paramB);
 
         // test the model
         testModel(taskContext, augmentedTestFile);
     }
 
-    /**
-     * Checks parameters and throws exception if the parameters are out of range
-     *
-     * @throws java.lang.IllegalArgumentException
-     *             if model params out of range
-     */
-    public void checkParameters()
-        throws IllegalArgumentException
+    private void processParameters(List<String> classificationArguments)
     {
-
-        if (paramOrderT < 0 || paramOrderT > 3) {
-            throw new IllegalArgumentException(
-                    "paramOrderT (=" + paramOrderT + ") must be in range [0..3])");
-        }
-
-        if (paramOrderE < 0 || paramOrderE > 1) {
-            throw new IllegalArgumentException(
-                    "paramOrderE (=" + paramOrderE + ") must be in range [0..1])");
-        }
-
-        if (paramB < 0) {
-            throw new IllegalArgumentException("paramB (=" + paramB + ") must be >= 0");
-        }
-
-        if (paramC < 0) {
-            throw new IllegalArgumentException("paramC (=" + paramC + ") must be >= 0");
-        }
-
-        if (paramOrderT < paramOrderE) {
-            throw new IllegalArgumentException("paramOrderE must be <= paramOrderT");
-        }
+        paramC = SVMHMMUtils.getParameterC(classificationArguments);
+        paramEpsilon = SVMHMMUtils.getParameterEpsilon(classificationArguments);
+        paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(classificationArguments);
+        paramOrderT = SVMHMMUtils
+                .getParameterOrderT_dependencyOfTransitions(classificationArguments);
+        paramB = SVMHMMUtils.getParameterBeamWidth(classificationArguments);
     }
 
     /**
@@ -275,10 +213,12 @@ public class SVMHMMTestTask
      *            context
      * @throws Exception
      */
-    public void trainModel(TaskContext taskContext, File trainingFile)
-        throws Exception
+    public void trainModel(TaskContext taskContext, File trainingFile, double paramC,
+            int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
+                throws Exception
     {
-        File tmpModel = trainModelAtTemporaryLocation(trainingFile);
+        File tmpModel = trainModelAtTemporaryLocation(trainingFile, paramC, paramOrderE,
+                paramOrderT, paramEpsilon, paramB);
 
         FileInputStream stream = new FileInputStream(tmpModel);
         taskContext.storeBinary(MODEL_NAME, stream);
@@ -288,20 +228,20 @@ public class SVMHMMTestTask
         FileUtils.deleteQuietly(tmpModel);
     }
 
-    public void trainModel(File modelOutputFile, File trainingFile)
-        throws Exception
+    public void trainModel(File modelOutputFile, File trainingFile, double paramC, int paramOrderE,
+            int paramOrderT, double paramEpsilon, int paramB)
+                throws Exception
     {
-        File tmpModel = trainModelAtTemporaryLocation(trainingFile);
+        File tmpModel = trainModelAtTemporaryLocation(trainingFile, paramC, paramOrderE,
+                paramOrderT, paramEpsilon, paramB);
         FileUtils.copyFile(tmpModel, modelOutputFile);
         FileUtils.deleteQuietly(tmpModel);
     }
 
-    private File trainModelAtTemporaryLocation(File trainingFile)
-        throws Exception
+    private File trainModelAtTemporaryLocation(File trainingFile, double paramC, int paramOrderE,
+            int paramOrderT, double paramEpsilon, int paramB)
+                throws Exception
     {
-        // the check needs to happen a bit later here to ensure that the model store feature also
-        // runs through the parameter check
-        checkParameters();
         File tmpModelFile = File.createTempFile("tmp_svm_hmm", ".model");
 
         // we have to copy the training file to tmp to prevent long path issue
@@ -309,7 +249,11 @@ public class SVMHMMTestTask
         File tmpTrainingFile = File.createTempFile("tmp_svm_hmm_training", ".txt");
         FileUtils.copyFile(trainingFile, tmpTrainingFile);
 
-        List<String> modelTrainCommand = buildTrainCommand(tmpTrainingFile, tmpModelFile.getPath());
+        List<String> modelTrainCommand = buildTrainCommand(tmpTrainingFile, tmpModelFile.getPath(),
+                paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
+
+        LogFactory.getLog(getClass())
+                .info("Use following parametrization: " + toString(modelTrainCommand));
 
         log.debug("Start training model");
         long time = System.currentTimeMillis();
@@ -321,6 +265,15 @@ public class SVMHMMTestTask
         FileUtils.deleteQuietly(tmpTrainingFile);
 
         return tmpModelFile;
+    }
+
+    private String toString(List<String> modelTrainCommand)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(String s : modelTrainCommand){
+            sb.append(s + " ");
+        }
+        return sb.toString().trim();
     }
 
     /**
@@ -389,7 +342,8 @@ public class SVMHMMTestTask
      *            where the trained model will be stored
      * @return command as list of Strings
      */
-    private List<String> buildTrainCommand(File trainingFile, String targetModelLocation)
+    private List<String> buildTrainCommand(File trainingFile, String targetModelLocation,
+            double paramC, int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
     {
         List<String> result = new ArrayList<>();
         result.add(resolveSVMHmmLearnCommand());

@@ -37,10 +37,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
+public class LiblinearTwentyNewsgroupsTest
+    extends JavaDemosTest_Base
 {
     LiblinearTwentyNewsgroups javaExperiment;
     ParameterSpace pSpace;
@@ -50,7 +50,7 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
         throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new LiblinearTwentyNewsgroups();
         pSpace = LiblinearTwentyNewsgroups.getParameterSpace(null);
     }
@@ -61,34 +61,35 @@ public class LiblinearTwentyNewsgroupsTest extends JavaDemosTest_Base
     {
         ContextMemoryReport.key = LiblinearTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
-        
+
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        Double result = createEvaluator.calculateEvaluationMeasures()
+                .get(Accuracy.class.getSimpleName());
         assertEquals(0.5, result, 0.0001);
     }
-    
+
     @Test
     public void testJavaTrainTestWithParametrization()
         throws Exception
     {
         ContextMemoryReport.key = LiblinearTestTask.class.getName();
-        
+
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { LiblinearTestTask.PARAM_C, "5",
-                        LiblinearTestTask.PARAM_EPSILON, "0.2",
-                        LiblinearTestTask.PARAM_SOLVER_TYPE,
-                        LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC }));
-        
-        javaExperiment.runTrainTest(LiblinearTwentyNewsgroups.getParameterSpace(dimClassificationArgs));
-        
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                asList(new String[] { "-c", "5", "-e", "0.2", "-s", "5" }));
+
+        javaExperiment
+                .runTrainTest(LiblinearTwentyNewsgroups.getParameterSpace(dimClassificationArgs));
+
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
+        Double result = createEvaluator.calculateEvaluationMeasures()
+                .get(Accuracy.class.getSimpleName());
         assertEquals(0.875, result, 0.0001);
     }
-    
+
     @Test
     public void testJavaCrossValidation()
         throws Exception

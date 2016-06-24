@@ -43,7 +43,6 @@ import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -177,10 +176,7 @@ public class LiblinearTwentyNewsgroups
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { LiblinearTestTask.PARAM_C, "100",
-                        LiblinearTestTask.PARAM_EPSILON, "0.001",
-                        LiblinearTestTask.PARAM_SOLVER_TYPE,
-                        LiblinearTestTask.SOLVER_L1R_L2LOSS_SVC }));
+                asList(new String[] { "-c", "100", "-c", "0.001", "-s", "5" }));
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
                 LiblinearAdapter.class);

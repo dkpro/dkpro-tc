@@ -33,6 +33,7 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.crfsuite.task.CrfUtil;
 
 public class CRFSuiteModelSerializationDescription
     extends ModelSerializationTask
@@ -40,9 +41,13 @@ public class CRFSuiteModelSerializationDescription
 {
 
     @Discriminator(name=DIM_CLASSIFICATION_ARGS)
-    private String[] classificationArguments;
+    private List<String> classificationArguments;
 
     boolean trainModel = true;
+
+    private String algoName;
+
+    private List<String> algoParameters;
 
     @Override
     public void execute(TaskContext aContext)
@@ -50,6 +55,7 @@ public class CRFSuiteModelSerializationDescription
     {
 
         if (trainModel) {
+            processParameters(classificationArguments);
             trainAndStoreModel(aContext);
         }
         else {
@@ -79,14 +85,19 @@ public class CRFSuiteModelSerializationDescription
 
         String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
         String trainingDataPath = trainFolder.getPath() + "/" + trainFileName;
-        String classificationArgs = classificationArguments != null ? classificationArguments[0]
-                : null;
         List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(classifierPath,
-                trainingDataPath, classificationArgs);
+                trainingDataPath, algoName, algoParameters);
 
         Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
         process.waitFor();
     }
+    
+    private void processParameters(List<String> classificationArguments)
+            throws Exception
+        {
+            algoName = CrfUtil.getAlgorithm(classificationArguments);
+            algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
+        }
 
     public void trainModel(boolean b)
     {
