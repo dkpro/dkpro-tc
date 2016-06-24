@@ -87,6 +87,7 @@ public class CRFSuiteSaveAndLoadModelTest
         postags.add("NN");
         postags.add("pct");
         postags.add("DT");
+        postags.add("TO");
         postags.add("CC");
         postags.add("JJ");
         postags.add("PPS");
