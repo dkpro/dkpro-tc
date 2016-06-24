@@ -55,7 +55,7 @@ public class SVMHMMTestTask
     /*
      * for svm_hmm debugging purposes
      */
-    public static boolean PRINT_STD_OUT = true;
+    public static boolean PRINT_STD_OUT = false;
 
     private static final String BINARIES_BASE_LOCATION = "classpath:/org/dkpro/tc/svmhmm/";
 
