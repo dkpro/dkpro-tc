@@ -1,7 +1,7 @@
 # dkpro-tc
 
 DKPro TC is a UIMA-based text classification framework built on top of DKPro Core and DKPro Lab. 
-It is intended to alleviate supervised machine learning experiments with any kind of textual data.
+It is intended to facilitate supervised machine learning experiments with any kind of textual data.
 
 For more information, please visit the [DKPro TC Documentation](https://dkpro.github.io/dkpro-tc/documentation/).
 
