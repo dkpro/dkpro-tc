@@ -20,12 +20,10 @@ package org.dkpro.tc.evaluation.evaluator.measures.regression;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-
 import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.SingleOutcome;
 import org.dkpro.tc.evaluation.measures.regression.PearsonCorrelation;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class PearsonCorrelationTest
 {
@@ -33,29 +31,13 @@ public class PearsonCorrelationTest
     @Test
     public void measureTest()
     {
-        Id2Outcome id2 = new Id2Outcome();
+        Id2Outcome id2 = Mockito.mock(Id2Outcome.class);
 
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 1.0 },
-        		new double[] { 2.0 },
-        		Collections.emptyList(), "1"
-        ));
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 10.0 },
-        		new double[] { 1.0 },
-        		Collections.emptyList(), "1"
-        ));
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 14.0 },
-        		new double[] { 3.0 },
-        		Collections.emptyList(), "1"
-        ));
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 3.0 },
-        		new double[] { 5.0 },
-        		Collections.emptyList(), "1"
-        ));
-
+        double[] predictions = new double[] { 1.0, 10.0, 14.0, 3.0 };
+        double[] golds = new double[] { 2.0, 1.0, 3.0, 5.0 };
+        
+        Mockito.when(id2.getPredictions()).thenReturn(predictions);
+        Mockito.when(id2.getGoldValues()).thenReturn(golds);
 
         double result = PearsonCorrelation.calculate(id2).get(PearsonCorrelation.class.getSimpleName());
         assertEquals(-0.25786, result, 0.00001);
@@ -64,28 +46,13 @@ public class PearsonCorrelationTest
     @Test
     public void measurePerfectMatch()
     {
-        Id2Outcome id2 = new Id2Outcome();
+        Id2Outcome id2 = Mockito.mock(Id2Outcome.class);
 
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 1.0 },
-        		new double[] { 1.0 },
-        		Collections.emptyList(), "1"
-        ));
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 2.0 },
-        		new double[] { 2.0 },
-        		Collections.emptyList(), "1"
-        ));
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 3.0 },
-        		new double[] { 3.0 },
-        		Collections.emptyList(), "1"
-        ));
-        id2.addOutcome(new SingleOutcome(
-        		new double[] { 4.0 },
-        		new double[] { 4.0 },
-        		Collections.emptyList(), "1"
-        ));
+        double[] predictions = new double[] { 1.0, 2.0, 3.0, 4.0 };
+        double[] golds = new double[] { 1.0, 2.0, 3.0, 4.0 };
+        
+        Mockito.when(id2.getPredictions()).thenReturn(predictions);
+        Mockito.when(id2.getGoldValues()).thenReturn(golds);
 
         double result = PearsonCorrelation.calculate(id2).get(PearsonCorrelation.class.getSimpleName());
         assertEquals(1.0, result, 0.000001);

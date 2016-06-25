@@ -221,16 +221,6 @@ public class Id2Outcome implements Serializable
     {
         return outcomes;
     }
-    
-    /**
-     * Add a single outcome.
-     * Mainly used for testing.
-     * 
-     * @param outcome a single outcome
-     */
-    public void addOutcome(SingleOutcome outcome) {
-    	outcomes.add(outcome);
-    }
 
     /**
      * Returns all predictions in a single array.
