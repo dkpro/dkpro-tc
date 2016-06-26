@@ -34,7 +34,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.io.ReutersCorpusReader;
+import org.dkpro.tc.examples.io.MultiLabelAnnotationPreprocessing;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
@@ -45,13 +45,14 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
 
+import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import meka.classifiers.multilabel.BR;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.classifiers.bayes.NaiveBayes;
 
-public class MekaReutersDemo
+public class MekaReutersDemoSimpleDkproReader
     implements Constants
 {
 
@@ -71,10 +72,10 @@ public class MekaReutersDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(MekaReutersDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(MekaReutersDemoSimpleDkproReader.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
-        MekaReutersDemo experiment = new MekaReutersDemo();
+        MekaReutersDemoSimpleDkproReader experiment = new MekaReutersDemoSimpleDkproReader();
         experiment.runTrainTest(pSpace);
         experiment.runCrossValidation(pSpace);
     }
@@ -88,17 +89,15 @@ public class MekaReutersDemo
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                FILEPATH_TRAIN, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
-                ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+                TextReader.class, TextReader.PARAM_SOURCE_LOCATION, FILEPATH_TRAIN,
+                TextReader.PARAM_LANGUAGE, LANGUAGE_CODE, TextReader.PARAM_PATTERNS,
+                TextReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION, FILEPATH_TEST,
-                ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
-                ReutersCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+                TextReader.class, TextReader.PARAM_SOURCE_LOCATION, FILEPATH_TEST,
+                TextReader.PARAM_LANGUAGE, LANGUAGE_CODE, TextReader.PARAM_PATTERNS,
+                TextReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
@@ -111,8 +110,8 @@ public class MekaReutersDemo
                         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
         dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD,
@@ -167,6 +166,9 @@ public class MekaReutersDemo
     {
 
         return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
+                createEngineDescription(MultiLabelAnnotationPreprocessing.class,
+                        MultiLabelAnnotationPreprocessing.PARAM_GOLD_LABEL_FILE,
+                        FILEPATH_GOLD_LABELS),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
     }

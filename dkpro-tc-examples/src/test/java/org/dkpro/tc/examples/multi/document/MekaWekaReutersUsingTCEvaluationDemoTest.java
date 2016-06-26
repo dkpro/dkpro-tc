@@ -21,7 +21,7 @@ package org.dkpro.tc.examples.multi.document;
 import org.dkpro.lab.task.ParameterSpace;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.examples.multi.document.MekaReutersDemo;
+import org.dkpro.tc.examples.multi.document.MekaReutersDemoSimpleDkproReader;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
@@ -30,7 +30,7 @@ import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
  */
 public class MekaWekaReutersUsingTCEvaluationDemoTest extends JavaDemosTest_Base
 {
-    MekaReutersDemo javaExperiment;
+    MekaReutersDemoSimpleDkproReader javaExperiment;
     ParameterSpace pSpace;
     
     @Before
@@ -39,8 +39,8 @@ public class MekaWekaReutersUsingTCEvaluationDemoTest extends JavaDemosTest_Base
     {
         super.setup();
         
-        javaExperiment = new MekaReutersDemo();
-        pSpace = MekaReutersDemo.getParameterSpace();
+        javaExperiment = new MekaReutersDemoSimpleDkproReader();
+        pSpace = MekaReutersDemoSimpleDkproReader.getParameterSpace();
     }
 
     @Test
