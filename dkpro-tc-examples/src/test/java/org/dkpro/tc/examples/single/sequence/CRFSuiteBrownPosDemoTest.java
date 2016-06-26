@@ -42,7 +42,7 @@ import org.junit.Test;
 public class CRFSuiteBrownPosDemoTest
     extends JavaDemosTest_Base
 {
-    CRFSuiteBrownPosDemo javaExperiment;
+    CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
 
     @Override
     @Before
@@ -50,7 +50,7 @@ public class CRFSuiteBrownPosDemoTest
         throws Exception
     {
         super.setup();
-        javaExperiment = new CRFSuiteBrownPosDemo();
+        javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
     }
 
     @Test
@@ -61,7 +61,7 @@ public class CRFSuiteBrownPosDemoTest
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON }));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(Constants.FM_SEQUENCE,
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
                 Constants.LM_SINGLE_LABEL, dimClassificationArgs);
 
         javaExperiment.runCrossValidation(pSpace);
@@ -76,7 +76,7 @@ public class CRFSuiteBrownPosDemoTest
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(Constants.FM_SEQUENCE,
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
                 Constants.LM_SINGLE_LABEL, dimClassificationArgs);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
@@ -91,7 +91,7 @@ public class CRFSuiteBrownPosDemoTest
         dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
                 asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
                         "feature.minfreq=3", "-p", "gamma=5.0", "-p", "max_iterations=15"));
-        pSpace = CRFSuiteBrownPosDemo.getParameterSpace(Constants.FM_SEQUENCE,
+        pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
                 Constants.LM_SINGLE_LABEL, dimClassificationArgs);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();

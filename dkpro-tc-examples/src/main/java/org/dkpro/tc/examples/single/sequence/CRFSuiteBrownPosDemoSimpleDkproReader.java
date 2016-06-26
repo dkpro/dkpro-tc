@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -38,7 +37,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.examples.io.BrownCorpusReader;
+import org.dkpro.tc.examples.io.SequenceTargetPosTaggingPreprocessing;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
@@ -48,10 +47,12 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
+
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class CRFSuiteBrownPosDemo
+public class CRFSuiteBrownPosDemoSimpleDkproReader
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -67,12 +68,12 @@ public class CRFSuiteBrownPosDemo
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
-        DemoUtils.setDkproHome(CRFSuiteBrownPosDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()));
 
-        CRFSuiteBrownPosDemo experiment = new CRFSuiteBrownPosDemo();
+        CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
         experiment.runCrossValidation(pSpace);
     }
 
@@ -82,15 +83,15 @@ public class CRFSuiteBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS,
+        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS,
                 asList(INCLUDE_PREFIX + "a01.xml"));
         dimReaders.put(DIM_READER_TRAIN, train);
         
-        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS,
+        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS,
                 asList(INCLUDE_PREFIX + "a02.xml"));
         dimReaders.put(DIM_READER_TEST, test);
 
@@ -133,13 +134,14 @@ public class CRFSuiteBrownPosDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(NoOpAnnotator.class);
+        return createEngineDescription(SequenceTargetPosTaggingPreprocessing.class);
     }
 
     public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTest", CRFSuiteAdapter.class);
         batch.setParameterSpace(pSpace);
+        batch.setPreprocessing(getPreprocessing());
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
         batch.addReport(ContextMemoryReport.class);
