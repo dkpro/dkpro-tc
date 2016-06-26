@@ -14,7 +14,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class SequenceTargetPosTaggingPreprocessing
+public class SequenceOutcomeAnnotator
     extends JCasAnnotator_ImplBase
 {
     int tcId = 0;

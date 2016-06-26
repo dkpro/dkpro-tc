@@ -25,7 +25,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
-public class MultiLabelAnnotationPreprocessing
+public class MultiLabelOutcomeAnnotator
     extends JCasAnnotator_ImplBase
 {
 

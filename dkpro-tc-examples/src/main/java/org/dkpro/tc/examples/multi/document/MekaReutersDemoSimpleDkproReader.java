@@ -34,7 +34,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.io.anno.MultiLabelAnnotationPreprocessing;
+import org.dkpro.tc.examples.io.anno.MultiLabelOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
@@ -166,8 +166,8 @@ public class MekaReutersDemoSimpleDkproReader
     {
 
         return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(MultiLabelAnnotationPreprocessing.class,
-                        MultiLabelAnnotationPreprocessing.PARAM_GOLD_LABEL_FILE,
+                createEngineDescription(MultiLabelOutcomeAnnotator.class,
+                        MultiLabelOutcomeAnnotator.PARAM_GOLD_LABEL_FILE,
                         FILEPATH_GOLD_LABELS),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));

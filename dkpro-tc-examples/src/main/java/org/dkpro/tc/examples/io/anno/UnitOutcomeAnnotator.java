@@ -13,7 +13,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class UnitPosTaggingPreprocessing
+public class UnitOutcomeAnnotator
     extends JCasAnnotator_ImplBase
 {
     int tcId = 0;
