@@ -37,7 +37,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.examples.io.SequenceTargetPosTaggingPreprocessing;
+import org.dkpro.tc.examples.io.anno.SequenceTargetPosTaggingPreprocessing;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;

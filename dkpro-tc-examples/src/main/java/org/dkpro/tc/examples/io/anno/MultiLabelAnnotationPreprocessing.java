@@ -1,4 +1,4 @@
-package org.dkpro.tc.examples.io;
+package org.dkpro.tc.examples.io.anno;
 
 import java.io.File;
 import java.io.IOException;
