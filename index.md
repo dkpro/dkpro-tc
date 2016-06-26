@@ -8,7 +8,7 @@ layout: frontpage
 title: "DKPro TC"
 ---
 
-DKPro TC is a UIMA-based text classification framework built on top of [DKPro Core][DKPRO_CORE] and [DKPro Lab][DKPRO_LAB]. It is intended to alleviate supervised machine learning experiments with any kind of textual data. 
+DKPro TC is a UIMA-based text classification framework built on top of [DKPro Core][DKPRO_CORE] and [DKPro Lab][DKPRO_LAB]. It is intended to facilitate supervised machine learning experiments with any kind of textual data. 
 
 DKPro TC comes with
 
@@ -25,7 +25,7 @@ If you want to use the latest (snapshot) version of DKPro TC, please mind that t
 
 If you use DKPro TC in research, please cite the following paper:
 
-> Johannes Daxenberger and Oliver Ferschke and Iryna Gurevych and Torsten Zesch (2014). DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data. In:  Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics.  System Demonstrations. [(pdf)][ACL_2014] [(bib)][ACL_2014_BIB]
+> Johannes Daxenberger, Oliver Ferschke, Iryna Gurevych, and Torsten Zesch (2014). DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data. In:  *Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics (System Demonstrations)* [(pdf)][ACL_2014] [(bib)][ACL_2014_BIB]
 
 ### License
 
@@ -35,7 +35,7 @@ It must be pointed out that while the component's source code itself is licensed
 
 ### About
 
-This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquitous Knowledge Processing Lab (UKP)](http://www.ukp.tu-darmstadt.de/), Technische Universität Darmstadt. It is now jointly developed by UKP Lab (Technische Universität Darmstadt), [Language Technology Lab](http://ltl.uni-due.de/) (Universität Duisburg-Essen), and other contributors.
+This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquitous Knowledge Processing Lab (UKP)](https://www.ukp.tu-darmstadt.de/), Technische Universität Darmstadt. It is now jointly developed by UKP Lab (Technische Universität Darmstadt), [Language Technology Lab](http://ltl.uni-due.de/) (Universität Duisburg-Essen), and other contributors.
 
 [DKPRO_CORE]: https://dkpro.github.io/dkpro-core
 [DKPRO_LAB]: https://dkpro.github.io/dkpro-lab
