@@ -38,7 +38,7 @@ import org.junit.Test;
  */
 public class LiblinearBrownUnitPosDemoTest extends JavaDemosTest_Base
 {
-    LiblinearBrownUnitPosDemo javaExperiment;
+    LiblinearBrownUnitSimpleDkproReader javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -47,8 +47,8 @@ public class LiblinearBrownUnitPosDemoTest extends JavaDemosTest_Base
     {
         super.setup();
         
-        javaExperiment = new LiblinearBrownUnitPosDemo();
-        pSpace = LiblinearBrownUnitPosDemo.getParameterSpace();
+        javaExperiment = new LiblinearBrownUnitSimpleDkproReader();
+        pSpace = LiblinearBrownUnitSimpleDkproReader.getParameterSpace();
     }
 
     @Test

@@ -36,7 +36,6 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
@@ -45,13 +44,15 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
+
 /**
  * This is an example for POS tagging as unit classification. Each POS is treated as a
  * classification unit, but unlike sequence tagging the decision for each POS is taken
  * independently. This will usually give worse results, so this is only to showcase the concept.
  * 
  */
-public class LiblinearBrownUnitPosDemo
+public class LiblinearBrownUnitSimpleDkproReader
     implements Constants
 {
 
@@ -69,9 +70,9 @@ public class LiblinearBrownUnitPosDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(LiblinearBrownUnitPosDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(LiblinearBrownUnitSimpleDkproReader.class.getSimpleName());
 
-        new LiblinearBrownUnitPosDemo().runTrainTest(getParameterSpace());
+        new LiblinearBrownUnitSimpleDkproReader().runTrainTest(getParameterSpace());
 //        new LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
     }
 
@@ -113,17 +114,17 @@ public class LiblinearBrownUnitPosDemo
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS,
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS,
                 new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS,
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS,
                 new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
 
         dimReaders.put(DIM_READER_TEST, readerTest);

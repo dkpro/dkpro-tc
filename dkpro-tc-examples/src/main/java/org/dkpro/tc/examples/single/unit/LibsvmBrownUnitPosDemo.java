@@ -73,7 +73,7 @@ public class LibsvmBrownUnitPosDemo
         DemoUtils.setDkproHome(LibsvmBrownUnitPosDemo.class.getSimpleName());
 
         new LibsvmBrownUnitPosDemo().runTrainTest(getParameterSpace());
-        new LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
+        new LiblinearBrownUnitSimpleDkproReader().runCrossValidation(getParameterSpace());
     }
 
     // ##### CV #####
