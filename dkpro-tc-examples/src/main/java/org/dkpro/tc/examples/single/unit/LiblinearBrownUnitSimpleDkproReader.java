@@ -36,6 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.io.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
@@ -143,6 +144,6 @@ public class LiblinearBrownUnitSimpleDkproReader
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(createEngineDescription(NoOpAnnotator.class));
+        return createEngineDescription(UnitOutcomeAnnotator.class);
     }
 }
