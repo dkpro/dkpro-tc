@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+
 //import meka.core.Result;
 //import mulan.evaluation.measure.MicroPrecision;
 //import mulan.evaluation.measure.MicroRecall;
@@ -50,7 +51,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
-
+import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -337,5 +338,23 @@ public class ReportUtils
         }
 
         return cMTable;
+    }
+    
+    /**
+     * Find a specific discriminator value given a discriminator key.
+     * @param discriminatorsMap The map to search
+     * @param discriminatorName The name of the discriminator
+     * @return The discriminator value for the given key
+     * @throws TextClassificationException
+     */
+    public static String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
+        throws TextClassificationException
+    {
+    	for (String key : discriminatorsMap.keySet()) {
+			if(key.split("\\|")[1].equals(discriminatorName)){
+				return discriminatorsMap.get(key);
+			}
+		}
+    	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
     }
 }

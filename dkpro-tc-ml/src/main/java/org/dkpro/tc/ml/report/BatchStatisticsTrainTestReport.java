@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -29,14 +30,14 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.storage.impl.StringAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
-
-import au.com.bytecode.opencsv.CSVWriter;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportConstants;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.ml.report.util.PrettyPrintUtils;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 
 /**
@@ -130,17 +131,6 @@ public class BatchStatisticsTrainTestReport
         }
 
         getContext().storeBinary(STATISTICS_REPORT_FILENAME, new StringAdapter(s));
-    }
-    
-    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
-        throws TextClassificationException
-    {
-    	for (String key : discriminatorsMap.keySet()) {
-			if(key.split("\\|")[1].equals(discriminatorName)){
-				return discriminatorsMap.get(key);
-			}
-		}
-    	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
     }
 }
 

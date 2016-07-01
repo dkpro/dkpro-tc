@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -111,15 +113,4 @@ public class BatchTrainTestReport
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
         dummyFolder.delete();
     }
-    
-    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
-            throws TextClassificationException
-        {
-        	for (String key : discriminatorsMap.keySet()) {
-    			if(key.split("\\|")[1].equals(discriminatorName)){
-    				return discriminatorsMap.get(key);
-    			}
-    		}
-        	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
-        }
 }
