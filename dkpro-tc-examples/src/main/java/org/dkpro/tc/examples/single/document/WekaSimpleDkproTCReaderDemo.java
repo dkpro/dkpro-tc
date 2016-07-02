@@ -18,8 +18,8 @@
  */
 package org.dkpro.tc.examples.single.document;
 
-import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,18 +29,19 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.DynamicDiscriminableFunctionBase;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -69,22 +70,20 @@ public class WekaSimpleDkproTCReaderDemo
         DemoUtils.setDkproHome(SimpleDkproTCReader.class.getSimpleName());
 
         WekaSimpleDkproTCReaderDemo demo = new WekaSimpleDkproTCReaderDemo();
-        demo.runCrossValidation(getParameterSpace());
+        demo.runTrainTest(getParameterSpace());
     }
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    private void runTrainTest(ParameterSpace parameterSpace) throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("SimpleReaderDemoCV",
-                WekaClassificationAdapter.class, NUM_FOLDS);
+        ExperimentTrainTest batch = new ExperimentTrainTest("SimpleReaderDemoCV",
+                WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
+        batch.setParameterSpace(parameterSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-
-        // Run
+        batch.addReport(BatchTrainTestReport.class);
+        
         Lab.getInstance().run(batch);
+        
     }
 
     public static ParameterSpace getParameterSpace()
@@ -97,27 +96,45 @@ public class WekaSimpleDkproTCReaderDemo
                 SimpleDkproTCReader.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS,
                 SimpleDkproTCReader.PARAM_SENTENCES_FILE, FILEPATH_TRAIN + "/instances.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        dimReaders.put(DIM_READER_TEST, readerTrain);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { LuceneNGram.class.getName() }));
-
-        // parameters to configure feature extractors
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] {
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, "50",
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+        Dimension dimFeatureExtractors = Dimension
+                .create("ABC",
+                        Arrays.asList(
+                                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
+                                        "createLuceneTriGrams")
+                                {
+                                    @Override
+                                    public ExternalResourceDescription getActualValue()
+                                    {
+                                        return createExternalResourceDescription(LuceneNGram.class,
+                                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
+                                                LuceneNGram.PARAM_NGRAM_MIN_N, "3",
+                                                LuceneNGram.PARAM_NGRAM_MAX_N, "3");
+                                    }
+                                },
+                                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
+                                        "createLuceneUniGrams")
+                                {
+                                    @Override
+                                    public ExternalResourceDescription getActualValue()
+                                    {
+                                        return createExternalResourceDescription(LuceneNGram.class,
+                                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
+                                                LuceneNGram.PARAM_NGRAM_MIN_N, "1",
+                                                LuceneNGram.PARAM_NGRAM_MAX_N, "1");
+                                    }
+                                }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureExtractors,
+                dimClassificationArgs);
 
         return pSpace;
     }

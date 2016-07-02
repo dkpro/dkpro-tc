@@ -40,6 +40,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.resource.CustomResourceSpecifier;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -71,16 +73,14 @@ public class InitTask
     protected CollectionReaderDescription readerTrain;
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    @Discriminator(name = DIM_PIPELINE_PARAMS)
-    protected List<Object> pipelineParameters;
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
     @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private String threshold;
-    @Discriminator(name = DIM_FEATURE_SET)
-    protected List<String> featureSet;
+    @Discriminator(name = "ABC")
+    private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
@@ -195,15 +195,12 @@ public class InitTask
         throws ResourceInitializationException
     {
         // check mandatory dimensions
-        if (featureSet == null) {
+        if (featureExtractors == null) {
             throw new ResourceInitializationException(new TextClassificationException(
                     "No feature extractors have been added to the experiment."));
         }
 
         List<Object> parameters = new ArrayList<Object>();
-        if (pipelineParameters != null) {
-            parameters.addAll(pipelineParameters);
-        }
 
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
@@ -214,20 +211,38 @@ public class InitTask
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);
         parameters.add(threshold);
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_EXTRACTORS);
-        parameters.add(featureSet);
+        parameters.add(getFeatureExtractorNames(featureExtractors));
         parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
         parameters.add(developerMode);
 
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }
 
+    private Object getFeatureExtractorNames(
+            List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors2)
+    {
+        String[] featureExtractorNames = new String[featureExtractors.size()];
+
+        for (int i = 0; i < featureExtractorNames.length; i++) {
+
+            String implName;
+            if (featureExtractors.get(i).getActualValue()
+                    .getResourceSpecifier() instanceof CustomResourceSpecifier) {
+                implName = ((CustomResourceSpecifier) featureExtractors.get(i).getActualValue()
+                        .getResourceSpecifier()).getResourceClassName();
+            }
+            else {
+                implName = featureExtractors.get(i).getActualValue().getImplementationName();
+            }
+            featureExtractorNames[i] = (implName);
+        }
+        return featureExtractorNames;
+    }
+
     private AnalysisEngineDescription getPostValidityCheckEngine(TaskContext aContext)
         throws ResourceInitializationException
     {
         List<Object> parameters = new ArrayList<Object>();
-        if (pipelineParameters != null) {
-            parameters.addAll(pipelineParameters);
-        }
 
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);

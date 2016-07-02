@@ -30,12 +30,14 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -67,14 +69,14 @@ public class ContextCollectorUFE
         return result;
     }
 
-    @Override
-    public List<java.lang.Class<? extends MetaCollector>> getMetaCollectorClasses()
-    {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(UnitContextMetaCollector.class);
-
-        return metaCollectorClasses;
-    };
+//    @Override
+//    public List<java.lang.Class<? extends MetaCollector>> getMetaCollectorClasses()
+//    {
+//        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
+//        metaCollectorClasses.add(UnitContextMetaCollector.class);
+//
+//        return metaCollectorClasses;
+//    };
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget unit)
@@ -93,4 +95,12 @@ public class ContextCollectorUFE
         }
         return new HashSet<Feature>();
     }
+
+@Override
+public List<MetaCollectorConfiguration> getMetaCollectorClasses()
+    throws ResourceInitializationException
+{
+    // TODO Auto-generated method stub
+    return null;
+}
 }

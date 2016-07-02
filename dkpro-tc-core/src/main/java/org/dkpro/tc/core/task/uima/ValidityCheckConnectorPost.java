@@ -60,7 +60,7 @@ public class ValidityCheckConnectorPost
         throws AnalysisEngineProcessException
     {
 
-        getLogger().log(Level.FINE, "--- post-validation for CAS with id ["
+        getLogger().log(Level.INFO, "--- post-validation for CAS with id ["
                 + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         if (featureModeI == 0) {

@@ -46,12 +46,11 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
@@ -59,8 +58,6 @@ import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
-import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
@@ -199,38 +196,48 @@ public class TaskUtils
     // return extractors;
     // }
 
-    /**
-     * Get a list of MetaCollector classes from a list of feature extractors.
-     */
-    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
-            List<String> featureSet)
-                throws InstantiationException, IllegalAccessException, ClassNotFoundException
-    {
-        Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
-
-        for (String element : featureSet) {
-            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
-                    .forName(element).newInstance();
-            if (featureExtractor instanceof MetaDependent) {
-                MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
-                metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
-            }
-        }
-
-        return metaCollectorClasses;
-    }
+//    /**
+//     * Get a list of MetaCollector classes from a list of feature extractors.
+//     */
+//    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
+//            List<String> featureSet)
+//                throws InstantiationException, IllegalAccessException, ClassNotFoundException
+//    {
+//        Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
+//
+//        for (String element : featureSet) {
+//            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
+//                    .forName(element).newInstance();
+//            if (featureExtractor instanceof MetaDependent) {
+//                MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
+//                metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
+//            }
+//        }
+//
+//        return metaCollectorClasses;
+//    }
 
     /**
      * Get a list of required type names.
      */
-    public static Set<String> getRequiredTypesFromFeatureExtractors(List<String> featureSet)
+    public static Set<String> getRequiredTypesFromFeatureExtractors(
+            List<ExternalResourceDescription> featureSet)
         throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<String> requiredTypes = new HashSet<String>();
 
-        for (String element : featureSet) {
-            TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(element),
-                    TypeCapability.class);
+        for (ExternalResourceDescription element : featureSet) {
+            
+            String implName;
+            if (element.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+                implName = ((CustomResourceSpecifier) element
+                        .getResourceSpecifier()).getResourceClassName();
+            } else {
+                implName = element.getImplementationName();
+            }           
+            
+            TypeCapability annotation = ReflectionUtil.getAnnotation(
+                    Class.forName(implName), TypeCapability.class);
 
             if (annotation != null) {
                 requiredTypes.addAll(Arrays.asList(annotation.inputs()));
@@ -245,15 +252,14 @@ public class TaskUtils
      * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
-            String outputPath, String dataWriter, String learningMode, String featureMode,
+    public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            boolean applyWeighting, String... featureExtractorClassNames)
+            boolean applyWeighting, List<String> featureFilter, List<ExternalResourceDescription> aFeatureExtractors)
                 throws ResourceInitializationException
     {
-        return getFeatureExtractorConnector(parameters, outputPath, dataWriter, learningMode,
+        return getFeatureExtractorConnector(outputPath, dataWriter, learningMode,
                 featureMode, featureStore, addInstanceId, developerMode, isTesting,
-                Collections.<String> emptyList(), applyWeighting, featureExtractorClassNames);
+                Collections.<String> emptyList(), applyWeighting, aFeatureExtractors);
     }
 
     /**
@@ -261,43 +267,15 @@ public class TaskUtils
      * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    public static AnalysisEngineDescription getFeatureExtractorConnector(List<Object> parameters,
-            String outputPath, String dataWriter, String learningMode, String featureMode,
+    public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
-            List<String> filters, boolean applyWeighting, String... featureExtractorClassNames)
+            List<String> filters, boolean applyWeighting, List<ExternalResourceDescription> extractorResources)
                 throws ResourceInitializationException
     {
-        // convert parameters to string as external resources only take string parameters
-        List<Object> convertedParameters = new ArrayList<Object>();
-        if (parameters != null) {
-            for (Object parameter : parameters) {
-                if (parameter instanceof ExternalResourceDescription) {
-                    convertedParameters.add(parameter);
-                }
-                else {
-                    convertedParameters.add(parameter.toString());
-                }
-            }
-        }
-        else {
-            parameters = new ArrayList<Object>();
-        }
-
-        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
-        for (String featureExtractor : featureExtractorClassNames) {
-            try {
-                extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
-                        Class.forName(featureExtractor).asSubclass(Resource.class),
-                        convertedParameters.toArray()));
-            }
-            catch (ClassNotFoundException e) {
-                throw new ResourceInitializationException(e);
-            }
-        }
-
-        // add the rest of the necessary parameters with the correct types
-        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+        
+        List<Object> parameters = new ArrayList<>();
+        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
+                outputPath, ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
                 ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(),

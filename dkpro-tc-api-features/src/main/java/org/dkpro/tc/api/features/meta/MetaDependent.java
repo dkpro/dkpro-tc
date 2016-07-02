@@ -19,15 +19,17 @@ package org.dkpro.tc.api.features.meta;
 
 import java.util.List;
 
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Feature extractors that depend on {@link MetaCollector}s should implemnt this interface.
- * By doing so they declare what kind of {@link MetaCollector}s are used in the MetaInfoTask.
+ * Feature extractors that depend on {@link MetaCollector}s should implemnt this interface. By doing
+ * so they declare what kind of {@link MetaCollector}s are used in the MetaInfoTask.
  */
 public interface MetaDependent
 {
     /**
      * @return A list of meta collector classes that a "meta dependent" collector depdends on
      */
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses();
+    List<MetaCollectorConfiguration> getMetaCollectorClasses()
+        throws ResourceInitializationException;
 }

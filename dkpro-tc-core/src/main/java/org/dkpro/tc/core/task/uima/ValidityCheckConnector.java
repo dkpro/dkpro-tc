@@ -82,7 +82,7 @@ public class ValidityCheckConnector
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        getLogger().log(Level.FINE, "--- pre-validation of CAS with id ["
+        getLogger().log(Level.INFO,"--- pre-validation of CAS with id ["
                 + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
         // make sure this class is only called once per pipeline
