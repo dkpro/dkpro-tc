@@ -65,9 +65,9 @@ public class LibsvmTestTask
     {
         exceptMultiLabelMode();
 
-        boolean regression = learningMode.equals(Constants.LM_REGRESSION);
+        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
 
-        buildOutcome2IntegerMap(aContext, regression);
+        buildOutcome2IntegerMap(aContext, isRegression);
         File fileTrain = replaceOutcomeByIntegers(getTrainFile(aContext));
 
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
@@ -77,7 +77,7 @@ public class LibsvmTestTask
         ltm.run(buildParameters(fileTrain, model));
         prediction(model, aContext);
 
-        writeMapping(aContext);
+        writeMapping(aContext,isRegression);
     }
 
     private void exceptMultiLabelMode()
@@ -89,9 +89,14 @@ public class LibsvmTestTask
         }
     }
 
-    private void writeMapping(TaskContext aContext)
+    private void writeMapping(TaskContext aContext, boolean isRegression)
         throws IOException
     {
+        if(isRegression){
+            //regression has no mapping
+            return;
+        }
+        
         String map2String = map2String(outcome2id);
         File file = aContext.getFile(LibsvmAdapter.getOutcomeMappingFilename(),
                 AccessMode.READWRITE);
