@@ -62,9 +62,9 @@ public class LibsvmRegressionDemoTest extends JavaDemosTest_Base
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double meanAbsoluteError = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
-        assertEquals(1.4, meanAbsoluteError, 0.00001);
+        assertEquals(1.06, meanAbsoluteError, 0.00001);
         
         Double rootMeanSquaredError = createEvaluator.calculateEvaluationMeasures().get(RootMeanSquaredError.class.getSimpleName());
-        assertEquals(2.357965, rootMeanSquaredError, 0.00001);
+        assertEquals(1.954482, rootMeanSquaredError, 0.00001);
     }
 }
