@@ -42,6 +42,37 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
+/**
+<pre>
+{@literal
+  -s type : set type of solver (default 1)
+      0 -- L2-regularized logistic regression (primal)
+      1 -- L2-regularized L2-loss support vector classification (dual)
+      2 -- L2-regularized L2-loss support vector classification (primal)
+      3 -- L2-regularized L1-loss support vector classification (dual)
+      4 -- multi-class support vector classification by Crammer and Singer
+      5 -- L1-regularized L2-loss support vector classification
+      6 -- L1-regularized logistic regression
+      7 -- L2-regularized logistic regression (dual)
+     11 -- L2-regularized L2-loss support vector regression (dual)
+     12 -- L2-regularized L1-loss support vector regression (dual)
+     13 -- L2-regularized L2-loss support vector regression (primal)
+  -c cost : set the parameter C (default 1)
+  -e epsilon : set tolerance of termination criterion
+    -s 0 and 2
+        |f'(w)|_2 &lt;= eps*min(pos,neg)/l*|f'(w0)|_2,
+        where f is the primal function and pos/neg are # of
+        positive/negative data (default 0.01)
+    -s 1, 3, 4 and 7
+       Dual maximal violation <= eps; similar to libsvm (default 0.1)
+    -s 5 and 6
+       |f'(w)|_inf &le; eps*min(pos,neg)/l*|f'(w0)|_inf,
+       where f is the primal function (default 0.01)
+  -B bias : if bias &ge 0, instance x becomes [x; bias]; if &lt; 0, no bias term added (default -1)
+  -wi weight: weights adjust the parameter C of different classes (see README for details)
+  }
+ </pre>
+*/
 public class LiblinearTestTask
     extends ExecutableTaskBase
     implements Constants
@@ -62,21 +93,21 @@ public class LiblinearTestTask
         throws Exception
     {
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-
         if (multiLabel) {
             throw new TextClassificationException(
                     "Multi-label requested, but LIBLINEAR only supports single label setups.");
         }
 
+        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
+
         File fileTrain = getTrainFile(aContext);
         File fileTest = getTestFile(aContext);
 
-        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(fileTrain, fileTest);
-        File idMappedTrainFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTrain,
-                outcomeMapping);
-        File idMappedTestFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTest,
-                outcomeMapping);
-        writeMapping(aContext, outcomeMapping);
+        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(isRegression, fileTrain,
+                fileTest);
+        File idMappedTrainFile = LiblinearUtils.replaceOutcome(fileTrain, outcomeMapping);
+        File idMappedTestFile = LiblinearUtils.replaceOutcome(fileTest, outcomeMapping);
+        writeMapping(aContext, outcomeMapping, isRegression);
 
         // default for bias is -1, documentation says to set it to 1 in order to get results closer
         // to libsvm
@@ -98,9 +129,13 @@ public class LiblinearTestTask
         predict(aContext, model, test);
     }
 
-    private void writeMapping(TaskContext aContext, Map<String, Integer> outcomeMapping)
-        throws IOException
+    private void writeMapping(TaskContext aContext, Map<String, Integer> outcomeMapping,
+            boolean isRegression)
+                throws IOException
     {
+        if (isRegression) {
+            return;
+        }
         File mappingFile = new File(aContext.getFolder("", AccessMode.READWRITE),
                 LiblinearAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));

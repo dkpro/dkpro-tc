@@ -49,34 +49,34 @@ public class LiblinearUtilTest
 
         param = Arrays.asList("-s", "1");
         assertEquals(SolverType.L2R_L2LOSS_SVC_DUAL, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "2");
         assertEquals(SolverType.L2R_L2LOSS_SVC, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "3");
         assertEquals(SolverType.L2R_L1LOSS_SVC_DUAL, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "4");
         assertEquals(SolverType.MCSVM_CS, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "5");
         assertEquals(SolverType.L1R_L2LOSS_SVC, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "6");
         assertEquals(SolverType.L1R_LR, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "7");
         assertEquals(SolverType.L2R_LR_DUAL, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "11");
         assertEquals(SolverType.L2R_L2LOSS_SVR, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "12");
         assertEquals(SolverType.L2R_L2LOSS_SVR_DUAL, LiblinearUtils.getSolver(param));
-        
+
         param = Arrays.asList("-s", "13");
         assertEquals(SolverType.L2R_L1LOSS_SVR_DUAL, LiblinearUtils.getSolver(param));
-        
+
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -85,14 +85,14 @@ public class LiblinearUtilTest
         List<String> param = Arrays.asList("-s");
         LiblinearUtils.getSolver(param);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testExceptionSetParamC()
     {
         List<String> param = Arrays.asList("-c");
         LiblinearUtils.getParameterC(param);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testExceptionSetEpsilon()
     {
@@ -125,29 +125,33 @@ public class LiblinearUtilTest
         List<String> param = Arrays.asList("-e", "2.1");
         assertEquals(2.1, LiblinearUtils.getParameterEpsilon(param), 0.0001);
     }
-    
+
     @Test
-    public void testMapToString(){
+    public void testMapToString()
+    {
         Map<String, Integer> m = new HashMap<>();
         m.put("a", 1);
         m.put("b", 2);
         String outcomeMap2String = LiblinearUtils.outcomeMap2String(m);
         assertEquals(outcomeMap2String, "a\t1\nb\t2\n");
     }
-    
+
     @Test
-    public void testCreateMapping() throws IOException{
+    public void testCreateMapping()
+        throws IOException
+    {
         String dummyData = "A\t1:1.0\t2:1.0\nB\t1:1.0\nC\t2:1.0";
         File tmpFile = FileUtil.createTempFile("junitTest", ".tmp");
         FileUtils.write(tmpFile, dummyData);
-        Map<String, Integer> map = LiblinearUtils.createMapping(tmpFile);
-        
-        assertEquals(3,map.size());
+        Map<String, Integer> map = LiblinearUtils.createMapping(false, tmpFile);
+
+        assertEquals(3, map.size());
         assertEquals(new Integer(0), map.get("A"));
         assertEquals(new Integer(1), map.get("B"));
         assertEquals(new Integer(2), map.get("C"));
-        
-        File integerReplacedFile = LiblinearUtils.replaceOutcomeByIntegerValue(tmpFile, map);
-        assertEquals("0\t1:1.0\t2:1.0\n1\t1:1.0\n2\t2:1.0\n",FileUtils.readFileToString(integerReplacedFile));
+
+        File integerReplacedFile = LiblinearUtils.replaceOutcome(tmpFile, map);
+        assertEquals("0\t1:1.0\t2:1.0\n1\t1:1.0\n2\t2:1.0\n",
+                FileUtils.readFileToString(integerReplacedFile));
     }
 }
