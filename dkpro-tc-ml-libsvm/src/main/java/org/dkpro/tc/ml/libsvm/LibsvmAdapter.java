@@ -39,7 +39,7 @@ import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
  * 
  * <pre>
  * -s svm_type (see constants)
- * -s kernel_type (see constants) 
+ * -t kernel_type (see constants) 
  * -d degree : set degree in kernel function (default 3) 
  * -g gamma : set gamma in kernel function (default 1/num_features) 
  * -r coef0 : set coef0 in kernel function (default 0)
