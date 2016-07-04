@@ -115,7 +115,7 @@ public class LibsvmDataWriter
             sb.append(o + "\n");
         }
 
-        File outcomeMap = new File(outputDirectory, LibsvmAdapter.getOutcomes());
+        File outcomeMap = new File(outputDirectory, LibsvmAdapter.getOutcomesFile());
         FileUtils.write(outcomeMap, sb.toString(), "utf-8");
     }
 

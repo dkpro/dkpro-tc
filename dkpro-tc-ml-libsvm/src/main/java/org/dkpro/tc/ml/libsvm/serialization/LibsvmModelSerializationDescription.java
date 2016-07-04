@@ -109,7 +109,7 @@ public class LibsvmModelSerializationDescription
     private void buildOutcome2IntegerMap(TaskContext aContext)
         throws IOException
     {
-        String outcomes = LibsvmAdapter.getOutcomes();
+        String outcomes = LibsvmAdapter.getOutcomesFile();
 
         File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
         File trainOutcomes = new File(folder, outcomes);
