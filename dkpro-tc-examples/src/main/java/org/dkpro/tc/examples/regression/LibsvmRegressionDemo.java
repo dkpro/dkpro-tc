@@ -34,19 +34,17 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.EssayScoreReader;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfSentences;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import weka.classifiers.functions.LinearRegression;
 
-public class WekaRegressionDemo
+public class LibsvmRegressionDemo
     implements Constants
 {
 
@@ -59,11 +57,11 @@ public class WekaRegressionDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(WekaRegressionDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(LibsvmRegressionDemo.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
 
-        WekaRegressionDemo experiment = new WekaRegressionDemo();
+        LibsvmRegressionDemo experiment = new LibsvmRegressionDemo();
         experiment.runTrainTest(pSpace);
     }
 
@@ -79,20 +77,25 @@ public class WekaRegressionDemo
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/train/essay_train.txt", EssayScoreReader.PARAM_LANGUAGE, "en"
-                );
+                "src/main/resources/data/essays/train/essay_train.txt",
+                EssayScoreReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/test/essay_test.txt", EssayScoreReader.PARAM_LANGUAGE, "en");
+                "src/main/resources/data/essays/test/essay_test.txt",
+                EssayScoreReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { LinearRegression.class.getName() }));
+                Arrays.asList(
+                        new String[] { "-s", LibsvmAdapter.PARAM_SVM_TYPE_EPISLON_SVR_REGRESSION }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokens.class.getName(), NrOfSentences.class.getName(), NrOfTokensPerSentence.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension
+                .create(DIM_FEATURE_SET,
+                        Arrays.asList(new String[] { NrOfTokens.class.getName(),
+                                NrOfSentences.class.getName(),
+                                NrOfTokensPerSentence.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
@@ -102,17 +105,15 @@ public class WekaRegressionDemo
         return pSpace;
     }
 
-
     // ##### TRAIN-TEST #####
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("WekaRegressionDemo",
-                WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("LibsvmRegressionDemo",
+                LibsvmAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(batch);

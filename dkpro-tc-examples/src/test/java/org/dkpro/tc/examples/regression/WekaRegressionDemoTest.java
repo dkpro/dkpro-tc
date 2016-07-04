@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.regression.pair;
+package org.dkpro.tc.examples.regression;
 
 import static org.junit.Assert.assertEquals;
 
@@ -41,7 +41,7 @@ import weka.core.SerializationHelper;
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class WekaRegressionExperimentTest extends JavaDemosTest_Base
+public class WekaRegressionDemoTest extends JavaDemosTest_Base
 {
     ParameterSpace pSpace;
     WekaRegressionDemo experiment;
@@ -56,12 +56,6 @@ public class WekaRegressionExperimentTest extends JavaDemosTest_Base
         pSpace = WekaRegressionDemo.getParameterSpace();
     }
 
-    @Test
-    public void testJavaCrossValidation()
-        throws Exception
-    {
-        experiment.runCrossValidation(pSpace);
-    }
     
     @Test
     public void testTrainTest() throws Exception{
