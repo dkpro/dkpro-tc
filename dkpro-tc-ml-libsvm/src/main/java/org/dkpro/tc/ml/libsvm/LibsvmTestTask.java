@@ -202,7 +202,7 @@ public class LibsvmTestTask
         List<String> pred = FileUtils.readLines(predTmp);
         bw.write("#PREDICTION;GOLD" + "\n");
         for (int i = 0; i < gold.size(); i++) {
-            String p = pred.get(i).replaceAll("\\.0", ""); // primitive double to int conversion
+            String p = pred.get(i); 
             String g = gold.get(i);
             bw.write(p + ";" + g);
             bw.write("\n");
