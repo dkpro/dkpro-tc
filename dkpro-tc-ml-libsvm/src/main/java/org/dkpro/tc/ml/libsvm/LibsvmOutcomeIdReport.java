@@ -51,11 +51,11 @@ public class LibsvmOutcomeIdReport
     public void execute()
         throws Exception
     {
-        Map<Integer, String> id2label = getId2LabelMapping();
-
         boolean isRegression = getDiscriminators()
                 .get(LibsvmTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
                 .equals(Constants.LM_REGRESSION);
+        
+        Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 
         String header = buildHeader(id2label, isRegression);
 
@@ -120,9 +120,14 @@ public class LibsvmOutcomeIdReport
         return header.toString();
     }
 
-    private Map<Integer, String> getId2LabelMapping()
+    private Map<Integer, String> getId2LabelMapping(boolean isRegression)
         throws Exception
     {
+        if(isRegression){
+            //no map for regression;
+            return new HashMap<>();
+        }
+        
         File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
         String fileName = LibsvmAdapter.getOutcomeMappingFilename();
         File file = new File(mappingFolder, fileName);
