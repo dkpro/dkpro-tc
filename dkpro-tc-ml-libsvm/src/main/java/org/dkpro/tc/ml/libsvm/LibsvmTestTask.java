@@ -63,13 +63,11 @@ public class LibsvmTestTask
     public void execute(TaskContext aContext)
         throws Exception
     {
-        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+        exceptMultiLabelMode();
 
-        if (multiLabel) {
-            throw new TextClassificationException("Multi-label is not yet implemented");
-        }
+        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
 
-        buildOutcome2IntegerMap(aContext);
+        buildOutcome2IntegerMap(aContext, isRegression);
         File fileTrain = replaceOutcomeByIntegers(getTrainFile(aContext));
 
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
@@ -78,14 +76,30 @@ public class LibsvmTestTask
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(buildParameters(fileTrain, model));
         prediction(model, aContext);
-        
-        writeMapping(aContext);
+
+        writeMapping(aContext,isRegression);
     }
 
-    private void writeMapping(TaskContext aContext) throws IOException
+    private void exceptMultiLabelMode()
+        throws TextClassificationException
     {
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+        if (multiLabel) {
+            throw new TextClassificationException("Multi-label is not supported");
+        }
+    }
+
+    private void writeMapping(TaskContext aContext, boolean isRegression)
+        throws IOException
+    {
+        if(isRegression){
+            //regression has no mapping
+            return;
+        }
+        
         String map2String = map2String(outcome2id);
-        File file = aContext.getFile(LibsvmAdapter.getOutcomeMappingFilename(), AccessMode.READWRITE);
+        File file = aContext.getFile(LibsvmAdapter.getOutcomeMappingFilename(),
+                AccessMode.READWRITE);
         FileUtils.writeStringToFile(file, map2String, "utf-8");
     }
 
@@ -97,25 +111,41 @@ public class LibsvmTestTask
                 new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
 
         for (String s : FileUtils.readLines(trainFile)) {
-            if(s.isEmpty()){
+            if (s.isEmpty()) {
                 continue;
             }
             int indexOf = s.indexOf("\t");
-            Integer integer = outcome2id.get(s.substring(0,indexOf));
-            bw.write(integer.toString());
+            String val = map(s, indexOf);
+            bw.write(val);
             bw.write(s.substring(indexOf));
             bw.write("\n");
         }
 
         bw.close();
-        
+
         return createTempFile;
     }
 
-    private void buildOutcome2IntegerMap(TaskContext aContext)
+    private String map(String s, int indexOf)
+    {
+        String outcome = s.substring(0, indexOf);
+        Integer integer = outcome2id.get(outcome);
+        if (integer == null) {
+            // happens for regression i.e. no mapping needed
+            return outcome;
+        }
+        return integer.toString();
+    }
+
+    private void buildOutcome2IntegerMap(TaskContext aContext, boolean isRegression)
         throws IOException
     {
-        String outcomes = LibsvmAdapter.getOutcomes();
+        if (isRegression) {
+            // no mapping for regression
+            return;
+        }
+
+        String outcomes = LibsvmAdapter.getOutcomesFile();
 
         File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
         File trainOutcomes = new File(folder, outcomes);
@@ -165,7 +195,6 @@ public class LibsvmTestTask
         mergePredictedValuesWithExpected(fileTest, predTmp, prediction);
     }
 
-
     // We only get the predicted values but we loose the information which value was expected - we
     // thus use the test file and restore the expected values from there
     private void mergePredictedValuesWithExpected(File fileTest, File predTmp, File prediction)
@@ -178,7 +207,7 @@ public class LibsvmTestTask
         List<String> pred = FileUtils.readLines(predTmp);
         bw.write("#PREDICTION;GOLD" + "\n");
         for (int i = 0; i < gold.size(); i++) {
-            String p = pred.get(i).replaceAll("\\.0", ""); // primitive double to int conversion
+            String p = pred.get(i); 
             String g = gold.get(i);
             bw.write(p + ";" + g);
             bw.write("\n");

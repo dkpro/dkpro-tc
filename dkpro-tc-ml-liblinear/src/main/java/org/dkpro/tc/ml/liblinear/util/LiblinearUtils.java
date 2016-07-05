@@ -187,9 +187,12 @@ public class LiblinearUtils
         return sb.toString();
     }
 
-    public static Map<String, Integer> createMapping(File... files)
+    public static Map<String, Integer> createMapping(boolean isRegression, File... files)
         throws IOException
     {
+        if (isRegression) {
+            return new HashMap<>();
+        }
         Set<String> uniqueOutcomes = new HashSet<>();
         for (File f : files) {
             uniqueOutcomes.addAll(pickOutcomes(f));
@@ -224,7 +227,7 @@ public class LiblinearUtils
         return outcomes;
     }
 
-    public static File replaceOutcomeByIntegerValue(File file, Map<String, Integer> outcomeMapping)
+    public static File replaceOutcome(File file, Map<String, Integer> outcomeMapping)
         throws IOException
     {
         BufferedReader br = new BufferedReader(
@@ -239,12 +242,24 @@ public class LiblinearUtils
                 continue;
             }
             int firstTabIdx = line.indexOf("\t");
-            Integer id = outcomeMapping.get(line.substring(0, firstTabIdx));
-            bw.write(id + line.substring(firstTabIdx) + "\n");
+            String val = map(outcomeMapping, line, firstTabIdx);
+            bw.write(val + line.substring(firstTabIdx) + "\n");
         }
         br.close();
         bw.close();
 
         return outFile;
+    }
+
+    private static String map(Map<String, Integer> outcomeMapping, String line, int firstTabIdx)
+    {
+        String s = line.substring(0, firstTabIdx);
+        Integer integer = outcomeMapping.get(s);
+        if (integer == null) {
+            // regression mode
+            return s;
+        }
+
+        return integer.toString();
     }
 }

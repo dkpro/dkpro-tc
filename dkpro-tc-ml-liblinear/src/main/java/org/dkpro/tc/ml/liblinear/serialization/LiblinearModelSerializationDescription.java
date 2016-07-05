@@ -60,10 +60,13 @@ public class LiblinearModelSerializationDescription
     private void trainAndStoreModel(TaskContext aContext)
         throws Exception
     {
+        
+        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
+        
         //create mapping and persist mapping
         File fileTrain = getTrainFile(aContext);
-        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(fileTrain);
-        File mappedTrainFile = LiblinearUtils.replaceOutcomeByIntegerValue(fileTrain, outcomeMapping);
+        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(isRegression, fileTrain);
+        File mappedTrainFile = LiblinearUtils.replaceOutcome(fileTrain, outcomeMapping);
         File mappingFile = new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));        
 

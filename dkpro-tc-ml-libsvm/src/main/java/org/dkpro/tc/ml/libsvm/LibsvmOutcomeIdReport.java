@@ -51,9 +51,13 @@ public class LibsvmOutcomeIdReport
     public void execute()
         throws Exception
     {
-        Map<Integer, String> id2label = getId2LabelMapping();
+        boolean isRegression = getDiscriminators()
+                .get(LibsvmTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+                .equals(Constants.LM_REGRESSION);
+        
+        Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 
-        String header = buildHeader(id2label);
+        String header = buildHeader(id2label, isRegression);
 
         List<String> predictions = readPredictions();
 
@@ -93,11 +97,17 @@ public class LibsvmOutcomeIdReport
         return FileUtils.readLines(new File(predFolder, predFileName));
     }
 
-    private String buildHeader(Map<Integer, String> id2label)
+    private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
         throws UnsupportedEncodingException
     {
         StringBuilder header = new StringBuilder();
         header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
+
+        if (isRegression) {
+            // no label mapping for regression so that is all we have to do
+            return header.toString();
+        }
+
         int numKeys = id2label.keySet().size();
         List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
         for (int i = 0; i < numKeys; i++) {
@@ -110,9 +120,14 @@ public class LibsvmOutcomeIdReport
         return header.toString();
     }
 
-    private Map<Integer, String> getId2LabelMapping()
+    private Map<Integer, String> getId2LabelMapping(boolean isRegression)
         throws Exception
     {
+        if(isRegression){
+            //no map for regression;
+            return new HashMap<>();
+        }
+        
         File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
         String fileName = LibsvmAdapter.getOutcomeMappingFilename();
         File file = new File(mappingFolder, fileName);

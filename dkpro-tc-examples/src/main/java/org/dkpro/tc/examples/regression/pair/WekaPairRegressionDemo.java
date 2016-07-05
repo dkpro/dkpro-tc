@@ -55,7 +55,7 @@ import weka.classifiers.functions.SMOreg;
  * similarity features between document pairs and <br>
  * then learns a regression model that predicts similarity of unseen document pairs.
  */
-public class WekaRegressionDemo
+public class WekaPairRegressionDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -75,9 +75,9 @@ public class WekaRegressionDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(WekaRegressionDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(WekaPairRegressionDemo.class.getSimpleName());
 
-        WekaRegressionDemo experiment = new WekaRegressionDemo();
+        WekaPairRegressionDemo experiment = new WekaPairRegressionDemo();
         // experiment.runCrossValidation(getParameterSpace());
         experiment.runTrainTest(getParameterSpace());
     }
