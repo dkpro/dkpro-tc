@@ -32,6 +32,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCopier;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -186,6 +187,8 @@ public class FoldClassificationUnitCasMultiplier
         deleteAllTextClassificationAnnotation(copyJCas);
         setTargetAnnotation(copyJCas);
 
+        assignNewId(copyJCas);
+        
         subCASCounter++;
 
         // issue #261
@@ -194,6 +197,12 @@ public class FoldClassificationUnitCasMultiplier
         getLogger().debug("Creating CAS " + subCASCounter + " of " + annotations.size());
 
         return copyJCas;
+    }
+
+    private void assignNewId(JCas copyJCas)
+    {
+        JCasId jcasId = JCasUtil.selectSingle(jCas, JCasId.class);
+        jcasId.setId(subCASCounter);
     }
 
     private void setTargetAnnotation(JCas copyJCas)
