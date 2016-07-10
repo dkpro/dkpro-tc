@@ -379,11 +379,6 @@
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>cc.mallet</groupId>
-				<artifactId>mallet</artifactId>
-				<version>2.0.8</version>
-			</dependency>
-			<dependency>
 				<groupId>com.datumbox</groupId>
 				<artifactId>libsvm</artifactId>
 				<version>3.21</version>
