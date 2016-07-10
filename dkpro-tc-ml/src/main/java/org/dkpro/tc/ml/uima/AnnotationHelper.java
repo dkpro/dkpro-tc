@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -29,7 +29,7 @@ import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -59,7 +59,7 @@ public class AnnotationHelper extends JCasAnnotator_ImplBase {
 	        outcome.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
 	        outcome.addToIndexes();
 			
-	        TextClassificationUnit tcUnit = new TextClassificationUnit(aJCas, begin, end);
+	        TextClassificationTarget tcUnit = new TextClassificationTarget(aJCas, begin, end);
 	        tcUnit.setId( getNextId() );
 	        tcUnit.addToIndexes();
     	}

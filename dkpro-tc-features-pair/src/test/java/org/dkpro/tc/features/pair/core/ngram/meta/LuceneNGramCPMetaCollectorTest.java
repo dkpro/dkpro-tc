@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -44,6 +44,7 @@ import org.junit.rules.TemporaryFolder;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMetaCollector;
 import org.dkpro.tc.testing.TestPairReader;
@@ -66,10 +67,15 @@ public class LuceneNGramCPMetaCollectorTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory
+                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramCPMetaCollector.class,

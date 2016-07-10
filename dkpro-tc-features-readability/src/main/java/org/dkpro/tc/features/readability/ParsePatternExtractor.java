@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,6 +24,11 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.readability.util.ParsePatternUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.Constituent;
@@ -31,14 +36,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.NP;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.SBAR;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.VP;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.features.readability.util.ParsePatternUtils;
 
 public class ParsePatternExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      * Extracts parse features to estimate syntactic complexity. The features are described in
@@ -82,7 +83,7 @@ public class ParsePatternExtractor
     public static final String COORDS_PER_CLAUSE = "CoordinationsPerClause";
     public static final String COMPLEXNOMINALS_PER_CLAUSE = "ComplexNominalsPerClause";
 
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
 
     {
         double nrOfNPs = 0.0;
@@ -104,8 +105,8 @@ public class ParsePatternExtractor
         int lengthSumTunits = 0;
         int parseTreeDepthSum = 0;
         Set<Feature> featSet = new HashSet<Feature>();
-        double nrOfSentences = JCasUtil.select(jcas, Sentence.class).size() * 1.0;
-        for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
+        double nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size() * 1.0;
+        for (Sentence s : JCasUtil.selectCovered(jcas, Sentence.class, target)) {
             parseTreeDepthSum += ParsePatternUtils.getParseDepth(s);
             for (Constituent c : JCasUtil.selectCovered(Constituent.class, s)) {
                 if (c instanceof NP) {

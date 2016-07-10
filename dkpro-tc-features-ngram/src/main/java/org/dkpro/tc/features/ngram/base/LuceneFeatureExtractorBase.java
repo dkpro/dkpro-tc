@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -119,7 +119,7 @@ public abstract class LuceneFeatureExtractorBase
      * but with the constraint option in place, resulting in code duplication.
      * 
      * @param term potential new feature
-     * @return
+     * @return if term passes screening
      */
     protected boolean passesScreening(String term){
         return true;

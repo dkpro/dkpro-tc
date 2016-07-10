@@ -44,8 +44,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.LuceneNGramUFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.svmhmm.SVMHMMAdapter;
@@ -95,9 +95,6 @@ public class SVMHMMSaveAndLoadModelTest
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
         
-        File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
-        assertTrue(bipartitionThreshold.exists());
-
         modelFolder.deleteOnExit();
     }
 
@@ -133,12 +130,12 @@ public class SVMHMMSaveAndLoadModelTest
 
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(
                 DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneNGramUFE.PARAM_NGRAM_USE_TOP_K, 500,
-                        LuceneNGramUFE.PARAM_NGRAM_MIN_N, 1,
-                        LuceneNGramUFE.PARAM_NGRAM_MAX_N, 3 }));
+                Arrays.asList(new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                        LuceneNGram.PARAM_NGRAM_MAX_N, 3 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneNGramUFE.class.getName(), NrOfCharsUFE.class.getName(), }));
+                Arrays.asList(new String[] { LuceneNGram.class.getName(), NrOfChars.class.getName(), }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
@@ -174,17 +171,17 @@ public class SVMHMMSaveAndLoadModelTest
         
         List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
-        assertEquals("DT", outcomes.get(0).getOutcome());
-        assertEquals("NN", outcomes.get(1).getOutcome());
-        assertEquals("NN", outcomes.get(2).getOutcome());
+        assertEquals("NN", outcomes.get(0).getOutcome());
+        assertEquals("IN", outcomes.get(1).getOutcome());
+        assertEquals("AT", outcomes.get(2).getOutcome());
         assertEquals("NN", outcomes.get(3).getOutcome());
-        assertEquals("NN", outcomes.get(4).getOutcome());
-        assertEquals("pct", outcomes.get(5).getOutcome());
-        assertEquals("PPS", outcomes.get(6).getOutcome());
-        assertEquals("DOD", outcomes.get(7).getOutcome());
-        assertEquals("VB", outcomes.get(8).getOutcome());
-        assertEquals("NNS", outcomes.get(9).getOutcome());
-        assertEquals("pct", outcomes.get(10).getOutcome());
+        assertEquals("IN", outcomes.get(4).getOutcome());
+        assertEquals("AT", outcomes.get(5).getOutcome());
+        assertEquals("NN", outcomes.get(6).getOutcome());
+        assertEquals("IN", outcomes.get(7).getOutcome());
+        assertEquals("AT", outcomes.get(8).getOutcome());
+        assertEquals("NN", outcomes.get(9).getOutcome());
+        assertEquals("IN", outcomes.get(10).getOutcome());
 
     }
 }

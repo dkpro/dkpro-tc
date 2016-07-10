@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -27,22 +27,21 @@ import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.FreqDistBasedMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 
 public class FrequencyDistributionNGramPMetaCollector
 	extends FreqDistBasedMetaCollector implements Constants
@@ -143,8 +142,9 @@ public class FrequencyDistributionNGramPMetaCollector
 	    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1)
 	        throws TextClassificationException
 	    {
+	        TextClassificationTarget target = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
 	    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
-	    	              view1, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
+	    	              view1, target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
 	    	              ngramMaxN, stopwords);
 	        return fd;
 	    }
@@ -152,8 +152,9 @@ public class FrequencyDistributionNGramPMetaCollector
 	    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2)
 	        throws TextClassificationException
 	    {
+	        TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
 	    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
-	    	              view2, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
+	    	              view2, target2, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, 
 	    	              ngramMaxN, stopwords);
 	        return fd;
 	    }

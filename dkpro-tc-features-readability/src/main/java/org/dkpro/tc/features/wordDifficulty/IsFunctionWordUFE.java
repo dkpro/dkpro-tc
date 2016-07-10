@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -31,16 +31,16 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
         "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos" })
 public class IsFunctionWordUFE
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      *         In this feature, all articles, prepositions, conjunctions and pronouns are considered
@@ -54,7 +54,7 @@ public class IsFunctionWordUFE
     
 
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas view, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
 

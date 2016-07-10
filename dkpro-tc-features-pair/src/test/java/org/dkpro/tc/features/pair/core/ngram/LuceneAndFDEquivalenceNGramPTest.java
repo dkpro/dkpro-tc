@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -18,7 +18,6 @@
 package org.dkpro.tc.features.pair.core.ngram;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,6 +30,17 @@ import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.pair.core.ngram.meta.FrequencyDistributionNGramPMetaCollector;
+import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.testing.TestPairReader;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -39,19 +49,6 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.pair.core.ngram.FrequencyDistributionNGramPFE;
-import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
-import org.dkpro.tc.features.pair.core.ngram.meta.FrequencyDistributionNGramPMetaCollector;
-import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.testing.TestPairReader;
 
 public class LuceneAndFDEquivalenceNGramPTest
 {
@@ -65,10 +62,16 @@ public class LuceneAndFDEquivalenceNGramPTest
         throws Exception
     {
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
+        
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
         
         File frequencyDistFile = folder.newFile();
         File luceneFile = folder.newFolder();
@@ -178,11 +181,11 @@ public class LuceneAndFDEquivalenceNGramPTest
 
         assertEquals(9, view1features.getKeys().size());
         for (String sample : view1features.getKeys()) {
-            assertTrue(view1features.getCount(sample) == 2);
+            assertEquals(2, view1features.getCount(sample));
         }
         assertEquals(9, view2features.getKeys().size());
         for (String sample : view2features.getKeys()) {
-            assertTrue(view2features.getCount(sample) == 2);
+            assertEquals(2, view2features.getCount(sample));
         }
     }
 }

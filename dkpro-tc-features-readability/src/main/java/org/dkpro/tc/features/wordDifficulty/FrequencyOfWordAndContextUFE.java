@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -39,16 +39,16 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.frequency.Web1TFileAccessProvider;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class FrequencyOfWordAndContextUFE
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String PARAM_WEB1T_DIR = "DirectoryOfWeb1T";
     @ConfigurationParameter(name = PARAM_WEB1T_DIR, mandatory = true)
@@ -85,7 +85,7 @@ public class FrequencyOfWordAndContextUFE
     }
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
 

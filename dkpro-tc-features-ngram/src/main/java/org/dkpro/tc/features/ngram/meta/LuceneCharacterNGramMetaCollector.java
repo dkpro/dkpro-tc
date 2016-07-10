@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -19,11 +19,16 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
+/**
+ * Creates a frequency distribution over all characters occurring in the entire document text i.e. index zero to document-length.
+ * For considering only a subset of the document text and working with several target annotations {@link org.dkpro.tc.features.ngram.meta.LuceneCharacterNGramUnitMetaCollector}
+ */
 public class LuceneCharacterNGramMetaCollector
     extends LuceneBasedMetaCollector
 {
@@ -39,7 +44,8 @@ public class LuceneCharacterNGramMetaCollector
     
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
-        return NGramUtils.getDocumentCharacterNgrams(jcas, lowerCase,
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        return NGramUtils.getDocumentCharacterNgrams(jcas, fullDoc, lowerCase,
                 charNgramMinN, charNgramMaxN);
     }
     

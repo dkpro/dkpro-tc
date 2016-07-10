@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,12 +22,13 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
 
 /**
  * Extracts the ratio of the 6 major English pronouns to the total pronouns
@@ -36,7 +37,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class PronounRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String FN_I_RATIO = "PronounRatioI";
     public static final String FN_HE_RATIO = "PronounRatioHe";
@@ -47,7 +48,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_YOU_RATIO = "PronounRatioYou";
     
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
 
@@ -60,7 +61,7 @@ public class PronounRatioFeatureExtractor
         int youCount = 0;
 
         int n = 0;
-        for (PR pronoun : JCasUtil.select(jcas, PR.class)) {
+        for (PR pronoun : JCasUtil.selectCovered(jcas, PR.class, target)) {
             n++;
 
             String text = pronoun.getCoveredText().toLowerCase();

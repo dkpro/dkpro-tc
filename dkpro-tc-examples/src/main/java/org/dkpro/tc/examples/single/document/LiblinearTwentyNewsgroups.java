@@ -18,6 +18,7 @@
  */
 package org.dkpro.tc.examples.single.document;
 
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
@@ -36,8 +37,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -45,7 +46,6 @@ import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
@@ -78,15 +78,16 @@ public class LiblinearTwentyNewsgroups
         // explained there.
         DemoUtils.setDkproHome(LiblinearTwentyNewsgroups.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace(null);
 
         LiblinearTwentyNewsgroups experiment = new LiblinearTwentyNewsgroups();
         experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
+        experiment.runTrainTestParametrization();
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -114,13 +115,23 @@ public class LiblinearTwentyNewsgroups
                         NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets);
+        ParameterSpace pSpace;
+
+        if (dimClassificationArgs == null) {
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                    dimFeatureSets);
+        }
+        else {
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                    dimFeatureSets, dimClassificationArgs);
+        }
 
         return pSpace;
     }
@@ -158,12 +169,30 @@ public class LiblinearTwentyNewsgroups
         Lab.getInstance().run(batch);
     }
 
+    // ##### TRAIN-TEST #####
+    protected void runTrainTestParametrization()
+        throws Exception
+    {
+
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                asList(new String[] { "-c", "100", "-c", "0.001", "-s", "5" }));
+
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
+                LiblinearAdapter.class);
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(getParameterSpace(dimClassificationArgs));
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(ContextMemoryReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-
-        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        LANGUAGE_CODE));
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 }

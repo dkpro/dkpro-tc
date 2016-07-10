@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -21,19 +21,20 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Extracts the ratio of a certain token to all tokens in the document
  */
 public class TokenRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String FN_TOKEN_RATIO = "TokenRatio";
 
@@ -45,13 +46,13 @@ public class TokenRatioFeatureExtractor
     }
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
         double tokenRatio = 0.0;
         int tokenCount = 0;
         int n = 0;
-        for (Token t : JCasUtil.select(jcas, Token.class)) {
+        for (Token t : JCasUtil.selectCovered(jcas, Token.class, target)) {
             n++;
 
             String text = t.getCoveredText().toLowerCase();

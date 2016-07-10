@@ -37,7 +37,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -104,7 +104,7 @@ public class WekaSimpleDkproTCReaderDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { LuceneNGramDFE.class.getName() }));
+                asList(new String[] { LuceneNGram.class.getName() }));
 
         // parameters to configure feature extractors
         @SuppressWarnings("unchecked")

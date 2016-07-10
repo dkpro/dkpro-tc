@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,13 +24,13 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 
 //this extractor 
 
 public class IsLatinWordUFE
     extends IsInWordListUFE
-    implements ClassificationUnitFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      *         This feature extractor tests, if the solution is in a list of words with latin roots.

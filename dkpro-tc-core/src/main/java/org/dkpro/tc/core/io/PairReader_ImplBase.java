@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -26,6 +26,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -73,6 +74,9 @@ public abstract class PairReader_ImplBase
         JCas view = jCas.createView(part.toString());
         view.setDocumentText(text);
         view.setDocumentLanguage(language);
+        
+        TextClassificationTarget target = new TextClassificationTarget(view, 0, text.length());
+        target.addToIndexes();
 
         DocumentMetaData baseMetaData = DocumentMetaData.get(jCas);
         createMetaData(

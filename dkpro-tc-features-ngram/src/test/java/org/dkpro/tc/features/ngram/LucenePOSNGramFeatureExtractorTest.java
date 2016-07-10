@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -33,6 +33,13 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,15 +49,6 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.LucenePOSNGramDFE;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class LucenePOSNGramFeatureExtractorTest
 {
@@ -72,8 +70,8 @@ public class LucenePOSNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LucenePOSNGramDFE.PARAM_POS_NGRAM_USE_TOP_K, 5,
-                LucenePOSNGramDFE.PARAM_LUCENE_DIR, luceneFolder };
+        Object[] parameters = new Object[] { LucenePOSNGram.PARAM_POS_NGRAM_USE_TOP_K, 5,
+                LucenePOSNGram.PARAM_LUCENE_DIR, luceneFolder };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -83,18 +81,16 @@ public class LucenePOSNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription posTagger = AnalysisEngineFactory
-                .createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        "en");
+        AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(
+                OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, "en");
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LucenePOSNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                LucenePOSNGramDFE.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, LucenePOSNGram.class.getName());
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.PhrasePatternExtractor;
 
 public class PhrasePatternExtractorTest
@@ -58,8 +59,11 @@ public class PhrasePatternExtractorTest
         jcas.setDocumentText(text);
         engine.process(jcas);
 
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
+        target.addToIndexes();
+
         PhrasePatternExtractor extractor = new PhrasePatternExtractor();
-        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas, target));
 
         Assert.assertEquals(6, features.size());
         // System.out.println(features);

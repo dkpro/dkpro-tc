@@ -37,8 +37,8 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -98,7 +98,7 @@ public class WekaTwentyNewsgroupsPreprocessing
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 4 }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(NrOfTokensDFE.class.getName(), LuceneNGramDFE.class.getName()));
+                asList(NrOfTokens.class.getName(), LuceneNGram.class.getName()));
 
         Dimension<String> dimSegmenter = Dimension.create("segmenter", "break", "opennlp");
 

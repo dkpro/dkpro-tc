@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.TypeTokenRatioExtractor;
 
 public class TypeTokenRatioExtractorTest
@@ -58,9 +59,12 @@ public class TypeTokenRatioExtractorTest
         jcas.setDocumentText(text);
         engine.process(jcas);
 
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
+        target.addToIndexes();
+
         TypeTokenRatioExtractor extractor = new TypeTokenRatioExtractor();
 
-        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas, target));
 
         Assert.assertEquals(1, features.size());
         Assert.assertEquals((double) features.get(0).getValue(), 0.6, 0.1);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 
@@ -57,8 +59,10 @@ public abstract class LucenePMetaCollectorBase
         FrequencyDistribution<String> view2NGrams;
         FrequencyDistribution<String> documentNGrams;
         try {
-            view1NGrams = getNgramsFDView1(view1);
-            view2NGrams = getNgramsFDView2(view2);
+            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+            view1NGrams = getNgramsFDView1(view1,target1);
+            view2NGrams = getNgramsFDView2(view2,target2);
             documentNGrams = getNgramsFD(jcases);
         }
         catch (TextClassificationException e) {
@@ -92,10 +96,10 @@ public abstract class LucenePMetaCollectorBase
     protected abstract FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException;
 
-    protected abstract FrequencyDistribution<String> getNgramsFDView1(JCas view1)
+    protected abstract FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget target)
         throws TextClassificationException;
 
-    protected abstract FrequencyDistribution<String> getNgramsFDView2(JCas view2)
+    protected abstract FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget target)
         throws TextClassificationException;
 
     protected abstract String getFieldNameView1();

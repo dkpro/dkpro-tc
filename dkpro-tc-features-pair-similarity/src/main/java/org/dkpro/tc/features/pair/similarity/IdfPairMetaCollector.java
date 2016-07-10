@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,30 +24,32 @@ import java.util.Set;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class IdfPairMetaCollector<T extends Annotation>
-	extends LuceneBasedMetaCollector
+    extends LuceneBasedMetaCollector
     implements Constants
 {
     /**
-     * This is the annotation type of the ngrams: usually Token.class, but possibly 
-     * Lemma.class or Stem.class,etc.
+     * This is the annotation type of the ngrams: usually Token.class, but possibly Lemma.class or
+     * Stem.class,etc.
      */
     @ConfigurationParameter(name = CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, mandatory = false, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     private Class<T> ngramAnnotationType;
 
     private Set<String> stopwords;
-    
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -55,6 +57,7 @@ public class IdfPairMetaCollector<T extends Annotation>
         super.initialize(context);
         stopwords = new HashSet<String>();
     }
+
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
@@ -68,35 +71,36 @@ public class IdfPairMetaCollector<T extends Annotation>
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
-        
+
         initializeDocument(jcas);
-        
+
         FrequencyDistribution<String> document1NGrams;
         FrequencyDistribution<String> document2NGrams;
-        try{
+        try {
             document1NGrams = getNgramsFD(view1);
             document2NGrams = getNgramsFD(view2);
-        }catch(TextClassificationException e){
+        }
+        catch (TextClassificationException e) {
             throw new AnalysisEngineProcessException(e);
         }
 
         FrequencyDistribution<String> documentNGrams = new FrequencyDistribution<String>();
-    	// Only add a term once per document, no matter how many times it occurs in the doc.  "Document Frequency".
-    	// This is different than other metacollectors.
-        for(String key: document1NGrams.getKeys()){
-        	documentNGrams.addSample(key, 1);
+        // Only add a term once per document, no matter how many times it occurs in the doc.
+        // "Document Frequency".
+        // This is different than other metacollectors.
+        for (String key : document1NGrams.getKeys()) {
+            documentNGrams.addSample(key, 1);
         }
-        for(String key: document2NGrams.getKeys()){
-        	documentNGrams.addSample(key, 1);
+        for (String key : document2NGrams.getKeys()) {
+            documentNGrams.addSample(key, 1);
         }
-        
 
         for (String ngram : documentNGrams.getKeys()) {
-        	for(int i=0;i<documentNGrams.getCount(ngram);i++){ 
-        		addField(jcas, getFieldName(), ngram);
-        	}
+            for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
+                addField(jcas, getFieldName(), ngram);
+            }
         }
-       
+
         try {
             writeToIndex();
         }
@@ -107,15 +111,19 @@ public class IdfPairMetaCollector<T extends Annotation>
 
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
-    		throws TextClassificationException
-    	{
-    	FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(
-                    jcas, true, false, 1, 1, stopwords, ngramAnnotationType);
-    	return toReturn;
+        throws TextClassificationException
+    {
+        TextClassificationTarget target = JCasUtil.selectSingle(jcas,
+                TextClassificationTarget.class);
+        
+        FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(jcas, target, true,
+                false, 1, 1, stopwords, ngramAnnotationType);
+        return toReturn;
     }
-    
+
     @Override
-    protected String getFieldName(){
+    protected String getFieldName()
+    {
         return LuceneFeatureExtractorBase.LUCENE_NGRAM_FIELD;
     }
 }

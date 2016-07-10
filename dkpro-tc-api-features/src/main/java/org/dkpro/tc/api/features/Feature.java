@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -26,20 +26,44 @@ import org.dkpro.tc.api.features.util.FeatureUtil;
  * Internal representation of a feature.
  */
 public class Feature
-	implements Comparable<Feature>
+    implements Comparable<Feature>
 {
 
     protected String name;
     protected Object value;
+    private boolean isDefaultValue;
 
     public Feature(String name, Object value)
     {
-    	// TODO should we cache the feature espacing? this is called quite often ...
+        // TODO should we cache the feature espacing? this is called quite often ...
         this.name = FeatureUtil.escapeFeatureName(name).intern();
         this.value = value;
+        this.isDefaultValue = false;
     }
-    
-    public Set<Feature> asSet() {
+
+    /**
+     * Creates a feature that is aware if the value is a <b>default value</b>. This information is
+     * used when filling the feature store. A sparse feature store would not add a feature if it is
+     * a default value i.e. means a feature is <i>not set</i>
+     * 
+     * @param name
+     *            Name of the feature
+     * @param value
+     *            The feature value
+     * @param isDefaultValue
+     *            A boolean if the feature value is a default value i.e. means this feature is
+     *            <i>not set</i> for an instance
+     */
+    public Feature(String name, Object value, boolean isDefaultValue)
+    {
+        // TODO should we cache the feature espacing? this is called quite often ...
+        this.name = FeatureUtil.escapeFeatureName(name).intern();
+        this.value = value;
+        this.isDefaultValue = isDefaultValue;
+    }
+
+    public Set<Feature> asSet()
+    {
         Set<Feature> set = new TreeSet<Feature>();
         set.add(this);
         return set;
@@ -65,6 +89,11 @@ public class Feature
         this.name = name.intern();
     }
 
+    public boolean isDefaultValue()
+    {
+        return isDefaultValue;
+    }
+
     @Override
     public String toString()
     {
@@ -72,40 +101,45 @@ public class Feature
         return String.format("%s(<%s>, <%s>)", className, this.name, this.value);
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Feature other = (Feature) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Feature other = (Feature) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        }
+        else if (!name.equals(other.name))
+            return false;
+        if (value == null) {
+            if (other.value != null)
+                return false;
+        }
+        else if (!value.equals(other.value))
+            return false;
+        return true;
+    }
 
-	@Override
-	public int compareTo(Feature o) {
-		return this.getName().compareTo(o.getName());
-	}
-	
+    @Override
+    public int compareTo(Feature o)
+    {
+        return this.getName().compareTo(o.getName());
+    }
+
 }

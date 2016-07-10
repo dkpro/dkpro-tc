@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universit??t Darmstadt
  * 
@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Mar 26 14:18:53 CET 2016
+ * Updated by JCasGen Tue Jun 07 08:16:55 CEST 2016
  * XML source: /Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-api/src/main/resources/desc/type/TextClassification.xml
  * @generated */
 public class TextClassificationSequence extends Annotation {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -70,5 +70,7 @@ public interface FeatureStore
      */
     public void setFeatureNames(TreeSet<String> featureNames)
             throws IllegalStateException;
+    
+    public boolean supportsSparseFeatures();
 
 }

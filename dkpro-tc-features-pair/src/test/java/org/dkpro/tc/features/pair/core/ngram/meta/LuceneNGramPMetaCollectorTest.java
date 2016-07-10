@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -37,17 +37,16 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
+import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
+import org.dkpro.tc.testing.TestPairReader;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
-import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
-import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
-import org.dkpro.tc.testing.TestPairReader;
 
 public class LuceneNGramPMetaCollectorTest
 {
@@ -61,26 +60,28 @@ public class LuceneNGramPMetaCollectorTest
         File tmpDir = folder.newFolder();
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestPairReader.class,
-                TestPairReader.PARAM_INPUT_FILE, "src/test/resources/data/textpairs.txt"
-                );
+                TestPairReader.class, TestPairReader.PARAM_INPUT_FILE,
+                "src/test/resources/data/textpairs.txt");
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentModeAnnotator.class,
+                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
+
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_ONE);
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramPMetaCollector.class,
-                LuceneNGramPFE.PARAM_LUCENE_DIR, tmpDir
-                );
+                LuceneNGramPMetaCollector.class, LuceneNGramPFE.PARAM_LUCENE_DIR, tmpDir);
 
         // test fails if for-loop removed
         for (@SuppressWarnings("unused")
-        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(),
-                metaCollector)) {
+        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
             // System.out.println(jcas.getDocumentText().length());
         }
 
@@ -90,7 +91,7 @@ public class LuceneNGramPMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(LuceneNGramDFE.LUCENE_NGRAM_FIELD);
+                Terms terms = fields.terms(LuceneNGram.LUCENE_NGRAM_FIELD);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
 

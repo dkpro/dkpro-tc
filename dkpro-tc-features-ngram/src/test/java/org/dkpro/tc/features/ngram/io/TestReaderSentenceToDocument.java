@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -39,6 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import org.dkpro.tc.api.io.TCReaderSingleLabel;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class TestReaderSentenceToDocument
     extends JCasCollectionReader_ImplBase
@@ -105,6 +106,8 @@ public class TestReaderSentenceToDocument
         TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
         outcome.setOutcome(getTextClassificationOutcome(aJCas));
         outcome.addToIndexes();
+        
+        new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length()).addToIndexes();
 
         offset++;
     }

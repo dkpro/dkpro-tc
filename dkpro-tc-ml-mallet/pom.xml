@@ -1,5 +1,5 @@
 <!--
-	Copyright 2015
+	Copyright 2016
 	Ubiquitous Knowledge Processing (UKP) Lab
 	Technische Universität Darmstadt
 
@@ -67,6 +67,10 @@
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-fstore-simple</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>

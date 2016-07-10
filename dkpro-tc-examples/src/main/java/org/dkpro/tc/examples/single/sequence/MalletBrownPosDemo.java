@@ -38,9 +38,9 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsUFE;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
-import org.dkpro.tc.features.style.InitialCharacterUpperCaseUFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.features.tcu.CurrentUnit;
 import org.dkpro.tc.features.tcu.NextUnit;
 import org.dkpro.tc.features.tcu.PrevUnit;
@@ -98,19 +98,19 @@ public class MalletBrownPosDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_MAX_N, 4,
-                        LuceneCharacterNGramUFE.PARAM_CHAR_NGRAM_USE_TOP_K, 100 }));
+                asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
+                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 100 }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 asList(new String[] { 
-                        NrOfCharsUFE.class.getName(), 
+                        NrOfChars.class.getName(), 
                         CurrentUnit.class.getName(),
                         NextUnit.class.getName(), 
                         PrevUnit.class.getName(),
-                        InitialCharacterUpperCaseUFE.class.getName(),
-                        LuceneCharacterNGramUFE.class.getName()
+                        InitialCharacterUpperCase.class.getName(),
+                        LuceneCharacterNGram.class.getName()
                         }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

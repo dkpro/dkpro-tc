@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import org.dkpro.tc.api.io.TCReaderSequence;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Base class for sequence label readers.
@@ -53,7 +53,7 @@ public abstract class SequenceLabelReaderBase
             throw new CollectionException();
         }
 
-        for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas, TextClassificationUnit.class, JCasUtil.selectSingle(jcas, TextClassificationSequence.class))) {
+        for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas, TextClassificationTarget.class, JCasUtil.selectSingle(jcas, TextClassificationSequence.class))) {
             TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
             outcome.setOutcome(getTextClassificationOutcome(jcas, unit));
             outcome.setWeight(getTextClassificationOutcomeWeight(jcas, unit));
@@ -61,7 +61,7 @@ public abstract class SequenceLabelReaderBase
         }
     }
     
-	public double getTextClassificationOutcomeWeight(JCas jcas, TextClassificationUnit unit) {
+	public double getTextClassificationOutcomeWeight(JCas jcas, TextClassificationTarget unit) {
     	/**
     	 * By default, set all the instance outcome weights equally to one
     	 */

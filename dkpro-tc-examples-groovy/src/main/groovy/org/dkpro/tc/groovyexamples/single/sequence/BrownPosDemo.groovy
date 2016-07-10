@@ -33,7 +33,7 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter
 import org.dkpro.tc.examples.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.length.NrOfTokensUFE
+import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -61,7 +61,7 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
-        NrOfTokensUFE.name
+        NrOfTokens.name
     ])
 
     // ##### CV #####

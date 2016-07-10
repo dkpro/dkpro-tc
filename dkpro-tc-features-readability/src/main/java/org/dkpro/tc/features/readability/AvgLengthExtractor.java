@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,22 +24,23 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.readability.measure.WordSyllableCounter;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 /**
  * Computes the average word and average sentence length, ignores punctuation
  */
 public class AvgLengthExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
 
     public static final String AVG_SENTENCE_LENGTH = "AvgSentenceLength";
@@ -47,7 +48,7 @@ public class AvgLengthExtractor
     public static final String AVG_WORD_LENGTH_IN_SYLLABLES = "AvgWordLengthInSyllables";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
         Set<Feature> featSet = new HashSet<Feature>();
@@ -55,9 +56,10 @@ public class AvgLengthExtractor
         int nrOfWords = 0;
         int nrOfCharacters = 0;
         int nrOfSyllables = 0;
-        int nrOfSentences = JCasUtil.select(jcas, Sentence.class).size();
+        int nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size();
 
-        WordSyllableCounter counter = new WordSyllableCounter(jcas.getDocumentLanguage());
+        WordSyllableCounter counter = new WordSyllableCounter(
+                jcas.getDocumentLanguage());
 
         for (Token t : JCasUtil.select(jcas, Token.class)) {
 
@@ -71,14 +73,14 @@ public class AvgLengthExtractor
         // avoid division by 0;
 
         nrOfSentences = Math.max(nrOfSentences, 1);
-        featSet.addAll(Arrays.asList(new Feature(AVG_SENTENCE_LENGTH, nrOfWords
-                / (double) nrOfSentences)));
+        featSet.addAll(Arrays
+                .asList(new Feature(AVG_SENTENCE_LENGTH, nrOfWords / (double) nrOfSentences)));
 
         nrOfWords = Math.max(nrOfWords, 1);
-        featSet.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_CHARACTERS, nrOfCharacters
-                / (double) nrOfWords)));
-        featSet.addAll(Arrays.asList(new Feature(AVG_WORD_LENGTH_IN_SYLLABLES, nrOfSyllables
-                / (double) nrOfWords)));
+        featSet.addAll(Arrays.asList(
+                new Feature(AVG_WORD_LENGTH_IN_CHARACTERS, nrOfCharacters / (double) nrOfWords)));
+        featSet.addAll(Arrays.asList(
+                new Feature(AVG_WORD_LENGTH_IN_SYLLABLES, nrOfSyllables / (double) nrOfWords)));
 
         return featSet;
     }

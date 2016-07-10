@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -21,13 +21,14 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Extracts the ratio of plural to total nouns.
@@ -36,18 +37,18 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class PluralRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String FN_PLURAL_RATIO = "PluralRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
         int plural = 0;
         int singular = 0;
 
-        for (POS tag : JCasUtil.select(jcas, N.class)) {
+        for (POS tag : JCasUtil.selectCovered(jcas, N.class, target)) {
             // FIXME Issue 123: depends on tagset
             if ((tag.getPosValue().equals("NNS")) || (tag.getPosValue().equals("NNPS"))
                     || (tag.getPosValue().equals("NNS"))) {

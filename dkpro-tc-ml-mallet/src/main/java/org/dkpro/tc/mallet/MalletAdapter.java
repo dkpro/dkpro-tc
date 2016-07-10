@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -28,6 +28,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.mallet.report.MalletOutcomeIDReport;
 import org.dkpro.tc.mallet.task.MalletTestTask;
 import org.dkpro.tc.mallet.writer.MalletDataWriter;
@@ -89,4 +90,10 @@ public class MalletAdapter
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 		throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public String getFeatureStore()
+    {
+        return DenseFeatureStore.class.getName();
+    }
 }

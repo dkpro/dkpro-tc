@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -29,6 +29,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneKeywordCPFE;
@@ -119,19 +120,19 @@ public void initialize(UimaContext context)
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1)
+    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget target)
         throws TextClassificationException
     {
         return KeywordNGramUtils.getDocumentKeywordNgrams(
-                view1, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+                view1, target, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2)
+    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget target)
         throws TextClassificationException
     {
         return KeywordNGramUtils.getDocumentKeywordNgrams(
-                view2, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+                view2, target, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
     
     @Override

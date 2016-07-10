@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -35,6 +35,11 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
@@ -43,14 +48,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 public class LexicalVariationExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String PARAM_EXCLUDE_LEXICAL_VARIATION = "ExcludeLexicalVariation";
     @ConfigurationParameter(name = PARAM_EXCLUDE_LEXICAL_VARIATION, defaultValue = "false")
@@ -76,7 +77,7 @@ public class LexicalVariationExtractor
     public static final String LEXICAL_DENSITY = "LexicalDensity";
     public static final String LEXICAL_VARIATION = "LexicalVariation";
 
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
         double nrOfLexicalWords = 0.0;
         double nrOfNonLexicalWords = 0.0;
@@ -87,8 +88,8 @@ public class LexicalVariationExtractor
         int nrOfModifiers = 0;
         int nrOfNouns = 0;
         Set<String> verbTypes = new HashSet<String>();
-        double nrOfSentences = JCasUtil.select(jcas, Sentence.class).size() * 1.0;
-        for (Token t : JCasUtil.select(jcas, Token.class)) {
+        double nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size() * 1.0;
+        for (Token t : JCasUtil.selectCovered(jcas, Token.class, target)) {
 
             POS p = t.getPos();
 

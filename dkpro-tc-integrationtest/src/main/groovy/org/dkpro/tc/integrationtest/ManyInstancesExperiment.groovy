@@ -30,8 +30,8 @@ import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.features.length.NrOfTokensDFE
-import org.dkpro.tc.features.ngram.LuceneNGramDFE
+import org.dkpro.tc.features.length.NrOfTokens
+import org.dkpro.tc.features.ngram.LuceneNGram
 import org.dkpro.tc.integrationtest.io.LineInstanceReader
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
@@ -73,9 +73,9 @@ public class ManyInstancesExperiment implements Constants {
     [
         "TopK",
         "500",
-        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGram.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGram.PARAM_NGRAM_MAX_N,
         3
     ]
     )
@@ -87,8 +87,8 @@ public class ManyInstancesExperiment implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokensDFE.class.name,
-        LuceneNGramDFE.class.name
+        NrOfTokens.class.name,
+        LuceneNGram.class.name
     ])
 
     // === Test =========================================================

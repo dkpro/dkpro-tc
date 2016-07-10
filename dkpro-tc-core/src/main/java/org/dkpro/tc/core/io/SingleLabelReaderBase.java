@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -27,6 +27,7 @@ import org.apache.uima.jcas.JCas;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import org.dkpro.tc.api.io.TCReaderSingleLabel;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Base class for single-label readers
@@ -54,6 +55,8 @@ public abstract class SingleLabelReaderBase
         outcome.setOutcome(getTextClassificationOutcome(jcas));
         outcome.setWeight(getTextClassificationOutcomeWeight(jcas));
         outcome.addToIndexes();
+        
+        new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length()).addToIndexes();
     }
 
 

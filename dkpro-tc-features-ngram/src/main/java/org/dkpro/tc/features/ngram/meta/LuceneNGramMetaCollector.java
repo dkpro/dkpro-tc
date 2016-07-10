@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,13 +24,14 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneNGramMetaCollector
     extends LuceneBasedMetaCollector
@@ -70,14 +71,16 @@ public class LuceneNGramMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException{
     	
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        
     	FrequencyDistribution<String> fd = null;
-    	fd = NGramUtils.getDocumentNgrams(jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+    	fd = NGramUtils.getDocumentNgrams(jcas, fullDoc, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
  
         return fd;
     }
     
     @Override
     protected String getFieldName(){
-        return LuceneNGramDFE.LUCENE_NGRAM_FIELD;
+        return LuceneNGram.LUCENE_NGRAM_FIELD;
     }
 }

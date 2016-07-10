@@ -29,7 +29,7 @@
 		<url>https://www.ukp.tu-darmstadt.de/</url>
 	</organization>
 	<properties>
-		<dkpro.core.version>1.7.0</dkpro.core.version>
+		<dkpro.core.version>1.8.0</dkpro.core.version>
 		<lucene.version>4.4.0</lucene.version>
 		<uima.version>2.8.1</uima.version>
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
@@ -81,6 +81,7 @@
         <module>dkpro-tc-ml-crfsuite</module>
         <module>dkpro-tc-ml-mallet</module>
         <module>dkpro-tc-ml-liblinear</module>
+        <module>dkpro-tc-ml-libsvm</module>
         <module>dkpro-tc-ml-svmhmm</module>
         <module>dkpro-tc-ml-weka</module>
         <module>dkpro-tc-testing</module>
@@ -102,11 +103,6 @@
 				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-core</artifactId>
 				<version>0.9.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.dkpro.tc</groupId>
-				<artifactId>dkpro-tc-docbook</artifactId>
-				<version>0.8.0-SNAPSHOT-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.dkpro.tc</groupId>
@@ -181,6 +177,11 @@
             <dependency>
                 <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-liblinear</artifactId>
+                <version>0.9.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dkpro.tc</groupId>
+                <artifactId>dkpro-tc-ml-libsvm</artifactId>
                 <version>0.9.0-SNAPSHOT</version>
             </dependency>
 			<dependency>
@@ -364,11 +365,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
-				<artifactId>spring-asm</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
 				<artifactId>spring-expression</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
@@ -391,6 +387,11 @@
 				<groupId>cc.mallet</groupId>
 				<artifactId>mallet</artifactId>
 				<version>2.0.8</version>
+			</dependency>
+			<dependency>
+				<groupId>com.datumbox</groupId>
+				<artifactId>libsvm</artifactId>
+				<version>3.21</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

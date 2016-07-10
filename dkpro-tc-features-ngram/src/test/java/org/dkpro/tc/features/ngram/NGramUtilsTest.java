@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.uima.fit.factory.JCasBuilder;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.junit.Test;
 
@@ -88,13 +88,17 @@ public class NGramUtilsTest
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
+        
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
+        target.addToIndexes();
+        
         JCasBuilder cb = new JCasBuilder(jcas);
         for (String token : text.split(" ")) {
             cb.add(token, Token.class);
         }
         cb.add(0, Sentence.class);
 
-        FrequencyDistribution<String> ngrams = NGramUtils.getDocumentPhoneticNgrams(jcas, 1, 3);
+        FrequencyDistribution<String> ngrams = NGramUtils.getDocumentPhoneticNgrams(jcas, target, 1, 3);
 
         assertEquals(12, ngrams.getN());
         assertTrue(ngrams.contains("I000"));
@@ -113,7 +117,7 @@ public class NGramUtilsTest
         for (String token : text.split(" ")) {
             cb.add(token, Token.class);
         }
-        TextClassificationUnit tu = new TextClassificationUnit(jcas, 2, 7);
+        TextClassificationTarget tu = new TextClassificationTarget(jcas, 2, 7);
         tu.addToIndexes();
 
         FrequencyDistribution<String> ngrams = NGramUtils.getAnnotationCharacterNgrams(tu, false,

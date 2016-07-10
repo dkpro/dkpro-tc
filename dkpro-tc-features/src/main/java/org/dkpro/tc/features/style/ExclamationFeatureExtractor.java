@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -23,12 +23,13 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
  * Counts the ratio of number of sentences ending with exclamation(s) compared to all sentences.
@@ -37,17 +38,17 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class ExclamationFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
 
     public static final String FEATURE_NAME = "ExclamationRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
 
-        double sentences = JCasUtil.select(jcas, Sentence.class).size();
+        double sentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size();
         String text = jcas.getDocumentText();
 
         Pattern p = Pattern.compile("\\!+");

@@ -52,9 +52,13 @@ public class LiblinearOutcomeIdReport
     public void execute()
         throws Exception
     {
-        Map<Integer, String> id2label = getId2LabelMapping();
-
-        String header = buildHeader(id2label);
+        boolean isRegression = getDiscriminators()
+                .get(LiblinearTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+                .equals(Constants.LM_REGRESSION);
+        
+        Map<Integer, String> id2label = getId2LabelMapping(isRegression);
+        
+        String header = buildHeader(id2label, isRegression);
 
         List<String> predictions = readPredictions();
 
@@ -94,11 +98,16 @@ public class LiblinearOutcomeIdReport
         return FileUtils.readLines(new File(predFolder, predFileName));
     }
 
-    private String buildHeader(Map<Integer, String> id2label)
+    private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
         throws UnsupportedEncodingException
     {
         StringBuilder header = new StringBuilder();
         header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
+        
+        if(isRegression){
+            return header.toString();
+        }
+        
         int numKeys = id2label.keySet().size();
         List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
         for (int i = 0; i < numKeys; i++) {
@@ -111,13 +120,17 @@ public class LiblinearOutcomeIdReport
         return header.toString();
     }
 
-    private Map<Integer, String> getId2LabelMapping()
+    private Map<Integer, String> getId2LabelMapping(boolean isRegression)
         throws Exception
     {
-        File mappingFile = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
+        if(isRegression){
+            return new HashMap<>();
+        }
+        
+        File mappingFolder = getContext().getFolder("",
                 StorageService.AccessMode.READONLY);
         String fileName = LiblinearAdapter.getOutcomeMappingFilename();
-        File file = new File(mappingFile, fileName);
+        File file = new File(mappingFolder, fileName);
         Map<Integer, String> map = new HashMap<Integer, String>();
 
         List<String> lines = FileUtils.readLines(file);

@@ -122,6 +122,7 @@ public class STSReader
         throws IOException, CollectionException
     {
         super.getNext(jcas);
+        jcas.setDocumentText("");
 
         TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
         outcome.setOutcome(getTextClassificationOutcome(jcas));

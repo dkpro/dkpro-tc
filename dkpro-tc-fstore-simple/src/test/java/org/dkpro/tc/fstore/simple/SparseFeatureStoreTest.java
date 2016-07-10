@@ -1,5 +1,5 @@
 /*
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -18,8 +18,7 @@
 
 package org.dkpro.tc.fstore.simple;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -114,17 +113,12 @@ public class SparseFeatureStoreTest
 
         Instance retrievedInstance1 = fs.getInstance(0);
         // now it has two features
-        assertEquals(2, retrievedInstance1.getFeatures().size());
+        assertEquals(1, retrievedInstance1.getFeatures().size());
         // which are sorted by name
         Iterator<Feature> iter = retrievedInstance1.getFeatures().iterator();
         Feature feature1 = iter.next();
-        Feature feature2 = iter.next();
-        assertEquals("featA", feature1.getName());
-        assertEquals("featZ", feature2.getName());
-        // but the "featA" is null
-        assertNull(feature1.getValue());
-        // and "featZ" has value = "value"
-        assertEquals("value", feature2.getValue());
+        assertEquals("featZ", feature1.getName());
+        assertNotNull(feature1.getValue());
     }
 
     @Test
@@ -141,7 +135,7 @@ public class SparseFeatureStoreTest
 
         Instance retrievedInstance1 = fs.getInstance(0);
         // now it has two features
-        assertEquals(2, retrievedInstance1.getFeatures().size());
+        assertEquals(1, retrievedInstance1.getFeatures().size());
 
         Instance inst3 = new Instance(Arrays.asList(new Feature("featB", "value")), "outcome1");
 

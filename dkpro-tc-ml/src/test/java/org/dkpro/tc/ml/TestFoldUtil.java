@@ -34,8 +34,9 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -89,8 +90,8 @@ public class TestFoldUtil
             CollectionReader createReader = createReader(jcas, f);
             createReader.getNext(jcas.getCas());
 
-            Collection<TextClassificationUnit> colUni = JCasUtil.select(jcas,
-                    TextClassificationUnit.class);
+            Collection<TextClassificationTarget> colUni = JCasUtil.select(jcas,
+                    TextClassificationTarget.class);
             units.add(colUni.size());
             Collection<TextClassificationSequence> colSeq = JCasUtil.select(jcas,
                     TextClassificationSequence.class);
@@ -203,8 +204,8 @@ public class TestFoldUtil
             CollectionReader createReader = createReader(jcas, f);
             createReader.getNext(jcas.getCas());
 
-            Collection<TextClassificationUnit> units = JCasUtil.select(jcas,
-                    TextClassificationUnit.class);
+            Collection<TextClassificationTarget> units = JCasUtil.select(jcas,
+                    TextClassificationTarget.class);
             arrayList.add(units.size());
         }
         return arrayList;
@@ -236,6 +237,13 @@ public class TestFoldUtil
         createSequenceCas();
     }
 
+    private void createJCasIdAnnotation(JCas jcas)
+    {
+        JCasId id = new JCasId(jcas);
+        id.setId(0);
+        id.addToIndexes();
+    }
+
     private void createSequenceCas()
         throws IOException, UIMAException
     {
@@ -259,6 +267,8 @@ public class TestFoldUtil
         DocumentMetaData dmd = new DocumentMetaData(jcasSequence);
         dmd.setDocumentId("id");
         dmd.addToIndexes();
+        
+        createJCasIdAnnotation(jcasSequence);
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION, tmpFoldSeq.getRoot(),
@@ -304,6 +314,8 @@ public class TestFoldUtil
         DocumentMetaData dmd = new DocumentMetaData(jcasNoSequence);
         dmd.setDocumentId("id");
         dmd.addToIndexes();
+        
+        createJCasIdAnnotation(jcasNoSequence);
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION, tmpFoldNoSeq.getRoot(),
@@ -314,7 +326,7 @@ public class TestFoldUtil
 
     private void setUnit(JCas jcas, int beg, int end)
     {
-        TextClassificationUnit tcu = new TextClassificationUnit(jcas, beg, end);
+        TextClassificationTarget tcu = new TextClassificationTarget(jcas, beg, end);
         tcu.addToIndexes();
     }
 }

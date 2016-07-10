@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -19,31 +19,44 @@ package org.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Sets the text of the TextClassificationUnit two before as feature value 
  */
 public class PrevPrevUnit extends TcuLookUpTable
 {
+    public static final String PARAM_LOWER_CASE = "useLowerCase";
+    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = true, defaultValue = "true")
+    protected boolean useLowerCase;
 
     public static final String FEATURE_NAME = "prevPrevUnit";
     final static String BEGIN_OF_SEQUENCE = "BOS";
 
-    public Set<Feature> extract(JCas aView, TextClassificationUnit unit)
+    public Set<Feature> extract(JCas aView, TextClassificationTarget unit)
         throws TextClassificationException
     {
         super.extract(aView, unit);
         Integer idx = unitBegin2Idx.get(unit.getBegin());
 
-        String featureVal = prevPrevUnit(idx);
+        String featureVal = lowerCase(prevPrevUnit(idx));
         return new Feature(FEATURE_NAME, featureVal).asSet();
     }
     
+    private String lowerCase(String token)
+    {
+        if(useLowerCase){
+            return token.toLowerCase();
+        }
+        
+        return token;
+    }
+
     private String prevPrevUnit(Integer idx)
     {
         if (idx2SequenceBegin.get(idx) != null){

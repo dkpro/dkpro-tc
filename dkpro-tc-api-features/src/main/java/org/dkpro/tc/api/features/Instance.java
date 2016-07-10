@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -162,6 +162,8 @@ public class Instance
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(jcasId);
+        sb.append("-");
         sb.append(sequenceId);
         sb.append(" - ");
         sb.append(sequencePosition);

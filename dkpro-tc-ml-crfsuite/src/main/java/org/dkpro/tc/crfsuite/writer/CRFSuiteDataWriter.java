@@ -66,7 +66,8 @@ public class CRFSuiteDataWriter
                 outputFile), "utf-8"));
 
         while(sequenceIterator.hasNext()){
-            bf.write(sequenceIterator.next().toString());
+            String features = sequenceIterator.next().toString();
+            bf.write(features);
             bf.write("\n");
         }
 

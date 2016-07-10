@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -23,11 +23,12 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Calculates the proportions of tokens that are longer than max (default=5) characters
@@ -38,7 +39,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
  */
 public class LongWordsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String PARAM_MIN_CHARS = "minCharsInWord";
     @ConfigurationParameter(name = PARAM_MIN_CHARS, mandatory = true, defaultValue="3")
@@ -52,7 +53,7 @@ public class LongWordsFeatureExtractor
     public static final String FN_SW_RATIO = "ShortTokenRatio"; // under 3 chars
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
 
         double longTokenRatio = 0.0;
@@ -60,7 +61,7 @@ public class LongWordsFeatureExtractor
         double shortTokenRatio = 0.0;
         int shortTokenCount = 0;
         int n = 0;
-        for (Token t : JCasUtil.select(jcas, Token.class)) {
+        for (Token t : JCasUtil.selectCovered(jcas, Token.class, target)) {
             n++;
 
             String text = t.getCoveredText();

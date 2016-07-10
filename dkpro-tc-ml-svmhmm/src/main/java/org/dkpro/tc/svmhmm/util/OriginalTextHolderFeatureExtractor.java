@@ -1,5 +1,5 @@
 /*
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -23,17 +23,17 @@ import java.util.Set;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Stores the original token (text content) of the unit
  */
 public class OriginalTextHolderFeatureExtractor
         extends FeatureExtractorResource_ImplBase
-        implements ClassificationUnitFeatureExtractor
+        implements FeatureExtractor
 {
 
     /**
@@ -41,7 +41,7 @@ public class OriginalTextHolderFeatureExtractor
      */
     public static final String ORIGINAL_TEXT = "OriginalText";
 
-    @Override public Set<Feature> extract(JCas jCas, TextClassificationUnit textClassificationUnit)
+    @Override public Set<Feature> extract(JCas jCas, TextClassificationTarget textClassificationUnit)
             throws TextClassificationException
     {
         return new Feature(ORIGINAL_TEXT, textClassificationUnit.getCoveredText()).asSet();

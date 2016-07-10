@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -21,11 +21,12 @@ import static org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtract
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LucenePhoneticNGramMetaCollector
     extends LuceneBasedMetaCollector
@@ -41,8 +42,10 @@ public class LucenePhoneticNGramMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
-        return NGramUtils.getDocumentPhoneticNgrams(jcas,
-                phoneticNgramMinN, phoneticNgramMaxN);
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
+        return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, phoneticNgramMinN,
+                phoneticNgramMaxN);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universit??t Darmstadt
  * 
@@ -31,7 +31,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Mar 26 14:18:53 CET 2016
+ * Updated by JCasGen Tue Jun 07 08:16:55 CEST 2016
  * @generated */
 public class TextClassificationOutcome_Type extends Annotation_Type {
   /** @generated 

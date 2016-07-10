@@ -29,6 +29,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.weka.task.WekaTestTask;
@@ -92,4 +93,10 @@ public class MekaStatisticsClassificationAdapter
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 	    return WekaModelSerializationDescription.class;
 	}
+	
+	@Override
+    public String getFeatureStore()
+    {
+        return DenseFeatureStore.class.getName();
+    }
 }

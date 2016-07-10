@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -75,13 +75,6 @@ public class FeatureTestUtil
         Assert.assertEquals(expectedValue, (Double) actualFeature.getValue(), epsilon);
     }
     
-    /**
-     * Shortcut for JUnit assert that test whether a feature has a missing value
-     * 
-     * @param expectedName
-     * @param expectedValue
-     * @param features
-     */
     public static void assertFeatures(String expectedName, double expectedValue,
             Set<Feature> features, double epsilon)
     {
@@ -91,6 +84,20 @@ public class FeatureTestUtil
     		if (f.getName().equals(expectedName)) {
     			found = true;
                 Assert.assertEquals(expectedValue, (Double) f.getValue(), epsilon);	
+            }
+    	}
+    	Assert.assertTrue(found);
+    }
+    
+    public static void assertFeatures(String expectedName, int expectedValue,
+            Set<Feature> features)
+    {
+        Assert.assertNotNull(features);
+    	boolean found = false;
+    	for (Feature f : features) {
+    		if (f.getName().equals(expectedName)) {
+    			found = true;
+                Assert.assertEquals(expectedValue, (int) f.getValue());	
             }
     	}
     	Assert.assertTrue(found);

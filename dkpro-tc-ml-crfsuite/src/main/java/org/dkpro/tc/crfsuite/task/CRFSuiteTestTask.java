@@ -47,10 +47,10 @@ public class CRFSuiteTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-    @Discriminator(name=DIM_LEARNING_MODE)
+    @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
-    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
-    private String[] classificationArguments;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<String> classificationArguments;
 
     public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
     Log logger = null;
@@ -59,6 +59,8 @@ public class CRFSuiteTestTask
     private String modelLocation = null;
     private File trainFile = null;
     private File testFile = null;
+    private String algoName;
+    private List<String> algoParameters;
 
     private static RuntimeProvider runtimeProvider = null;
 
@@ -73,7 +75,7 @@ public class CRFSuiteTestTask
                     "Multi-label requested, but CRFSuite only supports single label setups.");
         }
 
-        sanityCheckOnClassificationArguments();
+        processParameters(classificationArguments);
 
         executablePath = getExecutablePath();
         modelLocation = trainModel(aContext);
@@ -83,24 +85,11 @@ public class CRFSuiteTestTask
 
     }
 
-    private void sanityCheckOnClassificationArguments()
+    private void processParameters(List<String> classificationArguments)
         throws Exception
     {
-        if (classificationArguments == null || classificationArguments.length == 0) {
-            log("No algorithm has been provided - will use CRFsuite default (lbfgs)");
-            return;
-        }
-
-        if (classificationArguments.length == 1) {
-            return;
-        }
-
-        /*
-         * At the moment only a pair of parameters is expected for provide the algorithm CRFsuite
-         * uses
-         */
-        throw new Exception("Unexpected amount of classification arguments: " + "["
-                + classificationArguments.length + "] expected either zero or one");
+        algoName = CrfUtil.getAlgorithm(classificationArguments);
+        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
     }
 
     public static String getExecutablePath()
@@ -110,16 +99,16 @@ public class CRFSuiteTestTask
         if (runtimeProvider == null) {
             PlatformDetector pd = new PlatformDetector();
             String platform = pd.getPlatformId();
-            LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
-                    "Load binary for platform: [" + platform + "]");
+            LogFactory.getLog(CRFSuiteTestTask.class.getName())
+                    .info("Load binary for platform: [" + platform + "]");
 
             runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/crfsuite/");
         }
 
         String executablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
 
-        LogFactory.getLog(CRFSuiteTestTask.class.getName()).info(
-                "Will use binary: [" + executablePath + "]");
+        LogFactory.getLog(CRFSuiteTestTask.class.getName())
+                .info("Will use binary: [" + executablePath + "]");
 
         return executablePath;
     }
@@ -130,8 +119,8 @@ public class CRFSuiteTestTask
 
         writeCRFSuiteGeneratedReports2File(aContext);
 
-        List<String> predictionValues = new ArrayList<String>(Arrays.asList(aRawTextOutput
-                .split("\n")));
+        List<String> predictionValues = new ArrayList<String>(
+                Arrays.asList(aRawTextOutput.split("\n")));
 
         writeFileWithPredictedLabels(aContext, predictionValues);
     }
@@ -139,9 +128,8 @@ public class CRFSuiteTestTask
     private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
         throws Exception
     {
-        File predictionsFile = aContext.getFile(
-                CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                        AdapterNameEntries.predictionsFile), AccessMode.READWRITE);
+        File predictionsFile = aContext.getFile(CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.predictionsFile), AccessMode.READWRITE);
 
         StringBuilder sb = new StringBuilder();
         sb.append("#Gold\tPrediction\n");
@@ -223,8 +211,8 @@ public class CRFSuiteTestTask
         throws Exception
     {
         File tmpFileFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        String tmpFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.featureVectorsFile);
+        String tmpFileName = CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
         File tmpTest = new File(tmpFileFolder.getPath() + "/" + tmpFileName);
         testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
@@ -274,19 +262,19 @@ public class CRFSuiteTestTask
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.featureVectorsFile);
+        String trainFileName = CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
         File tmpTrain = new File(trainFolder.getPath() + "/" + trainFileName);
 
         trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 
-        return getTrainCommand(aTmpModelLocation, trainFile.getAbsolutePath(),
-                classificationArguments != null ? classificationArguments[0] : null);
+        return getTrainCommand(aTmpModelLocation, trainFile.getAbsolutePath(), algoName,
+                algoParameters);
     }
 
     public static List<String> getTrainCommand(String modelOutputLocation, String trainingFile,
-            String algorithm)
-        throws Exception
+            String algorithm, List<String> algoParameter)
+                throws Exception
     {
         List<String> commandTrainModel = new ArrayList<String>();
         commandTrainModel.add(getExecutablePath());
@@ -294,10 +282,11 @@ public class CRFSuiteTestTask
         commandTrainModel.add("-m");
         commandTrainModel.add(modelOutputLocation);
 
-        // add algorithm if provided
-        if (algorithm != null) {
-            commandTrainModel.add("-a");
-            commandTrainModel.add(algorithm);
+        commandTrainModel.add("-a");
+        commandTrainModel.add(algorithm);
+        
+        for(String p : algoParameter){
+            commandTrainModel.add(p.replaceAll(" ", ""));
         }
 
         commandTrainModel.add(trainingFile);

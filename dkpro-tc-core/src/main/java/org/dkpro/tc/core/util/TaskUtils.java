@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -37,9 +37,6 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
@@ -57,9 +54,8 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
@@ -68,10 +64,13 @@ import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 /**
  * Utility methods needed in classification tasks (loading instances, serialization of classifiers
@@ -90,8 +89,8 @@ public class TaskUtils
     public static JSONObject getConfigFromJSON(String path)
         throws IOException
     {
-        String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(path)
-                .getFile()));
+        String jsonPath = FileUtils
+                .readFileToString(new File(ClassLoader.getSystemResource(path).getFile()));
         return (JSONObject) JSONSerializer.toJSON(jsonPath);
     }
 
@@ -205,7 +204,7 @@ public class TaskUtils
      */
     public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
             List<String> featureSet)
-        throws InstantiationException, IllegalAccessException, ClassNotFoundException
+                throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
 
@@ -250,7 +249,7 @@ public class TaskUtils
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
             boolean applyWeighting, String... featureExtractorClassNames)
-        throws ResourceInitializationException
+                throws ResourceInitializationException
     {
         return getFeatureExtractorConnector(parameters, outputPath, dataWriter, learningMode,
                 featureMode, featureStore, addInstanceId, developerMode, isTesting,
@@ -266,7 +265,7 @@ public class TaskUtils
             String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
             List<String> filters, boolean applyWeighting, String... featureExtractorClassNames)
-        throws ResourceInitializationException
+                throws ResourceInitializationException
     {
         // convert parameters to string as external resources only take string parameters
         List<Object> convertedParameters = new ArrayList<Object>();
@@ -296,18 +295,9 @@ public class TaskUtils
             }
         }
 
-        // also add default FE for context extraction during meta collection
-        // TODO MW: Does not work here because field "contextFile" does not get initialised properly
-        /*
-         * try { String className = ContextCollectorUFE.class.getName();
-         * extractorResources.add(ExternalResourceFactory.createExternalResourceDescription(
-         * Class.forName(className).asSubclass(Resource.class), convertedParameters.toArray())); }
-         * catch (ClassNotFoundException e) { throw new ResourceInitializationException(e); }
-         */
-
         // add the rest of the necessary parameters with the correct types
-        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
-                outputPath, ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
+                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
                 ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
                 ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(),
@@ -327,9 +317,9 @@ public class TaskUtils
      * initialized)
      */
     public static Instance getSingleInstanceUnit(String featureMode,
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-            boolean developerMode, boolean addInstanceId, TextClassificationUnit unit)
-        throws TextClassificationException
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean developerMode,
+            boolean addInstanceId, TextClassificationTarget unit)
+                throws TextClassificationException
     {
         Instance instance = new Instance();
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
@@ -340,21 +330,15 @@ public class TaskUtils
             }
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                    if (featExt instanceof DocumentFeatureExtractor && developerMode) {
-                        // we're ok
-                    }
-                    else {
-                        throw new TextClassificationException("Using non-unit FE in unit mode: "
-                                + featExt.getResourceName());
-                    }
+                if (!(featExt instanceof FeatureExtractor)) {
+                    throw new TextClassificationException(
+                            "Using non-unit FE in unit mode: " + featExt.getResourceName());
                 }
 
                 instance.setOutcomes(getOutcomes(jcas, unit));
                 instance.setWeight(getWeight(jcas, unit));
                 instance.setJcasId(jcasId);
-                instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(jcas,
-                        unit));
+                instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, unit));
             }
         }
         return instance;
@@ -367,61 +351,63 @@ public class TaskUtils
      * @throws Exception
      */
     public static Instance getSingleInstance(String featureMode,
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-            boolean developerMode, boolean addInstanceId)
-        throws Exception
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean developerMode,
+            boolean addInstanceId, boolean supportSparseFeatures)
+                throws Exception
     {
 
         Instance instance = new Instance();
 
         if (featureMode.equals(Constants.FM_DOCUMENT)) {
-            instance = getSingleInstanceDocument(instance, featureExtractors, jcas, addInstanceId);
+            instance = getSingleInstanceDocument(instance, featureExtractors, jcas, addInstanceId,
+                    supportSparseFeatures);
         }
         else if (featureMode.equals(Constants.FM_PAIR)) {
             instance = getSingleInstancePair(instance, featureExtractors, jcas, addInstanceId);
         }
         else if (featureMode.equals(Constants.FM_UNIT)) {
             instance = getSingleInstanceUnit(instance, featureExtractors, jcas, addInstanceId,
-                    developerMode);
+                    developerMode, supportSparseFeatures);
         }
 
         return instance;
     }
 
     private static Instance getSingleInstanceUnit(Instance instance,
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-            boolean addInstanceId, boolean developerMode)
-        throws Exception
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId,
+            boolean developerMode, boolean supportsSparseFeature)
+                throws Exception
     {
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        TextClassificationUnit unit = JCasUtil.selectSingle(jcas, TextClassificationUnit.class);
+        TextClassificationTarget unit = JCasUtil.selectSingle(jcas, TextClassificationTarget.class);
 
         if (addInstanceId) {
             instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
         }
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-            if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                if (featExt instanceof DocumentFeatureExtractor && developerMode) {
-                    // we're ok
-                }
-                else {
-                    throw new TextClassificationException("Using non-unit FE in unit mode: "
-                            + featExt.getResourceName());
-                }
+            if (!(featExt instanceof FeatureExtractor)) {
+                throw new TextClassificationException(
+                        "Using non-unit FE in unit mode: " + featExt.getResourceName());
+            }
+            
+            if (supportsSparseFeature) {
+                instance.addFeatures(getSparseFeatures(jcas, unit, featExt));
+            }
+            else {
+                instance.addFeatures(getDenseFeatures(jcas, unit, featExt));
             }
 
             instance.setOutcomes(getOutcomes(jcas, unit));
             instance.setWeight(getWeight(jcas, unit));
             instance.setJcasId(jcasId);
-            instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(jcas, unit));
         }
         return instance;
     }
 
     private static Instance getSingleInstancePair(Instance instance,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId)
-        throws TextClassificationException
+                throws TextClassificationException
     {
         try {
             int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
@@ -431,8 +417,8 @@ public class TaskUtils
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                 if (!(featExt instanceof PairFeatureExtractor)) {
-                    throw new TextClassificationException("Using non-pair FE in pair mode: "
-                            + featExt.getResourceName());
+                    throw new TextClassificationException(
+                            "Using non-pair FE in pair mode: " + featExt.getResourceName());
                 }
                 JCas view1 = jcas.getView(Constants.PART_ONE);
                 JCas view2 = jcas.getView(Constants.PART_TWO);
@@ -450,32 +436,45 @@ public class TaskUtils
     }
 
     private static Instance getSingleInstanceDocument(Instance instance,
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId)
-        throws TextClassificationException
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId,
+            boolean supportSparseFeatures)
+                throws TextClassificationException
     {
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
+
+        TextClassificationTarget documentTcu = JCasUtil.selectSingle(jcas,
+                TextClassificationTarget.class);
 
         if (addInstanceId) {
             instance.addFeature(InstanceIdFeature.retrieve(jcas));
         }
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-            if (!(featExt instanceof DocumentFeatureExtractor)) {
-                throw new TextClassificationException("Using non-document FE in document mode: "
-                        + featExt.getResourceName());
+            if (!(featExt instanceof FeatureExtractor)) {
+                throw new TextClassificationException(
+                        "Using incompatible feature in document mode: "
+                                + featExt.getResourceName());
             }
+
+            if (supportSparseFeatures) {
+                instance.addFeatures(getSparseFeatures(jcas, documentTcu, featExt));
+            }
+            else {
+                instance.addFeatures(getDenseFeatures(jcas, documentTcu, featExt));
+            }
+
             instance.setOutcomes(getOutcomes(jcas, null));
             instance.setWeight(getWeight(jcas, null));
             instance.setJcasId(jcasId);
-            instance.addFeatures(((DocumentFeatureExtractor) featExt).extract(jcas));
         }
 
         return instance;
     }
 
     public static List<Instance> getMultipleInstancesSequenceMode(
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId)
-        throws TextClassificationException
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId,
+            boolean supportSparseFeatures)
+                throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
 
@@ -485,8 +484,8 @@ public class TaskUtils
         for (TextClassificationSequence seq : JCasUtil.select(jcas,
                 TextClassificationSequence.class)) {
             unitId = 0;
-            for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
-                    TextClassificationUnit.class, seq)) {
+            for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas,
+                    TextClassificationTarget.class, seq)) {
 
                 unit.setId(unitId++);
 
@@ -499,12 +498,16 @@ public class TaskUtils
                 // execute feature extractors and add features to instance
 
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                    if (!(featExt instanceof FeatureExtractor)) {
                         throw new TextClassificationException(
                                 "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                     }
-                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, unit));
+                    if (supportSparseFeatures) {
+                        instance.addFeatures(getSparseFeatures(jcas, unit, featExt));
+                    }
+                    else {
+                        instance.addFeatures(getDenseFeatures(jcas, unit, featExt));
+                    }
                 }
 
                 // set and write outcome label(s)
@@ -522,13 +525,37 @@ public class TaskUtils
         return instances;
     }
 
+    private static Set<Feature> getDenseFeatures(JCas jcas, TextClassificationTarget unit,
+            FeatureExtractorResource_ImplBase featExt)
+                throws TextClassificationException
+    {
+        return ((FeatureExtractor) featExt).extract(jcas, unit);
+    }
+
+    private static Set<Feature> getSparseFeatures(JCas jcas, TextClassificationTarget unit,
+            FeatureExtractorResource_ImplBase featExt)
+                throws TextClassificationException
+    {
+        Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, unit);
+        Set<Feature> filtered = new HashSet<>();
+        for (Feature f : features) {
+            if (!f.isDefaultValue()) {
+                filtered.add(f);
+            }
+        }
+
+        return filtered;
+    }
+
     public static List<Instance> getMultipleInstancesUnitMode(
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId)
-        throws TextClassificationException
+            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId,
+            boolean supportSparseFeatures)
+                throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        for (TextClassificationUnit unit : JCasUtil.select(jcas, TextClassificationUnit.class)) {
+        for (TextClassificationTarget unit : JCasUtil.select(jcas,
+                TextClassificationTarget.class)) {
 
             Instance instance = new Instance();
 
@@ -540,12 +567,16 @@ public class TaskUtils
             // execute feature extractors and add features to instance
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
-                    throw new TextClassificationException("Using non-unit FE in sequence mode: "
-                            + featExt.getResourceName());
+                if (!(featExt instanceof FeatureExtractor)) {
+                    throw new TextClassificationException(
+                            "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                 }
-                instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(jcas,
-                        unit));
+                if (supportSparseFeatures) {
+                    instance.addFeatures(getSparseFeatures(jcas, unit, featExt));
+                }
+                else {
+                    instance.addFeatures(getDenseFeatures(jcas, unit, featExt));
+                }
             }
 
             // set and write outcome label(s)
@@ -564,12 +595,12 @@ public class TaskUtils
     public static List<Instance> getInstancesInSequence(
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
             TextClassificationSequence sequence, boolean addInstanceId, int sequenceId)
-        throws Exception
+                throws Exception
     {
         List<Instance> instances = new ArrayList<Instance>();
         int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        for (TextClassificationUnit unit : JCasUtil.selectCovered(jcas,
-                TextClassificationUnit.class, sequence)) {
+        for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas,
+                TextClassificationTarget.class, sequence)) {
 
             Instance instance = new Instance();
 
@@ -580,12 +611,11 @@ public class TaskUtils
             // execute feature extractors and add features to instance
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    if (!(featExt instanceof ClassificationUnitFeatureExtractor)) {
+                    if (!(featExt instanceof FeatureExtractor)) {
                         throw new TextClassificationException(
                                 "Using non-unit FE in sequence mode: " + featExt.getResourceName());
                     }
-                    instance.addFeatures(((ClassificationUnitFeatureExtractor) featExt).extract(
-                            jcas, unit));
+                    instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, unit));
                 }
             }
             catch (TextClassificationException e) {

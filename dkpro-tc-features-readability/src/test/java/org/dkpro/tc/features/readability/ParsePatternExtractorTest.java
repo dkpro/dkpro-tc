@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -35,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.ParsePatternExtractor;
 
 public class ParsePatternExtractorTest
@@ -53,9 +54,12 @@ public class ParsePatternExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
         engine.process(jcas);
+        
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
+        target.addToIndexes();
 
         ParsePatternExtractor extractor = new ParsePatternExtractor();
-        List<Feature> features = new ArrayList<>(extractor.extract(jcas));
+        List<Feature> features = new ArrayList<>(extractor.extract(jcas, target));
         Assert.assertEquals(features.size(), 24);
         double[] results = { 6.0, 3.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 10.5, 51.3, 21.5, 77.0,
                 10.0, 2.0, 69.0, 1.0, 1.0, 2.0, 2.0, 1.0, 0.5, 0.5, 1.0, 6.0, 3.0, 2.0, 1.0, 2.0,

@@ -38,8 +38,8 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGramUFE;
-import org.dkpro.tc.features.style.IsSurroundedByCharsUFE;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.style.IsSurroundedByChars;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
@@ -99,11 +99,11 @@ public class WekaManualFoldCrossValidation
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
-                .asList(new Object[] { IsSurroundedByCharsUFE.PARAM_SURROUNDING_CHARS, "\"\"" }));
+                .asList(new Object[] { IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"" }));
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneCharacterNGramUFE.class.getName() }));
+                Arrays.asList(new String[] { LuceneCharacterNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

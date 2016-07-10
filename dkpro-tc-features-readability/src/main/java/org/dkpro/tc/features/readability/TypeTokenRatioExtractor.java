@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -26,18 +26,19 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.features.readability.util.ReadabilityUtils;
 
 public class TypeTokenRatioExtractor
 
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     /**
      *         Calculates the Type-Token Ratio following the explanations in: Sowmya Vajjala and
@@ -73,7 +74,7 @@ public class TypeTokenRatioExtractor
 
     public static final String TYPE_TOKEN_RATIO = "Type_Token_Ratio";
 
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
         int numberOfTokens = 0;
         // int numberOfVerbs = 0;
@@ -81,7 +82,7 @@ public class TypeTokenRatioExtractor
         List<String> types = new ArrayList<String>();
         // List<String> verbtypes = new ArrayList<String>();
 
-        for (Sentence sent : JCasUtil.select(jcas, Sentence.class)) {
+        for (Sentence sent : JCasUtil.selectCovered(jcas, Sentence.class, target)) {
             for (Token t : JCasUtil.selectCovered(jcas, Token.class, sent)) {
 
                 if (ReadabilityUtils.isWord(t)) {

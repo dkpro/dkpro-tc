@@ -16,8 +16,8 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.core.GroovyExperiment
 import org.dkpro.tc.examples.io.MovieReviewCorpusReader
-import org.dkpro.tc.features.length.NrOfTokensDFE
-import org.dkpro.tc.features.ngram.LuceneNGramDFE
+import org.dkpro.tc.features.length.NrOfTokens
+import org.dkpro.tc.features.ngram.LuceneNGram
 import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 import org.dkpro.tc.weka.writer.WekaDataWriter
@@ -71,27 +71,27 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
     DIM_FEATURE_SET,
     [
         QuestionsRatioFeatureExtractor.name,
-        NrOfTokensDFE.name,
-        LuceneNGramDFE.name
+        NrOfTokens.name,
+        LuceneNGram.name
     ]
     );
 
     def dimPipelineParameters = Dimension.create(
     DIM_PIPELINE_PARAMS,
     [
-        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
+        LuceneNGram.PARAM_NGRAM_USE_TOP_K,
         "500",
-        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGram.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGram.PARAM_NGRAM_MAX_N,
         3
     ],
     [
-        LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K,
+        LuceneNGram.PARAM_NGRAM_USE_TOP_K,
         "5000",
-        LuceneNGramDFE.PARAM_NGRAM_MIN_N,
+        LuceneNGram.PARAM_NGRAM_MIN_N,
         1,
-        LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+        LuceneNGram.PARAM_NGRAM_MAX_N,
         3
     ]
     );

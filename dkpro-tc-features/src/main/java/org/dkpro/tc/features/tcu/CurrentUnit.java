@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -19,25 +19,40 @@ package org.dkpro.tc.features.tcu;
 
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Sets the text of the current TextClassificationUnit as feature value
  */
-public class CurrentUnit extends FeatureExtractorResource_ImplBase implements
-		ClassificationUnitFeatureExtractor {
-	public final static String FEATURE_NAME = "currUnit";
+public class CurrentUnit
+    extends FeatureExtractorResource_ImplBase
+    implements FeatureExtractor
+{
+    public static final String PARAM_LOWER_CASE = "useLowerCase";
+    @ConfigurationParameter(name = PARAM_LOWER_CASE, mandatory = true, defaultValue = "true")
+    protected boolean useLowerCase;
 
-	public Set<Feature> extract(JCas aView,
-			TextClassificationUnit aClassificationUnit)
-			throws TextClassificationException {
-		String token = aClassificationUnit.getCoveredText();
-		return new Feature(FEATURE_NAME, token).asSet();
-	}
+    public final static String FEATURE_NAME = "currUnit";
+
+    public Set<Feature> extract(JCas aView, TextClassificationTarget aClassificationUnit)
+        throws TextClassificationException
+    {
+        String token = lowerCase(aClassificationUnit.getCoveredText());
+        return new Feature(FEATURE_NAME, token).asSet();
+    }
+
+    private String lowerCase(String coveredText)
+    {
+        if(useLowerCase){
+            return coveredText.toLowerCase();
+        }
+        return coveredText;
+    }
 }

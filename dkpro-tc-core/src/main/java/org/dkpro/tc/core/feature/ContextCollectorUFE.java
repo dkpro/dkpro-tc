@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -32,18 +32,18 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.ClassificationUnitFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 public class ContextCollectorUFE
     extends FeatureExtractorResource_ImplBase
-    implements ClassificationUnitFeatureExtractor, MetaDependent
+    implements FeatureExtractor, MetaDependent
 {
     public static final int CONTEXT_WIDTH = 30;
 
@@ -77,7 +77,7 @@ public class ContextCollectorUFE
     };
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationUnit unit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget unit)
         throws TextClassificationException
     {
         try {

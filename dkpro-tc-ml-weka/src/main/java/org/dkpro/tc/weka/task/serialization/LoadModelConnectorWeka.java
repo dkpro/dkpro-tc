@@ -18,18 +18,15 @@
  */
 package org.dkpro.tc.weka.task.serialization;
 
-import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
-import static org.dkpro.tc.core.Constants.FM_PAIR;
-import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
-import static org.dkpro.tc.core.Constants.MODEL_CLASS_LABELS;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -42,10 +39,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -56,15 +55,11 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 public class LoadModelConnectorWeka
-    extends ModelSerialization_ImplBase
+    extends ModelSerialization_ImplBase implements Constants
 {
 
     @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
-
-    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
-    @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = true, defaultValue = "0.5")
-    private String bipartitionThreshold;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -79,6 +74,10 @@ public class LoadModelConnectorWeka
     private Instances trainingData;
     private List<String> classLabels;
 
+    boolean useSparse = false;
+
+    private String bipartitionThreshold;
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -86,6 +85,13 @@ public class LoadModelConnectorWeka
         super.initialize(context);
 
         try {
+            TCMachineLearningAdapter initMachineLearningAdapter = SaveModelUtils
+                    .initMachineLearningAdapter(tcModelLocation);
+            bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
+            FeatureStore featureStore = (FeatureStore) Class
+                    .forName(initMachineLearningAdapter.getFeatureStore()).newInstance();
+            useSparse = featureStore.supportsSparseFeatures();
+
             loadClassifier();
             loadTrainingData();
             if (!learningMode.equals(Constants.LM_REGRESSION)) {
@@ -100,12 +106,26 @@ public class LoadModelConnectorWeka
             throw new ResourceInitializationException(e);
         }
     }
+    
+    private String initBipartitionThreshold(File tcModelLocation)
+            throws FileNotFoundException, IOException
+        {
+            File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
+            Properties prop = new Properties();
+
+            FileInputStream fis = new FileInputStream(file);
+            prop.load(fis);
+            fis.close();
+
+            return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+        }
 
     private void loadClassLabels()
         throws IOException
     {
         classLabels = new ArrayList<>();
-        for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
+        for (String classLabel : FileUtils
+                .readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
             classLabels.add(classLabel);
         }
     }
@@ -113,8 +133,8 @@ public class LoadModelConnectorWeka
     private void loadTrainingData()
         throws IOException, ClassNotFoundException
     {
-        ObjectInputStream inT = new ObjectInputStream(new FileInputStream(new File(tcModelLocation,
-                "training_data")));
+        ObjectInputStream inT = new ObjectInputStream(
+                new FileInputStream(new File(tcModelLocation, "training_data")));
         trainingData = (Instances) inT.readObject();
         inT.close();
     }
@@ -122,8 +142,8 @@ public class LoadModelConnectorWeka
     private void loadClassifier()
         throws Exception
     {
-        cls = (Classifier) weka.core.SerializationHelper.read(new File(tcModelLocation,
-                MODEL_CLASSIFIER).getAbsolutePath());
+        cls = (Classifier) weka.core.SerializationHelper
+                .read(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
     }
 
     @Override
@@ -134,7 +154,7 @@ public class LoadModelConnectorWeka
         Instance instance = null;
         try {
             instance = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,
-                    false);
+                    false, useSparse);
         }
         catch (Exception e1) {
             throw new AnalysisEngineProcessException(e1);
@@ -241,8 +261,8 @@ public class LoadModelConnectorWeka
 
     private TextClassificationOutcome getOutcome(JCas jcas)
     {
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas,
-                TextClassificationOutcome.class));
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
         if (outcomes.size() != 1) {
             throw new IllegalStateException("There should be exactly one TC outcome");
         }

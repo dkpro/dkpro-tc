@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,30 +24,29 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
- * Counts the ratio of tokens containing numbers or 
- * combinations of numbers and letters. Possibly useful to capture
- * teenage slang in online chats. For texts with lot of numbers
- * expected, you may want to modify the regex to capture 
- * letters AND numbers only
+ * Counts the ratio of tokens containing numbers or combinations of numbers and letters. Possibly
+ * useful to capture teenage slang in online chats. For texts with lot of numbers expected, you may
+ * want to modify the regex to capture letters AND numbers only
  */
 public class NumberWordsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
     public static final String FEATURE_NAME = "WordsWithNumbers";
 
     @Override
-    public Set<Feature> extract(JCas jcas)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
 
-        List<String> tokens = JCasUtil.toText(JCasUtil.select(jcas, Token.class));
+        List<String> tokens = JCasUtil.toText(JCasUtil.selectCovered(jcas, Token.class, target));
         int nrOfTokens = tokens.size();
 
         Pattern p = Pattern.compile("^[a-zA-Z0-9]*[0-9]+[a-zA-Z0-9]*$");

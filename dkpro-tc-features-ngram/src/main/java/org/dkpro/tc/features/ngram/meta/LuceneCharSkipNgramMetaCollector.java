@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -19,10 +19,11 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneCharacterSkipNgramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneCharSkipNgramMetaCollector
     extends LuceneBasedMetaCollector
@@ -42,8 +43,9 @@ public class LuceneCharSkipNgramMetaCollector
     
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         return NGramUtils.getCharacterSkipNgrams(
-                jcas, ngramLowerCase, minN, maxN, skipSize);
+                jcas, fullDoc, ngramLowerCase, minN, maxN, skipSize);
     }
     
     @Override

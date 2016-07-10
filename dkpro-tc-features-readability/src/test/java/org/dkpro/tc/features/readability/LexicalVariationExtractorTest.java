@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -37,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.readability.LexicalVariationExtractor;
 
 public class LexicalVariationExtractorTest
@@ -57,9 +58,12 @@ public class LexicalVariationExtractorTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
         engine.process(jcas);
+        
+        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
+        target.addToIndexes();
 
         LexicalVariationExtractor extractor = new LexicalVariationExtractor();
-        Set<Feature> features = extractor.extract(jcas);
+        Set<Feature> features = extractor.extract(jcas,target);
 
         Assert.assertEquals(14, features.size());
 

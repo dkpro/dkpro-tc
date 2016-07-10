@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.wordDifficulty.IsNounCompoundExtractor;
 
 public class IsNounCompoundExtractorTest {
@@ -52,7 +52,7 @@ public class IsNounCompoundExtractorTest {
         jcas.setDocumentText("Autohändler und Steine");
         engine.process(jcas);
         
-        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 11);
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 11);
         assertEquals("Autohändler", unit1.getCoveredText());
         new NN(jcas, 0, 11).addToIndexes();
         Lemma l1= new Lemma(jcas, 0, 11);
@@ -61,7 +61,7 @@ public class IsNounCompoundExtractorTest {
         addAnnotations(l1,t1, pos1, jcas, "Autohändler", 0, 11);
         
       
-        TextClassificationUnit unit2 = new TextClassificationUnit(jcas, 12, 15);
+        TextClassificationTarget unit2 = new TextClassificationTarget(jcas, 12, 15);
         assertEquals("und", unit2.getCoveredText());
         new CONJ(jcas, 12, 14).addToIndexes();
         Lemma l2= new Lemma(jcas, 12, 14);
@@ -71,7 +71,7 @@ public class IsNounCompoundExtractorTest {
         
       
         
-        TextClassificationUnit unit3 = new TextClassificationUnit(jcas, 16, 22);
+        TextClassificationTarget unit3 = new TextClassificationTarget(jcas, 16, 22);
         assertEquals("Steine", unit3.getCoveredText());
         new NN(jcas, 16, 22).addToIndexes();
         Lemma l3 = new Lemma(jcas, 16, 22);

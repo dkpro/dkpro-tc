@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -20,13 +20,13 @@ package org.dkpro.tc.core.initializer;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public interface SequenceOutcomeAnnotator
 {
     /**
      * Returns the text classification outcome for each classification unit
      */
-    public String getTextClassificationOutcome(JCas jcas, TextClassificationUnit unit)
+    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
         throws AnalysisEngineProcessException;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -34,6 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
 import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
@@ -86,8 +88,9 @@ public class NGramMetaCollector
     {
     	try{
     		dfStore.registerNewDocument();
+    		TextClassificationTarget target = JCasUtil.selectSingle(jcas, TextClassificationTarget.class);
 	        FrequencyDistribution<String> documentNGrams = NGramUtils.getDocumentNgrams(
-	                jcas, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);  
+	                jcas, target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);  
 	        for (String ngram : documentNGrams.getKeys()) {
 	            fd.addSample(ngram, documentNGrams.getCount(ngram));
 	            dfStore.countTerm(ngram);

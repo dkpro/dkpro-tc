@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -31,7 +31,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.wordDifficulty.PositionInTextUFE;
 
 
@@ -48,22 +48,22 @@ public class PositionInTextUFETest {
 	        engine.process(jcas);
 	        
 	        
-	        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 1);
+	        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 1);
 	        Token t1 = new Token(jcas, 0,1);
 	        t1.addToIndexes();	
 	        unit1.addToIndexes();
 	        
-	        TextClassificationUnit unit2 = new TextClassificationUnit(jcas, 2, 3);
+	        TextClassificationTarget unit2 = new TextClassificationTarget(jcas, 2, 3);
 	        Token t2 = new Token(jcas, 2,3);
 	        t2.addToIndexes();	
 	        unit2.addToIndexes();
 	        
-	        TextClassificationUnit unit3 = new TextClassificationUnit(jcas, 4, 5);
+	        TextClassificationTarget unit3 = new TextClassificationTarget(jcas, 4, 5);
 	        Token t3 = new Token(jcas, 4,5);
 	        t3.addToIndexes();	
 	        unit3.addToIndexes();
 	        
-	        TextClassificationUnit unit4 = new TextClassificationUnit(jcas, 6, 7);
+	        TextClassificationTarget unit4 = new TextClassificationTarget(jcas, 6, 7);
 	        Token t4 = new Token(jcas, 6,7);
 	        t4.addToIndexes();	
 	        unit4.addToIndexes();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -140,7 +140,7 @@ public class DenseFeatureStore
     @Override
     public String toString()
     {
-        return "SparseFeatureStore{" +
+        return "DenseFeatureStore{" +
                 "instanceList=" + instanceList +
                 '}';
     }
@@ -160,5 +160,11 @@ public class DenseFeatureStore
     public void setFeatureNames(TreeSet<String> featureNames)
     {
         throw new IllegalStateException("Method not allowed in this feature store");
+    }
+
+    @Override
+    public boolean supportsSparseFeatures()
+    {
+        return false;
     }
 }

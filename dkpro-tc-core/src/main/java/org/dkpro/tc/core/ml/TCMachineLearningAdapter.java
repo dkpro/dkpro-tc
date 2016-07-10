@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -22,7 +22,6 @@ import java.util.Collection;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
-
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
@@ -93,4 +92,6 @@ public interface TCMachineLearningAdapter
     public String getFrameworkFilename(AdapterNameEntries name);
 
 	public Class<? extends ModelSerializationTask> getSaveModelTask();
+
+    public String getFeatureStore();
 }

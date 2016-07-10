@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -26,7 +26,7 @@ import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.JCasId;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 
@@ -42,7 +42,7 @@ public class InstanceIdFeatureTest {
 	        jcas.setDocumentLanguage("en");
 	        engine.process(jcas);
 	        
-	        TextClassificationUnit unit1 = new TextClassificationUnit(jcas, 0, 1);
+	        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 1);
 	        unit1.setId(0);
 	        unit1.addToIndexes();
 

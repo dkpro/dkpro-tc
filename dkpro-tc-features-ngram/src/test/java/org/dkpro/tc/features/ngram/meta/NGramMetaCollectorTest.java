@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -36,6 +36,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.NGramMetaCollector;
 
@@ -67,13 +69,16 @@ public class NGramMetaCollectorTest
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
         
+        AnalysisEngineDescription doc = AnalysisEngineFactory
+                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+        
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 NGramMetaCollector.class,
                 FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, tmpFdFile,
                 FrequencyDistributionNGramFeatureExtractorBase.PARAM_DFSTORE_FILE, tmpDfStoreFile
         );
 
-        for (JCas jcas : new JCasIterable(reader, segmenter, metaCollector)) {
+        for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {
 //            System.out.println(jcas.getDocumentText().length());
         }
         

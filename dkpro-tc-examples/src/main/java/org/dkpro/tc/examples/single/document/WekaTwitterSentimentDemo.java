@@ -35,8 +35,8 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.twitter.EmoticonRatioDFE;
-import org.dkpro.tc.features.twitter.NumberOfHashTagsDFE;
+import org.dkpro.tc.features.twitter.EmoticonRatio;
+import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -109,8 +109,8 @@ public class WekaTwitterSentimentDemo
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { EmoticonRatioDFE.class.getName(),
-                        NumberOfHashTagsDFE.class.getName() }));
+                Arrays.asList(new String[] { EmoticonRatio.class.getName(),
+                        NumberOfHashTags.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -29,6 +29,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 import org.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
@@ -36,6 +37,32 @@ import org.dkpro.tc.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
 import org.dkpro.tc.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
 import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
+/**
+ * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult
+ * {@code http://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html} for parameter settings.
+ * 
+ * <pre>
+ * Parameters:
+ *   -c      Typical SVM parameter C trading-off slack vs. magnitude of the weight-vector. 
+ *               NOTE: The default value for this parameter is unlikely to work well for your
+ *               particular problem. A good value for C must be selected via cross-validation, ideally
+ *               exploring values over several orders of magnitude. NOTE: Unlike in V1.01, the value of C is
+ *               divided by the number of training examples. So, to get results equivalent to V1.01, multiply
+ *               C by the number of training examples. Default value is set to 1.
+ *   -e      Parameter "-e &lt;EPSILON&gt;": This specifies the precision to which constraints are
+ *               required to be satisfied by the solution. The smaller EPSILON, the longer and the more memory
+ *               training takes, but the solution is more precise. However, solutions more accurate than 0.5
+ *               typically do not improve prediction accuracy.
+ *   -t      Order of dependencies of transitions in HMM. Can be any number larger than 1. (default 1)
+ *   -m      Order of dependencies of emissions in HMM. Can be any number
+ *               larger than 0. (default 0) UPDATE: according to svm_struct_api.c: must be either 0 or 1;
+ *               fails for &gt;1
+ *   -b       A non-zero value turns on (approximate) beam search to replace
+ *               the exact Viterbi algorithm both for finding the most violated constraint, as well as for
+ *               computing predictions. The value is the width of the beam used (e.g. 100). (default 0).
+ * 
+ * </pre>
+ */
 public class SVMHMMAdapter
 	implements TCMachineLearningAdapter
 {
@@ -97,5 +124,11 @@ public class SVMHMMAdapter
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 		return SvmhmmModelSerializationDescription.class;
 	}
+
+    @Override
+    public String getFeatureStore()
+    {
+        return SparseFeatureStore.class.getName();
+    }
 }
 

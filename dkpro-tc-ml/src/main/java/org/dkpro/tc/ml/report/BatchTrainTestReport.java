@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,8 +31,6 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
-
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.evaluation.Id2Outcome;
@@ -111,15 +111,4 @@ public class BatchTrainTestReport
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
         dummyFolder.delete();
     }
-    
-    private String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
-            throws TextClassificationException
-        {
-        	for (String key : discriminatorsMap.keySet()) {
-    			if(key.split("\\|")[1].equals(discriminatorName)){
-    				return discriminatorsMap.get(key);
-    			}
-    		}
-        	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
-        }
 }

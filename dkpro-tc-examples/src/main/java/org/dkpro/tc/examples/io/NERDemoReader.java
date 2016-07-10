@@ -39,7 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import org.dkpro.tc.api.io.TCReaderSequence;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationUnit;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Reads the GermEval 2014 NER Shared Task dataset.
@@ -117,7 +117,7 @@ public class NERDemoReader
                 sentenceEnd = token.getEnd();
                 doc.add(" ");
                 
-                TextClassificationUnit unit = new TextClassificationUnit(aJCas, token.getBegin(), token.getEnd());
+                TextClassificationTarget unit = new TextClassificationTarget(aJCas, token.getBegin(), token.getEnd());
                 unit.addToIndexes();
                 
                 TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas, token.getBegin(), token.getEnd());
@@ -175,7 +175,7 @@ public class NERDemoReader
 
 	@Override
 	public String getTextClassificationOutcome(JCas jcas,
-			TextClassificationUnit unit) throws CollectionException
+			TextClassificationTarget unit) throws CollectionException
 	{
 		// without function here, as we do not represent this in the CAS
 		return null;

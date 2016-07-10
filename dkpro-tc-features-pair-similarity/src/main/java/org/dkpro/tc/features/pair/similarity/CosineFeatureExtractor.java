@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -34,6 +35,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import dkpro.similarity.algorithms.api.SimilarityException;
@@ -117,12 +119,16 @@ public class CosineFeatureExtractor<T extends Annotation>
         throws TextClassificationException
     {
         try {
+            
+            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+            
         	//Note: getSimilarity(String, String) is *not* a convenience 
         	// method for getSimilarity(Collection<String>, Collection<String>).
             Set<String> text1 = NGramUtils.getDocumentNgrams(
-                    view1, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
+                    view1, target1, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
             Set<String> text2 = NGramUtils.getDocumentNgrams(
-                    view2, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
+                    view2, target2, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
             
             double similarity = measure.getSimilarity(text1,
                   text2);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -25,54 +25,54 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
 public class LuceneNGramPMetaCollector
-	extends LucenePMetaCollectorBase
+    extends LucenePMetaCollectorBase
 {
 
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
-	protected int ngramView1MinN;
+    protected int ngramView1MinN;
 
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
-	protected int ngramView2MinN;
-    
+    protected int ngramView2MinN;
+
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	protected int ngramMinN;
+    protected int ngramMinN;
 
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
-	protected int ngramView1MaxN;
-    
+    protected int ngramView1MaxN;
+
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
-	protected int ngramView2MaxN;
+    protected int ngramView2MaxN;
 
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	protected int ngramMaxN;
+    protected int ngramMaxN;
 
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
 
-    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
-	protected boolean filterPartialStopwordMatches;
+    @ConfigurationParameter(name = LuceneNGramPFE.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue = "false")
+    protected boolean filterPartialStopwordMatches;
 
     @ConfigurationParameter(name = LuceneNGramPFE.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
-	protected boolean ngramLowerCase;
-	
+    protected boolean ngramLowerCase;
 
     protected Set<String> stopwords;
-    
+
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         try {
             stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
         }
@@ -85,12 +85,11 @@ public class LuceneNGramPMetaCollector
     protected FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException
     {
-    	FrequencyDistribution<String> fd = ComboUtils.getMultipleViewNgrams(
-    	              jcases, null, ngramLowerCase, filterPartialStopwordMatches, 
-    	              ngramMinN, ngramMaxN, stopwords);
+        FrequencyDistribution<String> fd = ComboUtils.getMultipleViewNgrams(jcases, null,
+                ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
         return fd;
     }
-    
+
     /**
      * This is an artifact to be merged with {@code getNgramsFD(List<JCas> jcases)} when pair FEs
      * are ready.
@@ -103,29 +102,31 @@ public class LuceneNGramPMetaCollector
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1)
-        throws TextClassificationException
+    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1,
+            TextClassificationTarget target)
+                throws TextClassificationException
     {
-    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
-    	              view1, ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, 
-    	              ngramView1MaxN, stopwords);
+        FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view1, target,
+                ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, ngramView1MaxN,
+                stopwords);
         return fd;
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2)
-        throws TextClassificationException
+    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2,
+            TextClassificationTarget target)
+                throws TextClassificationException
     {
-    	FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(
-    	              view2, ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, 
-    	              ngramView2MaxN, stopwords);
+        FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view2, target,
+                ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN,
+                stopwords);
         return fd;
     }
-    
+
     @Override
     protected String getFieldName()
     {
-        return LuceneNGramDFE.LUCENE_NGRAM_FIELD;
+        return LuceneNGram.LUCENE_NGRAM_FIELD;
     }
 
     @Override

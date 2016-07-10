@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -35,6 +36,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
@@ -42,7 +44,7 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
 
 /**
  * Pair keyword ngram feature extractor for
- * {@link org.dkpro.tc.features.ngram.KeywordNGramDFE
+ * {@link org.dkpro.tc.features.ngram.KeywordNGram
  * KeywordNGramDFE} Can be used to extract ngrams from one or both documents in the
  * pair, and parameters for each document (view 1's, view 2's) can be set separately, or both
  * documents can be treated together as one extended document. <br>
@@ -184,9 +186,11 @@ public class LuceneKeywordPFE
     public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, ngramMinN1, ngramMaxN1,
+        TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+        TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, target1, ngramMinN1, ngramMaxN1,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, ngramMinN2, ngramMaxN2,
+        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, target2, ngramMinN2, ngramMaxN2,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
         FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
         

@@ -36,9 +36,9 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfCharsDFE;
-import org.dkpro.tc.features.length.NrOfTokensPerSentenceDFE;
-import org.dkpro.tc.features.ngram.LuceneNGramDFE;
+import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.length.NrOfTokensPerSentence;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
@@ -125,14 +125,14 @@ public class WekaComplexConfigurationSingleDemo
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
         Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensPerSentenceDFE.class.getName(),
-                        NrOfCharsDFE.class.getName(), LuceneNGramDFE.class.getName() }),
-                asList(new String[] { LuceneNGramDFE.class.getName() }));
+                asList(new String[] { NrOfTokensPerSentence.class.getName(),
+                        NrOfChars.class.getName(), LuceneNGram.class.getName() }),
+                asList(new String[] { LuceneNGram.class.getName() }));
 
         // parameters to configure feature extractors
         Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { LuceneNGramDFE.PARAM_NGRAM_USE_TOP_K, "50",
-                        LuceneNGramDFE.PARAM_NGRAM_MIN_N, 1, LuceneNGramDFE.PARAM_NGRAM_MAX_N,
+                asList(new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, "50",
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
                         3 }));
 
         // single-label feature selection (Weka specific options), reduces the feature set to 10

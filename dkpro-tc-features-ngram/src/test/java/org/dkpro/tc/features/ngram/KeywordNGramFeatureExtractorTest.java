@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -32,6 +32,14 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
+import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,16 +48,6 @@ import org.junit.rules.TemporaryFolder;
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.KeywordNGramDFE;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
-import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 
 public class KeywordNGramFeatureExtractorTest
 {
@@ -73,10 +71,10 @@ public class KeywordNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { KeywordNGramDFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt", KeywordNGramDFE.PARAM_LUCENE_DIR,
-                luceneFolder, KeywordNGramDFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
-                markSentenceLocation, KeywordNGramDFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
+        Object[] parameters = new Object[] { KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", KeywordNGram.PARAM_LUCENE_DIR,
+                luceneFolder, KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
+                markSentenceLocation, KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
                 includeComma };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -87,14 +85,13 @@ public class KeywordNGramFeatureExtractorTest
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                KeywordNGramMetaCollector.class, parameterList.toArray());
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(KeywordNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                KeywordNGramDFE.class.getName());
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, KeywordNGram.class.getName());
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
@@ -118,8 +115,8 @@ public class KeywordNGramFeatureExtractorTest
         assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
         assertTrue(fs.getFeatureNames().contains("keyNG_apricot_peach"));
         assertTrue(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames().contains(
-                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(fs.getFeatureNames()
+                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
         assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_CA"));
@@ -135,8 +132,8 @@ public class KeywordNGramFeatureExtractorTest
         assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
         assertFalse(fs.getFeatureNames().contains("keyNG_apricot_peach"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames().contains(
-                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(fs.getFeatureNames()
+                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
         assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
         assertTrue(fs.getFeatureNames().contains("keyNG_peach_CA"));
@@ -153,8 +150,8 @@ public class KeywordNGramFeatureExtractorTest
         assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
         assertTrue(fs.getFeatureNames().contains("keyNG_apricot_peach"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames().contains(
-                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(fs.getFeatureNames()
+                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
         assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
         assertFalse(fs.getFeatureNames().contains("keyNG_peach_CA"));

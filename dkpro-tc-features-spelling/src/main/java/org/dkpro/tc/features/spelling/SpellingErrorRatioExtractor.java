@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  * 
@@ -21,29 +21,30 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.anomaly.type.SpellingAnomaly;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.DocumentFeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 
 /**
  * Extracts the ratio of wrongly spelled tokens to all tokens.
  */
 public class SpellingErrorRatioExtractor
     extends FeatureExtractorResource_ImplBase
-    implements DocumentFeatureExtractor
+    implements FeatureExtractor
 {
 
     // TODO Issue 125: could be generalized to AnnotationRatioFE
     
     @Override
-    public Set<Feature> extract(JCas view)
+    public Set<Feature> extract(JCas view, TextClassificationTarget target)
         throws TextClassificationException
     {
-        int nrOfSpellingErrors = JCasUtil.select(view, SpellingAnomaly.class).size();
+        int nrOfSpellingErrors = JCasUtil.selectCovered(view, SpellingAnomaly.class, target).size();
         int nrOfTokens = JCasUtil.select(view, Token.class).size();
         
         double ratio = 0.0;
