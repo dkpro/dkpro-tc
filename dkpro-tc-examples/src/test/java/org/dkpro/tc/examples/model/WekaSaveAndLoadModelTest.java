@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -46,15 +48,19 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
+import org.dkpro.tc.examples.io.EssayScoreReader;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.features.length.NrOfSentences;
 import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
+import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
@@ -70,6 +76,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import meka.classifiers.multilabel.MULAN;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SMOreg;
 import weka.classifiers.trees.RandomForest;
@@ -88,6 +95,8 @@ public class WekaSaveAndLoadModelTest
     static String pairGoldFiles = "src/main/resources/data/sts2012/STS.gs.MSRpar.txt";
     static String documentTrainFolderReuters = "src/main/resources/data/reuters/training";
     static String documentGoldLabelsReuters = "src/main/resources/data/reuters/cats.txt";
+    static String regressionTrain = "src/main/resources/data/essays/train/essay_train.txt";
+    static String regressionTest = "src/main/resources/data/essays/test/essay_test.txt";
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -122,8 +131,8 @@ public class WekaSaveAndLoadModelTest
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -156,8 +165,8 @@ public class WekaSaveAndLoadModelTest
                         NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
@@ -241,6 +250,83 @@ public class WekaSaveAndLoadModelTest
         modelFolder.deleteOnExit();
     }
 
+    /**
+     * This test case trains a regression model on scored essay texts
+     */
+    @Test
+    public void documentRoundTripWekaRegression()
+        throws Exception
+    {
+
+        DemoUtils.setDkproHome(WekaSaveAndLoadModelTest.class.getSimpleName());
+        File modelFolder = folder.newFolder();
+
+        ParameterSpace paramSpace = regressionGetParameterSpace();
+        regressionExecuteSaveModel(paramSpace, modelFolder);
+        regressionLoadModel(modelFolder);
+
+        // verify that all expected files have been created
+        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+        assertTrue(classifierFile.exists());
+
+        File usedFeaturesFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
+        assertTrue(usedFeaturesFile.exists());
+
+        File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
+        assertTrue(modelMetaFile.exists());
+
+        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+        assertTrue(featureMode.exists());
+
+        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+        assertTrue(learningMode.exists());
+
+        File bipartitionThreshold = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
+        assertTrue(bipartitionThreshold.exists());
+
+        modelFolder.deleteOnExit();
+    }
+
+    private void regressionLoadModel(File modelFolder)
+        throws UIMAException, IOException
+    {
+        CollectionReader reader = CollectionReaderFactory.createReader(EssayScoreReader.class,
+                EssayScoreReader.PARAM_SOURCE_LOCATION, regressionTest,
+                EssayScoreReader.PARAM_LANGUAGE, "en");
+        
+        AnalysisEngine segmenter =  AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+
+        JCas jcas = JCasFactory.createJCas();
+        reader.hasNext();
+        reader.getNext(jcas.getCas());
+
+        segmenter.process(jcas);
+        tcAnno.process(jcas);
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas,
+                TextClassificationOutcome.class));
+        assertEquals(1, outcomes.size());  
+        
+        Double d = Double.valueOf(outcomes.get(0).getOutcome());
+        assertTrue( d > 0.1 && d < 5);
+    }
+
+    private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder)
+        throws Exception
+    {
+        ExperimentSaveModel batch = new ExperimentSaveModel("regressionWeka",
+                WekaRegressionAdapter.class, modelFolder);
+        batch.setParameterSpace(paramSpace);
+
+        Lab.getInstance().run(batch);
+    }
+
     @Test
     public void pairRoundTripWekaRegression()
         throws Exception
@@ -289,8 +375,8 @@ public class WekaSaveAndLoadModelTest
         DemoUtils.setDkproHome(WekaSaveAndLoadModelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
-        ParameterSpace unitParamSpace = unitGetParameterSpace();
-        unitExecuteSaveModel(unitParamSpace, modelFolder);
+        ParameterSpace regressionParamSpace = unitGetParameterSpace();
+        unitExecuteSaveModel(regressionParamSpace, modelFolder);
         unitLoadModel(modelFolder);
 
         // verify that all expected files have been created
@@ -315,6 +401,36 @@ public class WekaSaveAndLoadModelTest
         assertTrue(bipartitionThreshold.exists());
 
         modelFolder.deleteOnExit();
+    }
+
+    private ParameterSpace regressionGetParameterSpace()
+        throws Exception
+    {
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_train.txt",
+                EssayScoreReader.PARAM_LANGUAGE, "en");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new String[] { LinearRegression.class.getName() }));
+
+        @SuppressWarnings("unchecked")
+        Dimension<List<String>> dimFeatureSets = Dimension
+                .create(DIM_FEATURE_SET,
+                        Arrays.asList(new String[] { NrOfTokens.class.getName(),
+                                NrOfSentences.class.getName(),
+                                NrOfTokensPerSentence.class.getName() }));
+
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                dimClassificationArgs);
+
+        return pSpace;
     }
 
     private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder,
@@ -365,9 +481,9 @@ public class WekaSaveAndLoadModelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = CollectionReaderFactory.createReaderDescription(
-                STSReader.class, STSReader.PARAM_INPUT_FILE, pairTrainFiles,
-                STSReader.PARAM_GOLD_FILE, pairGoldFiles);
+        Object readerTrain = CollectionReaderFactory.createReaderDescription(STSReader.class,
+                STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE,
+                pairGoldFiles);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
@@ -386,16 +502,17 @@ public class WekaSaveAndLoadModelTest
         return pSpace;
     }
 
-    private static ParameterSpace unitGetParameterSpace() throws ResourceInitializationException
+    private static ParameterSpace unitGetParameterSpace()
+        throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
+
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
                 Arrays.asList("*.xml"));
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-        
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));
@@ -488,8 +605,8 @@ public class WekaSaveAndLoadModelTest
         throws Exception
     {
         CollectionReader reader = CollectionReaderFactory.createReader(TeiReader.class,
-                TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_PATTERNS, "*.xml");
+                TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
+                TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS, "*.xml");
 
         AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
