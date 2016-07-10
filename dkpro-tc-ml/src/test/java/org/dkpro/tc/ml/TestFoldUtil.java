@@ -34,6 +34,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Before;
@@ -236,6 +237,13 @@ public class TestFoldUtil
         createSequenceCas();
     }
 
+    private void createJCasIdAnnotation(JCas jcas)
+    {
+        JCasId id = new JCasId(jcas);
+        id.setId(0);
+        id.addToIndexes();
+    }
+
     private void createSequenceCas()
         throws IOException, UIMAException
     {
@@ -259,6 +267,8 @@ public class TestFoldUtil
         DocumentMetaData dmd = new DocumentMetaData(jcasSequence);
         dmd.setDocumentId("id");
         dmd.addToIndexes();
+        
+        createJCasIdAnnotation(jcasSequence);
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION, tmpFoldSeq.getRoot(),
@@ -304,6 +314,8 @@ public class TestFoldUtil
         DocumentMetaData dmd = new DocumentMetaData(jcasNoSequence);
         dmd.setDocumentId("id");
         dmd.addToIndexes();
+        
+        createJCasIdAnnotation(jcasNoSequence);
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION, tmpFoldNoSeq.getRoot(),
