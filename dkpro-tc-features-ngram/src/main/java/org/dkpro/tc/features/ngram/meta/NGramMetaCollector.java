@@ -31,6 +31,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
 import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -45,7 +46,8 @@ public class NGramMetaCollector
 {
     public static final String NGRAM_FD_KEY = "ngrams.ser";
 
-    @ConfigurationParameter(name = FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, mandatory = true)
+    public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
+    @ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
     private File ngramFdFile;
     
     @ConfigurationParameter(name = FrequencyDistributionNGramFeatureExtractorBase.PARAM_DFSTORE_FILE, mandatory = true)

@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 
 public abstract class LuceneNgramFeatureExtractorBase
@@ -35,9 +34,9 @@ public abstract class LuceneNgramFeatureExtractorBase
     {
         return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramMetaCollector.class)
                 .addStorageMapping(
-                        LuceneFeatureExtractorBase.PARAM_LUCENE_DIR,
-                        LuceneNGram.PARAM_LUCENE_DIR, 
-                        LuceneBasedMetaCollector.LUCENE_DIR));
+                        LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                             LuceneNGram.PARAM_SOURCE_LOCATION, 
+                        LuceneNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
