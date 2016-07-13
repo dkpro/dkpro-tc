@@ -286,7 +286,7 @@ public class CRFSuiteTestTask
         commandTrainModel.add(algorithm);
         
         for(String p : algoParameter){
-            commandTrainModel.add(p);
+            commandTrainModel.add(p.replaceAll(" ", ""));
         }
 
         commandTrainModel.add(trainingFile);

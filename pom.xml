@@ -79,7 +79,7 @@
 		<module>dkpro-tc-integrationtest</module>
 		<module>dkpro-tc-ml</module>
         <module>dkpro-tc-ml-crfsuite</module>
-        <module>dkpro-tc-ml-mallet</module>
+        
         <module>dkpro-tc-ml-liblinear</module>
         <module>dkpro-tc-ml-libsvm</module>
         <module>dkpro-tc-ml-svmhmm</module>
@@ -103,11 +103,6 @@
 				<groupId>org.dkpro.tc</groupId>
 				<artifactId>dkpro-tc-core</artifactId>
 				<version>0.9.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.dkpro.tc</groupId>
-				<artifactId>dkpro-tc-docbook</artifactId>
-				<version>0.8.0-SNAPSHOT-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.dkpro.tc</groupId>
@@ -172,11 +167,6 @@
             <dependency>
                 <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-crfsuite</artifactId>
-                <version>0.9.0-SNAPSHOT</version>
-            </dependency>
-          <dependency>
-                <groupId>org.dkpro.tc</groupId>
-                <artifactId>dkpro-tc-ml-mallet</artifactId>
                 <version>0.9.0-SNAPSHOT</version>
             </dependency>            
             <dependency>
@@ -387,11 +377,6 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
 				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cc.mallet</groupId>
-				<artifactId>mallet</artifactId>
-				<version>2.0.8</version>
 			</dependency>
 			<dependency>
 				<groupId>com.datumbox</groupId>

@@ -41,10 +41,10 @@ import weka.core.SerializationHelper;
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class WekaPairRegressionDemoTest extends JavaDemosTest_Base
+public class SemanticTextSimilarityDemoTest extends JavaDemosTest_Base
 {
     ParameterSpace pSpace;
-    WekaPairRegressionDemo experiment;
+    SemanticTextSimilarityDemo experiment;
     
     @Before
     public void setup()
@@ -52,8 +52,8 @@ public class WekaPairRegressionDemoTest extends JavaDemosTest_Base
     {
         super.setup();
         
-        experiment = new WekaPairRegressionDemo();
-        pSpace = WekaPairRegressionDemo.getParameterSpace();
+        experiment = new SemanticTextSimilarityDemo();
+        pSpace = SemanticTextSimilarityDemo.getParameterSpace();
     }
 
     @Test
