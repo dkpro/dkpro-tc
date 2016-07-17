@@ -19,9 +19,12 @@ package org.dkpro.tc.api.features.meta;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -31,16 +34,36 @@ public class MetaCollectorConfiguration
     public final AnalysisEngineDescription descriptor;
     public final Map<String, String> collectorOverrides = new HashMap<>();
     public final Map<String, String> extractorOverrides = new HashMap<>();
-    
+
     public MetaCollectorConfiguration(AnalysisEngineDescription aDescriptor)
     {
         descriptor = aDescriptor;
     }
 
-    public MetaCollectorConfiguration(Class<? extends AnalysisComponent> aClass)
-        throws ResourceInitializationException
+    public MetaCollectorConfiguration(Class<? extends AnalysisComponent> aClass,
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        descriptor = createEngineDescription(aClass);
+        List<Object> param = new ArrayList<>();
+        for (String k : parameterSettings.keySet()) {
+            param.add(k);
+
+            Object object = parameterSettings.get(k);
+
+            if (NumberUtils.isNumber(object.toString())) {
+                if (Math.ceil(Double.valueOf(object.toString())) == 0) {
+                    param.add(Integer.valueOf(object.toString()));
+                }
+                else {
+                    param.add(Double.valueOf(object.toString()));
+                }
+            }
+            else {
+                param.add(parameterSettings.get(k));
+            }
+        }
+
+        descriptor = createEngineDescription(aClass, param.toArray());
     }
 
     public MetaCollectorConfiguration addStorageMapping(String aCollectorParameter,

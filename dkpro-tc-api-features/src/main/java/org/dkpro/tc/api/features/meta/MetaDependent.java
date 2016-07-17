@@ -18,6 +18,7 @@
 package org.dkpro.tc.api.features.meta;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -28,8 +29,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 public interface MetaDependent
 {
     /**
+     * @param parameterSettings 
      * @return A list of meta collector classes that a "meta dependent" collector depdends on
      */
-    List<MetaCollectorConfiguration> getMetaCollectorClasses()
+    List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
         throws ResourceInitializationException;
 }

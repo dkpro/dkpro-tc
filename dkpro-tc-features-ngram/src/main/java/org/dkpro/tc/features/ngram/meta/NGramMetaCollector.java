@@ -19,8 +19,6 @@ package org.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.UimaContext;
@@ -29,17 +27,16 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
+import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.util.TfidfUtils;
 
 public class NGramMetaCollector
     extends FreqDistBasedMetaCollector
@@ -101,15 +98,6 @@ public class NGramMetaCollector
     	} catch(TextClassificationException e){
     		throw new AnalysisEngineProcessException(e);
     	}
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_FD_FILE, NGRAM_FD_KEY);
-        mapping.put(FrequencyDistributionNGramFeatureExtractorBase.PARAM_DFSTORE_FILE, DfModel.FILE_NAME);
-        return mapping;
     }
 
     @Override

@@ -157,9 +157,10 @@ public class MetaInfoTask
                 }
     
                 MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+                Map<String, Object> parameterSettings = ConfigurationParameterFactory.getParameterSettings(feDesc.getResourceSpecifier());
                 
                 // Tell the meta collectors where to store their data
-                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses()) {
+                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(parameterSettings)) {
                     configureStorageLocations(aContext, conf.descriptor,
                             (String) feClosure.getDiscriminatorValue(), conf.collectorOverrides, AccessMode.READWRITE);
                     metaCollectors.add(conf.descriptor);

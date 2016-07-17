@@ -22,13 +22,11 @@ import static org.dkpro.tc.core.Constants.DIM_APPLY_INSTANCE_WEIGHTING;
 import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_FILTERS;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_STORE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
 import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
-import static org.dkpro.tc.core.Constants.DIM_PIPELINE_PARAMS;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,12 +34,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -49,7 +49,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
-import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -149,9 +148,12 @@ public class ExtractFeaturesTask
                 }
 
                 MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+                Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                        .getParameterSettings(feDesc.getResourceSpecifier());
 
                 // Tell the meta collectors where to store their data
-                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses()) {
+                for (MetaCollectorConfiguration conf : feInstance
+                        .getMetaCollectorClasses(parameterSettings)) {
                     MetaInfoTask.configureStorageLocations(aContext, feDesc.getResourceSpecifier(),
                             (String) feClosure.getDiscriminatorValue(), conf.extractorOverrides,
                             AccessMode.READONLY);

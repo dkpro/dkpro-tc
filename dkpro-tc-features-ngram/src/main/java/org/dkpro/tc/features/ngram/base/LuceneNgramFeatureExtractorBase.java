@@ -19,6 +19,7 @@ package org.dkpro.tc.features.ngram.base;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
@@ -29,10 +30,10 @@ public abstract class LuceneNgramFeatureExtractorBase
     extends LuceneFeatureExtractorBase
 {
     @Override
-    public List<MetaCollectorConfiguration> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
         throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramMetaCollector.class)
+        return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramMetaCollector.class, parameterSettings)
                 .addStorageMapping(
                         LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
                              LuceneNGram.PARAM_SOURCE_LOCATION, 
