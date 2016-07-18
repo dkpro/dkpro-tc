@@ -51,11 +51,11 @@ public class MetaCollectorConfiguration
             Object object = parameterSettings.get(k);
 
             if (NumberUtils.isNumber(object.toString())) {
-                if (Math.ceil(Double.valueOf(object.toString())) == 0) {
-                    param.add(Integer.valueOf(object.toString()));
+                if (object.toString().matches("[0-9]+\\.[0-9]+")) {
+                    param.add(Double.valueOf(object.toString()));
                 }
                 else {
-                    param.add(Double.valueOf(object.toString()));
+                    param.add(Integer.valueOf(object.toString()));
                 }
             }
             else {
