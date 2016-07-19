@@ -29,9 +29,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 public interface MetaDependent
 {
     /**
+     * @param name 
      * @param parameterSettings 
+     * @param name 
      * @return A list of meta collector classes that a "meta dependent" collector depdends on
      */
-    List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
+    List<MetaCollectorConfiguration> getMetaCollectorClasses(String name, Map<String, Object> parameterSettings)
         throws ResourceInitializationException;
+    
+    void setName(String name);
 }

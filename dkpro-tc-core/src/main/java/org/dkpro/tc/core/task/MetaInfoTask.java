@@ -19,10 +19,8 @@ package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.Constants.DIM_PIPELINE_PARAMS;
 import static org.dkpro.tc.core.Constants.DIM_RECORD_CONTEXT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.FM_UNIT;
@@ -55,7 +53,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
 
@@ -158,9 +155,12 @@ public class MetaInfoTask
     
                 MetaDependent feInstance = (MetaDependent) feClass.newInstance();
                 Map<String, Object> parameterSettings = ConfigurationParameterFactory.getParameterSettings(feDesc.getResourceSpecifier());
+
+                String name = (String) feClosure.getDiscriminatorValue();
+                feInstance.setName(name);
                 
                 // Tell the meta collectors where to store their data
-                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(parameterSettings)) {
+                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(name,parameterSettings)) {
                     configureStorageLocations(aContext, conf.descriptor,
                             (String) feClosure.getDiscriminatorValue(), conf.collectorOverrides, AccessMode.READWRITE);
                     metaCollectors.add(conf.descriptor);

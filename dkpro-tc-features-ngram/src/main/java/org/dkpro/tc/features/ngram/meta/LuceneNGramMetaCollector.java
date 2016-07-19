@@ -35,8 +35,12 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneNGramMetaCollector
     extends LuceneBasedMetaCollector
-{    
-
+    {
+    
+    public static final String PARAM_FIELD_NAME = "PARAM_FIELD_NAME";
+    @ConfigurationParameter(name = "PARAM_FIELD_NAME", mandatory = true)
+    protected String uniqueName;
+    
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
@@ -81,6 +85,6 @@ public class LuceneNGramMetaCollector
     
     @Override
     protected String getFieldName(){
-        return LuceneNGram.LUCENE_NGRAM_FIELD;
+        return LuceneNGram.LUCENE_NGRAM_FIELD + uniqueName;
     }
 }

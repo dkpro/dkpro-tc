@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.bcel.generic.LUSHR;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -49,6 +50,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
+import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -150,10 +152,13 @@ public class ExtractFeaturesTask
                 MetaDependent feInstance = (MetaDependent) feClass.newInstance();
                 Map<String, Object> parameterSettings = ConfigurationParameterFactory
                         .getParameterSettings(feDesc.getResourceSpecifier());
-
+                
+                String name = (String) feClosure.getDiscriminatorValue();
+                feInstance.setName(name);
+                
                 // Tell the meta collectors where to store their data
                 for (MetaCollectorConfiguration conf : feInstance
-                        .getMetaCollectorClasses(parameterSettings)) {
+                        .getMetaCollectorClasses(name,parameterSettings)) {
                     MetaInfoTask.configureStorageLocations(aContext, feDesc.getResourceSpecifier(),
                             (String) feClosure.getDiscriminatorValue(), conf.extractorOverrides,
                             AccessMode.READONLY);
