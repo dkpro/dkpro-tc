@@ -18,7 +18,6 @@
 package org.dkpro.tc.core.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.fit.factory.ExternalResourceFactory;
@@ -37,7 +36,7 @@ public class FeatureFactory
          * Each feature has to set a unique name which is build from the simple name of the feature class and extended with a random value 
          */
         String name = featureName.getSimpleName() + System.nanoTime();
-        List<Object> params = new ArrayList<>(Arrays.asList(parameters));
+        List<String> params = getParameterAsString(parameters);
         params.add(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
         params.add(name);
 
@@ -50,6 +49,15 @@ public class FeatureFactory
                         params.toArray());
             }
         };
+    }
+
+    private static List<String> getParameterAsString(Object[] parameters)
+    {
+        List<String> strings = new ArrayList<>();
+        for(Object object : parameters){
+            strings.add(object.toString());
+        }
+        return strings;
     }
 
 }

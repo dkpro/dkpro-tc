@@ -74,8 +74,8 @@ public class LuceneNGramFeatureExtractorTest
         Object[] parameters = new Object[] {
                 LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3",
-                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.getAbsolutePath(),
-                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.getAbsolutePath()};
+                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString()};
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LuceneNGram.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
