@@ -61,11 +61,4 @@ public class LuceneNGram
         }
         return features;
     }
-
-    @Override
-    public void setName(String name)
-    {
-        fieldName=LUCENE_NGRAM_FIELD+ "-"+ name;
-        
-    }
 }

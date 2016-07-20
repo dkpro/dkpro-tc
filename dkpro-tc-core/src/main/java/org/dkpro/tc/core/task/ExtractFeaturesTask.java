@@ -152,13 +152,10 @@ public class ExtractFeaturesTask
                 MetaDependent feInstance = (MetaDependent) feClass.newInstance();
                 Map<String, Object> parameterSettings = ConfigurationParameterFactory
                         .getParameterSettings(feDesc.getResourceSpecifier());
-                
-                String name = (String) feClosure.getDiscriminatorValue();
-                feInstance.setName(name);
-                
+
                 // Tell the meta collectors where to store their data
                 for (MetaCollectorConfiguration conf : feInstance
-                        .getMetaCollectorClasses(name,parameterSettings)) {
+                        .getMetaCollectorClasses(parameterSettings)) {
                     MetaInfoTask.configureStorageLocations(aContext, feDesc.getResourceSpecifier(),
                             (String) feClosure.getDiscriminatorValue(), conf.extractorOverrides,
                             AccessMode.READONLY);

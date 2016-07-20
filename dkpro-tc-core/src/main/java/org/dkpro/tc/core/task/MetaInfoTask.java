@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,6 +51,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
@@ -95,6 +97,8 @@ public class MetaInfoTask
     @Discriminator(name = DIM_RECORD_CONTEXT)
     private boolean recordContext;
 
+    private Set<String> featureExtractorNames = new HashSet<>();
+
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
@@ -118,6 +122,7 @@ public class MetaInfoTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
+        featureExtractorNames = new HashSet<>();
         // check for error conditions
         if (featureExtractors == null) {
             throw new ResourceInitializationException(new TextClassificationException(
@@ -130,39 +135,41 @@ public class MetaInfoTask
             featureExtractorDescriptions.add(fc.getActualValue());
         }
 
-
         List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
         try {
-    
+
             // Configure the meta collectors for each feature extractor individually
             for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> feClosure : featureExtractors) {
                 ExternalResourceDescription feDesc = feClosure.getActualValue();
-                
+
                 String implName;
                 if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-                    implName = ((CustomResourceSpecifier) feDesc
-                            .getResourceSpecifier()).getResourceClassName();
-                } else {
+                    implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                            .getResourceClassName();
+                }
+                else {
                     implName = feDesc.getImplementationName();
                 }
 
                 Class<?> feClass = Class.forName(implName);
-                
+
                 // Skip feature extractors that are not dependent on meta collectors
                 if (!MetaDependent.class.isAssignableFrom(feClass)) {
                     continue;
                 }
-    
-                MetaDependent feInstance = (MetaDependent) feClass.newInstance();
-                Map<String, Object> parameterSettings = ConfigurationParameterFactory.getParameterSettings(feDesc.getResourceSpecifier());
 
-                String name = (String) feClosure.getDiscriminatorValue();
-                feInstance.setName(name);
-                
+                MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+                Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                        .getParameterSettings(feDesc.getResourceSpecifier());
+
+                validateUniqueFeatureExtractorNames(parameterSettings);
+
                 // Tell the meta collectors where to store their data
-                for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(name,parameterSettings)) {
+                for (MetaCollectorConfiguration conf : feInstance
+                        .getMetaCollectorClasses(parameterSettings)) {
                     configureStorageLocations(aContext, conf.descriptor,
-                            (String) feClosure.getDiscriminatorValue(), conf.collectorOverrides, AccessMode.READWRITE);
+                            (String) feClosure.getDiscriminatorValue(), conf.collectorOverrides,
+                            AccessMode.READWRITE);
                     metaCollectors.add(conf.descriptor);
                 }
             }
@@ -189,43 +196,57 @@ public class MetaInfoTask
         }
         return builder.createAggregateDescription();
     }
-    
-    public static void configureStorageLocations(TaskContext aContext, ResourceSpecifier aDesc, String aExtractorName, Map<String, String> aOverrides, AccessMode aMode)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException
-        {
-            // We assume for the moment that we only have primitive analysis engines for meta
-            // collection, not aggregates. If there were aggregates, we'd have to do this
-            // recursively
-            if (aDesc instanceof AnalysisEngineDescription) {
-                // Analysis engines are ok
-                if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
-                    throw new IllegalArgumentException("Only primitive meta collectors currently supported.");
-                }
-            }
-            else if (aDesc instanceof CustomResourceSpecifier_impl) {
-                // Feature extractors are ok
-            }
-            else {
-                throw new IllegalArgumentException("Descriptors of type "+aDesc.getClass()+" not supported.");
-            }
-            
-            for (Entry<String, String> e : aOverrides.entrySet()) {
-                if (aExtractorName != null) {
-                    // We generate a storage location from the feature extractor discriminator value
-                    // and the preferred value specified by the meta collector
-                    String storageLocation = String.valueOf(aExtractorName)
-                            + "-" + e.getValue();
-                    String parameterName = e.getKey();
-                    ConfigurationParameterFactory.setParameter(aDesc, parameterName,
-                            new File(aContext.getFolder(MetaInfoTask.META_KEY, aMode), e.getValue()).getAbsolutePath());
-                }
-                else {
-                    // If there is no associated feature extractor, then just use the preferred name
-                    ConfigurationParameterFactory.setParameter(aDesc, e.getKey(),
-                            new File(aContext.getFolder(MetaInfoTask.META_KEY, aMode), e.getValue()).getAbsolutePath());
-                }
+
+    private void validateUniqueFeatureExtractorNames(Map<String, Object> parameterSettings)
+    {
+        String name = (String) parameterSettings
+                .get(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
+        if (featureExtractorNames.contains(name)) {
+            throw new IllegalArgumentException("The feature extractor name [" + name
+                    + "] has been used before. The name has to be unique among all used feature extractors.");
+        }
+        featureExtractorNames.add(name);
+    }
+
+    public static void configureStorageLocations(TaskContext aContext, ResourceSpecifier aDesc,
+            String aExtractorName, Map<String, String> aOverrides, AccessMode aMode)
+                throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    {
+        // We assume for the moment that we only have primitive analysis engines for meta
+        // collection, not aggregates. If there were aggregates, we'd have to do this
+        // recursively
+        if (aDesc instanceof AnalysisEngineDescription) {
+            // Analysis engines are ok
+            if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
+                throw new IllegalArgumentException(
+                        "Only primitive meta collectors currently supported.");
             }
         }
+        else if (aDesc instanceof CustomResourceSpecifier_impl) {
+            // Feature extractors are ok
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "Descriptors of type " + aDesc.getClass() + " not supported.");
+        }
+
+        for (Entry<String, String> e : aOverrides.entrySet()) {
+            if (aExtractorName != null) {
+                // We generate a storage location from the feature extractor discriminator value
+                // and the preferred value specified by the meta collector
+                String parameterName = e.getKey();
+                ConfigurationParameterFactory.setParameter(aDesc, parameterName,
+                        new File(aContext.getFolder(MetaInfoTask.META_KEY, aMode), e.getValue())
+                                .getAbsolutePath());
+            }
+            else {
+                // If there is no associated feature extractor, then just use the preferred name
+                ConfigurationParameterFactory.setParameter(aDesc, e.getKey(),
+                        new File(aContext.getFolder(MetaInfoTask.META_KEY, aMode), e.getValue())
+                                .getAbsolutePath());
+            }
+        }
+    }
 
     private void addContextCollector()
     {

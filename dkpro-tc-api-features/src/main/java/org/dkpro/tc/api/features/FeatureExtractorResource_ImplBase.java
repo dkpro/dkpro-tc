@@ -20,6 +20,7 @@ package org.dkpro.tc.api.features;
 import java.util.Map;
 
 import org.apache.uima.fit.component.Resource_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -33,6 +34,9 @@ import org.apache.uima.resource.ResourceSpecifier;
 public abstract class FeatureExtractorResource_ImplBase
     extends Resource_ImplBase
 {
+    public static final String PARAM_UNIQUE_EXTRACTOR_NAME = "uniqueFeatureExtractorName";
+    @ConfigurationParameter(name = PARAM_UNIQUE_EXTRACTOR_NAME, mandatory = true)
+    protected String featureExtractorName;
     
     protected String[] requiredTypes;
 

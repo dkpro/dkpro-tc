@@ -26,7 +26,4 @@ public abstract class DynamicDiscriminableFunctionBase<T> implements Discriminab
     
     @Override
     public abstract T getActualValue();
-
-    
-//    public abstract T getActualValue(TaskContext aContext);
 }

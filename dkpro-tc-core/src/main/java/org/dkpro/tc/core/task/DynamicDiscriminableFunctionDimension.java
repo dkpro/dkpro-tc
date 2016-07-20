@@ -13,6 +13,7 @@ public class DynamicDiscriminableFunctionDimension<T>
     private int current = -1;
     private Map<String, Object> config;
 
+    @SafeVarargs
     public DynamicDiscriminableFunctionDimension(String aName, DynamicDiscriminableFunctionBase<T>... aClosures)
     {
         super(aName);

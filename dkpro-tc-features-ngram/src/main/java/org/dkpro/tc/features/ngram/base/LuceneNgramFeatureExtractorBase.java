@@ -29,26 +29,22 @@ import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 public abstract class LuceneNgramFeatureExtractorBase
     extends LuceneFeatureExtractorBase
 {
-    protected String fieldName;
-    
+
     @Override
-    public List<MetaCollectorConfiguration> getMetaCollectorClasses(String name, Map<String, Object> parameterSettings)
-        throws ResourceInitializationException
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        fieldName = name;
-        parameterSettings.put(LuceneNGramMetaCollector.PARAM_FIELD_NAME, name);
-        
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramMetaCollector.class, parameterSettings)
-                .addStorageMapping(
-                        LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
-                             LuceneNGram.PARAM_SOURCE_LOCATION, 
-                        LuceneNGramMetaCollector.LUCENE_DIR));
+        return Arrays.asList(
+                new MetaCollectorConfiguration(LuceneNGramMetaCollector.class, parameterSettings)
+                        .addStorageMapping(LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                                LuceneNGram.PARAM_SOURCE_LOCATION,
+                                LuceneNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return fieldName;
+        return LUCENE_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override

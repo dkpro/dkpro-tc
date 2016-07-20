@@ -39,6 +39,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.DynamicDiscriminableFunctionBase;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -113,9 +114,21 @@ public class WekaSimpleDkproTCReaderDemo
                                     public ExternalResourceDescription getActualValue()
                                     {
                                         return createExternalResourceDescription(LuceneNGram.class,
+                                                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "triGramRun",
                                                 LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
                                                 LuceneNGram.PARAM_NGRAM_MIN_N, "3",
                                                 LuceneNGram.PARAM_NGRAM_MAX_N, "3");
+                                    }
+                                },
+                                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
+                                        "numTok")
+                                {
+                                    @Override
+                                    public ExternalResourceDescription getActualValue()
+                                    {
+                                        return createExternalResourceDescription(NrOfTokens.class,
+                                                NrOfTokens.PARAM_UNIQUE_EXTRACTOR_NAME, NrOfTokens.class.getName()+System.currentTimeMillis()
+                                                );
                                     }
                                 },
                                 new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
@@ -125,6 +138,7 @@ public class WekaSimpleDkproTCReaderDemo
                                     public ExternalResourceDescription getActualValue()
                                     {
                                         return createExternalResourceDescription(LuceneNGram.class,
+                                                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "uniGramRun",
                                                 LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
                                                 LuceneNGram.PARAM_NGRAM_MIN_N, "1",
                                                 LuceneNGram.PARAM_NGRAM_MAX_N, "1");
