@@ -19,7 +19,6 @@
 package org.dkpro.tc.examples.single.document;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,14 +28,13 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.FeatureFactory;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
@@ -107,43 +105,16 @@ public class WekaSimpleDkproTCReaderDemo
         Dimension dimFeatureExtractors = Dimension
                 .create(DIM_FEATURE_SET,
                         Arrays.asList(
-                                new TcFeature<ExternalResourceDescription>(
-                                        "createLuceneTriGrams")
-                                {
-                                    @Override
-                                    public ExternalResourceDescription getActualValue()
-                                    {
-                                        return createExternalResourceDescription(LuceneNGram.class,
-                                                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "triGramRun",
-                                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
-                                                LuceneNGram.PARAM_NGRAM_MIN_N, "3",
-                                                LuceneNGram.PARAM_NGRAM_MAX_N, "3");
-                                    }
-                                },
-                                new TcFeature<ExternalResourceDescription>(
-                                        "numTok")
-                                {
-                                    @Override
-                                    public ExternalResourceDescription getActualValue()
-                                    {
-                                        return createExternalResourceDescription(NrOfTokens.class,
-                                                NrOfTokens.PARAM_UNIQUE_EXTRACTOR_NAME, NrOfTokens.class.getName()+System.currentTimeMillis()
-                                                );
-                                    }
-                                },
-                                new TcFeature<ExternalResourceDescription>(
-                                        "createLuceneUniGrams")
-                                {
-                                    @Override
-                                    public ExternalResourceDescription getActualValue()
-                                    {
-                                        return createExternalResourceDescription(LuceneNGram.class,
-                                                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "uniGramRun",
-                                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
-                                                LuceneNGram.PARAM_NGRAM_MIN_N, "1",
-                                                LuceneNGram.PARAM_NGRAM_MAX_N, "1");
-                                    }
-                                }));
+                                FeatureFactory.make(LuceneNGram.class, 
+                                        LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
+                                        LuceneNGram.PARAM_NGRAM_MIN_N, "3",
+                                        LuceneNGram.PARAM_NGRAM_MAX_N, "3"),
+                                FeatureFactory.make(NrOfTokens.class),
+                                FeatureFactory.make(LuceneNGram.class, 
+                                        LuceneNGram.PARAM_NGRAM_USE_TOP_K, "5",
+                                        LuceneNGram.PARAM_NGRAM_MIN_N, "5",
+                                        LuceneNGram.PARAM_NGRAM_MAX_N, "5"))
+                                );
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
