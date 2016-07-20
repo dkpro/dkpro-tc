@@ -21,6 +21,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_RECORD_CONTEXT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.FM_UNIT;
@@ -80,7 +81,7 @@ public class MetaInfoTask
 
     private List<String> operativeViews;
 
-    @Discriminator(name = "ABC")
+    @Discriminator(name = DIM_FEATURE_SET)
     private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
 
     @Discriminator(name = DIM_FEATURE_MODE)

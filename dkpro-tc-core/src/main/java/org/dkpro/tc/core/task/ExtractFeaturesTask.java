@@ -27,6 +27,7 @@ import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
 import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.bcel.generic.LUSHR;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -50,7 +50,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
-import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -93,7 +92,7 @@ public class ExtractFeaturesTask
     private boolean developerMode;
     @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
-    @Discriminator(name = "ABC")
+    @Discriminator(name = DIM_FEATURE_SET)
     private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
 
     private boolean isTesting = false;
@@ -123,7 +122,7 @@ public class ExtractFeaturesTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        File outputDir = aContext.getStorageLocation(OUTPUT_KEY, AccessMode.READWRITE);
+        File outputDir = aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
 
         // Resolve the feature extractor closures to actual descritors
         List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
@@ -183,7 +182,7 @@ public class ExtractFeaturesTask
 
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
-                featureMode, featureStore, true, developerMode, isTesting, featureFilters,
+                featureMode, getFeatureStore(), true, developerMode, isTesting, featureFilters,
                 applyWeighting, featureExtractorDescriptions);
 
         return connector;

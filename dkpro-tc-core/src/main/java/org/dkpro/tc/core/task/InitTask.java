@@ -23,7 +23,6 @@ import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
-import static org.dkpro.tc.core.Constants.DIM_PIPELINE_PARAMS;
 import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
 import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
 import static org.dkpro.tc.core.Constants.FM_PAIR;
@@ -79,7 +78,7 @@ public class InitTask
     private String featureMode;
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private String threshold;
-    @Discriminator(name = "ABC")
+    @Discriminator(name = DIM_FEATURE_SET)
     private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;

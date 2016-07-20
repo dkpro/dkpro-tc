@@ -105,7 +105,7 @@ public class WekaSimpleDkproTCReaderDemo
 
         @SuppressWarnings("unchecked")
         Dimension dimFeatureExtractors = Dimension
-                .create("ABC",
+                .create(DIM_FEATURE_SET,
                         Arrays.asList(
                                 new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
                                         "createLuceneTriGrams")

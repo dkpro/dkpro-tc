@@ -64,8 +64,6 @@ public class WekaTestTask
     protected boolean applySelection;
     @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
-    @Discriminator(name=DIM_FEATURE_SET)
-    protected List<String> featureSet;
     @Discriminator(name=DIM_LEARNING_MODE)
     protected String learningMode;
     @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
