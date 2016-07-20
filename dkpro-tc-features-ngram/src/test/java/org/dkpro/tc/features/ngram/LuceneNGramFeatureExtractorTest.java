@@ -73,8 +73,9 @@ public class LuceneNGramFeatureExtractorTest
 
         Object[] parameters = new Object[] {
                 LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneNGram.PARAM_NGRAM_USE_TOP_K, 3,
-                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder };
+                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3",
+                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.getAbsolutePath(),
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.getAbsolutePath()};
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LuceneNGram.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
@@ -88,18 +89,14 @@ public class LuceneNGramFeatureExtractorTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
+        
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
-//        TaskUtils.getFeatureExtractorConnector(
-//                outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
-//                featureMode, getFeatureStore(), true, developerMode, isTesting, featureFilters,
-//                applyWeighting, featureExtractorDescriptions);
-        
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), true,
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false,
                 false, false, new ArrayList<>(), false, fes);
 
         // run meta collector
@@ -121,53 +118,51 @@ public class LuceneNGramFeatureExtractorTest
         assertTrue(featureNames.contains("ngram_5"));
         assertTrue(featureNames.contains("ngram_5_5"));
 
-        // System.out.println(FileUtils.readFileToString(new File(outputPath,
-        // JsonDataWriter.JSON_FILE_NAME)));
     }
 
-//    @Test
-//    public void luceneNGramFeatureExtractorNonDefaultFrequencyThresholdTest()
-//        throws Exception
-//    {
-//
-//        File luceneFolder = folder.newFolder();
-//        File outputPath = folder.newFolder();
-//
-//        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 3,
-//                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD,
-//                0.1f };
-//
-//        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
-//
-//        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-//                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-//                "src/test/resources/ngrams/*.txt");
-//
-//        AnalysisEngineDescription segmenter = AnalysisEngineFactory
-//                .createEngineDescription(BreakIteratorSegmenter.class);
-//
-//        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-//                .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
-//
-//        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-//                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-//                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-//                false, false, false, false, LuceneNGram.class.getName());
-//
-//        // run meta collector
-//        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
-//
-//        // run FE(s)
-//        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
-//
-//        Gson gson = new Gson();
-//        FeatureStore fs = gson.fromJson(
-//                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-//                DenseFeatureStore.class);
-//        assertEquals(4, fs.getNumberOfInstances());
-//        assertEquals(1, fs.getUniqueOutcomes().size());
-//
-//        Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
-//        assertEquals(0, featureNames.size());
-//    }
+    @Test
+    public void luceneNGramFeatureExtractorNonDefaultFrequencyThresholdTest()
+        throws Exception
+    {
+
+        File luceneFolder = folder.newFolder();
+        File outputPath = folder.newFolder();
+
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 3,
+                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD,
+                0.1f };
+
+        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/ngrams/*.txt");
+
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
+
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
+
+        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, false, LuceneNGram.class.getName());
+
+        // run meta collector
+        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+
+        // run FE(s)
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+
+        Gson gson = new Gson();
+        FeatureStore fs = gson.fromJson(
+                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
+                DenseFeatureStore.class);
+        assertEquals(4, fs.getNumberOfInstances());
+        assertEquals(1, fs.getUniqueOutcomes().size());
+
+        Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
+        assertEquals(0, featureNames.size());
+    }
 }
