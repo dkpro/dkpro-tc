@@ -93,7 +93,7 @@ public class ExtractFeaturesTask
     @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
     @Discriminator(name = DIM_FEATURE_SET)
-    private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
+    private List<TcFeature<ExternalResourceDescription>> featureExtractors;
 
     private boolean isTesting = false;
     // TODO Issue 121: this is already prepared, but not used
@@ -129,7 +129,7 @@ public class ExtractFeaturesTask
 
         // Configure the meta collectors for each feature extractor individually
         try {
-            for (DynamicDiscriminableFunctionBase<ExternalResourceDescription> feClosure : featureExtractors) {
+            for (TcFeature<ExternalResourceDescription> feClosure : featureExtractors) {
                 ExternalResourceDescription feDesc = feClosure.getActualValue();
                 featureExtractorDescriptions.add(feDesc);
 

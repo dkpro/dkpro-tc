@@ -79,7 +79,7 @@ public class InitTask
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private String threshold;
     @Discriminator(name = DIM_FEATURE_SET)
-    private List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors;
+    private List<TcFeature<ExternalResourceDescription>> featureExtractors;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
@@ -218,7 +218,7 @@ public class InitTask
     }
 
     private Object getFeatureExtractorNames(
-            List<DynamicDiscriminableFunctionBase<ExternalResourceDescription>> featureExtractors2)
+            List<TcFeature<ExternalResourceDescription>> featureExtractors2)
     {
         String[] featureExtractorNames = new String[featureExtractors.size()];
 

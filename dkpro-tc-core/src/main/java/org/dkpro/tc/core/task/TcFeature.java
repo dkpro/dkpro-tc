@@ -4,12 +4,12 @@ import java.util.Map;
 
 import org.dkpro.lab.task.Discriminable;
 
-public abstract class DynamicDiscriminableFunctionBase<T> implements Discriminable
+public abstract class TcFeature<T> implements Discriminable
 {
     private String name;
     protected Map<String, Object> config;
     
-    public DynamicDiscriminableFunctionBase(String aName)
+    public TcFeature(String aName)
     {
         name = aName;
     }

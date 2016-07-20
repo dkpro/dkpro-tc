@@ -36,7 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.DynamicDiscriminableFunctionBase;
+import org.dkpro.tc.core.task.TcFeature;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
@@ -107,7 +107,7 @@ public class WekaSimpleDkproTCReaderDemo
         Dimension dimFeatureExtractors = Dimension
                 .create(DIM_FEATURE_SET,
                         Arrays.asList(
-                                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
+                                new TcFeature<ExternalResourceDescription>(
                                         "createLuceneTriGrams")
                                 {
                                     @Override
@@ -120,7 +120,7 @@ public class WekaSimpleDkproTCReaderDemo
                                                 LuceneNGram.PARAM_NGRAM_MAX_N, "3");
                                     }
                                 },
-                                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
+                                new TcFeature<ExternalResourceDescription>(
                                         "numTok")
                                 {
                                     @Override
@@ -131,7 +131,7 @@ public class WekaSimpleDkproTCReaderDemo
                                                 );
                                     }
                                 },
-                                new DynamicDiscriminableFunctionBase<ExternalResourceDescription>(
+                                new TcFeature<ExternalResourceDescription>(
                                         "createLuceneUniGrams")
                                 {
                                     @Override
