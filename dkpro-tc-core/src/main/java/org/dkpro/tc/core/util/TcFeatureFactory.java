@@ -26,9 +26,9 @@ import org.apache.uima.resource.Resource;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.core.task.TcFeature;
 
-public class FeatureFactory
+public class TcFeatureFactory
 {
-    public static TcFeature<ExternalResourceDescription> make(Class<? extends Resource> featureName,
+    public static TcFeature<ExternalResourceDescription> create(Class<? extends Resource> featureName,
             Object... parameters)
     {
 

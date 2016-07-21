@@ -28,13 +28,15 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.FeatureFactory;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
@@ -102,15 +104,15 @@ public class WekaSimpleDkproTCReaderDemo
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension dimFeatureExtractors = Dimension
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureExtractors = Dimension
                 .create(DIM_FEATURE_SET,
                         Arrays.asList(
-                                FeatureFactory.make(LuceneNGram.class, 
+                                TcFeatureFactory.create(LuceneNGram.class, 
                                         LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
                                         LuceneNGram.PARAM_NGRAM_MIN_N, "3",
                                         LuceneNGram.PARAM_NGRAM_MAX_N, "3"),
-                                FeatureFactory.make(NrOfTokens.class),
-                                FeatureFactory.make(LuceneNGram.class, 
+                                TcFeatureFactory.create(NrOfTokens.class),
+                                TcFeatureFactory.create(LuceneNGram.class, 
                                         LuceneNGram.PARAM_NGRAM_USE_TOP_K, "5",
                                         LuceneNGram.PARAM_NGRAM_MIN_N, "5",
                                         LuceneNGram.PARAM_NGRAM_MAX_N, "5"))
