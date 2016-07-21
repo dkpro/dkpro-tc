@@ -128,9 +128,10 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 3,
-                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD,
-                0.1f };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3",
+                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(), LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD,
+                "0.1f", LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -144,10 +145,19 @@ public class LuceneNGramFeatureExtractorTest
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
+//        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+//                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+//                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+//                false, false, false, false, LuceneNGram.class.getName());
+        
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LuceneNGram.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+        
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LuceneNGram.class.getName());
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false,
+                false, false, new ArrayList<>(), false, fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
