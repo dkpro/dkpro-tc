@@ -51,7 +51,8 @@ public class LuceneNGramMetaCollectorTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @SuppressWarnings("unused")
+    public static String UNIQUE_FEATURE_NAME = "123";
+    
     @Test
     public void luceneNgramMetaCollectorTest()
         throws Exception
@@ -73,11 +74,12 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
-                LuceneNGram.PARAM_SOURCE_LOCATION, tmpDir
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
+                LuceneNGramMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, UNIQUE_FEATURE_NAME
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter,doc, metaCollector)) {
-//            System.out.println(jcas.getDocumentText().length());
+            System.out.println(jcas.getDocumentText().length());
         }
         
         int i = 0;
@@ -86,19 +88,11 @@ public class LuceneNGramMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(LuceneNGram.LUCENE_NGRAM_FIELD);
+                Terms terms = fields.terms(LuceneNGram.LUCENE_NGRAM_FIELD+UNIQUE_FEATURE_NAME);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
-//                    Bits liveDocs = MultiFields.getLiveDocs(index);
-//                    DocsEnum docs = termsEnum.docs(liveDocs, null);
-//                    int docId;
-//                    while((docId = docs.nextDoc()) != DocsEnum.NO_MORE_DOCS) {
-//                        index.g
-//                    }
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
-//                        System.out.println(text.utf8ToString() + " - " + termsEnum.totalTermFreq());
-//                        System.out.println(termsEnum.docFreq());
                         
                         if (text.utf8ToString().equals("this")) {
                             assertEquals(2, termsEnum.docFreq());
