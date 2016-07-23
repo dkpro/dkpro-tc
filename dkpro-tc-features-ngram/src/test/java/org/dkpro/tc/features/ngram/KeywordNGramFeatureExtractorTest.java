@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -31,7 +30,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
@@ -71,12 +72,13 @@ public class KeywordNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt", KeywordNGram.PARAM_LUCENE_DIR,
+        Object[] parameters = new Object[] {KeywordNGram.PARAM_UNIQUE_EXTRACTOR_NAME,"123",  
+                KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", KeywordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder,KeywordNGramMetaCollector.PARAM_TARGET_LOCATION,
                 luceneFolder, KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
                 markSentenceLocation, KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
                 includeComma };
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
@@ -86,12 +88,17 @@ public class KeywordNGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(KeywordNGramMetaCollector.class, parameterList.toArray());
+                .createEngineDescription(KeywordNGramMetaCollector.class, parameters);
 
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(KeywordNGram.class, toString(parameters));
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+        
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, false, KeywordNGram.class.getName());
+                false, false, false, new ArrayList<>(), false, fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
@@ -104,6 +111,16 @@ public class KeywordNGramFeatureExtractorTest
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
                 DenseFeatureStore.class);
         assertEquals(1, fs.getNumberOfInstances());
+    }
+
+    private Object [] toString(Object[] parameters)
+    {
+        List<Object> out = new ArrayList<>();
+        for(Object o : parameters){
+            out.add(o.toString());
+        }
+        
+        return out.toArray();
     }
 
     @Test

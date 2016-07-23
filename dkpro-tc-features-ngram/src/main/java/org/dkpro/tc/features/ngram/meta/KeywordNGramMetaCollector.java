@@ -80,7 +80,7 @@ public class KeywordNGramMetaCollector
     @Override
     protected String getFieldName()
     {
-        return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
+        return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD + featureExtractorName;
     }
 
 }
