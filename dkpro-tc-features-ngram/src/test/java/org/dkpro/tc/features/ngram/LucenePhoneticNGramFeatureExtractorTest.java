@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -29,7 +28,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
@@ -66,25 +67,30 @@ public class LucenePhoneticNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LucenePhoneticNGram.PARAM_PHONETIC_NGRAM_USE_TOP_K, 10,
-        		LucenePhoneticNGram.PARAM_LUCENE_DIR, luceneFolder };
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+        Object[] parameters = new Object[] { LucenePhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LucenePhoneticNGram.PARAM_PHONETIC_NGRAM_USE_TOP_K, "10",
+                LucenePhoneticNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                LucenePhoneticNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString(), };
+
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(LucenePhoneticNGram.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en", TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-                "src/test/resources/data/text*.txt");
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-        		LucenePhoneticNGramMetaCollector.class, parameterList.toArray());
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(LucenePhoneticNGramMetaCollector.class, parameters);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT,
-                DenseFeatureStore.class.getName(), false, false, false, false,
-                LucenePhoneticNGram.class.getName());
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, new ArrayList<>(), false, fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
