@@ -28,16 +28,20 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
 import org.dkpro.tc.core.util.ExperimentUtil;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
@@ -105,11 +109,16 @@ public class WekaAblationDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        // ##############
-        // this is where the feature set for the ablation test are created
-        Dimension<List<String>> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
-                EmoticonRatio.class.getName(), NumberOfHashTags.class.getName(),
-                NrOfTokens.class.getName());
+//        // ##############
+//        // this is where the feature set for the ablation test are created
+//        Dimension<List<String>> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
+//                EmoticonRatio.class.getName(), NumberOfHashTags.class.getName(),
+//                NrOfTokens.class.getName());
+        
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets =ExperimentUtil.getAblationTestFeatures(
+                TcFeatureFactory.create(NrOfTokensPerSentence.class),
+                        TcFeatureFactory.create(EmoticonRatio.class),
+                        TcFeatureFactory.create(NumberOfHashTags.class));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(

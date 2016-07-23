@@ -22,9 +22,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminable;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
 
 public class ExperimentUtil {
 
@@ -64,31 +66,31 @@ public class ExperimentUtil {
      * For example, if you specify four feature extractors A, B, C, and D, you will get [A,B,C,D],
      * [A,B,C], [A,B,D], [A,C,D], [B,C,D],
      * 
-     * @param featureExtractorClassNames
+     * @param features
      *            All the feature extractors that should be tested.
      * @return a dimension with a list of feature extractor sets; named after the feature that is
      *         left out
      */
-	public static Dimension<List<String>> getAblationTestFeatures(String ... featureExtractorClassNames) {
+	public static Dimension<List<TcFeature<ExternalResourceDescription>>> getAblationTestFeatures(TcFeature<ExternalResourceDescription> ... features) {
 		@SuppressWarnings("unchecked")
-		List<String>[] featureSets = (ArrayList<String>[]) new ArrayList[featureExtractorClassNames.length + 1];
+		List<TcFeature<ExternalResourceDescription>>[] featureSets = (ArrayList<TcFeature<ExternalResourceDescription>>[]) new ArrayList[features.length + 1];
 
-		for (int i=0; i<featureExtractorClassNames.length; i++) {
-			List<String> featureNamesMinusOne = getFeatureNamesMinusOne(featureExtractorClassNames, i);
+		for (int i=0; i<features.length; i++) {
+			List<TcFeature<ExternalResourceDescription>> featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
 			featureSets[i] = featureNamesMinusOne;
 		}
 		// also add all features extractors
-		featureSets[featureExtractorClassNames.length] = new ArrayList<String>(Arrays.asList(featureExtractorClassNames));
+		featureSets[features.length] = new ArrayList<TcFeature<ExternalResourceDescription>>(Arrays.asList(features));
 		
-        Dimension<List<String>> dimFeatureSets = Dimension.create(
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
         		Constants.DIM_FEATURE_SET, featureSets
         );
         
         return dimFeatureSets;
 	}
 	
-	private static List<String> getFeatureNamesMinusOne(String[] names, int i) {
-        NamedArrayList<String> nameList = new NamedArrayList<String>(Arrays.asList(names));
+	private static List<TcFeature<ExternalResourceDescription>> getFeatureNamesMinusOne(TcFeature<ExternalResourceDescription>[] names, int i) {
+        NamedArrayList<TcFeature<ExternalResourceDescription>> nameList = new NamedArrayList<TcFeature<ExternalResourceDescription>>(Arrays.asList(names));
         nameList.setName(LEFTOUT_FE + names[i]);
 		nameList.remove(i);
 		return nameList;
