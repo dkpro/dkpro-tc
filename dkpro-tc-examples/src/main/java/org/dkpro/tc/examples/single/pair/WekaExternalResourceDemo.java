@@ -36,6 +36,8 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
@@ -104,18 +106,14 @@ public class WekaExternalResourceDemo
                         CosineSimilarityResource.PARAM_NORMALIZATION,
                         NormalizationMode.L2.toString());
 
-        // Pass the External Resource to the feature extractor(s) here:
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                        SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
-                        gstResource }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { SimilarityPairFeatureExtractor.class.getName() }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
+                        gstResource)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimPipelineParameters, dimFeatureSets,
+                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets,
                 dimClassificationArgs);
 
         return pSpace;

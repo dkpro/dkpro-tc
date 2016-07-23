@@ -28,15 +28,16 @@ import org.dkpro.tc.core.task.TcFeature;
 
 public class TcFeatureFactory
 {
-    public static TcFeature<ExternalResourceDescription> create(Class<? extends Resource> featureName,
-            Object... parameters)
+    public static TcFeature<ExternalResourceDescription> create(
+            Class<? extends Resource> featureName, Object... parameters)
     {
 
         /*
-         * Each feature has to set a unique name which is build from the simple name of the feature class and extended with a random value 
+         * Each feature has to set a unique name which is build from the simple name of the feature
+         * class and extended with a random value
          */
         String name = featureName.getSimpleName() + System.nanoTime();
-        List<String> params = getParameterAsString(parameters);
+        List<Object> params = getParameterAsString(parameters);
         params.add(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
         params.add(name);
 
@@ -51,13 +52,18 @@ public class TcFeatureFactory
         };
     }
 
-    private static List<String> getParameterAsString(Object[] parameters)
+    private static List<Object> getParameterAsString(Object[] parameters)
     {
-        List<String> strings = new ArrayList<>();
-        for(Object object : parameters){
-            strings.add(object.toString());
+        List<Object> out = new ArrayList<>();
+        for (Object object : parameters) {
+            if (object instanceof ExternalResourceDescription) {
+                out.add(object);
+            }
+            else {
+                out.add(object.toString());
+            }
         }
-        return strings;
+        return out;
     }
 
 }
