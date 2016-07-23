@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.features.pair.core.ngram;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,19 +36,20 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import com.google.common.collect.MinMaxPriorityQueue;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
-import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.ngram.util.TermFreqTuple;
 import org.dkpro.tc.features.pair.core.ngram.meta.ComboUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMetaCollector;
+import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
+
+import com.google.common.collect.MinMaxPriorityQueue;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
  * Combination pair ngram feature extractor. Creates features that are combinations of ngrams from
@@ -112,12 +113,15 @@ public class LuceneNGramCPFE
     }
     
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LuceneNGramCPMetaCollector.class);
-
-        return metaCollectorClasses;
+        return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramPMetaCollector.class,
+                parameterSettings).addStorageMapping(
+                        LuceneNGramCPMetaCollector.PARAM_TARGET_LOCATION,
+                        LuceneNGramCPFE.PARAM_SOURCE_LOCATION,
+                        LuceneNGramCPMetaCollector.LUCENE_DIR));
     }
 
     @Override
