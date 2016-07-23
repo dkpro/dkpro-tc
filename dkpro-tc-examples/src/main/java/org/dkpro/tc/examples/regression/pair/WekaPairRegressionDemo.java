@@ -28,12 +28,15 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -104,10 +107,9 @@ public class WekaPairRegressionDemo
                 Arrays.asList(new String[] { SMOreg.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                // yields really bad results. To improve the performance, use a string similarity
-                // based feature extractor
-                Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders),
