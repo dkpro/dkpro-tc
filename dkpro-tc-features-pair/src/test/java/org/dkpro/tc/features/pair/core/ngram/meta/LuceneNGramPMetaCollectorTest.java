@@ -67,8 +67,8 @@ public class LuceneNGramPMetaCollectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentModeAnnotator.class,
-                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
@@ -77,7 +77,9 @@ public class LuceneNGramPMetaCollectorTest
         builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramPMetaCollector.class, LuceneNGramPFE.PARAM_LUCENE_DIR, tmpDir);
+                LuceneNGramPMetaCollector.class, LuceneNGramPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneNGramPFE.PARAM_SOURCE_LOCATION, tmpDir,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, tmpDir);
 
         // test fails if for-loop removed
         for (@SuppressWarnings("unused")

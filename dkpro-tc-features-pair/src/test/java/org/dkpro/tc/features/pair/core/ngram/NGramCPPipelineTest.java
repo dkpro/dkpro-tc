@@ -20,10 +20,13 @@ package org.dkpro.tc.features.pair.core.ngram;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
@@ -32,6 +35,7 @@ import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMetaCollector;
+import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
 
 public class NGramCPPipelineTest
     extends PPipelineTestBase
@@ -42,11 +46,12 @@ public class NGramCPPipelineTest
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
+        test.parameters = new Object[] { LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath, };
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
         assertEquals(test.featureNames.size(), 65);
@@ -67,11 +72,12 @@ public class NGramCPPipelineTest
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
+        test.parameters = new Object[] { LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
                 LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
@@ -85,11 +91,12 @@ public class NGramCPPipelineTest
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
+        test.parameters = new Object[] { LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
                 LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboNG"));
@@ -105,11 +112,12 @@ public class NGramCPPipelineTest
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
+        test.parameters = new Object[] { LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneNGramCPFE.PARAM_USE_VIEW1_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEW2_NGRAMS_AS_FEATURES, false,
                 LuceneNGramCPFE.PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES, false,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, test.lucenePath,
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
                 LuceneNGramCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, false,
                 LuceneNGramCPFE.PARAM_NGRAM_MAX_N_COMBO, 2,
                 LuceneNGramCPFE.PARAM_NGRAM_SYMMETRY_COMBO, true };
@@ -138,19 +146,32 @@ public class NGramCPPipelineTest
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
-        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(LuceneNGramCPFE.class, toString(parameterList.toArray()));
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+        
+        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
-                false, false, false, false, 
-                LuceneNGramCPFE.class.getName());
+                false, false, false, new ArrayList<>(), false, fes);
     }
+    
+    private Object [] toString(Object[] array)
+    {
+        List<Object> out = new ArrayList<>();
+        for(Object o : array){
+            out.add(o.toString());
+        }
+        
+        return out.toArray();
+    }
+
     @Override
-	protected void getMetaCollector(List<Object> parameterList)
-			throws ResourceInitializationException
-	{
-		metaCollector = AnalysisEngineFactory.createEngineDescription(
-				LuceneNGramCPMetaCollector.class,
-	            parameterList.toArray()
-	    );
-	}
+    protected void getMetaCollector(List<Object> parameterList)
+        throws ResourceInitializationException
+    {
+        metaCollector = AnalysisEngineFactory
+                .createEngineDescription(LuceneNGramCPMetaCollector.class, parameterList.toArray());
+    }
 }

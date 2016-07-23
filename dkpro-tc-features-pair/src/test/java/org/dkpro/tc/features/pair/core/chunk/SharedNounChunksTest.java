@@ -22,6 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -29,22 +30,23 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.type.JCasId;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.pair.core.ngram.PPipelineTestBase;
+import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-import org.dkpro.tc.api.type.JCasId;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.pair.core.chunk.SharedNounChunks;
-import org.dkpro.tc.features.pair.core.ngram.PPipelineTestBase;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-
-public class SharedNounChunksTest extends PPipelineTestBase
+public class SharedNounChunksTest
+    extends PPipelineTestBase
 
 {
 
@@ -52,7 +54,7 @@ public class SharedNounChunksTest extends PPipelineTestBase
     private JCas jcas2;
 
     int jcasId;
-    
+
     @Before
     public void setUp()
         throws ResourceInitializationException, AnalysisEngineProcessException
@@ -84,7 +86,8 @@ public class SharedNounChunksTest extends PPipelineTestBase
 
         SharedNounChunksTest test = new SharedNounChunksTest();
         test.initialize();
-        test.parameters = new Object[] { SharedNounChunks.PARAM_NORMALIZE_WITH_FIRST, false };
+        test.parameters = new Object[] { SharedNounChunks.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                SharedNounChunks.PARAM_NORMALIZE_WITH_FIRST, false };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 1);
         assertTrue(test.featureNames.first().startsWith("SharedNounChunkView2"));
@@ -98,7 +101,8 @@ public class SharedNounChunksTest extends PPipelineTestBase
     {
         SharedNounChunksTest test = new SharedNounChunksTest();
         test.initialize();
-        test.parameters = new Object[] { SharedNounChunks.PARAM_NORMALIZE_WITH_FIRST, true };
+        test.parameters = new Object[] { SharedNounChunks.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                SharedNounChunks.PARAM_NORMALIZE_WITH_FIRST, true };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 1);
         assertTrue(test.featureNames.first().startsWith("SharedNounChunkView1"));
@@ -107,21 +111,36 @@ public class SharedNounChunksTest extends PPipelineTestBase
     }
 
     @Override
-    protected void getFeatureExtractorCollector(List<Object> parameterList) throws ResourceInitializationException
+    protected void getFeatureExtractorCollector(List<Object> parameterList)
+        throws ResourceInitializationException
     {
-        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(SharedNounChunks.class,
+                        toString(parameterList.toArray()));
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+
+        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
-                false, false, false, false,
-                SharedNounChunks.class.getName());
+                false, false, false, new ArrayList<>(), false, fes);
+    }
+
+    private Object[] toString(Object[] array)
+    {
+        List<Object> out = new ArrayList<>();
+        for (Object o : array) {
+            out.add(o.toString());
+        }
+
+        return out.toArray();
     }
 
     @Override
     protected void getMetaCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
-        metaCollector = AnalysisEngineFactory.createEngineDescription(
-                NoOpAnnotator.class);
+        metaCollector = AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
     }
 
 }

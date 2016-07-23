@@ -79,7 +79,9 @@ public class LuceneNGramCPMetaCollectorTest
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramCPMetaCollector.class,
-                LuceneNGramCPFE.PARAM_LUCENE_DIR, tmpDir
+                LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, tmpDir,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, tmpDir
                 );
 
         // test fails if for-loop removed
