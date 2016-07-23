@@ -41,7 +41,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
@@ -63,6 +65,8 @@ public class LuceneNgramDocumentTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+    
+    private static String EXTRACTOR_ID = "123";
 
     @Test
     public void testLuceneMetaCollectorOutput()
@@ -116,11 +120,21 @@ public class LuceneNgramDocumentTest
     {
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_ID,
+                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "1", LuceneNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                luceneFolder.toString(), LuceneNGram.PARAM_NGRAM_MIN_N, "1",
+                LuceneNGram.PARAM_NGRAM_MAX_N, "1" };
 
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(LuceneNGram.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+
+        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
+                false, false, false, new ArrayList<>(), false, fes);
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
@@ -128,11 +142,6 @@ public class LuceneNgramDocumentTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
-
-        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LuceneNGram.class.getName());
 
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
@@ -163,8 +172,10 @@ public class LuceneNgramDocumentTest
     private void runMetaCollection(File luceneFolder)
         throws Exception
     {
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_ID,
+                LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1, LuceneNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                luceneFolder.toString(), LuceneNGram.PARAM_NGRAM_MIN_N, 1,
                 LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -174,7 +185,7 @@ public class LuceneNgramDocumentTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
-        
+
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
@@ -187,7 +198,7 @@ public class LuceneNgramDocumentTest
     {
         @SuppressWarnings("deprecation")
         IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
-        Term term = new Term("ngram", string);
+        Term term = new Term("ngram"+EXTRACTOR_ID, string);
         return (int) idxReader.totalTermFreq(term);
     }
 

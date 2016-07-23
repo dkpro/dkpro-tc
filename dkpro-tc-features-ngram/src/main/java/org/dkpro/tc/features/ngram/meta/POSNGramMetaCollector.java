@@ -18,16 +18,14 @@
 package org.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.features.ngram.base.FrequencyDistributionPosNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class POSNGramMetaCollector
     extends FreqDistBasedMetaCollector
@@ -52,14 +50,6 @@ public class POSNGramMetaCollector
         for (String ngram : documentPOSNGrams.getKeys()) {
             fd.addSample(ngram, documentPOSNGrams.getCount(ngram));
         }
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(FrequencyDistributionPosNGramFeatureExtractorBase.PARAM_POS_NGRAM_FD_FILE, POS_NGRAM_FD_KEY);
-        return mapping;
     }
 
     @Override
