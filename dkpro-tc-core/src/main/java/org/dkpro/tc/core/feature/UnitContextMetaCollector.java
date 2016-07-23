@@ -17,13 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.core.feature;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
-
-import org.dkpro.tc.core.Constants;
 
 /** A dummy meta-collector which merely sets up the correct file path
  * for the context file. This is required by the {@link ContextCollectorUFE},
@@ -38,12 +33,4 @@ public class UnitContextMetaCollector
 		// Intentionally do nothing here.
 	}
 	
-	@Override
-	public Map<String, String> getParameterKeyPairs() {
-        Map<String, String> mapping = new HashMap<String, String>();
-        
-        mapping.put(PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY);
-                
-        return mapping;
-	}
 }
