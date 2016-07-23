@@ -30,15 +30,17 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.style.IsSurroundedByChars;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
@@ -98,16 +100,13 @@ public class WekaManualFoldCrossValidation
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
-                .asList(new Object[] { IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"" }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+                .asList(TcFeatureFactory.create(IsSurroundedByChars.class, IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"")));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneCharacterNGram.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets,
                 dimClassificationArgs,
                 /*
                  * MANUAL CROSS VALIDATION FOLDS - i.e. the cas created by your reader will be used

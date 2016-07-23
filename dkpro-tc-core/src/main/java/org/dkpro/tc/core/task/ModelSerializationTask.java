@@ -20,6 +20,7 @@ package org.dkpro.tc.core.task;
 import java.io.File;
 import java.util.List;
 
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
@@ -35,7 +36,7 @@ public abstract class ModelSerializationTask
     @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
     @Discriminator(name=DIM_FEATURE_SET)
-    protected List<String> featureSet;
+    protected List<TcFeature<ExternalResourceDescription>> featureSet;
     @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
     @Discriminator(name=DIM_LEARNING_MODE)

@@ -28,17 +28,19 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
@@ -91,10 +93,11 @@ public class MekaComplexConfigurationMultiDemo
 
     /**
      * @return
-     * @throws ResourceInitializationException 
+     * @throws ResourceInitializationException
      */
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -125,17 +128,11 @@ public class MekaComplexConfigurationMultiDemo
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokens.class.getName(),
-                        LuceneNGram.class.getName() }),
-                asList(new String[] { LuceneNGram.class.getName() }));
-
-        // parameters to configure feature extractors
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] {
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, "600",
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
+                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 600,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
         // multi-label feature selection (Mulan specific options), reduces the feature set to 10
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
@@ -149,8 +146,8 @@ public class MekaComplexConfigurationMultiDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
-                Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD),
-                dimPipelineParameters, dimFeatureSets, dimClassificationArgs,
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimFeatureSets,
+                dimClassificationArgs,
                 Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;

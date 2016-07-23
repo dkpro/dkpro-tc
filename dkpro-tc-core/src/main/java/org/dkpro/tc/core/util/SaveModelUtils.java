@@ -56,6 +56,7 @@ import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.TcFeature;
 
 /**
  * Demo to show case how to train and save a model in document mode and multi-label classification
@@ -66,7 +67,7 @@ public class SaveModelUtils
 {
     private static final String TCVERSION = "TcVersion";
 
-    public static void writeFeatureInformation(File outputFolder, List<String> featureSet)
+    public static void writeFeatureInformation(File outputFolder, List<TcFeature<ExternalResourceDescription>> featureSet)
         throws Exception
     {
         String featureExtractorString = StringUtils.join(featureSet, "\n");
@@ -75,7 +76,7 @@ public class SaveModelUtils
     }
 
     public static void writeModelParameters(TaskContext aContext, File aOutputFolder,
-            List<String> aFeatureSet, List<Object> aFeatureParameters)
+            List<TcFeature<ExternalResourceDescription>> featureSet, List<Object> aFeatureParameters)
         throws Exception
     {
         // write meta collector data
@@ -84,7 +85,7 @@ public class SaveModelUtils
         // extractors
         Set<Class<? extends MetaCollector>> metaCollectorClasses;
         try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(aFeatureSet);
+            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
         }
         catch (ClassNotFoundException e) {
             throw new ResourceInitializationException(e);
@@ -194,7 +195,7 @@ public class SaveModelUtils
         FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta);
     }
 
-    public static void writeFeatureClassFiles(File modelFolder, List<String> featureSet)
+    public static void writeFeatureClassFiles(File modelFolder, List<TcFeature<ExternalResourceDescription>> featureSet)
         throws Exception
     {
         for (String featureString : featureSet) {

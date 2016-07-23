@@ -28,17 +28,19 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.anno.MultiLabelOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -104,14 +106,11 @@ public class MekaReutersDemoSimpleDkproReader
                 Arrays.asList(
                         new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName() }));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] {
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, "100",
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
-                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
+                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
         dimFeatureSelection.put(DIM_LABEL_TRANSFORMATION_METHOD,
@@ -125,7 +124,7 @@ public class MekaReutersDemoSimpleDkproReader
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD),
-                dimPipelineParameters, dimFeatureSets, dimClassificationArgs,
+                 dimFeatureSets, dimClassificationArgs,
                 Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;
@@ -167,8 +166,7 @@ public class MekaReutersDemoSimpleDkproReader
 
         return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(MultiLabelOutcomeAnnotator.class,
-                        MultiLabelOutcomeAnnotator.PARAM_GOLD_LABEL_FILE,
-                        FILEPATH_GOLD_LABELS),
+                        MultiLabelOutcomeAnnotator.PARAM_GOLD_LABEL_FILE, FILEPATH_GOLD_LABELS),
                 createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
                         LANGUAGE_CODE));
     }
