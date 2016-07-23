@@ -18,7 +18,7 @@
 package org.dkpro.tc.features.ngram.base;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,18 +27,18 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 
 /**
  * This class extracts lists of specified keywords from a text. <br>
  * The lists are similar to ngrams, except that instead of using all tokens, only the specified
- * keywords are eligible to appear in a list. These "keyword ngrams" may be useful for tasks such
- * as sentence ordering (Barzilay and Lapata 2008). The concept is similar to strings of entity
+ * keywords are eligible to appear in a list. These "keyword ngrams" may be useful for tasks such as
+ * sentence ordering (Barzilay and Lapata 2008). The concept is similar to strings of entity
  * mentions in Centering Theory, except since the user defines the permissible tokens, finite lists
- * are preferred. Keyword ngrams are extracted from an entire document, not just a single sentence.<br>
+ * are preferred. Keyword ngrams are extracted from an entire document, not just a single sentence.
+ * <br>
  * <br>
  * Example: keyword ngrams of discourse markers:<br>
  * Text: Although apples are red, I prefer blueberries. Furthermore, bananas are green, if only when
@@ -106,18 +106,21 @@ public class KeywordNGramFeatureExtractorBase
     }
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(KeywordNGramMetaCollector.class);
-
-        return metaCollectorClasses;
+        return Arrays.asList(
+                new MetaCollectorConfiguration(KeywordNGramMetaCollector.class, parameterSettings)
+                        .addStorageMapping(KeywordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                                KeywordNGramFeatureExtractorBase.PARAM_SOURCE_LOCATION,
+                                KeywordNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return KEYWORD_NGRAM_FIELD;
+        return KEYWORD_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override

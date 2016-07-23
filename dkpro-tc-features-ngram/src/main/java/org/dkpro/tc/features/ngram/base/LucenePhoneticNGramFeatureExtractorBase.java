@@ -17,14 +17,16 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.base;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-
-import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.features.ngram.LucenePhoneticNGram;
 import org.dkpro.tc.features.ngram.meta.LucenePhoneticNGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.Token" })
@@ -36,29 +38,32 @@ public class LucenePhoneticNGramFeatureExtractorBase
 
     public static final String PARAM_PHONETIC_NGRAM_MIN_N = "phoneticNgramMinN";
     @ConfigurationParameter(name = PARAM_PHONETIC_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	protected int phoneticNgramMinN;
+    protected int phoneticNgramMinN;
 
     public static final String PARAM_PHONETIC_NGRAM_MAX_N = "phoneticNgramMaxN";
     @ConfigurationParameter(name = PARAM_PHONETIC_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	protected int phoneticNgramMaxN;
+    protected int phoneticNgramMaxN;
 
     public static final String PARAM_PHONETIC_NGRAM_USE_TOP_K = "phoneticNgramUseTopK";
     @ConfigurationParameter(name = PARAM_PHONETIC_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     protected int phoneticNgramUseTopK;
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LucenePhoneticNGramMetaCollector.class);
-        
-        return metaCollectorClasses;
+        return Arrays.asList(new MetaCollectorConfiguration(LucenePhoneticNGramMetaCollector.class,
+                parameterSettings).addStorageMapping(
+                        LucenePhoneticNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        LucenePhoneticNGram.PARAM_SOURCE_LOCATION,
+                        LucenePhoneticNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return LUCENE_PHONETIC_NGRAM_FIELD;
+        return LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override

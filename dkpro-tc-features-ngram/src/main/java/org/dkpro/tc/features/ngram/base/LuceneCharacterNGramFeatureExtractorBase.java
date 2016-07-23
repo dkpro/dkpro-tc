@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.base;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-
-import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.meta.LuceneCharacterNGramMetaCollector;
 
 public class LuceneCharacterNGramFeatureExtractorBase
@@ -34,33 +36,36 @@ public class LuceneCharacterNGramFeatureExtractorBase
 
     public static final String PARAM_CHAR_NGRAM_MIN_N = "charNgramMinN";
     @ConfigurationParameter(name = PARAM_CHAR_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	protected int charNgramMinN;
+    protected int charNgramMinN;
 
     public static final String PARAM_CHAR_NGRAM_MAX_N = "charNgramMaxN";
     @ConfigurationParameter(name = PARAM_CHAR_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	protected int charNgramMaxN;
+    protected int charNgramMaxN;
 
     public static final String PARAM_CHAR_NGRAM_USE_TOP_K = "charNgramUseTopK";
     @ConfigurationParameter(name = PARAM_CHAR_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     protected int charNgramUseTopK;
-    
+
     public static final String PARAM_CHAR_NGRAM_LOWER_CASE = "charNgramLowerCase";
     @ConfigurationParameter(name = PARAM_CHAR_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "false")
     protected boolean charNgramLowerCase;
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LuceneCharacterNGramMetaCollector.class);
-        
-        return metaCollectorClasses;
+        return Arrays.asList(new MetaCollectorConfiguration(LuceneCharacterNGramMetaCollector.class,
+                parameterSettings).addStorageMapping(
+                        LuceneCharacterNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        LuceneCharacterNGram.PARAM_SOURCE_LOCATION,
+                        LuceneCharacterNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return LUCENE_CHAR_NGRAM_FIELD;
+        return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
