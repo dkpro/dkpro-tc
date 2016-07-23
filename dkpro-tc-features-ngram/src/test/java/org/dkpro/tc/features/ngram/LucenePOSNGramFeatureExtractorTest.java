@@ -32,12 +32,15 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
@@ -70,10 +73,18 @@ public class LucenePOSNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LucenePOSNGram.PARAM_POS_NGRAM_USE_TOP_K, 5,
-                LucenePOSNGram.PARAM_LUCENE_DIR, luceneFolder };
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+        Object[] parameters = new Object[] {
+                LucenePOSNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LucenePOSNGram.PARAM_POS_NGRAM_USE_TOP_K, "5",
+                LucenePOSNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                LucenePOSNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString()};
 
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LucenePOSNGram.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+        
+        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+        
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
                 "src/test/resources/ngrams/*.txt");
@@ -88,9 +99,9 @@ public class LucenePOSNGramFeatureExtractorTest
                 LucenePOSNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LucenePOSNGram.class.getName());
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false,
+                false, false, new ArrayList<>(), false, fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);

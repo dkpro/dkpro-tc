@@ -17,15 +17,17 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.base;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
-
-import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
+import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class LucenePOSNGramFeatureExtractorBase
@@ -51,18 +53,20 @@ public class LucenePOSNGramFeatureExtractorBase
     protected boolean useCanonicalTags;
 
     @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(LucenePOSNGramMetaCollector.class);
-        
-        return metaCollectorClasses;
+        return Arrays.asList(
+                new MetaCollectorConfiguration(LuceneNGramMetaCollector.class, parameterSettings)
+                        .addStorageMapping(LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                                LuceneNGram.PARAM_SOURCE_LOCATION,
+                                LuceneNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return LUCENE_POS_NGRAM_FIELD;
+        return LUCENE_POS_NGRAM_FIELD+featureExtractorName;
     }
 
     @Override

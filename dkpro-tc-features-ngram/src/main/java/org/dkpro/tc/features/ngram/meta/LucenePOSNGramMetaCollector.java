@@ -45,7 +45,7 @@ public class LucenePOSNGramMetaCollector
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        
+
         return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, posNgramMinN, posNgramMaxN,
                 useCanonical);
     }
@@ -53,7 +53,7 @@ public class LucenePOSNGramMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LUCENE_POS_NGRAM_FIELD;
+        return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
     }
 
 }
