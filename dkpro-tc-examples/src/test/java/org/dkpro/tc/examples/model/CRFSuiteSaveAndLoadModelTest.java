@@ -45,12 +45,13 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.After;
@@ -71,10 +72,11 @@ public class CRFSuiteSaveAndLoadModelTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     public Set<String> postags = new HashSet<>();
-    
+
     @Before
-    public void setup(){
-        
+    public void setup()
+    {
+
         postags.add("AT");
         postags.add("NN");
         postags.add("PPS");
@@ -93,7 +95,7 @@ public class CRFSuiteSaveAndLoadModelTest
         postags.add("PPS");
         postags.add("NNS");
     }
-    
+
     @After
     public void cleanUp()
     {
@@ -105,10 +107,9 @@ public class CRFSuiteSaveAndLoadModelTest
         throws Exception
     {
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList());
-        
+        Dimension<List<String>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, asList());
+
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
@@ -165,18 +166,18 @@ public class CRFSuiteSaveAndLoadModelTest
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { LuceneCharacterNGram.class.getName(), NrOfChars.class.getName(), }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(
+                        TcFeatureFactory.create(LuceneCharacterNGram.class,
+                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 1,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 3),
+                TcFeatureFactory.create(NrOfChars.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimPipelineParameters,
-                dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets,
+                dimClassificationArgs);
         return pSpace;
     }
 
@@ -184,13 +185,12 @@ public class CRFSuiteSaveAndLoadModelTest
     public void loadModelArow()
         throws Exception
     {
-        
+
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new String[] {
-                        CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR}));
-        
+        Dimension<List<String>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new String[] {
+                        CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR }));
+
         // create a model
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
@@ -213,25 +213,25 @@ public class CRFSuiteSaveAndLoadModelTest
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
-        for(TextClassificationOutcome o : outcomes){
+        for (TextClassificationOutcome o : outcomes) {
             String label = o.getOutcome();
             System.out.println(label);
             assertTrue(postags.contains(label));
         }
     }
-    
+
     @Test
     public void loadModelArowParameters()
         throws Exception
     {
-        
+
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(new String[] {
                         CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
                         "feature.minfreq=2", "-p", "gamma=2.0", "-p", "variance=3.000" }));
-        
+
         // create a model
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
@@ -250,11 +250,11 @@ public class CRFSuiteSaveAndLoadModelTest
 
         tokenizer.process(jcas);
         tcAnno.process(jcas);
-        
+
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
-        for(TextClassificationOutcome o : outcomes){
+        for (TextClassificationOutcome o : outcomes) {
             assertTrue(postags.contains(o.getOutcome()));
         }
     }

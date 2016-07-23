@@ -9,10 +9,12 @@ public abstract class TcFeature implements Discriminable
 {
     private String name;
     protected Map<String, Object> config;
+    private String fullFeatureName;
     
-    public TcFeature(String aName)
+    public TcFeature(String aName, String fullFeatureName)
     {
         name = aName;
+        this.fullFeatureName = fullFeatureName;
     }
 
     public void setConfig(Map<String, Object> aConfig) {
@@ -27,4 +29,9 @@ public abstract class TcFeature implements Discriminable
     
     @Override
     public abstract ExternalResourceDescription getActualValue();
+
+    public String getFeatureName()
+    {
+        return fullFeatureName;
+    }
 }

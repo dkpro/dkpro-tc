@@ -36,12 +36,13 @@ public class TcFeatureFactory
          * Each feature has to set a unique name which is build from the simple name of the feature
          * class and extended with a random value
          */
-        String name = featureName.getSimpleName() + System.nanoTime();
+        String fullFeatureName = featureName.getClass().getName(); 
+        String id = featureName.getSimpleName() + System.nanoTime();
         List<Object> params = getParameterAsString(parameters);
         params.add(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
-        params.add(name);
+        params.add(id);
 
-        return new TcFeature(name)
+        return new TcFeature(id, fullFeatureName)
         {
             @Override
             public ExternalResourceDescription getActualValue()

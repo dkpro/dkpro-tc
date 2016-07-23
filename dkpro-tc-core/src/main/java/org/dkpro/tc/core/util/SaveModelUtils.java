@@ -22,7 +22,6 @@ import static org.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,12 +30,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -44,6 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -52,7 +50,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -67,7 +64,7 @@ public class SaveModelUtils
 {
     private static final String TCVERSION = "TcVersion";
 
-    public static void writeFeatureInformation(File outputFolder, List<TcFeature<ExternalResourceDescription>> featureSet)
+    public static void writeFeatureInformation(File outputFolder, List<TcFeature> featureSet)
         throws Exception
     {
         String featureExtractorString = StringUtils.join(featureSet, "\n");
@@ -76,79 +73,104 @@ public class SaveModelUtils
     }
 
     public static void writeModelParameters(TaskContext aContext, File aOutputFolder,
-            List<TcFeature<ExternalResourceDescription>> featureSet, List<Object> aFeatureParameters)
+            List<TcFeature> featureSet, List<Object> aFeatureParameters)
         throws Exception
     {
-        // write meta collector data
-        // automatically determine the required metaCollector classes from the
-        // provided feature
-        // extractors
-        Set<Class<? extends MetaCollector>> metaCollectorClasses;
-        try {
-            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-        }
-        catch (ClassNotFoundException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (InstantiationException e) {
-            throw new ResourceInitializationException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new ResourceInitializationException(e);
-        }
-
-        // collect parameter/key pairs that need to be set
-        Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
-        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-            try {
-                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
-                        .getParameterKeyPairs());
-            }
-            catch (InstantiationException e) {
-                throw new ResourceInitializationException(e);
-            }
-            catch (IllegalAccessException e) {
-                throw new ResourceInitializationException(e);
-            }
-        }
-
         Properties parameterProperties = new Properties();
-        for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-            File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
-                    entry.getValue());
+        
+        
+        for(TcFeature f : featureSet){
+            ExternalResourceDescription actualValue = f.getActualValue();
+            Map<String, Object> parameterSettings = ConfigurationParameterFactory.getParameterSettings(actualValue.getResourceSpecifier());
+            
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append(f.getFeatureName()+"\n");
+            
+            for (Entry<String, Object> entry : parameterSettings.entrySet()) {
+                File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
+                        entry.getValue().toString());
 
-            String name = file.getName();
-            String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-            File targetFolder = new File(subFolder);
-            copyToTargetLocation(file, targetFolder);
-            parameterProperties.put(entry.getKey(), name);
-
-            // should never be reached
+                String name = file.getName();
+                String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+                File targetFolder = new File(subFolder);
+                copyToTargetLocation(file, targetFolder);
+                parameterProperties.put(entry.getKey(), name);
+            }
+            
         }
         
-        // might happen if the feature parameters dimension is not configured
-        if(aFeatureParameters == null){
-        	aFeatureParameters = new ArrayList<Object>();
-        }
-
-        for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
-
-            String key = (String) aFeatureParameters.get(i).toString();
-            String value = aFeatureParameters.get(i + 1).toString();
-
-            if (valueExistAsFileOrFolderInTheFileSystem(value)) {
-                String name = new File(value).getName();
-                String destination = aOutputFolder + "/" + name;
-                copyToTargetLocation(new File(value), new File(destination));
-                parameterProperties.put(key, name);
-                continue;
-            }
-            parameterProperties.put(key, value);
-        }
-
-        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
-        parameterProperties.store(writer, "");
-        writer.close();
+        
+//        // write meta collector data
+//        // automatically determine the required metaCollector classes from the
+//        // provided feature
+//        // extractors
+//        Set<Class<? extends MetaCollector>> metaCollectorClasses;
+//        try {
+//            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
+//        }
+//        catch (ClassNotFoundException e) {
+//            throw new ResourceInitializationException(e);
+//        }
+//        catch (InstantiationException e) {
+//            throw new ResourceInitializationException(e);
+//        }
+//        catch (IllegalAccessException e) {
+//            throw new ResourceInitializationException(e);
+//        }
+//
+//        // collect parameter/key pairs that need to be set
+//        Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
+//        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+//            try {
+//                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
+//                        .getParameterKeyPairs());
+//            }
+//            catch (InstantiationException e) {
+//                throw new ResourceInitializationException(e);
+//            }
+//            catch (IllegalAccessException e) {
+//                throw new ResourceInitializationException(e);
+//            }
+//        }
+//
+//        Properties parameterProperties = new Properties();
+//        for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
+//            File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
+//                    entry.getValue());
+//
+//            String name = file.getName();
+//            String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+//            File targetFolder = new File(subFolder);
+//            copyToTargetLocation(file, targetFolder);
+//            parameterProperties.put(entry.getKey(), name);
+//
+//            // should never be reached
+//        }
+//        
+//        // might happen if the feature parameters dimension is not configured
+//        if(aFeatureParameters == null){
+//        	aFeatureParameters = new ArrayList<Object>();
+//        }
+//
+//        for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
+//
+//            String key = (String) aFeatureParameters.get(i).toString();
+//            String value = aFeatureParameters.get(i + 1).toString();
+//
+//            if (valueExistAsFileOrFolderInTheFileSystem(value)) {
+//                String name = new File(value).getName();
+//                String destination = aOutputFolder + "/" + name;
+//                copyToTargetLocation(new File(value), new File(destination));
+//                parameterProperties.put(key, name);
+//                continue;
+//            }
+//            parameterProperties.put(key, value);
+//        }
+//
+//        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
+//        parameterProperties.store(writer, "");
+//        writer.close();
     }
 
     private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
@@ -195,10 +217,11 @@ public class SaveModelUtils
         FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta);
     }
 
-    public static void writeFeatureClassFiles(File modelFolder, List<TcFeature<ExternalResourceDescription>> featureSet)
+    public static void writeFeatureClassFiles(File modelFolder, List<TcFeature> featureSet)
         throws Exception
     {
-        for (String featureString : featureSet) {
+        for (TcFeature f : featureSet) {
+            String featureString = f.getFeatureName();
             Class<?> feature = Class.forName(featureString);
             InputStream inStream = feature.getResource(
                     "/" + featureString.replace(".", "/") + ".class").openStream();
