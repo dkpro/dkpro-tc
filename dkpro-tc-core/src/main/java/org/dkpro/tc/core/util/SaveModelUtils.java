@@ -44,12 +44,15 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
+import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -74,103 +77,123 @@ public class SaveModelUtils
 
     public static void writeModelParameters(TaskContext aContext, File aOutputFolder,
             List<TcFeature> featureSet, List<Object> aFeatureParameters)
-        throws Exception
+                throws Exception
     {
         Properties parameterProperties = new Properties();
-        
-        
-        for(TcFeature f : featureSet){
-            ExternalResourceDescription actualValue = f.getActualValue();
-            Map<String, Object> parameterSettings = ConfigurationParameterFactory.getParameterSettings(actualValue.getResourceSpecifier());
-            
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append(f.getFeatureName()+"\n");
-            
-            for (Entry<String, Object> entry : parameterSettings.entrySet()) {
-                File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
-                        entry.getValue().toString());
 
-                String name = file.getName();
-                String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-                File targetFolder = new File(subFolder);
-                copyToTargetLocation(file, targetFolder);
-                parameterProperties.put(entry.getKey(), name);
+        for (TcFeature f : featureSet) {
+            ExternalResourceDescription feDesc = f.getActualValue();
+            Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                    .getParameterSettings(feDesc.getResourceSpecifier());
+
+            String implName;
+            if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+                implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                        .getResourceClassName();
             }
-            
+            else {
+                implName = feDesc.getImplementationName();
+            }
+
+            Class<?> feClass = Class.forName(implName);
+
+            // Skip feature extractors that are not dependent on meta collectors
+            if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                continue;
+            }
+
+            MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+
+            // Tell the meta collectors where to store their data
+            for (MetaCollectorConfiguration conf : feInstance
+                    .getMetaCollectorClasses(parameterSettings)) {
+                Map<String, String> collectorOverrides = conf.collectorOverrides;
+
+                for (Entry<String, String> entry : collectorOverrides.entrySet()) {
+                    File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
+                            entry.getValue().toString());
+
+                    String name = file.getName();
+                    String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+                    File targetFolder = new File(subFolder);
+                    copyToTargetLocation(file, targetFolder);
+                    parameterProperties.put(entry.getKey(), name);
+                }
+
+            }
+
         }
-        
-        
-//        // write meta collector data
-//        // automatically determine the required metaCollector classes from the
-//        // provided feature
-//        // extractors
-//        Set<Class<? extends MetaCollector>> metaCollectorClasses;
-//        try {
-//            metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-//        }
-//        catch (ClassNotFoundException e) {
-//            throw new ResourceInitializationException(e);
-//        }
-//        catch (InstantiationException e) {
-//            throw new ResourceInitializationException(e);
-//        }
-//        catch (IllegalAccessException e) {
-//            throw new ResourceInitializationException(e);
-//        }
-//
-//        // collect parameter/key pairs that need to be set
-//        Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
-//        for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-//            try {
-//                metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
-//                        .getParameterKeyPairs());
-//            }
-//            catch (InstantiationException e) {
-//                throw new ResourceInitializationException(e);
-//            }
-//            catch (IllegalAccessException e) {
-//                throw new ResourceInitializationException(e);
-//            }
-//        }
-//
-//        Properties parameterProperties = new Properties();
-//        for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-//            File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
-//                    entry.getValue());
-//
-//            String name = file.getName();
-//            String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-//            File targetFolder = new File(subFolder);
-//            copyToTargetLocation(file, targetFolder);
-//            parameterProperties.put(entry.getKey(), name);
-//
-//            // should never be reached
-//        }
-//        
-//        // might happen if the feature parameters dimension is not configured
-//        if(aFeatureParameters == null){
-//        	aFeatureParameters = new ArrayList<Object>();
-//        }
-//
-//        for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
-//
-//            String key = (String) aFeatureParameters.get(i).toString();
-//            String value = aFeatureParameters.get(i + 1).toString();
-//
-//            if (valueExistAsFileOrFolderInTheFileSystem(value)) {
-//                String name = new File(value).getName();
-//                String destination = aOutputFolder + "/" + name;
-//                copyToTargetLocation(new File(value), new File(destination));
-//                parameterProperties.put(key, name);
-//                continue;
-//            }
-//            parameterProperties.put(key, value);
-//        }
-//
-//        FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
-//        parameterProperties.store(writer, "");
-//        writer.close();
+
+        // // write meta collector data
+        // // automatically determine the required metaCollector classes from the
+        // // provided feature
+        // // extractors
+        // Set<Class<? extends MetaCollector>> metaCollectorClasses;
+        // try {
+        // metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
+        // }
+        // catch (ClassNotFoundException e) {
+        // throw new ResourceInitializationException(e);
+        // }
+        // catch (InstantiationException e) {
+        // throw new ResourceInitializationException(e);
+        // }
+        // catch (IllegalAccessException e) {
+        // throw new ResourceInitializationException(e);
+        // }
+        //
+        // // collect parameter/key pairs that need to be set
+        // Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
+        // for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
+        // try {
+        // metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
+        // .getParameterKeyPairs());
+        // }
+        // catch (InstantiationException e) {
+        // throw new ResourceInitializationException(e);
+        // }
+        // catch (IllegalAccessException e) {
+        // throw new ResourceInitializationException(e);
+        // }
+        // }
+        //
+        // Properties parameterProperties = new Properties();
+        // for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
+        // File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
+        // entry.getValue());
+        //
+        // String name = file.getName();
+        // String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+        // File targetFolder = new File(subFolder);
+        // copyToTargetLocation(file, targetFolder);
+        // parameterProperties.put(entry.getKey(), name);
+        //
+        // // should never be reached
+        // }
+        //
+        // // might happen if the feature parameters dimension is not configured
+        // if(aFeatureParameters == null){
+        // aFeatureParameters = new ArrayList<Object>();
+        // }
+        //
+        // for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
+        //
+        // String key = (String) aFeatureParameters.get(i).toString();
+        // String value = aFeatureParameters.get(i + 1).toString();
+        //
+        // if (valueExistAsFileOrFolderInTheFileSystem(value)) {
+        // String name = new File(value).getName();
+        // String destination = aOutputFolder + "/" + name;
+        // copyToTargetLocation(new File(value), new File(destination));
+        // parameterProperties.put(key, name);
+        // continue;
+        // }
+        // parameterProperties.put(key, value);
+        // }
+        //
+        // FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
+        // parameterProperties.store(writer, "");
+        // writer.close();
     }
 
     private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
@@ -223,8 +246,8 @@ public class SaveModelUtils
         for (TcFeature f : featureSet) {
             String featureString = f.getFeatureName();
             Class<?> feature = Class.forName(featureString);
-            InputStream inStream = feature.getResource(
-                    "/" + featureString.replace(".", "/") + ".class").openStream();
+            InputStream inStream = feature
+                    .getResource("/" + featureString.replace(".", "/") + ".class").openStream();
 
             OutputStream outStream = buildOutputStream(modelFolder, featureString);
 
@@ -240,8 +263,8 @@ public class SaveModelUtils
         throws Exception
     {
 
-        String packagePath = featureString.substring(0, featureString.lastIndexOf(".")).replaceAll(
-                "\\.", "/");
+        String packagePath = featureString.substring(0, featureString.lastIndexOf("."))
+                .replaceAll("\\.", "/");
         String featureClassName = featureString.substring(featureString.lastIndexOf(".") + 1)
                 + ".class";
 
@@ -293,7 +316,7 @@ public class SaveModelUtils
 
     public static void verifyTcVersion(File tcModelLocation,
             Class<? extends ModelSerialization_ImplBase> class1)
-        throws Exception
+                throws Exception
     {
         String loadedVersion = SaveModelUtils.loadTcVersionFromModel(tcModelLocation);
         String currentVersion = SaveModelUtils.getCurrentTcVersionFromJar();
@@ -305,9 +328,8 @@ public class SaveModelUtils
         if (loadedVersion.equals(currentVersion)) {
             return;
         }
-        Logger.getLogger(class1).warn(
-                "The model was created under version [" + loadedVersion + "], you are using ["
-                        + currentVersion + "]");
+        Logger.getLogger(class1).warn("The model was created under version [" + loadedVersion
+                + "], you are using [" + currentVersion + "]");
     }
 
     private static String getCurrentTcVersionFromJar()
@@ -451,15 +473,16 @@ public class SaveModelUtils
      * classpath
      */
     public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
-            String outputPath, String[] featureExtractorClassNames, List<Object> convertedParameters)
-        throws ResourceInitializationException
+            String outputPath, String[] featureExtractorClassNames,
+            List<Object> convertedParameters)
+                throws ResourceInitializationException
     {
 
         List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
         try {
             File classFile = new File(outputPath + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
-            URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI()
-                    .toURL() });
+            URLClassLoader urlClassLoader = new URLClassLoader(
+                    new URL[] { classFile.toURI().toURL() });
 
             for (String featureExtractor : featureExtractorClassNames) {
 
@@ -522,5 +545,5 @@ public class SaveModelUtils
         resourceManager.setExtensionClassPath(classpathOfModelFeatures, true);
         return resourceManager;
     }
-   
+
 }
