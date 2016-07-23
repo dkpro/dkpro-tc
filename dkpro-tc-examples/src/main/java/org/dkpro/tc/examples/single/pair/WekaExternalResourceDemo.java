@@ -106,7 +106,7 @@ public class WekaExternalResourceDemo
                         CosineSimilarityResource.PARAM_NORMALIZATION,
                         NormalizationMode.L2.toString());
 
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
                         gstResource)));

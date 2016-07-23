@@ -28,7 +28,7 @@ import org.dkpro.tc.core.task.TcFeature;
 
 public class TcFeatureFactory
 {
-    public static TcFeature<ExternalResourceDescription> create(
+    public static TcFeature create(
             Class<? extends Resource> featureName, Object... parameters)
     {
 
@@ -41,7 +41,7 @@ public class TcFeatureFactory
         params.add(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
         params.add(name);
 
-        return new TcFeature<ExternalResourceDescription>(name)
+        return new TcFeature(name)
         {
             @Override
             public ExternalResourceDescription getActualValue()

@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -114,7 +113,7 @@ public class WekaAblationDemo
 //                EmoticonRatio.class.getName(), NumberOfHashTags.class.getName(),
 //                NrOfTokens.class.getName());
         
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets =ExperimentUtil.getAblationTestFeatures(
+        Dimension<List<TcFeature>> dimFeatureSets =ExperimentUtil.getAblationTestFeatures(
                 TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(EmoticonRatio.class),
                         TcFeatureFactory.create(NumberOfHashTags.class));

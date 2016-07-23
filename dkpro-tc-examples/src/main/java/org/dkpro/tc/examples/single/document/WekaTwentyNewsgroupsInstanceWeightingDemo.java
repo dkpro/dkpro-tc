@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -134,7 +133,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));
 
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(NrOfTokens.class),
@@ -147,7 +146,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
                 DIM_BASELINE_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimBaselineFeatureSets = Dimension
+        Dimension<List<TcFeature>> dimBaselineFeatureSets = Dimension
                 .create(DIM_BASELINE_FEATURE_SET,
                         Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                                 TcFeatureFactory.create(NrOfTokens.class),

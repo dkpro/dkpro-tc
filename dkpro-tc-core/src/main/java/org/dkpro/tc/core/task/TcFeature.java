@@ -2,9 +2,10 @@ package org.dkpro.tc.core.task;
 
 import java.util.Map;
 
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.lab.task.Discriminable;
 
-public abstract class TcFeature<T> implements Discriminable
+public abstract class TcFeature implements Discriminable
 {
     private String name;
     protected Map<String, Object> config;
@@ -25,5 +26,5 @@ public abstract class TcFeature<T> implements Discriminable
     }
     
     @Override
-    public abstract T getActualValue();
+    public abstract ExternalResourceDescription getActualValue();
 }

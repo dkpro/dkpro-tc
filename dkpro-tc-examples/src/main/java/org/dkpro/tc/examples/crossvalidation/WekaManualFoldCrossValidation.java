@@ -30,7 +30,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -100,7 +99,7 @@ public class WekaManualFoldCrossValidation
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
                 .asList(TcFeatureFactory.create(IsSurroundedByChars.class, IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"")));
 
 

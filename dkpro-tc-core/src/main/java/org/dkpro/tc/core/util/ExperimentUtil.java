@@ -22,46 +22,46 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminable;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcFeature;
 
-public class ExperimentUtil {
+public class ExperimentUtil
+{
 
     private static final String SINGLE_FE = "SINGLE_FEATURE_";
     private static final String LEFTOUT_FE = "ABLATION_TEST_LEFTOUT_FEATURE_";
 
-	/**
-	 * Returns a pre-defined dimension with feature extractor sets. Each set
-	 * consists only of an individual feature. For example, if you specify four
-	 * feature extractors A, B, C, and D, you will get [A], [B], [C] and [D]
-	 * 
-	 * @param featureExtractorClassNames
-	 *            All the feature extractors that should be tested.
-	 * @return a dimension with a list of feature extractor sets; named after
-	 *         the selected single feature
-	 */
-	public static Dimension<List<String>> getSingleFeatures(
-			String... featureExtractorClassNames) {
-		@SuppressWarnings("unchecked")
-		List<String>[] featureSets = (ArrayList<String>[]) new ArrayList[featureExtractorClassNames.length];
+    /**
+     * Returns a pre-defined dimension with feature extractor sets. Each set consists only of an
+     * individual feature. For example, if you specify four feature extractors A, B, C, and D, you
+     * will get [A], [B], [C] and [D]
+     * 
+     * @param featureExtractorClassNames
+     *            All the feature extractors that should be tested.
+     * @return a dimension with a list of feature extractor sets; named after the selected single
+     *         feature
+     */
+    public static Dimension<List<String>> getSingleFeatures(String... featureExtractorClassNames)
+    {
+        @SuppressWarnings("unchecked")
+        List<String>[] featureSets = (ArrayList<String>[]) new ArrayList[featureExtractorClassNames.length];
 
-		for (int i = 0; i < featureExtractorClassNames.length; i++) {
-			NamedArrayList<String> singleFE = new NamedArrayList<String>(
-					Arrays.asList(featureExtractorClassNames[i]));
-			singleFE.setName(SINGLE_FE + featureExtractorClassNames[i]);
-			featureSets[i] = singleFE;
-		}
+        for (int i = 0; i < featureExtractorClassNames.length; i++) {
+            NamedArrayList<String> singleFE = new NamedArrayList<String>(
+                    Arrays.asList(featureExtractorClassNames[i]));
+            singleFE.setName(SINGLE_FE + featureExtractorClassNames[i]);
+            featureSets[i] = singleFE;
+        }
 
-		Dimension<List<String>> dimFeatureSets = Dimension.create(
-				Constants.DIM_FEATURE_SET, featureSets);
+        Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+                featureSets);
 
-		return dimFeatureSets;
-	}
-	
-	/**
+        return dimFeatureSets;
+    }
+
+    /**
      * Returns a pre-defined dimension with feature extractor sets configured for an ablation test.
      * For example, if you specify four feature extractors A, B, C, and D, you will get [A,B,C,D],
      * [A,B,C], [A,B,D], [A,C,D], [B,C,D],
@@ -71,30 +71,31 @@ public class ExperimentUtil {
      * @return a dimension with a list of feature extractor sets; named after the feature that is
      *         left out
      */
-	public static Dimension<List<TcFeature<ExternalResourceDescription>>> getAblationTestFeatures(TcFeature<ExternalResourceDescription> ... features) {
-		@SuppressWarnings("unchecked")
-		List<TcFeature<ExternalResourceDescription>>[] featureSets = (ArrayList<TcFeature<ExternalResourceDescription>>[]) new ArrayList[features.length + 1];
+    public static Dimension<List<TcFeature>> getAblationTestFeatures(TcFeature... features)
+    {
+        @SuppressWarnings("unchecked")
+        List<TcFeature>[] featureSets = (ArrayList<TcFeature>[]) new ArrayList[features.length + 1];
 
-		for (int i=0; i<features.length; i++) {
-			List<TcFeature<ExternalResourceDescription>> featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
-			featureSets[i] = featureNamesMinusOne;
-		}
-		// also add all features extractors
-		featureSets[features.length] = new ArrayList<TcFeature<ExternalResourceDescription>>(Arrays.asList(features));
-		
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
-        		Constants.DIM_FEATURE_SET, featureSets
-        );
-        
+        for (int i = 0; i < features.length; i++) {
+            List<TcFeature> featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
+            featureSets[i] = featureNamesMinusOne;
+        }
+        // also add all features extractors
+        featureSets[features.length] = new ArrayList<TcFeature>(Arrays.asList(features));
+
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+                featureSets);
+
         return dimFeatureSets;
-	}
-	
-	private static List<TcFeature<ExternalResourceDescription>> getFeatureNamesMinusOne(TcFeature<ExternalResourceDescription>[] names, int i) {
-        NamedArrayList<TcFeature<ExternalResourceDescription>> nameList = new NamedArrayList<TcFeature<ExternalResourceDescription>>(Arrays.asList(names));
+    }
+
+    private static List<TcFeature> getFeatureNamesMinusOne(TcFeature[] names, int i)
+    {
+        NamedArrayList<TcFeature> nameList = new NamedArrayList<TcFeature>(Arrays.asList(names));
         nameList.setName(LEFTOUT_FE + names[i]);
-		nameList.remove(i);
-		return nameList;
-	}
+        nameList.remove(i);
+        return nameList;
+    }
 
     /**
      * A named list which can be used to label values which are lists (e.g. a list of feature
@@ -103,7 +104,9 @@ public class ExperimentUtil {
      * @param <T>
      */
     @SuppressWarnings("serial")
-    public static class NamedArrayList<T> extends ArrayList<T> implements Discriminable
+    public static class NamedArrayList<T>
+        extends ArrayList<T>
+        implements Discriminable
     {
         private String name;
 

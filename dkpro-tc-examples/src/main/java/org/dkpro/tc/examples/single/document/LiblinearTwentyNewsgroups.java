@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -112,7 +111,7 @@ public class LiblinearTwentyNewsgroups
                 TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
                 Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
                         LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
