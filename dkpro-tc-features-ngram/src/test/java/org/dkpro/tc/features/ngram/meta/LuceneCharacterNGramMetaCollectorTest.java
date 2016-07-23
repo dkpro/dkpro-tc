@@ -41,7 +41,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -76,9 +75,10 @@ public class LuceneCharacterNGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneCharacterNGramMetaCollector.class,
+                LuceneCharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
-                LuceneCharacterNGramMetaCollector.LUCENE_DIR, tmpDir,
-                LuceneNGram.PARAM_LUCENE_DIR, tmpDir
+                LuceneCharacterNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
+                LuceneCharacterNGram.PARAM_SOURCE_LOCATION, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter,doc, metaCollector)) {
