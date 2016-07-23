@@ -41,7 +41,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
@@ -64,6 +66,8 @@ public class LuceneNgramUnitTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+
+    private static String EXTRACTOR_NAME = "133";
 
     @Test
     public void testLuceneMetaCollectorOutput()
@@ -117,11 +121,16 @@ public class LuceneNgramUnitTest
     {
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, LuceneNGram.PARAM_NGRAM_USE_TOP_K, "1",
+                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                LuceneNGram.PARAM_NGRAM_MIN_N, "1", LuceneNGram.PARAM_NGRAM_MAX_N, "1", };
 
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(LuceneNGram.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
@@ -135,9 +144,9 @@ public class LuceneNgramUnitTest
                 .createEngineDescription(EachTokenAsUnitAnnotator.class);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_UNIT, DenseFeatureStore.class.getName(),
-                false, false, false, false, LuceneNGram.class.getName());
+                false, false, false, new ArrayList<>(), false, fes);
 
         SimplePipeline.runPipeline(reader, segmenter, unitAnno, featExtractorConnector);
 
@@ -168,9 +177,13 @@ public class LuceneNgramUnitTest
     private void runMetaCollection(File luceneFolder)
         throws Exception
     {
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
-                LuceneNGram.PARAM_LUCENE_DIR, luceneFolder, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
-                LuceneNGram.PARAM_NGRAM_MAX_N, 1, };
+
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1,
+                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 1 };
+
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -192,7 +205,7 @@ public class LuceneNgramUnitTest
     {
         @SuppressWarnings("deprecation")
         IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
-        Term term = new Term("ngram", string);
+        Term term = new Term("ngram" + EXTRACTOR_NAME, string);
         return (int) idxReader.totalTermFreq(term);
     }
 
