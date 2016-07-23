@@ -22,15 +22,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.meta.MetaCollector;
-import org.dkpro.tc.core.Constants;
 
 /**
  * Extract the context of each unit (in a sequence) and write it to a special file.
@@ -45,13 +42,6 @@ public abstract class ContextMetaCollector_ImplBase
 
     protected BufferedWriter bw;
 
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY);
-        return mapping;
-    }
 
     @Override
     public void initialize(UimaContext context)

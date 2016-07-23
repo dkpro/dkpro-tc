@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +32,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -96,11 +94,12 @@ public class ContextCollectorUFE
         return new HashSet<Feature>();
     }
 
-@Override
-public List<MetaCollectorConfiguration> getMetaCollectorClasses()
-    throws ResourceInitializationException
-{
-    // TODO Auto-generated method stub
-    return null;
-}
+    @Override
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
+    {
+        return null;
+    }
+
 }
