@@ -31,6 +31,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
@@ -38,6 +39,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
@@ -110,24 +113,20 @@ public class SVMHMMBrownPosDemo
         Dimension<List<Object>> dimPipelineParameters = Dimension
                 .create(Constants.DIM_PIPELINE_PARAMS, Arrays.asList());
 
-        // feature extractors
-        Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfChars.class.getName(),
-                        LuceneCharacterNGram.class.getName(),
-                        OriginalTextHolderFeatureExtractor.class.getName() }));
-
-        // feature extractor parameters
-        Dimension<List<Object>> dimFeatureSetsParams = Dimension.create(
-                Constants.DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 20,
-                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 3 }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                Constants.DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfChars.class),
+                        TcFeatureFactory.create(LuceneCharacterNGram.class,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 20,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 3),
+                        TcFeatureFactory.create(OriginalTextHolderFeatureExtractor.class)));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
                 Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
-                dimPipelineParameters, dimFeatureSets, dimFeatureSetsParams, dimClassificationArgs);
+                dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,

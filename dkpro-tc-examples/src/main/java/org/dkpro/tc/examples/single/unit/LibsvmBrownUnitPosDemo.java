@@ -31,12 +31,15 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -81,8 +84,8 @@ public class LibsvmBrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("LibsvmCrossvalidationBrownPosDemo",
-                LibsvmAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+                "LibsvmCrossvalidationBrownPosDemo", LibsvmAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -127,22 +130,19 @@ public class LibsvmBrownUnitPosDemo
                 BrownCorpusReader.PARAM_PATTERNS,
                 new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
         dimReaders.put(DIM_READER_TEST, readerTest);
-        
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS,
-                        asList(new String[] { 
-                                "-c", "10"}));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokens.class.getName(), LuceneCharacterNGram.class.getName() }));
+        Dimension<List<String>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new String[] { "-c", "10" }));
+
+        @SuppressWarnings("unchecked")
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                Constants.DIM_FEATURE_SET, Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+                        TcFeatureFactory.create(LuceneCharacterNGram.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets
-                ,dimClassificationArgs
-                );
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
