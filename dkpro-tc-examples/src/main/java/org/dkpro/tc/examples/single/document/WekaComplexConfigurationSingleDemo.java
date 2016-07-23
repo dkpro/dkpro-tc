@@ -29,11 +29,14 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
@@ -124,16 +127,17 @@ public class WekaComplexConfigurationSingleDemo
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokensPerSentence.class.getName(),
-                        NrOfChars.class.getName(), LuceneNGram.class.getName() }),
-                asList(new String[] { LuceneNGram.class.getName() }));
-
-        // parameters to configure feature extractors
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, "50",
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
-                        3 }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
+                        TcFeatureFactory.create(NrOfChars.class),
+                        TcFeatureFactory.create(LuceneNGram.class,
+                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
+                                LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
+                                3)),
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class,
+                        LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
+                        LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
         // single-label feature selection (Weka specific options), reduces the feature set to 10
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
@@ -145,7 +149,7 @@ public class WekaComplexConfigurationSingleDemo
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
                 dimFeatureSets, dimClassificationArgs,
                 Dimension.createBundle("featureSelection", dimFeatureSelection));
 

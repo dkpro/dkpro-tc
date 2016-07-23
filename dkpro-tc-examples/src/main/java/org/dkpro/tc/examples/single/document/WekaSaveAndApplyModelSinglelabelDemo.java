@@ -33,17 +33,20 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
@@ -127,17 +130,18 @@ public class WekaSaveAndApplyModelSinglelabelDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<TcFeature<ExternalResourceDescription>>> dimFeatureSets = Dimension.create(
+                DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
+                        TcFeatureFactory.create(NrOfTokens.class),
+                        TcFeatureFactory.create(LuceneNGram.class,
+                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                                LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
+                                3)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
                 dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
