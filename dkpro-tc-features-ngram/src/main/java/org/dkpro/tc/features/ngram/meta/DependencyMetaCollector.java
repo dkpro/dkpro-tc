@@ -18,8 +18,6 @@
 package org.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -63,14 +61,6 @@ public class DependencyMetaCollector
         }
 
         return governor + "-" + type + "-" + dependent;
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(DependencyFeature.PARAM_DEP_FD_FILE, DEP_FD_KEY);
-        return mapping;
     }
 
     @Override

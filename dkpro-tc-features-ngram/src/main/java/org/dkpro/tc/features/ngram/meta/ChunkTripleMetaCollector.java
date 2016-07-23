@@ -19,10 +19,8 @@ package org.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -114,14 +112,6 @@ public class ChunkTripleMetaCollector
             // }
         }
         return chunkString;
-    }
-
-    @Override
-    public Map<String, String> getParameterKeyPairs()
-    {
-        Map<String, String> mapping = new HashMap<String, String>();
-        mapping.put(ChunkTriple.PARAM_CHUNK_TRIPLE_FD_FILE, CHUNK_TRIPLE_FD_KEY);
-        return mapping;
     }
 
     @Override
