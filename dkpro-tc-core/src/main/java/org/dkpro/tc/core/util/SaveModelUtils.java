@@ -79,51 +79,16 @@ public class SaveModelUtils
             List<TcFeature> featureSet, List<Object> aFeatureParameters)
                 throws Exception
     {
-        Properties parameterProperties = new Properties();
-
         for (TcFeature f : featureSet) {
-            ExternalResourceDescription feDesc = f.getActualValue();
-            Map<String, Object> parameterSettings = ConfigurationParameterFactory
-                    .getParameterSettings(feDesc.getResourceSpecifier());
-
-            String implName;
-            if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-                implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
-                        .getResourceClassName();
-            }
-            else {
-                implName = feDesc.getImplementationName();
-            }
-
-            Class<?> feClass = Class.forName(implName);
-
-            // Skip feature extractors that are not dependent on meta collectors
-            if (!MetaDependent.class.isAssignableFrom(feClass)) {
-                continue;
-            }
-
-            MetaDependent feInstance = (MetaDependent) feClass.newInstance();
-
-            // Tell the meta collectors where to store their data
-            for (MetaCollectorConfiguration conf : feInstance
-                    .getMetaCollectorClasses(parameterSettings)) {
-                Map<String, String> collectorOverrides = conf.collectorOverrides;
-
-                for (Entry<String, String> entry : collectorOverrides.entrySet()) {
-                    File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
-                            entry.getValue().toString());
-
-                    String name = file.getName();
-                    String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-                    File targetFolder = new File(subFolder);
-                    copyToTargetLocation(file, targetFolder);
-                    parameterProperties.put(entry.getKey(), name);
-                }
-
-            }
-
+            
+            copyLuceneMetaResources(aContext, f, aOutputFolder);
+            persistsFeatureClassObject(aContext,f, aOutputFolder);
+            
         }
 
+        int a=0;
+        a++;
+        
         // // write meta collector data
         // // automatically determine the required metaCollector classes from the
         // // provided feature
@@ -194,6 +159,74 @@ public class SaveModelUtils
         // FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
         // parameterProperties.store(writer, "");
         // writer.close();
+    }
+
+    private static void persistsFeatureClassObject(TaskContext aContext, TcFeature f,
+            File aOutputFolder) throws Exception
+    {
+        ExternalResourceDescription feDesc = f.getActualValue();
+
+        String implName;
+        if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+            implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                    .getResourceClassName();
+        }
+        else {
+            implName = feDesc.getImplementationName();
+        }
+
+        Class<?> feature = Class.forName(implName);    
+        
+        InputStream inStream = feature
+                .getResource("/" + implName.replace(".", "/") + ".class").openStream();
+
+        OutputStream outStream = buildOutputStream(aOutputFolder, implName);
+
+        IOUtils.copy(inStream, outStream);
+        outStream.close();
+        inStream.close();
+    }
+
+    //copy the lucene index folder to the target location
+    private static void copyLuceneMetaResources(TaskContext aContext, TcFeature f, File aOutputFolder) throws Exception
+    {
+        ExternalResourceDescription feDesc = f.getActualValue();
+        Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                .getParameterSettings(feDesc.getResourceSpecifier());
+
+        String implName;
+        if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+            implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                    .getResourceClassName();
+        }
+        else {
+            implName = feDesc.getImplementationName();
+        }
+
+        Class<?> feClass = Class.forName(implName);
+
+        // Skip feature extractors that are not dependent on meta collectors
+        if (!MetaDependent.class.isAssignableFrom(feClass)) {
+            return;
+        }
+
+        MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+
+        // Tell the meta collectors where to store their data
+        for (MetaCollectorConfiguration conf : feInstance
+                .getMetaCollectorClasses(parameterSettings)) {
+            Map<String, String> collectorOverrides = conf.collectorOverrides;
+
+            for (Entry<String, String> entry : collectorOverrides.entrySet()) {
+                File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
+                        entry.getValue().toString());
+
+                String name = file.getName();
+                String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+                File targetFolder = new File(subFolder);
+                copyToTargetLocation(file, targetFolder);
+            }
+        }        
     }
 
     private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
