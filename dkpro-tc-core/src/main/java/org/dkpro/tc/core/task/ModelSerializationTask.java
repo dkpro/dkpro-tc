@@ -36,7 +36,7 @@ public abstract class ModelSerializationTask
     @Discriminator(name=DIM_PIPELINE_PARAMS)
     protected List<Object> pipelineParameters;
     @Discriminator(name=DIM_FEATURE_SET)
-    protected List<TcFeature<ExternalResourceDescription>> featureSet;
+    protected List<TcFeature> featureSet;
     @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
     @Discriminator(name=DIM_LEARNING_MODE)

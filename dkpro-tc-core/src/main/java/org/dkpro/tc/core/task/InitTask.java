@@ -40,7 +40,6 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.CustomResourceSpecifier;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -79,7 +78,7 @@ public class InitTask
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private String threshold;
     @Discriminator(name = DIM_FEATURE_SET)
-    private List<TcFeature<ExternalResourceDescription>> featureExtractors;
+    private List<TcFeature> featureExtractors;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
@@ -218,7 +217,7 @@ public class InitTask
     }
 
     private Object getFeatureExtractorNames(
-            List<TcFeature<ExternalResourceDescription>> featureExtractors2)
+            List<TcFeature> featureExtractors2)
     {
         String[] featureExtractorNames = new String[featureExtractors.size()];
 

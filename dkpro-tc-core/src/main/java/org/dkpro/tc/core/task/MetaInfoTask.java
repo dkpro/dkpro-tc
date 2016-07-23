@@ -82,7 +82,7 @@ public class MetaInfoTask
     private List<String> operativeViews;
 
     @Discriminator(name = DIM_FEATURE_SET)
-    private List<TcFeature<ExternalResourceDescription>> featureExtractors;
+    private List<TcFeature> featureExtractors;
 
     @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
@@ -132,7 +132,7 @@ public class MetaInfoTask
 
         // Resolve the feature extractor closures to actual descritors
         List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
-        for (TcFeature<ExternalResourceDescription> fc : featureExtractors) {
+        for (TcFeature fc : featureExtractors) {
             featureExtractorDescriptions.add(fc.getActualValue());
         }
 
@@ -140,7 +140,7 @@ public class MetaInfoTask
         try {
 
             // Configure the meta collectors for each feature extractor individually
-            for (TcFeature<ExternalResourceDescription> feClosure : featureExtractors) {
+            for (TcFeature feClosure : featureExtractors) {
                 ExternalResourceDescription feDesc = feClosure.getActualValue();
 
                 String implName;

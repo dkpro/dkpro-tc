@@ -22,12 +22,12 @@ import static org.dkpro.tc.core.Constants.DIM_APPLY_INSTANCE_WEIGHTING;
 import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_FILTERS;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_STORE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
 import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class ExtractFeaturesTask
     @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
     @Discriminator(name = DIM_FEATURE_SET)
-    private List<TcFeature<ExternalResourceDescription>> featureExtractors;
+    private List<TcFeature> featureExtractors;
 
     private boolean isTesting = false;
     // TODO Issue 121: this is already prepared, but not used
@@ -129,7 +129,7 @@ public class ExtractFeaturesTask
 
         // Configure the meta collectors for each feature extractor individually
         try {
-            for (TcFeature<ExternalResourceDescription> feClosure : featureExtractors) {
+            for (TcFeature feClosure : featureExtractors) {
                 ExternalResourceDescription feDesc = feClosure.getActualValue();
                 featureExtractorDescriptions.add(feDesc);
 
