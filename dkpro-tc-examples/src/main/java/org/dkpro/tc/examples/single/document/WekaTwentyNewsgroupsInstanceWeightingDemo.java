@@ -148,7 +148,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         Dimension<List<TcFeature<ExternalResourceDescription>>> dimBaselineFeatureSets = Dimension
-                .create(DIM_FEATURE_SET,
+                .create(DIM_BASELINE_FEATURE_SET,
                         Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                                 TcFeatureFactory.create(NrOfTokens.class),
                                 TcFeatureFactory.create(LuceneNGram.class,
