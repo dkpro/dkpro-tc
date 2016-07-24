@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.features.pair.similarity;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +29,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
-import org.dkpro.tc.api.features.meta.MetaCollector;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
 
@@ -81,14 +81,17 @@ public class CosineFeatureExtractor<T extends Annotation>
 
     private CosineSimilarity measure;
     
-    @Override
-    public List<Class<? extends MetaCollector>> getMetaCollectorClasses()
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
     {
-        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-        metaCollectorClasses.add(IdfPairMetaCollector.class);
-
-        return metaCollectorClasses;
+        return Arrays.asList(new MetaCollectorConfiguration(IdfPairMetaCollector.class,
+                parameterSettings).addStorageMapping(
+                        IdfPairMetaCollector.PARAM_TARGET_LOCATION,
+                        CosineFeatureExtractor.PARAM_SOURCE_LOCATION,
+                        IdfPairMetaCollector.LUCENE_DIR));
     }
+    
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException

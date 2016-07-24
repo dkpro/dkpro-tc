@@ -20,14 +20,19 @@ package org.dkpro.tc.features.pair.similarity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Test;
 
@@ -56,7 +61,9 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath
+                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
+                IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
         		};
         test.runPipeline();
         assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
@@ -74,7 +81,9 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        		CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
+        		IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
         		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Stem"
         		};
         test.runPipeline();
@@ -93,7 +102,9 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
+                IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
         		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma"
         		};
         test.runPipeline();
@@ -111,7 +122,9 @@ public class CosineSimilarityTest
     	CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
         test.parameters = new Object[] { 
-        		CosineFeatureExtractor.PARAM_LUCENE_DIR, test.lucenePath,
+                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
+                IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
         		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
         		};
         test.runPipeline();
@@ -126,11 +139,16 @@ public class CosineSimilarityTest
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
-        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(parameterList,
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(CosineFeatureExtractor.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+        
+        featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
-                false, false, false, false, 
-                CosineFeatureExtractor.class.getName());
+                Constants.LM_REGRESSION, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
+                false, false, false, new ArrayList<>(), false, fes);
+        
     }
     @Override
 	protected void getMetaCollector(List<Object> parameterList)
