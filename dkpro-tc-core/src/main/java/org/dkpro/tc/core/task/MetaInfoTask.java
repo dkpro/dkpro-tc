@@ -297,20 +297,6 @@ public class MetaInfoTask
         }
     }
 
-    private void addContextCollector()
-    {
-        // Records the context i.e. as debugging help turned off by default set
-        // Dimension.create("recordContext", true) into your experiment to enable it
-
-        if (featureMode.equals(FM_UNIT)) {
-            metaCollectorClasses.add(UnitContextMetaCollector.class);
-        }
-
-        if (featureMode.equals(FM_SEQUENCE)) {
-            metaCollectorClasses.add(SequenceContextMetaCollector.class);
-        }
-    }
-
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;
