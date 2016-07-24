@@ -40,6 +40,8 @@ public abstract class ContextMetaCollector_ImplBase
     @ConfigurationParameter(name = PARAM_CONTEXT_FILE, mandatory = true)
     protected File contextFile;
 
+    public static final String CONTEXT_KEY = "id2context.txt";
+    
     protected BufferedWriter bw;
 
 

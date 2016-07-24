@@ -19,9 +19,9 @@ package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_RECORD_CONTEXT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.FM_UNIT;
@@ -61,7 +61,6 @@ import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
-import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
  * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
@@ -137,35 +136,18 @@ public class MetaInfoTask
         for (TcFeature fc : featureExtractors) {
             featureExtractorDescriptions.add(fc.getActualValue());
         }
-        
+
         List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
-        
-        if(recordContext){
-        if (featureMode.equals(FM_UNIT)) {
-            // add additional unit context meta collector that extracts the context around text classification units
-            // mainly used for error analysis purposes
-            Map<String, Object> empty = new HashMap<>();
-            MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
-                    UnitContextMetaCollector.class, empty).addStorageMapping(
-                    UnitContextMetaCollector.PARAM_CONTEXT_FILE, null,
-                    UnitContextMetaCollector.CONTEXT_KEY);
-            configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides, AccessMode.READWRITE);
-            metaCollectors.add(conf.descriptor);    
-        }
-        
-        if (featureMode.equals(FM_SEQUENCE)) {
-            Map<String, Object> empty = new HashMap<>();
-            MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
-                    SequenceContextMetaCollector.class, empty).addStorageMapping(
-                    SequenceContextMetaCollector.PARAM_CONTEXT_FILE, null,
-                    SequenceContextMetaCollector.CONTEXT_KEY);
 
-            configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides, AccessMode.READWRITE);
-            metaCollectors.add(conf.descriptor);   
-        }
+        if (recordContext) {
+            AnalysisEngineDescription aed = injectContextMetaCollector(aContext);
+            if (aed == null) {
+                throw new NullPointerException(
+                        "Initializing a ContextMetaCollector returned an AnalysisEngineDescription which was [NULL]");
+            }
+            metaCollectors.add(aed);
         }
 
-        
         try {
 
             // Configure the meta collectors for each feature extractor individually
@@ -225,6 +207,43 @@ public class MetaInfoTask
             }
         }
         return builder.createAggregateDescription();
+    }
+
+    private AnalysisEngineDescription injectContextMetaCollector(TaskContext aContext)
+        throws ResourceInitializationException
+    {
+        try {
+            if (featureMode.equals(FM_UNIT)) {
+                // add additional unit context meta collector that extracts the context around text
+                // classification units
+                // mainly used for error analysis purposes
+                Map<String, Object> empty = new HashMap<>();
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                        UnitContextMetaCollector.class, empty).addStorageMapping(
+                                UnitContextMetaCollector.PARAM_CONTEXT_FILE, null,
+                                UnitContextMetaCollector.CONTEXT_KEY);
+                configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
+                        AccessMode.READWRITE);
+
+                return conf.descriptor;
+            }
+
+            if (featureMode.equals(FM_SEQUENCE)) {
+                Map<String, Object> empty = new HashMap<>();
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                        SequenceContextMetaCollector.class, empty).addStorageMapping(
+                                SequenceContextMetaCollector.PARAM_CONTEXT_FILE, null,
+                                SequenceContextMetaCollector.CONTEXT_KEY);
+
+                configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
+                        AccessMode.READWRITE);
+                return conf.descriptor;
+            }
+        }
+        catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }
+        return null;
     }
 
     private void validateUniqueFeatureExtractorNames(Map<String, Object> parameterSettings)
