@@ -22,6 +22,7 @@ import static org.dkpro.tc.core.task.MetaInfoTask.META_KEY;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -79,16 +80,19 @@ public class SaveModelUtils
             List<TcFeature> featureSet, List<Object> aFeatureParameters)
                 throws Exception
     {
+        StringBuilder sb = new StringBuilder();
         for (TcFeature f : featureSet) {
-            
             copyLuceneMetaResources(aContext, f, aOutputFolder);
-            persistsFeatureClassObject(aContext,f, aOutputFolder);
-            
-        }
+            persistsFeatureClassObject(aContext, f, aOutputFolder);
 
-        int a=0;
+            sb = copyParameters(aContext, f, sb, aOutputFolder);
+            sb.append("\n");
+        }
+        writeFeatureParameters(sb, aOutputFolder);
+
+        int a = 0;
         a++;
-        
+
         // // write meta collector data
         // // automatically determine the required metaCollector classes from the
         // // provided feature
@@ -161,8 +165,65 @@ public class SaveModelUtils
         // writer.close();
     }
 
+    private static void writeFeatureParameters(StringBuilder sb, File aOutputFolder)
+        throws IOException
+    {
+        File file = new File(aOutputFolder, MODEL_PARAMETERS);
+        FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
+    }
+
+    private static StringBuilder copyParameters(TaskContext aContext, TcFeature f, StringBuilder sb,
+            File aOutputFolder)
+                throws IOException
+    {
+        sb.append(f.getFeatureName() + "\t");
+
+        ExternalResourceDescription feDesc = f.getActualValue();
+        Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                .getParameterSettings(feDesc.getResourceSpecifier());
+        List<String> keySet = new ArrayList<>(parameterSettings.keySet());
+        for (int i = 0; i < keySet.size(); i++) {
+
+            String key = keySet.get(i);
+            String value = parameterSettings.get(key).toString();
+
+            if (valueExistAsFileOrFolderInTheFileSystem(value)) {
+                String name = new File(value).getName();
+                String destination = aOutputFolder + "/" + name;
+                copyToTargetLocation(new File(value), new File(destination));
+                sb = record(i, keySet, name, sb);
+                continue;
+            }
+            sb = record(i, keySet, parameterSettings, sb);
+        }
+        sb.append("\n");
+        return sb;
+    }
+
+    private static StringBuilder record(int i, List<String> keySet, String name, StringBuilder sb)
+    {
+        String key = keySet.get(i);
+        sb.append(key + "=" + name);
+        if (i + 1 < keySet.size()) {
+            sb.append("\t");
+        }
+        return sb;
+    }
+
+    private static StringBuilder record(int i, List<String> keySet,
+            Map<String, Object> parameterSettings, StringBuilder sb)
+    {
+        String key = keySet.get(i);
+        sb.append(key + "=" + parameterSettings.get(key).toString());
+        if (i + 1 < keySet.size()) {
+            sb.append("\t");
+        }
+        return sb;
+    }
+
     private static void persistsFeatureClassObject(TaskContext aContext, TcFeature f,
-            File aOutputFolder) throws Exception
+            File aOutputFolder)
+                throws Exception
     {
         ExternalResourceDescription feDesc = f.getActualValue();
 
@@ -175,10 +236,10 @@ public class SaveModelUtils
             implName = feDesc.getImplementationName();
         }
 
-        Class<?> feature = Class.forName(implName);    
-        
-        InputStream inStream = feature
-                .getResource("/" + implName.replace(".", "/") + ".class").openStream();
+        Class<?> feature = Class.forName(implName);
+
+        InputStream inStream = feature.getResource("/" + implName.replace(".", "/") + ".class")
+                .openStream();
 
         OutputStream outStream = buildOutputStream(aOutputFolder, implName);
 
@@ -187,8 +248,10 @@ public class SaveModelUtils
         inStream.close();
     }
 
-    //copy the lucene index folder to the target location
-    private static void copyLuceneMetaResources(TaskContext aContext, TcFeature f, File aOutputFolder) throws Exception
+    // copy the lucene index folder to the target location
+    private static void copyLuceneMetaResources(TaskContext aContext, TcFeature f,
+            File aOutputFolder)
+                throws Exception
     {
         ExternalResourceDescription feDesc = f.getActualValue();
         Map<String, Object> parameterSettings = ConfigurationParameterFactory
@@ -226,7 +289,7 @@ public class SaveModelUtils
                 File targetFolder = new File(subFolder);
                 copyToTargetLocation(file, targetFolder);
             }
-        }        
+        }
     }
 
     private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
