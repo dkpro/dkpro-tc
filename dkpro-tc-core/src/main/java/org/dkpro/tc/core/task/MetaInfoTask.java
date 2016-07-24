@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
+import de.tudarmstadt.ukp.dkpro.tc.core.Constants;
 
 /**
  * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
@@ -135,8 +137,35 @@ public class MetaInfoTask
         for (TcFeature fc : featureExtractors) {
             featureExtractorDescriptions.add(fc.getActualValue());
         }
-
+        
         List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
+        
+        if(recordContext){
+        if (featureMode.equals(FM_UNIT)) {
+            // add additional unit context meta collector that extracts the context around text classification units
+            // mainly used for error analysis purposes
+            Map<String, Object> empty = new HashMap<>();
+            MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                    UnitContextMetaCollector.class, empty).addStorageMapping(
+                    UnitContextMetaCollector.PARAM_CONTEXT_FILE, null,
+                    UnitContextMetaCollector.CONTEXT_KEY);
+            configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides, AccessMode.READWRITE);
+            metaCollectors.add(conf.descriptor);    
+        }
+        
+        if (featureMode.equals(FM_SEQUENCE)) {
+            Map<String, Object> empty = new HashMap<>();
+            MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                    SequenceContextMetaCollector.class, empty).addStorageMapping(
+                    SequenceContextMetaCollector.PARAM_CONTEXT_FILE, null,
+                    SequenceContextMetaCollector.CONTEXT_KEY);
+
+            configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides, AccessMode.READWRITE);
+            metaCollectors.add(conf.descriptor);   
+        }
+        }
+
+        
         try {
 
             // Configure the meta collectors for each feature extractor individually
