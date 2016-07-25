@@ -347,7 +347,8 @@ public interface Constants
      */
     public static final String MODEL_META = "meta.txt";
     
-    public static final String META_COLLECTOR_PARAMETER = "metaCollectorParameters.txt";
+    public static final String META_COLLECTOR_OVERRIDE = "metaCollectorOverrides.txt";
+    public static final String META_EXTRACTOR_OVERRIDE = "metaExtractorOverrides.txt";
     
     /**
      * Tc version under which this model has been trained

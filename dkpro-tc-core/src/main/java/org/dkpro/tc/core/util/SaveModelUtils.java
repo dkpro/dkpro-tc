@@ -82,7 +82,7 @@ public class SaveModelUtils
     {
         StringBuilder sb = new StringBuilder();
         for (TcFeature f : featureSet) {
-            copyLuceneMetaResources(aContext, f, aOutputFolder);
+            copyLuceneMetaResourcesAndGetOverrides(aContext, f, aOutputFolder);
             persistsFeatureClassObject(aContext, f, aOutputFolder);
 
             sb = copyParameters(aContext, f, sb, aOutputFolder);
@@ -177,7 +177,7 @@ public class SaveModelUtils
     }
 
     // copy the lucene index folder to the target location
-    private static void copyLuceneMetaResources(TaskContext aContext, TcFeature f,
+    private static void copyLuceneMetaResourcesAndGetOverrides(TaskContext aContext, TcFeature f,
             File aOutputFolder)
                 throws Exception
     {
@@ -203,13 +203,15 @@ public class SaveModelUtils
 
         MetaDependent feInstance = (MetaDependent) feClass.newInstance();
 
-        Map<String, Object> luceneParameters = new HashMap<>();
+        Map<String, Object> metaOverrides = new HashMap<>();
+        Map<String, Object> extractorOverrides = new HashMap<>();
         
         // Tell the meta collectors where to store their data
         for (MetaCollectorConfiguration conf : feInstance
                 .getMetaCollectorClasses(parameterSettings)) {
             Map<String, String> collectorOverrides = conf.collectorOverrides;
-            luceneParameters.putAll(collectorOverrides);
+            metaOverrides.putAll(collectorOverrides);
+            extractorOverrides.putAll(conf.extractorOverrides);
 
             for (Entry<String, String> entry : collectorOverrides.entrySet()) {
                 File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
@@ -222,17 +224,18 @@ public class SaveModelUtils
                 copyToTargetLocation(file, targetFolder);
             }
         }
-        writeLuceneParameters(aOutputFolder, luceneParameters);
+        writeOverrides(aOutputFolder, metaOverrides,META_COLLECTOR_OVERRIDE);
+        writeOverrides(aOutputFolder, metaOverrides,META_EXTRACTOR_OVERRIDE);
     }
 
-    private static void writeLuceneParameters(File aOutputFolder, Map<String, Object> luceneParameters) throws IOException
+    private static void writeOverrides(File aOutputFolder, Map<String, Object> override, String target) throws IOException
     {
         StringBuilder sb = new StringBuilder();
-        for(String k : luceneParameters.keySet()){
-            sb.append(k + "=" + luceneParameters.get(k));
+        for(String k : override.keySet()){
+            sb.append(k + "=" + override.get(k));
         }
         
-        FileUtils.write(new File(aOutputFolder, META_COLLECTOR_PARAMETER), sb.toString(), "utf-8");
+        FileUtils.write(new File(aOutputFolder, target), sb.toString(), "utf-8");
     }
 
     private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
@@ -678,7 +681,7 @@ public class SaveModelUtils
 
     private static Map<String, String> loadMetaCollectorOverrides(File tcModelLocation) throws IOException
     {
-        List<String> lines = FileUtils.readLines(new File(tcModelLocation, META_COLLECTOR_PARAMETER), "utf-8");
+        List<String> lines = FileUtils.readLines(new File(tcModelLocation, META_COLLECTOR_OVERRIDE), "utf-8");
         Map<String,String> overrides = new HashMap<>();
         
         for(String s :lines){
