@@ -586,7 +586,7 @@ public class SaveModelUtils
     }
 
     public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
-            File tcModelLocation, UimaContext aContext) throws IOException, ClassNotFoundException
+            File tcModelLocation, UimaContext aContext) throws Exception
     {
         List<ExternalResourceDescription> erd = new ArrayList<>();
         
@@ -609,42 +609,17 @@ public class SaveModelUtils
             ExternalResourceDescription exRes = feature.getActualValue();
             
             
+            
          // Skip feature extractors that are not dependent on meta collectors
             if (!MetaDependent.class.isAssignableFrom(feClass)) {
                 continue;
             }
             
-            Map<String,String> overrides = loadMetaCollectorOverrides(tcModelLocation);
-
-            // We assume for the moment that we only have primitive analysis engines for meta
-            // collection, not aggregates. If there were aggregates, we'd have to do this
-            // recursively
-            ResourceSpecifier aDesc = exRes.getResourceSpecifier();
-            if (aDesc instanceof AnalysisEngineDescription) {
-                // Analysis engines are ok
-                if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
-                    throw new IllegalArgumentException(
-                            "Only primitive meta collectors currently supported.");
-                }
+            MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+            for (MetaCollectorConfiguration conf : feInstance
+                    .getMetaCollectorClasses(wrap(parameters))) {
+                configureMetaCollectors(tcModelLocation, exRes);
             }
-            else if (aDesc instanceof CustomResourceSpecifier_impl) {
-                // Feature extractors are ok
-            }
-            else {
-                throw new IllegalArgumentException(
-                        "Descriptors of type " + aDesc.getClass() + " not supported.");
-            }
-
-            for (Entry<String, String> e : overrides.entrySet()) {
-                    // We generate a storage location from the feature extractor discriminator value
-                    // and the preferred value specified by the meta collector
-                    String parameterName = e.getKey();
-                    ConfigurationParameterFactory.setParameter(aDesc, parameterName,
-                            new File(tcModelLocation, e.getValue())
-                                    .getAbsolutePath());
-                
-            }
-            
 
             erd.add(exRes);
         }
@@ -652,6 +627,52 @@ public class SaveModelUtils
         urlClassLoader.close();
         
         return erd;
+    }
+
+
+    private static Map<String, Object> wrap(Object[] parameters)
+    {
+        Map<String, Object> m = new HashMap<>();
+        
+        for(int i=0; i < parameters.length; i=i+2){
+            m.put((String)parameters[i], parameters[i+1]);
+        }
+        
+        return m;
+    }
+
+    private static void configureMetaCollectors(File tcModelLocation, ExternalResourceDescription exRes) throws IOException
+    {
+        Map<String,String> overrides = loadMetaCollectorOverrides(tcModelLocation);
+
+        // We assume for the moment that we only have primitive analysis engines for meta
+        // collection, not aggregates. If there were aggregates, we'd have to do this
+        // recursively
+        ResourceSpecifier aDesc = exRes.getResourceSpecifier();
+        if (aDesc instanceof AnalysisEngineDescription) {
+            // Analysis engines are ok
+            if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
+                throw new IllegalArgumentException(
+                        "Only primitive meta collectors currently supported.");
+            }
+        }
+        else if (aDesc instanceof CustomResourceSpecifier_impl) {
+            // Feature extractors are ok
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "Descriptors of type " + aDesc.getClass() + " not supported.");
+        }
+
+        for (Entry<String, String> e : overrides.entrySet()) {
+                // We generate a storage location from the feature extractor discriminator value
+                // and the preferred value specified by the meta collector
+                String parameterName = e.getKey();
+                ConfigurationParameterFactory.setParameter(aDesc, parameterName,
+                        new File(tcModelLocation, e.getValue())
+                                .getAbsolutePath());
+            
+        }        
     }
 
 
