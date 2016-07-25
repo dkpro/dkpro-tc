@@ -88,8 +88,6 @@ public class MetaInfoTask
     @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
 
-    private Set<Class<? extends MetaCollector>> metaCollectorClasses;
-
     @Discriminator(name = DIM_FILES_ROOT)
     private File filesRoot;
 

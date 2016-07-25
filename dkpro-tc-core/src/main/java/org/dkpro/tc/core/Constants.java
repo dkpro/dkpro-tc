@@ -89,11 +89,6 @@ public interface Constants
     public static final String DIM_FEATURE_SET = "featureSet";
 
     /**
-     * Name of the discriminator that stores the additional pipeline parameters
-     */
-    public static final String DIM_PIPELINE_PARAMS = "pipelineParameters";
-
-    /**
      * Name of the discriminator that stores the additional argument passed to the classification
      * algorithms
      */
@@ -351,6 +346,9 @@ public interface Constants
      * Name of the file which holds the model meta data
      */
     public static final String MODEL_META = "meta.txt";
+    
+    public static final String META_COLLECTOR_PARAMETER = "metaCollectorParameters.txt";
+    
     /**
      * Tc version under which this model has been trained
      */
@@ -367,10 +365,6 @@ public interface Constants
      * Name of the file which holds the class labels
      */
     public static final String MODEL_CLASS_LABELS = "classLabels.txt";
-    /**
-     * Name of the file which holds the feature extractors
-     */
-    public static final String MODEL_FEATURE_EXTRACTORS = "featureExtractors.txt";
 
     /**
      * Name of the file which holds the feature extractors
@@ -380,7 +374,7 @@ public interface Constants
     /**
      * Name of the file which holds the global UIMA parameters
      */
-    public static final String MODEL_PARAMETERS = "parameters.txt";
+    public static final String MODEL_FEATURE_EXTRACTOR_CONFIGURATION = "featureExtractorConfiguration.txt";
 
     /**
      * Name of the file which holds the classifier

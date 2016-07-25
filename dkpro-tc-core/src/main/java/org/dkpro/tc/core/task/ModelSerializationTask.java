@@ -30,9 +30,6 @@ public abstract class ModelSerializationTask
     extends ExecutableTaskBase
     implements Constants
 {
-    
-    @Discriminator(name=DIM_PIPELINE_PARAMS)
-    protected List<Object> pipelineParameters;
     @Discriminator(name=DIM_FEATURE_SET)
     protected List<TcFeature> featureSet;
     @Discriminator(name=DIM_FEATURE_MODE)
@@ -52,14 +49,13 @@ public abstract class ModelSerializationTask
 
 	
 	public void writeModelConfiguration(TaskContext aContext, String mlAdapter) throws Exception{
-		
-        SaveModelUtils.writeFeatureInformation(outputFolder, featureSet);
-        SaveModelUtils.writeFeatureClassFiles(outputFolder, featureSet);
-        SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet, pipelineParameters);
-        SaveModelUtils.writeModelAdapterInformation(outputFolder, mlAdapter);
-        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+
+	    SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet);
         SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
         SaveModelUtils.writeLearningMode(outputFolder, learningMode);
+        SaveModelUtils.writeModelAdapterInformation(outputFolder, mlAdapter);
+        SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
+
 	}
    
 }

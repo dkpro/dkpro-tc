@@ -30,10 +30,12 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -41,6 +43,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.uima.UimaContext;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
@@ -51,11 +54,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.TcFeature;
 
 /**
@@ -67,16 +72,8 @@ public class SaveModelUtils
 {
     private static final String TCVERSION = "TcVersion";
 
-    public static void writeFeatureInformation(File outputFolder, List<TcFeature> featureSet)
-        throws Exception
-    {
-        String featureExtractorString = StringUtils.join(featureSet, "\n");
-        FileUtils.writeStringToFile(new File(outputFolder, MODEL_FEATURE_EXTRACTORS),
-                featureExtractorString);
-    }
-
     public static void writeModelParameters(TaskContext aContext, File aOutputFolder,
-            List<TcFeature> featureSet, List<Object> aFeatureParameters)
+            List<TcFeature> featureSet)
                 throws Exception
     {
         StringBuilder sb = new StringBuilder();
@@ -85,89 +82,15 @@ public class SaveModelUtils
             persistsFeatureClassObject(aContext, f, aOutputFolder);
 
             sb = copyParameters(aContext, f, sb, aOutputFolder);
-            sb.append("\n");
         }
         writeFeatureParameters(sb, aOutputFolder);
 
-        int a = 0;
-        a++;
-
-        // // write meta collector data
-        // // automatically determine the required metaCollector classes from the
-        // // provided feature
-        // // extractors
-        // Set<Class<? extends MetaCollector>> metaCollectorClasses;
-        // try {
-        // metaCollectorClasses = TaskUtils.getMetaCollectorsFromFeatureExtractors(featureSet);
-        // }
-        // catch (ClassNotFoundException e) {
-        // throw new ResourceInitializationException(e);
-        // }
-        // catch (InstantiationException e) {
-        // throw new ResourceInitializationException(e);
-        // }
-        // catch (IllegalAccessException e) {
-        // throw new ResourceInitializationException(e);
-        // }
-        //
-        // // collect parameter/key pairs that need to be set
-        // Map<String, String> metaParameterKeyPairs = new HashMap<String, String>();
-        // for (Class<? extends MetaCollector> metaCollectorClass : metaCollectorClasses) {
-        // try {
-        // metaParameterKeyPairs.putAll(metaCollectorClass.newInstance()
-        // .getParameterKeyPairs());
-        // }
-        // catch (InstantiationException e) {
-        // throw new ResourceInitializationException(e);
-        // }
-        // catch (IllegalAccessException e) {
-        // throw new ResourceInitializationException(e);
-        // }
-        // }
-        //
-        // Properties parameterProperties = new Properties();
-        // for (Entry<String, String> entry : metaParameterKeyPairs.entrySet()) {
-        // File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
-        // entry.getValue());
-        //
-        // String name = file.getName();
-        // String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-        // File targetFolder = new File(subFolder);
-        // copyToTargetLocation(file, targetFolder);
-        // parameterProperties.put(entry.getKey(), name);
-        //
-        // // should never be reached
-        // }
-        //
-        // // might happen if the feature parameters dimension is not configured
-        // if(aFeatureParameters == null){
-        // aFeatureParameters = new ArrayList<Object>();
-        // }
-        //
-        // for (int i = 0; i < aFeatureParameters.size(); i = i + 2) {
-        //
-        // String key = (String) aFeatureParameters.get(i).toString();
-        // String value = aFeatureParameters.get(i + 1).toString();
-        //
-        // if (valueExistAsFileOrFolderInTheFileSystem(value)) {
-        // String name = new File(value).getName();
-        // String destination = aOutputFolder + "/" + name;
-        // copyToTargetLocation(new File(value), new File(destination));
-        // parameterProperties.put(key, name);
-        // continue;
-        // }
-        // parameterProperties.put(key, value);
-        // }
-        //
-        // FileWriter writer = new FileWriter(new File(aOutputFolder, MODEL_PARAMETERS));
-        // parameterProperties.store(writer, "");
-        // writer.close();
     }
 
     private static void writeFeatureParameters(StringBuilder sb, File aOutputFolder)
         throws IOException
     {
-        File file = new File(aOutputFolder, MODEL_PARAMETERS);
+        File file = new File(aOutputFolder, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
         FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
     }
 
@@ -195,7 +118,9 @@ public class SaveModelUtils
             }
             sb = record(i, keySet, parameterSettings, sb);
         }
+        
         sb.append("\n");
+        
         return sb;
     }
 
@@ -274,21 +199,36 @@ public class SaveModelUtils
 
         MetaDependent feInstance = (MetaDependent) feClass.newInstance();
 
+        Map<String, Object> luceneParameters = new HashMap<>();
+        
         // Tell the meta collectors where to store their data
         for (MetaCollectorConfiguration conf : feInstance
                 .getMetaCollectorClasses(parameterSettings)) {
             Map<String, String> collectorOverrides = conf.collectorOverrides;
+            luceneParameters.putAll(collectorOverrides);
 
             for (Entry<String, String> entry : collectorOverrides.entrySet()) {
                 File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
                         entry.getValue().toString());
 
+                
                 String name = file.getName();
                 String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
                 File targetFolder = new File(subFolder);
                 copyToTargetLocation(file, targetFolder);
             }
         }
+        writeLuceneParameters(aOutputFolder, luceneParameters);
+    }
+
+    private static void writeLuceneParameters(File aOutputFolder, Map<String, Object> luceneParameters) throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        for(String k : luceneParameters.keySet()){
+            sb.append(k + "=" + luceneParameters.get(k));
+        }
+        
+        FileUtils.write(new File(aOutputFolder, META_COLLECTOR_PARAMETER), sb.toString(), "utf-8");
     }
 
     private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
@@ -542,7 +482,7 @@ public class SaveModelUtils
         List<Object> parameters = new ArrayList<>();
         Properties parametersProp = new Properties();
 
-        FileInputStream fis = new FileInputStream(new File(tcModelLocation, MODEL_PARAMETERS));
+        FileInputStream fis = new FileInputStream(new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION));
         parametersProp.load(fis);
         fis.close();
 
@@ -640,5 +580,92 @@ public class SaveModelUtils
         resourceManager.setExtensionClassPath(classpathOfModelFeatures, true);
         return resourceManager;
     }
+
+    public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
+            File tcModelLocation, UimaContext aContext) throws IOException, ClassNotFoundException
+    {
+        List<ExternalResourceDescription> erd = new ArrayList<>();
+        
+        File classFile = new File(tcModelLocation + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
+        URLClassLoader urlClassLoader = new URLClassLoader(
+                new URL[] { classFile.toURI().toURL() });
+        
+        File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
+        for(String l : FileUtils.readLines(file)){
+            String[] split = l.split("\t");
+            String name = split[0];
+            Object [] parameters = getParameters(split);
+            
+            Class<? extends Resource> feClass = urlClassLoader.loadClass(name)
+                    .asSubclass(Resource.class);
+            
+            List<Object> idRemovedParameters = filterId(parameters);
+            String id = getId(parameters);
+            TcFeature feature = TcFeatureFactory.create(id, feClass, idRemovedParameters.toArray());
+            ExternalResourceDescription exRes = feature.getActualValue();
+            
+            
+         // Skip feature extractors that are not dependent on meta collectors
+            if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                continue;
+            }
+
+            
+
+//            MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+//            for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(wrap(parameters))) {
+//                MetaInfoTask.configureStorageLocations(aContext, conf.descriptor,
+//                        (String) feature.getDiscriminatorValue(), conf.collectorOverrides,
+//                        AccessMode.READWRITE);
+//            
+//            }
+            erd.add(exRes);
+        }
+        
+        urlClassLoader.close();
+        
+        return erd;
+    }
+
+
+    private static String getId(Object[] parameters)
+    {
+        for(int i=0; i < parameters.length; i++){
+            if(parameters[i].toString().equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)){
+                return parameters[i+1].toString(); 
+            }
+        }
+        return null;
+    }
+
+    private static List<Object> filterId(Object[] parameters)
+    {
+        List<Object> out =new ArrayList<>();
+        for(int i=0; i < parameters.length; i++){
+            if(parameters[i].toString().equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)){
+                i++;
+                continue;
+            }
+            out.add(parameters[i]);
+        }
+        
+        return out;
+    }
+
+    private static Object[] getParameters(String[] split)
+    {
+        List<Object> p = new ArrayList<>();
+        for(int i=1; i < split.length; i++){
+            String string = split[i];
+            int indexOf = string.indexOf("=");
+            String paramName = string.substring(0, indexOf);
+            String paramVal = string.substring(indexOf+1);
+            p.add(paramName);
+            p.add(paramVal);
+        }
+        
+        return p.toArray();
+    }
+
 
 }

@@ -52,6 +52,30 @@ public class TcFeatureFactory
             }
         };
     }
+    
+    public static TcFeature create(String id,
+            Class<? extends Resource> featureName, Object... parameters)
+    {
+
+        /*
+         * Each feature has to set a unique name which is build from the simple name of the feature
+         * class and extended with a random value
+         */
+        String fullFeatureName = featureName.getName(); 
+        List<Object> params = getParameterAsString(parameters);
+        params.add(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
+        params.add(id);
+
+        return new TcFeature(id, fullFeatureName)
+        {
+            @Override
+            public ExternalResourceDescription getActualValue()
+            {
+                return ExternalResourceFactory.createExternalResourceDescription(featureName,
+                        params.toArray());
+            }
+        };
+    }
 
     private static List<Object> getParameterAsString(Object[] parameters)
     {

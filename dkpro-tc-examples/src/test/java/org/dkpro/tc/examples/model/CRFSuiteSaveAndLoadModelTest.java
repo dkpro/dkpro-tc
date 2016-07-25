@@ -116,10 +116,9 @@ public class CRFSuiteSaveAndLoadModelTest
 
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
-
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        
+        File parameterFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
+        assertTrue(parameterFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());

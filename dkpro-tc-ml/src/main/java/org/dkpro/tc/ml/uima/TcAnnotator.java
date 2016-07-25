@@ -68,14 +68,13 @@ public class TcAnnotator
     private String featureMode;
 
     // private List<FeatureExtractorResource_ImplBase> featureExtractors;
-    private List<String> featureExtractors;
-    private List<Object> parameters;
 
     private TCMachineLearningAdapter mlAdapter;
 
     private AnalysisEngine engine;
 
     private int jcasId;
+    private List<ExternalResourceDescription> featureExtractors; 
 
     @Override
     public void initialize(UimaContext context)
@@ -84,18 +83,17 @@ public class TcAnnotator
         super.initialize(context);
 
         try {
+            featureExtractors = SaveModelUtils
+                    .loadExternalResourceDescriptionOfFeatures(tcModelLocation, context);
             mlAdapter = SaveModelUtils.initMachineLearningAdapter(tcModelLocation);
-            parameters = SaveModelUtils.initParameters(tcModelLocation);
-            featureExtractors = SaveModelUtils.initFeatureExtractors(tcModelLocation);
             featureMode = SaveModelUtils.initFeatureMode(tcModelLocation);
             learningMode = SaveModelUtils.initLearningMode(tcModelLocation);
 
             validateUimaParameter();
 
-            AnalysisEngineDescription connector = getSaveModelConnector(parameters,
-                    tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
+            AnalysisEngineDescription connector = getSaveModelConnector(tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
                     learningMode, featureMode, mlAdapter.getFeatureStore(),
-                    featureExtractors.toArray(new String[0]));
+                    featureExtractors);
 
             engine = UIMAFramework.produceAnalysisEngine(connector,
                     SaveModelUtils.getModelFeatureAwareResourceManager(tcModelLocation), null);
@@ -138,24 +136,18 @@ public class TcAnnotator
      * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    private AnalysisEngineDescription getSaveModelConnector(List<Object> parameters,
-            String outputPath, String dataWriter, String learningMode, String featureMode,
-            String featureStore, String... featureExtractorClassNames)
+    private AnalysisEngineDescription getSaveModelConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
+            String featureStore, List<ExternalResourceDescription> featureExtractor)
                 throws ResourceInitializationException
     {
-        // convert parameters to string as external resources only take string parameters
-        List<Object> convertedParameters = SaveModelUtils.convertParameters(parameters);
-
-        List<ExternalResourceDescription> extractorResources = SaveModelUtils
-                .loadExternalResourceDescriptionOfFeatures(outputPath, featureExtractorClassNames,
-                        convertedParameters);
+        List<Object> parameters=new ArrayList<>();
 
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(PARAM_TC_MODEL_LOCATION, tcModelLocation,
                 ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
                 ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
                 ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
-                ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, featureExtractor,
                 ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,
                 ModelSerialization_ImplBase.PARAM_IS_TESTING, true,
                 ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode,
