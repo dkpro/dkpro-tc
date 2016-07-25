@@ -48,8 +48,6 @@ public class WekaTestTask
     implements Constants
 {
 
-    @Discriminator(name=DIM_PIPELINE_PARAMS)
-    protected List<Object> pipelineParameters;
     @Discriminator(name=DIM_CLASSIFICATION_ARGS)
     protected List<String> classificationArguments;
     @Discriminator(name=DIM_FEATURE_SEARCHER_ARGS)

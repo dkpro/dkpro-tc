@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,6 +45,7 @@ import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.UimaContext;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
@@ -52,6 +54,8 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.CustomResourceSpecifier_impl;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
@@ -609,16 +613,39 @@ public class SaveModelUtils
             if (!MetaDependent.class.isAssignableFrom(feClass)) {
                 continue;
             }
+            
+            Map<String,String> overrides = loadMetaCollectorOverrides(tcModelLocation);
 
+            // We assume for the moment that we only have primitive analysis engines for meta
+            // collection, not aggregates. If there were aggregates, we'd have to do this
+            // recursively
+            ResourceSpecifier aDesc = exRes.getResourceSpecifier();
+            if (aDesc instanceof AnalysisEngineDescription) {
+                // Analysis engines are ok
+                if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
+                    throw new IllegalArgumentException(
+                            "Only primitive meta collectors currently supported.");
+                }
+            }
+            else if (aDesc instanceof CustomResourceSpecifier_impl) {
+                // Feature extractors are ok
+            }
+            else {
+                throw new IllegalArgumentException(
+                        "Descriptors of type " + aDesc.getClass() + " not supported.");
+            }
+
+            for (Entry<String, String> e : overrides.entrySet()) {
+                    // We generate a storage location from the feature extractor discriminator value
+                    // and the preferred value specified by the meta collector
+                    String parameterName = e.getKey();
+                    ConfigurationParameterFactory.setParameter(aDesc, parameterName,
+                            new File(tcModelLocation, e.getValue())
+                                    .getAbsolutePath());
+                
+            }
             
 
-//            MetaDependent feInstance = (MetaDependent) feClass.newInstance();
-//            for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(wrap(parameters))) {
-//                MetaInfoTask.configureStorageLocations(aContext, conf.descriptor,
-//                        (String) feature.getDiscriminatorValue(), conf.collectorOverrides,
-//                        AccessMode.READWRITE);
-//            
-//            }
             erd.add(exRes);
         }
         
@@ -627,6 +654,19 @@ public class SaveModelUtils
         return erd;
     }
 
+
+    private static Map<String, String> loadMetaCollectorOverrides(File tcModelLocation) throws IOException
+    {
+        List<String> lines = FileUtils.readLines(new File(tcModelLocation, META_COLLECTOR_PARAMETER), "utf-8");
+        Map<String,String> overrides = new HashMap<>();
+        
+        for(String s :lines){
+            String[] split = s.split("=");
+            overrides.put(split[0], split[1]);
+        }
+        
+        return overrides;
+    }
 
     private static String getId(Object[] parameters)
     {
