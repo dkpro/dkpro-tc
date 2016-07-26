@@ -17,27 +17,26 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
-import static org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase.LUCENE_POS_NGRAM_FIELD;
-
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.ngram.LucenePOSNGram;
+import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-
-import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LucenePOSNGramFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class LucenePOSNGramMetaCollector
     extends LuceneBasedMetaCollector
 {
-    @ConfigurationParameter(name = LucenePOSNGramFeatureExtractorBase.PARAM_POS_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int posNgramMinN;
+    public static final String LUCENE_POS_NGRAM_FIELD = "posngram";
+    
+    @ConfigurationParameter(name = LucenePOSNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-    @ConfigurationParameter(name = LucenePOSNGramFeatureExtractorBase.PARAM_POS_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int posNgramMaxN;
+    @ConfigurationParameter(name = LucenePOSNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
 
-    @ConfigurationParameter(name = LucenePOSNGramFeatureExtractorBase.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
+    @ConfigurationParameter(name = LucenePOSNGram.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
     private boolean useCanonical;
 
     @Override
@@ -46,7 +45,7 @@ public class LucenePOSNGramMetaCollector
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
 
-        return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, posNgramMinN, posNgramMaxN,
+        return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN,
                 useCanonical);
     }
 

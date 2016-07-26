@@ -17,13 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
-import static org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase.LUCENE_PHONETIC_NGRAM_FIELD;
-
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LucenePhoneticNGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.LucenePhoneticNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -31,12 +29,14 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 public class LucenePhoneticNGramMetaCollector
     extends LuceneBasedMetaCollector
 {
+    public static final String LUCENE_PHONETIC_NGRAM_FIELD = "phoneticngram";
 
-    @ConfigurationParameter(name = LucenePhoneticNGramFeatureExtractorBase.PARAM_PHONETIC_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int phoneticNgramMinN;
 
-    @ConfigurationParameter(name = LucenePhoneticNGramFeatureExtractorBase.PARAM_PHONETIC_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int phoneticNgramMaxN;
+    @ConfigurationParameter(name = LucenePhoneticNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
+
+    @ConfigurationParameter(name = LucenePhoneticNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
 
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
@@ -44,8 +44,8 @@ public class LucenePhoneticNGramMetaCollector
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, phoneticNgramMinN,
-                phoneticNgramMaxN);
+        return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, ngramMinN,
+                ngramMaxN);
     }
 
     @Override

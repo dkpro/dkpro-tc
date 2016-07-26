@@ -17,16 +17,22 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneNgramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -37,7 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LuceneNGram
-    extends LuceneNgramFeatureExtractorBase
+    extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
 
@@ -60,5 +66,34 @@ public class LuceneNGram
             }
         }
         return features;
+    }
+    
+    @Override
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
+                throws ResourceInitializationException
+    {
+        return Arrays.asList(
+                new MetaCollectorConfiguration(LuceneNGramMetaCollector.class, parameterSettings)
+                        .addStorageMapping(LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                                LuceneNGram.PARAM_SOURCE_LOCATION,
+                                LuceneNGramMetaCollector.LUCENE_DIR));
+    }
+
+    @Override
+    protected String getFieldName()
+    {
+        return LUCENE_NGRAM_FIELD + featureExtractorName;
+    }
+
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return "ngram";
+    }
+
+    @Override
+    protected int getTopN()
+    {
+        return ngramUseTopK;
     }
 }

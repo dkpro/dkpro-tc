@@ -20,7 +20,7 @@ package org.dkpro.tc.features.ngram.meta;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneCharacterSkipNgramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.LuceneSkipCharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -28,16 +28,19 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 public class LuceneCharSkipNgramMetaCollector
     extends LuceneBasedMetaCollector
 {
-    @ConfigurationParameter(name = LuceneCharacterSkipNgramFeatureExtractorBase.PARAM_CHAR_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
+
+    public static final String LUCENE_CHAR_SKIP_NGRAM_FIELD = "charskipngram";
+
+    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int minN;
 
-    @ConfigurationParameter(name = LuceneCharacterSkipNgramFeatureExtractorBase.PARAM_CHAR_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int maxN;
 
-    @ConfigurationParameter(name = LuceneCharacterSkipNgramFeatureExtractorBase.PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
     private int skipSize;
 
-    @ConfigurationParameter(name = LuceneCharacterSkipNgramFeatureExtractorBase.PARAM_CHAR_SKIP_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
+    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
     private boolean ngramLowerCase;
 
     @Override
@@ -52,7 +55,6 @@ public class LuceneCharSkipNgramMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneCharacterSkipNgramFeatureExtractorBase.LUCENE_CHAR_SKIP_NGRAM_FIELD
-                + featureExtractorName;
+        return LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
     }
 }

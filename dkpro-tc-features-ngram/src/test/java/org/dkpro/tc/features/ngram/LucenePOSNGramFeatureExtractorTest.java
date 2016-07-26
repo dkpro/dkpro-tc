@@ -74,7 +74,7 @@ public class LucenePOSNGramFeatureExtractorTest
 
         Object[] parameters = new Object[] {
                 LucenePOSNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LucenePOSNGram.PARAM_POS_NGRAM_USE_TOP_K, "5",
+                LucenePOSNGram.PARAM_NGRAM_USE_TOP_K, "5",
                 LucenePOSNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
                 LucenePOSNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString()};
 

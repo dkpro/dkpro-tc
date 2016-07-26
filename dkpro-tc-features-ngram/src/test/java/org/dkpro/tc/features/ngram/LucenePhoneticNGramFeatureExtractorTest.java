@@ -68,7 +68,7 @@ public class LucenePhoneticNGramFeatureExtractorTest
         File outputPath = folder.newFolder();
 
         Object[] parameters = new Object[] { LucenePhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LucenePhoneticNGram.PARAM_PHONETIC_NGRAM_USE_TOP_K, "10",
+                LucenePhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10",
                 LucenePhoneticNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
                 LucenePhoneticNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString(), };
 

@@ -39,10 +39,10 @@ public class LuceneCharacterNGramUnitMetaCollector
 {
 
     @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int charNgramMinN;
+    private int ngramMinN;
 
     @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int charNgramMaxN;
+    private int ngramMaxN;
 
     @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean lowerCase;
@@ -53,7 +53,7 @@ public class LuceneCharacterNGramUnitMetaCollector
         FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
         for (Annotation a : JCasUtil.select(jcas, TextClassificationTarget.class)) {
             FrequencyDistribution<String> ngramDist = NGramUtils.getAnnotationCharacterNgrams(a,
-                    lowerCase, charNgramMinN, charNgramMaxN, '^', '$');
+                    lowerCase, ngramMinN, ngramMaxN, '^', '$');
             for (String condition : ngramDist.getKeys()) {
                 fd.addSample(condition, ngramDist.getCount(condition));
             }

@@ -26,7 +26,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneSkipNgramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.LuceneSkipNGram;
+import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
@@ -35,13 +36,15 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 public class LuceneSkipNgramMetaCollector
     extends LuceneBasedMetaCollector
 {
-    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractorBase.PARAM_SKIP_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
+    public static final String LUCENE_SKIP_NGRAM_FIELD = "skipngram";
+    
+    @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int minN;
 
-    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractorBase.PARAM_SKIP_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int maxN;
 
-    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractorBase.PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    @ConfigurationParameter(name = LuceneSkipNGram.PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
     private int skipSize;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
@@ -50,7 +53,7 @@ public class LuceneSkipNgramMetaCollector
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue = "false")
     protected boolean filterPartialStopwordMatches;
 
-    @ConfigurationParameter(name = LuceneSkipNgramFeatureExtractorBase.PARAM_SKIP_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
+    @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
     private boolean ngramLowerCase;
 
     private Set<String> stopwords;
@@ -81,6 +84,6 @@ public class LuceneSkipNgramMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD + featureExtractorName;
+        return LUCENE_SKIP_NGRAM_FIELD + featureExtractorName;
     }
 }
