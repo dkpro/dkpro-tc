@@ -198,7 +198,7 @@ public class MetaInfoTask
         return builder.createAggregateDescription();
     }
 
-    private Class<?> getClass(ExternalResourceDescription feDesc)
+    public static Class<?> getClass(ExternalResourceDescription feDesc)
         throws ClassNotFoundException
     {
         String implName;

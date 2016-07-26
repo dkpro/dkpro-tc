@@ -43,7 +43,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
-import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
@@ -134,15 +133,7 @@ public class ExtractFeaturesTask
                 ExternalResourceDescription feDesc = feClosure.getActualValue();
                 featureExtractorDescriptions.add(feDesc);
 
-                String implName;
-                if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-                    implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
-                            .getResourceClassName();
-                }
-                else {
-                    implName = feDesc.getImplementationName();
-                }
-                Class<?> feClass = Class.forName(implName);
+                Class<?> feClass = MetaInfoTask.getClass(feDesc);
 
                 // Skip feature extractors that are not dependent on meta collectors
                 if (!MetaDependent.class.isAssignableFrom(feClass)) {

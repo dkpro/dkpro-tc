@@ -90,7 +90,7 @@ public class SVMHMMBrownPosDemoTest
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
-        assertEquals(0.4838, result, 0.0001);
+        assertEquals(0.5806, result, 0.0001);
 
     }
 }
