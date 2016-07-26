@@ -25,9 +25,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
@@ -60,9 +58,6 @@ public class ValidityCheckConnectorPost
         throws AnalysisEngineProcessException
     {
 
-        getLogger().log(Level.INFO, "--- post-validation for CAS with id ["
-                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
-
         if (featureModeI == 0) {
             featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
         }
@@ -84,8 +79,6 @@ public class ValidityCheckConnectorPost
         checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(jcas, classificationUnits,
                 outcomes);
 
-        getLogger().log(Level.FINE, "--- post-validation for CAS with id ["
-                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] complete ---");
     }
 
     private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(JCas jcas,
