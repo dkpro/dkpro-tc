@@ -43,6 +43,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
@@ -94,9 +96,12 @@ public class WekaSaveAndLoadModelDocumentPairRegression
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
@@ -141,10 +146,11 @@ public class WekaSaveAndLoadModelDocumentPairRegression
                 Constants.DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMOreg.class.getName() }));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                Arrays.asList(new String[] { DiffNrOfTokensPairFeatureExtractor.class.getName() }));
 
+        @SuppressWarnings("unchecked")
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
+        
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
                 Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, dimClassificationArgs);

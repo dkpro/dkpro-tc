@@ -42,11 +42,12 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.weka.MekaClassificationAdapter;
@@ -99,20 +100,15 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
                         RandomForest.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
-                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3),
+                TcFeatureFactory.create(NrOfChars.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets, Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"),
-                dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"), dimClassificationArgs);
         return pSpace;
     }
 
@@ -133,9 +129,12 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());

@@ -44,6 +44,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
@@ -94,9 +96,12 @@ public class WekaSaveAndLoadModelUnitTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
@@ -141,17 +146,13 @@ public class WekaSaveAndLoadModelUnitTest
                 Arrays.asList(new String[] { SMO.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, Arrays
-                .asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 20 }));
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneCharacterNGram.class.getName() }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(LuceneCharacterNGram.class,
+                        LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 20)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimPipelineParameters, dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }

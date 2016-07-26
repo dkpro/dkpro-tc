@@ -43,6 +43,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfSentences;
@@ -80,7 +82,6 @@ public class WekaSaveAndLoadModelDocumentRegression
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentRegression.class.getSimpleName());
     }
 
-
     /**
      * This test case trains a regression model on scored essay texts
      */
@@ -100,9 +101,12 @@ public class WekaSaveAndLoadModelDocumentRegression
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
@@ -126,8 +130,8 @@ public class WekaSaveAndLoadModelDocumentRegression
         CollectionReader reader = CollectionReaderFactory.createReader(EssayScoreReader.class,
                 EssayScoreReader.PARAM_SOURCE_LOCATION, regressionTest,
                 EssayScoreReader.PARAM_LANGUAGE, "en");
-        
-        AnalysisEngine segmenter =  AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
         AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
@@ -140,12 +144,12 @@ public class WekaSaveAndLoadModelDocumentRegression
         segmenter.process(jcas);
         tcAnno.process(jcas);
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas,
-                TextClassificationOutcome.class));
-        assertEquals(1, outcomes.size());  
-        
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
+        assertEquals(1, outcomes.size());
+
         Double d = Double.valueOf(outcomes.get(0).getOutcome());
-        assertTrue( d > 0.1 && d < 5);
+        assertTrue(d > 0.1 && d < 5);
     }
 
     private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder)
@@ -157,7 +161,6 @@ public class WekaSaveAndLoadModelDocumentRegression
 
         Lab.getInstance().run(batch);
     }
-
 
     private ParameterSpace regressionGetParameterSpace()
         throws Exception
@@ -175,11 +178,10 @@ public class WekaSaveAndLoadModelDocumentRegression
                 Arrays.asList(new String[] { LinearRegression.class.getName() }));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension
-                .create(DIM_FEATURE_SET,
-                        Arrays.asList(new String[] { NrOfTokens.class.getName(),
-                                NrOfSentences.class.getName(),
-                                NrOfTokensPerSentence.class.getName() }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+                        TcFeatureFactory.create(NrOfSentences.class),
+                        TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),

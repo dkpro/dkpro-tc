@@ -42,6 +42,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
@@ -82,27 +84,30 @@ public class SVMHMMSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(modelFolder.getAbsolutePath() + "/"
-                + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
-        
+
         File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
         assertTrue(featureMode.exists());
-        
+
         File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
         assertTrue(learningMode.exists());
-        
+
         modelFolder.deleteOnExit();
     }
 
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
-                SVMHMMAdapter.class, aModelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", SVMHMMAdapter.class,
+                aModelFolder);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
@@ -110,7 +115,8 @@ public class SVMHMMSaveAndLoadModelTest
     }
 
     @SuppressWarnings("unchecked")
-    private ParameterSpace getParameterSpace() throws ResourceInitializationException
+    private ParameterSpace getParameterSpace()
+        throws ResourceInitializationException
     {
         DemoUtils.setDkproHome(this.getClass().getName());
 
@@ -120,26 +126,21 @@ public class SVMHMMSaveAndLoadModelTest
         // train/test will use both, while cross-validation will only use the
         // train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
+
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, trainFolder,
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS, "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-        
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(
-                DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1,
-                        LuceneNGram.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { LuceneNGram.class.getName(), NrOfChars.class.getName(), }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
+                TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3),
+                TcFeatureFactory.create(NrOfChars.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_SEQUENCE), dimPipelineParameters, dimFeatureSets);
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets);
         return pSpace;
     }
 
@@ -151,25 +152,23 @@ public class SVMHMMSaveAndLoadModelTest
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace();
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
-        
+
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentText("This is an example text. It has 2 sentences.");
         jcas.setDocumentLanguage("en");
-        
-        AnalysisEngine tokenizer = AnalysisEngineFactory
-                .createEngine(BreakIteratorSegmenter.class);
-        
-        AnalysisEngine tcAnno =  AnalysisEngineFactory
-                .createEngine(TcAnnotator.class,
-                        TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                        TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION,
-                        Sentence.class.getName(), TcAnnotator.PARAM_NAME_UNIT_ANNOTATION,
-                        Token.class.getName());
-        
+
+        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+
         tokenizer.process(jcas);
         tcAnno.process(jcas);
-        
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         assertEquals("NN", outcomes.get(0).getOutcome());
         assertEquals("IN", outcomes.get(1).getOutcome());
