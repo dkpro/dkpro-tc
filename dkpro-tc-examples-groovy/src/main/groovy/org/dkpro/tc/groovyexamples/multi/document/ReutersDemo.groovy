@@ -28,11 +28,11 @@ import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.ReutersCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.core.util.TcFeatureFactory
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport

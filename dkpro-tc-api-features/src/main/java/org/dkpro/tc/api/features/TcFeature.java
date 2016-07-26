@@ -1,4 +1,4 @@
-package org.dkpro.tc.core.task;
+package org.dkpro.tc.api.features;
 
 import java.util.Map;
 

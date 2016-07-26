@@ -56,12 +56,13 @@ import org.apache.uima.resource.impl.CustomResourceSpecifier_impl;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import org.dkpro.tc.core.task.TcFeature;
 
 /**
  * Demo to show case how to train and save a model in document mode and multi-label classification

@@ -47,6 +47,7 @@ import org.dkpro.lab.task.Discriminable;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.core.io.ReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;

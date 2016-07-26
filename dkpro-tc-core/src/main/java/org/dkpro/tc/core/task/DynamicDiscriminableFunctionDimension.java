@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DynamicDimension;
+import org.dkpro.tc.api.features.TcFeature;
 
 public class DynamicDiscriminableFunctionDimension
     extends Dimension<TcFeature>

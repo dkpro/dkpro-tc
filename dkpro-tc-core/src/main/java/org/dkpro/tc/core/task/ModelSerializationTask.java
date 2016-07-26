@@ -23,6 +23,7 @@ import java.util.List;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.SaveModelUtils;
 

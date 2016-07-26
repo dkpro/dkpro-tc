@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminable;
+import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.TcFeature;
 
 public class ExperimentUtil
 {
