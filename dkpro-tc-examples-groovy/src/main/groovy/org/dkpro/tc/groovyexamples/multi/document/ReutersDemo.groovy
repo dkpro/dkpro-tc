@@ -31,8 +31,8 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.ReutersCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
 import org.dkpro.tc.ml.ExperimentCrossValidation
+import org.dkpro.tc.core.util.TcFeatureFactory
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
@@ -65,16 +65,16 @@ public class ReutersDemo implements Constants {
     // === DIMENSIONS===========================================================
 
     def testreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
-        ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest, 
-        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
-        ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
-        ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+    ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+    ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+    ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
+    ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
 
     def trainreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
-        ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-        ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
-        ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
-        ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+    ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+    ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
+    ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
+    ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
 
     def dimReaders = Dimension.createBundle("readers", [
         readerTest: testreader,
@@ -100,27 +100,15 @@ public class ReutersDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [NrOfTokens.name, LuceneNGram.name])
-
-    def dimPipelineParameters = Dimension.create(
-    DIM_PIPELINE_PARAMS,
     [
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-        "500",
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-        1,
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
-        3
+        TcFeatureFactory.create(NrOfTokens.class),
+        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 3 )
     ],
     [
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-        "1000",
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-        1,
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
-        3
-    ]
-    )
+        TcFeatureFactory.create(NrOfTokens.class),
+        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1000, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 3 )
+    ])
+
 
     // === Experiments =========================================================
 
@@ -146,7 +134,6 @@ public class ReutersDemo implements Constants {
                 dimClassificationArgs,
                 dimFeatureSelection,
                 dimFeatureSets,
-                dimPipelineParameters
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchCrossValidationReport],
@@ -175,8 +162,7 @@ public class ReutersDemo implements Constants {
                 dimThreshold,
                 dimClassificationArgs,
                 dimFeatureSelection,
-                dimFeatureSets,
-                dimPipelineParameters
+                dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [BatchTrainTestReport]]

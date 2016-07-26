@@ -34,6 +34,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaRegressionAdapter
+import org.dkpro.tc.core.util.TcFeatureFactory
 
 import weka.classifiers.functions.SMOreg
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
@@ -84,7 +85,7 @@ public class RegressionDemo implements Constants {
     // based feature extractor
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
-        DiffNrOfTokensPairFeatureExtractor.name
+        TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)
     ])
 
     // === Experiments =========================================================

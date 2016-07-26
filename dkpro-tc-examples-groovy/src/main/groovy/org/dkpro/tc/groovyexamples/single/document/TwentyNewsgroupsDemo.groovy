@@ -90,10 +90,8 @@ public class TwentyNewsgroupsDemo implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokens.class.name,
-        LuceneNGram.class.name
-        //        NGramFeatureExtractor.class.name
-
+        TcFeatureFactory.create(NrOfTokens.class),
+        TcFeatureFactory.create(LuceneNGram.class)
     ]
     )
 
