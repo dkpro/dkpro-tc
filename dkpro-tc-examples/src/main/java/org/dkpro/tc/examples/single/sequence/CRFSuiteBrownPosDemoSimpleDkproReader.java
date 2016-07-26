@@ -36,6 +36,8 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -96,21 +98,17 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         dimReaders.put(DIM_READER_TEST, test);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
-                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 50 }));
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(new String[] { NrOfTokens.class.getName(),
-                        LuceneCharacterNGram.class.getName() }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                asList(TcFeatureFactory.create(NrOfTokens.class),
+                        TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
+                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 50)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
                 Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
-                dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
+                dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
