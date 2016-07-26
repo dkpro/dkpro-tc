@@ -100,9 +100,9 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         @SuppressWarnings("unchecked")
         Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 asList(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 50)));
+                        TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
+                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),

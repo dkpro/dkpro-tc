@@ -107,25 +107,20 @@ public class SVMHMMBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = getDimReaders(trainTest);
 
-        // no parameters needed for now... see TwentyNewsgroupDemo for multiple parametrization
-        // or pipeline
-        Dimension<List<Object>> dimPipelineParameters = Dimension
-                .create(Constants.DIM_PIPELINE_PARAMS, Arrays.asList());
-
         Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
                 Constants.DIM_FEATURE_SET,
                 Arrays.asList(TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 20,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 3),
+                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
+                                LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3),
                         TcFeatureFactory.create(OriginalTextHolderFeatureExtractor.class)));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
                 Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
-                dimPipelineParameters, dimFeatureSets, dimClassificationArgs);
+                dimFeatureSets, dimClassificationArgs);
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,

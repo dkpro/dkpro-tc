@@ -122,6 +122,12 @@ public class CRFSuiteSaveAndLoadModelTest
         
         File parameterFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
         assertTrue(parameterFile.exists());
+        
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+        
+        File extractorOverride = new File(modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());

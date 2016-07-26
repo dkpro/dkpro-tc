@@ -45,13 +45,14 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcFeature;
+import org.dkpro.tc.core.util.TcFeatureFactory;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -95,31 +96,26 @@ public class LibsvmSaveAndLoadModelTest
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+        Dimension<List<Object>> dimClassificationArguments = Dimension
+                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "100"));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArguments = Dimension.create(
-                DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "100"));
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays
-                .asList(new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
+                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
         ParameterSpace pSpace;
         if (useClassificationArguments) {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                    dimClassificationArguments, dimFeatureSets);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimClassificationArguments,
+                    dimFeatureSets);
         }
         else {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                    dimFeatureSets);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets);
         }
         return pSpace;
     }
@@ -149,9 +145,12 @@ public class LibsvmSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
@@ -251,18 +250,20 @@ public class LibsvmSaveAndLoadModelTest
                 BrownCorpusReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "a01.xml" });
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-        
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArguments = Dimension.create(
-                DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "1000"));
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneCharacterNGram.class.getName() }));
+        Dimension<List<Object>> dimClassificationArguments = Dimension
+                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "1000"));
+
+        @SuppressWarnings("unchecked")
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+                        TcFeatureFactory.create((LuceneCharacterNGram.class))));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArguments);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets,
+                dimClassificationArguments);
 
         return pSpace;
     }
@@ -287,12 +288,13 @@ public class LibsvmSaveAndLoadModelTest
 
         outcomes.addAll(JCasUtil.select(jcas, TextClassificationOutcome.class));
 
-//        int i=0;
-//        for(TextClassificationOutcome o: outcomes){
-//            System.out.println("assertEquals(\"" + o.getOutcome() + "\", outcomes.get("+(i++)+").getOutcome());");
-//        }
-        
-        assertEquals(31, outcomes.size());        
+        // int i=0;
+        // for(TextClassificationOutcome o: outcomes){
+        // System.out.println("assertEquals(\"" + o.getOutcome() + "\",
+        // outcomes.get("+(i++)+").getOutcome());");
+        // }
+
+        assertEquals(31, outcomes.size());
         assertEquals("AT", outcomes.get(0).getOutcome());
         assertEquals("IN", outcomes.get(1).getOutcome());
         assertEquals("pct", outcomes.get(2).getOutcome());
@@ -310,19 +312,19 @@ public class LibsvmSaveAndLoadModelTest
         assertEquals("JJ", outcomes.get(14).getOutcome());
         assertEquals("NN", outcomes.get(15).getOutcome());
         assertEquals("pct", outcomes.get(16).getOutcome());
-        assertEquals("NN", outcomes.get(17).getOutcome());
-        assertEquals("JJ", outcomes.get(18).getOutcome());
+        assertEquals("NP", outcomes.get(17).getOutcome());
+        assertEquals("NN", outcomes.get(18).getOutcome());
         assertEquals("CC", outcomes.get(19).getOutcome());
         assertEquals("AP", outcomes.get(20).getOutcome());
-        assertEquals("JJ", outcomes.get(21).getOutcome());
+        assertEquals("NN", outcomes.get(21).getOutcome());
         assertEquals("IN", outcomes.get(22).getOutcome());
         assertEquals("NNS", outcomes.get(23).getOutcome());
         assertEquals("JJ", outcomes.get(24).getOutcome());
-        assertEquals("NN", outcomes.get(25).getOutcome());
+        assertEquals("NP", outcomes.get(25).getOutcome());
         assertEquals("IN", outcomes.get(26).getOutcome());
         assertEquals("AT", outcomes.get(27).getOutcome());
         assertEquals("AT", outcomes.get(28).getOutcome());
-        assertEquals("NN", outcomes.get(29).getOutcome());
+        assertEquals("JJ", outcomes.get(29).getOutcome());
         assertEquals("pct", outcomes.get(30).getOutcome());
     }
 
@@ -341,9 +343,12 @@ public class LibsvmSaveAndLoadModelTest
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
 
-        File usedFeaturesFile = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTORS);
-        assertTrue(usedFeaturesFile.exists());
+        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+        assertTrue(metaOverride.exists());
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+        assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
@@ -357,9 +362,9 @@ public class LibsvmSaveAndLoadModelTest
         File id2outcomeMapping = new File(
                 modelFolder.getAbsolutePath() + "/" + LibsvmAdapter.getOutcomeMappingFilename());
         assertTrue(id2outcomeMapping.exists());
-        
-        File featureNameMapping = new File(
-                modelFolder.getAbsolutePath() + "/" + LibsvmAdapter.getFeaturenameMappingFilename());
+
+        File featureNameMapping = new File(modelFolder.getAbsolutePath() + "/"
+                + LibsvmAdapter.getFeaturenameMappingFilename());
         assertTrue(featureNameMapping.exists());
     }
 }
