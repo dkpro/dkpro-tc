@@ -72,7 +72,8 @@ public class LuceneSkipNgramMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         return NGramUtils.getDocumentSkipNgrams(jcas, fullDoc, ngramLowerCase,
                 filterPartialStopwordMatches, minN, maxN, skipSize, stopwords);
     }
@@ -80,6 +81,6 @@ public class LuceneSkipNgramMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD;
+        return LuceneSkipNgramFeatureExtractorBase.LUCENE_SKIP_NGRAM_FIELD + featureExtractorName;
     }
 }

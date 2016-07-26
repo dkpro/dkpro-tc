@@ -51,6 +51,6 @@ public class LucenePhoneticNGramMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LUCENE_PHONETIC_NGRAM_FIELD;
+        return LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
     }
 }

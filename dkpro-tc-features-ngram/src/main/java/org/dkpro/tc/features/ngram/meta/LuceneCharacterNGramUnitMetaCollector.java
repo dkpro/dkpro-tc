@@ -64,6 +64,6 @@ public class LuceneCharacterNGramUnitMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneCharacterNGramFeatureExtractorBase.LUCENE_CHAR_NGRAM_FIELD;
+        return LuceneCharacterNGramFeatureExtractorBase.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 }
