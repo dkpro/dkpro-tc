@@ -28,13 +28,15 @@ import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.lab.task.impl.DefaultBatchTask
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.core.task.ExtractFeaturesTask
 import org.dkpro.tc.core.task.InitTask
 import org.dkpro.tc.core.task.MetaInfoTask
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.ngram.base.FrequencyDistributionNGramFeatureExtractorBase
+import org.dkpro.tc.features.length.*
+import org.dkpro.tc.features.ngram.*
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 import org.dkpro.tc.weka.report.WekaOutcomeIDReport
@@ -44,10 +46,6 @@ import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-
-import org.dkpro.tc.features.length.*
-import org.dkpro.tc.features.ngram.*
 
 /**
  * Groovy-Version of the TwentyNewsgroupsExperiment
@@ -90,27 +88,6 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
 
-    //UIMA parameters for FE configuration
-    def dimPipelineParameters = Dimension.create(
-    DIM_PIPELINE_PARAMS,
-    [
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-        "500",
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-        1,
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
-        3
-    ],
-    [
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K,
-        "1000",
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MIN_N,
-        1,
-        FrequencyDistributionNGramFeatureExtractorBase.PARAM_NGRAM_MAX_N,
-        3
-    ])
-
-
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS,
     [NaiveBayes.class.name],
@@ -119,8 +96,12 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokens.class.name,
-        LuceneNGram.class.name
+        TcFeatureFactory.create(NrOfTokens.class),
+        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MIN_N, 3)
+    ],
+    [
+        TcFeatureFactory.create(NrOfTokens.class),
+        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1000, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MIN_N, 3)
     ]
     )
 
@@ -197,8 +178,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
                 dimLearningMode,
                 dimFeatureMode,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParameters
+                dimFeatureSets
             ],
             tasks:           [
                 initTaskTrain,

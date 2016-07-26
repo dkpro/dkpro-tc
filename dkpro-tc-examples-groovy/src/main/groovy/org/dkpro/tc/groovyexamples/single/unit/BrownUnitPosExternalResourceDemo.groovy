@@ -41,6 +41,7 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 /**
  * This example is the same as {@link BrownUnitPosDemo}, except that it demonstrates how to
  * pass an external resource to the feature extractor.  (In this case we pass a dummy
@@ -57,10 +58,6 @@ implements Constants {
 
     def ExternalResourceDescription dummyResource = createExternalResourceDescription(
         DummyResource.class)
-    def dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS, [
-        NrOfTokensExternalResourceUFE.PARAM_DUMMY_RESOURCE,
-        dummyResource
-    ])
     
     def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
         BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
@@ -75,7 +72,7 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
-        NrOfTokens.name
+        TcFeatureFactory.create(NrOfTokens.class, NrOfTokensExternalResourceUFE.PARAM_DUMMY_RESOURCE, dummyResource)
     ])
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [SMO.name],[NaiveBayes.name])
@@ -94,7 +91,6 @@ implements Constants {
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimPipelineParameters,
                 dimFeatureSets,
                 dimClassificationArgs
             ],

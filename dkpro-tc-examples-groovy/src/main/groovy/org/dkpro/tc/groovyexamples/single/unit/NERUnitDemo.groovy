@@ -40,6 +40,7 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification
  * unit. This is only a showcase of the concept.
@@ -56,8 +57,8 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, [
-        NrOfChars.name,
-        InitialCharacterUpperCase.name
+        TcFeatureFactory.create(NrOfChars.class),
+        TcFeatureFactory.create(InitialCharacterUpperCase.class)
     ])
     
     def trainreader = CollectionReaderFactory.createReaderDescription(NERDemoReader.class,

@@ -35,7 +35,7 @@ import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
@@ -93,7 +93,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
     DIM_FEATURE_SET,
     [
         // This feature is sensible and fast, but gives bad results on the demo data
-        DiffNrOfTokensPairFeatureExtractor.name,
+        TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)
         // Please review LuceneNGramPFE's javadoc to understand
         // the parameters before using LuceneNGramPFE.
         //      LuceneNGramPFE.name

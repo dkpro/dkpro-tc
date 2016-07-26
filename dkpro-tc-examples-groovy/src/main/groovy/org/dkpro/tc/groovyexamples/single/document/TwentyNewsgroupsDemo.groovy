@@ -35,7 +35,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
@@ -91,47 +91,7 @@ public class TwentyNewsgroupsDemo implements Constants {
     DIM_FEATURE_SET,
     [
         TcFeatureFactory.create(NrOfTokens.class),
-        TcFeatureFactory.create(LuceneNGram.class)
-    ]
-    )
-
-    //    def dimPipelineParameters = Dimension.create(
-    //    DIM_PIPELINE_PARAMS,
-    //    [
-    //        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-    //        "50",
-    //        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
-    //        1,
-    //        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
-    //        3
-    //    ],
-    //    [
-    //        NGramFeatureExtractor.PARAM_NGRAM_USE_TOP_K,
-    //        "100",
-    //        NGramFeatureExtractor.PARAM_NGRAM_MIN_N,
-    //        1,
-    //        NGramFeatureExtractor.PARAM_NGRAM_MAX_N,
-    //        3
-    //    ]
-    //    );
-
-    def dimPipelineParameters = Dimension.create(
-    DIM_PIPELINE_PARAMS,
-    [
-        LuceneNGram.PARAM_NGRAM_USE_TOP_K,
-        "50",
-        LuceneNGram.PARAM_NGRAM_MIN_N,
-        1,
-        LuceneNGram.PARAM_NGRAM_MAX_N,
-        3
-    ],
-    [
-        LuceneNGram.PARAM_NGRAM_USE_TOP_K,
-        "100",
-        LuceneNGram.PARAM_NGRAM_MIN_N,
-        1,
-        LuceneNGram.PARAM_NGRAM_MAX_N,
-        3
+        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, "50", LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)
     ]
     )
 
@@ -156,8 +116,7 @@ public class TwentyNewsgroupsDemo implements Constants {
                 dimLearningMode,
                 dimFeatureMode,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParameters
+                dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
@@ -186,8 +145,7 @@ public class TwentyNewsgroupsDemo implements Constants {
                 dimLearningMode,
                 dimFeatureMode,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParameters
+                dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
