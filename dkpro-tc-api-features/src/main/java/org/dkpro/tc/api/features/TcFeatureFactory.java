@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
-import org.dkpro.tc.core.task.TcFeature;
 
 public class TcFeatureFactory
 {
