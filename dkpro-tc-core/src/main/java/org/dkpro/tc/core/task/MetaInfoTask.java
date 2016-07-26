@@ -55,7 +55,6 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.TcFeature;
-import org.dkpro.tc.api.features.meta.MetaCollector;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
@@ -153,16 +152,7 @@ public class MetaInfoTask
             for (TcFeature feClosure : featureExtractors) {
                 ExternalResourceDescription feDesc = feClosure.getActualValue();
 
-                String implName;
-                if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-                    implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
-                            .getResourceClassName();
-                }
-                else {
-                    implName = feDesc.getImplementationName();
-                }
-
-                Class<?> feClass = Class.forName(implName);
+                Class<?> feClass = getClass(feDesc);
 
                 // Skip feature extractors that are not dependent on meta collectors
                 if (!MetaDependent.class.isAssignableFrom(feClass)) {
@@ -206,6 +196,22 @@ public class MetaInfoTask
             }
         }
         return builder.createAggregateDescription();
+    }
+
+    private Class<?> getClass(ExternalResourceDescription feDesc)
+        throws ClassNotFoundException
+    {
+        String implName;
+        if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+            implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                    .getResourceClassName();
+        }
+        else {
+            implName = feDesc.getImplementationName();
+        }
+
+        Class<?> feClass = Class.forName(implName);
+        return feClass;
     }
 
     private AnalysisEngineDescription injectContextMetaCollector(TaskContext aContext)
