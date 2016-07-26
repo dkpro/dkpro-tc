@@ -375,11 +375,6 @@ public class SaveModelUtils
     {
         Class<?> contextClass = SaveModelUtils.class;
 
-        // String pomPattern = base + "META-INF/maven/" + modelGroup + "/" + moduleArtifactId +
-        // "*/pom.xml";
-        // PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        // Resource[] resources = resolver.getResources(pomPattern);
-
         InputStream resourceAsStream = contextClass
                 .getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
 
@@ -468,17 +463,6 @@ public class SaveModelUtils
         return (TCMachineLearningAdapter) classObj.newInstance();
     }
 
-    public static List<String> initFeatureExtractors(File tcModelLocation)
-        throws Exception
-    {
-        List<String> featureExtractors = new ArrayList<>();
-        File featureExtractorsDescription = new File(tcModelLocation, MODEL_FEATURE_EXTRACTORS);
-        List<String> featureConfiguration = FileUtils.readLines(featureExtractorsDescription);
-        for (String featureExtractor : featureConfiguration) {
-            featureExtractors.add(featureExtractor);
-        }
-        return featureExtractors;
-    }
 
     public static List<Object> initParameters(File tcModelLocation)
         throws IOException
@@ -611,6 +595,7 @@ public class SaveModelUtils
 
             // Skip feature extractors that are not dependent on meta collectors
             if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                erd.add(exRes);
                 continue;
             }
 
