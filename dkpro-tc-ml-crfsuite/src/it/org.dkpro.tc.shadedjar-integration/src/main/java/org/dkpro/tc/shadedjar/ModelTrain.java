@@ -39,6 +39,8 @@ import org.dkpro.tc.features.tcu.CurrentUnit;
 import org.dkpro.tc.features.tcu.NextUnit;
 import org.dkpro.tc.features.tcu.PrevUnit;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 
 import com.google.common.io.Files;
 
@@ -86,23 +88,17 @@ public class ModelTrain
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 Arrays.asList(new String[] {
-                        // Context
-                        PrevUnit.class.getName(), CurrentUnit.class.getName(),
-                        NextUnit.class.getName(),
-
-                LuceneCharacterNGram.class.getName(), NrOfChars.class.getName() }));
+                        TcFeatureFactory.create(PrevUnit.class),TcFeatureFactory.create(CurrentUnit.class), TcFeatureFactory.create(NextUnit.class),
+                        TcFeatureFactory.create(LuceneCharacterNGram.class,LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
+                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 250)
+                         }));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 asList(new String[] {
                         CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR }));
-
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { LuceneCharacterNGram.PARAM_CHAR_NGRAM_LOWER_CASE,
-                        true, LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
-                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 4,
-                        LuceneCharacterNGram.PARAM_CHAR_NGRAM_USE_TOP_K, 250 }));
 
         CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, languageCode,
@@ -116,7 +112,7 @@ public class ModelTrain
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
-                Dimension.create(DIM_FEATURE_MODE, featureMode), dimPipelineParameters,
+                Dimension.create(DIM_FEATURE_MODE, featureMode), 
                 dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
