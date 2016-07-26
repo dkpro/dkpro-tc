@@ -31,16 +31,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -64,7 +61,6 @@ import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.TcFeature;
 
 /**
@@ -122,9 +118,9 @@ public class SaveModelUtils
             }
             sb = record(i, keySet, parameterSettings, sb);
         }
-        
+
         sb.append("\n");
-        
+
         return sb;
     }
 
@@ -205,7 +201,7 @@ public class SaveModelUtils
 
         Map<String, Object> metaOverrides = new HashMap<>();
         Map<String, Object> extractorOverrides = new HashMap<>();
-        
+
         // Tell the meta collectors where to store their data
         for (MetaCollectorConfiguration conf : feInstance
                 .getMetaCollectorClasses(parameterSettings)) {
@@ -217,24 +213,25 @@ public class SaveModelUtils
                 File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
                         entry.getValue().toString());
 
-                
                 String name = file.getName();
                 String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
                 File targetFolder = new File(subFolder);
                 copyToTargetLocation(file, targetFolder);
             }
         }
-        writeOverrides(aOutputFolder, metaOverrides,META_COLLECTOR_OVERRIDE);
-        writeOverrides(aOutputFolder, metaOverrides,META_EXTRACTOR_OVERRIDE);
+        writeOverrides(aOutputFolder, metaOverrides, META_COLLECTOR_OVERRIDE);
+        writeOverrides(aOutputFolder, extractorOverrides, META_EXTRACTOR_OVERRIDE);
     }
 
-    private static void writeOverrides(File aOutputFolder, Map<String, Object> override, String target) throws IOException
+    private static void writeOverrides(File aOutputFolder, Map<String, Object> override,
+            String target)
+                throws IOException
     {
         StringBuilder sb = new StringBuilder();
-        for(String k : override.keySet()){
+        for (String k : override.keySet()) {
             sb.append(k + "=" + override.get(k));
         }
-        
+
         FileUtils.write(new File(aOutputFolder, target), sb.toString(), "utf-8");
     }
 
@@ -489,7 +486,8 @@ public class SaveModelUtils
         List<Object> parameters = new ArrayList<>();
         Properties parametersProp = new Properties();
 
-        FileInputStream fis = new FileInputStream(new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION));
+        FileInputStream fis = new FileInputStream(
+                new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION));
         parametersProp.load(fis);
         fis.close();
 
@@ -589,65 +587,51 @@ public class SaveModelUtils
     }
 
     public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
-            File tcModelLocation, UimaContext aContext) throws Exception
+            File tcModelLocation, UimaContext aContext)
+                throws Exception
     {
         List<ExternalResourceDescription> erd = new ArrayList<>();
-        
+
         File classFile = new File(tcModelLocation + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
-        URLClassLoader urlClassLoader = new URLClassLoader(
-                new URL[] { classFile.toURI().toURL() });
-        
+        URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI().toURL() });
+
         File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
-        for(String l : FileUtils.readLines(file)){
+        for (String l : FileUtils.readLines(file)) {
             String[] split = l.split("\t");
             String name = split[0];
-            Object [] parameters = getParameters(split);
-            
+            Object[] parameters = getParameters(split);
+
             Class<? extends Resource> feClass = urlClassLoader.loadClass(name)
                     .asSubclass(Resource.class);
-            
+
             List<Object> idRemovedParameters = filterId(parameters);
             String id = getId(parameters);
             TcFeature feature = TcFeatureFactory.create(id, feClass, idRemovedParameters.toArray());
             ExternalResourceDescription exRes = feature.getActualValue();
-            
-            
-            
-         // Skip feature extractors that are not dependent on meta collectors
+
+            // Skip feature extractors that are not dependent on meta collectors
             if (!MetaDependent.class.isAssignableFrom(feClass)) {
                 continue;
             }
-            
-            MetaDependent feInstance = (MetaDependent) feClass.newInstance();
-            for (MetaCollectorConfiguration conf : feInstance
-                    .getMetaCollectorClasses(wrap(parameters))) {
-                configureMetaCollectors(tcModelLocation, exRes);
-            }
+
+            Map<String, String> overrides = loadOverrides(tcModelLocation,META_COLLECTOR_OVERRIDE);
+            configureOverrides(tcModelLocation, exRes, overrides);
+            overrides = loadOverrides(tcModelLocation,META_EXTRACTOR_OVERRIDE);
+            configureOverrides(tcModelLocation, exRes, overrides);
 
             erd.add(exRes);
         }
-        
+
         urlClassLoader.close();
-        
+
         return erd;
     }
 
 
-    private static Map<String, Object> wrap(Object[] parameters)
+    private static void configureOverrides(File tcModelLocation,
+            ExternalResourceDescription exRes, Map<String, String> overrides)
+                throws IOException
     {
-        Map<String, Object> m = new HashMap<>();
-        
-        for(int i=0; i < parameters.length; i=i+2){
-            m.put((String)parameters[i], parameters[i+1]);
-        }
-        
-        return m;
-    }
-
-    private static void configureMetaCollectors(File tcModelLocation, ExternalResourceDescription exRes) throws IOException
-    {
-        Map<String,String> overrides = loadMetaCollectorOverrides(tcModelLocation);
-
         // We assume for the moment that we only have primitive analysis engines for meta
         // collection, not aggregates. If there were aggregates, we'd have to do this
         // recursively
@@ -668,35 +652,36 @@ public class SaveModelUtils
         }
 
         for (Entry<String, String> e : overrides.entrySet()) {
-                // We generate a storage location from the feature extractor discriminator value
-                // and the preferred value specified by the meta collector
-                String parameterName = e.getKey();
-                ConfigurationParameterFactory.setParameter(aDesc, parameterName,
-                        new File(tcModelLocation, e.getValue())
-                                .getAbsolutePath());
-            
-        }        
+            // We generate a storage location from the feature extractor discriminator value
+            // and the preferred value specified by the meta collector
+            String parameterName = e.getKey();
+            ConfigurationParameterFactory.setParameter(aDesc, parameterName,
+                    new File(tcModelLocation, e.getValue()).getAbsolutePath());
+
+        }
     }
 
-
-    private static Map<String, String> loadMetaCollectorOverrides(File tcModelLocation) throws IOException
+    private static Map<String, String> loadOverrides(File tcModelLocation, String overrideFile)
+        throws IOException
     {
-        List<String> lines = FileUtils.readLines(new File(tcModelLocation, META_COLLECTOR_OVERRIDE), "utf-8");
-        Map<String,String> overrides = new HashMap<>();
-        
-        for(String s :lines){
+        List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile),
+                "utf-8");
+        Map<String, String> overrides = new HashMap<>();
+
+        for (String s : lines) {
             String[] split = s.split("=");
             overrides.put(split[0], split[1]);
         }
-        
+
         return overrides;
     }
 
     private static String getId(Object[] parameters)
     {
-        for(int i=0; i < parameters.length; i++){
-            if(parameters[i].toString().equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)){
-                return parameters[i+1].toString(); 
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].toString()
+                    .equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)) {
+                return parameters[i + 1].toString();
             }
         }
         return null;
@@ -704,32 +689,32 @@ public class SaveModelUtils
 
     private static List<Object> filterId(Object[] parameters)
     {
-        List<Object> out =new ArrayList<>();
-        for(int i=0; i < parameters.length; i++){
-            if(parameters[i].toString().equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)){
+        List<Object> out = new ArrayList<>();
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].toString()
+                    .equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)) {
                 i++;
                 continue;
             }
             out.add(parameters[i]);
         }
-        
+
         return out;
     }
 
     private static Object[] getParameters(String[] split)
     {
         List<Object> p = new ArrayList<>();
-        for(int i=1; i < split.length; i++){
+        for (int i = 1; i < split.length; i++) {
             String string = split[i];
             int indexOf = string.indexOf("=");
             String paramName = string.substring(0, indexOf);
-            String paramVal = string.substring(indexOf+1);
+            String paramVal = string.substring(indexOf + 1);
             p.add(paramName);
             p.add(paramVal);
         }
-        
+
         return p.toArray();
     }
-
 
 }
