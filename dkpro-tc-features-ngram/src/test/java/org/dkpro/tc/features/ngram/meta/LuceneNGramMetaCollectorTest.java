@@ -132,7 +132,8 @@ public class LuceneNGramMetaCollectorTest
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneNGramMetaCollector.class,
-                LuceneNGram.PARAM_SOURCE_LOCATION, tmpDir
+                LuceneNGramMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {

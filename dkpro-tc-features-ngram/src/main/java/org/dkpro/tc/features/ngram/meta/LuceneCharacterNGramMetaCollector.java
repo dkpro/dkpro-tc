@@ -20,7 +20,7 @@ package org.dkpro.tc.features.ngram.meta;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -32,25 +32,26 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 public class LuceneCharacterNGramMetaCollector
     extends LuceneBasedMetaCollector
 {
+    public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
 
-    @ConfigurationParameter(name = LuceneCharacterNGramFeatureExtractorBase.PARAM_CHAR_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int charNgramMinN;
+    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-    @ConfigurationParameter(name = LuceneCharacterNGramFeatureExtractorBase.PARAM_CHAR_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int charNgramMaxN;
+    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
     
-    @ConfigurationParameter(name = LuceneCharacterNGramFeatureExtractorBase.PARAM_CHAR_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean lowerCase;
     
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         return NGramUtils.getDocumentCharacterNgrams(jcas, fullDoc, lowerCase,
-                charNgramMinN, charNgramMaxN);
+                ngramMinN, ngramMaxN);
     }
     
     @Override
     protected String getFieldName(){
-        return LuceneCharacterNGramFeatureExtractorBase.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
+        return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 }

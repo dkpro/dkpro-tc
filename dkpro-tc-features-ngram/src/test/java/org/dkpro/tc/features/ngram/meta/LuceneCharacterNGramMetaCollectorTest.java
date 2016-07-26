@@ -76,7 +76,7 @@ public class LuceneCharacterNGramMetaCollectorTest
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
                 LuceneCharacterNGramMetaCollector.class,
                 LuceneCharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 2,
+                LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                 LuceneCharacterNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
                 LuceneCharacterNGram.PARAM_SOURCE_LOCATION, tmpDir
         );
@@ -93,7 +93,7 @@ public class LuceneCharacterNGramMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(new LuceneCharacterNGramMetaCollector().getFieldName());
+                Terms terms = fields.terms(LuceneCharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD+"123");
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
                     BytesRef text = null;

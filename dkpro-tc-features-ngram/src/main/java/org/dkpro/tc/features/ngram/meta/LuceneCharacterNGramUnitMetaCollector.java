@@ -21,11 +21,11 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneCharacterNGramFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 /**
  * This meta collector should be used if (i) the JCas contains either one target annotation which
@@ -38,13 +38,13 @@ public class LuceneCharacterNGramUnitMetaCollector
     extends LuceneBasedMetaCollector
 {
 
-    @ConfigurationParameter(name = LuceneCharacterNGramFeatureExtractorBase.PARAM_CHAR_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int charNgramMinN;
 
-    @ConfigurationParameter(name = LuceneCharacterNGramFeatureExtractorBase.PARAM_CHAR_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int charNgramMaxN;
 
-    @ConfigurationParameter(name = LuceneCharacterNGramFeatureExtractorBase.PARAM_CHAR_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private boolean lowerCase;
 
     @Override
@@ -64,6 +64,6 @@ public class LuceneCharacterNGramUnitMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneCharacterNGramFeatureExtractorBase.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
+        return LuceneCharacterNGram.LUCENE_NGRAM_FIELD + featureExtractorName;
     }
 }

@@ -90,9 +90,12 @@ public class CRFSuiteSaveAndLoadModelTest
         postags.add("pct");
         postags.add("DT");
         postags.add("TO");
+        postags.add("NP");
+        postags.add("VB");
         postags.add("CC");
         postags.add("JJ");
         postags.add("PPS");
+        postags.add("BEDZ");
         postags.add("NNS");
     }
 
@@ -169,8 +172,8 @@ public class CRFSuiteSaveAndLoadModelTest
                 Arrays.asList(
                         TcFeatureFactory.create(LuceneCharacterNGram.class,
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 500,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MIN_N, 1,
-                                LuceneCharacterNGram.PARAM_CHAR_NGRAM_MAX_N, 3),
+                                LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 1,
+                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3),
                 TcFeatureFactory.create(NrOfChars.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -254,6 +257,7 @@ public class CRFSuiteSaveAndLoadModelTest
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for (TextClassificationOutcome o : outcomes) {
+            System.out.println(o.getOutcome());
             assertTrue(postags.contains(o.getOutcome()));
         }
     }
