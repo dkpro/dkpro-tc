@@ -37,6 +37,8 @@ import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 
 /**
  * Experiment setup used to test extreme configuration settings like empty feature extractors etc.
@@ -76,22 +78,6 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
 
-    //UIMA parameters for FE configuration
-    def dimPipelineParameters = Dimension.create(
-    DIM_PIPELINE_PARAMS,
-    [
-        "TopK",
-        "500",
-        LuceneNGram.PARAM_NGRAM_MIN_N,
-        1,
-        LuceneNGram.PARAM_NGRAM_MAX_N,
-        3
-    ]
-    )
-
-    //UIMA parameters for FE configuration
-    def dimPipelineParametersEmpty = Dimension.create(DIM_PIPELINE_PARAMS, [])
-
     def dimClassificationArgs =
     Dimension.create(
     DIM_CLASSIFICATION_ARGS,
@@ -107,8 +93,8 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
     DIM_FEATURE_SET,
     [
         [
-            NrOfTokens.class.name,
-            LuceneNGram.class.name
+            TcFeatureFactory.create(NrOfTokens.class),
+            TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)
         ].toArray()
     ] as Object[]
     )
@@ -130,8 +116,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParametersEmpty
+                dimFeatureSets
             ],
             reports:         [
                 BatchCrossValidationReport
@@ -150,8 +135,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParametersEmpty
+                dimFeatureSets
             ],
             reports:         [
                 BatchTrainTestReport
@@ -175,8 +159,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimClassificationArgs,
-                dimFeatureSetsEmpty,
-                dimPipelineParameters
+                dimFeatureSetsEmpty
             ],
             reports:         [
                 BatchCrossValidationReport
@@ -195,8 +178,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimClassificationArgs,
-                dimFeatureSetsEmpty,
-                dimPipelineParameters
+                dimFeatureSetsEmpty
             ],
             reports:         [
                 BatchTrainTestReport]

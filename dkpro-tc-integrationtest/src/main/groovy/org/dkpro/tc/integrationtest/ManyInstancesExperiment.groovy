@@ -40,6 +40,8 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 /**
  * Testing with many instances.
  *
@@ -67,19 +69,6 @@ public class ManyInstancesExperiment implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
 
-    //UIMA parameters for FE configuration
-    def dimPipelineParameters = Dimension.create(
-    DIM_PIPELINE_PARAMS,
-    [
-        "TopK",
-        "500",
-        LuceneNGram.PARAM_NGRAM_MIN_N,
-        1,
-        LuceneNGram.PARAM_NGRAM_MAX_N,
-        3
-    ]
-    )
-
     def dimClassificationArgs = Dimension.create(
     DIM_CLASSIFICATION_ARGS,
     [NaiveBayes.class.name])
@@ -87,8 +76,8 @@ public class ManyInstancesExperiment implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokens.class.name,
-        LuceneNGram.class.name
+        TcFeatureFactory.create(NrOfTokens.class),
+        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3 )
     ])
 
     // === Test =========================================================
@@ -106,8 +95,7 @@ public class ManyInstancesExperiment implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimClassificationArgs,
-                dimFeatureSets,
-                dimPipelineParameters
+                dimFeatureSets
             ],
             reports:         [
                 BatchCrossValidationReport

@@ -37,7 +37,8 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory
+import org.dkpro.tc.api.features.TcFeatureFactory
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.
  *
@@ -72,7 +73,7 @@ public class NumberOfFoldsSetting implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     [
-        NrOfTokens.class.name
+        TcFeatureFactory.create(NrOfTokens.class)
     ])
 
     // === Test =========================================================
