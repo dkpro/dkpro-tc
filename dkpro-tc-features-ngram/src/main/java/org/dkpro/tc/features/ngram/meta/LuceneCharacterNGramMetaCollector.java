@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
@@ -41,7 +43,19 @@ public class LuceneCharacterNGramMetaCollector
     private int ngramMaxN;
     
     @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
-    private boolean lowerCase;
+    private String stringLowerCase;
+    
+    boolean lowerCase = true;
+    
+    @Override
+    public void initialize(UimaContext context)
+        throws ResourceInitializationException
+    {
+        super.initialize(context);
+        
+        lowerCase = Boolean.valueOf(stringLowerCase);
+        
+    }
     
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas){

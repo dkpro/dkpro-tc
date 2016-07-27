@@ -53,8 +53,10 @@ public class LuceneSkipNgramMetaCollector
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue = "false")
     protected boolean filterPartialStopwordMatches;
 
-    @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
-    private boolean ngramLowerCase;
+    @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    private String stringNgramLowerCase;
+    
+    boolean ngramLowerCase = true;
 
     private Set<String> stopwords;
 
@@ -63,7 +65,7 @@ public class LuceneSkipNgramMetaCollector
         throws ResourceInitializationException
     {
         super.initialize(context);
-
+        ngramLowerCase = Boolean.valueOf(stringNgramLowerCase);
         try {
             stopwords = FeatureUtil.getStopwords(stopwordsFile, ngramLowerCase);
         }

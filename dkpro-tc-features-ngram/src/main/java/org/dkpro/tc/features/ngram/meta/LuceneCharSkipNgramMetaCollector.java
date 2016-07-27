@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.LuceneSkipCharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
@@ -40,15 +42,27 @@ public class LuceneCharSkipNgramMetaCollector
     @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
     private int skipSize;
 
-    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")
-    private boolean ngramLowerCase;
+    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    private String stringLowerCase;
+    
+    boolean lowerCase = true;
+    
+    @Override
+    public void initialize(UimaContext context)
+        throws ResourceInitializationException
+    {
+        super.initialize(context);
+        
+        lowerCase = Boolean.valueOf(stringLowerCase);
+        
+    }
 
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        return NGramUtils.getCharacterSkipNgrams(jcas, fullDoc, ngramLowerCase, minN, maxN,
+        return NGramUtils.getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
                 skipSize);
     }
 

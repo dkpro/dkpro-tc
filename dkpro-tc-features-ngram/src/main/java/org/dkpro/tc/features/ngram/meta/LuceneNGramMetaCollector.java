@@ -50,7 +50,9 @@ public class LuceneNGramMetaCollector
     private boolean filterPartialStopwordMatches;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
-    private boolean ngramLowerCase;
+    private String stringNgramLowerCase;
+    
+    boolean ngramLowerCase = true;
 
     private Set<String> stopwords;
     
@@ -59,6 +61,8 @@ public class LuceneNGramMetaCollector
         throws ResourceInitializationException
     {
         super.initialize(context);
+        
+        ngramLowerCase = Boolean.valueOf(stringNgramLowerCase);
         
         try {
             stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
