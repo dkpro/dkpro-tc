@@ -77,6 +77,7 @@ public class SimilarityPairFeatureTest
         
         SimilarityPairFeatureExtractor extractor = FeatureUtil.createResource(
         		SimilarityPairFeatureExtractor.class,
+        		SimilarityPairFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
         		SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
                 SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource);
 

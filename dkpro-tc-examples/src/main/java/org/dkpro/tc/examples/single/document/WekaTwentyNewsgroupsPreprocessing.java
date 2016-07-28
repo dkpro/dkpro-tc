@@ -34,6 +34,8 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -92,20 +94,18 @@ public class WekaTwentyNewsgroupsPreprocessing
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 asList(NaiveBayes.class.getName()));
 
-        Dimension<List<Object>> dimPipelineParameters = Dimension.create(DIM_PIPELINE_PARAMS,
-                asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 4 }));
-
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                asList(NrOfTokens.class.getName(), LuceneNGram.class.getName()));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                asList(TcFeatureFactory.create(NrOfTokens.class),
+                        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_MIN_N, 2,
+                                LuceneNGram.PARAM_NGRAM_MAX_N, 4, LuceneNGram.PARAM_NGRAM_USE_TOP_K,
+                                100)));
 
         Dimension<String> dimSegmenter = Dimension.create("segmenter", "break", "opennlp");
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets, dimClassificationArgs, dimSegmenter);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                dimClassificationArgs, dimSegmenter);
 
         return pSpace;
     }
