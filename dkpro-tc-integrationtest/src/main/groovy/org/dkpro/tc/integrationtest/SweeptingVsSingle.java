@@ -36,6 +36,8 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -73,33 +75,21 @@ public class SweeptingVsSingle
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
         DemoUtils.setDkproHome(SweeptingVsSingle.class.getSimpleName());
+        
+        Dimension<List<TcFeature>> dimPipelineParametersAll = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 100, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)),
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)),
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1000, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+        
+        
+        Dimension<List<TcFeature>> dimPipelineParameters100 = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 100, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
-        // for sweeping
-        Dimension<List<Object>> dimPipelineParametersAll = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }),
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<Object>> dimPipelineParameters100 = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 100,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<Object>> dimPipelineParameters500 = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 500,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
-        Dimension<List<Object>> dimPipelineParameters1000 = Dimension.create(DIM_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 1000,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 1,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
+        Dimension<List<TcFeature>> dimPipelineParameters500 = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+        
+        Dimension<List<TcFeature>> dimPipelineParameters1000 = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1000, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
         ParameterSpace pSpaceAll = getParameterSpace(dimPipelineParametersAll);
         ParameterSpace pSpace100 = getParameterSpace(dimPipelineParameters100);
@@ -120,7 +110,7 @@ public class SweeptingVsSingle
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace(Dimension<List<Object>> dimPipelineParameters)
+    public static ParameterSpace getParameterSpace(Dimension<List<TcFeature>> dimFeatureSet)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -144,13 +134,10 @@ public class SweeptingVsSingle
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMO.class.getName() }));
 
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, Arrays.asList(
-                new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
-
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimPipelineParameters,
-                dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSet,
+                dimClassificationArgs);
 
         return pSpace;
     }
