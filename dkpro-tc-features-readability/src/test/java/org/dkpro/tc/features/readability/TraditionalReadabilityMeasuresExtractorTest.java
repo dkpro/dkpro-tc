@@ -71,6 +71,7 @@ public class TraditionalReadabilityMeasuresExtractorTest
         
         TraditionalReadabilityMeasuresFeatureExtractor extractor = FeatureUtil.createResource(
         		TraditionalReadabilityMeasuresFeatureExtractor.class,
+        		TraditionalReadabilityMeasuresFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
         		TraditionalReadabilityMeasuresFeatureExtractor.PARAM_ADD_COLEMANLIAU, "true");
 
         List<Feature> features = new ArrayList<>(extractor.extract(jcas, target));

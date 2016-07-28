@@ -82,6 +82,7 @@ public class IsNounCompoundExtractorTest {
         
         IsNounCompoundExtractor extractor = FeatureUtil.createResource(
         		IsNounCompoundExtractor.class,
+        		IsNounCompoundExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
         		IsNounCompoundExtractor.DICTIONARY_LOCATON, "src/test/resources/dictionary/dict_de_nouns"
         );
 
