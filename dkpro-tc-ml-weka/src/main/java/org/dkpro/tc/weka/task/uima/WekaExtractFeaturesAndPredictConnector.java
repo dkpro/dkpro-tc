@@ -33,15 +33,14 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ConnectorBase;
-import org.dkpro.tc.weka.task.WekaExtractFeaturesAndPredictTask;
 import org.dkpro.tc.weka.util.WekaUtils;
 import org.dkpro.tc.weka.writer.WekaDataWriter;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
