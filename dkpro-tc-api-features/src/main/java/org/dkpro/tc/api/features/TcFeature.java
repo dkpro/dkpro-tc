@@ -19,19 +19,25 @@ package org.dkpro.tc.api.features;
 
 import java.util.Map;
 
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.Resource;
 import org.dkpro.lab.task.Discriminable;
 
-public abstract class TcFeature implements Discriminable
+public class TcFeature implements Discriminable
 {
-    private String name;
+    private String id;
     protected Map<String, Object> config;
     private String fullFeatureName;
+    private Object[] params;
+    private Class<? extends Resource> classOfFeat;
     
-    public TcFeature(String aName, String fullFeatureName)
+    public TcFeature(Class<? extends Resource> classOfFeat, String id, Object[] params)
     {
-        name = aName;
-        this.fullFeatureName = fullFeatureName;
+        this.classOfFeat = classOfFeat;
+        this.id = id;
+        this.fullFeatureName = classOfFeat.getName();
+        this.params = params;
     }
 
     public void setConfig(Map<String, Object> aConfig) {
@@ -41,11 +47,14 @@ public abstract class TcFeature implements Discriminable
     @Override
     public Object getDiscriminatorValue()
     {
-        return name;
+        return id;
     }
     
     @Override
-    public abstract ExternalResourceDescription getActualValue();
+    public ExternalResourceDescription getActualValue(){
+        return ExternalResourceFactory.createExternalResourceDescription(classOfFeat,
+                params);
+    }
 
     public String getFeatureName()
     {
