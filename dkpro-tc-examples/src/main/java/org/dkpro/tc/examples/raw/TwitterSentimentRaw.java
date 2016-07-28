@@ -52,28 +52,27 @@ public class TwitterSentimentRaw
 
         runPipeline(
                 // Reader
-                createReaderDescription(
-                        LabeledTweetReader.class,
+                createReaderDescription(LabeledTweetReader.class,
                         LabeledTweetReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                         LabeledTweetReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
                 createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(ArktweetPosTagger.class,
-                        ArktweetPosTagger.PARAM_LANGUAGE, "en",
-                        ArktweetPosTagger.PARAM_VARIANT, "default"),
+                createEngineDescription(ArktweetPosTagger.class, ArktweetPosTagger.PARAM_LANGUAGE,
+                        "en", ArktweetPosTagger.PARAM_VARIANT, "default"),
                 // Feature extraction
-                createEngineDescription(
-                        ExtractFeaturesConnector.class,
+                createEngineDescription(ExtractFeaturesConnector.class,
                         ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
                         ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
                         ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
                         ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
-                        ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[]{},
+                        ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[] {},
                         ExtractFeaturesConnector.PARAM_IS_TESTING, false,
-                        ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, asList(
-                                createExternalResourceDescription(EmoticonRatio.class),
-                                createExternalResourceDescription(NumberOfHashTags.class))));
+                        ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
+                        asList(createExternalResourceDescription(EmoticonRatio.class,
+                                EmoticonRatio.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
+                                createExternalResourceDescription(NumberOfHashTags.class,
+                                        NumberOfHashTags.PARAM_UNIQUE_EXTRACTOR_NAME, "1234"))));
     }
 }
