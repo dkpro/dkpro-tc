@@ -89,12 +89,12 @@ public class ModelTrain
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] {
+                Arrays.asList(
                         TcFeatureFactory.create(PrevUnit.class),TcFeatureFactory.create(CurrentUnit.class), TcFeatureFactory.create(NextUnit.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 250)
-                         }));
+                         ));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 asList(new String[] {
