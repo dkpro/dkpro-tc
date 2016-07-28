@@ -74,7 +74,6 @@ public class BatchStatisticsTrainTestReport
                                 
                 String blCl = getDiscriminatorValue(discriminatorsMap, DIM_BASELINE_CLASSIFICATION_ARGS);
                 String blFs = getDiscriminatorValue(discriminatorsMap, DIM_BASELINE_FEATURE_SET);
-                String blPp = getDiscriminatorValue(discriminatorsMap, DIM_BASELINE_PIPELINE_PARAMS);
                 
                 String trainFiles;
                 String testFiles;
@@ -97,10 +96,9 @@ public class BatchStatisticsTrainTestReport
                 
                 String cl = getDiscriminatorValue(discriminatorsMap, DIM_CLASSIFICATION_ARGS);
                 String fs = getDiscriminatorValue(discriminatorsMap, DIM_FEATURE_SET); 
-        		String pp = getDiscriminatorValue(discriminatorsMap, DIM_PIPELINE_PARAMS);
         		
         		int isBaseline = 0;
-                if (blCl.equals(cl) && blFs.equals(fs) && blPp.equals(pp)) {
+                if (blCl.equals(cl) && blFs.equals(fs)) {
                     isBaseline = 1;
                     experimentHasBaseline = true;
                 }
@@ -114,8 +112,7 @@ public class BatchStatisticsTrainTestReport
                     String mValue = String.valueOf(resultMap.get(mString));
                     String clShort = PrettyPrintUtils.prettyPrintClassifier(cl);
                     String fsShort = PrettyPrintUtils.prettyPrintFeatureSet(fs, true);
-                    String ppShort = PrettyPrintUtils.prettyPrintFeatureArgs(pp);
-                    String fAllShort = fsShort + ", " + ppShort;
+                    String fAllShort = fsShort;
                     // expected format: Train;Test;Classifier;FeatureSet;Measure;Value;IsBaseline
                     csv.writeNext(Arrays.asList(train, test, clShort, fAllShort, mName, mValue,
                             String.valueOf(isBaseline)).toArray(new String[] {}));
