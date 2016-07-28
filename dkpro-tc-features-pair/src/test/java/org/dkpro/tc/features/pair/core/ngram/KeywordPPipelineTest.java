@@ -30,7 +30,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Test;
@@ -50,12 +49,12 @@ public class KeywordPPipelineTest
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 1,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 1,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 1,
-                KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, 1,
-                KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, 1,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N, 1,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, 1,
                 LuceneKeywordPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
                 LuceneKeywordPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
                 LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                true, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
+                true, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
                 LuceneKeywordPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath};
@@ -79,12 +78,12 @@ public class KeywordPPipelineTest
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 3,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 3,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, 3,
-                KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, 3,
-                KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, 3,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N, 3,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, 3,
                 LuceneKeywordPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
                 LuceneKeywordPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
                 LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                true, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
+                true, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
                 LuceneKeywordPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath };

@@ -25,14 +25,14 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
+import org.dkpro.tc.features.pair.core.ngram.LuceneKeywordCPFE;
 import org.dkpro.tc.features.pair.core.ngram.LuceneKeywordPFE;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneKeywordPMetaCollector
         extends LucenePMetaCollectorBase
@@ -44,7 +44,7 @@ public class LuceneKeywordPMetaCollector
     @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
     private int ngramMinN2;
     
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
     
     @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
@@ -53,19 +53,19 @@ public class LuceneKeywordPMetaCollector
     @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
     private int ngramMaxN2;
     
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int ngramMaxN;
     
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
     protected String keywordsFile;
     
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
     private boolean markSentenceBoundary;
     
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
     private boolean markSentenceLocation;
     
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
     private boolean includeCommas;
     
     private Set<String> keywords;
@@ -122,7 +122,7 @@ public class LuceneKeywordPMetaCollector
     @Override
     protected String getFieldName()
     {
-        return KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
+        return LuceneKeywordCPFE.KEYWORD_NGRAM_FIELD;
     }
     
     @Override

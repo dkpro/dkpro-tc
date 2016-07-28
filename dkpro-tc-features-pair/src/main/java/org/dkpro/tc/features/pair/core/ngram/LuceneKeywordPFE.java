@@ -36,7 +36,7 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
 import org.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
@@ -57,23 +57,41 @@ public class LuceneKeywordPFE
     implements PairFeatureExtractor
 {
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int ngramMaxN;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
+    public static final String KEYWORD_NGRAM_FIELD = "keywordngram";
+
+    public static final String PARAM_KEYWORD_NGRAM_MIN_N = "keywordNgramMinN";
+    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    protected int keywordMinN;
+
+    public static final String PARAM_KEYWORD_NGRAM_MAX_N = "keywordNgramMaxN";
+    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    protected int keywordMaxN;
+
+    public static final String PARAM_NGRAM_KEYWORDS_FILE = "keywordsFile";
+    @ConfigurationParameter(name = PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
     protected String keywordsFile;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
-	protected boolean markSentenceBoundary;
+    public static final String PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY = "markSentenceBoundary";
+    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
+    protected boolean markSentenceBoundary;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
-	protected boolean markSentenceLocation;
+    public static final String PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION = "markSentenceLocation";
+    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
+    protected boolean markSentenceLocation;
 
-    @ConfigurationParameter(name = KeywordNGramFeatureExtractorBase.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
-	protected boolean includeCommas;
+    public static final String PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS = "includeCommas";
+    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
+    protected boolean includeCommas;
+
+    public static final String PARAM_KEYWORD_NGRAM_USE_TOP_K = "keywordNgramUseTopK";
+    @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
+    protected int keywordNgramUseTopK; 
 
     protected Set<String> keywords;
     /**
@@ -164,7 +182,7 @@ public class LuceneKeywordPFE
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        fieldOfTheMoment = KeywordNGramFeatureExtractorBase.KEYWORD_NGRAM_FIELD;
+        fieldOfTheMoment = KEYWORD_NGRAM_FIELD;
         topNOfTheMoment = ngramUseTopK;
         topKSet = getTopNgrams();
         

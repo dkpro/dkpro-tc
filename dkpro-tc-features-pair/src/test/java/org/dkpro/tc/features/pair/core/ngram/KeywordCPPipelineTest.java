@@ -31,7 +31,6 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.base.KeywordNGramFeatureExtractorBase;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordCPMetaCollector;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Test;
@@ -50,7 +49,7 @@ public class KeywordCPPipelineTest
                 LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
                 LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
                 LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
+                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
                 LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath };
@@ -80,7 +79,7 @@ public class KeywordCPPipelineTest
         		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
         		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
         		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
+                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
                 LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
@@ -103,7 +102,7 @@ public class KeywordCPPipelineTest
         		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
         		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
         		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
+                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
                 LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
@@ -129,7 +128,7 @@ public class KeywordCPPipelineTest
         		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
         		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
         		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, KeywordNGramFeatureExtractorBase.PARAM_NGRAM_KEYWORDS_FILE,
+                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
                 "src/test/resources/data/keywordlist.txt",
                 LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
                 LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
