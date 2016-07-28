@@ -17,26 +17,23 @@
  ******************************************************************************/
 package org.dkpro.tc.features.syntax;
 
-import static org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor.FN_QUESTION_RATIO;
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor.FN_QUESTION_RATIO;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor;
+import org.junit.Assert;
 
 public class QuestionRatioTest
 {

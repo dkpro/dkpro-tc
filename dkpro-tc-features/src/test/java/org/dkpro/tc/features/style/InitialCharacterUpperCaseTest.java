@@ -23,7 +23,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -55,7 +55,8 @@ public class InitialCharacterUpperCaseTest
         engine.process(jcas);
         
         InitialCharacterUpperCase extractor = FeatureUtil.createResource(
-        		InitialCharacterUpperCase.class);
+        		InitialCharacterUpperCase.class,
+        		IsSurroundedByChars.PARAM_UNIQUE_EXTRACTOR_NAME, "123");
 
 
         TextClassificationTarget unit1 = new TextClassificationTarget(jcas);

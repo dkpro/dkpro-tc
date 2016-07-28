@@ -17,27 +17,24 @@
  ******************************************************************************/
 package org.dkpro.tc.features.style;
 
-import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
-
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.style.LongWordsFeatureExtractor;
+import org.junit.Assert;
+import org.junit.Test;
+
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public class LongWordsTest
 {
@@ -56,11 +53,11 @@ public class LongWordsTest
         TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
         target.addToIndexes();
 
-        LongWordsFeatureExtractor extractor = FeatureUtil.createResource(LongWordsFeatureExtractor.class);
+        LongWordsFeatureExtractor extractor = FeatureUtil.createResource(LongWordsFeatureExtractor.class,LongWordsFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123");
 
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(2, features.size());
+        Assert.assertEquals(2, features.size(), 0);
         Iterator<Feature> iter = features.iterator();
         assertFeature(LongWordsFeatureExtractor.FN_LW_RATIO, 0.2, iter.next());
         assertFeature(LongWordsFeatureExtractor.FN_SW_RATIO, 0.4, iter.next());

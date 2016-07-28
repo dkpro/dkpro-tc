@@ -23,8 +23,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
@@ -36,7 +34,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.AdjectiveEndingFeatureExtractor;
-
+import org.junit.Assert;
 public class AdjectiveEndingTest
 {
     @Test

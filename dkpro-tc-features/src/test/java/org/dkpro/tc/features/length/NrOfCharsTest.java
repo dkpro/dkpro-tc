@@ -30,7 +30,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class NrOfCharsTest
 {

@@ -23,7 +23,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -56,6 +56,7 @@ public class IsSurroundedByCharsTest
         
         IsSurroundedByChars extractor = FeatureUtil.createResource(
         		IsSurroundedByChars.class,
+        		IsSurroundedByChars.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"");
 
 
