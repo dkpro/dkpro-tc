@@ -67,7 +67,9 @@ public class TwentyNewsgroupsRaw
                         ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[] {},
                         ExtractFeaturesConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
-                        asList(createExternalResourceDescription(NrOfTokens.class),
-                                createExternalResourceDescription(NrOfSentences.class))));
+                        asList(createExternalResourceDescription(NrOfTokens.class,
+                                NrOfTokens.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
+                                createExternalResourceDescription(NrOfSentences.class,
+                                        NrOfSentences.PARAM_UNIQUE_EXTRACTOR_NAME, "1234"))));
     }
 }

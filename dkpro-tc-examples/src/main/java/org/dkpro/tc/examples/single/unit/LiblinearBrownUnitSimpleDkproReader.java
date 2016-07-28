@@ -34,6 +34,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -130,8 +132,8 @@ public class LiblinearBrownUnitSimpleDkproReader
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(new String[] { NrOfTokens.class.getName(), LuceneCharacterNGram.class.getName() }));
+        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(LuceneCharacterNGram.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

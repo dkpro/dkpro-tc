@@ -138,8 +138,7 @@ public class WekaBrownUnitPosDemo
         @SuppressWarnings("unchecked")
         Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(LuceneCharacterNGram.class,
-                                LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
+                        TcFeatureFactory.create(LuceneCharacterNGram.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
