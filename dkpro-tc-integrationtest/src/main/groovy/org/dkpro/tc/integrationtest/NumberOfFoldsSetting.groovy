@@ -28,6 +28,8 @@ import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
+import org.dkpro.tc.api.features.TcFeatureFactory
+import org.dkpro.tc.api.features.TcFeatureList
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.integrationtest.io.LineInstanceReader
@@ -37,8 +39,6 @@ import org.dkpro.tc.weka.WekaClassificationAdapter
 
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import org.apache.uima.fit.factory.CollectionReaderFactory
-import org.dkpro.tc.api.features.TcFeatureFactory
 /**
  * Testing the check in the CV batch task that the number of folds needs to be at least 2.
  *
@@ -72,9 +72,9 @@ public class NumberOfFoldsSetting implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [
+    new TcFeatureList(
         TcFeatureFactory.create(NrOfTokens.class)
-    ])
+    ))
 
     // === Test =========================================================
 

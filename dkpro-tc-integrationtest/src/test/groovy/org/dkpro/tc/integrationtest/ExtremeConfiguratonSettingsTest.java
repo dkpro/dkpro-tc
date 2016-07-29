@@ -17,15 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.integrationtest;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.dkpro.lab.engine.ExecutionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import org.dkpro.lab.engine.ExecutionException;
+import org.junit.Assert;
 
 public class ExtremeConfiguratonSettingsTest
 {

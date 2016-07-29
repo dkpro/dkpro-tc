@@ -22,6 +22,7 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
+import org.apache.batik.svggen.font.table.FeatureList
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
 import org.apache.uima.fit.factory.CollectionReaderFactory
@@ -61,9 +62,10 @@ implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(
-    DIM_FEATURE_SET, [
-        TcFeatureFactory.create(NrOfTokens.class)
-    ])
+    DIM_FEATURE_SET, 
+        new FeatureList(
+            TcFeatureFactory.create(NrOfTokens.class)
+    ))
 
     // ##### CV #####
     protected void runCrossValidation()

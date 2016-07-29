@@ -42,6 +42,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList
 /**
  * Testing with many instances.
  *
@@ -75,10 +76,10 @@ public class ManyInstancesExperiment implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [
+    new TcFeatureList(
         TcFeatureFactory.create(NrOfTokens.class),
         TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3 )
-    ])
+    ))
 
     // === Test =========================================================
 

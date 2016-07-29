@@ -35,7 +35,9 @@ import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureFactory
+import org.dkpro.tc.api.features.TcFeatureList;
+
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter
@@ -91,13 +93,9 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    [
-        // This feature is sensible and fast, but gives bad results on the demo data
-        TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)
-        // Please review LuceneNGramPFE's javadoc to understand
-        // the parameters before using LuceneNGramPFE.
-        //      LuceneNGramPFE.name
-    ]
+        new TcFeatureList(
+            TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)
+        )
     )
 
     // === Experiments =========================================================

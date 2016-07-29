@@ -24,6 +24,8 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
+import org.dkpro.tc.api.features.TcFeatureList
+import org.dkpro.tc.api.features.TcFeatureFactory
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.io.LabeledTweetReader
 import org.dkpro.tc.examples.util.DemoUtils
@@ -78,10 +80,11 @@ public class TwitterSentimentDemo implements Constants {
                     ]),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_SET, [
-                    EmoticonRatio.name,
-                    NumberOfHashTags.name
-                ]),
+                Dimension.create(DIM_FEATURE_SET, 
+                    new TcFeatureList(
+                        TcFeatureFactory.create(EmoticonRatio.class),
+                        TcFeatureFactory.create(NumberOfHashTags.class)
+                )),
                 Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
             ],
             reports: [
@@ -123,10 +126,12 @@ public class TwitterSentimentDemo implements Constants {
                 ]),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_SET, [
-                    EmoticonRatio.name,
-                    NumberOfHashTags.name
-                ]),
+                Dimension.create(DIM_FEATURE_SET, 
+                    new TcFeatureList(
+                        TcFeatureFactory.create(EmoticonRatio.class),
+                        TcFeatureFactory.create(NumberOfHashTags.class)
+                    )
+                ),
                 Dimension.create(DIM_CLASSIFICATION_ARGS, [NaiveBayes.name], [RandomForest.name])
             ],
             reports: [BatchTrainTestReport], // collects results from folds
