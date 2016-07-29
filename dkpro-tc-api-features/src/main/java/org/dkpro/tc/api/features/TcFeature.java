@@ -24,14 +24,15 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Resource;
 import org.dkpro.lab.task.Discriminable;
 
-public class TcFeature implements Discriminable
+public class TcFeature
+    implements Discriminable
 {
     private String id;
     protected Map<String, Object> config;
     private String fullFeatureName;
     private Object[] params;
     private Class<? extends Resource> classOfFeat;
-    
+
     public TcFeature(Class<? extends Resource> classOfFeat, String id, Object[] params)
     {
         this.classOfFeat = classOfFeat;
@@ -40,20 +41,40 @@ public class TcFeature implements Discriminable
         this.params = params;
     }
 
-    public void setConfig(Map<String, Object> aConfig) {
+    public void setConfig(Map<String, Object> aConfig)
+    {
         config = aConfig;
     }
-    
+
     @Override
     public Object getDiscriminatorValue()
     {
+        StringBuilder desc = new StringBuilder();
+        desc.append("[");
+        desc.append(fullFeatureName);
+        if (params != null && params.length > 0) {
+            desc.append("| ");
+            for (int i = 0; i < params.length; i++) {
+                Object object = params[i];
+                desc.append(object.toString());
+                if (i + 1 < params.length) {
+                    desc.append(", ");
+                }
+            }
+        }
+        desc.append("]");
+        return desc.toString();
+    }
+
+    public String getId()
+    {
         return id;
     }
-    
+
     @Override
-    public ExternalResourceDescription getActualValue(){
-        return ExternalResourceFactory.createExternalResourceDescription(classOfFeat,
-                params);
+    public ExternalResourceDescription getActualValue()
+    {
+        return ExternalResourceFactory.createExternalResourceDescription(classOfFeat, params);
     }
 
     public String getFeatureName()

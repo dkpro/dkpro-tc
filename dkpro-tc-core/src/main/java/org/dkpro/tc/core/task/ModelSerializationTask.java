@@ -18,12 +18,11 @@
 package org.dkpro.tc.core.task;
 
 import java.io.File;
-import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.SaveModelUtils;
 
@@ -32,7 +31,7 @@ public abstract class ModelSerializationTask
     implements Constants
 {
     @Discriminator(name=DIM_FEATURE_SET)
-    protected List<TcFeature> featureSet;
+    protected TcFeatureList featureSet;
     @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
     @Discriminator(name=DIM_LEARNING_MODE)

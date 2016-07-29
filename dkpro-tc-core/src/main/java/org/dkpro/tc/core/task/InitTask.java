@@ -48,6 +48,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.io.ReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
@@ -79,7 +80,7 @@ public class InitTask
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private String threshold;
     @Discriminator(name = DIM_FEATURE_SET)
-    private List<TcFeature> featureExtractors;
+    private TcFeatureList featureExtractors;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
