@@ -40,6 +40,7 @@ import org.dkpro.tc.features.tcu.NextUnit;
 import org.dkpro.tc.features.tcu.PrevUnit;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 
 import com.google.common.io.Files;
@@ -88,8 +89,8 @@ public class ModelTrain
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(
                         TcFeatureFactory.create(PrevUnit.class),TcFeatureFactory.create(CurrentUnit.class), TcFeatureFactory.create(NextUnit.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
