@@ -32,8 +32,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.EssayScoreReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -93,9 +93,9 @@ public class WekaRegressionDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { LinearRegression.class.getName() }));
 
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(NrOfSentences.class),
                         TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 

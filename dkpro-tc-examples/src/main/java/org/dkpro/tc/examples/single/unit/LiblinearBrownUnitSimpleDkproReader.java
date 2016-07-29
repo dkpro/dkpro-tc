@@ -21,9 +21,7 @@ package org.dkpro.tc.examples.single.unit;
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -34,8 +32,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -131,9 +129,8 @@ public class LiblinearBrownUnitSimpleDkproReader
 
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(LuceneCharacterNGram.class)));
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(LuceneCharacterNGram.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

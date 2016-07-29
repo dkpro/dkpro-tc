@@ -38,6 +38,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.NERDemoReader;
@@ -117,23 +118,23 @@ public class CRFSuiteNERSequenceDemo
         throws ResourceInitializationException
     {
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory
-                .createReaderDescription(NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
-                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
+                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
 
-        CollectionReaderDescription readerTest = CollectionReaderFactory
-                .createReaderDescription(NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
-                        NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                        NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
+                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
 
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfChars.class), TcFeatureFactory.create(InitialCharacterUpperCase.class)));
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(TcFeatureFactory.create(NrOfChars.class),
+                        TcFeatureFactory.create(InitialCharacterUpperCase.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),

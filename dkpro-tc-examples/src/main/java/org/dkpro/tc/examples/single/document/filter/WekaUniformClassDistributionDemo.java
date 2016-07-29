@@ -33,8 +33,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -115,9 +115,9 @@ public class WekaUniformClassDistributionDemo
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
         
         
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,3)));
 
         Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,

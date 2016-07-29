@@ -22,7 +22,6 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +35,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -134,9 +133,8 @@ public class LibsvmBrownUnitPosDemo
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new String[] { "-c", "10" }));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
-                Constants.DIM_FEATURE_SET, Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
+                Constants.DIM_FEATURE_SET, new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

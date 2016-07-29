@@ -35,6 +35,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ExperimentUtil;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
@@ -113,7 +114,7 @@ public class WekaAblationDemo
 //                EmoticonRatio.class.getName(), NumberOfHashTags.class.getName(),
 //                NrOfTokens.class.getName());
         
-        Dimension<List<TcFeature>> dimFeatureSets =ExperimentUtil.getAblationTestFeatures(
+        Dimension<TcFeatureList> dimFeatureSets =ExperimentUtil.getAblationTestFeatures(
                 TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(EmoticonRatio.class),
                         TcFeatureFactory.create(NumberOfHashTags.class));

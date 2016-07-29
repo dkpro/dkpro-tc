@@ -25,6 +25,7 @@ import java.util.List;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminable;
 import org.dkpro.tc.api.features.TcFeature;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 
 public class ExperimentUtil
@@ -71,28 +72,28 @@ public class ExperimentUtil
      * @return a dimension with a list of feature extractor sets; named after the feature that is
      *         left out
      */
-    public static Dimension<List<TcFeature>> getAblationTestFeatures(TcFeature... features)
+    public static Dimension<TcFeatureList> getAblationTestFeatures(TcFeature... features)
     {
-        @SuppressWarnings("unchecked")
-        List<TcFeature>[] featureSets = (ArrayList<TcFeature>[]) new ArrayList[features.length + 1];
+        TcFeatureList [] featureSets = new TcFeatureList[features.length + 1];
 
         for (int i = 0; i < features.length; i++) {
-            List<TcFeature> featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
+            TcFeatureList featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
             featureSets[i] = featureNamesMinusOne;
         }
         // also add all features extractors
-        featureSets[features.length] = new ArrayList<TcFeature>(Arrays.asList(features));
+        featureSets[features.length] = new TcFeatureList(features);
 
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 featureSets);
 
         return dimFeatureSets;
     }
 
-    private static List<TcFeature> getFeatureNamesMinusOne(TcFeature[] names, int i)
+    private static TcFeatureList getFeatureNamesMinusOne(TcFeature[] names, int i)
     {
-        NamedArrayList<TcFeature> nameList = new NamedArrayList<TcFeature>(Arrays.asList(names));
-        nameList.setName(LEFTOUT_FE + names[i]);
+        
+        TcFeatureList nameList = new TcFeatureList(names);
+//        nameList.setName(LEFTOUT_FE + names[i]);
         nameList.remove(i);
         return nameList;
     }

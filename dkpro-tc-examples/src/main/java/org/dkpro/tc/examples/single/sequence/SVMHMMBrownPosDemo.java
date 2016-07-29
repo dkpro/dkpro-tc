@@ -38,6 +38,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
@@ -99,7 +100,6 @@ public class SVMHMMBrownPosDemo
         return results;
     }
 
-    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace(boolean trainTest,
             Dimension<List<String>> dimClassificationArgs)
                 throws ResourceInitializationException
@@ -107,9 +107,9 @@ public class SVMHMMBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = getDimReaders(trainTest);
 
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
                 Constants.DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfChars.class),
+                new TcFeatureList(TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
                                 LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
