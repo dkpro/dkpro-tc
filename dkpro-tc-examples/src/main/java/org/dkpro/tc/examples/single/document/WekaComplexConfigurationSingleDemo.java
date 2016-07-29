@@ -33,8 +33,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -126,15 +126,14 @@ public class WekaComplexConfigurationSingleDemo
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(LuceneNGram.class,
                                 LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                                 LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
                                 3)),
-                Arrays.asList(TcFeatureFactory.create(LuceneNGram.class,
+                new TcFeatureList(TcFeatureFactory.create(LuceneNGram.class,
                         LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
                         LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
@@ -148,8 +147,8 @@ public class WekaComplexConfigurationSingleDemo
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
-                dimFeatureSets, dimClassificationArgs,
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                dimClassificationArgs,
                 Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;

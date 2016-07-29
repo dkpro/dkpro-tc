@@ -33,8 +33,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.SimpleDkproTCReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -102,10 +102,9 @@ public class WekaSimpleDkproTCReaderDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureExtractors = Dimension
+        Dimension<TcFeatureList> dimFeatureExtractors = Dimension
                 .create(DIM_FEATURE_SET,
-                        Arrays.asList(
+                        new TcFeatureList(
                                 TcFeatureFactory.create(LuceneNGram.class, 
                                         LuceneNGram.PARAM_NGRAM_USE_TOP_K, "100",
                                         LuceneNGram.PARAM_NGRAM_MIN_N, "3",
