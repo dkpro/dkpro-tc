@@ -45,6 +45,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
@@ -99,9 +100,8 @@ public class LibsvmSaveAndLoadModelTest
         Dimension<List<Object>> dimClassificationArguments = Dimension
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "100"));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
                         LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
                         LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 

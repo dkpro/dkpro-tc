@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,8 +42,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
@@ -155,7 +154,6 @@ public class CRFSuiteSaveAndLoadModelTest
 
     }
 
-    @SuppressWarnings("unchecked")
     private ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
         throws ResourceInitializationException
     {
@@ -174,8 +172,8 @@ public class CRFSuiteSaveAndLoadModelTest
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(
                         TcFeatureFactory.create(LuceneCharacterNGram.class,
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 500,
                                 LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 1,
