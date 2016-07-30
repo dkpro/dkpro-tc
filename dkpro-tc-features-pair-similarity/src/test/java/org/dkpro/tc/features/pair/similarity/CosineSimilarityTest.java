@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -32,7 +31,6 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Test;
 

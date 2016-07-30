@@ -17,19 +17,19 @@
  ******************************************************************************/
 package org.dkpro.tc.features.spelling;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.dkpro.tc.features.spelling.SpellingErrorPOSRatioFeatureExtractor.FN_ART_ERROR_RATIO;
 import static org.dkpro.tc.features.spelling.SpellingErrorPOSRatioFeatureExtractor.FN_N_ERROR_RATIO;
 import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Set;
-
-import junit.framework.Assert;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,10 +38,7 @@ import org.junit.rules.TestName;
 import de.tudarmstadt.ukp.dkpro.core.jazzy.JazzyChecker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.spelling.SpellingErrorPOSRatioFeatureExtractor;
+import org.junit.Assert;
 
 public class SpellingErrorPOSRatioFeatureExtractorTest
 {

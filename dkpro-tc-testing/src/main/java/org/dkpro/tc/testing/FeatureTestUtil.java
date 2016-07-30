@@ -19,7 +19,7 @@ package org.dkpro.tc.testing;
 
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.MissingValue;
 

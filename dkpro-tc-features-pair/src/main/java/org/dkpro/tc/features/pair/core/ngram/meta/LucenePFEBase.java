@@ -17,17 +17,16 @@
  ******************************************************************************/
 package org.dkpro.tc.features.pair.core.ngram.meta;
 
-import java.util.Set;
-
 import static org.dkpro.tc.core.Constants.NGRAM_GLUE;
 
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import java.util.Set;
 
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public abstract class LucenePFEBase
 	extends LuceneFeatureExtractorBase
