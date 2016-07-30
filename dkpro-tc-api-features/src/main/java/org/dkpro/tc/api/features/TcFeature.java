@@ -33,6 +33,15 @@ public class TcFeature
     private Object[] params;
     private Class<? extends Resource> classOfFeat;
 
+    /**
+     * Creates a new feature instance
+     * @param classOfFeat
+     *        A feature extractor class
+     * @param id
+     *        A unique identification string for this feature 
+     * @param params
+     *        Configuration parameters for this feature extractor
+     */
     public TcFeature(Class<? extends Resource> classOfFeat, String id, Object[] params)
     {
         this.classOfFeat = classOfFeat;

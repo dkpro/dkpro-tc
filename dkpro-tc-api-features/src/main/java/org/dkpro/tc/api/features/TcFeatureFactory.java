@@ -25,8 +25,16 @@ import org.apache.uima.resource.Resource;
 
 public class TcFeatureFactory
 {
-    public static TcFeature create(
-            Class<? extends Resource> featureName, Object... parameters)
+    /**
+     * Creates a new instance of a TcFeature
+     * 
+     * @param featureName
+     *            The class of a feature extractor
+     * @param parameters
+     *            The configuration parameters for this feature extractor
+     * @return Configured feature which has a randomly assigned unique identification
+     */
+    public static TcFeature create(Class<? extends Resource> featureName, Object... parameters)
     {
 
         /*
@@ -40,11 +48,22 @@ public class TcFeatureFactory
 
         TcFeature tcFeature = new TcFeature(featureName, id, params.toArray());
         return tcFeature;
-        
+
     }
-    
-    public static TcFeature create(String id,
-            Class<? extends Resource> featureName, Object... parameters)
+
+    /**
+     * Creates a new instance of a TcFeature which allows the user to set an own id
+     * 
+     * @param id
+     *            The id of the feature which must be unique among all used features
+     * @param featureName
+     *            The class of the feature extractor that shall be instantiated
+     * @param parameters
+     *            The list of the parameters for this feature extractor
+     * @return A configured feature which is identified by a user provided identification string
+     */
+    public static TcFeature create(String id, Class<? extends Resource> featureName,
+            Object... parameters)
     {
 
         /*
@@ -54,7 +73,7 @@ public class TcFeatureFactory
         List<Object> params = getParameterAsString(parameters);
         params.add(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME);
         params.add(id);
-        
+
         TcFeature tcFeature = new TcFeature(featureName, id, params.toArray());
         return tcFeature;
     }

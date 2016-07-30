@@ -21,8 +21,11 @@ import java.util.ArrayList;
 
 import org.dkpro.lab.task.Discriminable;
 
-public class TcFeatureList extends ArrayList<TcFeature> implements Discriminable
+public class TcFeatureList
+    extends ArrayList<TcFeature>
+    implements Discriminable
 {
+    private String featureSetName=null;
 
     /**
      * 
@@ -31,25 +34,42 @@ public class TcFeatureList extends ArrayList<TcFeature> implements Discriminable
 
     public TcFeatureList(TcFeature... features)
     {
-        for(TcFeature f : features){
+        for (TcFeature f : features) {
             add(f);
         }
+    }
+
+    /**
+     * Allows setting an user-defined name which is used when {@link #getDiscriminatorValue()
+     * getDiscriminatorValue} is called by default the feature set name is a list of the names of
+     * the individual features
+     * 
+     * @param featureSetName
+     *            The name of the feature set
+     */
+    public void setFeatureSetName(String featureSetName)
+    {
+        this.featureSetName = featureSetName;
     }
 
     @Override
     public Object getDiscriminatorValue()
     {
-        StringBuilder sb = new StringBuilder();
+        if(featureSetName!=null){
+            return featureSetName;
+        }
         
+        StringBuilder sb = new StringBuilder();
+
         int size = this.size();
-        for(int i=0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             TcFeature tcFeature = get(i);
             sb.append(tcFeature.getDiscriminatorValue());
-            if(i+1 < size()){
+            if (i + 1 < size()) {
                 sb.append(", ");
             }
         }
-        
+
         return sb.toString();
     }
 

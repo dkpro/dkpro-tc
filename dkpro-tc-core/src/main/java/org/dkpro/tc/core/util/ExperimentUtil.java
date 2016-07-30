@@ -93,7 +93,7 @@ public class ExperimentUtil
     {
         
         TcFeatureList nameList = new TcFeatureList(names);
-//        nameList.setName(LEFTOUT_FE + names[i]);
+        nameList.setFeatureSetName(LEFTOUT_FE + names[i].getDiscriminatorValue());
         nameList.remove(i);
         return nameList;
     }
