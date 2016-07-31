@@ -33,8 +33,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -127,11 +127,14 @@ public class MekaComplexConfigurationMultiDemo
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
-                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 600,
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+                new TcFeatureList(
+                        TcFeatureFactory.create(NrOfTokens.class), 
+                        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 600,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, 
+                        LuceneNGram.PARAM_NGRAM_MAX_N, 3)
+                        ));
 
         // multi-label feature selection (Mulan specific options), reduces the feature set to 10
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();

@@ -38,8 +38,8 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -112,11 +112,15 @@ public class MekaSaveAndApplyModelMultilabelDemo
                 Arrays.asList(new String[] { MULAN.class.getName(), "-S", "RAkEL2", "-W",
                         RandomForest.class.getName() }));
 
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
-                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 100,
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class), 
+                                  TcFeatureFactory.create(LuceneNGram.class, 
+                                                          LuceneNGram.PARAM_NGRAM_USE_TOP_K, 100,
+                                                          LuceneNGram.PARAM_NGRAM_MIN_N, 1, 
+                                                          LuceneNGram.PARAM_NGRAM_MAX_N, 3)
+                                  )
+                );
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),

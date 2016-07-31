@@ -43,7 +43,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureList;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
@@ -255,10 +254,11 @@ public class LibsvmSaveAndLoadModelTest
         Dimension<List<Object>> dimClassificationArguments = Dimension
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "1000"));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create((LuceneCharacterNGram.class))));
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
+                                  TcFeatureFactory.create(LuceneCharacterNGram.class)
+                                  )
+                );
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

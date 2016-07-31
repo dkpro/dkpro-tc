@@ -251,9 +251,8 @@ public class LiblinearSaveAndLoadModelTest
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<TcFeature>> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                Arrays.asList(TcFeatureFactory.create(NrOfTokens.class),
+        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,
                                 LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
 
