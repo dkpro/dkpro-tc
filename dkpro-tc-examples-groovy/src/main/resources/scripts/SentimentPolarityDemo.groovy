@@ -70,7 +70,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    new TcFeautureList(
+    new TcFeatureList(
         TcFeatureFactory.create(QuestionsRatioFeatureExtractor.class),
         TcFeatureFactory.create(NrOfTokens.class),
         TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MAX_N, 3)
