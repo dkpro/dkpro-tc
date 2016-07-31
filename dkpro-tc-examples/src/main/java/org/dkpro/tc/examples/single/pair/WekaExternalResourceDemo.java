@@ -42,6 +42,7 @@ import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.weka.WekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -128,6 +129,7 @@ public class WekaExternalResourceDemo
                 WekaClassificationAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
+        batch.addReport(BatchTrainTestReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

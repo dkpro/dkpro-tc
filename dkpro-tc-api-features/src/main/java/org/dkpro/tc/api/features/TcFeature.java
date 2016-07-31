@@ -35,12 +35,13 @@ public class TcFeature
 
     /**
      * Creates a new feature instance
+     * 
      * @param classOfFeat
-     *        A feature extractor class
+     *            A feature extractor class
      * @param id
-     *        A unique identification string for this feature 
+     *            A unique identification string for this feature
      * @param params
-     *        Configuration parameters for this feature extractor
+     *            Configuration parameters for this feature extractor
      */
     public TcFeature(Class<? extends Resource> classOfFeat, String id, Object[] params)
     {
@@ -65,7 +66,13 @@ public class TcFeature
             desc.append("| ");
             for (int i = 0; i < params.length; i++) {
                 Object object = params[i];
-                desc.append(object.toString());
+                if (object instanceof ExternalResourceDescription) {
+                    ExternalResourceDescription erd = (ExternalResourceDescription) object;
+                    desc.append("ExtResDesc[" + erd.getName() + "]");
+                }
+                else {
+                    desc.append(object.toString());
+                }
                 if (i + 1 < params.length) {
                     desc.append(", ");
                 }
@@ -90,9 +97,10 @@ public class TcFeature
     {
         return fullFeatureName;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString()
+    {
         return (String) getDiscriminatorValue();
     }
 }
