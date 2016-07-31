@@ -41,6 +41,10 @@
   			de.tudarmstadt.ukp.dkpro.core.io.tei-asl
   		</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-api-features</artifactId>
+  	</dependency>
   </dependencies>
 	<build>
 		<plugins>
