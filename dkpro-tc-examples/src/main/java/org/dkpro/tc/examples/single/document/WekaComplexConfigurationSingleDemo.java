@@ -34,7 +34,7 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -126,14 +126,14 @@ public class WekaComplexConfigurationSingleDemo
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(LuceneNGram.class,
                                 LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                                 LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
                                 3)),
-                new TcFeatureList(TcFeatureFactory.create(LuceneNGram.class,
+                new TcFeatureSet(TcFeatureFactory.create(LuceneNGram.class,
                         LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
                         LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 

@@ -36,7 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -107,9 +107,9 @@ public class WekaExternalResourceDemo
                         CosineSimilarityResource.PARAM_NORMALIZATION,
                         NormalizationMode.L2.toString());
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
+                new TcFeatureSet(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
                         gstResource)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

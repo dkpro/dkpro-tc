@@ -25,7 +25,7 @@ import java.util.List;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminable;
 import org.dkpro.tc.api.features.TcFeature;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 
 public class ExperimentUtil
@@ -72,27 +72,27 @@ public class ExperimentUtil
      * @return a dimension with a list of feature extractor sets; named after the feature that is
      *         left out
      */
-    public static Dimension<TcFeatureList> getAblationTestFeatures(TcFeature... features)
+    public static Dimension<TcFeatureSet> getAblationTestFeatures(TcFeature... features)
     {
-        TcFeatureList [] featureSets = new TcFeatureList[features.length + 1];
+        TcFeatureSet [] featureSets = new TcFeatureSet[features.length + 1];
 
         for (int i = 0; i < features.length; i++) {
-            TcFeatureList featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
+            TcFeatureSet featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
             featureSets[i] = featureNamesMinusOne;
         }
         // also add all features extractors
-        featureSets[features.length] = new TcFeatureList(features);
+        featureSets[features.length] = new TcFeatureSet(features);
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 featureSets);
 
         return dimFeatureSets;
     }
 
-    private static TcFeatureList getFeatureNamesMinusOne(TcFeature[] names, int i)
+    private static TcFeatureSet getFeatureNamesMinusOne(TcFeature[] names, int i)
     {
         
-        TcFeatureList nameList = new TcFeatureList(names);
+        TcFeatureSet nameList = new TcFeatureSet(names);
         nameList.setFeatureSetName(LEFTOUT_FE + names[i].getDiscriminatorValue());
         nameList.remove(i);
         return nameList;

@@ -34,7 +34,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -105,9 +105,9 @@ public class WekaPairRegressionDemo
                 Constants.DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { SMOreg.class.getName() }));
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
+                new TcFeatureSet(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders),

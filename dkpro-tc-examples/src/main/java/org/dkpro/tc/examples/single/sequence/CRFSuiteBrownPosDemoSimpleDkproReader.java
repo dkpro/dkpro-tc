@@ -36,7 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
@@ -97,8 +97,8 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
                 asList(INCLUDE_PREFIX + "a02.xml"));
         dimReaders.put(DIM_READER_TEST, test);
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));

@@ -36,7 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.NERDemoReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -125,9 +125,9 @@ public class WekaNERUnitDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 Constants.DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(InitialCharacterUpperCase.class),
+                new TcFeatureSet(TcFeatureFactory.create(InitialCharacterUpperCase.class),
                         TcFeatureFactory.create(IsSurroundedByChars.class,
                                 IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"")));
 

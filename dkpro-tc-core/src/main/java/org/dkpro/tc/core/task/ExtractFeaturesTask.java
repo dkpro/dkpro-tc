@@ -50,7 +50,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.features.TcFeature;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -94,7 +94,7 @@ public class ExtractFeaturesTask
     @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
     @Discriminator(name = DIM_FEATURE_SET)
-    private TcFeatureList featureExtractors;
+    private TcFeatureSet featureExtractors;
 
     private boolean isTesting = false;
     // TODO Issue 121: this is already prepared, but not used

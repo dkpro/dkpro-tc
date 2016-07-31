@@ -38,7 +38,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.dkpro.tc.api.features.TcFeatureFactory
-import org.dkpro.tc.api.features.TcFeatureList
+import org.dkpro.tc.api.features.TcFeatureSet
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
  */
@@ -64,7 +64,7 @@ implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                         new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class)))
+                         new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class)))
 
     // ##### CV #####
     protected void runCrossValidation()

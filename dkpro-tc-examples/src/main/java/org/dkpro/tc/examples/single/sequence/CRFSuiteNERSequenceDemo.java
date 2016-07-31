@@ -35,7 +35,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.examples.io.NERDemoReader;
@@ -129,8 +129,8 @@ public class CRFSuiteNERSequenceDemo
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(NrOfChars.class),
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(InitialCharacterUpperCase.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

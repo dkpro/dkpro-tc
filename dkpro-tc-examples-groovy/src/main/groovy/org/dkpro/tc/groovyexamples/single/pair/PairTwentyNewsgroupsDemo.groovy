@@ -36,7 +36,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.weka.WekaClassificationAdapter
 import org.dkpro.tc.api.features.TcFeatureFactory
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 
 import weka.classifiers.functions.SMO
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer
@@ -93,7 +93,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-        new TcFeatureList(
+        new TcFeatureSet(
             TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)
         )
     )

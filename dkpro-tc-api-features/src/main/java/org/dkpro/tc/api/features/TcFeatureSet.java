@@ -21,19 +21,28 @@ import java.util.ArrayList;
 
 import org.dkpro.lab.task.Discriminable;
 
-public class TcFeatureList
+public class TcFeatureSet
     extends ArrayList<TcFeature>
     implements Discriminable
 {
-    private String featureSetName=null;
+    private String featureSetName = null;
 
     /**
      * 
      */
     private static final long serialVersionUID = 2065704241626247807L;
 
-    public TcFeatureList(TcFeature... features)
+    public TcFeatureSet(TcFeature... features)
     {
+        for (TcFeature f : features) {
+            add(f);
+        }
+    }
+
+    public TcFeatureSet(String featureSetName, TcFeature... features)
+    {
+        this.featureSetName = featureSetName;
+
         for (TcFeature f : features) {
             add(f);
         }
@@ -52,13 +61,18 @@ public class TcFeatureList
         this.featureSetName = featureSetName;
     }
 
+    public void addFeature(TcFeature f)
+    {
+        add(f);
+    }
+
     @Override
     public Object getDiscriminatorValue()
     {
-        if(featureSetName!=null){
+        if (featureSetName != null) {
             return featureSetName;
         }
-        
+
         StringBuilder sb = new StringBuilder();
 
         int size = this.size();
@@ -76,8 +90,7 @@ public class TcFeatureList
     @Override
     public Object getActualValue()
     {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Method is not implemented");
     }
 
 }

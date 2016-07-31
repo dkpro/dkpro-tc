@@ -42,7 +42,7 @@ import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList
+import org.dkpro.tc.api.features.TcFeatureSet
 /**
  * This example is the same as {@link BrownUnitPosDemo}, except that it demonstrates how to
  * pass an external resource to the feature extractor.  (In this case we pass a dummy
@@ -72,7 +72,7 @@ implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
-    DIM_FEATURE_SET, new TcFeatureList(
+    DIM_FEATURE_SET, new TcFeatureSet(
         TcFeatureFactory.create(NrOfTokens.class, NrOfTokensExternalResourceUFE.PARAM_DUMMY_RESOURCE, dummyResource)
     ))
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,

@@ -33,7 +33,7 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -112,9 +112,9 @@ public class WekaTwitterSentimentDemo
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
         
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(EmoticonRatio.class),
                         TcFeatureFactory.create(NumberOfHashTags.class)));
         

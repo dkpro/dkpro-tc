@@ -36,7 +36,7 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureList;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
@@ -135,8 +135,8 @@ public class WekaBrownUnitPosDemo
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
 
-        Dimension<TcFeatureList> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class),
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
