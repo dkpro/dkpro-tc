@@ -18,15 +18,9 @@
  */
 package org.dkpro.tc.groovyexamples.single.pair;
 
-import java.io.File;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-
-import org.dkpro.tc.groovyexamples.single.pair.PairTwentyNewsgroupsDemo;
 import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test just ensures that the experiment runs without throwing

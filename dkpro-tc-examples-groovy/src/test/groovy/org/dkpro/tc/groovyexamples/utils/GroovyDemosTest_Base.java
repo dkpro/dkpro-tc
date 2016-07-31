@@ -24,8 +24,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-import org.dkpro.tc.groovyexamples.single.document.TwentyNewsgroupsDemoExtended;
-
 public class GroovyDemosTest_Base
 {
     @Before

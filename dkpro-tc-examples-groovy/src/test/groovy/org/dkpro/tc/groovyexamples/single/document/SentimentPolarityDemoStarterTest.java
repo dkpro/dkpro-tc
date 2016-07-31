@@ -43,6 +43,6 @@ public class SentimentPolarityDemoStarterTest extends GroovyDemosTest_Base
     public void testGroovyTrainTest()
         throws Exception
     {
-        groovyExperiment.main(null);
+        SentimentPolarityDemoStarter.main(null);
     }
 }
