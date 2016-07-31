@@ -37,8 +37,9 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory
+import org.dkpro.tc.api.features.TcFeatureFactory
+import org.dkpro.tc.api.features.TcFeatureList
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
  */
