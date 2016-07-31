@@ -14,7 +14,7 @@ import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.impl.DefaultBatchTask
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.api.features.TcFeatureFactory
-import org.dkpro.tc.api.features.TcFeatureList
+import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.core.GroovyExperiment
 import org.dkpro.tc.examples.io.MovieReviewCorpusReader
@@ -71,12 +71,12 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    new TcFeatureList(
+    new TcFeatureSet(
         TcFeatureFactory.create(QuestionsRatioFeatureExtractor.class),
         TcFeatureFactory.create(NrOfTokens.class),
         TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MAX_N, 3)
     ),
-    new TcFeatureList(
+    new TcFeatureSet(
         TcFeatureFactory.create(QuestionsRatioFeatureExtractor.class),
         TcFeatureFactory.create(NrOfTokens.class),
         TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 5000 ,LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MAX_N, 3)
