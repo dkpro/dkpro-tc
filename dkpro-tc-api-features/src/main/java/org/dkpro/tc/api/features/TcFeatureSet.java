@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import org.dkpro.lab.task.Discriminable;
 
 public class TcFeatureSet
-    extends ArrayList<TcFeature>
+    extends ArrayList<TcFeature> // Lists are just so much more convenient iterating and so on...so
+                                 // the set is actually implemented as list
     implements Discriminable
 {
     private String featureSetName = null;
