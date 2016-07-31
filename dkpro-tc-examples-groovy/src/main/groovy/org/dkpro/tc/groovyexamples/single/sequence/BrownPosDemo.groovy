@@ -22,7 +22,6 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
-import org.apache.batik.svggen.font.table.FeatureList
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
 import org.apache.uima.fit.factory.CollectionReaderFactory
@@ -50,23 +49,22 @@ implements Constants {
     def NUM_FOLDS = 2
     def String corpusFilePathTrain = "src/main/resources/data/brown_tei/"
     def experimentName = "BrownPosDemo"
-    
+
     def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
-        BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-        BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]
+    BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+    BrownCorpusReader.PARAM_PATTERNS, [
+        INCLUDE_PREFIX + "*.xml",
+        INCLUDE_PREFIX + "*.xml.gz"]
     );
 
     def dimReaders = Dimension.createBundle("readers", [
         readerTrain: trainreader,
-        ])
+    ])
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
-    def dimFeatureSets = Dimension.create(
-    DIM_FEATURE_SET, 
-        new FeatureList(
-            TcFeatureFactory.create(NrOfTokens.class)
-    ))
+    def dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                         new TcFeatureList(TcFeatureFactory.create(NrOfTokens.class)))
 
     // ##### CV #####
     protected void runCrossValidation()
@@ -102,7 +100,7 @@ implements Constants {
 
     public static void main(String[] args)
     {
-		DemoUtils.setDkproHome(BrownPosDemo.getSimpleName());
+        DemoUtils.setDkproHome(BrownPosDemo.getSimpleName());
         new BrownPosDemo().runCrossValidation()
     }
 }
