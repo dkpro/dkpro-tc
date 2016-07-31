@@ -90,4 +90,9 @@ public class TcFeature
     {
         return fullFeatureName;
     }
+    
+    @Override
+    public String toString(){
+        return (String) getDiscriminatorValue();
+    }
 }
