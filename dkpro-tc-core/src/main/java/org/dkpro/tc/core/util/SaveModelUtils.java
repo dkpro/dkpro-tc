@@ -493,10 +493,6 @@ public class SaveModelUtils
         return new File(tcModelLocation.getAbsolutePath() + "/" + name).exists();
     }
 
-    /**
-     * Loads the java classes of the feature that are provided with the model and adds them to the
-     * classpath
-     */
     public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
             String outputPath, String[] featureExtractorClassNames,
             List<Object> convertedParameters)
@@ -533,9 +529,6 @@ public class SaveModelUtils
                 convertedParameters.toArray());
     }
 
-    /**
-     * Converts objects by calling <code>toString()</code> for each parameter
-     */
     public static List<Object> convertParameters(List<Object> parameters)
     {
         List<Object> convertedParameters = new ArrayList<Object>();
@@ -550,7 +543,7 @@ public class SaveModelUtils
         return convertedParameters;
     }
 
-    /**
+    /*
      * Produces a resource manager that is used when creating the engine which is aware of the class
      * files located in the model folder
      */

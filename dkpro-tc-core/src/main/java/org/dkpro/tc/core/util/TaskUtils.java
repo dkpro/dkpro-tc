@@ -81,7 +81,7 @@ public class TaskUtils
      * @param path
      *            path to the config file
      * @return the JSONObject containing all config parameters
-     * @throws IOException
+     * @throws IOException in case of an error
      */
     public static JSONObject getConfigFromJSON(String path)
         throws IOException
@@ -99,7 +99,7 @@ public class TaskUtils
      *            model output file
      * @param serializableObject
      *            the object to serialize
-     * @throws IOException
+     * @throws IOException in case of an error
      */
     public static void serialize(File serializedFile, Object serializableObject)
         throws IOException
@@ -136,9 +136,9 @@ public class TaskUtils
      * Loads serialized Object from disk. File can be uncompressed, gzipped or bz2-compressed.
      * Compressed files must have a .gz or .bz2 suffix.
      *
-     * @param serializedFile
+     * @param serializedFile a file
      * @return the deserialized Object
-     * @throws IOException
+     * @throws IOException in case of an error
      */
     @SuppressWarnings({ "unchecked" })
     public static <T> T deserialize(File serializedFile)
@@ -176,46 +176,6 @@ public class TaskUtils
         return (T) deserializedObject;
     }
 
-    // /**
-    // * Instantiates feature extractors from a list of fully qualified class names
-    // *
-    // * @param extractorNames
-    // * a list of fully qualified class names
-    // * @return a list of SimpleFeatureExtractor
-    // * @throws ClassNotFoundException
-    // * @throws IllegalAccessException
-    // * @throws InstantiationException
-    // */
-    // public static List<FeatureExtractor> getExtractorsByName(List<String> extractorNames)
-    // throws ClassNotFoundException, IllegalAccessException, InstantiationException
-    // {
-    // List<FeatureExtractor> extractors = new ArrayList<FeatureExtractor>();
-    // for (String name : extractorNames) {
-    // extractors.add((FeatureExtractor) Class.forName(name).newInstance());
-    // }
-    // return extractors;
-    // }
-
-//    /**
-//     * Get a list of MetaCollector classes from a list of feature extractors.
-//     */
-//    public static Set<Class<? extends MetaCollector>> getMetaCollectorsFromFeatureExtractors(
-//            List<String> featureSet)
-//                throws InstantiationException, IllegalAccessException, ClassNotFoundException
-//    {
-//        Set<Class<? extends MetaCollector>> metaCollectorClasses = new HashSet<Class<? extends MetaCollector>>();
-//
-//        for (String element : featureSet) {
-//            FeatureExtractorResource_ImplBase featureExtractor = (FeatureExtractorResource_ImplBase) Class
-//                    .forName(element).newInstance();
-//            if (featureExtractor instanceof MetaDependent) {
-//                MetaDependent metaDepFeatureExtractor = (MetaDependent) featureExtractor;
-//                metaCollectorClasses.addAll(metaDepFeatureExtractor.getMetaCollectorClasses());
-//            }
-//        }
-//
-//        return metaCollectorClasses;
-//    }
 
     /**
      * Get a list of required type names.
@@ -247,11 +207,6 @@ public class TaskUtils
         return requiredTypes;
     }
 
-    /**
-     * @param featureExtractorClassNames
-     * @return A fully configured feature extractor connector
-     * @throws ResourceInitializationException
-     */
     public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
             boolean applyWeighting, List<String> featureFilter, List<ExternalResourceDescription> aFeatureExtractors)
@@ -262,11 +217,6 @@ public class TaskUtils
                 Collections.<String> emptyList(), applyWeighting, aFeatureExtractors);
     }
 
-    /**
-     * @param featureExtractorClassNames
-     * @return A fully configured feature extractor connector
-     * @throws ResourceInitializationException
-     */
     public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
             String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
             List<String> filters, boolean applyWeighting, List<ExternalResourceDescription> extractorResources)
@@ -293,6 +243,15 @@ public class TaskUtils
     /**
      * Should not be called directly, but always from a connector (UIMA context with parameters
      * initialized)
+     * 
+     * @param featureMode the feature mode
+     * @param featureExtractors feature extractors
+     * @param jcas  a jcas
+     * @param developerMode developer mode
+     * @param addInstanceId instance id
+     * @param unit the target
+     * @return an instance
+     * @throws TextClassificationException in case of errors
      */
     public static Instance getSingleInstanceUnit(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean developerMode,
@@ -325,8 +284,6 @@ public class TaskUtils
     /**
      * Should not be called directly, but always from a connector (UIMA context with parameters
      * initialized)
-     * 
-     * @throws Exception
      */
     public static Instance getSingleInstance(String featureMode,
             FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean developerMode,
@@ -636,11 +593,6 @@ public class TaskUtils
         return stringOutcomes;
     }
 
-    /**
-     * Gets the instance weight.
-     * 
-     * @return the instance weight
-     */
     public static double getWeight(JCas jcas, AnnotationFS unit)
         throws TextClassificationException
     {

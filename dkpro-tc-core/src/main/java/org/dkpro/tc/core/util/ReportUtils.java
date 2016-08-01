@@ -92,10 +92,6 @@ public class ReportUtils
     /**
      * Converts a bipartition array into a list of class names. Parameter arrays must have the same
      * length
-     * 
-     * @param labels
-     * @param classNames
-     * @return
      */
     public static String doubleArrayToClassNames(int[] labels, String[] classNames,
             Character separatorChar)
@@ -119,9 +115,6 @@ public class ReportUtils
 
     /**
      * Adds results from one fold to the overall CV results
-     * 
-     * @param results
-     * @param cvResults
      */
     public static void addToResults(Map<String, Double> results, Map<String, List<Double>> cvResults)
     {
@@ -137,10 +130,6 @@ public class ReportUtils
         }
     }
 
-    /**
-     * @param prcData
-     * @return
-     */
     public static DefaultXYDataset createXYDataset(List<double[][]> prcData)
     {
         DefaultXYDataset dataset = new DefaultXYDataset();
@@ -219,8 +208,6 @@ public class ReportUtils
 
     /**
      * Looks into the {@link FlexTable} and outputs general performance numbers if available
-     * 
-     * @param table
      */
     public static String getPerformanceOverview(FlexTable<String> table)
     {
