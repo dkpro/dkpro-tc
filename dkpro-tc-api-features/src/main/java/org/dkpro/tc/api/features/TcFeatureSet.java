@@ -62,11 +62,6 @@ public class TcFeatureSet
         this.featureSetName = featureSetName;
     }
 
-    public void addFeature(TcFeature f)
-    {
-        add(f);
-    }
-
     @Override
     public Object getDiscriminatorValue()
     {
