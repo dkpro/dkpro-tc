@@ -23,17 +23,11 @@ import java.util.Map;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Feature extractors that depend on {@link MetaCollector}s should implemnt this interface. By doing
+ * Feature extractors that depend on {@link MetaCollector}s should implement this interface. By doing
  * so they declare what kind of {@link MetaCollector}s are used in the MetaInfoTask.
  */
 public interface MetaDependent
 {
-    /**
-     * @param name 
-     * @param parameterSettings 
-     * @param name 
-     * @return A list of meta collector classes that a "meta dependent" collector depdends on
-     */
     List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
         throws ResourceInitializationException;
 }
