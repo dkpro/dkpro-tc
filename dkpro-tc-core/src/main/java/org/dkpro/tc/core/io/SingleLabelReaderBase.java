@@ -67,7 +67,7 @@ public abstract class SingleLabelReaderBase
      * @param jcas
      *            the JCas to add the annotation to
      * @return a double between zero and one
-     * @throws CollectionException
+     * @throws CollectionException if an error occurs
      */
 	public double getTextClassificationOutcomeWeight(JCas jcas)
 			throws CollectionException {

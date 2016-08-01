@@ -102,7 +102,7 @@ public class ExperimentUtil
      * A named list which can be used to label values which are lists (e.g. a list of feature
      * extractors) in dimensions.
      * 
-     * @param <T>
+     * @param <T> type of array
      */
     @SuppressWarnings("serial")
     public static class NamedArrayList<T>

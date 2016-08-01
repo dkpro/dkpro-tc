@@ -23,57 +23,47 @@ public interface PairReader
 {
 
     /**
-     * @return ID of the collection the first document was sampled from
-     * @throws TextClassificationException
+     * ID of the collection the first document was sampled from
      */
     public String getCollectionId1() throws TextClassificationException;
     /**
-     * @return ID of the collection the second document was sampled from
-     * @throws TextClassificationException
+     * ID of the collection the second document was sampled from
      */
     public String getCollectionId2() throws TextClassificationException;  
 
     /**
-     * @return ID of the first document
-     * @throws TextClassificationException
+     * ID of the first document
      */
     public String getDocumentId1() throws TextClassificationException;
     /**
-     * @return ID of the second document
-     * @throws TextClassificationException
+     * ID of the second document
      */
     public String getDocumentId2() throws TextClassificationException;
 
     /**
-     * @return Title of the first document
-     * @throws TextClassificationException
+     * Title of the first document
      */
     public String getTitle1() throws TextClassificationException;
     /**
-     * @return Title of the second document
-     * @throws TextClassificationException
+     * Title of the second document
      */
     public String getTitle2() throws TextClassificationException;
 
     /**
-     * @return Language of the first document
-     * @throws TextClassificationException
+     * Language of the first document
      */
     public String getLanguage1() throws TextClassificationException;
     /**
-     * @return Language of the second document
-     * @throws TextClassificationException
+     * Language of the second document
      */
     public String getLanguage2() throws TextClassificationException;
 
     /**
-     * @return The text of the first document in the pair
-     * @throws TextClassificationException
+     * The text of the first document in the pair
      */
     public String getText1() throws TextClassificationException;
     /**
-     * @return The text of the second document in the pair
-     * @throws TextClassificationException
+     * The text of the second document in the pair
      */
     public String getText2() throws TextClassificationException;
 

@@ -63,7 +63,7 @@ public class ReportUtils
      * Creates a confusion matrix by collecting the results from the overall CV run stored in
      * {@code tempM}
      * 
-     * @param tempM
+     * @param tempM temporary map
      * @param actualLabelsList
      *            the label powerset transformed list of actual/true labels
      * @param predictedLabelsList
