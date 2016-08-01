@@ -48,7 +48,7 @@ import weka.core.Instances;
 
 /**
  * 
- * UIMA analysis engine that is used in the {@link WekaExtractFeaturesAndPredictTask} to apply the
+ * UIMA analysis engine that is used in the WekaExtractFeaturesAndPredictTask to apply the
  * feature extractors on each CAS, and classify them using a previously trained model.
  */
 public class WekaExtractFeaturesAndPredictConnector

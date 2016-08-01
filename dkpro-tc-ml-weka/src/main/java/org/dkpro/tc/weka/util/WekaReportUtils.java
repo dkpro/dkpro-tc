@@ -37,13 +37,6 @@ public class WekaReportUtils
     /**
      * Adds results from one fold to the overall CV confusion matrix. Also updates actual and
      * predicted label lists for the label powerset transformation
-     * 
-     * @param actualLabelsList
-     *            not null
-     * @param predictedLabelsList
-     *            not null
-     * @param tempM
-     *            not null
      */
     public static void updateTempMLConfusionMatrix(MultilabelResult r, String[] classNames,
             List<String> actualLabelsList, List<String> predictedLabelsList,
@@ -78,7 +71,7 @@ public class WekaReportUtils
         }
     }
 
-    /**
+    /*
      * Creates data for average PR curve diagram over a threshold. <br>
      * See:
      * 

@@ -111,15 +111,6 @@ public class WekaUtils
      * unseen in the training data will be deleted from the test data. Class labels from the
      * training data unseen in the test data will be added to the test data. If training and test
      * class labels are equal, nothing will be done.
-     *
-     * @param trainData
-     *            training data
-     * @param testData
-     *            test data
-     * @param multilabel
-     *            whether this is a multi-label classification problem
-     * @return the adapted test data
-     * @throws Exception
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Instances makeOutcomeClassesCompatible(Instances trainData, Instances testData,
@@ -263,17 +254,8 @@ public class WekaUtils
                 false);
     }
 
-    /**
+    /*
      * Converts a feature store to a list of instances. Single-label case.
-     *
-     * TODO: maybe rename to "featureStore2ArffFile"
-     *
-     * @param outputFile
-     * @param instanceList
-     * @param useDenseInstances
-     * @param isRegressionExperiment
-     * @param useWeights
-     * @throws Exception
      */
     public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment, boolean useWeights)
@@ -361,16 +343,7 @@ public class WekaUtils
     }
 
     /**
-     * /** Converts a feature store to a list of instances. Multi-label case.
-     *
-     * TODO: maybe rename to "featureStore2ArffFile"
-     *
-     * @param outputFile
-     * @param featureStore
-     * @param useDenseInstances
-     * @param useWeights
-     *            use instance weights
-     * @throws Exception
+     * Converts a feature store to a list of instances. Multi-label case.
      */
     public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
             boolean useDenseInstances, boolean useWeights)
@@ -447,16 +420,6 @@ public class WekaUtils
     /**
      * Converts a TC instance object into a Meka instance object, compatible with the given
      * attribute set and class labels.
-     *
-     * @param instance
-     *            tc instance object
-     * @param trainingData 
-     *            will be used to determine header information for the instance, 
-     *            class labels need to be first attributes
-     * @param allClassLabels
-     *            names of all classes
-     * @return a Meka instance object, without any class values assigned
-     * @throws Exception
      */
     public static weka.core.Instance tcInstanceToMekaInstance(Instance instance,
             Instances trainingData, List<String> allClassLabels)
@@ -511,17 +474,6 @@ public class WekaUtils
     /**
      * Converts a TC instance object into a Weka instance object, compatible with the given
      * attribute set and class labels.
-     *
-     * @param instance
-     *            tc instance object
-     * @param trainingData
-     *            the instances which will be used to create the header information of the
-     *            resulting instance, class attribute must be at the end of attributes
-     * @param allClasses
-     *            class label names
-     * @param isRegressionExperiment
-     * @return a Weka instance object, class value is set to missing
-     * @throws Exception
      */
     public static weka.core.Instance tcInstanceToWekaInstance(Instance instance,
             Instances trainingData, List<String> allClasses, boolean isRegressionExperiment)
@@ -611,13 +563,6 @@ public class WekaUtils
 
     /**
      * Evaluates a given single-label classifier on given train and test sets.
-     *
-     * @param cl
-     *            single-label classifier, needs to be trained beforehand
-     * @param trainData
-     * @param testData
-     * @return
-     * @throws Exception
      */
     public static Evaluation getEvaluationSinglelabel(Classifier cl, Instances trainData,
             Instances testData)
@@ -630,15 +575,6 @@ public class WekaUtils
 
     /**
      * Evaluates a given multi-label classifier on given train and test sets.
-     *
-     * @param cl
-     *            multi-label classifier, needs not be trained beforehand
-     * @param trainData
-     * @param testData
-     * @param threshold
-     *            Meka threshold option
-     * @return
-     * @throws Exception
      */
     public static Result getEvaluationMultilabel(Classifier cl, Instances trainData,
             Instances testData, String threshold)
@@ -659,7 +595,7 @@ public class WekaUtils
      *            single-label classifier, needs to be trained beforehand, needs to be compatible
      *            with the test set trained classifier
      * @return instances object with additional attribute storing the predictions
-     * @throws Exception
+     * @throws Exception an exception
      */
     public static Instances getPredictionInstancesSingleLabel(Instances testData, Classifier cl)
         throws Exception
@@ -708,7 +644,7 @@ public class WekaUtils
      * @param thresholdArray
      *            an array of double, one for each label
      * @return instances object with additional attribute storing the predictions
-     * @throws Exception
+     * @throws Exception an exception
      */
     public static Instances getPredictionInstancesMultiLabel(Instances testData, Classifier cl,
             double[] thresholdArray)
@@ -749,7 +685,7 @@ public class WekaUtils
      * @param data
      *            data set with or without instanceId attribute
      * @return the data set without instanceId attribute
-     * @throws Exception
+     * @throws Exception an exception
      */
     public static Instances removeInstanceId(Instances data, boolean multilabel)
         throws Exception
@@ -786,7 +722,7 @@ public class WekaUtils
      * @param oldData
      *            data set with or without instanceId attribute
      * @return a data set with or without instanceId attribute
-     * @throws Exception
+     * @throws Exception an exception
      */
     public static Instances addInstanceId(Instances newData, Instances oldData, boolean isMultilabel)
         throws Exception
@@ -835,8 +771,8 @@ public class WekaUtils
      * @param multiLabel
      *            whether this arff file contains single- or multi-label outcome
      * @return instances with class attribute set
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws FileNotFoundException if file is not found
+     * @throws IOException if an exception occurs
      */
     public static Instances getInstances(File instancesFile, boolean multiLabel)
         throws FileNotFoundException, IOException
@@ -877,9 +813,6 @@ public class WekaUtils
         return trainData;
     }
 
-    /**
-     * @return The offset of the instanceId attribute within the weka instance
-     */
     public static int getInstanceIdAttributeOffset(Instances data)
     {
         int attOffset = 1;
@@ -928,7 +861,7 @@ public class WekaUtils
      * @param data
      *            training data to use for automatically determining the threshold
      * @return an array with thresholds for each label
-     * @throws Exception
+     * @throws Exception an exception
      */
     public static double[] getMekaThreshold(String threshold, Result r, Instances data)
         throws Exception
@@ -955,15 +888,7 @@ public class WekaUtils
     }
 
     /**
-     *
      * Feature selection using Weka.
-     *
-     * @param trainData
-     *            training data
-     * @param featureSearcher
-     * @param attributeEvaluator
-     * @return a feature selector
-     * @throws Exception
      */
     public static AttributeSelection singleLabelAttributeSelection(Instances trainData,
             List<String> featureSearcher, List<String> attributeEvaluator)
@@ -988,10 +913,6 @@ public class WekaUtils
     /**
      * Converts the Meka-specific instances format to Mulan-specific instances. Hierarchical
      * relationships among labels cannot be expressed.
-     *
-     * @param instances
-     * @return
-     * @throws InvalidDataFormatException
      */
     public static MultiLabelInstances convertMekaInstancesToMulanInstances(Instances instances)
         throws InvalidDataFormatException
@@ -1008,11 +929,6 @@ public class WekaUtils
     /**
      * Applies a filter to reduce the dimension of attributes and reorders them to be used within
      * Meka
-     *
-     * @param trainData
-     * @param removeFilter
-     * @return a dataset to be used with Meka
-     * @throws Exception
      */
     public static Instances applyAttributeSelectionFilter(Instances trainData, Remove removeFilter)
         throws Exception
@@ -1108,8 +1024,6 @@ public class WekaUtils
 	
     /**
      * Feature selection using Mulan.
-     *
-     * @throws TextClassificationException
      */
 	public static Remove featureSelectionMultilabel(TaskContext aContext, Instances trainData,
 			List<String> attributeEvaluator, String labelTransformationMethod, int numLabelsToKeep) throws TextClassificationException {
@@ -1177,11 +1091,6 @@ public class WekaUtils
     
     /**
      * Convenience method to get file described in an AdapterNameEntry in a folder of the current context 
-     * @param aContext
-     * @param key
-     * @param entry
-     * @param mode
-     * @return
      */
     public static File getFile(TaskContext aContext, String key, AdapterNameEntries entry, AccessMode mode)
     {
@@ -1194,11 +1103,6 @@ public class WekaUtils
 
     /**
      * Convenience method to get file described by a string value in a folder of the current context 
-     * @param aContext
-     * @param key
-     * @param entry
-     * @param mode
-     * @return
      */
     public static File getFile(TaskContext aContext, String key, String entry, AccessMode mode)
     {

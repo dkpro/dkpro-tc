@@ -32,7 +32,7 @@ public class MultilabelResult implements Serializable {
 	 * @param goldstandard the gold standard as integer matrix; labels x instances
 	 * @param predictions the predictions as double matrix; labels x instances
 	 * @param bipartitionThreshold a threshold to create bipartition from ranking
-	 * @throws TextClassificationException
+	 * @throws TextClassificationException an exception
 	 */
 	public MultilabelResult(int[][] goldstandard, double[][] predictions, String bipartitionThreshold) throws TextClassificationException{
 		this.actuals = goldstandard;

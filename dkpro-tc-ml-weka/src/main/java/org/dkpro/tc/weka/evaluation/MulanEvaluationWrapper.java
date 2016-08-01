@@ -179,7 +179,7 @@ public class MulanEvaluationWrapper
      * @param m
      *            the measure
      * @return the updated measure
-     * @throws IOException
+     * @throws IOException an exception
      */
     public static Measure getMulanMeasure(double[][] predictions, boolean[][] actuals,
             double[] thresholds, Measure m)
