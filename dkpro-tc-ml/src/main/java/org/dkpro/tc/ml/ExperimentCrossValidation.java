@@ -17,6 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
+import static org.dkpro.tc.core.Constants.DIM_CROSS_VALIDATION_MANUAL_FOLDS;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
+import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
+import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
+import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TEST_DATA;
+import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +41,6 @@ import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import static org.dkpro.tc.core.Constants.*;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
@@ -233,7 +240,7 @@ public class ExperimentCrossValidation
 
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
-//        testTask.addReport(BatchBasicResultReport.class);
+        testTask.addReport(BatchBasicResultReport.class);
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
