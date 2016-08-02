@@ -38,6 +38,7 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
+import org.dkpro.tc.ml.report.BatchBasicResultReport;
 
 /**
  * Crossvalidation setup
@@ -232,6 +233,7 @@ public class ExperimentCrossValidation
 
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
+        testTask.addReport(BatchBasicResultReport.class);
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
