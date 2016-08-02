@@ -233,7 +233,7 @@ public class ExperimentCrossValidation
 
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
-        testTask.addReport(BatchBasicResultReport.class);
+//        testTask.addReport(BatchBasicResultReport.class);
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);

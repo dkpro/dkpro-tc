@@ -129,7 +129,7 @@ public class ExperimentTrainTest
 
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
-        testTask.addReport(BatchBasicResultReport.class);
+//        testTask.addReport(BatchBasicResultReport.class);
 
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
