@@ -19,8 +19,7 @@
 package org.dkpro.tc.examples.model;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,11 +96,11 @@ public class WekaSaveAndLoadModelDocumentPairRegression
         assertTrue(classifierFile.exists());
 
         File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertTrue(metaOverride.exists());
+        assertFalse(metaOverride.exists());
 
         File extractorOverride = new File(
                 modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertTrue(extractorOverride.exists());
+        assertFalse(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());

@@ -19,6 +19,7 @@
 package org.dkpro.tc.examples.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -97,16 +98,16 @@ public class WekaSaveAndLoadModelDocumentRegression
         regressionExecuteSaveModel(paramSpace, modelFolder);
         regressionLoadModel(modelFolder);
 
-        // verify that all expected files have been created
-        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        assertTrue(classifierFile.exists());
-
         File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertTrue(metaOverride.exists());
+        assertFalse(metaOverride.exists());
 
         File extractorOverride = new File(
                 modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertTrue(extractorOverride.exists());
+        assertFalse(extractorOverride.exists());
+
+        // verify that all expected files have been created
+        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+        assertTrue(classifierFile.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
         assertTrue(modelMetaFile.exists());
