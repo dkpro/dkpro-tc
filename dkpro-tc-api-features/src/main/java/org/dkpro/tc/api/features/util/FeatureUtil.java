@@ -37,6 +37,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
+import org.dkpro.tc.api.features.TcFeature;
+
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
 /**
@@ -119,4 +121,38 @@ public class FeatureUtil
 	  // Get resource instance
 	  return res;
 	}
+	
+	   @SuppressWarnings("unchecked")
+	    public static <T extends Resource> T createResource(TcFeature feature)
+	            throws ResourceInitializationException, ResourceAccessException  {
+	      // Configure external resource
+	       
+	      ExternalResourceDescription desc = feature.getActualValue();
+	    
+	      // Configure resource manager
+	      ResourceManagerConfiguration cfg = UIMAFramework.getResourceSpecifierFactory()
+	              .createResourceManagerConfiguration();
+	    
+	      ExternalResourceFactory.bindExternalResource(cfg, "rootResource", desc);
+	    
+	      // Instantiate resource manager (internally instantiates resources)
+	      final ResourceManager manager = new ResourceManager_impl();
+	      manager.initializeExternalResources(cfg, "/", null);
+	      
+
+	      T res = (T) manager.getResource("/rootResource");
+	      
+	      // Initialize nested resources
+	      UimaContextAdmin ctx = new RootUimaContext_impl() {
+	          @Override
+	        public ResourceManager getResourceManager() {
+	              return manager;
+	          };
+	      };
+	      ExternalResourceInitializer.initialize(res, ctx);
+	              
+	      // Get resource instance
+	      return res;
+	    }
+	
 }
