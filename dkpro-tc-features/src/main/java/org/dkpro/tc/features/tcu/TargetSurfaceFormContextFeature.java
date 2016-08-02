@@ -27,7 +27,8 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
- * A feature that allows to provide context surface information as feature.
+ * A feature that allows to provide the context surface text as feature value. This feature does
+ * only work with machine classifier that can deal with <b>string</b> feature values
  */
 public class TargetSurfaceFormContextFeature
     extends TcuLookUpTable
@@ -37,10 +38,11 @@ public class TargetSurfaceFormContextFeature
     protected boolean useLowerCase;
 
     /**
-     * If zero is provided the surface form of the current target is set as feature value. By
-     * setting positive or negative indices local context can be set i.e. -1 will set the text of
-     * the previous target annotation that occurs before the annotation for which the feature
-     * extractor is currently executed. Likewise +1 will set the text of the following target annotation.
+     * Specifies which target's text is set as feature value for the current target. If zero is
+     * provided the surface form of the current target is set as feature value. By setting positive
+     * or negative indices the local context can be set as feature i.e. -1 will set the text of the
+     * previous target annotation that occurs before the annotation for which the feature extractor
+     * is currently executed. Likewise +1 will set the text of the following target annotation.
      */
     public static final String PARAM_RELATIVE_TARGET_ANNOTATION_INDEX = "targetAnnotation";
     @ConfigurationParameter(name = PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, mandatory = true)
@@ -88,15 +90,17 @@ public class TargetSurfaceFormContextFeature
     {
         if (idx == -1) {
             return BEG_OF_SEQUENCE;
-        }else if(idx < -1){
+        }
+        else if (idx < -1) {
             return OUT_OF_BOUNDARY;
         }
         else if (idx == units.size()) {
             return END_OF_SEQUENCE;
-        }else if(idx > units.size()){
+        }
+        else if (idx > units.size()) {
             return OUT_OF_BOUNDARY;
         }
-        
+
         return lowerCase(units.get(idx).getCoveredText());
     }
 
