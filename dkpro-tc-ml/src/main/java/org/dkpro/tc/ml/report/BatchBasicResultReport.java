@@ -67,11 +67,11 @@ public class BatchBasicResultReport
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Properties pa = new SortedKeyProperties();
 
-        if (learningMode.equals(LM_REGRESSION) || learningMode.equals(LM_MULTI_LABEL)) {
+        if (learningMode.equals(LM_REGRESSION)) {
             Double meanAbs = get(MeanAbsoluteError.class, createEvaluator);
             pa.setProperty("MeanAbsoluteError:", "" + meanAbs);
         }
-        else if (learningMode.equals(LM_SINGLE_LABEL)) {
+        else if (learningMode.equals(LM_SINGLE_LABEL) || learningMode.equals(LM_MULTI_LABEL)) {
             Double acc = get(Accuracy.class, createEvaluator);
             Double microF1 = get(MicroFScore.class, createEvaluator);
             Double macroF1 = get(MacroFScore.class, createEvaluator);
