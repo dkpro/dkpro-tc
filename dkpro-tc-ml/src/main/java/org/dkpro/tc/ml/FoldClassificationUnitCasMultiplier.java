@@ -201,7 +201,7 @@ public class FoldClassificationUnitCasMultiplier
 
     private void assignNewId(JCas copyJCas)
     {
-        JCasId jcasId = JCasUtil.selectSingle(jCas, JCasId.class);
+        JCasId jcasId = JCasUtil.selectSingle(copyJCas, JCasId.class);
         jcasId.setId(subCASCounter);
     }
 
