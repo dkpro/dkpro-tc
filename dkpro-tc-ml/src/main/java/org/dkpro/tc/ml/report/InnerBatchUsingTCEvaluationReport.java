@@ -19,9 +19,15 @@ package org.dkpro.tc.ml.report;
 
 import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -58,7 +64,8 @@ public class InnerBatchUsingTCEvaluationReport
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), ID_OUTCOME_KEY);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
+                        ID_OUTCOME_KEY);
                 Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
                 overallOutcome.add(id2outcome);
                 for (Object key : discriminatorsMap.keySet()) {
@@ -77,37 +84,38 @@ public class InnerBatchUsingTCEvaluationReport
         }
         getContext().storeBinary(Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter(prop));
 
-        File folder = getContext().getFolder(
-                Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-        FileOutputStream fos = new FileOutputStream(new File(folder,
-                Constants.SERIALIZED_ID_OUTCOME_KEY));
+        File folder = getContext().getFolder(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
+        FileOutputStream fos = new FileOutputStream(
+                new File(folder, Constants.SERIALIZED_ID_OUTCOME_KEY));
         ObjectOutputStream outputStream = new ObjectOutputStream(fos);
         outputStream.writeObject(overallOutcome);
         outputStream.close();
-        
+
         // write out a homogenized human readable file
-        String homogenizedOverallOutcomes = overallOutcome.homogenizeAggregatedFile();
-        String[] homogenizedLines = homogenizedOverallOutcomes.split("\n");
-        
-        Properties props = new Properties();
-        String header = "";
-        //header = header + homogenizedLines[0] + "\n" + homogenizedLines[1];       
-        for (int i = 0; i < homogenizedLines.length; i++) {
-        	if (i <= 1){
-        		header = header + homogenizedLines[i];     
-        		if (i == 0){
-        			header = header + "\n";
-        		}   		        		       		
-        	}
-        	else{
-        		// line might contain several '=', split at the last one
-        		int idxMostRightHandEqual = homogenizedLines[i].lastIndexOf("=");
-                String id = homogenizedLines[i].substring(0, idxMostRightHandEqual);
-                String evaluationData = homogenizedLines[i].substring(idxMostRightHandEqual + 1);
-        		props.setProperty(id, evaluationData); 
-        	}
-		}        
-        getContext().storeBinary(ID_HOMOGENIZED_OUTCOME_KEY,
-                new PropertiesAdapter(props, header));
+        File homogenizedOverallOutcomes = overallOutcome.homogenizeAggregatedFile();
+
+        BufferedReader tmpFileReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(homogenizedOverallOutcomes), "utf-8"));
+        Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(
+                        getContext().getFile(ID_HOMOGENIZED_OUTCOME_KEY, AccessMode.READWRITE)),
+                "utf-8"));
+
+        String line = null;
+        int idx=0;
+        while ((line = tmpFileReader.readLine()) != null) {
+            if(idx <= 1){
+                writer.append("#"+line+"\n");
+                idx++;
+                continue;
+            }
+            int idxMostRightHandEqual = line.lastIndexOf("=");
+            String id = line.substring(0, idxMostRightHandEqual);
+            String evaluationData = line.substring(idxMostRightHandEqual + 1);
+            writer.append(id + "=" + evaluationData);
+            writer.append("\n");
+        }
+        writer.close();
+        tmpFileReader.close();
     }
 }
