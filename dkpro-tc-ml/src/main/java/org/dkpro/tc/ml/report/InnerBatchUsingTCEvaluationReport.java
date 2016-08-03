@@ -94,6 +94,16 @@ public class InnerBatchUsingTCEvaluationReport
         // write out a homogenized human readable file
         File homogenizedOverallOutcomes = overallOutcome.homogenizeAggregatedFile();
 
+        writeHomogenizedOutcome(homogenizedOverallOutcomes);
+    }
+
+    private void writeHomogenizedOutcome(File homogenizedOverallOutcomes) throws Exception
+    {
+        if(homogenizedOverallOutcomes == null){
+            //not single or multi label modoe
+            return;
+        }
+        
         BufferedReader tmpFileReader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(homogenizedOverallOutcomes), "utf-8"));
         Writer writer = new BufferedWriter(new OutputStreamWriter(
@@ -116,6 +126,6 @@ public class InnerBatchUsingTCEvaluationReport
             writer.append("\n");
         }
         writer.close();
-        tmpFileReader.close();
+        tmpFileReader.close();        
     }
 }
