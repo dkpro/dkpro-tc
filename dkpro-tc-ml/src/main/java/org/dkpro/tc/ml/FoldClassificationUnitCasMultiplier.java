@@ -76,7 +76,7 @@ public class FoldClassificationUnitCasMultiplier
         throws AnalysisEngineProcessException
     {
         jCas = aJCas;
-        subCASCounter = 0;
+//        subCASCounter = 0; //do not reinitialize
         unitCounter = 0;
         seqCounter = 0;
         totalNum = 0;
