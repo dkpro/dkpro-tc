@@ -33,7 +33,7 @@ public class AssignIdConnector
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        getLogger().log(Level.INFO, "--- processing CAS with id [" + jcasId + "] ---");
+        getLogger().log(Level.INFO, "--- validating CAS with id [" + jcasId + "] ---");
 
         boolean exists = JCasUtil.exists(aJCas, JCasId.class);
         if (!exists) {
