@@ -40,6 +40,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.SaveModelUtils;
@@ -69,6 +70,9 @@ public class LoadModelConnectorLiblinear
 
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
+
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
+    private String learningMode;
 
     private Model liblinearModel;
     private Map<Integer, String> outcomeMapping;
@@ -145,15 +149,20 @@ public class LoadModelConnectorLiblinear
 
             Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
 
-            List<TextClassificationOutcome> outcomes = new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
+            List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                    JCasUtil.select(jcas, TextClassificationOutcome.class));
             Feature[][] testInstances = predictionProblem.x;
             for (int i = 0; i < testInstances.length; i++) {
                 Feature[] instance = testInstances[i];
                 Double prediction = Linear.predict(liblinearModel, instance);
 
-                String predictedLabel = outcomeMapping.get(prediction.intValue());
-
-                outcomes.get(i).setOutcome(predictedLabel);
+                if (learningMode.equals(Constants.LM_REGRESSION)) {
+                    outcomes.get(i).setOutcome(prediction.toString());
+                }
+                else {
+                    String predictedLabel = outcomeMapping.get(prediction.intValue());
+                    outcomes.get(i).setOutcome(predictedLabel);
+                }
             }
 
         }
