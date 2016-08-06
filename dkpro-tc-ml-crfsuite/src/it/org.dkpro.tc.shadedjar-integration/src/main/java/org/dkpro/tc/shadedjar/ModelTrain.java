@@ -35,9 +35,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.features.tcu.CurrentUnit;
-import org.dkpro.tc.features.tcu.NextUnit;
-import org.dkpro.tc.features.tcu.PrevUnit;
+import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
@@ -91,11 +89,14 @@ public class ModelTrain
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(
-                        TcFeatureFactory.create(PrevUnit.class),TcFeatureFactory.create(CurrentUnit.class), TcFeatureFactory.create(NextUnit.class),
-                        TcFeatureFactory.create(LuceneCharacterNGram.class,LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
-                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
-                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 250,
-                                LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)
+                        TcFeatureFactory.create(TargetSurfaceFormContextFeature.class, TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -1),
+                        TcFeatureFactory.create(TargetSurfaceFormContextFeature.class, TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, 0),
+                        TcFeatureFactory.create(TargetSurfaceFormContextFeature.class, TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, +1),
+                        TcFeatureFactory.create(LuceneCharacterNGram.class,
+                                                LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
+                                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 250,
+                                                LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)
                          ));
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
