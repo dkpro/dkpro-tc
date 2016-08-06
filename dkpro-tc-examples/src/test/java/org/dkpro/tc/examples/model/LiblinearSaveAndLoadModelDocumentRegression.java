@@ -85,7 +85,7 @@ public class LiblinearSaveAndLoadModelDocumentRegression
      * This test case trains a regression model on scored essay texts
      */
     @Test
-    public void documentRoundTripWekaRegression()
+    public void documentRoundTripLiblinear()
         throws Exception
     {
 
