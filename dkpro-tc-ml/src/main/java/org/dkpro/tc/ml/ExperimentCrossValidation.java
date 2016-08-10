@@ -250,7 +250,7 @@ public class ExperimentCrossValidation
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
         crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
-        crossValidationTask.setType(crossValidationTask.getType() + experimentName);
+        crossValidationTask.setType(crossValidationTask.getType().replaceAll("\\$[0-9]+", "-") + experimentName);
         crossValidationTask.addTask(metaTask);
         crossValidationTask.addTask(extractFeaturesTrainTask);
         crossValidationTask.addTask(extractFeaturesTestTask);
