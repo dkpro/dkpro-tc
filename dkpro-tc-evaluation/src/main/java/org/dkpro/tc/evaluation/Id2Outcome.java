@@ -360,7 +360,6 @@ public class Id2Outcome
      * 
      * @param singleOutcomes
      * @param labelsList
-     * @return
      * @throws UnsupportedEncodingException
      */
     private void generateOutcomesText(Writer writer, Set<SingleOutcome> singleOutcomes, List<String> labelsList)
