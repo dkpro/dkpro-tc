@@ -77,6 +77,9 @@ public class LoadModelConnectorLibsvm
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
 
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
+    private String learningMode;
+
     private svm_model model;
 
     private Map<String, String> integer2OutcomeMapping;
@@ -136,18 +139,27 @@ public class LoadModelConnectorLibsvm
                     .newInstance();
 
             File tempFile = createInputFileFromFeatureStore(jcas, featureStore);
-            
+
             File prediction = runPrediction(tempFile);
-            
+
             List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
             List<String> writtenPredictions = FileUtils.readLines(prediction);
 
-            checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,writtenPredictions);
+            checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,
+                    writtenPredictions);
 
             for (int i = 0; i < outcomes.size(); i++) {
-                String val = writtenPredictions.get(i).replaceAll("\\.0", "");
-                String pred = integer2OutcomeMapping.get(val);
-                outcomes.get(i).setOutcome(pred);
+
+                if (learningMode.equals(Constants.LM_REGRESSION)) {
+                    String val = writtenPredictions.get(i);
+                    outcomes.get(i).setOutcome(val);
+                }
+                else {
+                    String val = writtenPredictions.get(i).replaceAll("\\.0", "");
+                    String pred = integer2OutcomeMapping.get(val);
+                    outcomes.get(i).setOutcome(pred);
+                }
+
             }
 
         }
@@ -159,8 +171,7 @@ public class LoadModelConnectorLibsvm
 
     private List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas)
     {
-        return new ArrayList<>(
-                JCasUtil.select(jcas, TextClassificationOutcome.class));
+        return new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
     }
 
     private void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(
@@ -169,10 +180,11 @@ public class LoadModelConnectorLibsvm
         if (outcomes.size() != readLines.size()) {
             throw new IllegalStateException("Expected [" + outcomes.size()
                     + "] predictions but were [" + readLines.size() + "]");
-        }        
+        }
     }
 
-    private File runPrediction(File tempFile) throws Exception
+    private File runPrediction(File tempFile)
+        throws Exception
     {
         File prediction = FileUtil.createTempFile("libsvmPrediction", "libsvm");
         LibsvmPredict predictor = new LibsvmPredict();
@@ -186,20 +198,21 @@ public class LoadModelConnectorLibsvm
         return prediction;
     }
 
-    private File createInputFileFromFeatureStore(JCas jcas, FeatureStore featureStore) throws Exception
+    private File createInputFileFromFeatureStore(JCas jcas, FeatureStore featureStore)
+        throws Exception
     {
         File tempFile = FileUtil.createTempFile("libsvm", ".tmp_libsvm");
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
 
-        List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                true, featureStore.supportsSparseFeatures());
+        List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
+                featureStore.supportsSparseFeatures());
         for (Instance i : inst) {
             featureStore.addInstance(i);
         }
 
         for (Instance i : featureStore.getInstances()) {
-            bw.write(OUTCOME_PLACEHOLDER); 
+            bw.write(OUTCOME_PLACEHOLDER);
             for (Feature f : i.getFeatures()) {
                 if (!sanityCheckValue(f)) {
                     continue;
@@ -210,7 +223,7 @@ public class LoadModelConnectorLibsvm
             bw.write("\n");
         }
         bw.close();
-        
+
         return tempFile;
     }
 
