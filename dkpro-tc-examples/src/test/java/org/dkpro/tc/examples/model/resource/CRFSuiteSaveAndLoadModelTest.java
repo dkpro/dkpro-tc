@@ -79,28 +79,38 @@ public class CRFSuiteSaveAndLoadModelTest
     @Before
     public void setup()
     {
-
-        postags.add("AT");
         postags.add("NN");
-        postags.add("PPS");
-        postags.add("VBG");
-        postags.add("HVD");
-        postags.add("pct");
-        postags.add("VBN");
-        postags.add("IN");
-        postags.add("AT");
-        postags.add("NN");
-        postags.add("pct");
-        postags.add("DT");
-        postags.add("TO");
-        postags.add("NP");
-        postags.add("VB");
-        postags.add("CC");
         postags.add("JJ");
-        postags.add("AP");
-        postags.add("PPS");
+        postags.add("NP");
+        postags.add("DTS");
         postags.add("BEDZ");
+        postags.add("HV");
+        postags.add("PPO");
+        postags.add("DT");
         postags.add("NNS");
+        postags.add("PPS");
+        postags.add("JJT");
+        postags.add("ABX");
+        postags.add("MD");
+        postags.add("DOD");
+        postags.add("VBD");
+        postags.add("VBG");
+        postags.add("QL");
+        postags.add("pct");
+        postags.add("CC");
+        postags.add("VBN");
+        postags.add("NPg");
+        postags.add("IN");
+        postags.add("WDT");
+        postags.add("BEN");
+        postags.add("VB");
+        postags.add("BER");
+        postags.add("AP");
+        postags.add("RB");
+        postags.add("CS");
+        postags.add("AT");
+        postags.add("HVD");
+        postags.add("TO");
     }
 
     @After
