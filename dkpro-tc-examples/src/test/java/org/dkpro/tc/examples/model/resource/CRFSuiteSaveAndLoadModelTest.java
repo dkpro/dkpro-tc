@@ -1,4 +1,5 @@
 /**
+
  * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
@@ -16,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.model;
+package org.dkpro.tc.examples.model.resource;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -63,6 +64,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
+/**
+ * This demo demonstrates the usage of the sequence classifier CRFsuite which uses Conditional
+ * Random Fields (CRF).
+ */
 public class CRFSuiteSaveAndLoadModelTest
     implements Constants
 {
@@ -93,6 +98,7 @@ public class CRFSuiteSaveAndLoadModelTest
         postags.add("VB");
         postags.add("CC");
         postags.add("JJ");
+        postags.add("AP");
         postags.add("PPS");
         postags.add("BEDZ");
         postags.add("NNS");
@@ -118,14 +124,16 @@ public class CRFSuiteSaveAndLoadModelTest
 
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
         assertTrue(classifierFile.exists());
-        
-        File parameterFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
+
+        File parameterFile = new File(
+                modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
         assertTrue(parameterFile.exists());
-        
+
         File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
         assertTrue(metaOverride.exists());
-        
-        File extractorOverride = new File(modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+
+        File extractorOverride = new File(
+                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
         assertTrue(extractorOverride.exists());
 
         File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
@@ -178,6 +186,13 @@ public class CRFSuiteSaveAndLoadModelTest
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 500,
                                 LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 1,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3),
+                // This is the only model store/load demo at the moment that makes use of a
+                // resources in the file system which is loaded - please keep the Brown cluster
+                // feature in here
+                // to ensure that this functionality is covered by a test case :)
+                TcFeatureFactory.create(BrownClusterFeature.class,
+                        BrownClusterFeature.PARAM_BROWN_CLUSTERS_LOCATION,
+                        "src/test/resources/brownCluster/enTweetBrownC1000F40"),
                 TcFeatureFactory.create(NrOfChars.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -221,7 +236,6 @@ public class CRFSuiteSaveAndLoadModelTest
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for (TextClassificationOutcome o : outcomes) {
             String label = o.getOutcome();
-            System.out.println(label);
             assertTrue(postags.contains(label));
         }
     }
@@ -261,7 +275,6 @@ public class CRFSuiteSaveAndLoadModelTest
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for (TextClassificationOutcome o : outcomes) {
-            System.out.println(o.getOutcome());
             assertTrue(postags.contains(o.getOutcome()));
         }
     }
