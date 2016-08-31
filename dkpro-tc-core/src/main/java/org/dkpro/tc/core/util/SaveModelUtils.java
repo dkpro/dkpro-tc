@@ -464,7 +464,6 @@ public class SaveModelUtils
         return (TCMachineLearningAdapter) classObj.newInstance();
     }
 
-
     public static List<Object> initParameters(File tcModelLocation)
         throws IOException
     {
@@ -491,35 +490,6 @@ public class SaveModelUtils
     private static boolean isExistingFilePath(File tcModelLocation, String name)
     {
         return new File(tcModelLocation.getAbsolutePath() + "/" + name).exists();
-    }
-
-    public static List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures(
-            String outputPath, String[] featureExtractorClassNames,
-            List<Object> convertedParameters)
-                throws ResourceInitializationException
-    {
-
-        List<ExternalResourceDescription> extractorResources = new ArrayList<ExternalResourceDescription>();
-        try {
-            File classFile = new File(outputPath + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
-            URLClassLoader urlClassLoader = new URLClassLoader(
-                    new URL[] { classFile.toURI().toURL() });
-
-            for (String featureExtractor : featureExtractorClassNames) {
-
-                Class<? extends Resource> resource = urlClassLoader.loadClass(featureExtractor)
-                        .asSubclass(Resource.class);
-                ExternalResourceDescription resourceDescription = createExternalResource(resource,
-                        convertedParameters);
-                extractorResources.add(resourceDescription);
-
-            }
-            urlClassLoader.close();
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-        return extractorResources;
     }
 
     static ExternalResourceDescription createExternalResource(Class<? extends Resource> resource,
@@ -584,6 +554,10 @@ public class SaveModelUtils
 
             List<Object> idRemovedParameters = filterId(parameters);
             String id = getId(parameters);
+
+            idRemovedParameters = addModelPathAsPrefixIfParameterIsExistingFile(idRemovedParameters,
+                    tcModelLocation.getAbsolutePath());
+
             TcFeature feature = TcFeatureFactory.create(id, feClass, idRemovedParameters.toArray());
             ExternalResourceDescription exRes = feature.getActualValue();
 
@@ -593,9 +567,9 @@ public class SaveModelUtils
                 continue;
             }
 
-            Map<String, String> overrides = loadOverrides(tcModelLocation,META_COLLECTOR_OVERRIDE);
+            Map<String, String> overrides = loadOverrides(tcModelLocation, META_COLLECTOR_OVERRIDE);
             configureOverrides(tcModelLocation, exRes, overrides);
-            overrides = loadOverrides(tcModelLocation,META_EXTRACTOR_OVERRIDE);
+            overrides = loadOverrides(tcModelLocation, META_EXTRACTOR_OVERRIDE);
             configureOverrides(tcModelLocation, exRes, overrides);
 
             erd.add(exRes);
@@ -606,9 +580,30 @@ public class SaveModelUtils
         return erd;
     }
 
+    private static List<Object> addModelPathAsPrefixIfParameterIsExistingFile(
+            List<Object> idRemovedParameters, String modelPath)
+    {
+        List<Object> out = new ArrayList<>();
 
-    private static void configureOverrides(File tcModelLocation,
-            ExternalResourceDescription exRes, Map<String, String> overrides)
+        for (int i = 0; i < idRemovedParameters.size(); i++) {
+            if (i % 2 == 0) { // those are keys, keys are no surely no file paths
+                out.add(idRemovedParameters.get(i));
+                continue;
+            }
+            if (valueExistAsFileOrFolderInTheFileSystem(
+                    modelPath + "/" + idRemovedParameters.get(i))) {
+                out.add(modelPath + "/" + idRemovedParameters.get(i));
+            }
+            else {
+                out.add(idRemovedParameters.get(i));
+            }
+        }
+
+        return out;
+    }
+
+    private static void configureOverrides(File tcModelLocation, ExternalResourceDescription exRes,
+            Map<String, String> overrides)
                 throws IOException
     {
         // We assume for the moment that we only have primitive analysis engines for meta
@@ -643,8 +638,7 @@ public class SaveModelUtils
     private static Map<String, String> loadOverrides(File tcModelLocation, String overrideFile)
         throws IOException
     {
-        List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile),
-                "utf-8");
+        List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile), "utf-8");
         Map<String, String> overrides = new HashMap<>();
 
         for (String s : lines) {
