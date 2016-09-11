@@ -19,17 +19,20 @@ package org.dkpro.tc.ml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
-
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 
 /**
@@ -54,6 +57,7 @@ public abstract class Experiment_ImplBase
     public void initialize(TaskContext aContext)
     {
         super.initialize(aContext);
+        addConversionServiceEntries(aContext);
 
         try {
             if (getPreprocessing() == null) {
@@ -67,6 +71,31 @@ public abstract class Experiment_ImplBase
         }
 
         init();
+    }
+
+    private void addConversionServiceEntries(TaskContext aContext)
+    {
+        
+        ParameterSpace pSpace = getParameterSpace();
+        Dimension<?>[] dimensions = pSpace.getDimensions();
+        for (Dimension<?> d : dimensions) {
+            if (d.getName().equals("readers")) {
+                addConversionForCollectionReader(aContext, d);
+            }
+        }        
+    }
+
+    private void addConversionForCollectionReader(TaskContext aContext, Dimension<?> d)
+    {
+        @SuppressWarnings("rawtypes")
+        Map readers = (Map) d.next();
+        for (Object k : readers.keySet()) {
+            CollectionReaderDescription crd = (CollectionReaderDescription) readers.get(k);
+            String description = DiscriminableNameConverter
+                    .getCollectionReaderDescription(crd);
+            aContext.getConversionService().registerDiscriminable(crd, description);
+        }
+        
     }
 
     protected abstract void init()
