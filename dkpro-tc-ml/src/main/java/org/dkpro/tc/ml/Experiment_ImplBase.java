@@ -87,6 +87,9 @@ public abstract class Experiment_ImplBase
 
     private void addConversionForCollectionReader(TaskContext aContext, Dimension<?> d)
     {
+        if(!d.hasNext()){
+            return;
+        }
         @SuppressWarnings("rawtypes")
         Map readers = (Map) d.next();
         for (Object k : readers.keySet()) {
