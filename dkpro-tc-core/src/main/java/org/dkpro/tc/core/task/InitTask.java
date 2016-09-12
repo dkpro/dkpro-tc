@@ -30,7 +30,6 @@ import static org.dkpro.tc.core.Constants.PART_ONE;
 import static org.dkpro.tc.core.Constants.PART_TWO;
 
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +42,11 @@ import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.Discriminable;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
-import org.dkpro.tc.core.io.ReaderInvocationHandler;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
@@ -114,7 +111,7 @@ public class InitTask
                         new IllegalStateException("readerTrain is null"));
             }
 
-            readerDesc = createDiscriminableReader(readerTrain);
+            readerDesc = readerTrain;
         }
         else {
             if (readerTest == null) {
@@ -122,20 +119,10 @@ public class InitTask
                         new IllegalStateException("readerTest is null"));
             }
 
-            readerDesc = createDiscriminableReader(readerTest);
+            readerDesc = readerTest;
         }
 
         return readerDesc;
-    }
-
-    private CollectionReaderDescription createDiscriminableReader(
-            CollectionReaderDescription reader)
-    {
-        // use a dynamic proxy to inject a Discriminable interface
-        return (CollectionReaderDescription) Proxy.newProxyInstance(
-                reader.getClass().getClassLoader(),
-                new Class<?>[] { CollectionReaderDescription.class, Discriminable.class },
-                new ReaderInvocationHandler(reader));
     }
 
     // what should actually be done in this task
