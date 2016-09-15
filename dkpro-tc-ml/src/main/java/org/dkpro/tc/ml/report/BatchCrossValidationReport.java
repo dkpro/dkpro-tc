@@ -57,6 +57,13 @@ public class BatchCrossValidationReport
 
         FlexTable<String> table = FlexTable.forClass(String.class);
 
+        Map<String, String> properties2 = getAttributes();
+        for(String k : properties2.keySet()){
+            System.out.println(k + " " + properties2.get(k));
+        }
+        int a=0;
+        a++;
+        
         for (TaskContextMetadata subcontext : getSubtasks()) {
             // FIXME this is a hack
             String name = ExperimentCrossValidation.class.getSimpleName();
