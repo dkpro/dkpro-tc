@@ -94,7 +94,7 @@ public class ExperimentTrainTest
         initTaskTest.setPreprocessing(getPreprocessing());
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
-        initTaskTrain.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
+        initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();

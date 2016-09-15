@@ -58,8 +58,9 @@ public class BatchTrainTestReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            // FIXME this is a bad hack
-            if (subcontext.getType().contains("TestTask")) {
+            
+            if(ReportUtil.isMachineLearningAdapterTask(store, subcontext.getId())){
+            
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);

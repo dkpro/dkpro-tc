@@ -17,20 +17,49 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.ml.Experiment_ImplBase;
 
 public class ReportUtil
 {
-    public static TcTaskType getTaskType(Map<String, String> map){
-        
+    public static TcTaskType getTaskType(Map<String, String> map)
+    {
+
         String string = map.get(Experiment_ImplBase.TC_TASK_TYPE);
-        if(string == null){
+        if (string == null) {
             return TcTaskType.NO_TYPE;
         }
-        
+
         return TcTaskType.valueOf(string);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static HashMap<String, String> loadAttributes(StorageService store, String contextId)
+        throws IOException
+    {
+        File attributes = store.locateKey(contextId, TaskBase.ATTRIBUTES_KEY);
+
+        Properties p = new Properties();
+        FileInputStream fis = new FileInputStream(attributes);
+        p.load(fis);
+        fis.close();
+        return new HashMap<String, String>((Map) p);
+    }
+
+    public static boolean isMachineLearningAdapterTask(StorageService store, String id)
+        throws IOException
+    {
+        HashMap<String, String> loadAttributes = loadAttributes(store, id);
+        TcTaskType taskType = ReportUtil.getTaskType(loadAttributes);
+        return taskType == TcTaskType.MACHINE_LEARNING_ADAPTER;
     }
 
 }
