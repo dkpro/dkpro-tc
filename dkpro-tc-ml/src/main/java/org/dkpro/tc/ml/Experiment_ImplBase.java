@@ -52,6 +52,8 @@ public abstract class Experiment_ImplBase
     protected TCMachineLearningAdapter mlAdapter;
 
     Log log = LogFactory.getLog(Experiment_ImplBase.class);
+    
+    public static final String TC_TASK_TYPE = "TcTaskType";
 
     @Override
     public void initialize(TaskContext aContext)
