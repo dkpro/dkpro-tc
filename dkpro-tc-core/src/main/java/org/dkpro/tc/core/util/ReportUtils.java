@@ -37,22 +37,24 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-
 //import meka.core.Result;
 //import mulan.evaluation.measure.MicroPrecision;
 //import mulan.evaluation.measure.MicroRecall;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.text.StrTokenizer;
+import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.ChartUtil;
 import org.dkpro.lab.reporting.FlexTable;
+import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StreamWriter;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.core.Constants;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
 
 /**
  * Utility methods needed in reports
@@ -344,4 +346,50 @@ public class ReportUtils
 		}
     	throw new TextClassificationException(discriminatorName + " not found in discriminators set.");
     }
+    
+    public static Map<String,String> getDiscriminatorsForContext(StorageService store, String contextId, String discriminatorsKey)
+    {
+        return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
+    }
+
+    public static void writeExcelAndCSV(TaskContext context, String contextLabel, FlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
+    {
+        StorageService store = context.getStorageService();
+        context.getLoggingService().message(contextLabel,
+                ReportUtils.getPerformanceOverview(table));
+        // Excel cannot cope with more than 255 columns
+        if (table.getColumnIds().length <= 255) {
+            context.storeBinary(evalFileName + "_compact" + suffixExcel,
+                    table.getExcelWriter());
+        }
+        context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
+        table.setCompact(false);
+        // Excel cannot cope with more than 255 columns
+        if (table.getColumnIds().length <= 255) {
+            context.storeBinary(evalFileName + suffixExcel, table.getExcelWriter());
+        }
+        context.storeBinary(evalFileName + suffixCsv, table.getCsvWriter());
+
+        // output the location of the batch evaluation folder
+        // otherwise it might be hard for novice users to locate this
+        File dummyFolder = store.locateKey(context.getId(), "dummy");
+        // TODO can we also do this without creating and deleting the dummy folder?
+        context.getLoggingService().message(contextLabel,
+                "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
+        dummyFolder.delete();        
+    }
+
+    public static Map<String, String> clearDiscriminatorsByExcludePattern(
+            Map<String, String> discriminatorsMap, List<String> discriminatorsToExclude)
+    {
+        Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
+
+        for (String disc : discriminatorsMap.keySet()) {
+            if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
+                cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+            }
+        }
+        return cleanedDiscriminatorsMap;
+    }
+
 }
