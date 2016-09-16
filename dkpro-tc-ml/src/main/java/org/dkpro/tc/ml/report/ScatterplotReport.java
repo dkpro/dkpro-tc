@@ -38,7 +38,7 @@ public class ScatterplotReport
     {
     	
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (subcontext.getLabel().startsWith("ExperimentCrossValidation")) 
+            if (TaskTypeIdentificationUtil.isCrossValidationTask(getContext().getStorageService(), subcontext.getId())) 
             {    
 		        File id2outcomeFile = getContext().getStorageService().locateKey(
 		        		subcontext.getId(), Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
@@ -51,7 +51,7 @@ public class ScatterplotReport
 		
 		        getContext().storeBinary("scatterplot.pdf", renderer);
 	        }
-            else if (subcontext.getLabel().startsWith("WekaTestTask"))
+            else if (TaskTypeIdentificationUtil.isMachineLearningAdapterTask(getContext().getStorageService(), subcontext.getId()))
             {    
 		        File id2outcomeFile = getContext().getStorageService().locateKey(
 		        		subcontext.getId(), Constants.ID_OUTCOME_KEY);

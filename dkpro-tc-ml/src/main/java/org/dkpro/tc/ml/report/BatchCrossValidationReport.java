@@ -28,13 +28,11 @@ import org.dkpro.lab.reporting.FlexTable;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.TaskContextMetadata;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
@@ -58,7 +56,7 @@ public class BatchCrossValidationReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if(ReportUtil.isCrossValidationTask(store, subcontext.getId())){
+            if(TaskTypeIdentificationUtil.isCrossValidationTask(store, subcontext.getId())){
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(), Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter()).getMap();
                 
                 File fileToEvaluate = store.locateKey(subcontext.getId(), 

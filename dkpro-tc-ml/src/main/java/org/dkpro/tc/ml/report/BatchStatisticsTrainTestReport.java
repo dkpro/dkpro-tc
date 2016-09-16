@@ -62,8 +62,7 @@ public class BatchStatisticsTrainTestReport
         boolean experimentHasBaseline = false;
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-        	// FIXME this is a bad hack
-            if (subcontext.getType().contains("TestTask")) {
+            if (TaskTypeIdentificationUtil.isMachineLearningAdapterTask(getContext().getStorageService(), subcontext.getId())) {
   
 
                 Map<String, String> discriminatorsMap = getContext().getStorageService().retrieveBinary(subcontext.getId(),

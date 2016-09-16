@@ -59,7 +59,7 @@ public class BatchTrainTestReport
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             
-            if(ReportUtil.isMachineLearningAdapterTask(store, subcontext.getId())){
+            if(TaskTypeIdentificationUtil.isMachineLearningAdapterTask(store, subcontext.getId())){
             
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();

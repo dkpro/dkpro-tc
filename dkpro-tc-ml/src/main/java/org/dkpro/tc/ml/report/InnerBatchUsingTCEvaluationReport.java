@@ -59,8 +59,7 @@ public class InnerBatchUsingTCEvaluationReport
         Properties prop = new Properties();
         Set<Object> discriminatorsToExclude = new HashSet<Object>();
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            // FIXME this is a bad hack
-            if (subcontext.getType().contains("TestTask")) {
+            if (TaskTypeIdentificationUtil.isMachineLearningAdapterTask(store, subcontext.getId())) {
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
