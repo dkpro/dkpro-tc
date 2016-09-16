@@ -46,6 +46,7 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.ml.report.BatchBasicResultReport;
+import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
  * Crossvalidation setup
@@ -120,6 +121,7 @@ public class ExperimentCrossValidation
         initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
         initTask.setType(initTask.getType() + "-" + experimentName);
+        initTask.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
 
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
@@ -210,6 +212,7 @@ public class ExperimentCrossValidation
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
+        metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
@@ -218,6 +221,7 @@ public class ExperimentCrossValidation
                 + experimentName);
         extractFeaturesTrainTask.setMlAdapter(mlAdapter);
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
@@ -227,10 +231,12 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
+        extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
         // classification (numFolds times)
         testTask = mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
+        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {
@@ -260,6 +266,7 @@ public class ExperimentCrossValidation
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
         crossValidationTask.addReport(mlAdapter.getBatchTrainTestReportClass());
+        crossValidationTask.setAttribute(TC_TASK_TYPE, TcTaskType.CROSS_VALIDATION.toString());
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTask);

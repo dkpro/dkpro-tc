@@ -29,6 +29,7 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
  * Save model batch
@@ -83,12 +84,14 @@ public class ExperimentSaveModel
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
         initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
+        initTaskTrain.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
 
         // get some meta data depending on the whole document collection that we
         // need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
+        metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
         metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
 
@@ -99,6 +102,7 @@ public class ExperimentSaveModel
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
+        featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // feature extraction and prediction on test data
         try {
@@ -108,6 +112,7 @@ public class ExperimentSaveModel
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         saveModelTask.setOutputFolder(outputFolder);
+        saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
         
     	} catch (Exception e) {
 			throw new IllegalStateException(e);

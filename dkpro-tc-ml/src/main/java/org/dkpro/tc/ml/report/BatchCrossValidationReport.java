@@ -57,18 +57,8 @@ public class BatchCrossValidationReport
 
         FlexTable<String> table = FlexTable.forClass(String.class);
 
-        Map<String, String> properties2 = getAttributes();
-        for(String k : properties2.keySet()){
-            System.out.println(k + " " + properties2.get(k));
-        }
-        int a=0;
-        a++;
-        
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            // FIXME this is a hack
-            String name = ExperimentCrossValidation.class.getSimpleName();
-            // one CV batch (which internally ran numFolds times)
-            if (subcontext.getLabel().startsWith(name)) {
+            if(ReportUtil.isCrossValidationTask(store, subcontext.getId())){
                 Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(), Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter()).getMap();
                 
                 File fileToEvaluate = store.locateKey(subcontext.getId(), 

@@ -112,7 +112,7 @@ public class ExperimentTrainTest
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
-        featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.EXTRACTION_TRAIN.toString());
+        featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
@@ -122,7 +122,7 @@ public class ExperimentTrainTest
         featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
-        featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.EXTRACTION_TEST.toString());
+        featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
         // test task operating on the models of the feature extraction train and test tasks
         testTask = mlAdapter.getTestTask();
