@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.crfsuite;
+package org.dkpro.tc.ml.crfsuite;
 
 import java.util.Collection;
 
@@ -28,11 +28,11 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
-import org.dkpro.tc.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
-import org.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
+import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
+import org.dkpro.tc.ml.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
+import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
 
 /**

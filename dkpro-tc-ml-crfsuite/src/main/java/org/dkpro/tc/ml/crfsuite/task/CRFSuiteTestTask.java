@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.crfsuite.task;
+package org.dkpro.tc.ml.crfsuite.task;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,8 +36,8 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.crfsuite.writer.LabelSubstitutor;
+import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;

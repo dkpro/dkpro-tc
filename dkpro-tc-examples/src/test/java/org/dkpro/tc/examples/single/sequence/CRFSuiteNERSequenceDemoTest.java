@@ -22,12 +22,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.junit.Before;
 import org.junit.Test;
 

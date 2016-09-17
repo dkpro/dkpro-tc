@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.crfsuite.writer;
+package org.dkpro.tc.ml.crfsuite.writer;
 
 public class LabelSubstitutor
 {

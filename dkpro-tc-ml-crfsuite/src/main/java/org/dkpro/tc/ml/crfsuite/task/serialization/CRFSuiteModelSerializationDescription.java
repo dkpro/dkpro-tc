@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.crfsuite.task.serialization;
+package org.dkpro.tc.ml.crfsuite.task.serialization;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,9 +31,9 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.crfsuite.task.CrfUtil;
+import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.task.CrfUtil;
 
 public class CRFSuiteModelSerializationDescription
     extends ModelSerializationTask

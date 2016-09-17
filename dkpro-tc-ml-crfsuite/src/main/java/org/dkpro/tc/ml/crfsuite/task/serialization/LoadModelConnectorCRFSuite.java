@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.crfsuite.task.serialization;
+package org.dkpro.tc.ml.crfsuite.task.serialization;
 
 import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
@@ -43,8 +43,8 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.crfsuite.writer.CRFSuiteFeatureStoreSequenceIterator;
+import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteFeatureStoreSequenceIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public class LoadModelConnectorCRFSuite

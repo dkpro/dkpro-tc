@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.crfsuite.writer;
+package org.dkpro.tc.ml.crfsuite.writer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,7 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
 public class CRFSuiteDataWriter
     implements DataWriter

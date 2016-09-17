@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.crfsuite.writer;
+package org.dkpro.tc.ml.crfsuite.writer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,9 +36,9 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.crfsuite.writer.CRFSuiteDataWriter;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
+import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
 
 public class CRFSuiteDataWriterTest
 {

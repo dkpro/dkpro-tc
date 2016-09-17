@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.crfsuite.writer;
+package org.dkpro.tc.ml.crfsuite.writer;
 
 import java.util.Iterator;
 

@@ -21,4 +21,4 @@
  *
  * @since 0.7.0
  */
-package org.dkpro.tc.crfsuite;
+package org.dkpro.tc.ml.crfsuite;

@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.crfsuite.task;
+package org.dkpro.tc.ml.crfsuite.task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dkpro.tc.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
 public class CrfUtil
 {
