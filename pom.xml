@@ -79,7 +79,7 @@
 		<module>dkpro-tc-integrationtest</module>
 		<module>dkpro-tc-ml</module>
         <module>dkpro-tc-ml-crfsuite</module>
-        
+        <module>dkpro-tc-ml-keras</module>
         <module>dkpro-tc-ml-liblinear</module>
         <module>dkpro-tc-ml-libsvm</module>
         <module>dkpro-tc-ml-svmhmm</module>
@@ -168,7 +168,12 @@
                 <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-crfsuite</artifactId>
                 <version>0.9.0-SNAPSHOT</version>
-            </dependency>            
+            </dependency>
+            <dependency>
+                <groupId>org.dkpro.tc</groupId>
+                <artifactId>dkpro-tc-ml-keras</artifactId>
+                <version>0.9.0-SNAPSHOT</version>
+            </dependency>                        
             <dependency>
                 <groupId>org.dkpro.tc</groupId>
                 <artifactId>dkpro-tc-ml-liblinear</artifactId>
