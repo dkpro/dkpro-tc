@@ -102,7 +102,7 @@ public class CRFSuiteTestTask
             LogFactory.getLog(CRFSuiteTestTask.class.getName())
                     .info("Load binary for platform: [" + platform + "]");
 
-            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/crfsuite/");
+            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/crfsuite/");
         }
 
         String executablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();

@@ -17,13 +17,13 @@
 -->
 <project basedir="../.." default="separate-jars">
 	<import>
-		<url url="http://dkpro-core-asl.googlecode.com/svn/built-ant-macros/tags/0.6.0/ant-macros.xml"/>
+		<url url="https://raw.githubusercontent.com/dkpro/resource-packager/0.7.0/ant-macros.xml"/>
 	</import>
 
 	<!-- 
 	  - Output package configuration
 	  -->
-	<property name="outputPackage" value="org/dkpro/tc/crfsuite/lib"/>
+	<property name="outputPackage" value="org/dkpro/tc/ml/crfsuite/lib"/>
 
 	<target name="local-maven">
 		<property name="install-artifact-mode" value="local"/>
@@ -43,7 +43,7 @@
 		<mkdir dir="target/download"/>
 
 		<!-- OSX -->
-		<mkdir dir="target/model-staging/org/dkpro/tc/crfsuite/osx-x86_64"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/crfsuite/osx-x86_64"/>
 
 		<get 
 	    		src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.osx-x86_64.tar.gz" 
@@ -54,24 +54,24 @@
 				dest="target/download/crfsuite.osx-x86_64.tar"/>
 		<untar 
 				src="target/download/crfsuite.osx-x86_64.tar"
-				dest="target/model-staging/org/dkpro/tc/crfsuite/osx-x86_64">
+				dest="target/model-staging/org/dkpro/tc/ml/crfsuite/osx-x86_64">
 			<patternset>
 				<include name="*" />
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
 
-		<echo file="target/model-staging/org/dkpro/tc/crfsuite/osx-x86_64/README">
+		<echo file="target/model-staging/org/dkpro/tc/ml/crfsuite/osx-x86_64/README">
 			crfsuite version 0.12
 		</echo>
 
 		<propertyfile
-		    file="target/model-staging/org/dkpro/tc/crfsuite/osx-x86_64/manifest.properties">
+		    file="target/model-staging/org/dkpro/tc/ml/crfsuite/osx-x86_64/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
 		<!-- LINUX 32 bit -->
-		<mkdir dir="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_32"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_32"/>
 		<get 
 	    		src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.linux-x86_32.tar.gz" 
 	    		dest="target/download/crfsuite.linux-x86_32.tar.gz" 
@@ -81,24 +81,24 @@
 				dest="target/download/crfsuite.linux-x86_32.tar"/>
 		<untar 
 				src="target/download/crfsuite.linux-x86_32.tar"
-				dest="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_32">
+				dest="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_32">
 			<patternset>
 				<include name="*" />
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
 
-		<echo file="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_32/README">
+		<echo file="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_32/README">
 			crfsuite version 0.12
 		</echo>
 
 		<propertyfile
-		    file="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_32/manifest.properties">
+		    file="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_32/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
 		<!-- LINUX 64 bit -->
-		<mkdir dir="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_64"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_64"/>
 		<get 
 			    src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.linux-x86_64.tar.gz" 
 			    dest="target/download/crfsuite.linux-x86_64.tar.gz" 
@@ -108,24 +108,24 @@
 				dest="target/download/crfsuite.linux-x86_64.tar"/>
 		<untar 
 				src="target/download/crfsuite.linux-x86_64.tar"
-				dest="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_64">
+				dest="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_64">
 			<patternset>
 				<include name="*" />
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
 
-		<echo file="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_64/README">
+		<echo file="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_64/README">
 			crfsuite version 0.12
 		</echo>
 
 		<propertyfile
-				    file="target/model-staging/org/dkpro/tc/crfsuite/linux-x86_64/manifest.properties">
+				    file="target/model-staging/org/dkpro/tc/ml/crfsuite/linux-x86_64/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
 		<!-- WINDOWS 32 bit -->
-		<mkdir dir="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_32"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_32"/>
 		<get 
 				src="http://dl.bintray.com/inofficalbinarystore/generic/crfsuite-0.12.windows-x86_32.tar.gz" 
 				dest="target/download/crfsuite.windows-x86_32.tar.gz" 
@@ -135,38 +135,38 @@
 				dest="target/download/crfsuite.windows-x86_32.tar"/>
 		<untar 
 				src="target/download/crfsuite.windows-x86_32.tar"
-				dest="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_32">
+				dest="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_32">
 			<patternset>
 				<include name="*" />
 			</patternset>
 			<mapper type="flatten" />
 		</untar>
 
-		<echo file="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_32/README">
+		<echo file="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_32/README">
 			crfsuite version 0.12
 		</echo>
 
 		<propertyfile 
-			file="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_32/manifest.properties">
+			file="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_32/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
 		<!-- WINDOWS 64 bit -->
-		<mkdir dir="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_64"/>
-		<copydir src="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_32"
-				dest="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_64"/>
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_64"/>
+		<copydir src="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_32"
+				dest="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_64"/>
 
-		<echo file="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_64/README">
+		<echo file="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_64/README">
 					crfsuite version 0.12
 				</echo>
 
 		<propertyfile 
-					file="target/model-staging/org/dkpro/tc/crfsuite/windows-x86_64/manifest.properties">
+					file="target/model-staging/org/dkpro/tc/ml/crfsuite/windows-x86_64/manifest.properties">
 			<entry  key="crfsuite" value="executable"/>
 		</propertyfile>
 
 		<jar 
-			destfile="target/org.dkpro.tc.crfsuite-bin-${version.bin}.jar" 
+			destfile="target/org.dkpro.tc.ml.crfsuite-bin-${version.bin}.jar" 
 			compress="true">
 			<fileset dir="target/model-staging">
 				<include name="META-INF/**/*"/>
@@ -176,13 +176,13 @@
 
 		<generate-pom 
 			groupId="org.dkpro.tc"
-			artifactId="org.dkpro.tc.crfsuite-bin" 
+			artifactId="org.dkpro.tc.ml.crfsuite-bin" 
 			version="${version.bin}"/>
 
 		<install-artifact 
-			file="target/org.dkpro.tc.crfsuite-bin-${version.bin}.jar"
+			file="target/org.dkpro.tc.ml.crfsuite-bin-${version.bin}.jar"
 			groupId="org.dkpro.tc"
-			artifactId="org.dkpro.tc.crfsuite-bin" 
+			artifactId="org.dkpro.tc.ml.crfsuite-bin" 
 			version="${version.bin}"/>
 		<clean-pom/>
 		<delete dir="target/model-staging"/>
