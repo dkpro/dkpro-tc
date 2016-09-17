@@ -47,7 +47,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;

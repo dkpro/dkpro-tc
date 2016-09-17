@@ -45,7 +45,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.ScatterplotReport;
-import org.dkpro.tc.weka.WekaRegressionAdapter;
+import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;

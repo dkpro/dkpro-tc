@@ -45,7 +45,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 

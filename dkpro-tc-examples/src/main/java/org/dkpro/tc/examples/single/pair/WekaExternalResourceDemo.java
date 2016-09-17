@@ -43,7 +43,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;

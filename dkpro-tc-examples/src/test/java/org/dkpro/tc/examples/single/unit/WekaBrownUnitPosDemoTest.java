@@ -28,7 +28,7 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
-import org.dkpro.tc.weka.task.WekaTestTask;
+import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.junit.Before;
 import org.junit.Test;
 

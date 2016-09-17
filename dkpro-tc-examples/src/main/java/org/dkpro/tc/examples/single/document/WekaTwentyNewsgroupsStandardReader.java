@@ -48,8 +48,8 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
-import org.dkpro.tc.weka.WekaStatisticsClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaStatisticsClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;

@@ -29,7 +29,7 @@ import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.features.length.NrOfSentences;
 import org.dkpro.tc.features.length.NrOfTokens;
-import org.dkpro.tc.weka.writer.WekaDataWriter;
+import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;

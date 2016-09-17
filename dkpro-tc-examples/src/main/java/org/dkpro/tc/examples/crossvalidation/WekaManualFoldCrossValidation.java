@@ -42,7 +42,7 @@ import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.style.IsSurroundedByChars;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 

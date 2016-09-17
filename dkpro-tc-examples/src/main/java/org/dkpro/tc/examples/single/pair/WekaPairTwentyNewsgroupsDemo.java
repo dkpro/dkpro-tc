@@ -37,7 +37,7 @@ import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 

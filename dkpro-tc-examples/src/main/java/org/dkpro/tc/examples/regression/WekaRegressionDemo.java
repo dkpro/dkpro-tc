@@ -43,7 +43,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.LinearRegression;

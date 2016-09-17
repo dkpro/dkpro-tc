@@ -49,7 +49,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.weka.WekaRegressionAdapter;
+import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

@@ -45,7 +45,7 @@ import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.features.style.IsSurroundedByChars;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 

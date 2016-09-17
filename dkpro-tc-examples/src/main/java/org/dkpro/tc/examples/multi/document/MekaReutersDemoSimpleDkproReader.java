@@ -44,7 +44,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;

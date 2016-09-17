@@ -29,7 +29,7 @@ import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
-import org.dkpro.tc.weka.writer.WekaDataWriter;
+import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
