@@ -30,7 +30,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter
 import org.apache.uima.collection.CollectionReaderDescription;
 
 import weka.classifiers.bayes.NaiveBayes
