@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dkpro.tc.svmhmm.task.serialization;
+package org.dkpro.tc.ml.svmhmm.task.serialization;
 
 import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
@@ -47,11 +47,11 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
-import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
 
 public class LoadModelConnectorSvmhmm
     extends ModelSerialization_ImplBase

@@ -43,9 +43,9 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
-import org.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
-import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
+import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 public class SVMHMMDataWriterTest
 {

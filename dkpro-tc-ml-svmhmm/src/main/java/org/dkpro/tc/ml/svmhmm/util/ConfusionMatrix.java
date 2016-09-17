@@ -1,4 +1,4 @@
-package org.dkpro.tc.svmhmm.util;
+package org.dkpro.tc.ml.svmhmm.util;
 
 /*
  * Copyright 2016

@@ -32,9 +32,9 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.random.RandomSVMHMMAdapter;
-import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.random.RandomSVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.util;
+package org.dkpro.tc.ml.svmhmm.util;
 
 import java.util.Set;
 

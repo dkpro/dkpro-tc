@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.random;
+package org.dkpro.tc.ml.svmhmm.random;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,8 +30,8 @@ import org.apache.commons.io.IOUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter

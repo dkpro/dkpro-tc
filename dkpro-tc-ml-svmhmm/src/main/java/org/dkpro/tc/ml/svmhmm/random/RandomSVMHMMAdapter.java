@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.random;
+package org.dkpro.tc.ml.svmhmm.random;
 
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 
 /**
  * Random classifier for sequence labeling build upon SVMhmm adapter

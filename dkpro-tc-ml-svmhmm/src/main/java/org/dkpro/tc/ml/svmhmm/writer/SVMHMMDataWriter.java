@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.writer;
+package org.dkpro.tc.ml.svmhmm.writer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,9 +39,9 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.util.OriginalTextHolderFeatureExtractor;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 
 /**
  * Converts features to the internal format for SVM HMM

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.util;
+package org.dkpro.tc.ml.svmhmm.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

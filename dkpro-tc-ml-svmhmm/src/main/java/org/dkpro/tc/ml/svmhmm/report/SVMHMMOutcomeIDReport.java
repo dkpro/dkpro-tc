@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.report;
+package org.dkpro.tc.ml.svmhmm.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,8 +35,8 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 
 public class SVMHMMOutcomeIDReport
     extends ReportBase

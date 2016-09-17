@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm;
+package org.dkpro.tc.ml.svmhmm;
 
 import java.util.Collection;
 
@@ -31,11 +31,11 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
-import org.dkpro.tc.svmhmm.report.SVMHMMOutcomeIDReport;
-import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import org.dkpro.tc.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
-import org.dkpro.tc.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
-import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
+import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
+import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
+import org.dkpro.tc.ml.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
+import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult

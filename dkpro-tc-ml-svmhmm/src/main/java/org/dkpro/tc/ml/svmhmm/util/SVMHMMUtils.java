@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.util;
+package org.dkpro.tc.ml.svmhmm.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +42,7 @@ import org.apache.commons.collections.bidimap.DualTreeBidiMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.dkpro.tc.svmhmm.writer.SVMHMMDataWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 public final class SVMHMMUtils
 {

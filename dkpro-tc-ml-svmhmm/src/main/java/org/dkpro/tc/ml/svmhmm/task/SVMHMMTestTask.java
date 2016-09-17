@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.dkpro.tc.svmhmm.task;
+package org.dkpro.tc.ml.svmhmm.task;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,8 +45,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 
 public class SVMHMMTestTask
     extends ExecutableTaskBase

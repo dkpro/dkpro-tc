@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dkpro.tc.svmhmm.task.serialization;
+package org.dkpro.tc.ml.svmhmm.task.serialization;
 
 import java.io.File;
 import java.util.List;
@@ -29,9 +29,9 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.svmhmm.task.SVMHMMTestTask;
-import org.dkpro.tc.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 
 public class SvmhmmModelSerializationDescription
     extends ModelSerializationTask
