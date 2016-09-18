@@ -56,9 +56,6 @@
          <repository>
             <id>ltl-models</id>
             <url>http://basa.ltl.uni-due.de:34001/artifactory/models</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
 	</repositories>
 	<developers>
