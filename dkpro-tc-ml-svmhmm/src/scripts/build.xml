@@ -1,0 +1,180 @@
+<!--
+    Copyright 2016
+    Ubiquitous Knowledge Processing (UKP) Lab
+    Technische Universität Darmstadt
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project basedir="../.." default="separate-jars">
+	<import>
+		<url url="https://raw.githubusercontent.com/dkpro/resource-packager/0.7.0/ant-macros.xml"/>
+	</import>
+
+	<!-- 
+	  - Output package configuration
+	  -->
+	<property name="outputPackage" value="org/dkpro/tc/ml/svmhmm/lib"/>
+
+	<target name="local-maven">
+		<property name="install-artifact-mode" value="local"/>
+		<antcall target="separate-jars"/>
+	</target>
+
+	<target name="remote-maven">
+		<property name="install-artifact-mode" value="remote"/>
+		<antcall target="separate-jars"/>
+	</target>
+
+	<target name="separate-jars" depends="install-executables"/>
+
+	<target name="install-executables">
+		<property name="version.bin" value="20080814.1"/>
+
+		<mkdir dir="target/download"/>
+
+		<!-- OSX -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/svmhmm/osx-x86_64"/>
+
+		<get 
+	    		src="http://dl.bintray.com/inofficalbinarystore/generic/svmhmm.osx-x86_64.tar.gz" 
+	    		dest="target/download/svmhmm.osx-x86_64.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/svmhmm.osx-x86_64.tar.gz"
+				dest="target/download/svmhmm.osx-x86_64.tar"/>
+		<untar 
+				src="target/download/svmhmm.osx-x86_64.tar"
+				dest="target/model-staging/org/dkpro/tc/ml/svmhmm/osx-x86_64">
+			<mapper type="flatten" />
+		</untar>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/svmhmm/osx-x86_64/README">
+			svmhmm binary
+		</echo>
+
+		<propertyfile
+		    file="target/model-staging/org/dkpro/tc/ml/svmhmm/osx-x86_64/manifest.properties">
+			<entry  key="svm_hmm_classify" value="executable"/>
+			<entry  key="svm_hmm_learn" value="executable"/>
+		</propertyfile>
+		
+		<!-- LINUX 32 -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_32"/>
+
+		<get 
+	    		src="https://bintray.com/inofficalbinarystore/generic/download_file?file_path=svmhmm.linux-x86_32.tar.gz" 
+	    		dest="target/download/svmhmm.linux-x86_32.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/svmhmm.linux-x86_32.tar.gz"
+				dest="target/download/svmhmm.linux-x86_32.tar"/>
+		<untar 
+				src="target/download/svmhmm.linux-x86_32.tar"
+				dest="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_32">
+			<mapper type="flatten" />
+		</untar>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_32/README">
+			svmhmm binary
+		</echo>
+
+		<propertyfile
+		    file="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_32/manifest.properties">
+			<entry  key="svm_hmm_classify" value="executable"/>
+			<entry  key="svm_hmm_learn" value="executable"/>
+		</propertyfile>
+			 
+		<!-- LINUX 64 -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_64"/>
+
+		<get 
+	    		src="https://bintray.com/inofficalbinarystore/generic/download_file?file_path=svmhmm.linux-x86_64.tar.gz" 
+	    		dest="target/download/svmhmm.linux-x86_64.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/svmhmm.linux-x86_64.tar.gz"
+				dest="target/download/svmhmm.linux-x86_64.tar"/>
+		<untar 
+				src="target/download/svmhmm.linux-x86_64.tar"
+				dest="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_64">
+			<mapper type="flatten" />
+		</untar>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_64/README">
+			svmhmm binary
+		</echo>
+
+		<propertyfile
+		    file="target/model-staging/org/dkpro/tc/ml/svmhmm/linux-x86_64/manifest.properties">
+			<entry  key="svm_hmm_classify" value="executable"/>
+			<entry  key="svm_hmm_learn" value="executable"/>
+		</propertyfile>
+		
+		<!-- Windows 32 -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32"/>
+
+		<get 
+	    		src="https://bintray.com/inofficalbinarystore/generic/download_file?file_path=svmhmm.windows-x86_32.tar.gz" 
+	    		dest="target/download/svmhmm.windows-x86_32.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/svmhmm.windows-x86_32.tar.gz"
+				dest="target/download/svmhmm.windows-x86_32.tar"/>
+		<untar 
+				src="target/download/svmhmm.windows-x86_32.tar"
+				dest="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32">
+			<mapper type="flatten" />
+		</untar>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/README">
+			svmhmm binary
+		</echo>
+
+		<propertyfile
+		    file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/manifest.properties">
+			<entry  key="svm_hmm_classify.exe" value="executable"/>
+			<entry  key="svm_hmm_learn.exe" value="executable"/>
+		</propertyfile>		
+		
+		<!-- WINDOWS 64 bit -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_64"/>
+		<copydir src="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32"
+				dest="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_64"/>
+		<echo file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_64/README">
+							svmhmm binary
+		</echo>		
+
+		<jar 
+			destfile="target/org.dkpro.tc.ml.svmhmm-bin-${version.bin}.jar" 
+			compress="true">
+			<fileset dir="target/model-staging">
+				<include name="META-INF/**/*"/>
+				<include name="**/*"/>
+			</fileset>
+		</jar>
+
+		<generate-pom 
+			groupId="org.dkpro.tc"
+			artifactId="org.dkpro.tc.ml.svmhmm-bin" 
+			version="${version.bin}"/>
+
+		<install-artifact 
+			file="target/org.dkpro.tc.ml.svmhmm-bin-${version.bin}.jar"
+			groupId="org.dkpro.tc"
+			artifactId="org.dkpro.tc.ml.svmhmm-bin" 
+			version="${version.bin}"/>
+		<clean-pom/>
+		<!--delete dir="target/model-staging"/>-->
+		<!--delete dir="target/download"/>-->
+	</target>
+</project>

@@ -57,7 +57,7 @@ public class SVMHMMTestTask
      */
     public static boolean PRINT_STD_OUT = false;
 
-    private static final String BINARIES_BASE_LOCATION = "classpath:/org/dkpro/tc/svmhmm/";
+    private static final String BINARIES_BASE_LOCATION = "classpath:/org/dkpro/tc/ml/svmhmm/";
 
     /**
      * Learning mode discriminators; Only Constants.LM_SINGLE_LABEL is allowed

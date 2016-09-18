@@ -104,7 +104,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
-			<artifactId>org.dkpro.tc.svmhmm-bin</artifactId>
+			<artifactId>org.dkpro.tc.ml.svmhmm-bin</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.lab</groupId>
@@ -125,7 +125,7 @@
 			<!-- binaries -->
 			<dependency>
 				<groupId>org.dkpro.tc</groupId>
-				<artifactId>org.dkpro.tc.svmhmm-bin</artifactId>
+				<artifactId>org.dkpro.tc.ml.svmhmm-bin</artifactId>
 				<version>20080814.1</version>
 			</dependency>
 		</dependencies>
