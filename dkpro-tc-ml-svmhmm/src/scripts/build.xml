@@ -174,7 +174,7 @@
 			artifactId="org.dkpro.tc.ml.svmhmm-bin" 
 			version="${version.bin}"/>
 		<clean-pom/>
-		<!--delete dir="target/model-staging"/>-->
-		<!--delete dir="target/download"/>-->
+		<delete dir="target/model-staging"/>
+		<delete dir="target/download"/>
 	</target>
 </project>
