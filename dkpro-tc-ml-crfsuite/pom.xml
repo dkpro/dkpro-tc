@@ -95,23 +95,6 @@
 	</dependencyManagement>
 	<build>
 		<plugins>
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-invoker-plugin</artifactId> -->
-<!-- 				<configuration> -->
-<!-- 					<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo> -->
-<!-- 					<settingsFile>src/it/settings.xml</settingsFile> -->
-<!-- 					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath> -->
-<!-- 					<postBuildHookScript>verify</postBuildHookScript> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>integration-test</id> -->
-<!-- 						<goals> -->
-<!-- 							<goal>run</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
 		</plugins>
 		<pluginManagement>
 			<plugins>
