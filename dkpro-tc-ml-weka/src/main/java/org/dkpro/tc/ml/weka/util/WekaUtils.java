@@ -38,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.MLUtils;
 import meka.core.Result;
 import meka.core.ThresholdUtils;
@@ -580,7 +580,7 @@ public class WekaUtils
             Instances testData, String threshold)
         throws Exception
     {
-        Result r = meka.classifiers.multilabel.Evaluation.evaluateModel((MultilabelClassifier) cl,
+        Result r = meka.classifiers.multilabel.Evaluation.evaluateModel((MultiLabelClassifier) cl,
                 trainData, testData, threshold);
         return r;
     }
@@ -872,7 +872,7 @@ public class WekaUtils
             Arrays.fill(
                     t,
                     ThresholdUtils.calibrateThreshold(r.predictions,
-                            Double.valueOf(r.getValue("LCard_train"))));
+                            (Double)r.getValue("LCard_train")));
         }
         else if (threshold.equals("PCutL")) {
             // one threshold for each label (PCutL in Meka)
@@ -1000,7 +1000,7 @@ public class WekaUtils
             List<String> mlArgs = classificationArguments
                     .subList(1, classificationArguments.size());
             cl = AbstractClassifier.forName(classificationArguments.get(0), new String[] {});
-            ((MultilabelClassifier) cl).setOptions(mlArgs.toArray(new String[0]));
+            ((MultiLabelClassifier) cl).setOptions(mlArgs.toArray(new String[0]));
         }
         else {
             cl = AbstractClassifier.forName(classificationArguments.get(0), classificationArguments

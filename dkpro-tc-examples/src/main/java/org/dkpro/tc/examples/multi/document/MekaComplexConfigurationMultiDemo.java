@@ -47,7 +47,7 @@ import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import meka.classifiers.multilabel.BR;
 import meka.classifiers.multilabel.CCq;
-import meka.classifiers.multilabel.PSUpdateable;
+import meka.classifiers.multilabel.incremental.PSUpdateable;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.classifiers.bayes.NaiveBayes;
 
