@@ -35,7 +35,7 @@ import org.dkpro.tc.features.length.NrOfChars
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO

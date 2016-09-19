@@ -39,9 +39,9 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
 import org.dkpro.tc.features.ngram.*
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.weka.WekaClassificationAdapter
-import org.dkpro.tc.weka.report.WekaOutcomeIDReport
-import org.dkpro.tc.weka.task.WekaTestTask
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport
+import org.dkpro.tc.ml.weka.task.WekaTestTask
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
