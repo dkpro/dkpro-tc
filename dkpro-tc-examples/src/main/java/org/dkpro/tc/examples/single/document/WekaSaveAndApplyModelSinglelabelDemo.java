@@ -180,6 +180,6 @@ public class WekaSaveAndApplyModelSinglelabelDemo
                 AnalysisEngineFactory.createEngineDescription(TcAnnotator.class,
                         TcAnnotator.PARAM_TC_MODEL_LOCATION, modelPath),
                 AnalysisEngineFactory.createEngineDescription(XmiWriter.class,
-                        XmiWriter.PARAM_TARGET_LOCATION, PREDICTION_PATH));
+                        XmiWriter.PARAM_TARGET_LOCATION, PREDICTION_PATH, XmiWriter.PARAM_OVERWRITE, true));
     }
 }
