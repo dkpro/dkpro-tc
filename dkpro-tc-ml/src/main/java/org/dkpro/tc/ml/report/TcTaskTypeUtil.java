@@ -25,7 +25,7 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.ml.Experiment_ImplBase;
 
-public class TaskTypeIdentificationUtil
+public class TcTaskTypeUtil
 {
     public static boolean isMachineLearningAdapterTask(StorageService store, String id)
         throws IOException
@@ -73,7 +73,7 @@ public class TaskTypeIdentificationUtil
         throws IOException
     {
         Map<String, String> loadAttributes = loadAttributes(store, id);
-        TcTaskType taskType = TaskTypeIdentificationUtil.getTaskType(loadAttributes);
+        TcTaskType taskType = TcTaskTypeUtil.getTaskType(loadAttributes);
         return taskType == target;
     }
 

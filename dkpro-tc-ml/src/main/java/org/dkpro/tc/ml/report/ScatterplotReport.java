@@ -38,7 +38,7 @@ public class ScatterplotReport
     {
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (TaskTypeIdentificationUtil.isCrossValidationTask(getContext().getStorageService(),
+            if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(),
                     subcontext.getId())) {
                 File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
                         Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
@@ -53,7 +53,7 @@ public class ScatterplotReport
 
                 getContext().storeBinary("scatterplot.pdf", renderer);
             }
-            else if (TaskTypeIdentificationUtil.isMachineLearningAdapterTask(
+            else if (TcTaskTypeUtil.isMachineLearningAdapterTask(
                     getContext().getStorageService(), subcontext.getId())) {
                 File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
                         Constants.ID_OUTCOME_KEY);

@@ -52,7 +52,7 @@ public class BatchStatisticsCVReport
         HashSet<String> variableFeature = new HashSet<String>();
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (TaskTypeIdentificationUtil.isCrossValidationTask(getContext().getStorageService(), subcontext.getId())){
+            if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(), subcontext.getId())){
             	String csvText = getContext().getStorageService().retrieveBinary(subcontext.getId(), 
             			STATISTICS_REPORT_FILENAME, new StringAdapter()).getString();
                 CSVReader csvReader = new CSVReader(new StringReader(csvText), ';');

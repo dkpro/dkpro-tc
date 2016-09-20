@@ -62,7 +62,7 @@ public class BatchStatisticsTrainTestReport
         boolean experimentHasBaseline = false;
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (TaskTypeIdentificationUtil.isMachineLearningAdapterTask(getContext().getStorageService(), subcontext.getId())) {
+            if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), subcontext.getId())) {
   
 
                 Map<String, String> discriminatorsMap = getContext().getStorageService().retrieveBinary(subcontext.getId(),
