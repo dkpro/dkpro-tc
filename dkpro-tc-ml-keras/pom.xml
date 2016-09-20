@@ -24,4 +24,10 @@
   </parent>
   <artifactId>dkpro-tc-ml-keras</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-core</artifactId>
+  	</dependency>
+  </dependencies>
 </project>
