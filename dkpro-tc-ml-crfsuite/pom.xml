@@ -103,7 +103,7 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<configuration>
 						<usedDependencies>
-							<usedDependency>org.dkpro.tc:org.dkpro.tc.crfsuite-bin</usedDependency>
+							<usedDependency>org.dkpro.tc:org.dkpro.tc.ml.crfsuite-bin</usedDependency>
 						</usedDependencies>
 					</configuration>
 				</plugin>
