@@ -35,7 +35,7 @@ It must be pointed out that while the component's source code itself is licensed
 
 ### About
 
-This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquitous Knowledge Processing Lab (UKP)](https://www.ukp.tu-darmstadt.de/), Technische Universität Darmstadt. It is now jointly developed by UKP Lab (Technische Universität Darmstadt), [Language Technology Lab](http://ltl.uni-due.de/) (Universität Duisburg-Essen), and other contributors.
+This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquitous Knowledge Processing Lab (UKP)](https://www.ukp.tu-darmstadt.de/), Technische Universität Darmstadt. It is now jointly developed by UKP Lab (Technische Universität Darmstadt), [Language Technology Lab](http://ltl.uni-due.de/) (Universität Duisburg-Essen), and other [contributors](https://github.com/dkpro/dkpro-tc/blob/master/CONTRIBUTORS.txt).
 
 [DKPRO_CORE]: https://dkpro.github.io/dkpro-core
 [DKPRO_LAB]: https://dkpro.github.io/dkpro-lab
