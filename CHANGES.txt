@@ -3,10 +3,12 @@
 DKPro-TC 0.9.0 Release
 
 == Highlights ==
-Issue 363: Extend basic-implementation of Liblienar
 Issue 358: Speed up sequence tagging by using sparse-feature mode as default
+Issue 353: Enable passing CollectionReaderDescriptions instead of defining reader dimensions
 Issue 341: Improve DKPro-TC preprocessing speed by removing CasMultiplier from Workflow
-
+Issue 293: Add mavenized libsvm as machine learning adapter
+Issue  50: Create a dedicated evaluation object/module
+Issue  39: Multiple instances of the same feature extractor with different configurations should be possible
 
 == Major Version Enhancements ==
 DKPro Lab 0.13.0
@@ -14,10 +16,11 @@ DKPro Core 1.8.0
 Meka 1.9.0
 
 == Other Issues Fixed ==
+Issue 363: Extend basic-implementation of Liblinear
 Issue 367: CRFsuite: Enable full parametrization
 Issue 366: Unify parametrization of SVM modules
 Issue 361: Refactor ValidityCheckConnector (Pre/Post)
-
+Issue 207: Potential severe problem with ngram meta collectors and extractors
 
 ************************************************
 
