@@ -50,7 +50,7 @@ public class BatchCrossValidationReport
         FlexTable<String> table = FlexTable.forClass(String.class);
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (!TaskTypeIdentificationUtil.isCrossValidationTask(store, subcontext.getId())) {
+            if (!TcTaskTypeUtil.isCrossValidationTask(store, subcontext.getId())) {
                 continue;
             }
             Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store,

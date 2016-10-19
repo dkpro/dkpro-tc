@@ -31,6 +31,7 @@ import java.util.Properties;
 
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
+import org.dkpro.tc.ml.weka.util.MultilabelResult;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -65,8 +66,8 @@ public class OutcomeIDReportTest
                     .getResource("/predictions/multilabelPredictions.arff").toURI());
             regressionFile = new File(this.getClass()
                     .getResource("/predictions/regressionPredictions.arff").toURI());
-            mlResults = new File(this.getClass()
-                    .getResource("/predictions/multilabelEvaluation.bin").toURI());
+//            mlResults = new File(this.getClass()
+//                    .getResource("/predictions/multilabelEvaluation.bin").toURI());
         }
         catch (URISyntaxException e) {
             throw new IOException(e);
@@ -81,7 +82,7 @@ public class OutcomeIDReportTest
     public void testGenerateOutcomeIdPropertiesSingleLabel() throws ClassNotFoundException, IOException
     {
         List<String> labels = WekaUtils.getClassLabels(singleLabelData, false);
-        Properties props = WekaOutcomeIDReport.generateProperties(singleLabelData, false, false, labels, null);
+        Properties props = WekaOutcomeIDReport.generateSlProperties(singleLabelData, false, labels);
         String header = WekaOutcomeIDReport.generateHeader(labels);
         List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
@@ -108,12 +109,15 @@ public class OutcomeIDReportTest
 
     }
 
-    @Ignore
     @Test
-    public void testGenerateOutcomeIdPropertiesMultiLabel() throws ClassNotFoundException, IOException
+    public void testGenerateOutcomeIdPropertiesMultiLabel() throws Exception
     {
         List<String> labels = WekaUtils.getClassLabels(multiLabelData, true);
-        Properties props = WekaOutcomeIDReport.generateProperties(multiLabelData, true, false, labels, mlResults);
+        
+        MultilabelResult r = new MultilabelResult(getGoldstandard(multiLabelData), 
+        		getPredictions(multiLabelData), "0.5");
+        
+        Properties props = WekaOutcomeIDReport.generateMlProperties(multiLabelData, labels, r);
         String header = WekaOutcomeIDReport.generateHeader(labels);
         List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
@@ -134,10 +138,10 @@ public class OutcomeIDReportTest
 
     }
 
-    @Test
+	@Test
     public void testGenerateOutcomeIdPropertiesRegression() throws ClassNotFoundException, IOException
     {
-        Properties props = WekaOutcomeIDReport.generateProperties(regressionData, false, true, null, null);
+        Properties props = WekaOutcomeIDReport.generateSlProperties(regressionData, true, null);
 
         assertEquals(376, props.size());
         assertEquals(3.44168, getPrediction(props.getProperty("STS.input.MSRpar.txt-1")).get(0), 0.0001);
@@ -165,4 +169,30 @@ public class OutcomeIDReportTest
         }
         return a;
     }
+    
+    private double[][] getPredictions(Instances instances) {
+    	int L = instances.classIndex();
+    	int N = instances.numInstances();
+    	double[][] predMatrix = new double[N][L];
+
+		for(int l = L; l < 2*L; l++){
+			for(int n = 0; n < N; n++){
+				predMatrix[n][l-L] = instances.get(n).value(instances.attribute(l));
+			}
+		}
+		return predMatrix;
+	}
+
+	private int[][] getGoldstandard(Instances instances) {
+    	int L = instances.classIndex();
+    	int N = instances.numInstances();
+    	int[][] goldMatrix = new int[N][L];
+
+		for(int l = 0; l < L; l++){
+			for(int n = 0; n < N; n++){
+				goldMatrix[n][l] = (int) instances.get(n).value(instances.attribute(l));
+			}
+		}
+		return goldMatrix;
+	}
 }

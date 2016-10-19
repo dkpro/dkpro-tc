@@ -21,8 +21,8 @@ import org.dkpro.tc.examples.io.MovieReviewCorpusReader
 import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.features.ngram.LuceneNGram
 import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
-import org.dkpro.tc.weka.WekaClassificationAdapter;
-import org.dkpro.tc.weka.writer.WekaDataWriter
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.writer.WekaDataWriter
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;

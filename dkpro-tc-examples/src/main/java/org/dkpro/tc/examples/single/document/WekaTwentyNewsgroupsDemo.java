@@ -46,6 +46,7 @@ import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
@@ -88,8 +89,8 @@ public class WekaTwentyNewsgroupsDemo
         ParameterSpace pSpace = getParameterSpace();
 
         WekaTwentyNewsgroupsDemo experiment = new WekaTwentyNewsgroupsDemo();
-//        experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
+        experiment.runCrossValidation(pSpace);
+//        experiment.runTrainTest(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -181,6 +182,7 @@ public class WekaTwentyNewsgroupsDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchStatisticsCVReport.class);
+        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -198,6 +200,7 @@ public class WekaTwentyNewsgroupsDemo
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
         batch.addReport(ContextMemoryReport.class);
+        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

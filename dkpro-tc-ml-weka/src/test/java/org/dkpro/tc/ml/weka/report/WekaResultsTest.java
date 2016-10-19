@@ -126,7 +126,7 @@ public class WekaResultsTest
         cl.buildClassifier(trainData);
         Result eval = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, "0.2");
         assertEquals(16.0, eval.L, 0.01);
-        assertEquals(0.0, Result.getStats(eval, "1").get("Exact match"), 0.01);
+        assertEquals(0.0, (Double)Result.getStats(eval, "1").get("Exact match"), 0.01);
     }
 
 }

@@ -138,7 +138,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies>
-            <usedDependency>org.dkpro.tc:org.dkpro.tc.svmhmm-bin</usedDependency>
+            <usedDependency>org.dkpro.tc:org.dkpro.tc.ml.svmhmm-bin</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

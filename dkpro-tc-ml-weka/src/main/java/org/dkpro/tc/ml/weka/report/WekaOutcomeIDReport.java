@@ -75,9 +75,19 @@ public class WekaOutcomeIDReport
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
 
         List<String> labels = getLabels(predictions, multiLabel, regression);
+        
+        Properties props;
+        
+        if(multiLabel){
+        	MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
+        	props = generateMlProperties(predictions, labels, r);
+        }
+        else{
+        	props = generateSlProperties(predictions, regression, labels);
+        }
+        
 
-        Properties props = generateProperties(predictions, multiLabel, regression, labels,
-                mlResults);
+        
         getContext().storeBinary(Constants.ID_OUTCOME_KEY,
                 new PropertiesAdapter(props, generateHeader(labels)));
     }
@@ -106,8 +116,8 @@ public class WekaOutcomeIDReport
         return comment.toString();
     }
 
-    protected static Properties generateProperties(Instances predictions, boolean isMultiLabel,
-            boolean isRegression, List<String> labels, File mlResults)
+    protected static Properties generateMlProperties(Instances predictions,
+            List<String> labels, MultilabelResult r)
                 throws ClassNotFoundException, IOException
     {
         Properties props = new SortedKeyProperties();
@@ -119,9 +129,7 @@ public class WekaOutcomeIDReport
 
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
 
-        if (isMultiLabel) {
             Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
-            MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
             int[][] goldmatrix = r.getGoldstandard();
             double[][] predictionsmatrix = r.getPredictions();
             double bipartition = r.getBipartitionThreshold();
@@ -139,38 +147,51 @@ public class WekaOutcomeIDReport
                 String stringValue = predictions.get(i).stringValue(attOffset);
                 props.setProperty(stringValue, s);
             }
+        return props;
+    }
+    
+    
+    protected static Properties generateSlProperties(Instances predictions,
+            boolean isRegression, List<String> labels)
+                throws ClassNotFoundException, IOException
+    {
+        Properties props = new SortedKeyProperties();
+        String[] classValues = new String[predictions.numClasses()];
+
+        for (int i = 0; i < predictions.numClasses(); i++) {
+            classValues[i] = predictions.classAttribute().value(i);
         }
-        // single-label
-        else {
-            for (Instance inst : predictions) {
-                Double gold;
-                try {
-                    gold = new Double(inst.value(predictions.attribute(
-                            Constants.CLASS_ATTRIBUTE_NAME + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
-                }
-                catch (NullPointerException e) {
-                    // if train and test data have not been balanced
-                    gold = new Double(
-                            inst.value(predictions.attribute(Constants.CLASS_ATTRIBUTE_NAME)));
-                }
-                Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
-                Double prediction = new Double(inst.value(gsAtt));
-                if (!isRegression) {
-                    Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
-                    Integer predictionAsNumber = class2number
-                            .get(gsAtt.value(prediction.intValue()));
-                    Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
-                    
-                    String stringValue = inst.stringValue(attOffset);
-                    props.setProperty(stringValue, predictionAsNumber
-                            + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
-                }
-                else {
-                    // the outcome is numeric
-                    String stringValue = inst.stringValue(attOffset);
-                    props.setProperty(stringValue, prediction + SEPARATOR_CHAR
-                            + gold + SEPARATOR_CHAR + String.valueOf(0));
-                }
+
+        int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index(); 
+   
+        for (Instance inst : predictions) {
+            Double gold;
+            try {
+                gold = new Double(inst.value(predictions.attribute(
+                        Constants.CLASS_ATTRIBUTE_NAME + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
+            }
+            catch (NullPointerException e) {
+                // if train and test data have not been balanced
+                gold = new Double(
+                        inst.value(predictions.attribute(Constants.CLASS_ATTRIBUTE_NAME)));
+            }
+            Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
+            Double prediction = new Double(inst.value(gsAtt));
+            if (!isRegression) {
+                Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
+                Integer predictionAsNumber = class2number
+                        .get(gsAtt.value(prediction.intValue()));
+                Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
+                
+                String stringValue = inst.stringValue(attOffset);
+                props.setProperty(stringValue, predictionAsNumber
+                        + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
+            }
+            else {
+                // the outcome is numeric
+                String stringValue = inst.stringValue(attOffset);
+                props.setProperty(stringValue, prediction + SEPARATOR_CHAR
+                        + gold + SEPARATOR_CHAR + String.valueOf(0));
             }
         }
         return props;

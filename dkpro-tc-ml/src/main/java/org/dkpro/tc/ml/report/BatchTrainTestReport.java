@@ -55,7 +55,7 @@ public class BatchTrainTestReport
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
 
-            if (!TaskTypeIdentificationUtil.isMachineLearningAdapterTask(store,
+            if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store,
                     subcontext.getId())) {
                 continue;
             }

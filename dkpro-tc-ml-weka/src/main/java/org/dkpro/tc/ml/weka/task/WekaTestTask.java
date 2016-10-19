@@ -132,7 +132,7 @@ public class WekaTestTask
             // we don't need to build the classifier - meka does this
             // internally
             Result r = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, threshold);
-            WekaUtils.writeMlResultToFile(new MultilabelResult(r.allActuals(), r.allPredictions(),
+            WekaUtils.writeMlResultToFile(new MultilabelResult(r.allTrueValues(), r.allPredictions(),
                     threshold), evalOutput);
             testData = WekaUtils.getPredictionInstancesMultiLabel(testData, cl,
                     WekaUtils.getMekaThreshold(threshold, r, trainData));
