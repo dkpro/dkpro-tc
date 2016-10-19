@@ -1,5 +1,26 @@
 ************************************************
 
+DKPro-TC 0.9.0 Release
+
+== Highlights ==
+Issue 363: Extend basic-implementation of Liblienar
+Issue 358: Speed up sequence tagging by using sparse-feature mode as default
+Issue 341: Improve DKPro-TC preprocessing speed by removing CasMultiplier from Workflow
+
+
+== Major Version Enhancements ==
+DKPro Lab 0.13.0
+DKPro Core 1.8.0
+Meka 1.9.0
+
+== Other Issues Fixed ==
+Issue 367: CRFsuite: Enable full parametrization
+Issue 366: Unify parametrization of SVM modules
+Issue 361: Refactor ValidityCheckConnector (Pre/Post)
+
+
+************************************************
+
 DKPro-TC 0.8.0 Release
 
 == Highlights ==
