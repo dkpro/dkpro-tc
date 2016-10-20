@@ -53,10 +53,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-	 	<repository>
-            <id>dkpro-lab-rc</id>
-            <url>https://oss.sonatype.org/content/repositories/orgdkpro-1022</url>
-        </repository>        
 	</repositories>
 	<developers>
         <developer>
