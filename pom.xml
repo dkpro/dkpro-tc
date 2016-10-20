@@ -53,6 +53,10 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+	 	<repository>
+            <id>dkpro-lab-rc</id>
+            <url>https://oss.sonatype.org/content/repositories/orgdkpro-1022</url>
+        </repository>        
 	</repositories>
 	<developers>
         <developer>
@@ -239,7 +243,7 @@
 			<dependency>
 				<groupId>org.dkpro.lab</groupId>
 				<artifactId>dkpro-lab</artifactId>
-				<version>0.13.0-SNAPSHOT</version>
+				<version>0.13.0</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
