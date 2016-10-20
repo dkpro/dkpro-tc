@@ -93,6 +93,10 @@
 				de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
 			</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
