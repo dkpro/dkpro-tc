@@ -174,12 +174,6 @@
 			</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.parameter-asl
-			</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.dkpro.similarity</groupId>
 			<artifactId>
 				dkpro-similarity-algorithms-lexical-asl
@@ -192,6 +186,14 @@
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml-libsvm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api-features</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-evaluation</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

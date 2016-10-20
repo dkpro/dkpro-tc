@@ -101,6 +101,10 @@
 			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api-features</artifactId>
+		</dependency>
 	</dependencies>
 	<properties>
 	  	<!-- This module should not be deployed to the repository -->
