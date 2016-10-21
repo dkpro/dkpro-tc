@@ -94,4 +94,10 @@ public class LuceneCharacterNGram
                         LuceneCharacterNGram.PARAM_SOURCE_LOCATION,
                         LuceneCharacterNGramMetaCollector.LUCENE_DIR));
     }
+    
+    @Override
+    protected String addNgramMinMax()
+    {
+        return super.addNgramMinMax() + " CHARACTER";
+    }
 }

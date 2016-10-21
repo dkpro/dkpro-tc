@@ -78,6 +78,12 @@ public class LuceneNGram
                                 LuceneNGram.PARAM_SOURCE_LOCATION,
                                 LuceneNGramMetaCollector.LUCENE_DIR));
     }
+    
+    @Override
+    protected String addNgramMinMax()
+    {
+        return super.addNgramMinMax() + " WORD";
+    }
 
     @Override
     protected String getFieldName()
