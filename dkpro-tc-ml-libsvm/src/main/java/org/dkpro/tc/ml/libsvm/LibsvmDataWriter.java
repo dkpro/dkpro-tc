@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,8 @@ public class LibsvmDataWriter
     implements DataWriter
 {
     private Map<String, Integer> featName2id = new HashMap<>();
+    
+    static final String INDEX2INSTANCEID = "index2InstanceId.txt";
 
     @Override
     public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
@@ -58,8 +61,12 @@ public class LibsvmDataWriter
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
+        
+        Map<String, String> index2instanceId = new HashMap<>();
 
+        int idx=0;
         for (Instance i : featureStore.getInstances()) {
+            recordInstanceId(i, idx++, index2instanceId);
             String outcome = i.getOutcome();
             bw.write(outcome);
             for (Feature f : i.getFeatures()) {
@@ -72,6 +79,32 @@ public class LibsvmDataWriter
             bw.write("\n");
         }
         bw.close();
+        
+        //write mapping
+        writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+    }
+    
+    private void writeMapping(File outputDirectory, String fileName, Map<String, String> index2instanceId) throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Index\tDkProInstanceId\n");
+        for(String k : index2instanceId.keySet()){
+            sb.append(k + "\t" + index2instanceId.get(k)+"\n");
+        }
+        FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
+    }
+    
+    // build a map between the dkpro instance id and the index in the file
+    private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId)
+    {
+        Collection<Feature> features = instance.getFeatures();
+        for (Feature f : features) {
+            if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
+                continue;
+            }
+            index2instanceId.put(i + "", f.getValue() + "");
+            return;
+        }
     }
 
     private boolean sanityCheckValue(Feature f)

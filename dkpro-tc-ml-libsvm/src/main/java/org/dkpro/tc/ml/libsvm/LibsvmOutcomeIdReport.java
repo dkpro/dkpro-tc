@@ -56,10 +56,10 @@ public class LibsvmOutcomeIdReport
                 .equals(Constants.LM_REGRESSION);
         
         Map<Integer, String> id2label = getId2LabelMapping(isRegression);
-
         String header = buildHeader(id2label, isRegression);
 
         List<String> predictions = readPredictions();
+        Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap();
 
         Properties prop = new SortedKeyProperties();
         int lineCounter = 0;
@@ -70,8 +70,10 @@ public class LibsvmOutcomeIdReport
             String[] split = line.split(";");
             int pred = Double.valueOf(split[0]).intValue();
             int gold = Double.valueOf(split[1]).intValue();
-            prop.setProperty(String.format("%05d", lineCounter++),
+            String key = index2instanceIdMap.get(lineCounter+"");
+            prop.setProperty(key,
                     pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
+            lineCounter++;
         }
 
         File targetFile = getId2OutcomeFileLocation();
@@ -80,6 +82,25 @@ public class LibsvmOutcomeIdReport
         prop.store(fw, header);
         fw.close();
 
+    }
+    
+    private Map<String, String> getIndex2InstanceIdMap() throws IOException
+    {
+        File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY), LibsvmDataWriter.INDEX2INSTANCEID);
+        
+        Map<String,String> m = new HashMap<>();
+        
+        for(String l : FileUtils.readLines(f, "utf-8")){
+            if(l.startsWith("#")){
+                continue;
+            }
+            if(l.trim().isEmpty()){
+                continue;
+            }
+            String[] split = l.split("\t");
+            m.put(split[0], split[1]);
+        }
+        return m;
     }
 
     private File getId2OutcomeFileLocation()
