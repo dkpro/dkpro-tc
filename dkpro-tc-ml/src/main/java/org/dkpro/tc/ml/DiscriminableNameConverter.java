@@ -20,7 +20,6 @@ package org.dkpro.tc.ml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
@@ -49,7 +48,7 @@ public class DiscriminableNameConverter
             }
         }
 
-        String description = "[MD5: " + DigestUtils.md5Hex(sb.toString()) + ", " + sb.toString() + "]";
+        String description = "[" + sb.toString() + "]";
         return description;
     }
 
