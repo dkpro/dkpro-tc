@@ -34,7 +34,6 @@ import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import weka.core.Instances;
