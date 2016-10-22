@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
@@ -67,9 +68,10 @@ public class LuceneNGram
         }
         return features;
     }
-    
+
     @Override
-    public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
         return Arrays.asList(
@@ -78,11 +80,22 @@ public class LuceneNGram
                                 LuceneNGram.PARAM_SOURCE_LOCATION,
                                 LuceneNGramMetaCollector.LUCENE_DIR));
     }
-    
+
     @Override
-    protected String addNgramMinMax()
+    protected void logSelectionProcess(long N)
     {
-        return super.addNgramMinMax() + " WORD";
+        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT WORD [" + range()
+                + "]-GRAMS (" + caseSensitivity() + ")");
+    }
+
+    private String range()
+    {
+        return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;
+    }
+
+    private String caseSensitivity()
+    {
+        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
     }
 
     @Override

@@ -96,7 +96,7 @@ public class LucenePOSNGram
     {
         return "posngram";
     }
-
+    
     @Override
     protected int getTopN()
     {

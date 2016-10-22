@@ -98,16 +98,8 @@ public abstract class LuceneFeatureExtractorBase
     }
         
     protected void logSelectionProcess(long N) {
-    	getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT " + addNgramMinMax() + " NGRAMS");		
+    	getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT NGRAMS");		
 	}
-
-	protected String addNgramMinMax()
-    {
-        if(ngramMinN == ngramMaxN){
-            return "[" + ngramMinN + "]";
-        }
-        return "[" + ngramMinN + " - " + ngramMaxN+ "]";
-    }
 
     /**
      * @return The field name that this lucene-based ngram FE uses for storing the ngrams

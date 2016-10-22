@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
@@ -43,7 +44,7 @@ public class LuceneCharacterNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
-    
+
     @Override
     public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
         throws TextClassificationException
@@ -62,7 +63,6 @@ public class LuceneCharacterNGram
         }
         return features;
     }
-    
 
     @Override
     protected String getFieldName()
@@ -82,7 +82,6 @@ public class LuceneCharacterNGram
         return ngramUseTopK;
     }
 
-
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
@@ -94,10 +93,21 @@ public class LuceneCharacterNGram
                         LuceneCharacterNGram.PARAM_SOURCE_LOCATION,
                         LuceneCharacterNGramMetaCollector.LUCENE_DIR));
     }
-    
+
     @Override
-    protected String addNgramMinMax()
+    protected void logSelectionProcess(long N)
     {
-        return super.addNgramMinMax() + " CHARACTER";
+        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT CHARACTER ["
+                + range() + "]-GRAMS ("+caseSensitivity()+")");
+    }
+    
+    private String range()
+    {
+        return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;
+    }
+
+    private String caseSensitivity()
+    {
+        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
     }
 }
