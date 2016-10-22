@@ -4,6 +4,7 @@ DKPro-TC 0.9.0 Release
 
 == Highlights ==
 Issue 358: Speed up sequence tagging by using sparse-feature mode as default
+Issue 355: Make document mode to a special case of unit mode
 Issue 353: Enable passing CollectionReaderDescriptions instead of defining reader dimensions
 Issue 341: Improve DKPro-TC preprocessing speed by removing CasMultiplier from Workflow
 Issue 293: Add mavenized libsvm as machine learning adapter
