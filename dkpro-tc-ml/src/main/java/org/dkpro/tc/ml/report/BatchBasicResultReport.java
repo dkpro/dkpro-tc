@@ -92,7 +92,7 @@ public class BatchBasicResultReport
 
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
         FileOutputStream fileOutputStream = new FileOutputStream(key);
-        pa.store(fileOutputStream, "results");
+        pa.store(fileOutputStream, "Results");
         fileOutputStream.close();
         
     }
