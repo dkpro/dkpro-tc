@@ -38,7 +38,7 @@ import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
- * A result report which creates a few basic measures and writes them output folder of a run to
+ * A result report which creates a few basic measures and writes them to the output folder of a run to
  * provide by default at least some result values.
  */
 public class BatchBasicResultReport
