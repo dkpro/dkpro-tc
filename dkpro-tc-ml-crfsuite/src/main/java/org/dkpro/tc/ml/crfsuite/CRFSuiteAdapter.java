@@ -33,7 +33,7 @@ import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
 import org.dkpro.tc.ml.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
 import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
-import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
  * CRFSuite machine learning adapter. Details about available algorithm and their configuration is
@@ -68,7 +68,7 @@ public class CRFSuiteAdapter
     @Override
     public Class<? extends ReportBase> getBatchTrainTestReportClass()
     {
-        return InnerBatchUsingTCEvaluationReport.class;
+        return InnerBatchReport.class;
     }
 
     @SuppressWarnings("unchecked")

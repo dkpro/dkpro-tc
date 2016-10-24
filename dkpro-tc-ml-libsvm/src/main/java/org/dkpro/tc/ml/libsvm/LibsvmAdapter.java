@@ -31,7 +31,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
-import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
  * Libsvm offers various configuration switches for the SVM type and Kernel we defined constant
@@ -97,7 +97,7 @@ public class LibsvmAdapter
     @Override
     public Class<? extends ReportBase> getBatchTrainTestReportClass()
     {
-        return InnerBatchUsingTCEvaluationReport.class;
+        return InnerBatchReport.class;
     }
 
     @SuppressWarnings("unchecked")
