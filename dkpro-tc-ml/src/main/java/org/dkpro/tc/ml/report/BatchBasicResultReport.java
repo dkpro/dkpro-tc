@@ -35,7 +35,11 @@ import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.evaluation.measures.label.MacroFScore;
 import org.dkpro.tc.evaluation.measures.label.MicroFScore;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
+import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
+import org.dkpro.tc.evaluation.measures.regression.SpearmanCorrelation;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
+
+import de.tudarmstadt.ukp.dkpro.statistics.correlation.PearsonCorrelation;
 
 /**
  * A result report which creates a few basic measures and writes them to the output folder of a run to
@@ -69,7 +73,13 @@ public class BatchBasicResultReport
 
         if (learningMode.equals(LM_REGRESSION)) {
             Double meanAbs = get(MeanAbsoluteError.class, createEvaluator);
-            pa.setProperty("MeanAbsoluteError:", "" + meanAbs);
+            Double rootMeanSquaredError = get(RootMeanSquaredError.class, createEvaluator);
+            Double spearman = get(SpearmanCorrelation.class, createEvaluator);
+            Double pearson = get(PearsonCorrelation.class, createEvaluator);
+            pa.setProperty("Mean Absolute Error:", "" + meanAbs);
+            pa.setProperty("Root Mean Squared Error:", "" + rootMeanSquaredError);
+            pa.setProperty("Pearson Correlation:", "" + pearson);
+            pa.setProperty("Spearman Correlation:", "" + spearman);
         }
         else if (learningMode.equals(LM_SINGLE_LABEL) || learningMode.equals(LM_MULTI_LABEL)) {
             Double acc = get(Accuracy.class, createEvaluator);
