@@ -24,6 +24,10 @@
   </parent>
   <artifactId>dkpro-tc-ml-liblinear</artifactId>
   <dependencies>
+    <dependency>
+  		<groupId>commons-logging</groupId>
+  		<artifactId>commons-logging-api</artifactId>
+  	</dependency>
   	<dependency>
   		<groupId>de.bwaldvogel</groupId>
   		<artifactId>liblinear</artifactId>
@@ -73,10 +77,6 @@
   	<dependency>
   		<groupId>org.apache.uima</groupId>
   		<artifactId>uimaj-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-logging</groupId>
-  		<artifactId>commons-logging</artifactId>
   	</dependency>
   </dependencies>
 </project>

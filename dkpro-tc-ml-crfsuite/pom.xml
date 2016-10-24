@@ -17,6 +17,10 @@
   <artifactId>dkpro-tc-ml-crfsuite</artifactId>
   <dependencies>
     <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-core</artifactId>
     </dependency>
@@ -60,20 +64,12 @@
     <dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
       <artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.resources-asl
-			</artifactId>
+			de.tudarmstadt.ukp.dkpro.core.api.resources-asl
+	  </artifactId>
     </dependency>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-fstore-simple</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging-api</artifactId>
     </dependency>
   </dependencies>
   <dependencyManagement>
