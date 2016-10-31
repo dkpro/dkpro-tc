@@ -9,6 +9,12 @@
 # Possible status: "stable", "unstable"
 
 ### stable versions - keep sorted
+- version: 0.9.0
+  date: 2016-10-31
+  status: stable
+  groupId: org.dkpro.tc
+  artifactId: dkpro-tc
+
 - version: 0.8.0
   date: 2016-04-21
   status: stable
@@ -22,7 +28,7 @@
   artifactId: dkpro-tc
 
 ### unstable versions - keep sorted
-- version: 0.9.0-SNAPSHOT
+- version: 1.0.0-SNAPSHOT
   date: unknown
   status: unstable
   groupId: org.dkpro.tc
