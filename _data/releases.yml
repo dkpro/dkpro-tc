@@ -10,7 +10,7 @@
 
 ### stable versions - keep sorted
 - version: 0.9.0
-  date: 2016-10-31
+  date: 2016-10-24
   status: stable
   groupId: org.dkpro.tc
   artifactId: dkpro-tc
