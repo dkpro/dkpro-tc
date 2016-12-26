@@ -31,7 +31,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
-import org.dkpro.tc.ml.report.InnerBatchUsingTCEvaluationReport;
+import org.dkpro.tc.ml.report.InnerBatchReport;
 
 public class LiblinearAdapter 
 	implements TCMachineLearningAdapter
@@ -57,7 +57,7 @@ public class LiblinearAdapter
 
 	@Override
 	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
-		return InnerBatchUsingTCEvaluationReport.class;
+		return InnerBatchReport.class;
 	}
 
 	@SuppressWarnings("unchecked")
