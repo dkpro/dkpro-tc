@@ -34,6 +34,7 @@
 		<uima.version>2.8.1</uima.version>
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 		<spring.version>3.2.16.RELEASE</spring.version>
+		<dkpro.lab.version>0.14.0-SNAPSHOT</dkpro.lab.version>
 	</properties>
 	<scm>
 	  	<connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
@@ -233,7 +234,7 @@
 			<dependency>
 				<groupId>org.dkpro.lab</groupId>
 				<artifactId>dkpro-lab</artifactId>
-				<version>0.13.0</version>
+				<version>${dkpro.lab.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
