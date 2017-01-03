@@ -1,1 +1,2 @@
-classpath*:desc/type/*.xml
+classpath*:desc/type/JCasId.xml
+classpath*:desc/type/TextClassification.xml
