@@ -933,6 +933,11 @@ public class WekaUtils
     public static Instances applyAttributeSelectionFilter(Instances trainData, Remove removeFilter)
         throws Exception
     {
+        // less attributes than should be kept => ignore filter
+        if(removeFilter == null){
+        	return trainData;
+        }
+        
         Instances filtered = Filter.useFilter(trainData, removeFilter);
         filtered.setClassIndex(trainData.classIndex());
         // swap attributes to fit MEKA
