@@ -309,7 +309,10 @@ public interface Constants
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
-    public static final String FILENAME_FEATURES = "feature.names";
+    public static final String FILENAME_FEATURES = "featureNames.txt";
+    
+    public static String FILENAME_OUTCOMES = "outcomes.txt";
+    
     /**
      * Name of the attribute/label which stores the prediction values
      */
@@ -334,6 +337,7 @@ public interface Constants
      * For empty predictions (no label value above the bipartition threshold)
      */
     public static String EMPTY_PREDICTION = "$NO_PREDICTION$";
+	
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome
      */

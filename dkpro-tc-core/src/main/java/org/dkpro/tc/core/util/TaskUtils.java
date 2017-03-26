@@ -65,6 +65,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -236,7 +237,7 @@ public class TaskUtils
                 ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
                 ExtractFeaturesConnector.PARAM_FEATURE_STORE_CLASS, featureStore));
 
-        return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
+        return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
                 parameters.toArray());
     }
 
