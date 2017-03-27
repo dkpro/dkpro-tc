@@ -102,12 +102,15 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 
 	DataStreamWriter dsw;
 
-	Set<String> featureNames = new HashSet<>();
-	Set<String> uniqueOutcomes = new HashSet<>();
+	Set<String> featureNames;
+	Set<String> uniqueOutcomes;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
+		
+		featureNames = new HashSet<>();
+		uniqueOutcomes = new HashSet<>();
 
 		try {
 			featureStore = (FeatureStore) Class.forName(featureStoreClass).newInstance();
@@ -181,12 +184,10 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		applyFilter();
 
 		// write feature names file if in training mode
-		if (!isTesting) {
-			writeFeatureNames();
-			writeOutcomes();
-		}
-		// apply the feature names filter
-		else {
+		writeOutcomes();
+		writeFeatureNames();
+		
+		if (isTesting) {
 			applyFeatureNameFilter();
 		}
 
