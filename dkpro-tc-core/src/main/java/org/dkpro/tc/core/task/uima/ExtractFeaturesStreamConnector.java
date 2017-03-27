@@ -36,7 +36,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
@@ -91,14 +90,12 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 	@ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
 	private boolean isTesting;
 
-	protected FeatureStore featureStore;
-
 	/*
 	 * Default value as String; see
 	 * https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
 	 */
-	@ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true, defaultValue = "org.dkpro.tc.fstore.simple.DenseFeatureStore")
-	private String featureStoreClass;
+	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true, defaultValue = "false")
+	private boolean useSparseFeatures;
 
 	DataStreamWriter dsw;
 
@@ -111,12 +108,6 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		
 		featureNames = new HashSet<>();
 		uniqueOutcomes = new HashSet<>();
-
-		try {
-			featureStore = (FeatureStore) Class.forName(featureStoreClass).newInstance();
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
 
 		if (featureExtractors.length == 0) {
 			context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
@@ -140,30 +131,19 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		try {
 			if (featureMode.equals(Constants.FM_SEQUENCE)) {
 				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId,
-						featureStore.supportsSparseFeatures());
+						useSparseFeatures);
 			} else if (featureMode.equals(Constants.FM_UNIT)) {
 				instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId,
-						featureStore.supportsSparseFeatures());
+						useSparseFeatures);
 			} else {
 				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
-						addInstanceId, featureStore.supportsSparseFeatures()));
+						addInstanceId, useSparseFeatures));
 			}
-		} catch (Exception e1) {
-			throw new AnalysisEngineProcessException(new IllegalStateException(e1));
-		}
-
-//		for (Instance instance : instances) {
-//			try {
-//				this.featureStore.addInstance(instance);
-//			} catch (TextClassificationException e) {
-//				throw new AnalysisEngineProcessException(e);
-//			}
-//		}
-
-		try {
+			
 			dsw.write(instances);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
+			
+		} catch (Exception e1) {
+			throw new AnalysisEngineProcessException(e1);
 		}
 
 		for (Instance i : instances) {
@@ -192,7 +172,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		}
 
 		try {
-			dsw.transform(outputDirectory, !featureStore.supportsSparseFeatures(), learningMode,
+			dsw.transform(outputDirectory, useSparseFeatures, learningMode,
 					applyWeighting);
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
@@ -222,9 +202,10 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		// if feature space from training set and test set differs, apply the
 		// filter
 		// to keep only features seen during training
-		if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
+		if (!trainFeatureNames.equals(featureNames)) {
 			filter.setFeatureNames(trainFeatureNames);
-			filter.applyFilter(featureStore);
+//			filter.applyFilter(featureStore);
+			//FIXME: how to deal with applyFilter?
 		}
 	}
 
@@ -246,7 +227,8 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
 
 				if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
-					filter.applyFilter(featureStore);
+//					filter.applyFilter(featureStore);
+					//FIXME: no more feature store
 				}
 			} catch (Exception e) {
 				throw new AnalysisEngineProcessException(e);

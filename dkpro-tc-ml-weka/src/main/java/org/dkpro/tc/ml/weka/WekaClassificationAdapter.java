@@ -99,4 +99,9 @@ public class WekaClassificationAdapter
     {
         return DenseFeatureStore.class.getName();
     }
+
+	@Override
+	public boolean useSparseFeatures() {
+		return false;
+	}
 }

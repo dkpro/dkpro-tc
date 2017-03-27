@@ -75,7 +75,7 @@ public abstract class ConnectorBase
     /**
      * Name of the class implementing {@link org.dkpro.tc.api.features.FeatureStore}
      */
-    public static final String PARAM_FEATURE_STORE_CLASS= "featureStoreClass";
+    public static final String PARAM_USE_SPARSE_FEATURES= "featureStoreClass";
 
 
 }

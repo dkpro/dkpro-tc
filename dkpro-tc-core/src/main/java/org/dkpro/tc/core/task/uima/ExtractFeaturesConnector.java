@@ -96,7 +96,7 @@ public class ExtractFeaturesConnector
     /*
      * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
      */
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true, defaultValue = "org.dkpro.tc.fstore.simple.DenseFeatureStore")
+    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true, defaultValue = "org.dkpro.tc.fstore.simple.DenseFeatureStore")
     private String featureStoreClass;
 
     @Override

@@ -93,5 +93,5 @@ public interface TCMachineLearningAdapter
 
 	public Class<? extends ModelSerializationTask> getSaveModelTask();
 
-    public String getFeatureStore();
+	public boolean useSparseFeatures();
 }

@@ -209,17 +209,17 @@ public class TaskUtils
     }
 
     public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
-            String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
+            boolean useSparseFeatures, boolean addInstanceId, boolean developerMode, boolean isTesting,
             boolean applyWeighting, List<String> featureFilter, List<ExternalResourceDescription> aFeatureExtractors)
                 throws ResourceInitializationException
     {
         return getFeatureExtractorConnector(outputPath, dataWriter, learningMode,
-                featureMode, featureStore, addInstanceId, developerMode, isTesting,
+                featureMode, useSparseFeatures, addInstanceId, developerMode, isTesting,
                 Collections.<String> emptyList(), applyWeighting, aFeatureExtractors);
     }
 
     public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
-            String featureStore, boolean addInstanceId, boolean developerMode, boolean isTesting,
+            boolean useSparseFeatures, boolean addInstanceId, boolean developerMode, boolean isTesting,
             List<String> filters, boolean applyWeighting, List<ExternalResourceDescription> extractorResources)
                 throws ResourceInitializationException
     {
@@ -235,7 +235,7 @@ public class TaskUtils
                 ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
                 ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
                 ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-                ExtractFeaturesConnector.PARAM_FEATURE_STORE_CLASS, featureStore));
+                ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures));
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
                 parameters.toArray());

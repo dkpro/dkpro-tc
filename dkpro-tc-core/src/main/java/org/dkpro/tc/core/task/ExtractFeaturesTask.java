@@ -23,7 +23,7 @@ import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_FILTERS;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_STORE;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_USE_SPARSE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
@@ -87,8 +87,6 @@ public class ExtractFeaturesTask
     private String learningMode;
     @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
-    @Discriminator(name = DIM_FEATURE_STORE)
-    private String featureStore;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     private boolean developerMode;
     @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
@@ -175,23 +173,12 @@ public class ExtractFeaturesTask
 
         AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
                 outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
-                featureMode, getFeatureStore(), true, developerMode, isTesting, featureFilters,
+                featureMode, mlAdapter.useSparseFeatures(), true, developerMode, isTesting, featureFilters,
                 applyWeighting, featureExtractorDescriptions);
 
         return connector;
     }
 
-    private String getFeatureStore()
-    {
-        if (featureStore != null) {
-            LogFactory.getLog(getClass())
-                    .info("Will use feature store [" + featureStore
-                            + "] and override feature store defined in machine learning adapter i.e. ["
-                            + mlAdapter.getFeatureStore() + "]");
-            return featureStore;
-        }
-        return mlAdapter.getFeatureStore();
-    }
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)

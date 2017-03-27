@@ -139,7 +139,7 @@ public interface Constants
     /**
      * Name of the class that implements {@link org.dkpro.tc.api.features.FeatureStore}
      */
-    public static final String DIM_FEATURE_STORE = "featureStore";
+    public static final String DIM_FEATURE_USE_SPARSE = "featureStore";
 
     /**
      * Name of the discriminator which holds the classifier and arguments which serve as baseline
