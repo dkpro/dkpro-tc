@@ -18,6 +18,7 @@
 package org.dkpro.tc.core.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 import org.dkpro.tc.api.features.Instance;
@@ -38,4 +39,6 @@ public interface DataStreamWriter
     
 	public void transform(File outputDirectory, boolean b, String learningMode,
 			boolean applyWeighting) throws Exception;
+	
+	public void close() throws IOException;
 }

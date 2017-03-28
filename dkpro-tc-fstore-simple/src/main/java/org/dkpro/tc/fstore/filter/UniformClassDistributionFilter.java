@@ -59,19 +59,19 @@ public class UniformClassDistributionFilter
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(f), "utf-8"));
         String line = null;
-        int lineId=0;
+        int lineId = 0;
         while ((line = reader.readLine()) != null) {
             Instance i = gson.fromJson(line, Instance.class);
-            
+
             List<Integer> list = outcomeLineMap.get(i.getOutcome());
-            if(list==null){
+            if (list == null) {
                 list = new ArrayList<>();
             }
             list.add(lineId++);
             outcomeLineMap.put(i.getOutcome(), list);
         }
         reader.close();
-        
+
         // find the smallest class
         int minClassSize = Integer.MAX_VALUE;
         String minOutcome = null;
@@ -82,46 +82,44 @@ public class UniformClassDistributionFilter
                 minOutcome = k;
             }
         }
-        
-        //shuffle the line-ids und shrink lists to minimal size
-        for(String k : outcomeLineMap.keySet()){
+
+        // shuffle the line-ids und shrink lists to minimal size
+        for (String k : outcomeLineMap.keySet()) {
             List<Integer> list = outcomeLineMap.get(k);
             Collections.shuffle(list);
             outcomeLineMap.put(k, list.subList(0, minClassSize));
         }
 
-
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
-        
-        File tmpOut = new File(f.getParentFile(), "json_filtered.txt");
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(tmpOut), "utf-8"));
 
-        
+        File tmpOut = new File(f.getParentFile(), "json_filtered.txt");
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(tmpOut), "utf-8"));
+
         line = null;
-        lineId=0;
+        lineId = 0;
         while ((line = reader.readLine()) != null) {
             Instance i = gson.fromJson(line, Instance.class);
-            
-            //write the minimal class
-            if(minOutcome.equals(i.getOutcome())){
-                writer.write(line);
+
+            // write the minimal class
+            if (minOutcome.equals(i.getOutcome())) {
+                writer.write(line + System.lineSeparator());
                 lineId++;
                 continue;
             }
-            
-            boolean write= outcomeLineMap.get(i.getOutcome()).contains(lineId);
-            if(write){
-                writer.write(line);
+
+            boolean write = outcomeLineMap.get(i.getOutcome()).contains(lineId);
+            if (write) {
+                writer.write(line + System.lineSeparator());
             }
 
             lineId++;
         }
         reader.close();
         writer.close();
-        
-        FileUtils.copyFile(tmpOut, f);
 
+        FileUtils.copyFile(tmpOut, f);
+        FileUtils.deleteQuietly(tmpOut);
     }
 
     @Override

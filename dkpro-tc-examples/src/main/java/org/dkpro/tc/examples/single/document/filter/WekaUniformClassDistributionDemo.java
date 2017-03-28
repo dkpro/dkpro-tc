@@ -83,7 +83,7 @@ public class WekaUniformClassDistributionDemo
         ParameterSpace pSpace = getParameterSpace();
 
         WekaUniformClassDistributionDemo experiment = new WekaUniformClassDistributionDemo();
-//        experiment.runCrossValidation(pSpace);
+        // experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 
@@ -113,21 +113,18 @@ public class WekaUniformClassDistributionDemo
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new String[] { NaiveBayes.class.getName() }));
-        
-        
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,3)));
 
-//        Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,
-//                Arrays.asList(new String[] { UniformClassDistributionFilter.class.getName() }));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
+                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
+                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+
+        Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,
+                Arrays.asList(new String[] { UniformClassDistributionFilter.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), 
-                dimFeatureSets, 
-//                dimFeatureFilters,
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimFeatureFilters,
                 dimClassificationArgs);
 
         return pSpace;
@@ -138,8 +135,8 @@ public class WekaUniformClassDistributionDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("UniformClassDistFeatureFilterCV",
-                WekaClassificationAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+                "UniformClassDistFeatureFilterCV", WekaClassificationAdapter.class, NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         // batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for

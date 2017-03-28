@@ -177,18 +177,20 @@ public class ExtractFeaturesStreamConnector
     {
         super.collectionProcessComplete();
 
-        // FIXME: How to implement filtering
-        applyFilter(jsonTempFile);
-
-        // write feature names file if in training mode
-        writeOutcomes();
-        writeFeatureNames();
-
-        if (isTesting) {
-            applyFeatureNameFilter();
-        }
-
         try {
+            dsw.close();
+
+            // FIXME: How to implement filtering
+            applyFilter(jsonTempFile);
+
+            // write feature names file if in training mode
+            writeOutcomes();
+            writeFeatureNames();
+
+            if (isTesting) {
+                applyFeatureNameFilter();
+            }
+
             dsw.transform(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
         }
         catch (Exception e) {
