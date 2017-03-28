@@ -43,196 +43,225 @@ import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.fstore.filter.AdaptTestToTrainingFeaturesFilter;
+import org.dkpro.tc.fstore.filter.FeatureFilter;
 import org.dkpro.tc.fstore.filter.FeatureStoreFilter;
 
 /**
- * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
- * the feature extractors on each CAS.
+ * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
+ * extractors on each CAS.
  */
-public class ExtractFeaturesStreamConnector extends ConnectorBase {
+public class ExtractFeaturesStreamConnector
+    extends ConnectorBase
+{
 
-	/**
-	 * Directory in which the extracted features will be stored
-	 */
-	public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
+    /**
+     * Directory in which the extracted features will be stored
+     */
+    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 
-	@ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-	private File outputDirectory;
+    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
+    private File outputDirectory;
 
-	/**
-	 * Whether an ID should be added to each instance in the feature file
-	 */
-	public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
-	@ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
-	private boolean addInstanceId;
+    /**
+     * Whether an ID should be added to each instance in the feature file
+     */
+    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
+    private boolean addInstanceId;
 
-	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-	protected FeatureExtractorResource_ImplBase[] featureExtractors;
+    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
-	private String[] featureFilters;
+    @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
+    private String[] featureFilters;
 
-	@ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
-	private String dataWriterClass;
+    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+    private String dataWriterClass;
 
-	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
-	private String learningMode;
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
-	private String featureMode;
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
 
-	@ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
-	private boolean developerMode;
+    @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
+    private boolean developerMode;
 
-	@ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
-	private boolean applyWeighting;
+    @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
+    private boolean applyWeighting;
 
-	@ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
-	private boolean isTesting;
+    @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
+    private boolean isTesting;
 
-	/*
-	 * Default value as String; see
-	 * https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
-	 */
-	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true, defaultValue = "false")
-	private boolean useSparseFeatures;
+    /*
+     * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
+     */
+    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true, defaultValue = "false")
+    private boolean useSparseFeatures;
 
-	DataStreamWriter dsw;
+    DataStreamWriter dsw;
 
-	Set<String> featureNames;
-	Set<String> uniqueOutcomes;
+    Set<String> featureNames;
+    Set<String> uniqueOutcomes;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		
-		featureNames = new HashSet<>();
-		uniqueOutcomes = new HashSet<>();
+    File jsonTempFile;
 
-		if (featureExtractors.length == 0) {
-			context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
-			throw new ResourceInitializationException();
-		}
+    @Override
+    public void initialize(UimaContext context)
+        throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		try {
-			dsw = (DataStreamWriter) Class.forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
-			dsw.init(new File(outputDirectory, "json.txt"));
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+        featureNames = new HashSet<>();
+        uniqueOutcomes = new HashSet<>();
 
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		getLogger().log(Level.INFO, "--- feature extraction for CAS with id ["
-				+ JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+        if (featureExtractors.length == 0) {
+            context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
+            throw new ResourceInitializationException();
+        }
 
-		List<Instance> instances = new ArrayList<Instance>();
-		try {
-			if (featureMode.equals(Constants.FM_SEQUENCE)) {
-				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId,
-						useSparseFeatures);
-			} else if (featureMode.equals(Constants.FM_UNIT)) {
-				instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId,
-						useSparseFeatures);
-			} else {
-				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
-						addInstanceId, useSparseFeatures));
-			}
-			
-			dsw.write(instances);
-			
-		} catch (Exception e1) {
-			throw new AnalysisEngineProcessException(e1);
-		}
+        jsonTempFile = new File(outputDirectory, "json.txt");
 
-		for (Instance i : instances) {
-			for (Feature f : i.getFeatures()) {
-				featureNames.add(f.getName());
-			}
-			for (String o : i.getOutcomes()) {
-				uniqueOutcomes.add(o);
-			}
-		}
-	}
+        try {
+            dsw = (DataStreamWriter) Class
+                    .forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
+            dsw.init(jsonTempFile);
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
 
-	@Override
-	public void collectionProcessComplete() throws AnalysisEngineProcessException {
-		super.collectionProcessComplete();
+    @Override
+    public void process(JCas jcas)
+        throws AnalysisEngineProcessException
+    {
+        getLogger().log(Level.INFO, "--- feature extraction for CAS with id ["
+                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
-		//FIXME: How to implement filtering
-		applyFilter();
+        List<Instance> instances = new ArrayList<Instance>();
+        try {
+            if (featureMode.equals(Constants.FM_SEQUENCE)) {
+                instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas,
+                        addInstanceId, useSparseFeatures);
+            }
+            else if (featureMode.equals(Constants.FM_UNIT)) {
+                instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
+                        addInstanceId, useSparseFeatures);
+            }
+            else {
+                instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
+                        developerMode, addInstanceId, useSparseFeatures));
+            }
 
-		// write feature names file if in training mode
-		writeOutcomes();
-		writeFeatureNames();
-		
-		if (isTesting) {
-			applyFeatureNameFilter();
-		}
+            dsw.write(instances);
 
-		try {
-			dsw.transform(outputDirectory, useSparseFeatures, learningMode,
-					applyWeighting);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-		
-	}
+        }
+        catch (Exception e1) {
+            throw new AnalysisEngineProcessException(e1);
+        }
 
-	private void writeOutcomes() throws AnalysisEngineProcessException {
-		File outcomesFile = new File(outputDirectory, Constants.FILENAME_OUTCOMES);
-		try {
-			FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+        for (Instance i : instances) {
+            for (Feature f : i.getFeatures()) {
+                featureNames.add(f.getName());
+            }
+            for (String o : i.getOutcomes()) {
+                uniqueOutcomes.add(o);
+            }
+        }
+    }
 
-	private void applyFeatureNameFilter() throws AnalysisEngineProcessException {
-		File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-		TreeSet<String> trainFeatureNames;
-		try {
-			trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+    @Override
+    public void collectionProcessComplete()
+        throws AnalysisEngineProcessException
+    {
+        super.collectionProcessComplete();
 
-		AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
-		// if feature space from training set and test set differs, apply the
-		// filter
-		// to keep only features seen during training
-		if (!trainFeatureNames.equals(featureNames)) {
-			filter.setFeatureNames(trainFeatureNames);
-//			filter.applyFilter(featureStore);
-			//FIXME: how to deal with applyFilter?
-		}
-	}
+        // FIXME: How to implement filtering
+        applyFilter(jsonTempFile);
 
-	private void writeFeatureNames() throws AnalysisEngineProcessException {
-		try {
-			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
-					featureNames);
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+        // write feature names file if in training mode
+        writeOutcomes();
+        writeFeatureNames();
 
-	private void applyFilter() throws AnalysisEngineProcessException {
-		// apply filters that influence the whole feature store
-		// filters are applied in the order that they appear as parameters
-		for (String filterString : featureFilters) {
-			FeatureStoreFilter filter;
-			try {
-				filter = (FeatureStoreFilter) Class.forName(filterString).newInstance();
+        if (isTesting) {
+            applyFeatureNameFilter();
+        }
 
-				if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
-//					filter.applyFilter(featureStore);
-					//FIXME: no more feature store
-				}
-			} catch (Exception e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-		}
-	}
+        try {
+            dsw.transform(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+    }
+
+    private void writeOutcomes()
+        throws AnalysisEngineProcessException
+    {
+        File outcomesFile = new File(outputDirectory, Constants.FILENAME_OUTCOMES);
+        try {
+            FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private void applyFeatureNameFilter()
+        throws AnalysisEngineProcessException
+    {
+        File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+        TreeSet<String> trainFeatureNames;
+        try {
+            trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+        AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter();
+        // if feature space from training set and test set differs, apply the
+        // filter
+        // to keep only features seen during training
+        if (!trainFeatureNames.equals(featureNames)) {
+            filter.setFeatureNames(trainFeatureNames);
+            // filter.applyFilter(featureStore);
+            // FIXME: how to deal with applyFilter?
+        }
+    }
+
+    private void writeFeatureNames()
+        throws AnalysisEngineProcessException
+    {
+        try {
+            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
+                    featureNames);
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private void applyFilter(File jsonTempFile)
+        throws AnalysisEngineProcessException
+    {
+        // apply filters that influence the whole feature store
+        // filters are applied in the order that they appear as parameters
+        for (String filterString : featureFilters) {
+            FeatureFilter filter;
+            try {
+                filter = (FeatureFilter) Class.forName(filterString).newInstance();
+
+                if (filter.isApplicableForTraining() && !isTesting
+                        || filter.isApplicableForTesting() && isTesting) {
+                    filter.applyFilter(jsonTempFile);
+                }
+            }
+            catch (Exception e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+    }
 }

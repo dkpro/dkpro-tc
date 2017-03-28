@@ -17,90 +17,122 @@
  ******************************************************************************/
 package org.dkpro.tc.fstore.filter;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import org.dkpro.tc.api.features.FeatureStore;
+import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Instance;
 
+import com.google.gson.Gson;
+
 /**
- * Resamples the instances in order to achieve a uniform class distribution.
- * If the class distribution is already uniform, nothing is changed.
- * In all other cases, this results in dropping some instances.
+ * Resamples the instances in order to achieve a uniform class distribution. If the class
+ * distribution is already uniform, nothing is changed. In all other cases, this results in dropping
+ * some instances.
  * 
- * FIXME: This is currently optimized for memory consumption and might be slow for large feature stores.
- * If there is enough memory (at least 2x the size of the current feature store) a time optimized version should simply
- * create a new feature store that only holds the selected instances.
- * In the worst case, this would double memory consumption.
+ * FIXME: This is currently optimized for memory consumption and might be slow for large feature
+ * stores. If there is enough memory (at least 2x the size of the current feature store) a time
+ * optimized version should simply create a new feature store that only holds the selected
+ * instances. In the worst case, this would double memory consumption.
  */
 public class UniformClassDistributionFilter
-	implements FeatureStoreFilter
+    implements FeatureFilter
 {
 
-	@Override
-	public void applyFilter(FeatureStore store) 
-	{
-		
-		// create mapping from outcomes to instance offsets in the feature store
-		Map<String, List<Integer>> outcome2instanceOffset = new HashMap<String, List<Integer>>();
-		for (int i=0; i<store.getNumberOfInstances(); i++) {
-			Instance instance = store.getInstance(i);
-			String outcome = instance.getOutcome();
-			List<Integer> offsets;
-			if (outcome2instanceOffset.containsKey(outcome)) {
-				offsets = outcome2instanceOffset.get(outcome);
-			}
-			else {
-				offsets = new ArrayList<>();
-			}
-			offsets.add(i);
-			outcome2instanceOffset.put(outcome, offsets);
-		}
-		
-		// find the smallest class
-		int minClassSize = Integer.MAX_VALUE;
-		for (String outcome : outcome2instanceOffset.keySet()) {
-			int classSize = outcome2instanceOffset.get(outcome).size();
-			if (classSize < minClassSize) {
-				minClassSize = classSize;
-			}
-		}
-		
-		// resample all but the smallest class to the same size as the smallest class
-		// return the offsets of the instances that should be deleted
-		SortedSet<Integer> offsetsToDelete = new TreeSet<>();
-		for (String outcome : outcome2instanceOffset.keySet()) {
-			int classSize = outcome2instanceOffset.get(outcome).size();
-			if (classSize != minClassSize) {
-				offsetsToDelete.addAll(resample(outcome2instanceOffset.get(outcome), minClassSize));
-			}
-		}
-		
-		int nrOfDeleted = 0;
-		for (int offsetToDelete : offsetsToDelete) {
-			store.deleteInstance(offsetToDelete - nrOfDeleted);
-			nrOfDeleted++;
-		}
-	}
+    @Override
+    public void applyFilter(File f)
+        throws Exception
+    {
+        Map<String, List<Integer>> outcomeLineMap = new HashMap<>();
+        Gson gson = new Gson();
 
-	private List<Integer> resample(List<Integer> offsets, int targetSize) {
-		List<Integer> shuffledOffsets = new ArrayList<>(offsets);
-		Collections.shuffle(shuffledOffsets);
-		return shuffledOffsets.subList(targetSize, shuffledOffsets.size());	
-	}
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(f), "utf-8"));
+        String line = null;
+        int lineId=0;
+        while ((line = reader.readLine()) != null) {
+            Instance i = gson.fromJson(line, Instance.class);
+            
+            List<Integer> list = outcomeLineMap.get(i.getOutcome());
+            if(list==null){
+                list = new ArrayList<>();
+            }
+            list.add(lineId++);
+            outcomeLineMap.put(i.getOutcome(), list);
+        }
+        reader.close();
+        
+        // find the smallest class
+        int minClassSize = Integer.MAX_VALUE;
+        String minOutcome = null;
+        for (String k : outcomeLineMap.keySet()) {
+            int size = outcomeLineMap.get(k).size();
+            if (size < minClassSize) {
+                minClassSize = size;
+                minOutcome = k;
+            }
+        }
+        
+        //shuffle the line-ids und shrink lists to minimal size
+        for(String k : outcomeLineMap.keySet()){
+            List<Integer> list = outcomeLineMap.get(k);
+            Collections.shuffle(list);
+            outcomeLineMap.put(k, list.subList(0, minClassSize));
+        }
 
-	@Override
-	public boolean isApplicableForTraining() {
-		return true;
-	}
 
-	@Override
-	public boolean isApplicableForTesting() {
-		return false;
-	}
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+        
+        File tmpOut = new File(f.getParentFile(), "json_filtered.txt");
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(tmpOut), "utf-8"));
+
+        
+        line = null;
+        lineId=0;
+        while ((line = reader.readLine()) != null) {
+            Instance i = gson.fromJson(line, Instance.class);
+            
+            //write the minimal class
+            if(minOutcome.equals(i.getOutcome())){
+                writer.write(line);
+                lineId++;
+                continue;
+            }
+            
+            boolean write= outcomeLineMap.get(i.getOutcome()).contains(lineId);
+            if(write){
+                writer.write(line);
+            }
+
+            lineId++;
+        }
+        reader.close();
+        writer.close();
+        
+        FileUtils.copyFile(tmpOut, f);
+
+    }
+
+    @Override
+    public boolean isApplicableForTraining()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isApplicableForTesting()
+    {
+        return false;
+    }
 }
