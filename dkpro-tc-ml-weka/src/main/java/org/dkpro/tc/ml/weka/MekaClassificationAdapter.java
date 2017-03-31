@@ -95,8 +95,9 @@ public class MekaClassificationAdapter
 	}
 
     @Override
-    public String getFeatureStore()
+    public boolean useSparseFeatures()
     {
-        return DenseFeatureStore.class.getName();
+        return false;
     }
+
 }

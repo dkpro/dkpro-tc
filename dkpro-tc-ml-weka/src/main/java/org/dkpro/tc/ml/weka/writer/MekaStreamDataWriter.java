@@ -41,7 +41,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -111,7 +111,7 @@ public class MekaStreamDataWriter
     {
         close();
 
-        File arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
+        File arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(new File(outputFolder, GENERIC_FILE)), "utf-8"));
@@ -132,13 +132,18 @@ public class MekaStreamDataWriter
             numInstances++;
         }
         reader.close();
-
+        
         // Make sure "outcome" is not the name of an attribute
         List<String> outcomeList = FileUtils
                 .readLines(new File(outputFolder, Constants.FILENAME_OUTCOMES), "utf-8");
 
         List<Attribute> outcomeAttributes = createOutcomeAttributes(outcomeList);
 
+        // in Meka, class label attributes have to go on top
+        for (Attribute attribute : outcomeAttributes) {
+            attributeStore.addAttributeAtBegin(attribute.name(), attribute);
+        }
+        
         // for Meka-internal use
         Instances wekaInstances = new Instances(
                 WekaUtils.RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
