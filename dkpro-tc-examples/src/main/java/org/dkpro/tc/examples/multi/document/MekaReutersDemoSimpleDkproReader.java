@@ -78,7 +78,7 @@ public class MekaReutersDemoSimpleDkproReader
         ParameterSpace pSpace = getParameterSpace();
         MekaReutersDemoSimpleDkproReader experiment = new MekaReutersDemoSimpleDkproReader();
         experiment.runTrainTest(pSpace);
-        experiment.runCrossValidation(pSpace);
+//        experiment.runCrossValidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")

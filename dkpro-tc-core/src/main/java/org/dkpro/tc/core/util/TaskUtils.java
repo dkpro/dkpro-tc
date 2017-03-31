@@ -64,7 +64,6 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
-import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 
 import net.sf.json.JSONObject;
@@ -225,17 +224,17 @@ public class TaskUtils
     {
         
         List<Object> parameters = new ArrayList<>();
-        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
-                outputPath, ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
-                ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
-                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
-                ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(),
-                ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
-                ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-                ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
-                ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
-                ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-                ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures));
+        parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY,
+                outputPath, ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, learningMode,
+                ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                ExtractFeaturesStreamConnector.PARAM_FEATURE_FILTERS, filters.toArray(),
+                ExtractFeaturesStreamConnector.PARAM_FEATURE_MODE, featureMode,
+//                ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
+                ExtractFeaturesStreamConnector.PARAM_DEVELOPER_MODE, developerMode,
+                ExtractFeaturesStreamConnector.PARAM_IS_TESTING, isTesting,
+                ExtractFeaturesStreamConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
+                ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures));
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
                 parameters.toArray());

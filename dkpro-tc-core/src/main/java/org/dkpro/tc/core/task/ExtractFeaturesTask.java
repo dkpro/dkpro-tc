@@ -196,14 +196,6 @@ public class ExtractFeaturesTask
 
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
                 parameters.toArray());
-        
-        
-//        AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-//                outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
-//                featureMode, mlAdapter.useSparseFeatures(), true, developerMode, isTesting, featureFilters,
-//                applyWeighting, featureExtractorDescriptions);
-//
-//        return connector;
     }
 
 

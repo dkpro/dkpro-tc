@@ -68,12 +68,6 @@ public class ExtractFeaturesStreamConnector
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-    /*
-     * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
-     */
-    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true, defaultValue = "false")
-    private boolean useSparseFeatures;
-
     DataStreamWriter dsw;
 
     TreeSet<String> featureNames;
@@ -92,7 +86,7 @@ public class ExtractFeaturesStreamConnector
 
             if (fcc.isTesting) {
                 File featureNamesFile = new File(fcc.trainFolder, Constants.FILENAME_FEATURES);
-                featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
+                featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
             }
 
             if (featureExtractors.length == 0) {
@@ -125,15 +119,15 @@ public class ExtractFeaturesStreamConnector
         try {
             if (fcc.featureMode.equals(Constants.FM_SEQUENCE)) {
                 instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas,
-                        fcc.setInstanceId, useSparseFeatures);
+                        fcc.setInstanceId, fcc.useSparseFeatures);
             }
             else if (fcc.featureMode.equals(Constants.FM_UNIT)) {
                 instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                        fcc.setInstanceId, useSparseFeatures);
+                        fcc.setInstanceId, fcc.useSparseFeatures);
             }
             else {
                 instances.add(TaskUtils.getSingleInstance(fcc.featureMode, featureExtractors, jcas,
-                        fcc.developerMode, fcc.setInstanceId, useSparseFeatures));
+                        fcc.developerMode, fcc.setInstanceId, fcc.useSparseFeatures));
             }
 
             /*
