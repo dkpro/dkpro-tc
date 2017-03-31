@@ -173,7 +173,7 @@ public class WekaStreamDataWriter
         saver.setInstances(wekaInstances);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputDirectory, "json.txt")), "utf-8"));
+                new FileInputStream(new File(outputDirectory, GENERIC_FILE)), "utf-8"));
         String line;
         while ((line = reader.readLine()) != null) {
             Instance instance = gson.fromJson(line, Instance.class);
