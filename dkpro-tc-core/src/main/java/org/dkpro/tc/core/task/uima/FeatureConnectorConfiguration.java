@@ -141,20 +141,6 @@ public class FeatureConnectorConfiguration
         this.learningMode = learningMode;
     }
 
-    /**
-     * Carries the location of the training folder into the test task. This file pointer is
-     * identical to the output directory during the training task
-     */
-    public void setTrainFolder(File trainFile)
-    {
-        this.trainFolder = trainFile;
-    }
-
-    public File getTrainFolder()
-    {
-        return trainFolder;
-    }
-
     public void setInstanceId(boolean b)
     {
         this.setInstanceId = b;

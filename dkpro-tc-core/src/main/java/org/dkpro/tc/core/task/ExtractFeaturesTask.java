@@ -187,8 +187,6 @@ public class ExtractFeaturesTask
         fcc.setFeatureFilters(featureFilters);
         fcc.setApplyWeighting(applyWeighting);
         fcc.setInstanceId(true);
-        fcc.setTrainFolder(aContext.getFolder(Constants.TRAIN_OUTPUT, AccessMode.READONLY));
-        
         
         List<Object> parameters = new ArrayList<>();
         parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_FEATURE_CONNECTOR_CONFIGURATION,

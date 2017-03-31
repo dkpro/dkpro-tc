@@ -85,7 +85,7 @@ public class ExtractFeaturesStreamConnector
             uniqueOutcomes = new HashSet<>();
 
             if (fcc.isTesting) {
-                File featureNamesFile = new File(fcc.trainFolder, Constants.FILENAME_FEATURES);
+                File featureNamesFile = new File(fcc.outputDir, Constants.FILENAME_FEATURES);
                 featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
             }
 
@@ -95,7 +95,7 @@ public class ExtractFeaturesStreamConnector
             }
 
             dsw = (DataStreamWriter) Class
-                    .forName("org.dkpro.tc.ml.weka.writer.MekaStreamDataWriter").newInstance();
+                    .forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
             dsw.init(fcc.outputDir, fcc.useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
         }
         catch (Exception e) {

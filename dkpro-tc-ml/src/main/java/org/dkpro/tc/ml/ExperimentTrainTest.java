@@ -120,7 +120,6 @@ public class ExperimentTrainTest
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
         featuresTestTask.setMlAdapter(mlAdapter);
         featuresTestTask.setTesting(true);
-        featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TRAIN_OUTPUT);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);

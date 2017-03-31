@@ -232,7 +232,6 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
-        extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TRAIN_OUTPUT);
         
         extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
