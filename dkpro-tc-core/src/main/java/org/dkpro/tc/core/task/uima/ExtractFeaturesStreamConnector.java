@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.formula.IStabilityClassifier;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -68,7 +69,7 @@ public class ExtractFeaturesStreamConnector
     private String jsonConfiguration;
 
     FeatureConnectorConfiguration fcc;
-    
+
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
@@ -85,30 +86,34 @@ public class ExtractFeaturesStreamConnector
     TreeSet<String> featureNames;
     Set<String> uniqueOutcomes;
 
-    File jsonTempFile;
+    File json;
 
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-        
-        loadConfiguration();
-
-        featureNames = new TreeSet<>();
-        uniqueOutcomes = new HashSet<>();
-
-        if (featureExtractors.length == 0) {
-            context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
-            throw new ResourceInitializationException();
-        }
-
-        jsonTempFile = new File(fcc.outputDir, JSON);
-
         try {
+            loadConfiguration();
+
+            featureNames = new TreeSet<>();
+            uniqueOutcomes = new HashSet<>();
+
+            if (fcc.isTesting) {
+                File featureNamesFile = new File(fcc.trainFolder, Constants.FILENAME_FEATURES);
+                featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
+            }
+
+            if (featureExtractors.length == 0) {
+                context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
+                throw new ResourceInitializationException();
+            }
+
+            json = new File(fcc.outputDir, JSON);
+
             dsw = (DataStreamWriter) Class
                     .forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
-            dsw.init(jsonTempFile);
+            dsw.init(json);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -142,6 +147,12 @@ public class ExtractFeaturesStreamConnector
                         fcc.developerMode, fcc.setInstanceId, useSparseFeatures));
             }
 
+            /*
+             * filter-out feature names which did not occur during training if we are in the testing
+             * stage
+             */
+            instances = enforceMatchingFeatures(instances);
+
             dsw.write(instances);
 
         }
@@ -149,14 +160,43 @@ public class ExtractFeaturesStreamConnector
             throw new AnalysisEngineProcessException(e1);
         }
 
+        trackFeatureNamesAndOutcomes(instances);
+    }
+
+    private void trackFeatureNamesAndOutcomes(List<Instance> instances)
+    {
         for (Instance i : instances) {
-            for (Feature f : i.getFeatures()) {
-                featureNames.add(f.getName());
+            if (!fcc.isTesting) {
+                for (Feature f : i.getFeatures()) {
+                    featureNames.add(f.getName());
+                }
             }
             for (String o : i.getOutcomes()) {
                 uniqueOutcomes.add(o);
             }
+        }        
+    }
+
+    private List<Instance> enforceMatchingFeatures(List<Instance> instances)
+    {
+        if (!fcc.isTesting) {
+            return instances;
         }
+
+        List<Instance> out = new ArrayList<>();
+
+        for (Instance i : instances) {
+            List<Feature> newFeatures = new ArrayList<>();
+            for (Feature feat : i.getFeatures()) {
+                if (!featureNames.contains(feat.getName())) {
+                    continue;
+                }
+                newFeatures.add(feat);
+            }
+            i.setFeatures(newFeatures);
+            out.add(i);
+        }
+        return out;
     }
 
     @Override
@@ -168,16 +208,14 @@ public class ExtractFeaturesStreamConnector
         try {
             dsw.close();
 
-            // FIXME: How to implement filtering
-            applyFilter(jsonTempFile);
+            if (fcc.featureFilters.size() > 0) {
+                applyFilter(json);
+            }
 
             writeOutcomes();
 
             if (!fcc.isTesting) {
                 writeFeatureNames();
-            }
-            else {
-                applyFeatureNameFilter();
             }
 
             dsw.transform(fcc.outputDir, useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
@@ -196,26 +234,6 @@ public class ExtractFeaturesStreamConnector
             FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
         }
         catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-    }
-
-    private void applyFeatureNameFilter()
-        throws AnalysisEngineProcessException
-    {
-        try {
-            File featureNamesFile = new File(fcc.trainFolder, Constants.FILENAME_FEATURES);
-            TreeSet<String> trainFeatureNames;
-
-            trainFeatureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile));
-
-            AdaptTestToTrainingFeaturesFilter filter = new AdaptTestToTrainingFeaturesFilter(trainFeatureNames);
-            if (!trainFeatureNames.equals(featureNames)) {
-                filter.applyFilter(new File(fcc.outputDir, JSON));
-
-            }
-        }
-        catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
     }
