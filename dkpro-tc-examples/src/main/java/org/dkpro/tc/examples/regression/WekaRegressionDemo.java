@@ -44,6 +44,7 @@ import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.LinearRegression;
@@ -113,7 +114,7 @@ public class WekaRegressionDemo
         throws Exception
     {
         ExperimentTrainTest batch = new ExperimentTrainTest("WekaRegressionDemo",
-                WekaClassificationAdapter.class);
+                WekaRegressionAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);

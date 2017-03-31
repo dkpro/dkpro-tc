@@ -102,10 +102,11 @@ public class WekaRegressionAdapter
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
 		return WekaModelSerializationDescription.class;
 	}
-	
-	@Override
-    public String getFeatureStore()
+
+    @Override
+    public boolean useSparseFeatures()
     {
-        return DenseFeatureStore.class.getName();
+        return false;
     }
+	
 }
