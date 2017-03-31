@@ -30,15 +30,38 @@ import org.dkpro.tc.api.features.Instance;
 public interface DataStreamWriter
 {
     /**
-     * Write the contents of the feature store to the output directory.
+     * Write the feature instances in a generic format. This is necessary if either feature filter
+     * are provided or the input data format of the classifier requies a header which can only be
+     * created once all feature information e.g. names and outcomes have been seen (WEKA)
      */
-    public void write(Collection<Instance> instances)
+    public void writeGenericFormat(Collection<Instance> instances)
         throws Exception;
-    
-    public void init(File f) throws Exception;
-    
-	public void transform(File outputDirectory, boolean b, String learningMode,
-			boolean applyWeighting) throws Exception;
-	
-	public void close() throws IOException;
+
+    /**
+     * If the generic data format is/must be used - this method will read the generic file and
+     * create the classifier-fitted output format
+     */
+    public void transformFromGeneric()
+        throws Exception;
+
+    /**
+     * Writes directly into the data format of the classifier. This is considerably faster and the
+     * preferred way.
+     */
+    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+        throws Exception;
+
+    /**
+     * Lazy initialization of the writer component which writes either a generic file or the
+     * classifier file
+     */
+    public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
+        throws Exception;
+
+    public void close()
+        throws IOException;
+
+    public boolean canStream();
+
+    public boolean classiferReadsCompressed();
 }

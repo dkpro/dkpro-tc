@@ -1,5 +1,5 @@
 /**
- * Copyright 2016
+ * Copyright 2017
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -58,21 +58,32 @@ import weka.core.converters.Saver;
 public class WekaStreamDataWriter
     implements DataStreamWriter, Constants
 {
-    BufferedWriter bw;
+    BufferedWriter bw = null;
     Gson gson;
+    private boolean useSparse;
+    private String learningMode;
+    private boolean applyWeighting;
+    private File outputFolder;
 
-    public void init(File outputLocation)
-        throws Exception
+    public static final String GENERIC_FILE = "JSON.txt";
+
+    @Override
+    public void init(File outputFolder, boolean useSparse, String learningMode,
+            boolean applyWeighting)
+                throws Exception
     {
-        bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(outputLocation), "utf-8"));
-        gson = new Gson();
+        this.outputFolder = outputFolder;
+        this.useSparse = useSparse;
+        this.learningMode = learningMode;
+        this.applyWeighting = applyWeighting;
     }
 
     @Override
-    public void write(Collection<Instance> instances)
+    public void writeGenericFormat(Collection<Instance> instances)
         throws Exception
     {
+        initGeneric();
+
         Iterator<Instance> iterator = instances.iterator();
         while (iterator.hasNext()) {
             Instance next = iterator.next();
@@ -80,17 +91,30 @@ public class WekaStreamDataWriter
         }
     }
 
-    @Override
-    public void transform(File outputDirectory, boolean useDense, String learningMode,
-            boolean applyWeighting)
-                throws Exception
+    private void initGeneric()
+        throws IOException
     {
+        if (bw != null) {
+            return;
+        }
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(outputFolder, GENERIC_FILE)), "utf-8"));
+
+        gson = new Gson();
+    }
+
+    @Override
+    public void transformFromGeneric()
+        throws Exception
+    {
+        close();
+
         boolean isRegression = learningMode.equals(LM_REGRESSION);
 
-        File arffTarget = new File(outputDirectory, WekaClassificationAdapter.getInstance()
+        File arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputDirectory, "json.txt")), "utf-8"));
+                new FileInputStream(new File(outputFolder, GENERIC_FILE)), "utf-8"));
 
         AttributeStore attributeStore = new AttributeStore();
         Gson gson = new Gson();
@@ -111,7 +135,7 @@ public class WekaStreamDataWriter
 
         // Make sure "outcome" is not the name of an attribute
         List<String> outcomeList = FileUtils
-                .readLines(new File(outputDirectory, Constants.FILENAME_OUTCOMES), "utf-8");
+                .readLines(new File(outputFolder, Constants.FILENAME_OUTCOMES), "utf-8");
         Attribute outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
             System.err.println(
@@ -124,13 +148,15 @@ public class WekaStreamDataWriter
                 attributeStore.getAttributes(), numInstances);
         wekaInstances.setClass(outcomeAttribute);
 
-        writeArff(outputDirectory, arffTarget, attributeStore, wekaInstances, useDense,
-                isRegression, applyWeighting);
+        writeArff(outputFolder, arffTarget, attributeStore, wekaInstances, useSparse, isRegression,
+                applyWeighting, classiferReadsCompressed());
+        
+        FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FILE));
     }
 
     private void writeArff(File outputDirectory, File arffTarget, AttributeStore attributeStore,
             Instances wekaInstances, boolean useSparse, boolean isRegression,
-            boolean applyWeighting)
+            boolean applyWeighting, boolean compress)
                 throws Exception
     {
 
@@ -143,7 +169,7 @@ public class WekaStreamDataWriter
         // preprocessingFilter.setInputFormat(wekaInstances);
         saver.setRetrieval(Saver.INCREMENTAL);
         saver.setFile(arffTarget);
-        saver.setCompressOutput(true);
+        saver.setCompressOutput(compress);
         saver.setInstances(wekaInstances);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -272,5 +298,27 @@ public class WekaStreamDataWriter
             bw.close();
             bw = null;
         }
+    }
+
+    @Override
+    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+        throws Exception
+    {
+        throw new UnsupportedOperationException(
+                "Weka/Meka cannot write directly into classifier format. "
+                        + "The feature file has a header which requires knowing all feature names and outcomes"
+                        + " before the feature file can be written.");
+    }
+
+    @Override
+    public boolean canStream()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean classiferReadsCompressed()
+    {
+        return true;
     }
 }

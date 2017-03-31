@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.ss.formula.IStabilityClassifier;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -43,7 +42,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.fstore.filter.AdaptTestToTrainingFeaturesFilter;
 import org.dkpro.tc.fstore.filter.FeatureFilter;
 
 import com.google.gson.Gson;
@@ -113,7 +111,7 @@ public class ExtractFeaturesStreamConnector
 
             dsw = (DataStreamWriter) Class
                     .forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
-            dsw.init(json);
+            dsw.init(fcc.outputDir, fcc.useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -153,7 +151,12 @@ public class ExtractFeaturesStreamConnector
              */
             instances = enforceMatchingFeatures(instances);
 
-            dsw.write(instances);
+            if (fcc.featureFilters.size() > 0 || !dsw.canStream()) {
+                dsw.writeGenericFormat(instances);
+            }
+            else {
+                dsw.writeClassifierFormat(instances, dsw.classiferReadsCompressed());
+            }
 
         }
         catch (Exception e1) {
@@ -174,7 +177,7 @@ public class ExtractFeaturesStreamConnector
             for (String o : i.getOutcomes()) {
                 uniqueOutcomes.add(o);
             }
-        }        
+        }
     }
 
     private List<Instance> enforceMatchingFeatures(List<Instance> instances)
@@ -218,7 +221,7 @@ public class ExtractFeaturesStreamConnector
                 writeFeatureNames();
             }
 
-            dsw.transform(fcc.outputDir, useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
+            dsw.transformFromGeneric();
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
