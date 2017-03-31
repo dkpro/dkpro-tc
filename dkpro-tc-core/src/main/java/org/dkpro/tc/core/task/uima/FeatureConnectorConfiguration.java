@@ -20,9 +20,10 @@ package org.dkpro.tc.core.task.uima;
 import java.io.File;
 import java.util.List;
 
-import org.apache.uima.resource.ExternalResourceDescription;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-
+/**
+ * Simple data structure to hold the various variables needed for configuration and provide some
+ * explanation if necessary
+ */
 public class FeatureConnectorConfiguration
 {
 
@@ -59,6 +60,10 @@ public class FeatureConnectorConfiguration
         this.featureFilters = featureFilters;
     }
 
+    /**
+     * If the feature extraction task is in a testing phase this flag is <i>true</i> to perfom
+     * testing specific processing
+     */
     public boolean isTesting()
     {
         return isTesting;
@@ -74,6 +79,10 @@ public class FeatureConnectorConfiguration
         return developerMode;
     }
 
+    /**
+     * Disables some sanity checks to enable using feature extractors which are conceptually not
+     * fully compatible
+     */
     public void setDeveloperMode(boolean developerMode)
     {
         this.developerMode = developerMode;
@@ -84,6 +93,9 @@ public class FeatureConnectorConfiguration
         return useSparseFeatures;
     }
 
+    /**
+     * If a sparse feature representation is used. This suppresses default values
+     */
     public void setUseSparseFeatures(boolean useSparseFeatures)
     {
         this.useSparseFeatures = useSparseFeatures;
