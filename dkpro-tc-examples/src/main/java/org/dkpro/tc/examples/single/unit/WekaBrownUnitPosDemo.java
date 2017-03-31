@@ -75,7 +75,7 @@ public class WekaBrownUnitPosDemo
         // explained there.
         DemoUtils.setDkproHome(WekaBrownUnitPosDemo.class.getSimpleName());
 
-        new WekaBrownUnitPosDemo().runTrainTest(getParameterSpace());
+        new WekaBrownUnitPosDemo().runCrossValidation(getParameterSpace());
     }
 
     // ##### CV #####

@@ -23,7 +23,6 @@ import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_FILTERS;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_USE_SPARSE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
@@ -32,6 +31,7 @@ import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -39,9 +39,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -53,8 +53,13 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
+import org.dkpro.tc.core.task.uima.FeatureConnectorConfiguration;
 import org.dkpro.tc.core.util.TaskUtils;
+
+import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
@@ -170,13 +175,35 @@ public class ExtractFeaturesTask
         if (featureFilters == null) {
             featureFilters = Collections.<String> emptyList();
         }
+        
+        FeatureConnectorConfiguration fcc = new FeatureConnectorConfiguration();
+        fcc.setLearningMode(learningMode);
+        fcc.setOutputDir(outputDir);
+        fcc.setDataWriter(mlAdapter.getDataWriterClass().getName());
+        fcc.setFeatureMode(featureMode);
+        fcc.setUseSparseFeatures(mlAdapter.useSparseFeatures());
+        fcc.setDeveloperMode(developerMode);
+        fcc.setTesting(isTesting);
+        fcc.setFeatureFilters(featureFilters);
+        fcc.setApplyWeighting(applyWeighting);
+        fcc.setInstanceId(true);
+        fcc.setTrainFolder(aContext.getFolder(Constants.TRAIN_OUTPUT, AccessMode.READONLY));
+        
+        
+        List<Object> parameters = new ArrayList<>();
+        parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_FEATURE_CONNECTOR_CONFIGURATION,
+                new Gson().toJson(fcc), ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions));
 
-        AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
-                outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
-                featureMode, mlAdapter.useSparseFeatures(), true, developerMode, isTesting, featureFilters,
-                applyWeighting, featureExtractorDescriptions);
-
-        return connector;
+        return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
+                parameters.toArray());
+        
+        
+//        AnalysisEngineDescription connector = TaskUtils.getFeatureExtractorConnector(
+//                outputDir.getAbsolutePath(), mlAdapter.getDataWriterClass().getName(), learningMode,
+//                featureMode, mlAdapter.useSparseFeatures(), true, developerMode, isTesting, featureFilters,
+//                applyWeighting, featureExtractorDescriptions);
+//
+//        return connector;
     }
 
 

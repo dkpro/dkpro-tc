@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 
@@ -36,11 +35,9 @@ import com.google.gson.Gson;
 public class AdaptTestToTrainingFeaturesFilter
     implements FeatureFilter
 {
-
     private TreeSet<String> trainingFeatureNames;
 
-    public void setFeatureNames(TreeSet<String> trainingFeatureNames)
-    {
+    public AdaptTestToTrainingFeaturesFilter(TreeSet<String> trainingFeatureNames){
         this.trainingFeatureNames = trainingFeatureNames;
     }
 
@@ -73,8 +70,6 @@ public class AdaptTestToTrainingFeaturesFilter
             List<Feature> newFeatures = new ArrayList<>();
             for (Feature feat : i.getFeatures()) {
                 if (!trainingFeatureNames.contains(feat.getName())) {
-                    LogFactory.getLog(getClass()).debug("Feature name [" + feat.getName()
-                            + "] did not occur during training and will be dropped");
                     continue;
                 }
                 newFeatures.add(feat);
