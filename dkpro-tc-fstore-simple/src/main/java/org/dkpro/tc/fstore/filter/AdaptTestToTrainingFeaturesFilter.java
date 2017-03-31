@@ -17,36 +17,31 @@
  ******************************************************************************/
 package org.dkpro.tc.fstore.filter;
 
-import org.dkpro.tc.api.features.FeatureStore;
-
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
-/**
- * Filter for injecting feature space (feature names) that were seen during training to the
- * feature store during testing.
- */
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.Instance;
+
+import com.google.gson.Gson;
+
 public class AdaptTestToTrainingFeaturesFilter
-        implements FeatureStoreFilter
+    implements FeatureFilter
 {
 
     private TreeSet<String> trainingFeatureNames;
 
-    /**
-     * Sets the feature names known from training
-     *
-     * @param trainingFeatureNames feature names
-     */
     public void setFeatureNames(TreeSet<String> trainingFeatureNames)
     {
         this.trainingFeatureNames = trainingFeatureNames;
-    }
-
-    @Override
-    public void applyFilter(FeatureStore store)
-    {
-        if (store.isSettingFeatureNamesAllowed()) {
-            store.setFeatureNames(this.trainingFeatureNames);
-        }
     }
 
     @Override
@@ -59,5 +54,37 @@ public class AdaptTestToTrainingFeaturesFilter
     public boolean isApplicableForTesting()
     {
         return true;
+    }
+
+    @Override
+    public void applyFilter(File f)
+        throws Exception
+    {
+        Iterator<String> iterator = new JsonInstanceIterator(f);
+
+        File tmpOut = new File(f.getParentFile(), "json_filtered.txt");
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(tmpOut), "utf-8"));
+
+        Gson gson = new Gson();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            Instance i = gson.fromJson(next, Instance.class);
+            List<Feature> newFeatures = new ArrayList<>();
+            for (Feature feat : i.getFeatures()) {
+                if (!trainingFeatureNames.contains(feat.getName())) {
+                    LogFactory.getLog(getClass()).debug("Feature name [" + feat.getName()
+                            + "] did not occur during training and will be dropped");
+                    continue;
+                }
+                newFeatures.add(feat);
+            }
+            i.setFeatures(newFeatures);
+            writer.write(gson.toJson(i) + System.lineSeparator());
+        }
+
+        writer.close();
+        FileUtils.copyFile(tmpOut, f);
+        FileUtils.deleteQuietly(tmpOut);
     }
 }

@@ -201,7 +201,7 @@ public class ExtractFeaturesConnector
         // to keep only features seen during training
         if (!trainFeatureNames.equals(featureStore.getFeatureNames())) {
             filter.setFeatureNames(trainFeatureNames);
-            filter.applyFilter(featureStore);
+//            filter.applyFilter(featureStore);
         }        
     }
 
