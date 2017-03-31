@@ -59,9 +59,6 @@ public class ExtractFeaturesStreamConnector
      */
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 
-    /**
-     * Whether an ID should be added to each instance in the feature file
-     */
     public static final String PARAM_FEATURE_CONNECTOR_CONFIGURATION = "featureConnectorConfiguration";
     @ConfigurationParameter(name = PARAM_FEATURE_CONNECTOR_CONFIGURATION, mandatory = true)
     private String jsonConfiguration;
@@ -70,8 +67,6 @@ public class ExtractFeaturesStreamConnector
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
-
-    public static final String JSON = "json.txt";
 
     /*
      * Default value as String; see https://code.google.com/p/dkpro-tc/issues/detail?id=200#c9
@@ -83,8 +78,6 @@ public class ExtractFeaturesStreamConnector
 
     TreeSet<String> featureNames;
     Set<String> uniqueOutcomes;
-
-    File json;
 
     @Override
     public void initialize(UimaContext context)
@@ -107,10 +100,8 @@ public class ExtractFeaturesStreamConnector
                 throw new ResourceInitializationException();
             }
 
-            json = new File(fcc.outputDir, JSON);
-
             dsw = (DataStreamWriter) Class
-                    .forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
+                    .forName("org.dkpro.tc.ml.weka.writer.MekaStreamDataWriter").newInstance();
             dsw.init(fcc.outputDir, fcc.useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
         }
         catch (Exception e) {
@@ -211,8 +202,10 @@ public class ExtractFeaturesStreamConnector
         try {
             dsw.close();
 
+            // FIXME: The filters depend on the data format which is not checked - the generic data
+            // format the filter expects might be different to the one of the classifier
             if (fcc.featureFilters.size() > 0) {
-                applyFilter(json);
+                applyFilter(new File(fcc.outputDir, dsw.getGenericFileName()));
             }
 
             writeOutcomes();

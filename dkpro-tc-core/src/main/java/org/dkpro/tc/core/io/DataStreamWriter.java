@@ -64,4 +64,6 @@ public interface DataStreamWriter
     public boolean canStream();
 
     public boolean classiferReadsCompressed();
+
+    public String getGenericFileName();
 }
