@@ -26,8 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,7 +39,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -57,7 +55,7 @@ import weka.core.converters.Saver;
 /**
  * {@link DataWriter} for the Weka machine learning tool.
  */
-public class MekaStreamDataWriter
+public class WekaDataStreamWriter
     implements DataStreamWriter, Constants
 {
     BufferedWriter bw = null;
@@ -66,8 +64,6 @@ public class MekaStreamDataWriter
     private String learningMode;
     private boolean applyWeighting;
     private File outputFolder;
-
-    public static final String GENERIC_FILE = "JSON.txt";
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
@@ -100,7 +96,7 @@ public class MekaStreamDataWriter
             return;
         }
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputFolder, GENERIC_FILE)), "utf-8"));
+                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
 
         gson = new Gson();
     }
@@ -111,10 +107,12 @@ public class MekaStreamDataWriter
     {
         close();
 
-        File arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
+        boolean isRegression = learningMode.equals(LM_REGRESSION);
+
+        File arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputFolder, GENERIC_FILE)), "utf-8"));
+                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
 
         AttributeStore attributeStore = new AttributeStore();
         Gson gson = new Gson();
@@ -132,33 +130,34 @@ public class MekaStreamDataWriter
             numInstances++;
         }
         reader.close();
-        
+
         // Make sure "outcome" is not the name of an attribute
         List<String> outcomeList = FileUtils
                 .readLines(new File(outputFolder, Constants.FILENAME_OUTCOMES), "utf-8");
-
-        List<Attribute> outcomeAttributes = createOutcomeAttributes(outcomeList);
-
-        // in Meka, class label attributes have to go on top
-        for (Attribute attribute : outcomeAttributes) {
-            attributeStore.addAttributeAtBegin(attribute.name(), attribute);
+        Attribute outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
+        if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
+            System.err.println(
+                    "A feature with name \"outcome\" was found. Renaming outcome attribute");
+            outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
         }
-        
-        // for Meka-internal use
-        Instances wekaInstances = new Instances(
-                WekaUtils.RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
+        attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
+
+        Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME,
                 attributeStore.getAttributes(), numInstances);
-        wekaInstances.setClassIndex(outcomeAttributes.size());
+        wekaInstances.setClass(outcomeAttribute);
 
-        writeArff(arffTarget, attributeStore, wekaInstances, outcomeAttributes);
-
-        FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FILE));
+        writeArff(outputFolder, arffTarget, attributeStore, wekaInstances, useSparse, isRegression,
+                applyWeighting, classiferReadsCompressed());
+        
+        FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
     }
 
-    private void writeArff(File arffTarget, AttributeStore attributeStore, Instances wekaInstances,
-            List<Attribute> outcomeAttributes)
+    private void writeArff(File outputDirectory, File arffTarget, AttributeStore attributeStore,
+            Instances wekaInstances, boolean useSparse, boolean isRegression,
+            boolean applyWeighting, boolean compress)
                 throws Exception
     {
+
         if (!arffTarget.exists()) {
             arffTarget.mkdirs();
             arffTarget.createNewFile();
@@ -168,24 +167,16 @@ public class MekaStreamDataWriter
         // preprocessingFilter.setInputFormat(wekaInstances);
         saver.setRetrieval(Saver.INCREMENTAL);
         saver.setFile(arffTarget);
-        saver.setCompressOutput(classiferReadsCompressed());
+        saver.setCompressOutput(compress);
         saver.setInstances(wekaInstances);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputFolder, GENERIC_FILE)), "utf-8"));
-        String line = null;
+                new FileInputStream(new File(outputDirectory, GENERIC_FEATURE_FILE)), "utf-8"));
+        String line;
         while ((line = reader.readLine()) != null) {
             Instance instance = gson.fromJson(line, Instance.class);
 
             double[] featureValues = getFeatureValues(attributeStore, instance);
-
-            // set class label values
-            List<String> instanceOutcome = instance.getOutcomes();
-            for (Attribute label : outcomeAttributes) {
-                String labelname = label.name();
-                featureValues[attributeStore.getAttributeOffset(labelname)] = instanceOutcome
-                        .contains(labelname.split(CLASS_ATTRIBUTE_PREFIX)[1]) ? 1.0d : 0.0d;
-            }
 
             weka.core.Instance wekaInstance;
 
@@ -198,30 +189,39 @@ public class MekaStreamDataWriter
 
             wekaInstance.setDataset(wekaInstances);
 
+            String outcome = instance.getOutcome();
+            if (isRegression) {
+                wekaInstance.setClassValue(Double.parseDouble(outcome));
+            }
+            else {
+                wekaInstance.setClassValue(outcome);
+            }
+
             Double instanceWeight = instance.getWeight();
             if (applyWeighting) {
                 wekaInstance.setWeight(instanceWeight);
             }
 
+            // preprocessingFilter.input(wekaInstance);
+            // saver.writeIncremental(preprocessingFilter.output());
             saver.writeIncremental(wekaInstance);
         }
 
+        // finishes the incremental saving process
         saver.writeIncremental(null);
         reader.close();
     }
 
-    private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
+    private Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
     {
-        // make the order of the attributes predictable
-        Collections.sort(outcomeValues);
-        List<Attribute> atts = new ArrayList<Attribute>();
-
-        for (String outcome : outcomeValues) {
-            String name = outcome.contains(CLASS_ATTRIBUTE_PREFIX) ? outcome
-                    : CLASS_ATTRIBUTE_PREFIX + outcome;
-            atts.add(new Attribute(name, Arrays.asList(new String[] { "0", "1" })));
+        if (isRegresion) {
+            return new Attribute(CLASS_ATTRIBUTE_NAME);
         }
-        return atts;
+        else {
+            // make the order of the attributes predictable
+            Collections.sort(outcomeValues);
+            return new Attribute(CLASS_ATTRIBUTE_NAME, outcomeValues);
+        }
     }
 
     private double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
@@ -319,10 +319,11 @@ public class MekaStreamDataWriter
     {
         return true;
     }
-
+    
     @Override
     public String getGenericFileName()
     {
-        return GENERIC_FILE;
+        return GENERIC_FEATURE_FILE;
     }
+
 }

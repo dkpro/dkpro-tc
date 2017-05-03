@@ -171,6 +171,9 @@ public interface Constants
      * Records the context of a unit/sequence in either unit mode or sequence mode as debugging help
      */
     public static final String DIM_RECORD_CONTEXT = "recordContext";
+    
+    
+    public static final String GENERIC_FEATURE_FILE = "JSON.txt";
 
     /**
      * Developer mode enables it to use unit feature extractors in documents
