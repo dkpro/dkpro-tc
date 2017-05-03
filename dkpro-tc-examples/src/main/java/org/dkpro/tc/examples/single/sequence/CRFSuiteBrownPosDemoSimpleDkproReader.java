@@ -42,7 +42,6 @@ import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
@@ -106,7 +105,6 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
-                Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
                 dimFeatureSets, dimClassificationArgs);
 
         return pSpace;

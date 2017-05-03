@@ -76,7 +76,7 @@ public class CRFSuiteNERSequenceDemo
         DemoUtils.setDkproHome(CRFSuiteNERSequenceDemo.class.getSimpleName());
 
         CRFSuiteNERSequenceDemo demo = new CRFSuiteNERSequenceDemo();
-        demo.runCrossValidation(getParameterSpace());
+//        demo.runCrossValidation(getParameterSpace());
         demo.runTrainTest(getParameterSpace());
     }
 

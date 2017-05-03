@@ -94,8 +94,10 @@ public class ExtractFeaturesStreamConnector
                 throw new ResourceInitializationException();
             }
 
+            // FIXME hardcoded at the moment for testing
             dsw = (DataStreamWriter) Class
-                    .forName("org.dkpro.tc.ml.weka.writer.WekaStreamDataWriter").newInstance();
+                    .forName("org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataStreamWriter")
+                    .newInstance();
             dsw.init(fcc.outputDir, fcc.useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
         }
         catch (Exception e) {
@@ -208,7 +210,11 @@ public class ExtractFeaturesStreamConnector
                 writeFeatureNames();
             }
 
-            dsw.transformFromGeneric();
+            if (fcc.featureFilters.size() > 0 || !dsw.canStream()) {
+                // if we use generic mode we have to finalize the feature extraction by transforming
+                // the generic file into the classifier-specific data format
+                dsw.transformFromGeneric();
+            }
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);

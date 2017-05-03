@@ -40,7 +40,7 @@ public class CRFSuiteModelSerializationDescription
     implements Constants
 {
 
-    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     private List<String> classificationArguments;
 
     boolean trainModel = true;
@@ -80,8 +80,8 @@ public class CRFSuiteModelSerializationDescription
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = CRFSuiteAdapter.getInstance().getFrameworkFilename(
-                AdapterNameEntries.featureVectorsFile);
+        String trainFileName = CRFSuiteAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
 
         String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
         String trainingDataPath = trainFolder.getPath() + "/" + trainFileName;
@@ -91,13 +91,13 @@ public class CRFSuiteModelSerializationDescription
         Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
         process.waitFor();
     }
-    
+
     private void processParameters(List<String> classificationArguments)
-            throws Exception
-        {
-            algoName = CrfUtil.getAlgorithm(classificationArguments);
-            algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
-        }
+        throws Exception
+    {
+        algoName = CrfUtil.getAlgorithm(classificationArguments);
+        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
+    }
 
     public void trainModel(boolean b)
     {

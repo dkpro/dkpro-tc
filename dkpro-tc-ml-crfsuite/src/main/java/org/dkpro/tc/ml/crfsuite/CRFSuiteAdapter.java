@@ -28,7 +28,6 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
 import org.dkpro.tc.ml.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
@@ -108,12 +107,6 @@ public class CRFSuiteAdapter
     public Class<? extends ModelSerializationTask> getSaveModelTask()
     {
         return CRFSuiteModelSerializationDescription.class;
-    }
-
-    @Override
-    public String getFeatureStore()
-    {
-        return SparseFeatureStore.class.getName();
     }
 
     /**
@@ -281,4 +274,10 @@ public class CRFSuiteAdapter
         </pre>
      */
     public static final String ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT = "l2sgd";
+
+    @Override
+    public boolean useSparseFeatures()
+    {
+        return true;
+    }
 }
