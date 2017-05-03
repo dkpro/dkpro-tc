@@ -64,6 +64,7 @@ public class WekaDataStreamWriter
     private String learningMode;
     private boolean applyWeighting;
     private File outputFolder;
+    private File arffTarget;
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
@@ -74,6 +75,17 @@ public class WekaDataStreamWriter
         this.useSparse = useSparse;
         this.learningMode = learningMode;
         this.applyWeighting = applyWeighting;
+
+        arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task as test task. We use
+        // appending mode for streaming. We might errornously append the old training file with
+        // testing data!
+        // Force delete the old training file to make sure we start with a clean, empty file
+        if (arffTarget.exists()) {
+            FileUtils.forceDelete(arffTarget);
+        }
     }
 
     @Override
@@ -107,8 +119,6 @@ public class WekaDataStreamWriter
     {
         boolean isRegression = learningMode.equals(LM_REGRESSION);
 
-        File arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
 

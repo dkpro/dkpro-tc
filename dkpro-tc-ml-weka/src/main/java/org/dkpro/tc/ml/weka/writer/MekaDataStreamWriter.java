@@ -42,6 +42,7 @@ import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -66,6 +67,7 @@ public class MekaDataStreamWriter
     private String learningMode;
     private boolean applyWeighting;
     private File outputFolder;
+    private File arffTarget;
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
@@ -76,6 +78,17 @@ public class MekaDataStreamWriter
         this.useSparse = useSparse;
         this.learningMode = learningMode;
         this.applyWeighting = applyWeighting;
+        
+        arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task as test task. We use
+        // appending mode for streaming. We might errornously append the old training file with
+        // testing data!
+        // Force delete the old training file to make sure we start with a clean, empty file
+        if (arffTarget.exists()) {
+            FileUtils.forceDelete(arffTarget);
+        }
     }
 
     @Override
@@ -108,8 +121,6 @@ public class MekaDataStreamWriter
     public void transformFromGeneric()
         throws Exception
     {
-        File arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
 

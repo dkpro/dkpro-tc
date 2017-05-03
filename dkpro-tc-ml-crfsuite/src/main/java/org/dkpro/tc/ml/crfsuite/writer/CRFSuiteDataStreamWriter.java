@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataStreamWriter;
@@ -157,6 +158,14 @@ public class CRFSuiteDataStreamWriter
 
         classifierFormatOutputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task as test task. We use
+        // appending mode for streaming. We might errornously append the old training file with
+        // testing data!
+        // Force delete the old training file to make sure we start with a clean, empty file
+        if (classifierFormatOutputFile.exists()) {
+            FileUtils.forceDelete(classifierFormatOutputFile);
+        }
     }
 
     @Override
