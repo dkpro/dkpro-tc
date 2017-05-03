@@ -149,7 +149,7 @@ public class ExtractFeaturesStreamConnector
         catch (Exception e1) {
             throw new AnalysisEngineProcessException(e1);
         }
-
+        
         trackFeatureNamesAndOutcomes(instances);
     }
 
@@ -196,7 +196,6 @@ public class ExtractFeaturesStreamConnector
         super.collectionProcessComplete();
 
         try {
-            dsw.close();
 
             // FIXME: The filters depend on the data format which is not checked - the generic data
             // format the filter expects might be different to the one of the classifier

@@ -61,7 +61,7 @@ public class MekaDataStreamWriter
     implements DataStreamWriter, Constants
 {
     BufferedWriter bw = null;
-    Gson gson;
+    Gson gson = new Gson();
     private boolean useSparse;
     private String learningMode;
     private boolean applyWeighting;
@@ -89,6 +89,8 @@ public class MekaDataStreamWriter
             Instance next = iterator.next();
             bw.write(gson.toJson(next) + System.lineSeparator());
         }
+        bw.close();
+        bw = null;
     }
 
     private void initGeneric()
@@ -98,17 +100,14 @@ public class MekaDataStreamWriter
             return;
         }
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
+                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
 
-        gson = new Gson();
     }
 
     @Override
     public void transformFromGeneric()
         throws Exception
     {
-        close();
-
         File arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
         BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -130,7 +129,7 @@ public class MekaDataStreamWriter
             numInstances++;
         }
         reader.close();
-        
+
         // Make sure "outcome" is not the name of an attribute
         List<String> outcomeList = FileUtils
                 .readLines(new File(outputFolder, Constants.FILENAME_OUTCOMES), "utf-8");
@@ -141,7 +140,7 @@ public class MekaDataStreamWriter
         for (Attribute attribute : outcomeAttributes) {
             attributeStore.addAttributeAtBegin(attribute.name(), attribute);
         }
-        
+
         // for Meka-internal use
         Instances wekaInstances = new Instances(
                 WekaUtils.RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
@@ -284,16 +283,6 @@ public class MekaDataStreamWriter
             }
         }
         return featureValues;
-    }
-
-    @Override
-    public void close()
-        throws IOException
-    {
-        if (bw != null) {
-            bw.close();
-            bw = null;
-        }
     }
 
     @Override

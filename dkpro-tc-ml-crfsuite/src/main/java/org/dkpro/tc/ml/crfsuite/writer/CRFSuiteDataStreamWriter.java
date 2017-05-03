@@ -62,6 +62,9 @@ public class CRFSuiteDataStreamWriter
             Instance next = iterator.next();
             bw.write(gson.toJson(next) + System.lineSeparator());
         }
+
+        bw.close();
+        bw = null;
     }
 
     private void initGeneric()
@@ -91,11 +94,11 @@ public class CRFSuiteDataStreamWriter
 
         String line = null;
         while ((line = reader.readLine()) != null) {
-            //FIXME: This is a bit expensive
+            // FIXME: This is a bit expensive
             Instance instance = gson.fromJson(line, Instance.class);
             List<Instance> ins = new ArrayList<>();
             ins.add(instance);
-            
+
             Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(
                     ins);
 
@@ -104,7 +107,7 @@ public class CRFSuiteDataStreamWriter
                 writer.write(features);
                 writer.write("\n");
             }
-            
+
         }
 
         reader.close();
@@ -126,6 +129,8 @@ public class CRFSuiteDataStreamWriter
             bw.write("\n");
         }
 
+        bw.close();
+        bw = null;
     }
 
     private void initClassifierFormat()
@@ -152,15 +157,6 @@ public class CRFSuiteDataStreamWriter
 
         classifierFormatOutputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-    }
-
-    @Override
-    public void close()
-        throws IOException
-    {
-        if (bw != null) {
-            bw.close();
-        }
     }
 
     @Override

@@ -59,7 +59,7 @@ public class WekaDataStreamWriter
     implements DataStreamWriter, Constants
 {
     BufferedWriter bw = null;
-    Gson gson;
+    Gson gson = new Gson();
     private boolean useSparse;
     private String learningMode;
     private boolean applyWeighting;
@@ -87,6 +87,8 @@ public class WekaDataStreamWriter
             Instance next = iterator.next();
             bw.write(gson.toJson(next) + System.lineSeparator());
         }
+        bw.close();
+        bw = null;
     }
 
     private void initGeneric()
@@ -96,17 +98,13 @@ public class WekaDataStreamWriter
             return;
         }
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
-
-        gson = new Gson();
+                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
     }
 
     @Override
     public void transformFromGeneric()
         throws Exception
     {
-        close();
-
         boolean isRegression = learningMode.equals(LM_REGRESSION);
 
         File arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
@@ -148,7 +146,7 @@ public class WekaDataStreamWriter
 
         writeArff(outputFolder, arffTarget, attributeStore, wekaInstances, useSparse, isRegression,
                 applyWeighting, classiferReadsCompressed());
-        
+
         FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
     }
 
@@ -289,16 +287,6 @@ public class WekaDataStreamWriter
     }
 
     @Override
-    public void close()
-        throws IOException
-    {
-        if (bw != null) {
-            bw.close();
-            bw = null;
-        }
-    }
-
-    @Override
     public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
         throws Exception
     {
@@ -319,7 +307,7 @@ public class WekaDataStreamWriter
     {
         return true;
     }
-    
+
     @Override
     public String getGenericFileName()
     {

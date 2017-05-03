@@ -18,7 +18,6 @@
 package org.dkpro.tc.core.io;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 
 import org.dkpro.tc.api.features.Instance;
@@ -57,9 +56,6 @@ public interface DataStreamWriter
      */
     public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
         throws Exception;
-
-    public void close()
-        throws IOException;
 
     public boolean canStream();
 
