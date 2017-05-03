@@ -18,14 +18,18 @@
 
 package org.dkpro.tc.ml.crfsuite.writer;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
@@ -43,9 +47,9 @@ public class CRFSuiteDataStreamWriter
     boolean useSparse;
     String learningMode;
     boolean applyWeigthing;
-    private BufferedWriter bw;
-    private Gson gson;
-    private BufferedWriter bf;
+    private BufferedWriter bw = null;
+    private Gson gson = new Gson();
+    private File classifierFormatOutputFile;
 
     @Override
     public void writeGenericFormat(Collection<Instance> instances)
@@ -66,32 +70,73 @@ public class CRFSuiteDataStreamWriter
         if (bw != null) {
             return;
         }
-        bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
-                "utf-8"));
+        bw = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(
+                                new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true),
+                        "utf-8"));
 
-        gson = new Gson();
     }
 
     @Override
     public void transformFromGeneric()
         throws Exception
     {
-        throw new UnsupportedOperationException("Not yet implemented");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
+                "utf-8"));
+
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile), "utf-8"));
+
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            //FIXME: This is a bit expensive
+            Instance instance = gson.fromJson(line, Instance.class);
+            List<Instance> ins = new ArrayList<>();
+            ins.add(instance);
+            
+            Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(
+                    ins);
+
+            while (sequenceIterator.hasNext()) {
+                String features = sequenceIterator.next().toString();
+                writer.write(features);
+                writer.write("\n");
+            }
+            
+        }
+
+        reader.close();
+        writer.close();
     }
 
     @Override
     public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
         throws Exception
     {
+        initClassifierFormat();
+
         Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(
                 new ArrayList<Instance>(instances));
 
         while (sequenceIterator.hasNext()) {
             String features = sequenceIterator.next().toString();
-            bf.write(features);
-            bf.write("\n");
+            bw.write(features);
+            bw.write("\n");
         }
+
+    }
+
+    private void initClassifierFormat()
+        throws Exception
+    {
+        if (bw != null) {
+            return;
+        }
+
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
 
     }
 
@@ -105,17 +150,16 @@ public class CRFSuiteDataStreamWriter
         this.learningMode = learningMode;
         this.applyWeigthing = applyWeighting;
 
-        File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
+        classifierFormatOutputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-        bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "utf-8"));
     }
 
     @Override
     public void close()
         throws IOException
     {
-        if (bf != null) {
-            bf.close();
+        if (bw != null) {
+            bw.close();
         }
     }
 

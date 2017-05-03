@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.single.sequence;
+package org.dkpro.tc.examples.single.sequence.filter;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -30,6 +30,8 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
+import org.dkpro.tc.examples.single.sequence.CRFSuiteBrownPosDemoSimpleDkproReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
@@ -52,57 +54,63 @@ public class CRFSuiteBrownPosDemoTest
         super.setup();
         javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
     }
-
+    
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
-    {
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON }));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
-                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
-
-        javaExperiment.runCrossValidation(pSpace);
+    public void testFeatureFilter() throws Exception{
+        double runTrainTest = runTrainTestNoFilter();
+        double runTrainTestFilter = runTrainTestFilter();
+        
+        assertTrue(runTrainTest > runTrainTestFilter);
+        
+        
     }
 
     @SuppressWarnings("unchecked")
-    @Test
-    public void testTrainTest()
+    public Double runTrainTestNoFilter()
         throws Exception
     {
         // Random parameters for demonstration!
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
-                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
+                Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
 
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double resultNoParams = createEvaluator.calculateEvaluationMeasures()
+        Double results = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
 
+        
+        return results;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public Double runTrainTestFilter()
+        throws Exception
+    {
         // Random parameters for demonstration!
-        dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-                asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                        "feature.minfreq=3", "-p", "gamma=5.0", "-p", "max_iterations=15"));
-        pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
-                Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
+        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+        
+        Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS, asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
+        
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
+                Constants.LM_SINGLE_LABEL, dimClassificationArgs, dimFilter);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
 
-        o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double resultParams = createEvaluator.calculateEvaluationMeasures()
+        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
+        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        Double results = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
 
-        // if the parameters work something should change in the end result
-        assertTrue(Math.abs(resultNoParams - resultParams) > 0.00001);
+        
+        return results;
     }
 }
