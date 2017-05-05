@@ -96,7 +96,7 @@ public class ExtractFeaturesStreamConnector
 
             // FIXME hardcoded at the moment for testing
             dsw = (DataStreamWriter) Class
-                    .forName("org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataStreamWriter")
+                    .forName(fcc.getDataWriter())
                     .newInstance();
             dsw.init(fcc.outputDir, fcc.useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
         }

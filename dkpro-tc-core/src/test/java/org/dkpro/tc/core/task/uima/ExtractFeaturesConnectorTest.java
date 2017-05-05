@@ -21,9 +21,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -33,7 +34,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.NoopFeatureExtractor;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
@@ -42,37 +43,18 @@ import org.dkpro.tc.core.io.TestReaderMultiLabel;
 import org.dkpro.tc.core.io.TestReaderRegression;
 import org.dkpro.tc.core.io.TestReaderSingleLabel;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-@RunWith(Parameterized.class)
 public class ExtractFeaturesConnectorTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data()
-    {
-        return Arrays.asList(
-                new Object[][] { { DenseFeatureStore.class }, { SparseFeatureStore.class } });
-    }
-
-    private Class<? extends FeatureStore> featureStoreClass;
-
-    public ExtractFeaturesConnectorTest(Class<? extends FeatureStore> featureStoreClass)
-    {
-        this.featureStoreClass = featureStoreClass;
-    }
 
     @Test
     public void extractFeaturesConnectorSingleLabelTest()
@@ -83,14 +65,12 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] { NoopFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME,
-                "123"
-        };
+                "123" };
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
                 .createExternalResourceDescription(NoopFeatureExtractor.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
@@ -100,25 +80,32 @@ public class ExtractFeaturesConnectorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentModeAnnotator.class,
-                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes);
 
         SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                featureStoreClass);
-        assertEquals(2, fs.getNumberOfInstances());
-        assertEquals(1, fs.getUniqueOutcomes().size());
 
         System.out.println(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
+
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+        List<Instance> instances = new ArrayList<>();
+
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
+
+        assertEquals(2, instances.size());
+        assertEquals(1, getUniqueOutcomes(instances));
+
     }
 
     @Test
@@ -130,8 +117,7 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] { NoopFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME,
-                "123"
-        };
+                "123" };
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
                 .createExternalResourceDescription(NoopFeatureExtractor.class, parameters);
@@ -144,27 +130,30 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
-        
+
         AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentModeAnnotator.class,
-                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_DOCUMENT);
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes);
 
         SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                featureStoreClass);
-        assertEquals(2, fs.getNumberOfInstances());
-        assertEquals(3, fs.getUniqueOutcomes().size());
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
+        List<Instance> instances = new ArrayList<>();
 
-        System.out.println(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
+
+        assertEquals(2, instances.size());
+        assertEquals(3, getUniqueOutcomes(instances));
+
     }
 
     @Test
@@ -176,10 +165,7 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] { NoopFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME,
-                "123",
-                UnitContextMetaCollector.PARAM_CONTEXT_FILE,
-                Constants.ID_CONTEXT_KEY
-        };
+                "123", UnitContextMetaCollector.PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY };
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
                 .createExternalResourceDescription(NoopFeatureExtractor.class, parameters);
@@ -199,20 +185,33 @@ public class ExtractFeaturesConnectorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, featureStoreClass.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes);
 
         SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                featureStoreClass);
-        assertEquals(2, fs.getNumberOfInstances());
-        assertEquals(1, fs.getUniqueOutcomes().size());
-        assertEquals("0.45", fs.getUniqueOutcomes().first());
+
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
+        List<Instance> instances = new ArrayList<>();
+
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
+
+        assertEquals(2, instances.size());
+        assertEquals(1, getUniqueOutcomes(instances));
+        assertEquals("0.45", instances.get(0).getOutcome());
 
         System.out.println(
                 FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
+    }
+
+    private int getUniqueOutcomes(List<Instance> instances)
+    {
+        Set<String> outcomes = new HashSet<String>();
+        instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
+        return outcomes.size();
     }
 }

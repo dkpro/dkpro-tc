@@ -34,7 +34,7 @@ public class FeatureConnectorConfiguration
     boolean useSparseFeatures;
 
     String featureMode;
-    String name;
+    String dataWriter;
     File outputDir;
     String learningMode;
     File trainFolder;
@@ -111,14 +111,14 @@ public class FeatureConnectorConfiguration
         this.featureMode = featureMode;
     }
 
-    public String getName()
+    public String getDataWriter()
     {
-        return name;
+        return dataWriter;
     }
 
-    public void setDataWriter(String name)
+    public void setDataWriter(String dataWriter)
     {
-        this.name = name;
+        this.dataWriter = dataWriter;
     }
 
     public File getOutputDir()
