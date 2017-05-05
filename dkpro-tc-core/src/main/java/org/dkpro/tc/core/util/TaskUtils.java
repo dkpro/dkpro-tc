@@ -239,19 +239,6 @@ public class TaskUtils
         fcc.setApplyWeighting(applyWeighting);
         fcc.setInstanceId(true);
         
-//        List<Object> parameters = new ArrayList<>();
-//        parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY,
-//                outputPath, ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
-//                ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, learningMode,
-//                ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
-//                ExtractFeaturesStreamConnector.PARAM_FEATURE_FILTERS, filters.toArray(),
-//                ExtractFeaturesStreamConnector.PARAM_FEATURE_MODE, featureMode,
-////                ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-//                ExtractFeaturesStreamConnector.PARAM_DEVELOPER_MODE, developerMode,
-//                ExtractFeaturesStreamConnector.PARAM_IS_TESTING, isTesting,
-//                ExtractFeaturesStreamConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-//                ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures));
-
         List<Object> parameters = new ArrayList<>();
         parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_FEATURE_CONNECTOR_CONFIGURATION,
                 new Gson().toJson(fcc), ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, extractorResources));
@@ -259,9 +246,6 @@ public class TaskUtils
         return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
                 parameters.toArray());
         
-//        return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
-//                ExtractFeaturesStreamConnector.PARAM_FEATURE_CONNECTOR_CONFIGURATION
-//                parameters.toArray());
     }
 
     /**
