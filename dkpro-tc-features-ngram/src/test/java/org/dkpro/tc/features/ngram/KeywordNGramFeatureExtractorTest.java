@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -33,14 +34,15 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,20 +67,19 @@ public class KeywordNGramFeatureExtractorTest
                 "org.apache.uima.util.impl.Log4jLogger_impl");
     }
 
-    private void initialize(boolean includeComma, boolean markSentenceLocation)
+    private List<Instance> initialize(boolean includeComma, boolean markSentenceLocation)
         throws Exception
     {
 
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] {KeywordNGram.PARAM_UNIQUE_EXTRACTOR_NAME,"123",  
-                KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt", KeywordNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder,KeywordNGramMetaCollector.PARAM_TARGET_LOCATION,
-                luceneFolder, KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION,
-                markSentenceLocation, KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS,
-                includeComma };
+        Object[] parameters = new Object[] { KeywordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE, "src/test/resources/data/keywordlist.txt",
+                KeywordNGram.PARAM_SOURCE_LOCATION, luceneFolder,
+                KeywordNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder,
+                KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, markSentenceLocation,
+                KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, includeComma };
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
@@ -94,11 +95,11 @@ public class KeywordNGramFeatureExtractorTest
                 .createExternalResourceDescription(KeywordNGram.class, toString(parameters));
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
@@ -107,19 +108,25 @@ public class KeywordNGramFeatureExtractorTest
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
         Gson gson = new Gson();
-        fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                DenseFeatureStore.class);
-        assertEquals(1, fs.getNumberOfInstances());
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
+
+        assertEquals(1, instances.size());
+
+        return instances;
     }
 
-    private Object [] toString(Object[] parameters)
+    private Object[] toString(Object[] parameters)
     {
         List<Object> out = new ArrayList<>();
-        for(Object o : parameters){
+        for (Object o : parameters) {
             out.add(o.toString());
         }
-        
+
         return out.toArray();
     }
 
@@ -127,34 +134,47 @@ public class KeywordNGramFeatureExtractorTest
     public void extractKeywordsTest()
         throws Exception
     {
-        initialize(false, false);
+        List<Instance> inst = initialize(false, false);
 
-        assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
-        assertTrue(fs.getFeatureNames().contains("keyNG_apricot_peach"));
-        assertTrue(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames()
-                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(containsFeatureName(inst, "keyNG_cherry"));
+        assertTrue(containsFeatureName(inst, "keyNG_apricot_peach"));
+        assertTrue(containsFeatureName(inst, "keyNG_peach_nectarine_SB"));
+        assertTrue(containsFeatureName(inst,
+                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
-        assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_peach_CA"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_nectarine_SBBEG"));
+        assertFalse(containsFeatureName(inst, "keyNG_guava"));
+        assertFalse(containsFeatureName(inst, "keyNG_peach_CA"));
+        assertFalse(containsFeatureName(inst, "keyNG_nectarine_SBBEG"));
+    }
+
+    private boolean containsFeatureName(List<Instance> ins, String name)
+    {
+        for (Instance i : ins) {
+            for (Feature f : i.getFeatures()) {
+                if (f.getName().equals(name)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Test
     public void commasTest()
         throws Exception
     {
-        initialize(true, false);
+        List<Instance> ins = initialize(true, false);
 
-        assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_apricot_peach"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames()
-                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(containsFeatureName(ins, "keyNG_cherry"));
+        assertFalse(containsFeatureName(ins, "keyNG_apricot_peach"));
+        assertFalse(containsFeatureName(ins, "keyNG_peach_nectarine_SB"));
+        assertTrue(containsFeatureName(ins,
+                "keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
-        assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
-        assertTrue(fs.getFeatureNames().contains("keyNG_peach_CA"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_nectarine_SBBEG"));
+        assertFalse(containsFeatureName(ins, "keyNG_guava"));
+        assertTrue(containsFeatureName(ins, "keyNG_peach_CA"));
+        assertFalse(containsFeatureName(ins, "keyNG_nectarine_SBBEG"));
 
     }
 
@@ -162,17 +182,16 @@ public class KeywordNGramFeatureExtractorTest
     public void sentenceLocationTest()
         throws Exception
     {
-        initialize(false, true);
+        List<Instance> ins = initialize(false, true);
 
-        assertTrue(fs.getFeatureNames().contains("keyNG_cherry"));
-        assertTrue(fs.getFeatureNames().contains("keyNG_apricot_peach"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_peach_nectarine_SB"));
-        assertTrue(fs.getFeatureNames()
-                .contains("keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(containsFeatureName(ins,"keyNG_cherry"));
+        assertTrue(containsFeatureName(ins,"keyNG_apricot_peach"));
+        assertFalse(containsFeatureName(ins,"keyNG_peach_nectarine_SB"));
+        assertTrue(containsFeatureName(ins,"keyNG_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
-        assertFalse(fs.getFeatureNames().contains("keyNG_guava"));
-        assertFalse(fs.getFeatureNames().contains("keyNG_peach_CA"));
-        assertTrue(fs.getFeatureNames().contains("keyNG_nectarine_SBBEG"));
+        assertFalse(containsFeatureName(ins,"keyNG_guava"));
+        assertFalse(containsFeatureName(ins,"keyNG_peach_CA"));
+        assertTrue(containsFeatureName(ins,"keyNG_nectarine_SBBEG"));
     }
 
 }
