@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,9 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
@@ -71,16 +74,16 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] {
-                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3",
-                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString()};
+        Object[] parameters = new Object[] { LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3", LuceneNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
 
-        ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LuceneNGram.class, parameters);
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(LuceneNGram.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
@@ -89,15 +92,14 @@ public class LuceneNGramFeatureExtractorTest
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
-        
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false,
-                false, false, new ArrayList<>(), false, fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
@@ -106,13 +108,22 @@ public class LuceneNGramFeatureExtractorTest
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                DenseFeatureStore.class);
-        assertEquals(4, fs.getNumberOfInstances());
-        assertEquals(1, fs.getUniqueOutcomes().size());
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
+        
+        assertEquals(4, instances.size());
+        assertEquals(1, getUniqueOutcomes(instances));
 
-        Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
+        Set<String> featureNames = new HashSet<String>();
+        for(Instance i : instances){
+            for(Feature f : i.getFeatures()){
+                featureNames.add(f.getName());
+            }
+        }
         assertEquals(3, featureNames.size());
         assertTrue(featureNames.contains("ngram_4"));
         assertTrue(featureNames.contains("ngram_5"));
@@ -129,9 +140,9 @@ public class LuceneNGramFeatureExtractorTest
         File outputPath = folder.newFolder();
 
         Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3",
-                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(), LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD,
-                "0.1f", LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123", LuceneNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD, "0.1f",
+                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -145,19 +156,15 @@ public class LuceneNGramFeatureExtractorTest
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
                 .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
 
-//        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-//                parameterList, outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-//                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-//                false, false, false, false, LuceneNGram.class.getName());
-        
-        ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LuceneNGram.class, parameters);
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(LuceneNGram.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false,
-                false, false, new ArrayList<>(), false, fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes);
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
@@ -166,13 +173,24 @@ public class LuceneNGramFeatureExtractorTest
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                DenseFeatureStore.class);
-        assertEquals(4, fs.getNumberOfInstances());
-        assertEquals(1, fs.getUniqueOutcomes().size());
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
 
-        Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
-        assertEquals(0, featureNames.size());
+        assertEquals(4, instances.size());
+        assertEquals(1, getUniqueOutcomes(instances));
+        for (Instance i : instances) {
+            assertTrue(i.getFeatures().isEmpty());
+        }
+    }
+
+    private int getUniqueOutcomes(List<Instance> instances)
+    {
+        Set<String> outcomes = new HashSet<String>();
+        instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
+        return outcomes.size();
     }
 }
