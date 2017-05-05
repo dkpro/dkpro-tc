@@ -237,7 +237,7 @@ public class TaskUtils
         fcc.setTesting(isTesting);
         fcc.setFeatureFilters(filters);
         fcc.setApplyWeighting(applyWeighting);
-        fcc.setInstanceId(true);
+        fcc.setInstanceId(addInstanceId);
         
         List<Object> parameters = new ArrayList<>();
         parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_FEATURE_CONNECTOR_CONFIGURATION,
