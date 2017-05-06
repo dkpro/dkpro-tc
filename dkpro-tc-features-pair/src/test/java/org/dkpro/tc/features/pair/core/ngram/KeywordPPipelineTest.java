@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -31,7 +32,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Test;
 
 public class KeywordPPipelineTest
@@ -111,8 +111,8 @@ public class KeywordPPipelineTest
         
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
+                false, false, false, Collections.emptyList(), fes);
     }
 
     private Object [] toString(Object[] array)

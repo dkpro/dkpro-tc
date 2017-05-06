@@ -21,21 +21,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramCPMetaCollector;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
+import org.junit.Test;
 
 public class NGramCPPipelineTest
     extends PPipelineTestBase
@@ -153,8 +152,8 @@ public class NGramCPPipelineTest
         
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, DenseFeatureStore.class.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
+                false, false, false, Collections.emptyList(), fes);
     }
     
     private Object [] toString(Object[] array)

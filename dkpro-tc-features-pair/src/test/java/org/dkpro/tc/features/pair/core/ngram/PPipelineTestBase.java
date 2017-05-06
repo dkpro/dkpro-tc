@@ -22,7 +22,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -33,12 +35,11 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.testing.TestPairReader;
 import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
@@ -101,17 +102,38 @@ public abstract class PPipelineTestBase
         SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), featExtractorConnector);
 
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)), DenseFeatureStore.class);
-        assertEquals(1, fs.getNumberOfInstances());
-        assertEquals(1, fs.getUniqueOutcomes().size());
-        
-        featureNames = fs.getFeatureNames();
+        List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+		for (String l : lines) {
+			instanceList.add(gson.fromJson(l, Instance.class));
+		}
 
-        for (int i=0; i<fs.getNumberOfInstances(); i++) {
-            instanceList.add(fs.getInstance(i));
-            outcomeList.add(fs.getOutcomes(i));
-        }
+		assertEquals(1, lines.size());
+		assertEquals(1, getUniqueOutcomes(instanceList).size());
+
+		featureNames = getFeatureNames(instanceList);
+
+		for (int i = 0; i < instanceList.size(); i++) {
+			outcomeList.add(instanceList.get(i).getOutcomes());
+		}
     }
+    
+    private TreeSet<String> getFeatureNames(List<Instance> instanceList) {
+		TreeSet<String> s = new TreeSet<>();
+		for (Instance i : instanceList) {
+			for (Feature f : i.getFeatures()) {
+				s.add(f.getName());
+			}
+		}
+
+		return s;
+	}
+
+	private static Set<String> getUniqueOutcomes(List<Instance> instances) {
+		Set<String> outcomes = new HashSet<String>();
+		instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
+		return outcomes;
+	}
+    
 	protected abstract void getFeatureExtractorCollector(List<Object> parameterList)
 		throws ResourceInitializationException;
 

@@ -39,7 +39,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
@@ -49,7 +48,7 @@ import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
-import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
+import org.dkpro.tc.ml.weka.writer.WekaDataStreamWriter;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -88,9 +87,7 @@ public class LoadModelConnectorWeka
             TCMachineLearningAdapter initMachineLearningAdapter = SaveModelUtils
                     .initMachineLearningAdapter(tcModelLocation);
             bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
-            FeatureStore featureStore = (FeatureStore) Class
-                    .forName(initMachineLearningAdapter.getFeatureStore()).newInstance();
-            useSparse = featureStore.supportsSparseFeatures();
+            useSparse = initMachineLearningAdapter.useSparseFeatures();
 
             loadClassifier();
             loadTrainingData();
@@ -212,7 +209,7 @@ public class LoadModelConnectorWeka
             for (int i = 0; i < vals.length; i++) {
                 if (vals[i] >= Double.valueOf(bipartitionThreshold)) {
                     String label = mekaInstance.attribute(i).name()
-                            .split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1];
+                            .split(WekaDataStreamWriter.CLASS_ATTRIBUTE_PREFIX)[1];
                     outcomes.add(label);
                 }
             }
