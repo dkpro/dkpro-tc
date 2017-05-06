@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +59,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 	private String learningMode;
 	private boolean applyWeighting;
 	private File classifierFormatOutputFile;
-	private BufferedWriter bw;
+	private BufferedWriter bw=null;
 	Map<String, String> index2instanceId;
 
 	Gson gson = new Gson();
@@ -109,13 +109,10 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
-		initGeneric();
 
-		Iterator<Instance> iterator = instances.iterator();
-		while (iterator.hasNext()) {
-			Instance next = iterator.next();
-			bw.write(gson.toJson(next) + System.lineSeparator());
-		}
+		initGeneric();
+		
+		bw.write(gson.toJson(instances.toArray(new Instance[0]), Instance[].class));
 
 		bw.close();
 		bw = null;
@@ -136,9 +133,15 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		  BufferedReader reader = new BufferedReader(new InputStreamReader(
 	                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
 	                "utf-8"));
+		  
+		  String line=null;
+		  while((line=reader.readLine())!=null){
+			  Instance[] instances = gson.fromJson(line, Instance[].class);
+			  writeClassifierFormat(Arrays.asList(instances), false);
+		  }
+		  
 		  reader.close();
 		  
-		  throw new Unsupported OperationException("x");
 	}
 
 	@Override
@@ -149,8 +152,6 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		List<Instance> instances = new ArrayList<>(in);
 
 		FeatureNode[][] nodes = encoder.featueStore2FeatureNode(in);
-
-		String fileName = LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
 
 		for (int i = 0; i < nodes.length; i++) {
 			Instance instance = instances.get(i);
@@ -225,7 +226,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		for (String k : index2instanceId.keySet()) {
 			sb.append(k + "\t" + index2instanceId.get(k) + "\n");
 		}
-		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
+		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8", true);
 	}
 
 	// build a map between the dkpro instance id and the index in the file

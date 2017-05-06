@@ -55,121 +55,101 @@ import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 
-public class LoadModelConnectorLiblinear
-    extends ModelSerialization_ImplBase
-{
+public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 
-    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
-    private File tcModelLocation;
+	@ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
+	private File tcModelLocation;
 
-    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected FeatureExtractorResource_ImplBase[] featureExtractors;
+	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+	protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
-    private String featureStoreImpl;
+	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
+	private String featureMode;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
-    private String featureMode;
+	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
+	private String learningMode;
 
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
-    private String learningMode;
+	private Model liblinearModel;
+	private Map<Integer, String> outcomeMapping;
 
-    private Model liblinearModel;
-    private Map<Integer, String> outcomeMapping;
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
 
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
+		try {
+			liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
+			outcomeMapping = loadOutcome2IntegerMapping(tcModelLocation);
+			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
+		} catch (Exception e) {
+			throw new ResourceInitializationException(e);
+		}
 
-        try {
-            liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
-            outcomeMapping = loadOutcome2IntegerMapping(tcModelLocation);
-            SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
+	}
 
-    }
+	private Map<Integer, String> loadOutcome2IntegerMapping(File tcModelLocation) throws IOException {
+		Map<Integer, String> map = new HashMap<>();
+		List<String> readLines = FileUtils
+				.readLines(new File(tcModelLocation, LiblinearAdapter.getOutcomeMappingFilename()));
+		for (String l : readLines) {
+			String[] split = l.split("\t");
+			map.put(Integer.valueOf(split[1]), split[0]);
+		}
+		return map;
+	}
 
-    private Map<Integer, String> loadOutcome2IntegerMapping(File tcModelLocation)
-        throws IOException
-    {
-        Map<Integer, String> map = new HashMap<>();
-        List<String> readLines = FileUtils
-                .readLines(new File(tcModelLocation, LiblinearAdapter.getOutcomeMappingFilename()));
-        for (String l : readLines) {
-            String[] split = l.split("\t");
-            map.put(Integer.valueOf(split[1]), split[0]);
-        }
-        return map;
-    }
+	@Override
+	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		try {
+			List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
+					new LiblinearAdapter().useSparseFeatures());
 
-    @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-        try {
-            FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
-                    .newInstance();
+			FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
+			FeatureNode[][] nodes = encoder.featueStore2FeatureNode(inst);
 
-            List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                    true, featureStore.supportsSparseFeatures());
-            for (Instance i : inst) {
-                featureStore.addInstance(i);
-            }
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < nodes.length; i++) {
+				List<String> elements = new ArrayList<String>();
+				for (int j = 0; j < nodes[i].length; j++) {
+					FeatureNode node = nodes[i][j];
+					int index = node.getIndex();
+					double value = node.getValue();
 
-            FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
-            FeatureNode[][] nodes = encoder.featueStore2FeatureNode(featureStore);
+					// write sparse values, i.e. skip zero values
+					if (Math.abs(value) > 0.00000000001) {
+						elements.add(index + ":" + value);
+					}
+				}
+				sb.append("-1"); // DUMMY value for our outcome
+				sb.append("\t");
+				sb.append(StringUtils.join(elements, "\t"));
+				sb.append("\n");
+			}
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < nodes.length; i++) {
-                List<String> elements = new ArrayList<String>();
-                for (int j = 0; j < nodes[i].length; j++) {
-                    FeatureNode node = nodes[i][j];
-                    int index = node.getIndex();
-                    double value = node.getValue();
+			File inputData = File.createTempFile("libLinearePrediction",
+					LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+			FileUtils.writeStringToFile(inputData, sb.toString());
 
-                    // write sparse values, i.e. skip zero values
-                    if (Math.abs(value) > 0.00000000001) {
-                        elements.add(index + ":" + value);
-                    }
-                }
-                sb.append("-1"); // DUMMY value for our outcome
-                sb.append("\t");
-                sb.append(StringUtils.join(elements, "\t"));
-                sb.append("\n");
-            }
+			Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
 
-            File inputData = File.createTempFile("libLinearePrediction", LiblinearAdapter
-                    .getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-            FileUtils.writeStringToFile(inputData, sb.toString());
+			List<TextClassificationOutcome> outcomes = new ArrayList<>(
+					JCasUtil.select(jcas, TextClassificationOutcome.class));
+			Feature[][] testInstances = predictionProblem.x;
+			for (int i = 0; i < testInstances.length; i++) {
+				Feature[] instance = testInstances[i];
+				Double prediction = Linear.predict(liblinearModel, instance);
 
-            Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
+				if (learningMode.equals(Constants.LM_REGRESSION)) {
+					outcomes.get(i).setOutcome(prediction.toString());
+				} else {
+					String predictedLabel = outcomeMapping.get(prediction.intValue());
+					outcomes.get(i).setOutcome(predictedLabel);
+				}
+			}
 
-            List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                    JCasUtil.select(jcas, TextClassificationOutcome.class));
-            Feature[][] testInstances = predictionProblem.x;
-            for (int i = 0; i < testInstances.length; i++) {
-                Feature[] instance = testInstances[i];
-                Double prediction = Linear.predict(liblinearModel, instance);
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 
-                if (learningMode.equals(Constants.LM_REGRESSION)) {
-                    outcomes.get(i).setOutcome(prediction.toString());
-                }
-                else {
-                    String predictedLabel = outcomeMapping.get(prediction.intValue());
-                    outcomes.get(i).setOutcome(predictedLabel);
-                }
-            }
-
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-
-    }
+	}
 
 }
