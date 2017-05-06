@@ -40,6 +40,7 @@
  */
 package org.dkpro.tc.ml.liblinear;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -64,8 +65,7 @@ public class FeatureNodeArrayEncoder {
 		this.stringToInt.put(BIAS_NAME, biasIndex);
 	}
 
-	public FeatureNode[][] featueStore2FeatureNode(FeatureStore store) 
-	{
+	public FeatureNode[][] featueStore2FeatureNode(Collection<Instance> instances) {
 		// map feature indexes to feature nodes, sorting by index
 		Map<Integer, FeatureNode> featureNodes = new TreeMap<Integer, FeatureNode>();
 
@@ -74,34 +74,33 @@ public class FeatureNodeArrayEncoder {
 		// instances consisting entirely of features never seen during training
 		featureNodes.put(this.biasIndex, new FeatureNode(this.biasIndex, 1));
 
-		// convert the name String to an index
-		for (String featureName : store.getFeatureNames()) {
-			if (!this.stringToInt.containsKey(featureName)) {
-				this.stringToInt.put(featureName, this.stringToInt.size() + 1);
-			}
-		}
-		
-		FeatureNode[][] xValues = new FeatureNode[store.getNumberOfInstances()][];
-		
+		FeatureNode[][] xValues = new FeatureNode[instances.size()][];
+
 		int instanceOffset = 0;
-		for (Instance instance : store.getInstances()) {
-			for (Feature feature : instance.getFeatures()) {	
-				String name = feature.getName();
+		for (Instance instance : instances) {
+			for (Feature feature : instance.getFeatures()) {
 				
+				if (!this.stringToInt.containsKey(feature.getName())) {
+					this.stringToInt.put(feature.getName(), this.stringToInt.size() + 1);
+				}
+				
+				String name = feature.getName();
+
 				double value;
 				if (feature.getValue() instanceof Number) {
 					value = ((Number) feature.getValue()).doubleValue();
 				} else {
 					value = 1.0;
-				}			
+				}
 
 				int index = this.stringToInt.get(name);
 
 				// create a feature node for the given index
-				// NOTE: if there are duplicate features, only the last will be kept
+				// NOTE: if there are duplicate features, only the last will be
+				// kept
 				featureNodes.put(index, new FeatureNode(index, value));
 			}
-			
+
 			// put the feature nodes into an array, sorted by feature index
 			FeatureNode[] featureNodeArray = new FeatureNode[featureNodes.size()];
 			int i = 0;
