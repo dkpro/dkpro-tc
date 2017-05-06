@@ -73,9 +73,9 @@ public abstract class ConnectorBase
     public static final String PARAM_APPLY_WEIGHTING = "applyWeights";
     
     /**
-     * Name of the class implementing {@link org.dkpro.tc.api.features.FeatureStore}
+     * If a sparse feature representation shall be used
      */
-    public static final String PARAM_USE_SPARSE_FEATURES= "featureStoreClass";
+    public static final String PARAM_USE_SPARSE_FEATURES= "useSparseFeatures";
 
 
 }

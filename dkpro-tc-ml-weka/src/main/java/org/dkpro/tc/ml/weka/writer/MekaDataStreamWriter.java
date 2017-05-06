@@ -42,7 +42,6 @@ import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 

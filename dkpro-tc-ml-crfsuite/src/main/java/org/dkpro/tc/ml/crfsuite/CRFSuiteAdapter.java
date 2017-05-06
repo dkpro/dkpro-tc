@@ -24,14 +24,14 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
+import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
 import org.dkpro.tc.ml.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
-import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
+import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataStreamWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
@@ -92,9 +92,9 @@ public class CRFSuiteAdapter
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
+    public Class<? extends DataStreamWriter> getDataWriterClass()
     {
-        return CRFSuiteDataWriter.class;
+        return CRFSuiteDataStreamWriter.class;
     }
 
     @Override

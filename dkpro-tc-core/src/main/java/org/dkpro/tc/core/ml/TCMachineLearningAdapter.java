@@ -22,7 +22,7 @@ import java.util.Collection;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
-import org.dkpro.tc.core.io.DataWriter;
+import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
 /**
@@ -55,7 +55,7 @@ public interface TCMachineLearningAdapter
     /**
      * @return The data writer class that needs to be used with the corresponding ML framework
      */
-    public Class<? extends DataWriter> getDataWriterClass();
+    public Class<? extends DataStreamWriter> getDataWriterClass();
 
     /**
      * @return The class of the load model connector to be used with this ML framework

@@ -44,8 +44,6 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.fstore.filter.FeatureFilter;
 
-import com.google.gson.Gson;
-
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
  * extractors on each CAS.
@@ -54,16 +52,46 @@ public class ExtractFeaturesStreamConnector
     extends ConnectorBase
 {
 
-    /**
+	   /**
      * Directory in which the extracted features will be stored
      */
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 
-    public static final String PARAM_FEATURE_CONNECTOR_CONFIGURATION = "featureConnectorConfiguration";
-    @ConfigurationParameter(name = PARAM_FEATURE_CONNECTOR_CONFIGURATION, mandatory = true)
-    private String jsonConfiguration;
+    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
+    private File outputDirectory;
 
-    FeatureConnectorConfiguration fcc;
+    /**
+     * Whether an ID should be added to each instance in the feature file
+     */
+    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
+    private boolean addInstanceId;
+
+    @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
+    private String[] featureFilters;
+    
+    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
+    private boolean useSparseFeatures;
+
+    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+    private String dataWriterClass;
+
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true,
+            defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
+
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true,
+            defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
+
+    @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
+    private boolean developerMode;
+    
+    @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
+    private boolean applyWeighting;
+
+    @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
+    private boolean isTesting;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -79,13 +107,12 @@ public class ExtractFeaturesStreamConnector
     {
         super.initialize(context);
         try {
-            loadConfiguration();
 
             featureNames = new TreeSet<>();
             uniqueOutcomes = new HashSet<>();
 
-            if (fcc.isTesting) {
-                File featureNamesFile = new File(fcc.outputDir, Constants.FILENAME_FEATURES);
+            if (isTesting) {
+                File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
                 featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
             }
 
@@ -96,19 +123,15 @@ public class ExtractFeaturesStreamConnector
 
             // FIXME hardcoded at the moment for testing
             dsw = (DataStreamWriter) Class
-                    .forName(fcc.getDataWriter())
+                    .forName(dataWriterClass)
                     .newInstance();
-            dsw.init(fcc.outputDir, fcc.useSparseFeatures, fcc.learningMode, fcc.applyWeighting);
+            dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
     }
 
-    private void loadConfiguration()
-    {
-        fcc = new Gson().fromJson(jsonConfiguration, FeatureConnectorConfiguration.class);
-    }
 
     @Override
     public void process(JCas jcas)
@@ -119,17 +142,17 @@ public class ExtractFeaturesStreamConnector
 
         List<Instance> instances = new ArrayList<Instance>();
         try {
-            if (fcc.featureMode.equals(Constants.FM_SEQUENCE)) {
+            if (featureMode.equals(Constants.FM_SEQUENCE)) {
                 instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas,
-                        fcc.setInstanceId, fcc.useSparseFeatures);
+                        addInstanceId, useSparseFeatures);
             }
-            else if (fcc.featureMode.equals(Constants.FM_UNIT)) {
+            else if (featureMode.equals(Constants.FM_UNIT)) {
                 instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                        fcc.setInstanceId, fcc.useSparseFeatures);
+                        addInstanceId, useSparseFeatures);
             }
             else {
-                instances.add(TaskUtils.getSingleInstance(fcc.featureMode, featureExtractors, jcas,
-                        fcc.developerMode, fcc.setInstanceId, fcc.useSparseFeatures));
+                instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
+                        developerMode, addInstanceId, useSparseFeatures));
             }
 
             /*
@@ -138,7 +161,7 @@ public class ExtractFeaturesStreamConnector
              */
             instances = enforceMatchingFeatures(instances);
 
-            if (fcc.featureFilters.size() > 0 || !dsw.canStream()) {
+            if (featureFilters.length > 0 || !dsw.canStream()) {
                 dsw.writeGenericFormat(instances);
             }
             else {
@@ -156,7 +179,7 @@ public class ExtractFeaturesStreamConnector
     private void trackFeatureNamesAndOutcomes(List<Instance> instances)
     {
         for (Instance i : instances) {
-            if (!fcc.isTesting) {
+            if (!isTesting) {
                 for (Feature f : i.getFeatures()) {
                     featureNames.add(f.getName());
                 }
@@ -169,7 +192,7 @@ public class ExtractFeaturesStreamConnector
 
     private List<Instance> enforceMatchingFeatures(List<Instance> instances)
     {
-        if (!fcc.isTesting) {
+        if (!isTesting) {
             return instances;
         }
 
@@ -197,19 +220,17 @@ public class ExtractFeaturesStreamConnector
 
         try {
 
-            // FIXME: The filters depend on the data format which is not checked - the generic data
-            // format the filter expects might be different to the one of the classifier
-            if (fcc.featureFilters.size() > 0) {
-                applyFilter(new File(fcc.outputDir, dsw.getGenericFileName()));
+            if (featureFilters.length > 0) {
+                applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
             }
 
             writeOutcomes();
 
-            if (!fcc.isTesting) {
+            if (!isTesting) {
                 writeFeatureNames();
             }
 
-            if (fcc.featureFilters.size() > 0 || !dsw.canStream()) {
+            if (featureFilters.length > 0 || !dsw.canStream()) {
                 // if we use generic mode we have to finalize the feature extraction by transforming
                 // the generic file into the classifier-specific data format
                 dsw.transformFromGeneric();
@@ -224,7 +245,7 @@ public class ExtractFeaturesStreamConnector
     private void writeOutcomes()
         throws AnalysisEngineProcessException
     {
-        File outcomesFile = new File(fcc.outputDir, Constants.FILENAME_OUTCOMES);
+        File outcomesFile = new File(outputDirectory, Constants.FILENAME_OUTCOMES);
         try {
             FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
         }
@@ -237,7 +258,7 @@ public class ExtractFeaturesStreamConnector
         throws AnalysisEngineProcessException
     {
         try {
-            FileUtils.writeLines(new File(fcc.outputDir, Constants.FILENAME_FEATURES),
+            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
                     featureNames);
         }
         catch (IOException e) {
@@ -250,13 +271,13 @@ public class ExtractFeaturesStreamConnector
     {
         // apply filters that influence the whole feature store
         // filters are applied in the order that they appear as parameters
-        for (String filterString : fcc.featureFilters) {
+        for (String filterString : featureFilters) {
             FeatureFilter filter;
             try {
                 filter = (FeatureFilter) Class.forName(filterString).newInstance();
 
-                if (filter.isApplicableForTraining() && !fcc.isTesting
-                        || filter.isApplicableForTesting() && fcc.isTesting) {
+                if (filter.isApplicableForTraining() && !isTesting
+                        || filter.isApplicableForTesting() && isTesting) {
                     filter.applyFilter(jsonTempFile);
                 }
             }

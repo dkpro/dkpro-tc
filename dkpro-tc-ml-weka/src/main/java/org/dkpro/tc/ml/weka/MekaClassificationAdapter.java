@@ -25,17 +25,16 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
+import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.task.serialization.LoadModelConnectorWeka;
 import org.dkpro.tc.ml.weka.task.serialization.WekaModelSerializationDescription;
-import org.dkpro.tc.ml.weka.writer.MekaDataWriter;
+import org.dkpro.tc.ml.weka.writer.MekaDataStreamWriter;
 
 public class MekaClassificationAdapter 
 	implements TCMachineLearningAdapter
@@ -80,8 +79,8 @@ public class MekaClassificationAdapter
 	}
 	
 	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return MekaDataWriter.class;
+	public Class<? extends DataStreamWriter> getDataWriterClass() {
+		return MekaDataStreamWriter.class;
 	}
 	
 	@Override
