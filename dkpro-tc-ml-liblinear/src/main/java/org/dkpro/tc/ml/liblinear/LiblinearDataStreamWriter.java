@@ -115,8 +115,8 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
 
 		initGeneric();
-
-		bw.write(gson.toJson(instances.toArray(new Instance[0]), Instance[].class));
+		Instance[] array = instances.toArray(new Instance[0]);
+		bw.write(gson.toJson(array, Instance[].class) + System.lineSeparator());
 
 		bw.close();
 		bw = null;
