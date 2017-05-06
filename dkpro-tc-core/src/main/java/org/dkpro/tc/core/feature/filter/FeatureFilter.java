@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -15,20 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.fstore.filter;
+package org.dkpro.tc.core.feature.filter;
 
-import org.dkpro.tc.api.features.FeatureStore;
+import java.io.File;
 
 /**
  * Filter for feature store
  */
-public interface FeatureStoreFilter
+public interface FeatureFilter
 {
 
     /**
      * Applies the filter to the given feature store
      */
-    public void applyFilter(FeatureStore store);
+    public void applyFilter(File tmpFeatureFile) throws Exception;
 
     /**
      * Whether the filter is applicable on training instances

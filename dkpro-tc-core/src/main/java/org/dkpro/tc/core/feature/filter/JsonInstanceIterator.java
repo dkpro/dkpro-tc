@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.fstore.filter;
+package org.dkpro.tc.core.feature.filter;
 
 import java.io.BufferedReader;
 import java.io.File;

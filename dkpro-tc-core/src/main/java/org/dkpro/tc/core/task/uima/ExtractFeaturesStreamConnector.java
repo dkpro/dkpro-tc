@@ -39,10 +39,10 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.feature.filter.FeatureFilter;
 import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.fstore.filter.FeatureFilter;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
