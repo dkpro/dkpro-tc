@@ -54,15 +54,16 @@ import de.bwaldvogel.liblinear.FeatureNode;
 public class LiblinearDataStreamWriter implements DataStreamWriter {
 	FeatureNodeArrayEncoder encoder;
 	static final String INDEX2INSTANCEID = "index2InstanceId.txt";
-	private File outputDirectory;
-	private boolean useSparse;
-	private String learningMode;
-	private boolean applyWeighting;
-	private File classifierFormatOutputFile;
-	private BufferedWriter bw=null;
+	File outputDirectory;
+	boolean useSparse;
+	String learningMode;
+	boolean applyWeighting;
+	File classifierFormatOutputFile;
+	BufferedWriter bw=null;
 	Map<String, String> index2instanceId;
 
 	Gson gson = new Gson();
+	private int maxId=0;
 
 	// @Override
 	// public void write(File outputDirectory, FeatureStore featureStore,
@@ -156,7 +157,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		for (int i = 0; i < nodes.length; i++) {
 			Instance instance = instances.get(i);
 
-			recordInstanceId(instance, i, index2instanceId);
+			recordInstanceId(instance, maxId++, index2instanceId);
 
 			List<String> elements = new ArrayList<String>();
 			for (int j = 0; j < nodes[i].length; j++) {

@@ -121,7 +121,6 @@ public class ExtractFeaturesStreamConnector
                 throw new ResourceInitializationException();
             }
 
-            // FIXME hardcoded at the moment for testing
             dsw = (DataStreamWriter) Class
                     .forName(dataWriterClass)
                     .newInstance();
