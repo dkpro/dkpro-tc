@@ -33,63 +33,61 @@ import com.google.gson.Gson;
  *  Demonstrates how feature filtering might work. The filter removes all ''character ngrams'' from the feature set
  *   - intended as demonstration - in practical setups you would simply remove the character ngram feature 
  */
-public class FilterLuceneCharacterNgramStartingWithLetter
-    implements FeatureFilter
-{
+public class FilterLuceneCharacterNgramStartingWithLetter implements FeatureFilter {
 
-    @Override
-    public void applyFilter(File inputFeatureFile)
-        throws Exception
-    {
-        Gson gson = new Gson();
+	@Override
+	public void applyFilter(File inputFeatureFile) throws Exception {
+		Gson gson = new Gson();
 
-        // iterating over a stream is for large data more reasonable that bulk-read of all data
-        List<String> outputLines = new ArrayList<>();
+		// iterating over a stream is for large data more reasonable that
+		// bulk-read of all data
+		List<String> outputLines = new ArrayList<>();
 
-        List<String> inputLines = FileUtils.readLines(inputFeatureFile, "utf-8");
-        for (String l : inputLines) {
-            // de-serialize
-            Instance inst = gson.fromJson(l, Instance.class);
+		List<String> inputLines = FileUtils.readLines(inputFeatureFile, "utf-8");
+		for (String l : inputLines) {
+			// de-serialize
+			Instance[] instances = gson.fromJson(l, Instance[].class);
+			List<Instance> filter_out = new ArrayList<>();
+			for (Instance inst : instances) {
+				// collect features starting with a t-letter
+				List<Feature> features = new ArrayList<>(inst.getFeatures());
+				List<Feature> deletionTargets = new ArrayList<>();
+				for (Feature f : features) {
+					if (f.getName().startsWith("charngram")) {
+						deletionTargets.add(f);
+					}
+				}
+				// remove those features
+				for (Feature f : deletionTargets) {
+					features.remove(f);
+				}
 
-            // collect features starting with a t-letter
-            List<Feature> features = new ArrayList<>(inst.getFeatures());
-            List<Feature> deletionTargets = new ArrayList<>();
-            for (Feature f : features) {
-                if (f.getName().startsWith("charngram")) {
-                    deletionTargets.add(f);
-                }
-            }
-            // remove those features
-            for (Feature f : deletionTargets) {
-                features.remove(f);
-            }
+				// update instances
+				inst.setFeatures(features);
 
-            // update instances
-            inst.setFeatures(features);
+				// re-serialize
+				filter_out.add(inst);
+			}
+			outputLines.add(gson.toJson(filter_out.toArray(new Instance[0]), Instance[].class));
+		}
 
-            // re-serialize
-            outputLines.add(gson.toJson(inst));
-        }
+		// Write new file to temporary location
+		File tmp = File.createTempFile("tmpFeatureFile", "tmp");
+		FileUtils.writeLines(tmp, "utf-8", outputLines);
 
-        // Write new file to temporary location
-        File tmp = File.createTempFile("tmpFeatureFile", "tmp");
-        FileUtils.writeLines(tmp, "utf-8", outputLines);
+		// overwrite input file with new file
+		FileUtils.copyFile(tmp, inputFeatureFile);
+		tmp.delete();
+	}
 
-        // overwrite input file with new file
-        FileUtils.copyFile(tmp, inputFeatureFile);
-        tmp.delete();
-    }
+	@Override
+	public boolean isApplicableForTraining() {
+		return true;
+	}
 
-    @Override
-    public boolean isApplicableForTraining()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean isApplicableForTesting()
-    {
-        return true;
-    }
+	@Override
+	public boolean isApplicableForTesting() {
+		return true;
+	}
 
 }
