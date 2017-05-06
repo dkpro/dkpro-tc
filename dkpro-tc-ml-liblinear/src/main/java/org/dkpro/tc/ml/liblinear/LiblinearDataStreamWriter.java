@@ -203,6 +203,16 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
 		index2instanceId = new HashMap<>();
+		
+		// Caution: DKPro Lab imports (aka copies!) the data of the train task
+		// as test task. We use
+		// appending mode for streaming. We might append the old training file with
+		// testing data!
+		// Force delete the old training file to make sure we start with a
+		// clean, empty file
+		if (classifierFormatOutputFile.exists()) {
+			FileUtils.forceDelete(classifierFormatOutputFile);
+		}
 	}
 
 	@Override
@@ -227,7 +237,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		for (String k : index2instanceId.keySet()) {
 			sb.append(k + "\t" + index2instanceId.get(k) + "\n");
 		}
-		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8", true);
+		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
 	}
 
 	// build a map between the dkpro instance id and the index in the file
