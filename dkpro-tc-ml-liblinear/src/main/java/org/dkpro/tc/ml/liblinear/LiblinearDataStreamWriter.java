@@ -31,6 +31,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -59,11 +61,12 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 	String learningMode;
 	boolean applyWeighting;
 	File classifierFormatOutputFile;
-	BufferedWriter bw=null;
+	BufferedWriter bw = null;
 	Map<String, String> index2instanceId;
 
 	Gson gson = new Gson();
-	private int maxId=0;
+	private int maxId = 0;
+	private TreeSet<String> featureNames;
 
 	// @Override
 	// public void write(File outputDirectory, FeatureStore featureStore,
@@ -112,7 +115,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
 
 		initGeneric();
-		
+
 		bw.write(gson.toJson(instances.toArray(new Instance[0]), Instance[].class));
 
 		bw.close();
@@ -126,23 +129,42 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		bw = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
 	}
-	
 
 	@Override
 	public void transformFromGeneric() throws Exception {
-		
-		  BufferedReader reader = new BufferedReader(new InputStreamReader(
-	                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
-	                "utf-8"));
-		  
-		  String line=null;
-		  while((line=reader.readLine())!=null){
-			  Instance[] instances = gson.fromJson(line, Instance[].class);
-			  writeClassifierFormat(Arrays.asList(instances), false);
-		  }
-		  
-		  reader.close();
-		  
+
+		featureNames = getFeatureNames();
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			Instance[] instances = gson.fromJson(line, Instance[].class);
+			writeClassifierFormat(Arrays.asList(instances), false);
+		}
+		reader.close();
+
+	}
+
+	private TreeSet<String> getFeatureNames() throws Exception {
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+
+		TreeSet<String> names = new TreeSet<>();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			Instance[] instances = gson.fromJson(line, Instance[].class);
+			for (Instance i : instances) {
+				for (Feature f : i.getFeatures()) {
+					names.add(f.getName());
+				}
+			}
+		}
+		reader.close();
+
+		return names;
 	}
 
 	@Override
@@ -152,7 +174,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 
 		List<Instance> instances = new ArrayList<>(in);
 
-		FeatureNode[][] nodes = encoder.featueStore2FeatureNode(in);
+		FeatureNode[][] nodes = encoder.featueStore2FeatureNode(in, featureNames);
 
 		for (int i = 0; i < nodes.length; i++) {
 			Instance instance = instances.get(i);
@@ -203,10 +225,11 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
 		index2instanceId = new HashMap<>();
-		
+
 		// Caution: DKPro Lab imports (aka copies!) the data of the train task
 		// as test task. We use
-		// appending mode for streaming. We might append the old training file with
+		// appending mode for streaming. We might append the old training file
+		// with
 		// testing data!
 		// Force delete the old training file to make sure we start with a
 		// clean, empty file
@@ -217,7 +240,9 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 
 	@Override
 	public boolean canStream() {
-		return true;
+		// we need to know the feature names to map them to integers, no direct
+		// transformation :(
+		return false;
 	}
 
 	@Override

@@ -44,9 +44,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 
 import de.bwaldvogel.liblinear.FeatureNode;
@@ -60,14 +60,23 @@ public class FeatureNodeArrayEncoder {
 	private int biasIndex;
 
 	public FeatureNodeArrayEncoder() {
-		this.stringToInt = new HashMap<String, Integer>();
+		this.stringToInt = null;
 		this.biasIndex = 1;
-		this.stringToInt.put(BIAS_NAME, biasIndex);
 	}
 
-	public FeatureNode[][] featueStore2FeatureNode(Collection<Instance> instances) {
+	public FeatureNode[][] featueStore2FeatureNode(Collection<Instance> instances, TreeSet<String> featureNames) {
 		// map feature indexes to feature nodes, sorting by index
 		Map<Integer, FeatureNode> featureNodes = new TreeMap<Integer, FeatureNode>();
+
+		if (this.stringToInt == null) {
+			this.stringToInt = new HashMap<>();
+			this.stringToInt.put(BIAS_NAME, biasIndex);
+			for (String name : featureNames) {
+				if (!this.stringToInt.containsKey(name)) {
+					this.stringToInt.put(name, this.stringToInt.size() + 1);
+				}
+			}
+		}
 
 		// add a "bias" feature node; otherwise LIBLINEAR is unable to predict
 		// the majority class for
@@ -79,11 +88,7 @@ public class FeatureNodeArrayEncoder {
 		int instanceOffset = 0;
 		for (Instance instance : instances) {
 			for (Feature feature : instance.getFeatures()) {
-				
-				if (!this.stringToInt.containsKey(feature.getName())) {
-					this.stringToInt.put(feature.getName(), this.stringToInt.size() + 1);
-				}
-				
+
 				String name = feature.getName();
 
 				double value;
