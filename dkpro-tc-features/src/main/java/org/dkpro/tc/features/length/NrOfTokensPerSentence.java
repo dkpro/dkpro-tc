@@ -23,16 +23,14 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.MissingValue;
-import org.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
-import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
  * Extracts the number of tokens per sentence in the classification unit
@@ -58,11 +56,10 @@ public class NrOfTokensPerSentence
         int numSentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit).size();
 
         if (numSentences == 0) {
-            featSet.add(new Feature(FN_TOKENS_PER_SENTENCE, new MissingValue(
-                    MissingValueNonNominalType.NUMERIC)));
+            featSet.add(new Feature(FN_TOKENS_PER_SENTENCE, 0));
         }
         else {
-        	int numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
+        	double numTokens = JCasUtil.selectCovered(jcas, Token.class, classificationUnit).size();
         	double ratio = numTokens / (double) numSentences;
 
         	featSet.add(new Feature(FN_TOKENS_PER_SENTENCE, ratio));
