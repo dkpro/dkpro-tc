@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.fstore.filter.FeatureFilter;
+import org.dkpro.tc.core.feature.filter.FeatureFilter;
 
 import com.google.gson.Gson;
 
