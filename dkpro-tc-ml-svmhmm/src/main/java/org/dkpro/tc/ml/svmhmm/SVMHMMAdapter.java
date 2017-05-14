@@ -25,17 +25,16 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
+import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.ml.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataStreamWriter;
 
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult
@@ -111,8 +110,8 @@ public class SVMHMMAdapter
     }
 
 	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return SVMHMMDataWriter.class;
+	public Class<? extends DataStreamWriter> getDataWriterClass() {
+		return SVMHMMDataStreamWriter.class;
 	}
 
 	@Override
@@ -125,10 +124,9 @@ public class SVMHMMAdapter
 		return SvmhmmModelSerializationDescription.class;
 	}
 
-    @Override
-    public String getFeatureStore()
-    {
-        return SparseFeatureStore.class.getName();
-    }
+	@Override
+	public boolean useSparseFeatures() {
+		return true;
+	}
 }
 
