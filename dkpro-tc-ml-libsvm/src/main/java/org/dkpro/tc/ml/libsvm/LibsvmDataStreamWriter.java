@@ -50,8 +50,6 @@ import com.google.gson.Gson;
  * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
 public class LibsvmDataStreamWriter implements DataStreamWriter {
-	private Map<String, Integer> featName2id = new HashMap<>();
-
 	private File outputDirectory;
 
 	private boolean useSparse;
@@ -66,128 +64,6 @@ public class LibsvmDataStreamWriter implements DataStreamWriter {
 	Map<String, String> index2instanceId = new HashMap<>();
 	Map<String, Integer> featureNameMap = new HashMap<>();
 
-	// @Override
-	// public void write(File outputDirectory, FeatureStore featureStore,
-	// boolean useDenseInstances,
-	// String learningMode, boolean applyWeighting)
-	// throws Exception
-	// {
-	//
-	// writeOutcomes(featureStore, outputDirectory);
-	// createAndPersistFeatureNameMap(featureStore, outputDirectory);
-	//
-	// String fileName = LibsvmAdapter.getInstance()
-	// .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-	// BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-	// new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
-	//
-	// Map<String, String> index2instanceId = new HashMap<>();
-	//
-	// int idx=0;
-	// for (Instance i : featureStore.getInstances()) {
-	// recordInstanceId(i, idx++, index2instanceId);
-	// String outcome = i.getOutcome();
-	// bw.write(outcome);
-	// for (Feature f : i.getFeatures()) {
-	// if(!sanityCheckValue(f)){
-	// continue;
-	// }
-	// bw.write("\t");
-	// bw.write(featName2id.get(f.getName()) + ":" + f.getValue());
-	// }
-	// bw.write("\n");
-	// }
-	// bw.close();
-	//
-	// //write mapping
-	// writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
-	// }
-	//
-	// private void writeMapping(File outputDirectory, String fileName,
-	// Map<String, String> index2instanceId) throws IOException
-	// {
-	// StringBuilder sb = new StringBuilder();
-	// sb.append("#Index\tDkProInstanceId\n");
-	// for(String k : index2instanceId.keySet()){
-	// sb.append(k + "\t" + index2instanceId.get(k)+"\n");
-	// }
-	// FileUtils.writeStringToFile(new File(outputDirectory, fileName),
-	// sb.toString(), "utf-8");
-	// }
-	//
-	// // build a map between the dkpro instance id and the index in the file
-	// private void recordInstanceId(Instance instance, int i, Map<String,
-	// String> index2instanceId)
-	// {
-	// Collection<Feature> features = instance.getFeatures();
-	// for (Feature f : features) {
-	// if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
-	// continue;
-	// }
-	// index2instanceId.put(i + "", f.getValue() + "");
-	// return;
-	// }
-	// }
-	//
-	// private boolean sanityCheckValue(Feature f)
-	// {
-	// if (f.getValue() instanceof Number) {
-	// return true;
-	// }
-	// if(f.getName().equals(Constants.ID_FEATURE_NAME)){
-	// return false;
-	// }
-	//
-	// try {
-	// Double.valueOf((String) f.getValue());
-	// }
-	// catch (Exception e) {
-	// throw new IllegalArgumentException(
-	// "Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue()
-	// + "]",
-	// e);
-	// }
-	// return false;
-	// }
-	//
-	// private void createAndPersistFeatureNameMap(FeatureStore featureStore,
-	// File outputDirectory)
-	// throws IOException
-	// {
-	// int i = 0;
-	// for (String n : featureStore.getFeatureNames()) {
-	// featName2id.put(n, i++);
-	// }
-	//
-	// String s = map2String(featName2id);
-	// File outcomeMap = new File(outputDirectory,
-	// LibsvmAdapter.getFeaturenameMappingFilename());
-	// FileUtils.write(outcomeMap, s, "utf-8");
-	// }
-	//
-	// private void writeOutcomes(FeatureStore featureStore, File
-	// outputDirectory)
-	// throws IOException
-	// {
-	// StringBuilder sb = new StringBuilder();
-	// for (String o : featureStore.getUniqueOutcomes()) {
-	// sb.append(o + "\n");
-	// }
-	//
-	// File outcomeMap = new File(outputDirectory,
-	// LibsvmAdapter.getOutcomesFile());
-	// FileUtils.write(outcomeMap, sb.toString(), "utf-8");
-	// }
-	//
-	// private String map2String(Map<String, Integer> map)
-	// {
-	// StringBuilder sb = new StringBuilder();
-	// for (String k : map.keySet()) {
-	// sb.append(k + "\t" + map.get(k) + "\n");
-	// }
-	//
-	// return sb.toString();
-	// }
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {

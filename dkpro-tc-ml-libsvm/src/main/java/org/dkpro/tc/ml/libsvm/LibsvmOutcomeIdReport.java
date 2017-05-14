@@ -86,7 +86,7 @@ public class LibsvmOutcomeIdReport
     
     private Map<String, String> getIndex2InstanceIdMap() throws IOException
     {
-        File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY), LibsvmDataWriter.INDEX2INSTANCEID);
+        File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY), LibsvmDataStreamWriter.INDEX2INSTANCEID);
         
         Map<String,String> m = new HashMap<>();
         

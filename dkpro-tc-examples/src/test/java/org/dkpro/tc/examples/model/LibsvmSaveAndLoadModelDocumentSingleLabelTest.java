@@ -364,7 +364,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
         assertTrue(id2outcomeMapping.exists());
 
         File featureNameMapping = new File(modelFolder.getAbsolutePath() + "/"
-                + LibsvmAdapter.getFeaturenameMappingFilename());
+                + LibsvmAdapter.getFeatureNameMappingFilename());
         assertTrue(featureNameMapping.exists());
     }
 }

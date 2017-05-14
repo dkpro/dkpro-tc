@@ -128,7 +128,7 @@ public class LibsvmModelSerializationDescription
     {
         File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String mapping = LibsvmAdapter.getFeaturenameMappingFilename();
+        String mapping = LibsvmAdapter.getFeatureNameMappingFilename();
 
         FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
     }
