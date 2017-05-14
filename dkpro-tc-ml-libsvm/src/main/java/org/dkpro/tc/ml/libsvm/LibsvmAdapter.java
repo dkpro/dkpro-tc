@@ -24,6 +24,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
+import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
@@ -124,9 +125,9 @@ public class LibsvmAdapter
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
+    public Class<? extends DataStreamWriter> getDataWriterClass()
     {
-        return LibsvmDataWriter.class;
+        return LibsvmDataStreamWriter.class;
     }
 
     @Override
@@ -140,13 +141,11 @@ public class LibsvmAdapter
     {
         return LibsvmModelSerializationDescription.class;
     }
-
+    
     @Override
-    public String getFeatureStore()
-    {
-        return SparseFeatureStore.class.getName();
-    }
-
+	public boolean useSparseFeatures() {
+		return true;
+	}
 
     /** SVM type is set by switch [-s] */
     public static final String PARAM_SVM_TYPE_C_SVC_MULTI_CLASS = "0";
@@ -169,7 +168,6 @@ public class LibsvmAdapter
     public static final String PARAM_KERNEL_SIGMOID = "3";
     /** precomputed kernel (kernel values in training_set_file) set by switch [-t] */
     public static final String PARAM_KERNEL_PRE_COMPUTED = "4";
-
     
 }
 
