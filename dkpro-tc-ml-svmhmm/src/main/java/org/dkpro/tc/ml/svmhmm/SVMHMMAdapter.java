@@ -128,5 +128,9 @@ public class SVMHMMAdapter
 	public boolean useSparseFeatures() {
 		return true;
 	}
+	
+	public static String getFeatureNameMappingFilename() {
+		return "feature-name-mapping.txt";
+	}
 }
 

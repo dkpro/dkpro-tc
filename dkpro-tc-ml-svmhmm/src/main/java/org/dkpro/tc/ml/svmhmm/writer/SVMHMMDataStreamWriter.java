@@ -26,21 +26,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataStreamWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
 
 import com.google.gson.Gson;
 
@@ -70,6 +79,10 @@ public class SVMHMMDataStreamWriter implements DataStreamWriter {
 
 	private BufferedWriter bw;
 	Gson gson = new Gson();
+
+	private TreeSet<String> featureNames;
+
+	private Map<String, Integer> featureNameMap;
 
 	// @Override
 	// public void write(File aOutputDirectory, FeatureStore featureStore,
@@ -258,7 +271,142 @@ public class SVMHMMDataStreamWriter implements DataStreamWriter {
 
 	@Override
 	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
+		if (featureNames == null) {
+			// create feature name mapping and serialize it at first
+			// pass-through
+			loadFeatureNames();
+			initFeatureNameMap();
+			writeFeatureName2idMapping(outputDirectory, SVMHMMAdapter.getFeatureNameMappingFilename(), featureNameMap);
+		}
 
+		initClassifierFormat();
+
+		PrintWriter pw = new PrintWriter(bw);
+
+		List<Instance> inst = new ArrayList<>(instances);
+		for (int i = 0; i < inst.size(); i++) {
+			Instance instance = inst.get(i);
+
+			// placeholder for original token
+			String originalToken = null;
+
+			// other "features" - meta data features that will be stored in the
+			// comment
+			SortedMap<String, String> metaDataFeatures = new TreeMap<>();
+
+			// feature values
+			SortedMap<Integer, Number> featureValues = new TreeMap<>();
+			for (Feature f : instance.getFeatures()) {
+				String featureName = f.getName();
+				Object featureValue = f.getValue();
+
+				// we ignore null feature values
+				if (featureValue == null) {
+					continue;
+				}
+
+				// get original token stored in OriginalToken feature
+				if (OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT.equals(featureName)) {
+					// if original token/text was multi line, join it to a
+					// single line
+					// originalToken = ((String) featureValue).replaceAll("\\n",
+					// " ");
+					originalToken = (String) featureValue;
+					continue;
+				}
+
+				// handle other possible features as metadata?
+				if (isMetaDataFeature(featureName)) {
+					metaDataFeatures.put(featureName, (String) featureValue);
+					continue;
+				}
+
+				// not allow other non-number features
+				if (!(featureValue instanceof Number)) {
+					log.debug("Only features with number values are allowed, but was " + f);
+					continue;
+				}
+
+				// in case the feature store produced dense feature vector with
+				// zeros for
+				// non-present features, we ignore zero value features here
+				Number featureValueNumber = (Number) featureValue;
+				if (Math.abs(featureValueNumber.doubleValue() - 0d) < EPS) {
+					continue;
+				}
+
+				// get number and int value of the feature
+				Integer featureNumber = featureNameMap.get(featureName);
+
+				featureValues.put(featureNumber, featureValueNumber);
+			}
+
+			// print formatted output: label name and sequence id
+			pw.printf(Locale.ENGLISH, "%s qid:%d ", instance.getOutcome(), getUniqueSequenceId(instance));
+
+			// print sorted features
+			for (Map.Entry<Integer, Number> entry : featureValues.entrySet()) {
+				if (entry.getValue() instanceof Double) {
+					// format double on 8 decimal places
+					pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(), entry.getValue().doubleValue());
+				} else {
+					// format as integer
+					pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(), entry.getValue().intValue());
+				}
+			}
+
+			// print original token and label as comment
+			pw.printf(Locale.ENGLISH, "# %s %d %s ", instance.getOutcome(), instance.getSequenceId(),
+					(originalToken != null) ? (URLEncoder.encode(originalToken, "utf-8")) : "");
+
+			// print meta-data features at the end
+			for (Map.Entry<String, String> entry : metaDataFeatures.entrySet()) {
+				pw.printf(" %s:%s", URLEncoder.encode(entry.getKey(), "utf-8"),
+						URLEncoder.encode(entry.getValue(), "utf-8"));
+			}
+			// new line at the end
+			pw.println();
+		}
+
+		IOUtils.closeQuietly(pw);
+
+	}
+
+	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+			Map<String, Integer> stringToInt) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		for (String k : stringToInt.keySet()) {
+			sb.append(k + "\t" + stringToInt.get(k) + "\n");
+		}
+		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
+	}
+
+	private void initFeatureNameMap() {
+		featureNameMap = new HashMap<String, Integer>();
+		List<String> fm = new ArrayList<>(featureNames);
+		for (int i = 0; i < fm.size(); i++) {
+			featureNameMap.put(fm.get(i), i + 2);
+		}
+	}
+
+	private void initClassifierFormat() throws Exception {
+		if (bw != null) {
+			return;
+		}
+
+		bw = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+	}
+
+	private void loadFeatureNames() throws IOException {
+		List<String> readLines = FileUtils.readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
+		featureNames = new TreeSet<>();
+		for (String l : readLines) {
+			if (l.isEmpty()) {
+				continue;
+			}
+			featureNames.add(l);
+		}
 	}
 
 	@Override
