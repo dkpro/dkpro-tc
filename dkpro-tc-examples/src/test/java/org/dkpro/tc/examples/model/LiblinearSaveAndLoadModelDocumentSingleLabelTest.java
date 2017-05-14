@@ -27,8 +27,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
@@ -282,38 +284,27 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
 
         outcomes.addAll(JCasUtil.select(jcas, TextClassificationOutcome.class));
 
+        Set<String> possibleOutcomes = new HashSet<>();
+        possibleOutcomes.add("AT");
+        possibleOutcomes.add("NP");
+        possibleOutcomes.add("pct");
+        possibleOutcomes.add("WDT");
+        possibleOutcomes.add("JJ");
+        possibleOutcomes.add("VBD");
+        possibleOutcomes.add("NNS");
+        possibleOutcomes.add("IN");
+        possibleOutcomes.add("CC");
+        possibleOutcomes.add("NN");
+        possibleOutcomes.add("VBD");
+        possibleOutcomes.add("AP");
+        possibleOutcomes.add("HVD");
+        
         assertEquals(31, outcomes.size());
-        assertEquals("AT", outcomes.get(0).getOutcome());
-        assertEquals("NP", outcomes.get(1).getOutcome());
-        assertEquals("pct", outcomes.get(2).getOutcome());
-        assertEquals("WDT", outcomes.get(3).getOutcome());
-        assertEquals("JJ", outcomes.get(4).getOutcome());
-        assertEquals("VBD", outcomes.get(5).getOutcome());
-        assertEquals("AT", outcomes.get(6).getOutcome());
-        assertEquals("VBN", outcomes.get(7).getOutcome());
-        assertEquals("NNS", outcomes.get(8).getOutcome());
-        assertEquals("pct", outcomes.get(9).getOutcome());
-        assertEquals("JJ", outcomes.get(10).getOutcome());
-        assertEquals("IN", outcomes.get(11).getOutcome());
-        assertEquals("CC", outcomes.get(12).getOutcome());
-        assertEquals("pct", outcomes.get(13).getOutcome());
-        assertEquals("NN", outcomes.get(14).getOutcome());
-        assertEquals("NN", outcomes.get(15).getOutcome());
-        assertEquals("pct", outcomes.get(16).getOutcome());
-        assertEquals("JJ", outcomes.get(17).getOutcome());
-        assertEquals("VBD", outcomes.get(18).getOutcome());
-        assertEquals("CC", outcomes.get(19).getOutcome());
-        assertEquals("AP", outcomes.get(20).getOutcome());
-        assertEquals("NNS", outcomes.get(21).getOutcome());
-        assertEquals("IN", outcomes.get(22).getOutcome());
-        assertEquals("NNS", outcomes.get(23).getOutcome());
-        assertEquals("JJ", outcomes.get(24).getOutcome());
-        assertEquals("NN", outcomes.get(25).getOutcome());
-        assertEquals("IN", outcomes.get(26).getOutcome());
-        assertEquals("AT", outcomes.get(27).getOutcome());
-        assertEquals("NNS", outcomes.get(28).getOutcome());
-        assertEquals("NN", outcomes.get(29).getOutcome());
-        assertEquals("pct", outcomes.get(30).getOutcome());
+        for(TextClassificationOutcome o : outcomes){
+        	System.out.println(o.getOutcome());
+        	assertTrue(possibleOutcomes.contains(o.getOutcome()));
+        }
+        
     }
 
     private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)

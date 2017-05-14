@@ -232,7 +232,7 @@ public class LiblinearUtils
     {
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), "utf-8"));
-        File outFile = File.createTempFile("liblinear" + System.nanoTime(), ".tmp");
+        File outFile = File.createTempFile("liblinear" + System.nanoTime(), ".txt");
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
 

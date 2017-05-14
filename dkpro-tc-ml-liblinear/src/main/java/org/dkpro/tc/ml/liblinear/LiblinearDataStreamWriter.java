@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -55,7 +54,7 @@ import de.bwaldvogel.liblinear.FeatureNode;
  */
 public class LiblinearDataStreamWriter implements DataStreamWriter {
 	FeatureNodeArrayEncoder encoder;
-	static final String INDEX2INSTANCEID = "index2InstanceId.txt";
+	static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 	File outputDirectory;
 	boolean useSparse;
 	String learningMode;
@@ -67,49 +66,6 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 	Gson gson = new Gson();
 	private int maxId = 0;
 	private TreeSet<String> featureNames;
-
-	// @Override
-	// public void write(File outputDirectory, FeatureStore featureStore,
-	// boolean useDenseInstances,
-	// String learningMode, boolean applyWeighting)
-	// throws Exception
-	// {
-	// FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
-	// FeatureNode[][] nodes = encoder.featueStore2FeatureNode(featureStore);
-	//
-	// String fileName = LiblinearAdapter.getInstance()
-	// .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-	// BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-	// new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
-	//
-	// Map<String, String> index2instanceId = new HashMap<>();
-	//
-	// for (int i = 0; i < nodes.length; i++) {
-	// Instance instance = featureStore.getInstance(i);
-	//
-	// recordInstanceId(instance, i, index2instanceId);
-	//
-	// List<String> elements = new ArrayList<String>();
-	// for (int j = 0; j < nodes[i].length; j++) {
-	// FeatureNode node = nodes[i][j];
-	// int index = node.getIndex();
-	// double value = node.getValue();
-	//
-	// // write sparse values, i.e. skip zero values
-	// if (Math.abs(value) > 0.00000000001) {
-	// elements.add(index + ":" + value);
-	// }
-	// }
-	// bw.append(instance.getOutcome());
-	// bw.append("\t");
-	// bw.append(StringUtils.join(elements, "\t"));
-	// bw.append("\n");
-	// }
-	// bw.close();
-	//
-	// //write mapping
-	// writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
-	// }
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -202,6 +158,17 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		bw = null;
 
 		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+		writeFeatureName2idMapping(outputDirectory, LiblinearAdapter.getFeatureNameMappingFilename(),
+				encoder.stringToInt);
+	}
+
+	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+			Map<String, Integer> stringToInt) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		for (String k : stringToInt.keySet()) {
+			sb.append(k + "\t" + stringToInt.get(k) + "\n");
+		}
+		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
 	}
 
 	private void initClassifierFormat() throws Exception {

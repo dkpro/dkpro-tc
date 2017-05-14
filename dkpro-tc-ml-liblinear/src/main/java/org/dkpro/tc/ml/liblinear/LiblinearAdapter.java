@@ -44,6 +44,10 @@ public class LiblinearAdapter
 		return "outcome-mapping.txt";
 	}
 	
+	public static String getFeatureNameMappingFilename() {
+		return "feature-name-mapping.txt";
+	}
+	
 	@Override
 	public ExecutableTaskBase getTestTask() {
 		return new LiblinearTestTask();

@@ -37,7 +37,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
@@ -72,6 +71,8 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 	private Model liblinearModel;
 	private Map<Integer, String> outcomeMapping;
 
+	private Map<String, Integer> featureMapping;
+
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
@@ -79,11 +80,23 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 		try {
 			liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
 			outcomeMapping = loadOutcome2IntegerMapping(tcModelLocation);
+			featureMapping = loadFeature2IntegerMapping(tcModelLocation);
 			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
 
+	}
+
+	private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
+		Map<String, Integer> map = new HashMap<>();
+		List<String> readLines = FileUtils
+				.readLines(new File(tcModelLocation, LiblinearAdapter.getFeatureNameMappingFilename()));
+		for (String l : readLines) {
+			String[] split = l.split("\t");
+			map.put(split[0],Integer.valueOf(split[1]));
+		}
+		return map;
 	}
 
 	private Map<Integer, String> loadOutcome2IntegerMapping(File tcModelLocation) throws IOException {
@@ -96,15 +109,15 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 		}
 		return map;
 	}
-
+	
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
 			List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
 					new LiblinearAdapter().useSparseFeatures());
 
-			FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder();
-			FeatureNode[][] nodes = encoder.featueStore2FeatureNode(inst);
+			FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder(featureMapping);
+			FeatureNode[][] nodes = encoder.featueStore2FeatureNode(inst, null);
 
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < nodes.length; i++) {

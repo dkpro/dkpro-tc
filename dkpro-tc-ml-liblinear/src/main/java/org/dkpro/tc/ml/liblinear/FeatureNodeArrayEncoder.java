@@ -55,12 +55,17 @@ public class FeatureNodeArrayEncoder {
 
 	private static final String BIAS_NAME = FeatureNodeArrayEncoder.class.getName() + ".BIAS";
 
-	private Map<String, Integer> stringToInt;
+	Map<String, Integer> stringToInt;
 
 	private int biasIndex;
 
 	public FeatureNodeArrayEncoder() {
 		this.stringToInt = null;
+		this.biasIndex = 1;
+	}
+
+	public FeatureNodeArrayEncoder(Map<String, Integer> featureMapping) {
+		this.stringToInt = featureMapping;
 		this.biasIndex = 1;
 	}
 
