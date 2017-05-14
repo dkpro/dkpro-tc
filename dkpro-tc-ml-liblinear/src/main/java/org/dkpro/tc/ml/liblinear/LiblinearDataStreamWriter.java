@@ -17,12 +17,16 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -65,18 +69,44 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
-		throw new UnsupportedOperationException("No generic mode available");
+		initGeneric();
+
+		// bulk-write - in sequence mode this keeps the instances together that
+		// belong to the same sequence!
+		Instance[] array = instances.toArray(new Instance[0]);
+		bw.write(gson.toJson(array) + System.lineSeparator());
+
+		bw.close();
+		bw = null;
+	}
+
+	private void initGeneric() throws IOException {
+		if (bw != null) {
+			return;
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
 	}
 
 	@Override
 	public void transformFromGeneric() throws Exception {
-		throw new UnsupportedOperationException("No generic mode available");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+		
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			Instance [] instance = gson.fromJson(line, Instance[].class);
+			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+			writeClassifierFormat(ins, false);
+		}
+
+		reader.close();
 	}
 
 	@Override
 	public void writeClassifierFormat(Collection<Instance> in, boolean compress) throws Exception {
-		
-		if(featureNames==null){
+
+		if (featureNames == null) {
 			loadFeatureNames();
 		}
 
@@ -115,7 +145,7 @@ public class LiblinearDataStreamWriter implements DataStreamWriter {
 		writeFeatureName2idMapping(outputDirectory, LiblinearAdapter.getFeatureNameMappingFilename(),
 				encoder.stringToInt);
 	}
-	
+
 	private void loadFeatureNames() throws IOException {
 		List<String> readLines = FileUtils.readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
 		featureNames = new TreeSet<>();
