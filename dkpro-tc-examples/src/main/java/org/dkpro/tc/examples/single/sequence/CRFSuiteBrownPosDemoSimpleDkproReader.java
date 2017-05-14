@@ -41,7 +41,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
-import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -79,7 +78,6 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         experiment.runCrossValidation(pSpace);
     }
 
-    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace(String featureMode, String learningMode, Dimension<List<String>> dimClassificationArgs, Dimension<List<String>> dimFilters)
         throws ResourceInitializationException
     {
