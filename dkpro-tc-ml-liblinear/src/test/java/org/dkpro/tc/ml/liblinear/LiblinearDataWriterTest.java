@@ -64,7 +64,7 @@ public class LiblinearDataWriterTest {
 		
 		File outputDirectory = folder.newFolder();
 		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-		LiblinearDataWriter writer = new LiblinearDataWriter();
+		LiblinearDataStreamWriter writer = new LiblinearDataStreamWriter();
 		writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL, false);
 		
 		Problem problem = Problem.readFromFile(outputFile, 1.0);

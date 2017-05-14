@@ -45,244 +45,242 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
 
 /**
- * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
- * extractors on each CAS.
+ * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
+ * the feature extractors on each CAS.
  */
-public class ExtractFeaturesStreamConnector
-    extends ConnectorBase
-{
+public class ExtractFeaturesStreamConnector extends ConnectorBase {
 
-	   /**
-     * Directory in which the extracted features will be stored
-     */
-    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
+	/**
+	 * Directory in which the extracted features will be stored
+	 */
+	public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 
-    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-    private File outputDirectory;
+	@ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
+	private File outputDirectory;
 
-    /**
-     * Whether an ID should be added to each instance in the feature file
-     */
-    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
-    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
-    private boolean addInstanceId;
+	/**
+	 * Whether an ID should be added to each instance in the feature file
+	 */
+	public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+	@ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
+	private boolean addInstanceId;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
-    private String[] featureFilters;
-    
-    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
-    private boolean useSparseFeatures;
+	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
+	private String[] featureFilters;
 
-    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
-    private String dataWriterClass;
+	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
+	private boolean useSparseFeatures;
 
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true,
-            defaultValue = Constants.LM_SINGLE_LABEL)
-    private String learningMode;
+	@ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+	private String dataWriterClass;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true,
-            defaultValue = Constants.FM_DOCUMENT)
-    private String featureMode;
+	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+	private String learningMode;
 
-    @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
-    private boolean developerMode;
-    
-    @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
-    private boolean applyWeighting;
+	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+	private String featureMode;
 
-    @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
-    private boolean isTesting;
+	@ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
+	private boolean developerMode;
 
-    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected FeatureExtractorResource_ImplBase[] featureExtractors;
+	@ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
+	private boolean applyWeighting;
 
-    DataStreamWriter dsw;
+	@ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
+	private boolean isTesting;
 
-    TreeSet<String> featureNames;
-    Set<String> uniqueOutcomes;
+	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+	protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-        try {
+	DataStreamWriter dsw;
 
-            featureNames = new TreeSet<>();
-            uniqueOutcomes = new HashSet<>();
+	TreeSet<String> featureNames;
+	Set<String> uniqueOutcomes;
+	boolean writeFeatureNames = true;
 
-            if (isTesting) {
-                File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-                featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
-            }
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
+		try {
 
-            if (featureExtractors.length == 0) {
-                context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
-                throw new ResourceInitializationException();
-            }
+			uniqueOutcomes = new HashSet<>();
 
-            dsw = (DataStreamWriter) Class
-                    .forName(dataWriterClass)
-                    .newInstance();
-            dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-    }
+			if (isTesting) {
+				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+				featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
+			}
 
+			if (featureExtractors.length == 0) {
+				context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
+				throw new ResourceInitializationException();
+			}
 
-    @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-        getLogger().log(Level.INFO, "--- feature extraction for CAS with id ["
-                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+			dsw = (DataStreamWriter) Class.forName(dataWriterClass).newInstance();
+			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
+		} catch (Exception e) {
+			throw new ResourceInitializationException(e);
+		}
+	}
 
-        List<Instance> instances = new ArrayList<Instance>();
-        try {
-            if (featureMode.equals(Constants.FM_SEQUENCE)) {
-                instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas,
-                        addInstanceId, useSparseFeatures);
-            }
-            else if (featureMode.equals(Constants.FM_UNIT)) {
-                instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas,
-                        addInstanceId, useSparseFeatures);
-            }
-            else {
-                instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas,
-                        developerMode, addInstanceId, useSparseFeatures));
-            }
+	@Override
+	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		getLogger().log(Level.INFO, "--- feature extraction for CAS with id ["
+				+ JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
-            /*
-             * filter-out feature names which did not occur during training if we are in the testing
-             * stage
-             */
-            instances = enforceMatchingFeatures(instances);
+		if (featureNames == null) {
+			getFeatureNames(jcas);
+		}
 
-            if (featureFilters.length > 0 || !dsw.canStream()) {
-                dsw.writeGenericFormat(instances);
-            }
-            else {
-                dsw.writeClassifierFormat(instances, dsw.classiferReadsCompressed());
-            }
+		List<Instance> instances = new ArrayList<Instance>();
+		try {
+			if (featureMode.equals(Constants.FM_SEQUENCE)) {
+				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId,
+						useSparseFeatures);
+			} else if (featureMode.equals(Constants.FM_UNIT)) {
+				instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId,
+						useSparseFeatures);
+			} else {
+				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
+						addInstanceId, useSparseFeatures));
+			}
 
-        }
-        catch (Exception e1) {
-            throw new AnalysisEngineProcessException(e1);
-        }
-        
-        trackFeatureNamesAndOutcomes(instances);
-    }
+			/*
+			 * filter-out feature names which did not occur during training if
+			 * we are in the testing stage
+			 */
+			instances = enforceMatchingFeatures(instances);
 
-    private void trackFeatureNamesAndOutcomes(List<Instance> instances)
-    {
-        for (Instance i : instances) {
-            if (!isTesting) {
-                for (Feature f : i.getFeatures()) {
-                    featureNames.add(f.getName());
-                }
-            }
-            for (String o : i.getOutcomes()) {
-                uniqueOutcomes.add(o);
-            }
-        }
-    }
+			if (featureFilters.length > 0 || !dsw.canStream()) {
+				dsw.writeGenericFormat(instances);
+			} else {
+				dsw.writeClassifierFormat(instances, dsw.classiferReadsCompressed());
+			}
 
-    private List<Instance> enforceMatchingFeatures(List<Instance> instances)
-    {
-        if (!isTesting) {
-            return instances;
-        }
+		} catch (Exception e1) {
+			throw new AnalysisEngineProcessException(e1);
+		}
 
-        List<Instance> out = new ArrayList<>();
+		trackOutcomes(instances);
 
-        for (Instance i : instances) {
-            List<Feature> newFeatures = new ArrayList<>();
-            for (Feature feat : i.getFeatures()) {
-                if (!featureNames.contains(feat.getName())) {
-                    continue;
-                }
-                newFeatures.add(feat);
-            }
-            i.setFeatures(newFeatures);
-            out.add(i);
-        }
-        return out;
-    }
+		if (writeFeatureNames) {
+			writeFeatureNames();
+			writeFeatureNames = false;
+		}
+	}
 
-    @Override
-    public void collectionProcessComplete()
-        throws AnalysisEngineProcessException
-    {
-        super.collectionProcessComplete();
+	private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException {
+		// We run one time through feature extraction to get all features names
+		try {
+			List<Instance> instances = new ArrayList<>();
+			if (featureMode.equals(Constants.FM_SEQUENCE)) {
+				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId, false);
+			} else if (featureMode.equals(Constants.FM_UNIT)) {
+				instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId, false);
+			} else {
+				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
+						addInstanceId, false));
+			}
 
-        try {
+			featureNames = new TreeSet<>();
+			for (Feature f : instances.get(0).getFeatures()) {
+				featureNames.add(f.getName());
+			}
+			
+			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
 
-            if (featureFilters.length > 0) {
-                applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
-            }
+	private void trackOutcomes(List<Instance> instances) {
+		for (Instance i : instances) {
+			for (String o : i.getOutcomes()) {
+				uniqueOutcomes.add(o);
+			}
+		}
+	}
 
-            writeOutcomes();
+	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
+		if (!isTesting) {
+			return instances;
+		}
 
-            if (!isTesting) {
-                writeFeatureNames();
-            }
+		List<Instance> out = new ArrayList<>();
 
-            if (featureFilters.length > 0 || !dsw.canStream()) {
-                // if we use generic mode we have to finalize the feature extraction by transforming
-                // the generic file into the classifier-specific data format
-                dsw.transformFromGeneric();
-            }
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+		for (Instance i : instances) {
+			List<Feature> newFeatures = new ArrayList<>();
+			for (Feature feat : i.getFeatures()) {
+				if (!featureNames.contains(feat.getName())) {
+					continue;
+				}
+				newFeatures.add(feat);
+			}
+			i.setFeatures(newFeatures);
+			out.add(i);
+		}
+		return out;
+	}
 
-    }
+	@Override
+	public void collectionProcessComplete() throws AnalysisEngineProcessException {
+		super.collectionProcessComplete();
 
-    private void writeOutcomes()
-        throws AnalysisEngineProcessException
-    {
-        File outcomesFile = new File(outputDirectory, Constants.FILENAME_OUTCOMES);
-        try {
-            FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-    }
+		try {
 
-    private void writeFeatureNames()
-        throws AnalysisEngineProcessException
-    {
-        try {
-            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES),
-                    featureNames);
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-    }
+			if (featureFilters.length > 0) {
+				applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
+			}
 
-    private void applyFilter(File jsonTempFile)
-        throws AnalysisEngineProcessException
-    {
-        // apply filters that influence the whole feature store
-        // filters are applied in the order that they appear as parameters
-        for (String filterString : featureFilters) {
-            FeatureFilter filter;
-            try {
-                filter = (FeatureFilter) Class.forName(filterString).newInstance();
+			writeOutcomes();
 
-                if (filter.isApplicableForTraining() && !isTesting
-                        || filter.isApplicableForTesting() && isTesting) {
-                    filter.applyFilter(jsonTempFile);
-                }
-            }
-            catch (Exception e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
-    }
+			if (!isTesting) {
+				writeFeatureNames();
+			}
+
+			if (featureFilters.length > 0 || !dsw.canStream()) {
+				// if we use generic mode we have to finalize the feature
+				// extraction by transforming
+				// the generic file into the classifier-specific data format
+				dsw.transformFromGeneric();
+			}
+
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+
+	}
+
+	private void writeOutcomes() throws AnalysisEngineProcessException {
+		File outcomesFile = new File(outputDirectory, Constants.FILENAME_OUTCOMES);
+		try {
+			FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
+
+	private void writeFeatureNames() throws AnalysisEngineProcessException {
+		try {
+			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), featureNames);
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
+
+	private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException {
+		// apply filters that influence the whole feature store
+		// filters are applied in the order that they appear as parameters
+		for (String filterString : featureFilters) {
+			FeatureFilter filter;
+			try {
+				filter = (FeatureFilter) Class.forName(filterString).newInstance();
+
+				if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
+					filter.applyFilter(jsonTempFile);
+				}
+			} catch (Exception e) {
+				throw new AnalysisEngineProcessException(e);
+			}
+		}
+	}
 }
