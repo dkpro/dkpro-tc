@@ -81,7 +81,7 @@ public class LibsvmTwentyNewsgroups
         ParameterSpace pSpace = getParameterSpace(null);
 
         LibsvmTwentyNewsgroups experiment = new LibsvmTwentyNewsgroups();
-        experiment.runCrossValidation(pSpace);
+//        experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 

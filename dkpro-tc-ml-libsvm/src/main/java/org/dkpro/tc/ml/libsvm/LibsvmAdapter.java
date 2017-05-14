@@ -25,11 +25,9 @@ import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.tc.core.io.DataStreamWriter;
-import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
 import org.dkpro.tc.ml.report.InnerBatchReport;
@@ -67,6 +65,11 @@ public class LibsvmAdapter
     {
         return "outcome-mapping.txt";
     }
+    
+	public static String getFeatureNameMappingFilename() {
+		return "feature-name-mapping.txt";
+	}
+
     
     public static String getFeaturenameMappingFilename()
     {

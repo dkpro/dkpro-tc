@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataStreamWriter;
@@ -54,20 +55,16 @@ public class LibsvmDataStreamWriter implements DataStreamWriter {
 	private File outputDirectory;
 
 	private boolean useSparse;
-
 	private String learningMode;
-
 	private boolean applyWeighting;
-
 	private File classifierFormatOutputFile;
-
 	private BufferedWriter bw;
-
 	static final String INDEX2INSTANCEID = "index2InstanceId.txt";
-
 	Gson gson = new Gson();
-
 	private TreeSet<String> featureNames;
+	int idx = 0;
+	Map<String, String> index2instanceId = new HashMap<>();
+	Map<String, Integer> featureNameMap = new HashMap<>();
 
 	// @Override
 	// public void write(File outputDirectory, FeatureStore featureStore,
@@ -231,9 +228,58 @@ public class LibsvmDataStreamWriter implements DataStreamWriter {
 	@Override
 	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
 		if (featureNames == null) {
+			//create feature name mapping and serialize it at first pass-through
 			loadFeatureNames();
+			initFeatureNameMap();
+			writeFeatureName2idMapping(outputDirectory, LibsvmAdapter.getFeatureNameMappingFilename(), featureNameMap);
 		}
 
+		initClassifierFormat();
+
+		for (Instance i : instances) {
+			recordInstanceId(i, idx++, index2instanceId);
+			String outcome = i.getOutcome();
+			bw.write(outcome);
+			for (Feature f : i.getFeatures()) {
+				if (!sanityCheckValue(f)) {
+					continue;
+				}
+				bw.write("\t");
+				bw.write(featureNameMap.get(f.getName()) + ":" + f.getValue());
+			}
+			bw.write("\n");
+		}
+
+		bw.close();
+		bw = null;
+
+		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+
+	}
+
+	private void initFeatureNameMap() {
+		List<String> fm = new ArrayList<>(featureNames);
+		for (int i = 0; i < fm.size(); i++) {
+			featureNameMap.put(fm.get(i), i + 2);
+		}		
+	}
+
+	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+			Map<String, Integer> stringToInt) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		for (String k : stringToInt.keySet()) {
+			sb.append(k + "\t" + stringToInt.get(k) + "\n");
+		}
+		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
+	}
+
+	private void initClassifierFormat() throws Exception {
+		if (bw != null) {
+			return;
+		}
+
+		bw = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
 	}
 
 	private void loadFeatureNames() throws IOException {
@@ -282,5 +328,44 @@ public class LibsvmDataStreamWriter implements DataStreamWriter {
 	@Override
 	public String getGenericFileName() {
 		return Constants.GENERIC_FEATURE_FILE;
+	}
+
+	// build a map between the dkpro instance id and the index in the file
+	private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId) {
+		Collection<Feature> features = instance.getFeatures();
+		for (Feature f : features) {
+			if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
+				continue;
+			}
+			index2instanceId.put(i + "", f.getValue() + "");
+			return;
+		}
+	}
+
+	private boolean sanityCheckValue(Feature f) {
+		if (f.getValue() instanceof Number) {
+			return true;
+		}
+		if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
+			return false;
+		}
+
+		try {
+			Double.valueOf((String) f.getValue());
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]", e);
+		}
+		return false;
+	}
+
+	private void writeMapping(File outputDirectory, String fileName, Map<String, String> index2instanceId)
+			throws IOException {
+		StringBuilder sb = new StringBuilder();
+		sb.append("#Index\tDkProInstanceId\n");
+		for (String k : index2instanceId.keySet()) {
+			sb.append(k + "\t" + index2instanceId.get(k) + "\n");
+		}
+		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
 	}
 }
