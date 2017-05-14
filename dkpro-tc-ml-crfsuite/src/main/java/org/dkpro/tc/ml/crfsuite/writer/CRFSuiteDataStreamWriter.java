@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,7 +40,6 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class CRFSuiteDataStreamWriter implements DataStreamWriter {
 	CRFSuiteFeatureStoreSequenceIterator iterator;
