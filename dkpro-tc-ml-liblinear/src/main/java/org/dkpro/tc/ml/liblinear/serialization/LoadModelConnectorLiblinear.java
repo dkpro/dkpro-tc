@@ -44,8 +44,8 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.ml.liblinear.FeatureNodeArrayEncoder;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.liblinear.writer.FeatureNodeArrayEncoder;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 import de.bwaldvogel.liblinear.Feature;

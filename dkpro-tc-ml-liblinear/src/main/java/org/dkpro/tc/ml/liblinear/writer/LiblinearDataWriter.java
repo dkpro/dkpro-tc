@@ -40,7 +40,6 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.liblinear.FeatureNodeArrayEncoder;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 
 import com.google.gson.Gson;
@@ -56,7 +55,7 @@ import de.bwaldvogel.liblinear.FeatureNode;
  */
 public class LiblinearDataWriter implements DataWriter {
 	FeatureNodeArrayEncoder encoder;
-	static final String INDEX2INSTANCEID = "index2Instanceid.txt";
+	public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 	File outputDirectory;
 	boolean useSparse;
 	String learningMode;
