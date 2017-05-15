@@ -78,5 +78,9 @@
   		<groupId>org.apache.uima</groupId>
   		<artifactId>uimaj-core</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  	</dependency>
   </dependencies>
 </project>
