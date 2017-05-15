@@ -81,9 +81,10 @@ public class KerasAdapter
     }
 
     @Override
-    public String getFeatureStore()
+    public boolean useSparseFeatures()
     {
-        return null;
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }
