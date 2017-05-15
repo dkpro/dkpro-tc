@@ -30,6 +30,7 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
+import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 public class LiblinearAdapter 
@@ -84,7 +85,7 @@ public class LiblinearAdapter
 
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return LiblinearDataStreamWriter.class;
+		return LiblinearDataWriter.class;
 	}
 	
 	@Override

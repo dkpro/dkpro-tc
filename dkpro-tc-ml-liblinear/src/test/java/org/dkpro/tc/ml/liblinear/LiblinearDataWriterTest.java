@@ -28,6 +28,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -65,7 +66,7 @@ public class LiblinearDataWriterTest {
 		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString());
 		File outputFile = new File(outputDirectory,
 				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-		LiblinearDataStreamWriter writer = new LiblinearDataStreamWriter();
+		LiblinearDataWriter writer = new LiblinearDataWriter();
 		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false);
 		writer.writeClassifierFormat(fs, false);
 

@@ -55,7 +55,7 @@ import weka.core.converters.Saver;
 /**
  * Datawriter for the Weka machine learning tool.
  */
-public class MekaDataStreamWriter implements DataWriter, Constants {
+public class MekaDataWriter implements DataWriter, Constants {
 	BufferedWriter bw = null;
 	Gson gson = new Gson();
 	private boolean useSparse;

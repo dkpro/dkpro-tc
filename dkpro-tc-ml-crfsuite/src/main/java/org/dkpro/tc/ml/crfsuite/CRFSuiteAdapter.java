@@ -31,7 +31,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
 import org.dkpro.tc.ml.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
-import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataStreamWriter;
+import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
@@ -94,7 +94,7 @@ public class CRFSuiteAdapter
     @Override
     public Class<? extends DataWriter> getDataWriterClass()
     {
-        return CRFSuiteDataStreamWriter.class;
+        return CRFSuiteDataWriter.class;
     }
 
     @Override

@@ -56,14 +56,14 @@ import com.google.gson.Gson;
 /**
  * Converts features to the internal format for SVM HMM
  */
-public class SVMHMMDataStreamWriter implements DataWriter {
+public class SVMHMMDataWriter implements DataWriter {
 
 	// random prefix for all meta-data features
 	public static final String META_DATA_FEATURE_PREFIX = "ed64ffc5d412c3d3430e0d42d6a668110d1ce8ee";
 
 	private static final double EPS = 0.00000000001;
 
-	static Log log = LogFactory.getLog(SVMHMMDataStreamWriter.class);
+	static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
 
 	// a consecutive single number counter to identify a sequence over all CAS
 	Map<String, Integer> uniqueId = new HashMap<String, Integer>();

@@ -30,6 +30,7 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
+import org.dkpro.tc.ml.libsvm.writer.LibsvmDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
@@ -124,7 +125,7 @@ public class LibsvmAdapter
     @Override
     public Class<? extends DataWriter> getDataWriterClass()
     {
-        return LibsvmDataStreamWriter.class;
+        return LibsvmDataWriter.class;
     }
 
     @Override

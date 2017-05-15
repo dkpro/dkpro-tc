@@ -29,7 +29,7 @@ import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
-import org.dkpro.tc.ml.weka.writer.WekaDataStreamWriter;
+import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -63,7 +63,7 @@ public class TwitterSentimentRaw
                 // Feature extraction
                 createEngineDescription(ExtractFeaturesStreamConnector.class,
                 		ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-                		ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, WekaDataStreamWriter.class,
+                		ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
                 		ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
                 		ExtractFeaturesStreamConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, true,

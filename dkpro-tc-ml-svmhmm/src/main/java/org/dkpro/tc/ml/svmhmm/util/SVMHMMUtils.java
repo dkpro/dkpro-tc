@@ -42,7 +42,7 @@ import org.apache.commons.collections.bidimap.DualTreeBidiMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataStreamWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 public final class SVMHMMUtils
 {
@@ -358,7 +358,7 @@ public final class SVMHMMUtils
             SortedMap<String, String> instanceResult = new TreeMap<>();
 
             for (String comment : instanceComments) {
-                if (comment.startsWith(SVMHMMDataStreamWriter.META_DATA_FEATURE_PREFIX)) {
+                if (comment.startsWith(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX)) {
                     String[] split = comment.split(":");
                     String key = split[0];
                     String value = split[1];

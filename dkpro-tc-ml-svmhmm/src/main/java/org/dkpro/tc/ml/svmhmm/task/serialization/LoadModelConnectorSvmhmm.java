@@ -50,7 +50,7 @@ import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataStreamWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public class LoadModelConnectorSvmhmm
@@ -73,7 +73,7 @@ public class LoadModelConnectorSvmhmm
     private Path tmpFolderForFeatureFile = null;
     private BidiMap loadMapping;
 
-    SVMHMMDataStreamWriter svmhmmDataWriter;
+    SVMHMMDataWriter svmhmmDataWriter;
 
     @Override
     public void initialize(UimaContext context)
@@ -90,7 +90,7 @@ public class LoadModelConnectorSvmhmm
             FileUtils.copyFile(new File(tcModelLocation, Constants.FILENAME_FEATURES), new File(tmpFolderForFeatureFile.toFile(), Constants.FILENAME_FEATURES));
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
 
-            svmhmmDataWriter = new SVMHMMDataStreamWriter();
+            svmhmmDataWriter = new SVMHMMDataWriter();
             svmhmmDataWriter.init(tmpFolderForFeatureFile.toFile(), new SVMHMMAdapter().useSparseFeatures(),
                     learningMode, false);
         }

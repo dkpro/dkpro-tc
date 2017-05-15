@@ -48,7 +48,7 @@ import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
-import org.dkpro.tc.ml.weka.writer.WekaDataStreamWriter;
+import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -209,7 +209,7 @@ public class LoadModelConnectorWeka
             for (int i = 0; i < vals.length; i++) {
                 if (vals[i] >= Double.valueOf(bipartitionThreshold)) {
                     String label = mekaInstance.attribute(i).name()
-                            .split(WekaDataStreamWriter.CLASS_ATTRIBUTE_PREFIX)[1];
+                            .split(WekaDataWriter.CLASS_ATTRIBUTE_PREFIX)[1];
                     outcomes.add(label);
                 }
             }

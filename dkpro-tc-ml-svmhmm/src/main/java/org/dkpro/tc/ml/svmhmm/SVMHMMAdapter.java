@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.ml.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataStreamWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult
@@ -111,7 +111,7 @@ public class SVMHMMAdapter
 
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return SVMHMMDataStreamWriter.class;
+		return SVMHMMDataWriter.class;
 	}
 
 	@Override

@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.task.serialization.LoadModelConnectorWeka;
 import org.dkpro.tc.ml.weka.task.serialization.WekaModelSerializationDescription;
-import org.dkpro.tc.ml.weka.writer.WekaDataStreamWriter;
+import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 public class WekaStatisticsClassificationAdapter 
 	implements TCMachineLearningAdapter
@@ -80,7 +80,7 @@ public class WekaStatisticsClassificationAdapter
 	
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return WekaDataStreamWriter.class;
+		return WekaDataWriter.class;
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
@@ -84,7 +85,7 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 
 	private Map<String, String> getIndex2InstanceIdMap() throws IOException {
 		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-				LiblinearDataStreamWriter.INDEX2INSTANCEID);
+				LiblinearDataWriter.INDEX2INSTANCEID);
 
 		Map<String, String> m = new HashMap<>();
 

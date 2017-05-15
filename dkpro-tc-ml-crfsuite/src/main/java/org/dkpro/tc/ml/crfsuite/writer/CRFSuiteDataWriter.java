@@ -41,7 +41,7 @@ import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
 import com.google.gson.Gson;
 
-public class CRFSuiteDataStreamWriter implements DataWriter {
+public class CRFSuiteDataWriter implements DataWriter {
 	CRFSuiteFeatureStoreSequenceIterator iterator;
 	File outputDirectory;
 	boolean useSparse;

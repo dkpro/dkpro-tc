@@ -41,7 +41,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataStreamWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class SVMHMMDataWriterTest
             instances.add(instance);
         }
 
-        SVMHMMDataStreamWriter svmhmmDataWriter = new SVMHMMDataStreamWriter();
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
@@ -119,7 +119,7 @@ public class SVMHMMDataWriterTest
         FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
                 OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n");
 
-        SVMHMMDataStreamWriter svmhmmDataWriter = new SVMHMMDataStreamWriter();
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
@@ -139,18 +139,18 @@ public class SVMHMMDataWriterTest
 
         Feature f1 = new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
                 "multi line \n text");
-        Feature f2 = new Feature(SVMHMMDataStreamWriter.META_DATA_FEATURE_PREFIX + "someFeature",
+        Feature f2 = new Feature(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature",
                 longText);
 
         FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
                 OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n"
-                        + SVMHMMDataStreamWriter.META_DATA_FEATURE_PREFIX + "someFeature");
+                        + SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature");
 
         List<Instance> instances = new ArrayList<>();
         Instance instance = new Instance(Arrays.asList(f1, f2), "outcome");
         instances.add(instance);
 
-        SVMHMMDataStreamWriter svmhmmDataWriter = new SVMHMMDataStreamWriter();
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
@@ -166,9 +166,9 @@ public class SVMHMMDataWriterTest
                 .extractMetaDataFeatures(featureVectorsFile).get(0);
 
         assertTrue(metaDataFeatures
-                .containsKey(SVMHMMDataStreamWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+                .containsKey(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
         assertEquals(longText, metaDataFeatures
-                .get(SVMHMMDataStreamWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+                .get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
 
     }
 
@@ -182,7 +182,7 @@ public class SVMHMMDataWriterTest
         FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
                 "doubleFeature\n");
 
-        SVMHMMDataStreamWriter svmhmmDataWriter = new SVMHMMDataStreamWriter();
+        SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
