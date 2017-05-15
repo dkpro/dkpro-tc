@@ -58,7 +58,7 @@ public class LibsvmDataWriter implements DataWriter {
 	private boolean applyWeighting;
 	private File classifierFormatOutputFile;
 	private BufferedWriter bw;
-	static final String INDEX2INSTANCEID = "index2InstanceId.txt";
+	public static final String INDEX2INSTANCEID = "index2InstanceId.txt";
 	Gson gson = new Gson();
 	private TreeSet<String> featureNames;
 	int idx = 0;
