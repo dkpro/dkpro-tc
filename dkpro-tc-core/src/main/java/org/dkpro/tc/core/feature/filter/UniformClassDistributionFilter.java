@@ -60,15 +60,17 @@ public class UniformClassDistributionFilter
                 new InputStreamReader(new FileInputStream(f), "utf-8"));
         String line = null;
         int lineId = 0;
-        while ((line = reader.readLine()) != null) {
-            Instance i = gson.fromJson(line, Instance.class);
 
-            List<Integer> list = outcomeLineMap.get(i.getOutcome());
-            if (list == null) {
-                list = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            Instance[] ins = gson.fromJson(line, Instance[].class);
+            for (Instance i : ins) {
+                List<Integer> list = outcomeLineMap.get(i.getOutcome());
+                if (list == null) {
+                    list = new ArrayList<>();
+                }
+                list.add(lineId++);
+                outcomeLineMap.put(i.getOutcome(), list);
             }
-            list.add(lineId++);
-            outcomeLineMap.put(i.getOutcome(), list);
         }
         reader.close();
 
@@ -99,20 +101,20 @@ public class UniformClassDistributionFilter
         line = null;
         lineId = 0;
         while ((line = reader.readLine()) != null) {
-            Instance i = gson.fromJson(line, Instance.class);
+            Instance[] ins = gson.fromJson(line, Instance[].class);
+            for (Instance i : ins) {
+                // write the minimal class
+                if (minOutcome.equals(i.getOutcome())) {
+                    writer.write(line + System.lineSeparator());
+                    lineId++;
+                    continue;
+                }
 
-            // write the minimal class
-            if (minOutcome.equals(i.getOutcome())) {
-                writer.write(line + System.lineSeparator());
-                lineId++;
-                continue;
+                boolean write = outcomeLineMap.get(i.getOutcome()).contains(lineId);
+                if (write) {
+                    writer.write(line + System.lineSeparator());
+                }
             }
-
-            boolean write = outcomeLineMap.get(i.getOutcome()).contains(lineId);
-            if (write) {
-                writer.write(line + System.lineSeparator());
-            }
-
             lineId++;
         }
         reader.close();
