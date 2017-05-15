@@ -81,6 +81,6 @@ public class NrOfTokensPerSentenceTest
 
         Iterator<Feature> iter = features.iterator();
         assertFeature(NrOfTokensPerSentence.FN_TOKENS_PER_SENTENCE,
-                new MissingValue(MissingValueNonNominalType.NUMERIC), iter.next());
+                0, iter.next());
     }
 }
