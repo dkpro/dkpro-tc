@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.weka.evaluation.MulanEvaluationWrapper;
  */
 public class WekaReportUtils
 {
-    /**
+    /*
      * Adds results from one fold to the overall CV confusion matrix. Also updates actual and
      * predicted label lists for the label powerset transformation
      */

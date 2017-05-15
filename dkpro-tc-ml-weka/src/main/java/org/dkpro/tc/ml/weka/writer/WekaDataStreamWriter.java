@@ -50,7 +50,7 @@ import weka.core.SparseInstance;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.Saver;
 
-/**
+/*
  * Datawriter for the Weka machine learning tool.
  */
 public class WekaDataStreamWriter implements DataStreamWriter, Constants {
