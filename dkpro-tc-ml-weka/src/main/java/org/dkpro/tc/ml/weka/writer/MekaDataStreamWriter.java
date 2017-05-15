@@ -53,7 +53,7 @@ import weka.core.converters.ArffSaver;
 import weka.core.converters.Saver;
 
 /**
- * {@link DataWriter} for the Weka machine learning tool.
+ * Datawriter for the Weka machine learning tool.
  */
 public class MekaDataStreamWriter implements DataStreamWriter, Constants {
 	BufferedWriter bw = null;

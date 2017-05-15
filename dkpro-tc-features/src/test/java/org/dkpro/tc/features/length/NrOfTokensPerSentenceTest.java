@@ -27,13 +27,11 @@ import java.util.List;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.MissingValue;
-import org.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import org.junit.Assert;
 
 public class NrOfTokensPerSentenceTest
 {
