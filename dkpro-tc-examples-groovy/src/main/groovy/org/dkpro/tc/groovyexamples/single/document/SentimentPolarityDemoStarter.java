@@ -29,12 +29,6 @@ public class SentimentPolarityDemoStarter
     extends ExperimentStarter
 {
 
-    /**
-     * @param args
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IOException
-     */
     public static void main(String[] args)
         throws InstantiationException, IllegalAccessException, IOException
     {
