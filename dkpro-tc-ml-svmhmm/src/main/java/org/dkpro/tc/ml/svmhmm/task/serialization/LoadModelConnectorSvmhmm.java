@@ -29,20 +29,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.BidiMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.codehaus.plexus.util.FileUtils;
-
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
@@ -50,7 +50,7 @@ import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataStreamWriter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public class LoadModelConnectorSvmhmm
@@ -69,12 +69,11 @@ public class LoadModelConnectorSvmhmm
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
-    private String featureStoreImpl;
-
     private File model = null;
     private Path tmpFolderForFeatureFile = null;
     private BidiMap loadMapping;
+
+    SVMHMMDataStreamWriter svmhmmDataWriter;
 
     @Override
     public void initialize(UimaContext context)
@@ -87,15 +86,20 @@ public class LoadModelConnectorSvmhmm
                     .createTempDirectory("temp" + System.currentTimeMillis());
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
             loadMapping = loadLabel2IntegerMap();
+            //Copy feature-name file 
+            FileUtils.copyFile(new File(tcModelLocation, Constants.FILENAME_FEATURES), new File(tmpFolderForFeatureFile.toFile(), Constants.FILENAME_FEATURES));
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
 
+            svmhmmDataWriter = new SVMHMMDataStreamWriter();
+            svmhmmDataWriter.init(tmpFolderForFeatureFile.toFile(), new SVMHMMAdapter().useSparseFeatures(),
+                    learningMode, false);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
 
     }
-
+    
     private BidiMap loadLabel2IntegerMap()
         throws IOException
     {
@@ -109,33 +113,24 @@ public class LoadModelConnectorSvmhmm
         throws AnalysisEngineProcessException
     {
         try {
-            FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
-                    .newInstance();
+            List<Instance> instances = new ArrayList<>();
             int sequenceId = 0;
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
-                List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
-                        jcas, seq, true, sequenceId++);
-
-                for (Instance instance : instances) {
-                    featureStore.addInstance(instance);
-                }
-
+                instances.addAll(TaskUtils.getInstancesInSequence(featureExtractors, jcas, seq,
+                        true, sequenceId++));
             }
 
-            SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-            svmhmmDataWriter.write(tmpFolderForFeatureFile.toFile(), featureStore, true, "", false);
+            svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-            File featureFile = new File(
-                    tmpFolderForFeatureFile.toFile()
-                            + "/"
-                            + new SVMHMMAdapter()
-                                    .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
-            File augmentedTestFile = SVMHMMUtils
-                    .replaceLabelsWithIntegers(featureFile, loadMapping);
+            File featureFile = new File(tmpFolderForFeatureFile.toFile() + "/"
+                    + new SVMHMMAdapter().getFrameworkFilename(
+                            TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
+            File augmentedTestFile = SVMHMMUtils.replaceLabelsWithIntegers(featureFile,
+                    loadMapping);
 
-            File predictionsFile = FileUtils.createTempFile("svmhmmPrediction", ".txt", null);
+            File predictionsFile = FileUtil.createTempFile("svmhmmPrediction", ".txt");
             SVMHMMTestTask.callTestCommand(predictionsFile, model, augmentedTestFile);
 
             setOutcomes(jcas, predictionsFile, loadMapping);

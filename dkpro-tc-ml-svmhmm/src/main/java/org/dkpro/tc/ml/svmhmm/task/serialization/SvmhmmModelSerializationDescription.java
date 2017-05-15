@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.collections.BidiMap;
+import org.codehaus.plexus.util.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.Discriminator;
-
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
@@ -74,6 +74,9 @@ public class SvmhmmModelSerializationDescription
         SortedSet<String> outcomeLabels = SVMHMMUtils
                 .extractOutcomeLabelsFromFeatureVectorFiles(trainingFile);
         BidiMap labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
+        
+        //copy feature names
+        FileUtils.copyFile(new File(trainingDataStorage, FILENAME_FEATURES), new File(outputFolder, FILENAME_FEATURES));
 
         // // save mapping to file
         File mappingFile = new File(
