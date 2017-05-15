@@ -37,7 +37,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DataStreamWriter;
+import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
@@ -55,7 +55,7 @@ import weka.core.converters.Saver;
 /**
  * Datawriter for the Weka machine learning tool.
  */
-public class MekaDataStreamWriter implements DataStreamWriter, Constants {
+public class MekaDataStreamWriter implements DataWriter, Constants {
 	BufferedWriter bw = null;
 	Gson gson = new Gson();
 	private boolean useSparse;

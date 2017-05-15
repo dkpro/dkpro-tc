@@ -35,13 +35,13 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DataStreamWriter;
+import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
 import com.google.gson.Gson;
 
-public class CRFSuiteDataStreamWriter implements DataStreamWriter {
+public class CRFSuiteDataStreamWriter implements DataWriter {
 	CRFSuiteFeatureStoreSequenceIterator iterator;
 	File outputDirectory;
 	boolean useSparse;

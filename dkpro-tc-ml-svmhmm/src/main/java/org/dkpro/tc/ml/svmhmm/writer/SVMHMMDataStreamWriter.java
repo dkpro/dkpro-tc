@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DataStreamWriter;
+import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
@@ -56,7 +56,7 @@ import com.google.gson.Gson;
 /**
  * Converts features to the internal format for SVM HMM
  */
-public class SVMHMMDataStreamWriter implements DataStreamWriter {
+public class SVMHMMDataStreamWriter implements DataWriter {
 
 	// random prefix for all meta-data features
 	public static final String META_DATA_FEATURE_PREFIX = "ed64ffc5d412c3d3430e0d42d6a668110d1ce8ee";

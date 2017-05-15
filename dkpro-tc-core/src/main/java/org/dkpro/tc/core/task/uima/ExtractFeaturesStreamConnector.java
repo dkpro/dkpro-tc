@@ -40,7 +40,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.filter.FeatureFilter;
-import org.dkpro.tc.core.io.DataStreamWriter;
+import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
 
@@ -92,7 +92,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
 	protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-	DataStreamWriter dsw;
+	DataWriter dsw;
 
 	TreeSet<String> featureNames;
 	Set<String> uniqueOutcomes;
@@ -115,7 +115,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				throw new ResourceInitializationException();
 			}
 
-			dsw = (DataStreamWriter) Class.forName(dataWriterClass).newInstance();
+			dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
 			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);

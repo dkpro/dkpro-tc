@@ -37,7 +37,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.DataStreamWriter;
+import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 
 import com.google.gson.Gson;
@@ -49,7 +49,7 @@ import com.google.gson.Gson;
  * 
  * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
-public class LibsvmDataStreamWriter implements DataStreamWriter {
+public class LibsvmDataStreamWriter implements DataWriter {
 	private File outputDirectory;
 
 	private boolean useSparse;

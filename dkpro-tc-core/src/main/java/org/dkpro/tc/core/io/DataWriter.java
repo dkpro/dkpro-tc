@@ -26,7 +26,7 @@ import org.dkpro.tc.api.features.Instance;
  * Interface for data writers that write instances in the representation format used by machine
  * learning tools.
  */
-public interface DataStreamWriter
+public interface DataWriter
 {
     /**
      * Write the feature instances in a generic format. This is necessary if either feature filter

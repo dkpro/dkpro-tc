@@ -34,7 +34,7 @@ import com.google.gson.Gson;
  * Writes the feature store to a JSON file. Mainly used for testing purposes.
  */
 public class JsonDataWriter
-    implements DataStreamWriter, Constants
+    implements DataWriter, Constants
 {
     /**
      * Public name of the JSON dump file
