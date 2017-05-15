@@ -115,6 +115,9 @@ public class SVMHMMDataWriterTest
         instances.add(new Instance(
                 new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT, "multi line \n text")
                         .asSet()));
+        
+        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+                OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n");
 
         SVMHMMDataStreamWriter svmhmmDataWriter = new SVMHMMDataStreamWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
