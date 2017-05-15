@@ -102,6 +102,7 @@ public class LiblinearDataWriter implements DataWriter {
 		}
 
 		reader.close();
+		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
 	}
 
 	@Override

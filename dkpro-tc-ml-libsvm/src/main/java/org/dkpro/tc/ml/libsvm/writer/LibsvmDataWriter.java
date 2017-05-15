@@ -53,9 +53,6 @@ import com.google.gson.Gson;
 public class LibsvmDataWriter implements DataWriter {
 	private File outputDirectory;
 
-	private boolean useSparse;
-	private String learningMode;
-	private boolean applyWeighting;
 	private File classifierFormatOutputFile;
 	private BufferedWriter bw;
 	public static final String INDEX2INSTANCEID = "index2InstanceId.txt";
@@ -100,6 +97,7 @@ public class LibsvmDataWriter implements DataWriter {
 		}
 
 		reader.close();
+		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
 	}
 
 	@Override
@@ -174,9 +172,6 @@ public class LibsvmDataWriter implements DataWriter {
 	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
-		this.useSparse = useSparse;
-		this.learningMode = learningMode;
-		this.applyWeighting = applyWeighting;
 		classifierFormatOutputFile = new File(outputDirectory,
 				LibsvmAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 

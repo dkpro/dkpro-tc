@@ -129,6 +129,7 @@ public class SVMHMMDataWriter implements DataWriter {
 		}
 
 		reader.close();
+		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
 	}
 
 	@Override
