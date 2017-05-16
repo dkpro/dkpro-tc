@@ -81,8 +81,8 @@ public class LibsvmTwentyNewsgroups
         ParameterSpace pSpace = getParameterSpace(null);
 
         LibsvmTwentyNewsgroups experiment = new LibsvmTwentyNewsgroups();
-//        experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
+        experiment.runCrossValidation(pSpace);
+//        experiment.runTrainTest(pSpace);
     }
 
     public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)

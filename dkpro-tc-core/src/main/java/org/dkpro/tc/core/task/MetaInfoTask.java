@@ -42,6 +42,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -60,6 +61,7 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
+import org.dkpro.tc.core.task.uima.OutcomeCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
@@ -138,6 +140,10 @@ public class MetaInfoTask
 
         List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
 
+        metaCollectors.add(AnalysisEngineFactory.createEngineDescription(OutcomeCollector.class,
+                OutcomeCollector.PARAM_TARGET_FOLDER,
+                aContext.getFolder(META_KEY, AccessMode.READWRITE)));
+
         if (recordContext) {
             AnalysisEngineDescription aed = injectContextMetaCollector(aContext);
             if (aed == null) {
@@ -169,9 +175,8 @@ public class MetaInfoTask
                 // Tell the meta collectors where to store their data
                 for (MetaCollectorConfiguration conf : feInstance
                         .getMetaCollectorClasses(parameterSettings)) {
-                    configureStorageLocations(aContext, conf.descriptor,
-                            (String) feClosure.getId(), conf.collectorOverrides,
-                            AccessMode.READWRITE);
+                    configureStorageLocations(aContext, conf.descriptor, (String) feClosure.getId(),
+                            conf.collectorOverrides, AccessMode.READWRITE);
                     metaCollectors.add(conf.descriptor);
                 }
             }
