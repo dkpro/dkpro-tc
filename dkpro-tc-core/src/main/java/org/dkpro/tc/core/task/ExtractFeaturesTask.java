@@ -53,7 +53,6 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 import org.dkpro.tc.core.util.TaskUtils;
@@ -167,9 +166,6 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 		if (featureFilters == null) {
 			featureFilters = Collections.<String> emptyList();
 		}
-		
-		  File outcomeFile = new File(aContext.getFolder(MetaInfoTask.META_KEY, AccessMode.READONLY), Constants.FILENAME_OUTCOMES);
-		  FileUtils.copyFile(outcomeFile, new File(outputDir,Constants.FILENAME_OUTCOMES));
 
 		List<Object> parameters = new ArrayList<>();
 		parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, true,

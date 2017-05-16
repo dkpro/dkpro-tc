@@ -20,7 +20,9 @@ package org.dkpro.tc.core.task.uima;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -93,6 +95,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 	DataWriter dsw;
 
 	TreeSet<String> featureNames;
+	Set<String> uniqueOutcomes;
 	boolean writeFeatureNames = true;
 
 	@Override
@@ -100,6 +103,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		super.initialize(context);
 		try {
 
+			uniqueOutcomes = new HashSet<>();
 
 			if (isTesting) {
 				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
@@ -128,7 +132,6 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		}
 
 		List<Instance> instances = new ArrayList<Instance>();
-		
 		try {
 			if (featureMode.equals(Constants.FM_SEQUENCE)) {
 				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId,
@@ -140,6 +143,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
 						addInstanceId, useSparseFeatures));
 			}
+
 			/*
 			 * filter-out feature names which did not occur during training if
 			 * we are in the testing stage
@@ -155,6 +159,8 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 		} catch (Exception e1) {
 			throw new AnalysisEngineProcessException(e1);
 		}
+
+		trackOutcomes(instances);
 
 		if (writeFeatureNames) {
 			writeFeatureNames();
@@ -183,6 +189,14 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
+		}
+	}
+
+	private void trackOutcomes(List<Instance> instances) {
+		for (Instance i : instances) {
+			for (String o : i.getOutcomes()) {
+				uniqueOutcomes.add(o);
+			}
 		}
 	}
 
@@ -217,6 +231,8 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
 			}
 
+			writeOutcomes();
+
 			if (!isTesting) {
 				writeFeatureNames();
 			}
@@ -232,6 +248,15 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 			throw new AnalysisEngineProcessException(e);
 		}
 
+	}
+
+	private void writeOutcomes() throws AnalysisEngineProcessException {
+		File outcomesFile = new File(outputDirectory, Constants.FILENAME_OUTCOMES);
+		try {
+			FileUtils.writeLines(outcomesFile, "utf-8", uniqueOutcomes);
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 	}
 
 	private void writeFeatureNames() throws AnalysisEngineProcessException {
