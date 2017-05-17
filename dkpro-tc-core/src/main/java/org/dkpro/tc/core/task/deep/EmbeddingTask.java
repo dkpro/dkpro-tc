@@ -45,7 +45,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * Collects information about the entire document
  * 
  */
-public class DeepLearningEmbeddingTask
+public class EmbeddingTask
     extends UimaTaskBase
 {
 

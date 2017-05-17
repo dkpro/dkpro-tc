@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
  * setup
  * 
  */
-public class DeepLearningInitTask
+public class InitTaskDeep
     extends UimaTaskBase
 {
 
