@@ -221,6 +221,8 @@ public class ExperimentCrossValidation
                 + experimentName);
         extractFeaturesTrainTask.setMlAdapter(mlAdapter);
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
+                ExtractFeaturesTask.INPUT_KEY);
         extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // extracting features from test data (numFolds times)
@@ -231,6 +233,8 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
+        extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
+                ExtractFeaturesTask.INPUT_KEY);
         
         extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
