@@ -71,6 +71,7 @@ public class WekaDataWriter
     AttributeStore attributeStore;
     Attribute outcomeAttribute;
     ArffSaver saver;
+    Instances masterInstance;
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
@@ -318,11 +319,11 @@ public class WekaDataWriter
         throws Exception
     {
 
-        initalConfiguration(instances);
+        Instances masterInstance  = initalConfiguration(instances);
         
-        Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME,
-                attributeStore.getAttributes(), instances.size());
-        wekaInstances.setClass(outcomeAttribute);
+//        Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME,
+//                attributeStore.getAttributes(), instances.size());
+//        wekaInstances.setClass(outcomeAttribute);
 
         for (Instance inst : instances) {
             double[] featureValues = getFeatureValues(attributeStore, inst);
@@ -336,7 +337,7 @@ public class WekaDataWriter
                 wekaInstance = new DenseInstance(1.0, featureValues);
             }
 
-            wekaInstance.setDataset(wekaInstances);
+            wekaInstance.setDataset(masterInstance);
 
             String outcome = inst.getOutcome();
             if (isRegression) {
@@ -355,15 +356,13 @@ public class WekaDataWriter
             // saver.writeIncremental(preprocessingFilter.output());
             saver.writeIncremental(wekaInstance);
         }
-        // saver.writeIncremental(null);
-        System.out.println("ende");
     }
 
-    private void initalConfiguration(Collection<Instance> instances)
+    private Instances initalConfiguration(Collection<Instance> instances)
         throws TextClassificationException, IOException
     {
         if(saver!=null){
-            return;
+            return masterInstance;
         }
         saver = new ArffSaver();
         saver.setRetrieval(Saver.INCREMENTAL);
@@ -380,8 +379,9 @@ public class WekaDataWriter
         outcomeList.add("alt.atheism");
         outcomeList.add("comp.graphics");
         // FIXME: Das muss wieder raus später
-        outcomeAttribute = createOutcomeAttribute(outcomeList, learningMode.equals(LM_REGRESSION));
+        outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
+            System.err.println("A feature with name \"outcome\" was found. Renaming outcome attribute");
             outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
         }
         attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
@@ -407,11 +407,13 @@ public class WekaDataWriter
 
         }
         
-        Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME,
+        masterInstance = new Instances(WekaUtils.RELATION_NAME,
                 attributeStore.getAttributes(), instances.size());
-        wekaInstances.setClass(outcomeAttribute);
+        masterInstance.setClass(outcomeAttribute);
         // FIXME: darf man vermutlich auch nur einmal machen
-        saver.setStructure(wekaInstances);
+        saver.setInstances(masterInstance);
+        
+        return masterInstance;
 
     }
 
