@@ -25,30 +25,34 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VectorizationAnnotator
-    extends JCasAnnotator_ImplBase
-{
-    public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
-    @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
-    protected File targetFolder;
+public class VectorizationAnnotator extends JCasAnnotator_ImplBase {
+	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
+	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
+	protected File targetFolder;
 
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-    }
+	File instanceVectorFile;
+	File labelVectorFile;
+	File instanceMapping;
+	File labelMapping;
 
-    @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
-    {
-    }
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
 
-    @Override
-    public void collectionProcessComplete()
-    {
-    }
+		instanceVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
+		labelVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_LABEL_VECTOR);
+		instanceMapping = new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
+		labelMapping = new File(targetFolder, DeepLearningConstants.FILENAME_LABEL_MAPPING);
+	}
+
+	@Override
+	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+	}
+
+	@Override
+	public void collectionProcessComplete() {
+	}
 
 }
