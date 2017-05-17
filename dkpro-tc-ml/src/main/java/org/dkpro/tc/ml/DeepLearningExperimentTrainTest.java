@@ -22,12 +22,11 @@ import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.DeepLearningInitTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
-import org.dkpro.tc.core.task.deep.DeepLearningMetaInfoTask;
+import org.dkpro.tc.core.task.deep.DeepLearningEmbeddingTask;
 import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
  * Train-Test setup
- * 
  */
 public class DeepLearningExperimentTrainTest
     extends Experiment_ImplBase
@@ -35,7 +34,7 @@ public class DeepLearningExperimentTrainTest
 
     protected DeepLearningInitTask initTaskTrain;
     protected DeepLearningInitTask initTaskTest;
-    protected DeepLearningMetaInfoTask metaTask;
+    protected DeepLearningEmbeddingTask embeddingTask;
 
     public DeepLearningExperimentTrainTest()
     {/* needed for Groovy */
@@ -88,17 +87,18 @@ public class DeepLearningExperimentTrainTest
         initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
 
         // get some meta data depending on the whole document collection that we need for training
-        metaTask = new DeepLearningMetaInfoTask();
-        metaTask.setOperativeViews(operativeViews);
-        metaTask.setType(metaTask.getType() + "-" + experimentName);
-
-        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
-                MetaInfoTask.INPUT_KEY);
-        metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
+        embeddingTask = new DeepLearningEmbeddingTask();
+        embeddingTask.setOperativeViews(operativeViews);
+        embeddingTask.setType(embeddingTask.getType() + "-" + experimentName);
+        embeddingTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
+                DeepLearningEmbeddingTask.INPUT_KEY_TRAIN);
+        embeddingTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TRAIN,
+        		DeepLearningEmbeddingTask.INPUT_KEY_TEST);
+        embeddingTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);
         addTask(initTaskTest);
-        addTask(metaTask);
+        addTask(embeddingTask);
     }
 }

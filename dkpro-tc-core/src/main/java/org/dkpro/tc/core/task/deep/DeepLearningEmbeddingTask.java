@@ -45,18 +45,19 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * Collects information about the entire document
  * 
  */
-public class DeepLearningMetaInfoTask
+public class DeepLearningEmbeddingTask
     extends UimaTaskBase
 {
 
     /**
      * Public name of the task key
      */
-    public static final String META_KEY = "meta";
+    public static final String EMBEDDING_KEY = "embedding";
     /**
      * Public name of the folder where meta information will be stored within the task
      */
-    public static final String INPUT_KEY = "input";
+    public static final String INPUT_KEY_TRAIN = "inputTrain";
+    public static final String INPUT_KEY_TEST = "inputTest";
 
     private List<String> operativeViews;
 
@@ -78,12 +79,15 @@ public class DeepLearningMetaInfoTask
     {
         // TrainTest setup: input files are set as imports
         if (filesRoot == null || files_training == null) {
-            File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
-            Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
+            File trainRoot = aContext.getFolder(INPUT_KEY_TRAIN, AccessMode.READONLY);
+            Collection<File> files = FileUtils.listFiles(trainRoot, new String[] { "bin" }, true);
+            File testRoot = aContext.getFolder(INPUT_KEY_TEST, AccessMode.READONLY);
+            files.addAll(FileUtils.listFiles(testRoot, new String[] { "bin" }, true));
 
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
         }
+        //FIXME: Ensure that we get all data form all folds for embedding creation
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
@@ -97,7 +101,7 @@ public class DeepLearningMetaInfoTask
     {
         // make sure that the meta key import can be resolved (even when no meta features have been
         // extracted, as in the regression demo)
-        File folder = aContext.getFolder(META_KEY, AccessMode.READONLY);
+        File folder = aContext.getFolder(EMBEDDING_KEY, AccessMode.READONLY);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(AnalysisEngineFactory.createEngineDescription(PruneEmbeddingAnnotator.class,
