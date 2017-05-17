@@ -62,4 +62,6 @@ public interface DataWriter
     public boolean classiferReadsCompressed();
 
     public String getGenericFileName();
+    
+    public void close() throws Exception;
 }

@@ -243,7 +243,9 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				// the generic file into the classifier-specific data format
 				dsw.transformFromGeneric();
 			}
-
+			
+			dsw.close();
+			
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}

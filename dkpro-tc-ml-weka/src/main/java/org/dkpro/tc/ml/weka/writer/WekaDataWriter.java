@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +63,10 @@ public class WekaDataWriter implements DataWriter, Constants {
 	private File outputFolder;
 	private File arffTarget;
 
+	AttributeStore attributeStore;
+	Attribute outcomeAttribute; 
+    ArffSaver saver;
+    
 	@Override
 	public void init(File outputFolder, boolean useSparse, String learningMode, boolean applyWeighting)
 			throws Exception {
@@ -83,6 +88,30 @@ public class WekaDataWriter implements DataWriter, Constants {
 		if (arffTarget.exists()) {
 			FileUtils.forceDelete(arffTarget);
 		}
+		
+
+        if (!arffTarget.exists()) {
+            arffTarget.mkdirs();
+            arffTarget.createNewFile();
+        }
+		
+		attributeStore = new AttributeStore();
+
+        // Make sure "outcome" is not the name of an attribute
+        //List<String> outcomeList = FileUtils.readLines(new File(outputFolder, Constants.FILENAME_OUTCOMES), "utf-8");
+		List<String> outcomeList = new ArrayList<String>();
+		outcomeList.add("alt.atheism");
+		outcomeList.add("comp.graphics");
+        outcomeAttribute = createOutcomeAttribute(outcomeList, learningMode.equals(LM_REGRESSION));
+        if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
+            outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
+        }
+        attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
+		
+        saver = new ArffSaver();
+        saver.setRetrieval(Saver.INCREMENTAL);
+        saver.setFile(arffTarget);
+        saver.setCompressOutput(true);
 	}
 
 	@Override
@@ -270,14 +299,57 @@ public class WekaDataWriter implements DataWriter, Constants {
 
 	@Override
 	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
-		throw new UnsupportedOperationException("Weka/Meka cannot write directly into classifier format. "
-				+ "The feature file has a header which requires knowing all feature names and outcomes"
-				+ " before the feature file can be written.");
+	    boolean isRegression = learningMode.equals(LM_REGRESSION);
+	    for (Instance inst : instances) {
+            for (Feature feature : inst.getFeatures()) {
+                if (!attributeStore.containsAttributeName(feature.getName())) {
+                    Attribute attribute = WekaFeatureEncoder.featureToAttribute(feature);
+                    attributeStore.addAttribute(feature.getName(), attribute);
+                }
+            }
+        }
+	    
+	    Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME, attributeStore.getAttributes(), instances.size());
+        wekaInstances.setClass(outcomeAttribute);
+        //FIXME: darf man vermutlich auch nur einmal machen
+        saver.setStructure(wekaInstances);
+	    
+        for (Instance inst : instances) {
+            double[] featureValues = getFeatureValues(attributeStore, inst);
+
+            weka.core.Instance wekaInstance;
+
+            if (useSparse) {
+                wekaInstance = new SparseInstance(1.0, featureValues);
+            } else {
+                wekaInstance = new DenseInstance(1.0, featureValues);
+            }
+
+            wekaInstance.setDataset(wekaInstances);
+
+            String outcome = inst.getOutcome();
+            if (isRegression) {
+                wekaInstance.setClassValue(Double.parseDouble(outcome));
+            } else {
+                wekaInstance.setClassValue(outcome);
+            }
+
+            Double instanceWeight = inst.getWeight();
+            if (applyWeighting) {
+                wekaInstance.setWeight(instanceWeight);
+            }
+
+            // preprocessingFilter.input(wekaInstance);
+            // saver.writeIncremental(preprocessingFilter.output());
+            saver.writeIncremental(wekaInstance);
+        }
+//        saver.writeIncremental(null);
+        System.out.println("ende");
 	}
 
 	@Override
 	public boolean canStream() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -288,6 +360,11 @@ public class WekaDataWriter implements DataWriter, Constants {
 	@Override
 	public String getGenericFileName() {
 		return GENERIC_FEATURE_FILE;
+	}
+	
+	@Override
+	public void close() throws Exception {
+            saver.writeIncremental(null);
 	}
 
 }
