@@ -346,6 +346,7 @@ public interface Constants
      * extraction test-task about the output location of the extraction train-task
      */
     public static String TRAIN_OUTPUT = "TRAIN_OUTPUT";
+    public static String FILENAME_FEATURES_DESCRIPTION = "featureDescription.txt";
 
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome
