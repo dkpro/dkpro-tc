@@ -195,6 +195,10 @@
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-evaluation</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml-keras</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
