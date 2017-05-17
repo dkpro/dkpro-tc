@@ -21,22 +21,23 @@ This tutorial shows how to create a custom feature extractor.
 
 ### Example
 
-As example, we will have at look at the `EmoticonRatioExtractor`:
+As example, we will have at look at the `EmoticonRatio` feature:
 
 [source,java]
 ----
-public class EmoticonRatioExtractor extends FeatureExtractorResource_ImplBase
-   implements DocumentFeatureExtractor // the type of the feature extractor
+public class EmoticonRatio
+    extends FeatureExtractorResource_ImplBase
+    implements FeatureExtractor
 {
-  @Override
-  public List<Feature> extract(JCas annoDb) throws TextClassificationException
-  {
-    // retrieve annotations from previously running preprocessing task
-    double nrOfEmoticons = JCasUtil.select(annoDb, EMO.class).size();
-    double nrOfTokens = JCasUtil.select(annoDb, Token.class).size();
-    double ratio = nrOfEmoticons / nrOfTokens;
-    return new Feature("EmoticonRatio", ratio).asList();
-  }
+    @Override
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
+        throws TextClassificationException
+    {
+        int nrOfEmoticons = JCasUtil.selectCovered(jCas, EMO.class, target).size();
+        int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, target).size();
+        double ratio = (double) nrOfEmoticons / nrOfTokens;
+        return new Feature(EmoticonRatio.class.getSimpleName(), ratio).asSet();
+    }
 }
 ----
 
@@ -49,19 +50,19 @@ Here is a list of options you have to specify a feature extractor according to y
 DKPro TC supports the following feature modes and feature extractor types:
 
 |====
-| Feature Mode | Corresponding Feature Extractor Type | Has Access To
+| Feature Mode | Corresponding Feature Extractor Type | Extraction Target (via `target`)
 
 | document
-| DocumentFeatureExtractor
-| the entire CAS
+| FeatureExtractor
+| the entire content of the document 
+
+| unit/sequence 
+| FeatureExtractor
+| the current unit
 
 | pair 
 | PairFeatureExtractor 
-| both documents, in the form of two views on the same CAS 
-
-| unit/sequence 
-| ClassificationUnitFeatureExtractor
-| the current unit, all other units in the CAS, and to the entire CAS itself
+| two documents, in the form of two views on the same CAS
 |====
 
 #### Feature Value Types
