@@ -372,20 +372,6 @@ public class WekaDataWriter
         
         attributeStore = new AttributeStore();
 
-        // Make sure "outcome" is not the name of an attribute
-        // List<String> outcomeList = FileUtils.readLines(new File(outputFolder,
-        // Constants.FILENAME_OUTCOMES), "utf-8");
-        List<String> outcomeList = new ArrayList<String>();
-        outcomeList.add("alt.atheism");
-        outcomeList.add("comp.graphics");
-        // FIXME: Das muss wieder raus später
-        outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
-        if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
-            System.err.println("A feature with name \"outcome\" was found. Renaming outcome attribute");
-            outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
-        }
-        attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
-        
         
         List<String> lines = FileUtils.readLines(
                 new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), "utf-8");
@@ -406,6 +392,20 @@ public class WekaDataWriter
             }
 
         }
+        
+        // Make sure "outcome" is not the name of an attribute
+        // List<String> outcomeList = FileUtils.readLines(new File(outputFolder,
+        // Constants.FILENAME_OUTCOMES), "utf-8");
+        List<String> outcomeList = new ArrayList<String>();
+        outcomeList.add("alt.atheism");
+        outcomeList.add("comp.graphics");
+        // FIXME: Das muss wieder raus später
+        outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
+        if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
+            System.err.println("A feature with name \"outcome\" was found. Renaming outcome attribute");
+            outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
+        }
+        attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
         
         masterInstance = new Instances(WekaUtils.RELATION_NAME,
                 attributeStore.getAttributes(), instances.size());
