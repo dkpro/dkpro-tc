@@ -240,4 +240,12 @@ public class LibsvmDataWriter implements DataWriter {
 		}
 		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
 	}
+
+    @Override
+    public void close()
+        throws Exception
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

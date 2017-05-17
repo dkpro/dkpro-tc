@@ -305,4 +305,12 @@ public class SVMHMMDataWriter implements DataWriter {
 	public String getGenericFileName() {
 		return Constants.GENERIC_FEATURE_FILE;
 	}
+
+    @Override
+    public void close()
+        throws Exception
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

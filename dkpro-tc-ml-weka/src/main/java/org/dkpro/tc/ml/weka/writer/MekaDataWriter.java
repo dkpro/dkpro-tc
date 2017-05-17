@@ -290,4 +290,12 @@ public class MekaDataWriter implements DataWriter, Constants {
 	public String getGenericFileName() {
 		return GENERIC_FEATURE_FILE;
 	}
+
+    @Override
+    public void close()
+        throws Exception
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }
