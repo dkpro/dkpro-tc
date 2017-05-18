@@ -25,7 +25,7 @@ import org.dkpro.lab.task.impl.TaskBase;
  */
 public interface TcDeepLearningAdapter
 {
-    public static final String EMBEDDING_FOLDER="embeddingFolder";
+    public static final String PREPARATION_FOLDER="preparationFolder";
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.

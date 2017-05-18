@@ -83,7 +83,7 @@ def numpyizeOutcomeVector(vec):
 	
 
 
-def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength):
+def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength, predictionOut):
 
 	trainVecNump = numpyizeDataVector(trainVec)
 	trainOutcome = numpyizeOutcomeVector(trainOutcome)
@@ -125,9 +125,15 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
           epochs=epochs,
           validation_data=(x_test, y_test))
 	score, acc = model.evaluate(x_test, y_test, batch_size=batch_size)
-	print('Test score:', score)
-	print('Test accuracy:', acc)
+	
+	prediction = model.predict_classes(x_test)
+
+	predictionFile = open(predictionOut, 'w')
+	predictionFile.write("#Gold\tPrediction\n")
+	for i in range(0, len(prediction)):
+		predictionFile.write(str(y_test[i]) +"\t" + str(prediction[i][0])+ "\n")
+	predictionFile.close()
 
 
 if  __name__ =='__main__':
-	runExperiment(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6])
+	runExperiment(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7])

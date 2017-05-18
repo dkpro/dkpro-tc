@@ -35,7 +35,8 @@ public class KerasTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-
+    public static final String PREDICTION_FILE = "prediction.txt";
+            
     @Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
     private String python;
     
@@ -49,9 +50,14 @@ public class KerasTestTask
     public void execute(TaskContext aContext)
         throws Exception
     {
-        List<String> command = buildTrainCommand(aContext);
-
+        File kerasResultOut = getResultLocation(aContext);
+        List<String> command = buildTrainCommand(aContext, kerasResultOut);
         train(command);
+    }
+
+    private File getResultLocation(TaskContext aContext)
+    {
+        return aContext.getFile(PREDICTION_FILE, AccessMode.READWRITE);
     }
 
     private void train(List<String> command)
@@ -61,7 +67,7 @@ public class KerasTestTask
         process.waitFor();
     }
 
-    private List<String> buildTrainCommand(TaskContext aContext)
+    private List<String> buildTrainCommand(TaskContext aContext, File resultOut)
         throws Exception
     {
         File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
@@ -83,6 +89,7 @@ public class KerasTestTask
         command.add(testOutcomeVector.getAbsolutePath());
         command.add(embeddingPath.getAbsolutePath());
         command.add(maximumLength.toString());
+        command.add(resultOut.getAbsolutePath());
         
         return command;
     }
@@ -117,7 +124,7 @@ public class KerasTestTask
 
     private File getEmbedding(TaskContext aContext)
     {
-        File folder = aContext.getFolder(TcDeepLearningAdapter.EMBEDDING_FOLDER,
+        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
                 AccessMode.READONLY);
         File embedding = new File(folder, DeepLearningConstants.FILENAME_PRUNED_EMBEDDING);
 
