@@ -86,6 +86,7 @@ public class DeepLearningTestDummy
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
+//                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 25),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS, "/Users/toobee/Desktop/glove.6B.50d.txt")
                 );
 

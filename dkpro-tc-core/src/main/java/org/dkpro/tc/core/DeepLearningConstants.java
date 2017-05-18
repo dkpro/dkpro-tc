@@ -32,11 +32,11 @@ public interface DeepLearningConstants
 
     String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
 
-	String FILENAME_INSTANCE_VECTOR = "instanceVector.txt";
-	String FILENAME_OUTCOME_VECTOR = "labelVector.txt";
+	String FILENAME_INSTANCE_VECTOR = "instanceVectors.txt";
+	String FILENAME_OUTCOME_VECTOR = "outcomeVectors.txt";
 
 	String FILENAME_INSTANCE_MAPPING = "instanceMapping.txt";
-	String FILENAME_OUTCOME_MAPPING = "labelMapping.txt";
+	String FILENAME_OUTCOME_MAPPING = "outcomeMapping.txt";
 
     String DIM_MAXIMUM_LENGTH = "maximumLength";
 

@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class Document2LabelVectorizationAnnotator
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
-    
+
     public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
     @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     protected String instanceTypeName;
@@ -63,11 +63,11 @@ public class Document2LabelVectorizationAnnotator
     Map<String, Integer> instanceMap = new HashMap<>();
     Map<String, Integer> outcomeMap = new HashMap<>();
     private Type instanceType;
-    
+
     BufferedWriter writerInstance;
     BufferedWriter writerOutcome;
-    
-    int maximumLength=0;
+
+    int maximumLength = 0;
 
     @Override
     public void initialize(UimaContext context)
@@ -82,30 +82,32 @@ public class Document2LabelVectorizationAnnotator
             loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
             loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
 
-            //load the type of the annotation that holds the instances
+            // load the type of the annotation that holds the instances
             JCas typeFactory = JCasFactory.createJCas();
             Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
             AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
             instanceType = createAnnotation.getType();
-            
-            writerInstance = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
-            writerOutcome = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
-            
-            
+
+            writerInstance = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
+            writerOutcome = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
+
             maximumLength = getMaximumLength();
-            
+
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
 
-        
-
     }
 
-    private int getMaximumLength() throws IOException
+    private int getMaximumLength()
+        throws IOException
     {
-        String text = FileUtils.readFileToString(new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+        String text = FileUtils.readFileToString(
+                new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH),
+                "utf-8");
         return Integer.valueOf(text);
     }
 
@@ -127,16 +129,55 @@ public class Document2LabelVectorizationAnnotator
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        processInstances(aJCas);
-        
+        try {
+            processInstances(aJCas);
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
     }
 
     private void processInstances(JCas aJCas)
+        throws Exception
     {
-        Collection<AnnotationFS> annos = CasUtil.select(aJCas.getCas(), instanceType);
-        for(AnnotationFS a : annos){
-//            writerInstance.w
+        int writtenInstances = 0;
+
+        List<AnnotationFS> annos = new ArrayList<AnnotationFS>(
+                CasUtil.select(aJCas.getCas(), instanceType));
+        writerInstance.write("[");
+        for (int i = 0; i < annos.size(); i++) {
+            AnnotationFS a = annos.get(i);
+            Integer intIdOfInstance = instanceMap.get(a.getCoveredText());
+            writerInstance.write(intIdOfInstance.toString());
+            if (i + 1 < annos.size() && i + 1 < maximumLength) {
+                writerInstance.write(" ");
+            }
+
+            writtenInstances++;    
+            if (i + 1 >= maximumLength) {
+                break;
+            }
         }
+
+        // zero padding
+        if (writtenInstances < maximumLength) {
+            writerInstance.write(" ");
+        }
+        
+        while (writtenInstances < maximumLength) {
+            writerInstance.write("0");
+            if (writtenInstances + 1 < maximumLength) {
+                writerInstance.write(" ");
+            }
+            if (writtenInstances + 1 >= maximumLength) {
+                break;
+            }
+            writtenInstances++;
+        }
+
+        writerInstance.write("]");
+        writerInstance.write(System.lineSeparator());
     }
 
     @Override

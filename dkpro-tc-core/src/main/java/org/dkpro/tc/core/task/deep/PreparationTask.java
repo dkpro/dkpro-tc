@@ -27,8 +27,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -67,6 +69,9 @@ public class PreparationTask
     @Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
     private File embedding;
 
+    @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+    private Integer maximumLength;
+
     @Discriminator(name = DIM_FILES_ROOT)
     private File filesRoot;
 
@@ -102,14 +107,14 @@ public class PreparationTask
         File folder = aContext.getFolder(OUTPUT_KEY, AccessMode.READONLY);
 
         AggregateBuilder builder = new AggregateBuilder();
-        
+
         builder.add(AnalysisEngineFactory.createEngineDescription(PruneEmbeddingAnnotator.class,
                 PruneEmbeddingAnnotator.PARAM_TARGET_DIRECTORY, folder,
                 PruneEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embedding));
-        
+
         builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
                 MappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
-        
+
         builder.add(getMaximumLengthDeterminer(folder));
         return builder.createAggregateDescription();
 
@@ -123,6 +128,15 @@ public class PreparationTask
                     new IllegalStateException("Learning model is [null]"));
         }
 
+        if (maximumLength != null && maximumLength > 0) {
+            LogFactory.getLog(getClass())
+                    .info("Maximum length was set by user to [" + maximumLength + "]");
+            
+            writeExpectedMaximumLengthFile(folder);
+            
+            return AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
+        }
+
         switch (learningMode) {
         case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
             return AnalysisEngineFactory.createEngineDescription(
@@ -133,6 +147,16 @@ public class PreparationTask
                     new IllegalStateException("Learning mode [" + learningMode + "] not defined"));
         }
 
+    }
+
+    private void writeExpectedMaximumLengthFile(File folder) throws ResourceInitializationException
+    {
+        try {
+            FileUtils.writeStringToFile(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), maximumLength.toString(), "utf-8");
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
     }
 
     public void setOperativeViews(List<String> operativeViews)
