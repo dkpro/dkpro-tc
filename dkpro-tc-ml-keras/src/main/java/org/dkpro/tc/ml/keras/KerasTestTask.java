@@ -17,25 +17,20 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.keras;
 
-import org.dkpro.lab.reporting.ReportBase;
-import org.dkpro.lab.task.impl.TaskBase;
-import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.tc.core.Constants;
 
-public class KerasAdapter
-    implements TcDeepLearningAdapter
+public class KerasTestTask
+extends ExecutableTaskBase
+implements Constants
 {
 
     @Override
-    public TaskBase getTestTask()
+    public void execute(TaskContext aContext)
+        throws Exception
     {
-        return new KerasTestTask();
+        
     }
-
-    @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
-    {
-        return null;
-    }
-
 
 }
