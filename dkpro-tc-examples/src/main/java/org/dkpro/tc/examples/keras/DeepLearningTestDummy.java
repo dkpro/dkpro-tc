@@ -87,7 +87,7 @@ public class DeepLearningTestDummy
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE, "/Users/toobee/Desktop/imdb_cnn_lstm.py"),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE, "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS, "/Users/toobee/Desktop/glove.6B.50d.txt")
                 );
