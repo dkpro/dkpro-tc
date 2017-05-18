@@ -25,8 +25,6 @@ public interface DeepLearningConstants
 
     String FILENAME_TOKEN = "occurringToken.txt";
     
-    String DIM_PRETRAINED_EMBEDDINGS = "embeddingDimension";
-
 
     String LM_DOCUMENT_TO_LABEL = "document2label";
 
@@ -38,8 +36,11 @@ public interface DeepLearningConstants
 	String FILENAME_INSTANCE_MAPPING = "instanceMapping.txt";
 	String FILENAME_OUTCOME_MAPPING = "outcomeMapping.txt";
 
-    String DIM_MAXIMUM_LENGTH = "maximumLength";
-
     String FILENAME_MAXIMUM_LENGTH = "maxLen.txt";
+
+    String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
+    String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
+    String DIM_PYTHON_INSTALLATION = "dimPythonPath";
+    String DIM_PYTHON_USER_CODE = "dimPythonUserCode";
        
 }
