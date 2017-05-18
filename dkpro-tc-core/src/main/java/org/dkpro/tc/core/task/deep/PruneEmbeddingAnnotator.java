@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
@@ -61,6 +62,12 @@ public class PruneEmbeddingAnnotator
         token = new TreeSet<>();
 
         outputFile = new File(targetFolder, DeepLearningConstants.FILENAME_TOKEN);
+
+        if (inputEmbedding != null && !inputEmbedding.exists()) {
+            throw new IllegalArgumentException(
+                    "Embedding path not found [" + inputEmbedding.getAbsolutePath() + "]");
+        }
+        
     }
 
     @Override
@@ -77,6 +84,11 @@ public class PruneEmbeddingAnnotator
     {
         try {
             FileUtils.writeLines(outputFile, "utf-8", token);
+            
+            if (inputEmbedding == null) {
+                LogFactory.getLog(getClass()).debug("No embedding was provided");
+                return;
+            }
             pruneEmbedding();
         }
         catch (Exception e) {
@@ -109,6 +121,5 @@ public class PruneEmbeddingAnnotator
         writer.close();
         reader.close();
     }
-
 
 }

@@ -28,15 +28,18 @@ public interface DeepLearningConstants
     String DIM_PRETRAINED_EMBEDDINGS = "embeddingDimension";
 
 
-    String LM_SEQUENCE_TO_SEQUENCE = "seq2seq";
-    String LM_SEQUENCE_TO_LABEL = "seq2label";
+    String LM_DOCUMENT_TO_LABEL = "document2label";
 
     String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
 
 	String FILENAME_INSTANCE_VECTOR = "instanceVector.txt";
-	String FILENAME_LABEL_VECTOR = "labelVector.txt";
+	String FILENAME_OUTCOME_VECTOR = "labelVector.txt";
 
 	String FILENAME_INSTANCE_MAPPING = "instanceMapping.txt";
-	String FILENAME_LABEL_MAPPING = "labelMapping.txt";
+	String FILENAME_OUTCOME_MAPPING = "labelMapping.txt";
+
+    String DIM_MAXIMUM_LENGTH = "maximumLength";
+
+    String FILENAME_MAXIMUM_LENGTH = "maxLen.txt";
        
 }

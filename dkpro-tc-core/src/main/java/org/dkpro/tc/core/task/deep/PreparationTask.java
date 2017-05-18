@@ -45,14 +45,14 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * Collects information about the entire document
  * 
  */
-public class EmbeddingTask
+public class PreparationTask
     extends UimaTaskBase
 {
 
     /**
      * Public name of the task key
      */
-    public static final String EMBEDDING_KEY = "embedding";
+    public static final String OUTPUT_KEY = "output";
     /**
      * Public name of the folder where meta information will be stored within the task
      */
@@ -62,8 +62,8 @@ public class EmbeddingTask
     private List<String> operativeViews;
 
     @Discriminator(name = Constants.DIM_LEARNING_MODE)
-    private String deepLearningMode;
-    
+    private String learningMode;
+
     @Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
     private File embedding;
 
@@ -87,7 +87,7 @@ public class EmbeddingTask
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
         }
-        //FIXME: Ensure that we get all data form all folds for embedding creation
+        // FIXME: Ensure that we get all data form all folds for embedding creation
         // CV setup: filesRoot and files_atrining have to be set as dimension
         else {
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
@@ -99,14 +99,39 @@ public class EmbeddingTask
     public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        // make sure that the meta key import can be resolved (even when no meta features have been
-        // extracted, as in the regression demo)
-        File folder = aContext.getFolder(EMBEDDING_KEY, AccessMode.READONLY);
+        File folder = aContext.getFolder(OUTPUT_KEY, AccessMode.READONLY);
 
         AggregateBuilder builder = new AggregateBuilder();
+        
         builder.add(AnalysisEngineFactory.createEngineDescription(PruneEmbeddingAnnotator.class,
-                PruneEmbeddingAnnotator.PARAM_TARGET_DIRECTORY, folder, PruneEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embedding));
+                PruneEmbeddingAnnotator.PARAM_TARGET_DIRECTORY, folder,
+                PruneEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embedding));
+        
+        builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
+                MappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
+        
+        builder.add(getMaximumLengthDeterminer(folder));
         return builder.createAggregateDescription();
+
+    }
+
+    private AnalysisEngineDescription getMaximumLengthDeterminer(File folder)
+        throws ResourceInitializationException
+    {
+        if (learningMode == null) {
+            throw new ResourceInitializationException(
+                    new IllegalStateException("Learning model is [null]"));
+        }
+
+        switch (learningMode) {
+        case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
+            return AnalysisEngineFactory.createEngineDescription(
+                    Document2LabelMaximumLengthAnnotator.class,
+                    Document2LabelMaximumLengthAnnotator.PARAM_TARGET_DIRECTORY, folder);
+        default:
+            throw new ResourceInitializationException(
+                    new IllegalStateException("Learning mode [" + learningMode + "] not defined"));
+        }
 
     }
 

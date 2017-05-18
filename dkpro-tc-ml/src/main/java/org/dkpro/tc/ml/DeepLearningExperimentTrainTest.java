@@ -23,7 +23,7 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.InitTaskDeep;
 import org.dkpro.tc.core.task.MetaInfoTask;
-import org.dkpro.tc.core.task.deep.EmbeddingTask;
+import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.report.TcTaskType;
 
@@ -34,7 +34,7 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 
 	protected InitTaskDeep initTaskTrain;
 	protected InitTaskDeep initTaskTest;
-	protected EmbeddingTask embeddingTask;
+	protected PreparationTask preparationTask;
 	protected VectorizationTask vectorizationTrainTask;
 	protected VectorizationTask vectorizationTestTask;
 
@@ -88,31 +88,33 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 
 		// get some meta data depending on the whole document collection that we
 		// need for training
-		embeddingTask = new EmbeddingTask();
-		embeddingTask.setOperativeViews(operativeViews);
-		embeddingTask.setType(embeddingTask.getType() + "-" + experimentName);
-		embeddingTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, EmbeddingTask.INPUT_KEY_TRAIN);
-		embeddingTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, EmbeddingTask.INPUT_KEY_TEST);
-		embeddingTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
+		preparationTask = new PreparationTask();
+		preparationTask.setOperativeViews(operativeViews);
+		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
+		preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
+		preparationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
+		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
 		// feature extraction on training data
 		vectorizationTrainTask = new VectorizationTask();
 		vectorizationTrainTask.setType(vectorizationTrainTask.getType() + "-Train-" + experimentName);
 		vectorizationTrainTask.setTesting(false);
-		vectorizationTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, VectorizationTask.INPUT_KEY);
+		vectorizationTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, VectorizationTask.DATA_INPUT_KEY);
+		vectorizationTrainTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, VectorizationTask.MAPPING_INPUT_KEY);
 		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
 		// feature extraction on test data
 		vectorizationTestTask = new VectorizationTask();
 		vectorizationTestTask.setType(vectorizationTestTask.getType() + "-Test-" + experimentName);
 		vectorizationTestTask.setTesting(true);
-		vectorizationTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, VectorizationTask.INPUT_KEY);
+		vectorizationTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, VectorizationTask.DATA_INPUT_KEY);
+		vectorizationTestTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, VectorizationTask.MAPPING_INPUT_KEY);
 		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
 		// DKPro Lab issue 38: must be added as *first* task
 		addTask(initTaskTrain);
 		addTask(initTaskTest);
-		addTask(embeddingTask);
+		addTask(preparationTask);
 		addTask(vectorizationTrainTask);
 		addTask(vectorizationTestTask);
 	}
