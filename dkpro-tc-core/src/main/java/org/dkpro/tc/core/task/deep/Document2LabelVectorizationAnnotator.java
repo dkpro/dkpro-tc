@@ -40,6 +40,7 @@ import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 public class Document2LabelVectorizationAnnotator
@@ -69,6 +70,8 @@ public class Document2LabelVectorizationAnnotator
 
     int maximumLength = 0;
 
+    StringBuilder outcomeVector = new StringBuilder();
+    
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -95,11 +98,12 @@ public class Document2LabelVectorizationAnnotator
 
             maximumLength = getMaximumLength();
 
+            
+            outcomeVector.append("[");
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-
     }
 
     private int getMaximumLength()
@@ -131,11 +135,24 @@ public class Document2LabelVectorizationAnnotator
     {
         try {
             processInstances(aJCas);
+            processOutcome(aJCas);
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
 
+    }
+
+    private void processOutcome(JCas aJCas) throws Exception
+    {
+        List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
+                JCasUtil.select(aJCas, TextClassificationOutcome.class));
+        
+        for(int i=0; i < outcomes.size(); i++){
+            String outcome = outcomes.get(i).getOutcome();
+            outcomeVector.append(outcomeMap.get(outcome).toString());
+        }
+        outcomeVector.append(" ");
     }
 
     private void processInstances(JCas aJCas)
@@ -183,6 +200,13 @@ public class Document2LabelVectorizationAnnotator
     @Override
     public void collectionProcessComplete()
     {
+        try {
+            writerOutcome.write(outcomeVector.toString().trim() + "]");
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+        
         IOUtils.closeQuietly(writerInstance);
         IOUtils.closeQuietly(writerOutcome);
     }
