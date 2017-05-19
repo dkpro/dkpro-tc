@@ -71,6 +71,8 @@ public class EmbeddingTask
         throws Exception
     {
         if (embedding == null) {
+        	//create folder
+        	aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
             return;
         }
 
