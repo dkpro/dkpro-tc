@@ -44,8 +44,13 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	testVecNump = numpyizeVector(testVec)
 	testOutcome = numpyizeVector(testOutcome)
 	
-	embeddings,dim = loadEmbeddings(embedding)
-	EMBEDDING_DIM = dim
+	if embedding:
+		print("Load pretrained embeddings")
+		embeddings,dim = loadEmbeddings(embedding)
+		EMBEDDING_DIM = dim
+	else:
+		print("Train embeddings on the fly")
+		EMBEDDING_DIM = 50
 	
 	x_train = sequence.pad_sequences(trainVecNump, maxlen=longest_sequence)
 	y_train = sequence.pad_sequences(trainOutcome, maxlen=longest_sequence)
@@ -59,12 +64,12 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
-	print("Embedding dim: ", embeddings.shape)
-	print("Train data dim: ", x_train.shape)	
-	print("Train label dim: ", y_train.shape)
+	print("Building model")
 	model = Sequential()
-	model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0],
-                       input_length=x_train.shape[1], weights=[embeddings], trainable=False))
+	if embedding:
+	    model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
+	else:
+	    model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
 	model.add(Convolution1D(128, 5, padding='same', activation='relu'))	
 	model.add(Bidirectional(LSTM(EMBEDDING_DIM, return_sequences=True)))
 	model.add(TimeDistributed(Dense(maxLabel)))
