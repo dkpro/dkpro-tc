@@ -19,9 +19,11 @@ package org.dkpro.tc.ml.keras;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -30,6 +32,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.core.task.deep.PreparationTask;
 
 public class KerasTestTask
     extends ExecutableTaskBase
@@ -77,6 +80,8 @@ public class KerasTestTask
         File testOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
         
         File embeddingPath = getEmbedding(aContext);
+        
+        String maxLen = getMaximumLength(aContext);
 
         python = (python == null) ? "python" : python;
 
@@ -87,11 +92,23 @@ public class KerasTestTask
         command.add(trainOutcomeVector.getAbsolutePath());
         command.add(testDataVector.getAbsolutePath());
         command.add(testOutcomeVector.getAbsolutePath());
-        command.add(embeddingPath.getAbsolutePath());
-        command.add(maximumLength.toString());
+        command.add(embeddingPath!=null ? embeddingPath.getAbsolutePath() : "");
+        command.add(maxLen);
         command.add(resultOut.getAbsolutePath());
         
         return command;
+    }
+
+    private String getMaximumLength(TaskContext aContext) throws IOException
+    {
+        if(maximumLength!=null){
+            return maximumLength.toString();
+        }
+        
+        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
+        String maxLenFromFile = FileUtils.readFileToString(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+        
+        return maxLenFromFile;
     }
 
     private File getDataOutcome(TaskContext aContext, String key)

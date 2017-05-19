@@ -90,7 +90,7 @@ public class DeepLearningKerasDocumentTestDummy
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE,
                         "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
                         "/Users/toobee/Desktop/glove.6B.50d.txt"));
 

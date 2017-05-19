@@ -33,7 +33,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class Document2LabelMaximumLengthAnnotator
+public class MaximumLengthAnnotatorDocument2Label
     extends JCasAnnotator_ImplBase
 {
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";

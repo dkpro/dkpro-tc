@@ -87,7 +87,9 @@ public class VectorizationTask
         }
 
         switch (learningMode) {
+        //FIXME: do wee need this distinction?
         case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
+        case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:    
             return AnalysisEngineFactory.createEngineDescription(
                     Document2LabelVectorizationAnnotator.class,
                     Document2LabelVectorizationAnnotator.PARAM_TARGET_DIRECTORY, outputDir,

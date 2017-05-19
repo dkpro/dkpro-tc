@@ -24,7 +24,6 @@ import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
@@ -138,8 +137,12 @@ public class PreparationTask
         switch (learningMode) {
         case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
             return AnalysisEngineFactory.createEngineDescription(
-                    Document2LabelMaximumLengthAnnotator.class,
-                    Document2LabelMaximumLengthAnnotator.PARAM_TARGET_DIRECTORY, folder);
+                    MaximumLengthAnnotatorDocument2Label.class,
+                    MaximumLengthAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, folder);
+        case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:
+            return AnalysisEngineFactory.createEngineDescription(
+                    MaximumLengthAnnotatorSequence2Label.class,
+                    MaximumLengthAnnotatorSequence2Label.PARAM_TARGET_DIRECTORY, folder);
         default:
             throw new ResourceInitializationException(
                     new IllegalStateException("Learning mode [" + learningMode + "] not defined"));

@@ -43,7 +43,7 @@ public class PruneEmbeddingAnnotator
     extends JCasAnnotator_ImplBase
 {
     public static final String PARAM_EMBEDDING_PATH = "inputEmbedding";
-    @ConfigurationParameter(name = PARAM_EMBEDDING_PATH, mandatory = true)
+    @ConfigurationParameter(name = PARAM_EMBEDDING_PATH, mandatory = false)
     protected File inputEmbedding;
 
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
