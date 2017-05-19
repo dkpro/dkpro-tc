@@ -24,6 +24,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.InitTaskDeep;
+import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
@@ -39,6 +40,7 @@ public class DeepLearningExperimentTrainTest
     protected InitTaskDeep initTaskTrain;
     protected InitTaskDeep initTaskTest;
     protected PreparationTask preparationTask;
+    protected EmbeddingTask embeddingTask;
     protected VectorizationTask vectorizationTrainTask;
     protected VectorizationTask vectorizationTestTask;
     protected TaskBase learningTask;
@@ -105,8 +107,7 @@ public class DeepLearningExperimentTrainTest
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
         initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
 
-        // get some meta data depending on the whole document collection that we
-        // need for training
+        // get some meta data depending on the whole document collection 
         preparationTask = new PreparationTask();
         preparationTask.setType(preparationTask.getType() + "-" + experimentName);
         preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
@@ -114,6 +115,11 @@ public class DeepLearningExperimentTrainTest
         preparationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
                 PreparationTask.INPUT_KEY_TEST);
         preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
+        
+        embeddingTask = new EmbeddingTask();
+        embeddingTask.setType(embeddingTask.getType() + "-" + experimentName);
+        embeddingTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
+                EmbeddingTask.INPUT_MAPPING);
 
         // feature extraction on training data
         vectorizationTrainTask = new VectorizationTask();
@@ -165,6 +171,7 @@ public class DeepLearningExperimentTrainTest
         addTask(initTaskTrain);
         addTask(initTaskTest);
         addTask(preparationTask);
+        addTask(embeddingTask);
         addTask(vectorizationTrainTask);
         addTask(vectorizationTestTask);
         addTask(learningTask);
