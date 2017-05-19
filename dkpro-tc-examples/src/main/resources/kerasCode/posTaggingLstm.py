@@ -44,7 +44,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 	model = Sequential()
 	model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
-	model.add(Convolution1D(128, 5, paddding='same', activation='relu'))	
+	model.add(Convolution1D(128, 5, padding='same', activation='relu'))	
 	model.add(Bidirectional(LSTM(EMBEDDING_DIM, return_sequences=True)))
 	model.add(TimeDistributed(Dense(maxLabel)))
 	model.add(Activation('softmax'))
