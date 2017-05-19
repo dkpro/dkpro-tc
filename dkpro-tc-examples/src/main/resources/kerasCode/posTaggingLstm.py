@@ -46,14 +46,14 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
 	model.add(Bidirectional(LSTM(EMBEDDING_DIM, return_sequences=True)))
 	model.add(TimeDistributed(Dense(maxLabel)))
-	model.add(Activation('tanh'))
+	model.add(Activation('softmax'))
 
 # try using different optimizers and different optimizer configs
 	model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-	model.fit(x_train, y_train, epochs=2)
+	model.fit(x_train, y_train, epochs=2, shuffle=True)
 
 	prediction = model.predict_classes(x_test)
 
