@@ -28,12 +28,17 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	testVecNump = numpyizeVector(testVec)
 	testOutcome = numpyizeVector(testOutcome)
 
-	x_train = sequence.pad_sequences(trainVecNump, maxlen=int(longest_sequence))
-	x_test = sequence.pad_sequences(testVecNump, maxlen=int(longest_sequence))
+	x_train = sequence.pad_sequences(trainVecNump, maxlen=longest_sequence)
+	x_test = sequence.pad_sequences(testVecNump, maxlen=longest_sequence)
 	
 	y_test = testOutcome
 	maxLabel = max(x for s in trainOutcome+testOutcome for x in s) + 1
-	y_train = np.array([np_utils.to_categorical(seq, maxLabel) for seq in trainOutcome])
+	
+	y_train=[]
+	for s in trainOutcome:
+		c = np_utils.to_categorical(trainOutcome[0], maxLabel)
+		y_train.append(c)
+	y_train = np.array(y_train)
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
