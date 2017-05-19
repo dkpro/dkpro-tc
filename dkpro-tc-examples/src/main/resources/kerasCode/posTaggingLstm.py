@@ -30,14 +30,11 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	x_train = sequence.pad_sequences(trainVecNump, maxlen=int(longest_sequence))
 	x_test = sequence.pad_sequences(testVecNump, maxlen=int(longest_sequence))
 	
-	y_train = trainOutcome
 	y_test = testOutcome
+	maxLabel = max(x for s in trainOutcome+testOutcome for x in s) + 1
+	y_train = np.array([np_utils.to_categorical(seq, maxLabel) for seq in trainOutcome])
 
-
-	vocabSize = np.amax(trainVecNump+testVecNump)
-	maxLabel = np.amax(trainOutcome+testOutcome)+1
-
-	y_train = np.array([np_utils.to_categorical(seq, maxLabel) for seq in y_train])
+	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
 	model = Sequential()
 	model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
@@ -50,16 +47,19 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
               optimizer='adam',
               metrics=['accuracy'])
 
-	model.fit(x_train, y_train, epochs=1)
+	model.fit(x_train, y_train, epochs=2)
 
 	prediction = model.predict_classes(x_test)
-	print(prediction)
-	print(y_test)
 
 	predictionFile = open(predictionOut, 'w')
 	predictionFile.write("#Gold\tPrediction\n")
 	for i in range(0, len(prediction)):
-		predictionFile.write(str(y_test[i]) +"\t" + str(prediction[i][0])+ "\n")
+		predictionEntry = prediction[i]
+		for j in range(0, len(y_test[i])):
+			if y_test[i][j]==0:
+				break #we reached the padded area - zero is reserved
+			predictionFile.write(str(y_test[i][j]) +"\t" + str(predictionEntry[j])+ "\n")
+		predictionFile.write("\n")
 	predictionFile.close()
 
 

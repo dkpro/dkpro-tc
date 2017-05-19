@@ -78,9 +78,10 @@ public class DeepLearningKerasSeq2SeqPoSTestDummy
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
         dimReaders.put(DIM_READER_TRAIN, train);
 
+        //Careful - we need at least 2 sequences in the testing file otherwise things will crash
         CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a02.xml"));
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
         dimReaders.put(DIM_READER_TEST, test);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
