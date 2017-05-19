@@ -6,7 +6,7 @@ from keras.layers import Dense, Activation, Embedding, TimeDistributed, Bidirect
 from keras.layers import LSTM
 from keras.utils import np_utils
 
-EMBEDDING_DIM=64
+EMBEDDING_DIM=-1
 np.set_printoptions(threshold=np.nan)
 
 def numpyizeVector(vec):
@@ -19,6 +19,19 @@ def numpyizeVector(vec):
 	file.close()
 	return vout
 	
+def loadEmbeddings(emb):
+	matrix = {}	
+	f = open(emb, 'r')
+	embData = f.readlines()
+	dim = len(embData[0].split())-1
+	matrix = np.zeros((len(embData)+1, dim))	
+	for e in embData:
+		e = e.strip()
+		if not e:
+			continue
+		id, vector = e.split("\t")
+		matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
+	return matrix, dim
 
 def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longest_sequence, predictionOut):	
 
@@ -27,6 +40,10 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	
 	testVecNump = numpyizeVector(testVec)
 	testOutcome = numpyizeVector(testOutcome)
+	
+	embeddings,dim = loadEmbeddings(embedding)
+	EMBEDDING_DIM = dim
+
 
 	x_train = sequence.pad_sequences(trainVecNump, maxlen=longest_sequence)
 	x_test = sequence.pad_sequences(testVecNump, maxlen=longest_sequence)
@@ -42,8 +59,10 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
+
 	model = Sequential()
-	model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
+	model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0],
+                       input_length=x_train.shape[1], weights=[embeddings], trainable=False))
 	model.add(Convolution1D(128, 5, padding='same', activation='relu'))	
 	model.add(Bidirectional(LSTM(EMBEDDING_DIM, return_sequences=True)))
 	model.add(TimeDistributed(Dense(maxLabel)))
