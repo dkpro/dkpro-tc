@@ -103,7 +103,7 @@ The Twitter Sentiment Groovy Experiment uses `de.tudarmstadt.ukp.dkpro.tc.weka.t
 The `preprocessingPipeline` expects an aggregate AnalysisEngine from several component descriptions (UIMA `AnalysisComponents`), such as the `ArktweetTagger` which wraps the Ark Tokenizer and POS Tagger for Twitter. Common preprocessing components do sentence boundary detection and tokenization. Further components might do lemmatization, Part-Of-Speech tagging, dependency parsing etc.
 
 The `parameterSpace` contains configuration parameters which can be tested for different values. Such parameters are called discriminators.
-You can find a list of all configurable discriminators and their explanantion [here](../Discriminators_0_6_0.md).
+You can find a list of all configurable discriminators and their explanantion [here](../Discriminators_0_6_0).
 
 In short, the above example define:
 
@@ -141,7 +141,7 @@ For more information on feature and learning modes, refer to the following paper
 Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
 {% endhighlight groovy %}
 
-The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also [here](../FeatureExtractors.md).
+The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also [here](../FeatureExtractors).
 
 Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
