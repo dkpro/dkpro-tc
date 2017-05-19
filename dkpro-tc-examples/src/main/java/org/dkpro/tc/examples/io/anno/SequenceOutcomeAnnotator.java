@@ -67,7 +67,7 @@ public class SequenceOutcomeAnnotator
     public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
     {
         List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, unit);
-        return posList.get(0).getPosValue();
+        return posList.get(0).getPosValue().replaceAll(" ", "_");
     }
 
 }
