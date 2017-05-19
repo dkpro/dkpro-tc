@@ -7,6 +7,7 @@ from keras.layers import LSTM
 from keras.utils import np_utils
 
 EMBEDDING_DIM=64
+np.set_printoptions(threshold=np.nan)
 
 def numpyizeVector(vec):
 	vout=[]
