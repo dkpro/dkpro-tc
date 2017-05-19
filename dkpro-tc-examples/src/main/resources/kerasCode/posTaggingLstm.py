@@ -2,7 +2,7 @@ from sys import argv
 import numpy as np
 from keras.preprocessing import sequence
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Embedding, TimeDistributed, Bidirectional
+from keras.layers import Dense, Activation, Embedding, TimeDistributed, Bidirectional, Convolution1D
 from keras.layers import LSTM
 from keras.utils import np_utils
 
@@ -44,16 +44,17 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 	model = Sequential()
 	model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
+	model.add(Convolution1D(128, 5, paddding='same', activation='relu'))	
 	model.add(Bidirectional(LSTM(EMBEDDING_DIM, return_sequences=True)))
 	model.add(TimeDistributed(Dense(maxLabel)))
 	model.add(Activation('softmax'))
 
 # try using different optimizers and different optimizer configs
 	model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
+              optimizer='rmsprop',
               metrics=['accuracy'])
 
-	model.fit(x_train, y_train, epochs=2, shuffle=True)
+	model.fit(x_train, y_train, epochs=3, shuffle=True)
 
 	prediction = model.predict_classes(x_test)
 
