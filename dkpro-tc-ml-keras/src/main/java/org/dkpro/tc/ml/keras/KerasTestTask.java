@@ -32,7 +32,6 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.core.task.deep.PreparationTask;
 
 public class KerasTestTask
     extends ExecutableTaskBase

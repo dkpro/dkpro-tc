@@ -36,11 +36,11 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.DocumentIdTracer;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Document;
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class InitTaskDeep
@@ -53,6 +53,8 @@ public class InitTaskDeep
     protected CollectionReaderDescription readerTest;
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
+    @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+    private Integer maximumLength;
 
     private boolean isTesting = false;
 
@@ -143,7 +145,8 @@ public class InitTaskDeep
 
         // identity tracker to know later on that document N is file ABC.txt
                 createEngine(DocumentIdTracer.class, DocumentIdTracer.PARAM_TARGET_DIRECTORY,
-                        folder, DocumentIdTracer.PARAM_LEARNING_MODE, learningMode));
+                        folder, DocumentIdTracer.PARAM_LEARNING_MODE, learningMode, 
+                        DocumentIdTracer.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
     }
 
     public void setTesting(boolean isTesting)

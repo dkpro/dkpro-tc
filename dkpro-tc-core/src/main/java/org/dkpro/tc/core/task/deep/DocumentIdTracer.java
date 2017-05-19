@@ -59,6 +59,11 @@ public class DocumentIdTracer
     public static final String PARAM_LEARNING_MODE = "learningMode";
     @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
     protected String learningMode;
+    
+    public static final String PARAM_USER_SET_MAXIMUM_LENGTH = "maxLen";
+    @ConfigurationParameter(name = PARAM_USER_SET_MAXIMUM_LENGTH, mandatory = true)
+    protected Integer maximumLength;
+    
 
     BufferedWriter writer;
     int id = 0;
@@ -113,9 +118,16 @@ public class DocumentIdTracer
             for (AnnotationFS s : sequences) {
                 Collection<TextClassificationTarget> targets = JCasUtil.selectCovered(aJCas,
                         TextClassificationTarget.class, s);
+                
+                int i=0;
                 for (TextClassificationTarget tco : targets) {
                     writer.write(id + "\t" + tco.getCoveredText() + System.lineSeparator());
                     id++;
+                    
+                    if(maximumLength!=null && i+1 >= maximumLength){
+                        break;
+                    }
+                    i++;
                 }
                 writer.write("\n");
             }

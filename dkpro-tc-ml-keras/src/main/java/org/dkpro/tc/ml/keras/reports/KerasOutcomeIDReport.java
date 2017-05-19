@@ -134,7 +134,11 @@ public class KerasOutcomeIDReport
 
         List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
         for (String s : readLines) {
-            if (s.startsWith("#") || s.isEmpty()) {
+            if (s.startsWith("#")) {
+                continue;
+            }
+            if(s.isEmpty()){
+                t.add("");
                 continue;
             }
             String[] split = s.split("\t");
