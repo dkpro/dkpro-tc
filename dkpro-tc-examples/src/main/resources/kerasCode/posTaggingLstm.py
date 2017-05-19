@@ -23,6 +23,7 @@ def loadEmbeddings(emb):
 	matrix = {}	
 	f = open(emb, 'r')
 	embData = f.readlines()
+	f.close()
 	dim = len(embData[0].split())-1
 	matrix = np.zeros((len(embData)+1, dim))	
 	for e in embData:
@@ -74,7 +75,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	model.add(TimeDistributed(Dense(maxLabel)))
 	model.add(Activation('softmax'))
 
-# try using different optimizers and different optimizer configs
+	# try using different optimizers and different optimizer configs
 	model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
