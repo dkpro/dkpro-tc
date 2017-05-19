@@ -33,6 +33,8 @@ public interface TcDeepLearningAdapter
      */
     public static final String TARGET_ID_MAPPING = "targetIdFolder";
 
+	public static final String EMBEDDING_FOLDER = "embeddingFolder";
+
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.

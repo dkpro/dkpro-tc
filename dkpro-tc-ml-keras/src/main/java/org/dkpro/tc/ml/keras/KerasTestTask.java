@@ -140,7 +140,7 @@ public class KerasTestTask
 
     private File getEmbedding(TaskContext aContext)
     {
-        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
+        File folder = aContext.getFolder(TcDeepLearningAdapter.EMBEDDING_FOLDER,
                 AccessMode.READONLY);
         File embedding = new File(folder, DeepLearningConstants.FILENAME_PRUNED_EMBEDDING);
 

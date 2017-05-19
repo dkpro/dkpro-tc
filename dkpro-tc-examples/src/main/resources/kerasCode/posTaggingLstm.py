@@ -36,6 +36,7 @@ def loadEmbeddings(emb):
 def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longest_sequence, predictionOut):	
 
 	trainVecNump = numpyizeVector(trainVec)
+	print(trainVecNump[0])
 	trainOutcome = numpyizeVector(trainOutcome)
 	
 	testVecNump = numpyizeVector(testVec)
@@ -51,15 +52,20 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	y_test = testOutcome
 	maxLabel = max(x for s in trainOutcome+testOutcome for x in s) + 1
 	
-	y_train=[]
-	for s in trainOutcome:
-		c = np_utils.to_categorical(trainOutcome[0], maxLabel)
-		y_train.append(c)
-	y_train = np.array(y_train)
+	#y_train=[]
+	#for s in trainOutcome:
+    #	c = np_utils.to_categorical(s, maxLabel)
+	#	y_train.append(c)
+	#y_train = np.array(y_train)
+	
+	y_train = np.array([np_utils.to_categorical(s, maxLabel) for s in trainOutcome])
+	print(y_train[0].shape)
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
-
+	print("Embedding dim: ", embeddings.shape)
+	print("Train data dim: ", x_train.shape)	
+	print("Train label dim: ", y_train.shape)
 	model = Sequential()
 	model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0],
                        input_length=x_train.shape[1], weights=[embeddings], trainable=False))
