@@ -43,12 +43,16 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class Document2LabelVectorizationAnnotator
+public class VectorizationAnnotatorSequence2SequenceOfLabel
     extends JCasAnnotator_ImplBase
 {
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
+
+    public static final String PARAM_SEQUENCE_ANNOTATION = "sequenceAnnotation";
+    @ConfigurationParameter(name = PARAM_SEQUENCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence")
+    protected String sequenceSpanTypeName;
 
     public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
     @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
@@ -63,15 +67,15 @@ public class Document2LabelVectorizationAnnotator
 
     Map<String, Integer> instanceMap = new HashMap<>();
     Map<String, Integer> outcomeMap = new HashMap<>();
-    private Type instanceType;
 
-    BufferedWriter writerInstance;
-    BufferedWriter writerOutcome;
+    private Type instanceType;
+    private Type sequenceSpanType;
+
+    BufferedWriter writerSeqInst;
+    BufferedWriter writerSeqOutcome;
 
     int maximumLength = 0;
 
-    StringBuilder outcomeVector = new StringBuilder();
-    
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -87,19 +91,20 @@ public class Document2LabelVectorizationAnnotator
 
             // load the type of the annotation that holds the instances
             JCas typeFactory = JCasFactory.createJCas();
-            Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
-            AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
-            instanceType = createAnnotation.getType();
+            Type type = JCasUtil.getType(typeFactory, Class.forName(sequenceSpanTypeName));
+            AnnotationFS sequenceAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
+            sequenceSpanType = sequenceAnno.getType();
 
-            writerInstance = new BufferedWriter(
+            type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
+            AnnotationFS tokenAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
+            instanceType = tokenAnno.getType();
+
+            writerSeqInst = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
-            writerOutcome = new BufferedWriter(
+            writerSeqOutcome = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
 
             maximumLength = getMaximumLength();
-
-            
-            outcomeVector.append("[");
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -134,7 +139,7 @@ public class Document2LabelVectorizationAnnotator
         throws AnalysisEngineProcessException
     {
         try {
-            processInstances(aJCas);
+            processSequences(aJCas);
             processOutcome(aJCas);
         }
         catch (Exception e) {
@@ -143,72 +148,79 @@ public class Document2LabelVectorizationAnnotator
 
     }
 
-    private void processOutcome(JCas aJCas) throws Exception
-    {
-        List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
-                JCasUtil.select(aJCas, TextClassificationOutcome.class));
-        
-        for(int i=0; i < outcomes.size(); i++){
-            String outcome = outcomes.get(i).getOutcome();
-            outcomeVector.append(outcomeMap.get(outcome).toString());
-        }
-        outcomeVector.append(" ");
-    }
-
-    private void processInstances(JCas aJCas)
+    private void processOutcome(JCas aJCas)
         throws Exception
     {
-        int writtenInstances = 0;
+        List<AnnotationFS> sequenceAnnos = new ArrayList<AnnotationFS>(
+                CasUtil.select(aJCas.getCas(), sequenceSpanType));
 
-        List<AnnotationFS> annos = new ArrayList<AnnotationFS>(
-                CasUtil.select(aJCas.getCas(), instanceType));
-        writerInstance.write("[");
-        for (int i = 0; i < annos.size(); i++) {
-            AnnotationFS a = annos.get(i);
-            Integer intIdOfInstance = instanceMap.get(a.getCoveredText());
-            writerInstance.write(intIdOfInstance.toString());
-            if (i + 1 < annos.size() && i + 1 < maximumLength) {
-                writerInstance.write(" ");
+        for (AnnotationFS s : sequenceAnnos) {
+            List<TextClassificationOutcome> instances = JCasUtil.selectCovered(aJCas,
+                    TextClassificationOutcome.class, s);
+            if (instances.isEmpty()) {
+                continue;
+            }
+            writerSeqOutcome.write("[");
+            int i = 0;
+            for (; i < instances.size(); i++) {
+                TextClassificationOutcome tco = instances.get(i);
+                writerSeqOutcome.write(outcomeMap.get(tco.getOutcome()).toString());
+
+                if (i + 1 >= maximumLength) {
+                    break;
+                }
+                if (i + 1 < instances.size()) {
+                    writerSeqOutcome.write(" ");
+                }
+            }
+            while (i < maximumLength) {
+                writerSeqOutcome.write(" 0");
+                i++;
+            }
+            writerSeqOutcome.write("]" + System.lineSeparator());
+        }
+    }
+
+    private void processSequences(JCas aJCas)
+        throws Exception
+    {
+        List<AnnotationFS> sequenceAnnos = new ArrayList<AnnotationFS>(
+                CasUtil.select(aJCas.getCas(), sequenceSpanType));
+
+        for (AnnotationFS s : sequenceAnnos) {
+            List<AnnotationFS> instances = CasUtil.selectCovered(aJCas.getCas(), instanceType, s);
+            if (instances.isEmpty()) {
+                continue;
             }
 
-            writtenInstances++;    
-            if (i + 1 >= maximumLength) {
-                break;
+            writerSeqInst.write("[");
+            int i = 0;
+            for (; i < instances.size(); i++) {
+                AnnotationFS annotationFS = instances.get(i);
+                writerSeqInst.write(instanceMap.get(annotationFS.getCoveredText()).toString());
+
+                if (i + 1 >= maximumLength) {
+                    break;
+                }
+                if (i + 1 < instances.size()) {
+                    writerSeqInst.write(" ");
+                }
             }
+            while (i < maximumLength) {
+                writerSeqInst.write(" 0");
+                i++;
+            }
+
+            writerSeqInst.write("]" + System.lineSeparator());
         }
 
-        // zero padding
-        if (writtenInstances < maximumLength) {
-            writerInstance.write(" ");
-        }
-        
-        while (writtenInstances < maximumLength) {
-            writerInstance.write("0");
-            if (writtenInstances + 1 < maximumLength) {
-                writerInstance.write(" ");
-            }
-            if (writtenInstances + 1 >= maximumLength) {
-                break;
-            }
-            writtenInstances++;
-        }
-
-        writerInstance.write("]");
-        writerInstance.write(System.lineSeparator());
     }
 
     @Override
     public void collectionProcessComplete()
     {
-        try {
-            writerOutcome.write(outcomeVector.toString().trim() + "]");
-        }
-        catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-        
-        IOUtils.closeQuietly(writerInstance);
-        IOUtils.closeQuietly(writerOutcome);
+        IOUtils.closeQuietly(writerSeqInst);
+        IOUtils.closeQuietly(writerSeqOutcome);
     }
 
 }

@@ -87,13 +87,16 @@ public class VectorizationTask
         }
 
         switch (learningMode) {
-        //FIXME: do wee need this distinction?
         case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
-        case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:    
             return AnalysisEngineFactory.createEngineDescription(
-                    Document2LabelVectorizationAnnotator.class,
-                    Document2LabelVectorizationAnnotator.PARAM_TARGET_DIRECTORY, outputDir,
-                    Document2LabelVectorizationAnnotator.PARAM_PREPARATION_DIRECTORY, mappingDir);
+                    VectorizationAnnotatorDocument2Label.class,
+                    VectorizationAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, outputDir,
+                    VectorizationAnnotatorDocument2Label.PARAM_PREPARATION_DIRECTORY, mappingDir);
+        case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:
+            return AnalysisEngineFactory.createEngineDescription(
+                    VectorizationAnnotatorSequence2SequenceOfLabel.class,
+                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
+                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir);
         default:
             throw new ResourceInitializationException(
                     new IllegalStateException("Learning mode [" + learningMode + "] not defined"));

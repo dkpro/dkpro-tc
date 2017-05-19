@@ -87,6 +87,7 @@ public class DeepLearningKerasSeq2SeqPoSTestDummy
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE,
                         "src/main/resources/kerasCode/posTaggingLstm.py")
                 );
