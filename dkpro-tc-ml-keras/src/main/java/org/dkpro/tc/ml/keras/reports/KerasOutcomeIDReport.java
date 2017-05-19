@@ -70,31 +70,41 @@ public class KerasOutcomeIDReport
         List<String> nameOfTargets = getNameOfTargets();
 
         Properties prop = new SortedKeyProperties();
-        
-        for (int i=0; i < predictions.size(); i++) {
-            
+
+        int shift = 0;
+        for (int i = 0; i < predictions.size(); i++) {
+
             String p = predictions.get(i);
             if (p.startsWith("#Gold")) {
+                // header line exists in the prediction file and in the name of targets files
+                continue;
+            }
+            if (p.isEmpty()) {
+                shift++;
                 continue;
             }
 
-            String id = nameOfTargets.get(i);
+            String id = nameOfTargets.get(i - shift);
 
             String[] split = p.split("\t");
-            String gold = Integer.valueOf(Integer.valueOf(split[0]) - 1).toString(); // FIXME: Shift
-                                                                                     // index to
-                                                                                     // start at
-                                                                                     // zero ...
-                                                                                     // urghs
-            String prediction = Integer.valueOf(Integer.valueOf(split[1]) - 1).toString(); // FIXME:
-                                                                                           // Shift
-                                                                                           // index
-                                                                                           // to
-                                                                                           // start
-                                                                                           // at
-                                                                                           // zero
-                                                                                           // ...
-                                                                                           // urghs
+            Integer v = Integer.valueOf(Integer.valueOf(split[0]));
+            v = (v > 0) ? v - 1 : 0;
+            String gold = v.toString(); // FIXME: Shift
+                                        // index to
+                                        // start at
+                                        // zero ...
+                                        // urghs
+            v = Integer.valueOf(Integer.valueOf(split[1]));
+            v = (v > 0) ? v - 1 : 0;
+            String prediction = v.toString(); // FIXME:
+                                              // Shift
+                                              // index
+                                              // to
+                                              // start
+                                              // at
+                                              // zero
+                                              // ...
+                                              // urghs
             prop.setProperty("" + id,
                     prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
@@ -105,10 +115,11 @@ public class KerasOutcomeIDReport
         fos.close();
     }
 
-    private List<String> getPredictions(File file) throws IOException
+    private List<String> getPredictions(File file)
+        throws IOException
     {
         List<String> readLines = FileUtils.readLines(file, "utf-8");
-        return readLines.subList(1, readLines.size());//ignore first-line with comments
+        return readLines.subList(1, readLines.size());// ignore first-line with comments
     }
 
     private List<String> getNameOfTargets()
@@ -122,8 +133,8 @@ public class KerasOutcomeIDReport
         List<String> t = new ArrayList<>();
 
         List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
-        for(String s : readLines){
-            if(s.startsWith("#")){
+        for (String s : readLines) {
+            if (s.startsWith("#") || s.isEmpty()) {
                 continue;
             }
             String[] split = s.split("\t");

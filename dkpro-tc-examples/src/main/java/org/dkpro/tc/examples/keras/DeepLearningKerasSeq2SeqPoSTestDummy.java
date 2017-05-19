@@ -49,7 +49,7 @@ public class DeepLearningKerasSeq2SeqPoSTestDummy
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
+    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
 
     public static void main(String[] args)
         throws Exception

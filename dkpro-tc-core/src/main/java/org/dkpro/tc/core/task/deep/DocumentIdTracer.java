@@ -26,8 +26,12 @@ import java.util.Collection;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -48,12 +52,17 @@ public class DocumentIdTracer
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
 
+    public static final String PARAM_SEQUENCE_ANNOTATION = "sequenceAnnotation";
+    @ConfigurationParameter(name = PARAM_SEQUENCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence")
+    protected String sequenceSpanTypeName;
+
     public static final String PARAM_LEARNING_MODE = "learningMode";
     @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
     protected String learningMode;
 
     BufferedWriter writer;
     int id = 0;
+    private Type sequenceSpanType;
 
     @Override
     public void initialize(UimaContext context)
@@ -68,6 +77,11 @@ public class DocumentIdTracer
             writer.write(
                     "# processing sequence of the respective document / target - prediction output should conform to this order enabling determination which document/item was classified as X"
                             + System.lineSeparator());
+
+            JCas typeFactory = JCasFactory.createJCas();
+            Type type = JCasUtil.getType(typeFactory, Class.forName(sequenceSpanTypeName));
+            AnnotationFS sequenceAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
+            sequenceSpanType = sequenceAnno.getType();
 
         }
         catch (Exception e) {
@@ -94,11 +108,16 @@ public class DocumentIdTracer
         throws AnalysisEngineProcessException
     {
         try {
-            Collection<TextClassificationTarget> targets = JCasUtil.select(aJCas,
-                    TextClassificationTarget.class);
-            for (TextClassificationTarget tco : targets) {
-                writer.write(id + "\t" + tco.getCoveredText());
-                id++;
+
+            Collection<AnnotationFS> sequences = CasUtil.select(aJCas.getCas(), sequenceSpanType);
+            for (AnnotationFS s : sequences) {
+                Collection<TextClassificationTarget> targets = JCasUtil.selectCovered(aJCas,
+                        TextClassificationTarget.class, s);
+                for (TextClassificationTarget tco : targets) {
+                    writer.write(id + "\t" + tco.getCoveredText() + System.lineSeparator());
+                    id++;
+                }
+                writer.write("\n");
             }
         }
         catch (IOException e) {
