@@ -173,7 +173,7 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqOutcome.write(" ");
                 }
             }
-            if (i + 1 >= instances.size()) {
+            if (i + 1 >= instances.size() && i+1 < maximumLength) {
                 i--;// if we reached the limit of the data correct index by one to pad enough zeros
             }
             while (i + 1 < maximumLength) {
@@ -209,7 +209,7 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqInst.write(" ");
                 }
             }
-            if (i + 1 >= instances.size()) {
+            if (i + 1 >= instances.size() && i+1 < maximumLength) {
                 i--;// if we reached the limit of the data correct index by one to pad enough zeros
             }
             while (i + 1 < maximumLength) {
