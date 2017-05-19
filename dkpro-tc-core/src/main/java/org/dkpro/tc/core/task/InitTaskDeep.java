@@ -22,6 +22,7 @@ import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
 import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
 import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,17 +36,13 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
+import org.dkpro.tc.core.task.deep.DocumentIdTracer;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Document;
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
-/**
- * Initialization of the TC pipeline 1) checks the validity of the setup 2) runs the preprocessing
- * 3) runs the outcome/unit annotator 4) runs additional validity checks that check the outcome/unit
- * setup
- * 
- */
 public class InitTaskDeep
     extends UimaTaskBase
 {
@@ -105,9 +102,12 @@ public class InitTaskDeep
         throws ResourceInitializationException, IOException
     {
         String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
+        
+        File folder = aContext.getFolder(output, AccessMode.READWRITE);
+        
         AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
                 BinaryCasWriter.PARAM_TARGET_LOCATION,
-                aContext.getFolder(output, AccessMode.READWRITE).getPath(),
+                folder.getPath(),
                 BinaryCasWriter.PARAM_FORMAT, "6+");
 
         // special connector that just checks whether there are no instances and outputs a
@@ -129,17 +129,21 @@ public class InitTaskDeep
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
 
-                //FIXME: Pre-Validity checks for deep learning ?
+        // FIXME: Pre-Validity checks for deep learning ?
                 emptyProblemChecker,
 
         // user preprocessing
                 preprocessing,
 
         // tc post validity check
-                //FIXME: Post-Validity checks for deep learning ?
+        // FIXME: Post-Validity checks for deep learning ?
 
         // write CAS to HDD
-                xmiWriter);
+                xmiWriter,
+
+        // identity tracker to know later on that document N is file ABC.txt
+                createEngine(DocumentIdTracer.class, DocumentIdTracer.PARAM_TARGET_DIRECTORY,
+                        folder, DocumentIdTracer.PARAM_LEARNING_MODE, learningMode));
     }
 
     public void setTesting(boolean isTesting)

@@ -61,8 +61,6 @@ public class PreparationTask
     public static final String INPUT_KEY_TRAIN = "inputTrain";
     public static final String INPUT_KEY_TEST = "inputTest";
 
-    private List<String> operativeViews;
-
     @Discriminator(name = Constants.DIM_LEARNING_MODE)
     private String learningMode;
 
@@ -158,10 +156,4 @@ public class PreparationTask
             throw new ResourceInitializationException(e);
         }
     }
-
-    public void setOperativeViews(List<String> operativeViews)
-    {
-        this.operativeViews = operativeViews;
-    }
-
 }

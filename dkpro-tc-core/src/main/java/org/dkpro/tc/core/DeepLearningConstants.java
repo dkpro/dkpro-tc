@@ -27,6 +27,7 @@ public interface DeepLearningConstants
     
 
     String LM_DOCUMENT_TO_LABEL = "document2label";
+    String LM_SEQUENCE_TO_SEQUENCE_OF_LABELS = "sequence2sequenceOfLabels";
 
     String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
 
@@ -42,5 +43,6 @@ public interface DeepLearningConstants
     String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
     String DIM_PYTHON_INSTALLATION = "dimPythonPath";
     String DIM_PYTHON_USER_CODE = "dimPythonUserCode";
+    String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
        
 }

@@ -20,10 +20,11 @@ package org.dkpro.tc.ml.keras.reports;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
@@ -58,24 +59,42 @@ public class KerasOutcomeIDReport
         header.append("labels ");
         for (String m : outcomeMappings) {
             String[] split = m.split("\t");
-            int val = Integer.valueOf(split[1]) - 1; // FIXME: The evaluation module expects the counting to start at zero...
-            header.append(val + "=" + split[0]+ " ");
+            int val = Integer.valueOf(split[1]) - 1; // FIXME: The evaluation module expects the
+                                                     // counting to start at zero...
+            header.append(val + "=" + split[0] + " ");
         }
 
         File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
-        List<String> predictions = FileUtils.readLines(file, "utf-8");
+        List<String> predictions = getPredictions(file);
+
+        List<String> nameOfTargets = getNameOfTargets();
 
         Properties prop = new SortedKeyProperties();
-        for (String p : predictions) {
-            if(p.startsWith("#Gold")){
+        
+        for (int i=0; i < predictions.size(); i++) {
+            
+            String p = predictions.get(i);
+            if (p.startsWith("#Gold")) {
                 continue;
             }
-            
-            int id = new Random().nextInt();
-            
+
+            String id = nameOfTargets.get(i);
+
             String[] split = p.split("\t");
-            String gold = Integer.valueOf(Integer.valueOf(split[0])-1).toString(); // FIXME: Shift index to start at zero ... urghs
-            String prediction = Integer.valueOf(Integer.valueOf(split[1])-1).toString(); // FIXME: Shift index to start at zero ... urghs
+            String gold = Integer.valueOf(Integer.valueOf(split[0]) - 1).toString(); // FIXME: Shift
+                                                                                     // index to
+                                                                                     // start at
+                                                                                     // zero ...
+                                                                                     // urghs
+            String prediction = Integer.valueOf(Integer.valueOf(split[1]) - 1).toString(); // FIXME:
+                                                                                           // Shift
+                                                                                           // index
+                                                                                           // to
+                                                                                           // start
+                                                                                           // at
+                                                                                           // zero
+                                                                                           // ...
+                                                                                           // urghs
             prop.setProperty("" + id,
                     prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
@@ -84,6 +103,34 @@ public class KerasOutcomeIDReport
         OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
         prop.store(fos, header.toString());
         fos.close();
+    }
+
+    private List<String> getPredictions(File file) throws IOException
+    {
+        List<String> readLines = FileUtils.readLines(file, "utf-8");
+        return readLines.subList(1, readLines.size());//ignore first-line with comments
+    }
+
+    private List<String> getNameOfTargets()
+        throws IOException
+    {
+        File targetIdMappingFolder = getContext().getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING,
+                AccessMode.READONLY);
+        File targetIdMappingFile = new File(targetIdMappingFolder,
+                DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
+
+        List<String> t = new ArrayList<>();
+
+        List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
+        for(String s : readLines){
+            if(s.startsWith("#")){
+                continue;
+            }
+            String[] split = s.split("\t");
+            t.add(split[1]);
+        }
+
+        return t;
     }
 
 }

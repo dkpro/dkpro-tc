@@ -25,13 +25,19 @@ import org.dkpro.lab.task.impl.TaskBase;
  */
 public interface TcDeepLearningAdapter
 {
-    public static final String PREPARATION_FOLDER="preparationFolder";
+    public static final String PREPARATION_FOLDER = "preparationFolder";
+
+    /*
+     * Usually the init-test task to retrieve that document/instance N was document/instance
+     * ABC.txt/walking
+     */
+    public static final String TARGET_ID_MAPPING = "targetIdFolder";
+
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
      */
     public TaskBase getTestTask();
-
 
     /**
      * This report is always added to {@code testTask} reports by default in

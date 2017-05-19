@@ -26,7 +26,6 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.dkpro.tc.ml.report.BatchBasicResultReport;
 import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
@@ -109,7 +108,6 @@ public class DeepLearningExperimentTrainTest
         // get some meta data depending on the whole document collection that we
         // need for training
         preparationTask = new PreparationTask();
-        preparationTask.setOperativeViews(operativeViews);
         preparationTask.setType(preparationTask.getType() + "-" + experimentName);
         preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 PreparationTask.INPUT_KEY_TRAIN);
@@ -122,7 +120,7 @@ public class DeepLearningExperimentTrainTest
         vectorizationTrainTask
                 .setType(vectorizationTrainTask.getType() + "-Train-" + experimentName);
         vectorizationTrainTask.setTesting(false);
-        vectorizationTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
+        vectorizationTrainTask.addImport(initTaskTrain, InitTaskDeep.OUTPUT_KEY_TRAIN,
                 VectorizationTask.DATA_INPUT_KEY);
         vectorizationTrainTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
                 VectorizationTask.MAPPING_INPUT_KEY);
@@ -133,7 +131,7 @@ public class DeepLearningExperimentTrainTest
         vectorizationTestTask = new VectorizationTask();
         vectorizationTestTask.setType(vectorizationTestTask.getType() + "-Test-" + experimentName);
         vectorizationTestTask.setTesting(true);
-        vectorizationTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
+        vectorizationTestTask.addImport(initTaskTest, InitTaskDeep.OUTPUT_KEY_TEST,
                 VectorizationTask.DATA_INPUT_KEY);
         vectorizationTestTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
                 VectorizationTask.MAPPING_INPUT_KEY);
@@ -154,13 +152,14 @@ public class DeepLearningExperimentTrainTest
         // // always add OutcomeIdReport
         learningTask.addReport(mlDeepLearningAdapter.getOutcomeIdReportClass());
         learningTask.addReport(DeeplearningBasicResultReport.class);
-        //
         learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
                 TcDeepLearningAdapter.PREPARATION_FOLDER);
         learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
+        learningTask.addImport(initTaskTest, InitTaskDeep.OUTPUT_KEY_TEST,
+                TcDeepLearningAdapter.TARGET_ID_MAPPING);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);

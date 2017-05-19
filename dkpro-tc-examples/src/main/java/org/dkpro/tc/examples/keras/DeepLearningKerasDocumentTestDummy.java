@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class DeepLearningTestDummy
+public class DeepLearningKerasDocumentTestDummy
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -57,7 +57,7 @@ public class DeepLearningTestDummy
 
         ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningTestDummy experiment = new DeepLearningTestDummy();
+        DeepLearningKerasDocumentTestDummy experiment = new DeepLearningKerasDocumentTestDummy();
         experiment.runTrainTest(pSpace);
     }
 
@@ -86,11 +86,13 @@ public class DeepLearningTestDummy
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE, "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
+                        "/usr/local/bin/python3"),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE,
+                        "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
-                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS, "/Users/toobee/Desktop/glove.6B.50d.txt")
-                );
+                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                        "/Users/toobee/Desktop/glove.6B.50d.txt"));
 
         return pSpace;
     }
