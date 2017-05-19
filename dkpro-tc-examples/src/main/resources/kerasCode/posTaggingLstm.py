@@ -40,7 +40,6 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 	trainVecNump = numpyizeVector(trainVec)
 	trainOutcome = numpyizeVector(trainOutcome)
-	print(trainOutcome[0])
 	
 	testVecNump = numpyizeVector(testVec)
 	testOutcome = numpyizeVector(testOutcome)
@@ -56,8 +55,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	maxLabel = max(x for s in trainOutcome+testOutcome for x in s) + 1
 		
 	y_train = np.array([np_utils.to_categorical(s, maxLabel) for s in y_train])
-	print(y_train.shape)
-	print(y_train[0].shape)	
+
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
