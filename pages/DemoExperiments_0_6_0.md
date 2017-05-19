@@ -141,7 +141,7 @@ For more information on feature and learning modes, refer to the following paper
 Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
 {% endhighlight groovy %}
 
-The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also [here](../FeatureExtractors).
+The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept").
 
 Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
