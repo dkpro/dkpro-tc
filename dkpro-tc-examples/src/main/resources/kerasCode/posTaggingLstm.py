@@ -15,7 +15,9 @@ def numpyizeVector(vec):
 	for l in file.readlines():
 		l = l.strip()
 		l = l[1:-1] # strip the brackets
-		vout.append(np.fromstring(l, dtype=int, sep=' '))
+		v = [int(x) for x in l.split()]
+		vout.append(v)
+		#vout.append(np.fromstring(l, dtype=int, sep=' '))
 	file.close()
 	return vout
 	
@@ -37,30 +39,25 @@ def loadEmbeddings(emb):
 def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longest_sequence, predictionOut):	
 
 	trainVecNump = numpyizeVector(trainVec)
-	print(trainVecNump[0])
 	trainOutcome = numpyizeVector(trainOutcome)
+	print(trainOutcome[0])
 	
 	testVecNump = numpyizeVector(testVec)
 	testOutcome = numpyizeVector(testOutcome)
 	
 	embeddings,dim = loadEmbeddings(embedding)
 	EMBEDDING_DIM = dim
-
-
+	
 	x_train = sequence.pad_sequences(trainVecNump, maxlen=longest_sequence)
+	y_train = sequence.pad_sequences(trainOutcome, maxlen=longest_sequence)
 	x_test = sequence.pad_sequences(testVecNump, maxlen=longest_sequence)
 	
 	y_test = testOutcome
 	maxLabel = max(x for s in trainOutcome+testOutcome for x in s) + 1
-	
-	#y_train=[]
-	#for s in trainOutcome:
-    #	c = np_utils.to_categorical(s, maxLabel)
-	#	y_train.append(c)
-	#y_train = np.array(y_train)
-	
-	y_train = np.array([np_utils.to_categorical(s, maxLabel) for s in trainOutcome])
-	print(y_train[0].shape)
+		
+	y_train = np.array([np_utils.to_categorical(s, maxLabel) for s in y_train])
+	print(y_train.shape)
+	print(y_train[0].shape)	
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
