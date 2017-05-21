@@ -40,8 +40,6 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 
-import com.google.common.collect.Lists;
-
 public class NewsIterator implements DataSetIterator {
 	private final WordVectors wordVectors;
 	private final int batchSize;
@@ -75,13 +73,12 @@ public class NewsIterator implements DataSetIterator {
 	 *            class variable
 	 * @throws Exception 
 	 */
-	private NewsIterator(String dataDirectory, WordVectors wordVectors, int batchSize, int truncateLength,
-			boolean train) throws Exception {
+	private NewsIterator(String dataDirectory, WordVectors wordVectors, int batchSize) throws Exception {
 		this.dataDirectory = dataDirectory;
 		this.batchSize = batchSize;
 		this.vectorSize = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length;
 		this.wordVectors = wordVectors;
-		this.populateData(train);
+		this.populateData();
 		this.labels = new ArrayList<>();
 		for (int i = 0; i < this.categoryData.size(); i++) {
 			this.labels.add(this.categoryData.get(i).getKey());
@@ -257,7 +254,7 @@ public class NewsIterator implements DataSetIterator {
 	// }
 	// }
 
-	private void populateData(boolean train) throws Exception {
+	private void populateData() throws Exception {
 
 		//FIXME: Implement me a bit more efficiently :)
 		List<String> vectors = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_INSTANCE_VECTOR));
@@ -398,8 +395,6 @@ public class NewsIterator implements DataSetIterator {
 		private String dataDirectory;
 		private WordVectors wordVectors;
 		private int batchSize;
-		private int truncateLength;
-		private boolean train;
 
 		Builder() {
 		}
@@ -419,28 +414,17 @@ public class NewsIterator implements DataSetIterator {
 			return this;
 		}
 
-		public NewsIterator.Builder truncateLength(int truncateLength) {
-			this.truncateLength = truncateLength;
-			return this;
-		}
-
-		public NewsIterator.Builder train(boolean train) {
-			this.train = train;
-			return this;
-		}
-
 		public NewsIterator.Builder tokenizerFactory(TokenizerFactory tokenizerFactory) {
 			return this;
 		}
 
 		public NewsIterator build() throws Exception {
-			return new NewsIterator(dataDirectory, wordVectors, batchSize, truncateLength, train);
+			return new NewsIterator(dataDirectory, wordVectors, batchSize);
 		}
 
 		public String toString() {
 			return "org.deeplearning4j.examples.recurrent.ProcessNews.NewsIterator.Builder(dataDirectory="
-					+ this.dataDirectory + ", wordVectors=" + this.wordVectors + ", batchSize=" + this.batchSize
-					+ ", truncateLength=" + this.truncateLength + ", train=" + this.train + ")";
+					+ this.dataDirectory + ", wordVectors=" + this.wordVectors + ", batchSize=" + this.batchSize + ")";
 		}
 	}
 }

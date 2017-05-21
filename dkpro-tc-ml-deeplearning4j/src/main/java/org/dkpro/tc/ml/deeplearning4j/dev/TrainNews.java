@@ -68,32 +68,25 @@ public class TrainNews {
 
     public static void main(String[] args) throws Exception {
 //        DATA_PATH = "/Users/toobee/Documents/Eclipse/dl4j-examples/dl4j-examples/src/main/resources/NewsData/LabelledNews/";
-        DATA_PATH= "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521182025528/output";
+//        DATA_PATH= "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521182025528/output";
 
-        int batchSize = 4;     //Number of examples in each minibatch
+        int batchSize = 2;     //Number of examples in each minibatch
         int nEpochs = 50;        //Number of epochs (full passes of training data) to train on
 
         //DataSetIterators for training and testing respectively
         //Using AsyncDataSetIterator to do data loading in a separate thread; this may improve performance vs. waiting for data to load
-        wordVectors = WordVectorSerializer.loadTxtVectors(new File("/Users/toobee/Desktop/glove.6B.50d.txt"));
-
-        TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
-        tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
+        wordVectors = WordVectorSerializer.loadTxtVectors(new File("/Users/toobee/Desktop/org.dkpro.lab/repository/EmbeddingTask-DeepLearning-20170521182024802/output/prunedEmbedding.txt"));
 
         NewsIterator iTrain = new NewsIterator.Builder()
-            .dataDirectory(DATA_PATH)
+            .dataDirectory("/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521182025528/output")
             .wordVectors(wordVectors)
             .batchSize(batchSize)
-            .tokenizerFactory(tokenizerFactory)
-            .train(true)
             .build();
 
         NewsIterator iTest = new NewsIterator.Builder()
-            .dataDirectory(DATA_PATH)
+            .dataDirectory("/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170521182026162/output")
             .wordVectors(wordVectors)
             .batchSize(batchSize)
-            .tokenizerFactory(tokenizerFactory)
-            .train(false)
             .build();
 
         //DataSetIterator train = new AsyncDataSetIterator(iTrain,1);
