@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
@@ -38,14 +40,15 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 
+import com.google.common.collect.Lists;
+
 public class NewsIterator implements DataSetIterator {
 	private final WordVectors wordVectors;
 	private final int batchSize;
 	private final int vectorSize;
-	private final int truncateLength;
 	private int maxLength;
 	private final String dataDirectory;
-	private final List<Pair<String, String>> categoryData = new ArrayList<>();
+	private final List<Pair<String, List<String>>> categoryData = new ArrayList<>();
 	private int cursor = 0;
 	private int totalNews = 0;
 	private int newsPosition = 0;
@@ -78,7 +81,6 @@ public class NewsIterator implements DataSetIterator {
 		this.batchSize = batchSize;
 		this.vectorSize = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length;
 		this.wordVectors = wordVectors;
-		this.truncateLength = truncateLength;
 		this.populateData(train);
 		this.labels = new ArrayList<>();
 		for (int i = 0; i < this.categoryData.size(); i++) {
@@ -102,67 +104,71 @@ public class NewsIterator implements DataSetIterator {
 	}
 
 	private DataSet nextDataSet(int num) throws IOException {
-		// Loads news into news list from categoryData List along with category
-		// of each news
-		List<String> news = new ArrayList<>(num);
-		int[] category = new int[num];
+		 List<String> news = new ArrayList<>(num);
+	        int[] category = new int[num];
 
-		for (int i = 0; i < num && cursor < totalExamples(); i++) {
-			if (currCategory < categoryData.size()) {
-				Pair<String, String> pair = this.categoryData.get(currCategory);
-				news.add(pair.getValue());
-				category[i] = Integer.parseInt(pair.getKey());
-				currCategory++;
-				cursor++;
-			} else {
-				currCategory = 0;
-				newsPosition++;
-				i--;
-			}
-		}
+	        for (int i = 0; i < num && cursor < totalExamples(); i++) {
+	            if (currCategory < categoryData.size()) {
+	                news.add(this.categoryData.get(currCategory).getValue().get(newsPosition));
+	                category[i] = Integer.parseInt(this.categoryData.get(currCategory).getKey().split(",")[0]);
+	                currCategory++;
+	                cursor++;
+	            } else {
+	                currCategory = 0;
+	                newsPosition++;
+	                i--;
+	            }
+	        }
 
-		// Second: tokenize news and filter out unknown words
-		List<List<String>> allTokens = new ArrayList<>(news.size());
-		maxLength = -1;
-		for (String s : news) {
-			allTokens.add(Arrays.asList(s.split(" ")));
-		}
-		maxLength = allTokens.get(0).size();
+	        //Second: tokenize news and filter out unknown words
+	        List<List<String>> allTokens = new ArrayList<>(news.size());
+	        maxLength = 0;
+	        for (String s : news) {
+//	            List<String> tokens = tokenizerFactory.create(s).getTokens();
+//	            List<String> tokensFiltered = new ArrayList<>();
+//	            for (String t : tokens) {
+//	                if (wordVectors.hasWord(t)) tokensFiltered.add(t);
+//	            }
+	            allTokens.add(Arrays.asList(s.split(" ")));
+	        }
+	        maxLength = allTokens.get(0).size();
 
-		// Create data for training
-		// Here: we have news.size() examples of varying lengths
-		INDArray features = Nd4j.create(news.size(), vectorSize, maxLength);
-		INDArray labels = Nd4j.create(news.size(), this.categoryData.size(), maxLength);  
+	        //If longest news exceeds 'truncateLength': only take the first 'truncateLength' words
+	        //System.out.println("maxLength : " + maxLength);
 
-		// Because we are dealing with news of different lengths and only one
-		// output at the final time step: use padding arrays
-		// Mask arrays contain 1 if data is present at that time step for that
-		// example, or 0 if data is just padding
-		INDArray featuresMask = Nd4j.zeros(news.size(), maxLength);
-		INDArray labelsMask = Nd4j.zeros(news.size(), maxLength);
+	        //Create data for training
+	        //Here: we have news.size() examples of varying lengths
+	        INDArray features = Nd4j.create(news.size(), vectorSize, maxLength);
+	        INDArray labels = Nd4j.create(news.size(), this.categoryData.size(), maxLength);    //Three labels: Crime, Politics, Bollywood
 
-		int[] temp = new int[2];
-		for (int i = 0; i < news.size(); i++) {
-			List<String> tokens = allTokens.get(i);
-			temp[0] = i;
-			// Get word vectors for each word in news, and put them in the
-			// training data
-			for (int j = 0; j < tokens.size() && j < maxLength; j++) {
-				String token = tokens.get(j);
-				INDArray vector = wordVectors.getWordVectorMatrix(token);
-				features.put(new INDArrayIndex[] { point(i), all(), point(j) }, vector);
+	        //Because we are dealing with news of different lengths and only one output at the final time step: use padding arrays
+	        //Mask arrays contain 1 if data is present at that time step for that example, or 0 if data is just padding
+	        INDArray featuresMask = Nd4j.zeros(news.size(), maxLength);
+	        INDArray labelsMask = Nd4j.zeros(news.size(), maxLength);
 
-				temp[1] = j;
-				featuresMask.putScalar(temp, 1.0);
-			}
-			int idx = category[i];
-			int lastIdx = Math.min(tokens.size(), maxLength);
-			labels.putScalar(new int[] { i, idx, lastIdx - 1 }, 1.0);
-			labelsMask.putScalar(new int[] { i, lastIdx - 1 }, 1.0);
-		}
+	        int[] temp = new int[2];
+	        for (int i = 0; i < news.size(); i++) {
+	            List<String> tokens = allTokens.get(i);
+	            temp[0] = i;
+	            //Get word vectors for each word in news, and put them in the training data
+	            for (int j = 0; j < tokens.size() && j < maxLength; j++) {
+	                String token = tokens.get(j);
+	                INDArray vector = wordVectors.getWordVectorMatrix(token);
+	                features.put(new INDArrayIndex[]{point(i),
+	                    all(),
+	                    point(j)}, vector);
 
-		DataSet ds = new DataSet(features, labels, featuresMask, labelsMask);
-		return ds;
+	                temp[1] = j;
+	                featuresMask.putScalar(temp, 1.0);
+	            }
+	            int idx = category[i]-1; //Index starts at 1
+	            int lastIdx = Math.min(tokens.size(), maxLength);
+	            labels.putScalar(new int[]{i, idx, lastIdx - 1}, 1.0);
+	            labelsMask.putScalar(new int[]{i, lastIdx - 1}, 1.0);
+	        }
+
+	        DataSet ds = new DataSet(features, labels, featuresMask, labelsMask);
+	        return ds;
 	}
 
 	/**
@@ -258,11 +264,27 @@ public class NewsIterator implements DataSetIterator {
 		String outcomes = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_OUTCOME_VECTOR)).get(0);
 		outcomes = outcomes.substring(1, outcomes.length()-1).replaceAll(" ", "");
 		
+		Map<String,List<String>> m = new HashMap<>();
+		
 		for(int i=0; i < vectors.size(); i++){
 			String v = vectors.get(i);
 			v = v.substring(1, v.length()-1);
-			Pair<String, String> tempPair = Pair.of(outcomes.charAt(i)+"", v);
+			String o = outcomes.charAt(i)+"";
+			
+			List<String> list = m.get(o);
+			if(list == null){
+				list = new ArrayList<>();
+			}
+			list.add(v);
+			m.put(o, list);
+			
+//			Pair<String, String> tempPair = Pair.of(outcomes.charAt(i)+"", v);
 			this.totalNews++;
+//			this.categoryData.add(tempPair);
+		}
+		
+		for(String k : m.keySet()){
+			Pair<String, List<String>> tempPair = Pair.of(k, m.get(k));
 			this.categoryData.add(tempPair);
 		}
 

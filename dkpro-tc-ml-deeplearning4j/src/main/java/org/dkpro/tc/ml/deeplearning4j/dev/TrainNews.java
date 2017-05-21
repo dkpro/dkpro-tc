@@ -68,11 +68,10 @@ public class TrainNews {
 
     public static void main(String[] args) throws Exception {
 //        DATA_PATH = "/Users/toobee/Documents/Eclipse/dl4j-examples/dl4j-examples/src/main/resources/NewsData/LabelledNews/";
-        DATA_PATH= "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521171143046/output/";
+        DATA_PATH= "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521182025528/output";
 
-        int batchSize = 2;     //Number of examples in each minibatch
+        int batchSize = 4;     //Number of examples in each minibatch
         int nEpochs = 50;        //Number of epochs (full passes of training data) to train on
-        int truncateReviewsToLength = 20;  //Truncate reviews with length (# words) greater than this
 
         //DataSetIterators for training and testing respectively
         //Using AsyncDataSetIterator to do data loading in a separate thread; this may improve performance vs. waiting for data to load
@@ -85,7 +84,6 @@ public class TrainNews {
             .dataDirectory(DATA_PATH)
             .wordVectors(wordVectors)
             .batchSize(batchSize)
-            .truncateLength(truncateReviewsToLength)
             .tokenizerFactory(tokenizerFactory)
             .train(true)
             .build();
@@ -95,7 +93,6 @@ public class TrainNews {
             .wordVectors(wordVectors)
             .batchSize(batchSize)
             .tokenizerFactory(tokenizerFactory)
-            .truncateLength(truncateReviewsToLength)
             .train(false)
             .build();
 
