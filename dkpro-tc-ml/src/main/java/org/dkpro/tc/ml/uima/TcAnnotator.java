@@ -91,9 +91,8 @@ public class TcAnnotator
 
             validateUimaParameter();
 
-            AnalysisEngineDescription connector = getSaveModelConnector(tcModelLocation.getAbsolutePath(), mlAdapter.getDataWriterClass().toString(),
-                    learningMode, featureMode, mlAdapter.getFeatureStore(),
-                    featureExtractors);
+            AnalysisEngineDescription connector = getSaveModelConnector(tcModelLocation.getAbsolutePath(), mlAdapter,
+                    learningMode, featureMode, featureExtractors);
 
             engine = UIMAFramework.produceAnalysisEngine(connector,
                     SaveModelUtils.getModelFeatureAwareResourceManager(tcModelLocation), null);
@@ -136,8 +135,7 @@ public class TcAnnotator
      * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    private AnalysisEngineDescription getSaveModelConnector(String outputPath, String dataWriter, String learningMode, String featureMode,
-            String featureStore, List<ExternalResourceDescription> featureExtractor)
+    private AnalysisEngineDescription getSaveModelConnector(String outputPath, TCMachineLearningAdapter adapter, String learningMode, String featureMode, List<ExternalResourceDescription> featureExtractor)
                 throws ResourceInitializationException
     {
         List<Object> parameters=new ArrayList<>();
@@ -145,13 +143,13 @@ public class TcAnnotator
         // add the rest of the necessary parameters with the correct types
         parameters.addAll(Arrays.asList(PARAM_TC_MODEL_LOCATION, tcModelLocation,
                 ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
-                ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS, adapter.getDataWriterClass().getName(),
                 ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
                 ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, featureExtractor,
                 ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,
                 ModelSerialization_ImplBase.PARAM_IS_TESTING, true,
-                ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode,
-                ModelSerialization_ImplBase.PARAM_FEATURE_STORE_CLASS, featureStore));
+                ModelSerialization_ImplBase.PARAM_USE_SPARSE_FEATURES, adapter.useSparseFeatures(),
+                ModelSerialization_ImplBase.PARAM_FEATURE_MODE, featureMode));
 
         return AnalysisEngineFactory.createEngineDescription(mlAdapter.getLoadModelConnectorClass(),
                 parameters.toArray());

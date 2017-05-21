@@ -18,9 +18,9 @@
 package org.dkpro.tc.ml.crfsuite.writer;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 
 /**
@@ -32,19 +32,17 @@ public class CRFSuiteFeatureStoreSequenceIterator
 {
     static final String idInitVal = "ü+Ü**'?=?=)(ÖÄ:";
     int insIdx;
-    int maxInstances;
-    private final FeatureStore featureStore;
+    private List<Instance> instances;
 
-    public CRFSuiteFeatureStoreSequenceIterator(FeatureStore fs)
+    public CRFSuiteFeatureStoreSequenceIterator(List<Instance> instances)
     {
-        featureStore = fs;
-        maxInstances = fs.getNumberOfInstances();
+        this.instances = instances;
     }
 
     @Override
     public boolean hasNext()
     {
-        return insIdx < maxInstances;
+        return insIdx < instances.size();
     }
 
     @Override
@@ -56,8 +54,8 @@ public class CRFSuiteFeatureStoreSequenceIterator
 
             String lastSeenSeqId = idInitVal;
             boolean seqIdChanged = false;
-            for (; insIdx < maxInstances; insIdx++) {
-                Instance i = featureStore.getInstance(insIdx);
+            for (; insIdx < instances.size(); insIdx++) {
+                Instance i = instances.get(insIdx);
                 String id = getId(i);
 
                 if (!lastSeenSeqId.equals(id)) {
@@ -85,8 +83,8 @@ public class CRFSuiteFeatureStoreSequenceIterator
                 }
 
                 // Peak ahead - seqEnd reached?
-                if (insIdx + 1 < maxInstances) {
-                    Instance next = featureStore.getInstance(insIdx + 1);
+                if (insIdx + 1 < instances.size()) {
+                    Instance next = instances.get(insIdx + 1);
                     String nextId = getId(next);
                     if (!lastSeenSeqId.equals(nextId)) {
                         appendEOS(sb);
@@ -94,7 +92,7 @@ public class CRFSuiteFeatureStoreSequenceIterator
                         break;
                     }
                 }
-                else if (insIdx + 1 == maxInstances) {
+                else if (insIdx + 1 == instances.size()) {
                     appendEOS(sb);
                     insIdx++;
                     break;// We're done

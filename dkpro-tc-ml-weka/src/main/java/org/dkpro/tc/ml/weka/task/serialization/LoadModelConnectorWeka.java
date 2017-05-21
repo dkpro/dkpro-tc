@@ -39,7 +39,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
@@ -88,9 +87,7 @@ public class LoadModelConnectorWeka
             TCMachineLearningAdapter initMachineLearningAdapter = SaveModelUtils
                     .initMachineLearningAdapter(tcModelLocation);
             bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
-            FeatureStore featureStore = (FeatureStore) Class
-                    .forName(initMachineLearningAdapter.getFeatureStore()).newInstance();
-            useSparse = featureStore.supportsSparseFeatures();
+            useSparse = initMachineLearningAdapter.useSparseFeatures();
 
             loadClassifier();
             loadTrainingData();

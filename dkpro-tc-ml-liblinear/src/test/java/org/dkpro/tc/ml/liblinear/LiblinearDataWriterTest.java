@@ -23,50 +23,53 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.bwaldvogel.liblinear.Problem;
 
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.LiblinearDataWriter;
-
 public class LiblinearDataWriterTest {
-	 
+
 	@Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Test
 	public void dataWriterTest() throws Exception {
-		
-		FeatureStore fs = new DenseFeatureStore();
-		
+
+		List<Instance> fs = new ArrayList<Instance>();
+
 		List<Feature> features1 = new ArrayList<>();
 		features1.add(new Feature("feature1", 1.0));
 		features1.add(new Feature("feature2", 0.0));
-		
+
 		List<Feature> features2 = new ArrayList<>();
 		features2.add(new Feature("feature2", 0.5));
 		features2.add(new Feature("feature1", 0.5));
-		
+
 		Instance instance1 = new Instance(features1, "0");
 		Instance instance2 = new Instance(features2, "1");
 
-		fs.addInstance(instance1);
-		fs.addInstance(instance2);
-		
+		fs.add(instance1);
+		fs.add(instance2);
+
 		File outputDirectory = folder.newFolder();
-		File outputFile = new File(outputDirectory, LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+		StringBuilder sb = new StringBuilder();
+		sb.append("feature1\n");
+		sb.append("feature2\n");
+		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString());
+		File outputFile = new File(outputDirectory,
+				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 		LiblinearDataWriter writer = new LiblinearDataWriter();
-		writer.write(outputDirectory, fs, false, Constants.LM_SINGLE_LABEL, false);
-		
+		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false);
+		writer.writeClassifierFormat(fs, false);
+
 		Problem problem = Problem.readFromFile(outputFile, 1.0);
 		assertEquals(2, problem.l);
 		assertEquals(4, problem.n);

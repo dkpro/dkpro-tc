@@ -93,20 +93,19 @@ public class WekaUtils
     implements Constants
 {
 
-    /**
+    /*
      * Name of the relation == name of the arff file
      */
     public static final String RELATION_NAME = "dkpro-tc-generated";
 
-    /**
+    /*
      * Suffix for class label names in the test data that have been adapted to match the training
      * data
      *
-     * @see #makeOutcomeClassesCompatible(Instances, Instances, boolean)
      */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
 
-    /**
+    /*
      * Adapts the test data class labels to the training data. Class labels from the test data
      * unseen in the training data will be deleted from the test data. Class labels from the
      * training data unseen in the test data will be added to the test data. If training and test
@@ -233,12 +232,8 @@ public class WekaUtils
         return list;
     }
 
-    /**
+    /*
      * Converts a feature store to a list of instances. Single-label case.
-     *
-     * @param outputFile
-     * @param instanceList
-     * @throws Exception
      */
     public static void instanceListToArffFile(File outputFile, FeatureStore instanceList)
         throws Exception
@@ -342,7 +337,7 @@ public class WekaUtils
         instanceListToArffFileMultiLabel(outputFile, featureStore, useDenseInstances, false);
     }
 
-    /**
+    /*
      * Converts a feature store to a list of instances. Multi-label case.
      */
     public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
@@ -417,7 +412,7 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
-    /**
+    /*
      * Converts a TC instance object into a Meka instance object, compatible with the given
      * attribute set and class labels.
      */
@@ -471,7 +466,7 @@ public class WekaUtils
         return atts;
     }
 
-    /**
+    /*
      * Converts a TC instance object into a Weka instance object, compatible with the given
      * attribute set and class labels.
      */
@@ -561,7 +556,7 @@ public class WekaUtils
         return featureValues;
     }
 
-    /**
+    /*
      * Evaluates a given single-label classifier on given train and test sets.
      */
     public static Evaluation getEvaluationSinglelabel(Classifier cl, Instances trainData,
@@ -573,7 +568,7 @@ public class WekaUtils
         return eval;
     }
 
-    /**
+    /*
      * Evaluates a given multi-label classifier on given train and test sets.
      */
     public static Result getEvaluationMultilabel(Classifier cl, Instances trainData,
@@ -585,17 +580,9 @@ public class WekaUtils
         return r;
     }
 
-    /**
+    /*
      * Generates an instances object containing the predictions of a given single-label classifier
      * for a given test set
-     *
-     * @param testData
-     *            test set
-     * @param cl
-     *            single-label classifier, needs to be trained beforehand, needs to be compatible
-     *            with the test set trained classifier
-     * @return instances object with additional attribute storing the predictions
-     * @throws Exception an exception
      */
     public static Instances getPredictionInstancesSingleLabel(Instances testData, Classifier cl)
         throws Exception

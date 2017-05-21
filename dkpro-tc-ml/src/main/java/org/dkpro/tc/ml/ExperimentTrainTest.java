@@ -23,6 +23,7 @@ import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.CollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -39,6 +40,7 @@ public class ExperimentTrainTest
 
     protected InitTask initTaskTrain;
     protected InitTask initTaskTest;
+    protected CollectionTask collectionTask;
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask featuresTrainTask;
     protected ExtractFeaturesTask featuresTestTask;
@@ -95,6 +97,12 @@ public class ExperimentTrainTest
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
         initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
+        
+		collectionTask = new CollectionTask();
+		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
+		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
+		collectionTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN);
+		collectionTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
@@ -145,10 +153,12 @@ public class ExperimentTrainTest
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
+        testTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);
         addTask(initTaskTest);
+        addTask(collectionTask);
         addTask(metaTask);
         addTask(featuresTrainTask);
         addTask(featuresTestTask);

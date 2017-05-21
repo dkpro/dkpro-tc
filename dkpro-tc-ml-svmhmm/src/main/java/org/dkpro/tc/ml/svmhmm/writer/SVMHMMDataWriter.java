@@ -18,186 +18,291 @@
 
 package org.dkpro.tc.ml.svmhmm.writer;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
-import org.apache.commons.collections.BidiMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
-import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
+
+import com.google.gson.Gson;
 
 /**
  * Converts features to the internal format for SVM HMM
  */
-public class SVMHMMDataWriter
-    implements DataWriter
-{
+public class SVMHMMDataWriter implements DataWriter {
 
-    // random prefix for all meta-data features
-    public static final String META_DATA_FEATURE_PREFIX = "ed64ffc5d412c3d3430e0d42d6a668110d1ce8ee";
+	// random prefix for all meta-data features
+	public static final String META_DATA_FEATURE_PREFIX = "ed64ffc5d412c3d3430e0d42d6a668110d1ce8ee";
 
-    private static final double EPS = 0.00000000001;
+	private static final double EPS = 0.00000000001;
 
-    static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
+	static Log log = LogFactory.getLog(SVMHMMDataWriter.class);
 
-    // a consecutive single number counter to identify a sequence over all CAS
-    Map<String, Integer> uniqueId = new HashMap<String, Integer>();
-    int consequtiveUniqueDocSeqId = 0;
+	// a consecutive single number counter to identify a sequence over all CAS
+	Map<String, Integer> uniqueId = new HashMap<String, Integer>();
+	int consequtiveUniqueDocSeqId = 0;
 
-    @Override
-    public void write(File aOutputDirectory, FeatureStore featureStore, boolean aUseDenseInstances,
-            String aLearningMode, boolean applyWeighting)
-                throws Exception
-    {
-        // map features to feature numbers
-        BidiMap featureNameToFeatureNumberMapping = SVMHMMUtils
-                .mapVocabularyToIntegers(featureStore.getFeatureNames());
+	private File outputDirectory;
 
-        // prepare output file
-        File outputFile = new File(aOutputDirectory, new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
+	private File classifierFormatOutputFile;
 
-        BufferedWriter bf = new BufferedWriter(new FileWriter(outputFile));
-        PrintWriter pw = new PrintWriter(bf);
+	private BufferedWriter bw;
+	Gson gson = new Gson();
 
-        log.info("Start writing features to file " + outputFile.getAbsolutePath());
+	private TreeSet<String> featureNames;
 
-        log.debug("Total instances: " + featureStore.getNumberOfInstances());
-        log.debug("Feature vector size: " + featureStore.getFeatureNames().size());
+	private Map<String, Integer> featureNameMap;
 
-        if (featureStore instanceof SparseFeatureStore) {
-            SparseFeatureStore sparseFeatureStore = (SparseFeatureStore) featureStore;
-            log.debug("Non-null feature sparsity ratio: "
-                    + sparseFeatureStore.getFeatureSparsityRatio());
-        }
 
-        for (int i = 0; i < featureStore.getNumberOfInstances(); i++) {
-            Instance instance;
+	private Integer getUniqueSequenceId(Instance instance) {
+		String key = instance.getJcasId() + "-" + instance.getSequenceId();
+		Integer consecSeqId = uniqueId.get(key);
+		if (consecSeqId == null) {
+			consecSeqId = consequtiveUniqueDocSeqId++;
+			uniqueId.put(key, consecSeqId);
+		}
+		return consecSeqId;
+	}
 
-            instance = featureStore.getInstance(i);
+	protected boolean isMetaDataFeature(String featureName) {
+		return featureName.startsWith(META_DATA_FEATURE_PREFIX);
+	}
 
-            // placeholder for original token
-            String originalToken = null;
+	@Override
+	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
+		initGeneric();
 
-            // other "features" - meta data features that will be stored in the comment
-            SortedMap<String, String> metaDataFeatures = new TreeMap<>();
+		// bulk-write - in sequence mode this keeps the instances together that
+		// belong to the same sequence!
+		Instance[] array = instances.toArray(new Instance[0]);
+		bw.write(gson.toJson(array) + System.lineSeparator());
 
-            // feature values
-            SortedMap<Integer, Number> featureValues = new TreeMap<>();
-            for (Feature f : instance.getFeatures()) {
-                String featureName = f.getName();
-                Object featureValue = f.getValue();
+		bw.close();
+		bw = null;
+	}
 
-                // we ignore null feature values
-                if (featureValue == null) {
-                    continue;
-                }
+	private void initGeneric() throws IOException {
+		if (bw != null) {
+			return;
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
+	}
 
-                // get original token stored in OriginalToken feature
-                if (OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT.equals(featureName)) {
-                    // if original token/text was multi line, join it to a single line
-                    // originalToken = ((String) featureValue).replaceAll("\\n", " ");
-                    originalToken = (String) featureValue;
-                    continue;
-                }
+	@Override
+	public void transformFromGeneric() throws Exception {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
 
-                // handle other possible features as metadata?
-                if (isMetaDataFeature(featureName)) {
-                    metaDataFeatures.put(featureName, (String) featureValue);
-                    continue;
-                }
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			Instance[] instance = gson.fromJson(line, Instance[].class);
+			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+			writeClassifierFormat(ins, false);
+		}
 
-                // not allow other non-number features
-                if (!(featureValue instanceof Number)) {
-                    log.debug("Only features with number values are allowed, but was " + f);
-                    continue;
-                }
+		reader.close();
+		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
+	}
 
-                // in case the feature store produced dense feature vector with zeros for
-                // non-present features, we ignore zero value features here
-                Number featureValueNumber = (Number) featureValue;
-                if (Math.abs(featureValueNumber.doubleValue() - 0d) < EPS) {
-                    continue;
-                }
+	@Override
+	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
+		if (featureNames == null) {
+			// create feature name mapping and serialize it at first
+			// pass-through
+			loadFeatureNames();
+			initFeatureNameMap();
+			writeFeatureName2idMapping(outputDirectory, SVMHMMAdapter.getFeatureNameMappingFilename(), featureNameMap);
+		}
 
-                // get number and int value of the feature
-                Integer featureNumber = (Integer) featureNameToFeatureNumberMapping
-                        .get(featureName);
+		initClassifierFormat();
 
-                featureValues.put(featureNumber, featureValueNumber);
-            }
+		PrintWriter pw = new PrintWriter(bw);
 
-            // print formatted output: label name and sequence id
-            pw.printf(Locale.ENGLISH, "%s qid:%d ", instance.getOutcome(),
-                    getUniqueSequenceId(instance));
+		List<Instance> inst = new ArrayList<>(instances);
+		for (int i = 0; i < inst.size(); i++) {
+			Instance instance = inst.get(i);
 
-            // print sorted features
-            for (Map.Entry<Integer, Number> entry : featureValues.entrySet()) {
-                if (entry.getValue() instanceof Double) {
-                    // format double on 8 decimal places
-                    pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(),
-                            entry.getValue().doubleValue());
-                }
-                else {
-                    // format as integer
-                    pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(),
-                            entry.getValue().intValue());
-                }
-            }
+			// placeholder for original token
+			String originalToken = null;
 
-            // print original token and label as comment
-            pw.printf(Locale.ENGLISH, "# %s %d %s ", instance.getOutcome(),
-                    instance.getSequenceId(),
-                    (originalToken != null) ? (URLEncoder.encode(originalToken, "utf-8")) : "");
+			// other "features" - meta data features that will be stored in the
+			// comment
+			SortedMap<String, String> metaDataFeatures = new TreeMap<>();
 
-            // print meta-data features at the end
-            for (Map.Entry<String, String> entry : metaDataFeatures.entrySet()) {
-                pw.printf(" %s:%s", URLEncoder.encode(entry.getKey(), "utf-8"),
-                        URLEncoder.encode(entry.getValue(), "utf-8"));
-            }
-            // new line at the end
-            pw.println();
-        }
+			// feature values
+			SortedMap<Integer, Number> featureValues = new TreeMap<>();
+			for (Feature f : instance.getFeatures()) {
+				String featureName = f.getName();
+				Object featureValue = f.getValue();
 
-        IOUtils.closeQuietly(pw);
+				// we ignore null feature values
+				if (featureValue == null) {
+					continue;
+				}
 
-        // writing feature mapping
-        File mappingFile = new File(aOutputDirectory, "featuresIntToNames_forDebug.txt");
-        SVMHMMUtils.saveMappingTextFormat(featureNameToFeatureNumberMapping, mappingFile);
+				// get original token stored in OriginalToken feature
+				if (OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT.equals(featureName)) {
+					// if original token/text was multi line, join it to a
+					// single line
+					// originalToken = ((String) featureValue).replaceAll("\\n",
+					// " ");
+					originalToken = (String) featureValue;
+					continue;
+				}
 
-        log.info("Finished writing features to file " + outputFile.getAbsolutePath());
-    }
+				// handle other possible features as metadata?
+				if (isMetaDataFeature(featureName)) {
+					metaDataFeatures.put(featureName, (String) featureValue);
+					continue;
+				}
 
-    private Integer getUniqueSequenceId(Instance instance)
-    {
-        String key = instance.getJcasId() + "-" + instance.getSequenceId();
-        Integer consecSeqId = uniqueId.get(key);
-        if (consecSeqId == null) {
-            consecSeqId = consequtiveUniqueDocSeqId++;
-            uniqueId.put(key, consecSeqId);
-        }
-        return consecSeqId;
-    }
+				// not allow other non-number features
+				if (!(featureValue instanceof Number)) {
+					log.debug("Only features with number values are allowed, but was " + f);
+					continue;
+				}
 
-    protected boolean isMetaDataFeature(String featureName)
-    {
-        return featureName.startsWith(META_DATA_FEATURE_PREFIX);
-    }
+				// in case the feature store produced dense feature vector with
+				// zeros for
+				// non-present features, we ignore zero value features here
+				Number featureValueNumber = (Number) featureValue;
+				if (Math.abs(featureValueNumber.doubleValue() - 0d) < EPS) {
+					continue;
+				}
+
+				// get number and int value of the feature
+				Integer featureNumber = featureNameMap.get(featureName);
+
+				featureValues.put(featureNumber, featureValueNumber);
+			}
+
+			// print formatted output: label name and sequence id
+			pw.printf(Locale.ENGLISH, "%s qid:%d ", instance.getOutcome(), getUniqueSequenceId(instance));
+
+			// print sorted features
+			for (Map.Entry<Integer, Number> entry : featureValues.entrySet()) {
+				if (entry.getValue() instanceof Double) {
+					// format double on 8 decimal places
+					pw.printf(Locale.ENGLISH, "%d:%.8f ", entry.getKey(), entry.getValue().doubleValue());
+				} else {
+					// format as integer
+					pw.printf(Locale.ENGLISH, "%d:%d ", entry.getKey(), entry.getValue().intValue());
+				}
+			}
+
+			// print original token and label as comment
+			pw.printf(Locale.ENGLISH, "# %s %d %s ", instance.getOutcome(), instance.getSequenceId(),
+					(originalToken != null) ? (URLEncoder.encode(originalToken, "utf-8")) : "");
+
+			// print meta-data features at the end
+			for (Map.Entry<String, String> entry : metaDataFeatures.entrySet()) {
+				pw.printf(" %s:%s", URLEncoder.encode(entry.getKey(), "utf-8"),
+						URLEncoder.encode(entry.getValue(), "utf-8"));
+			}
+			// new line at the end
+			pw.println();
+		}
+
+		IOUtils.closeQuietly(pw);
+
+	}
+
+	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+			Map<String, Integer> stringToInt) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		for (String k : stringToInt.keySet()) {
+			sb.append(k + "\t" + stringToInt.get(k) + "\n");
+		}
+		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
+	}
+
+	private void initFeatureNameMap() {
+		featureNameMap = new HashMap<String, Integer>();
+		List<String> fm = new ArrayList<>(featureNames);
+		for (int i = 0; i < fm.size(); i++) {
+			featureNameMap.put(fm.get(i), i + 1);
+		}
+	}
+
+	private void initClassifierFormat() throws Exception {
+		if (bw != null) {
+			return;
+		}
+
+		bw = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+	}
+
+	private void loadFeatureNames() throws IOException {
+		List<String> readLines = FileUtils.readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
+		featureNames = new TreeSet<>();
+		for (String l : readLines) {
+			if (l.isEmpty()) {
+				continue;
+			}
+			featureNames.add(l);
+		}
+	}
+
+	@Override
+	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
+			throws Exception {
+		this.outputDirectory = outputDirectory;
+		classifierFormatOutputFile = new File(outputDirectory,
+				new SVMHMMAdapter().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+
+		// Caution: DKPro Lab imports (aka copies!) the data of the train task
+		// as test task. We use
+		// appending mode for streaming. We might append the old training file
+		// with
+		// testing data!
+		// Force delete the old training file to make sure we start with a
+		// clean, empty file
+		if (classifierFormatOutputFile.exists()) {
+			FileUtils.forceDelete(classifierFormatOutputFile);
+		}
+	}
+
+	@Override
+	public boolean canStream() {
+		return true;
+	}
+
+	@Override
+	public boolean classiferReadsCompressed() {
+		return false;
+	}
+
+	@Override
+	public String getGenericFileName() {
+		return Constants.GENERIC_FEATURE_FILE;
+	}
 }

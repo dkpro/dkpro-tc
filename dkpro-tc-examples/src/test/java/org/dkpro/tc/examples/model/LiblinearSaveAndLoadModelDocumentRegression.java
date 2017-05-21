@@ -50,6 +50,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfSentences;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
+import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -62,106 +63,93 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 /**
- * Round-trip tests for save/load model experiments. Tests all feature modes (document, pair, unit),
- * as well as all learning models (single-label, multi-label, regression).
+ * Round-trip tests for save/load model experiments. Tests all feature modes
+ * (document, pair, unit), as well as all learning models (single-label,
+ * multi-label, regression).
  *
  */
-public class LiblinearSaveAndLoadModelDocumentRegression
-    implements Constants
-{
-    static String regressionTrain = "src/main/resources/data/essays/train/essay_train.txt";
-    static String regressionTest = "src/main/resources/data/essays/test/essay_test.txt";
+public class LiblinearSaveAndLoadModelDocumentRegression implements Constants {
+	static String regressionTrain = "src/main/resources/data/essays/train/essay_train.txt";
+	static String regressionTest = "src/main/resources/data/essays/test/essay_test.txt";
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setup()
-    {
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentRegression.class.getSimpleName());
-    }
+	@Before
+	public void setup() {
+		DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentRegression.class.getSimpleName());
+	}
 
-    /**
-     * This test case trains a regression model on scored essay texts
-     */
-    @Test
-    public void documentRoundTripLiblinear()
-        throws Exception
-    {
+	/**
+	 * This test case trains a regression model on scored essay texts
+	 */
+	@Test
+	public void documentRoundTripLiblinear() throws Exception {
 
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentRegression.class.getSimpleName());
-        File modelFolder = folder.newFolder();
+		DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentRegression.class.getSimpleName());
+		File modelFolder = folder.newFolder();
 
-        ParameterSpace paramSpace = regressionGetParameterSpace();
-        regressionExecuteSaveModel(paramSpace, modelFolder);
-        regressionLoadModel(modelFolder);
-       
-    }
+		ParameterSpace paramSpace = regressionGetParameterSpace();
+		regressionExecuteSaveModel(paramSpace, modelFolder);
+		regressionLoadModel(modelFolder);
 
-    private void regressionLoadModel(File modelFolder)
-        throws UIMAException, IOException
-    {
-        CollectionReader reader = CollectionReaderFactory.createReader(EssayScoreReader.class,
-                EssayScoreReader.PARAM_SOURCE_LOCATION, regressionTest,
-                EssayScoreReader.PARAM_LANGUAGE, "en");
+	}
 
-        AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+	private void regressionLoadModel(File modelFolder) throws UIMAException, IOException {
+		CollectionReader reader = CollectionReaderFactory.createReader(EssayScoreReader.class,
+				EssayScoreReader.PARAM_SOURCE_LOCATION, regressionTest, EssayScoreReader.PARAM_LANGUAGE, "en");
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+		AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        JCas jcas = JCasFactory.createJCas();
-        reader.hasNext();
-        reader.getNext(jcas.getCas());
+		AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+				TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+				TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
 
-        segmenter.process(jcas);
-        tcAnno.process(jcas);
+		JCas jcas = JCasFactory.createJCas();
+		reader.hasNext();
+		reader.getNext(jcas.getCas());
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                JCasUtil.select(jcas, TextClassificationOutcome.class));
-        assertEquals(1, outcomes.size());
+		segmenter.process(jcas);
+		tcAnno.process(jcas);
 
-        Double d = Double.valueOf(outcomes.get(0).getOutcome());
-        assertTrue(d > 0.1 && d < 5);
-    }
+		List<TextClassificationOutcome> outcomes = new ArrayList<>(
+				JCasUtil.select(jcas, TextClassificationOutcome.class));
+		assertEquals(1, outcomes.size());
 
-    private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder)
-        throws Exception
-    {
-        ExperimentSaveModel batch = new ExperimentSaveModel("regressionLiblinear",
-                LiblinearAdapter.class, modelFolder);
-        batch.setParameterSpace(paramSpace);
+		Double d = Double.valueOf(outcomes.get(0).getOutcome());
+		assertTrue(d > 0.1 && d < 5);
+	}
 
-        Lab.getInstance().run(batch);
-    }
+	private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder) throws Exception {
+		ExperimentSaveModel batch = new ExperimentSaveModel("regressionLiblinear", LiblinearAdapter.class, modelFolder);
+		batch.setParameterSpace(paramSpace);
+		batch.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
 
-    private ParameterSpace regressionGetParameterSpace()
-        throws Exception
-    {
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+		Lab.getInstance().run(batch);
+	}
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/train/essay_train.txt",
-                EssayScoreReader.PARAM_LANGUAGE, "en");
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+	private ParameterSpace regressionGetParameterSpace() throws Exception {
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { "-s", "6" }));
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/essays/train/essay_train.txt", EssayScoreReader.PARAM_LANGUAGE, "en");
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(NrOfSentences.class),
-                        TcFeatureFactory.create(NrOfTokensPerSentence.class)));
+		@SuppressWarnings("unchecked")
+		Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new String[] { "-s", "6" }));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs);
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
+						TcFeatureFactory.create(NrOfSentences.class), TcFeatureFactory.create(LuceneNGram.class),
+						TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 
-        return pSpace;
-    }
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+				dimFeatureSets, dimClassificationArgs);
+
+		return pSpace;
+	}
 
 }

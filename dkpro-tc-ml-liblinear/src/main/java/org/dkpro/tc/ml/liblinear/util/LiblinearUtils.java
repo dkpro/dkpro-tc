@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 
 import de.bwaldvogel.liblinear.SolverType;
@@ -187,16 +187,16 @@ public class LiblinearUtils
         return sb.toString();
     }
 
-    public static Map<String, Integer> createMapping(boolean isRegression, File... files)
+    public static Map<String, Integer> createMapping(File outcomeFile, boolean isRegression)
         throws IOException
     {
         if (isRegression) {
             return new HashMap<>();
         }
+        
         Set<String> uniqueOutcomes = new HashSet<>();
-        for (File f : files) {
-            uniqueOutcomes.addAll(pickOutcomes(f));
-        }
+        uniqueOutcomes.addAll(FileUtils.readLines(outcomeFile, "utf-8"));
+
 
         Map<String, Integer> mapping = new HashMap<>();
         int id = 0;
@@ -207,32 +207,12 @@ public class LiblinearUtils
         return mapping;
     }
 
-    private static Collection<? extends String> pickOutcomes(File file)
-        throws IOException
-    {
-        Set<String> outcomes = new HashSet<>();
-
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), "utf-8"));
-
-        String line = null;
-        while (((line = br.readLine()) != null)) {
-            if (line.isEmpty()) {
-                continue;
-            }
-            int firstTabIdx = line.indexOf("\t");
-            outcomes.add(line.substring(0, firstTabIdx));
-        }
-        br.close();
-        return outcomes;
-    }
-
     public static File replaceOutcome(File file, Map<String, Integer> outcomeMapping)
         throws IOException
     {
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), "utf-8"));
-        File outFile = File.createTempFile("liblinear" + System.nanoTime(), ".tmp");
+        File outFile = File.createTempFile("liblinear" + System.nanoTime(), ".txt");
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
 

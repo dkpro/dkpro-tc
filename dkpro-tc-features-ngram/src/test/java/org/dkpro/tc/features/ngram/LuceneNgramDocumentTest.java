@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -45,14 +46,12 @@ import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -85,12 +84,16 @@ public class LuceneNgramDocumentTest
         throws Exception
     {
         Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(output, JsonDataWriter.JSON_FILE_NAME)),
-                DenseFeatureStore.class);
+        List<String> lines = FileUtils
+                .readLines(new File(output, JsonDataWriter.JSON_FILE_NAME));
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
 
-        assertEquals(1, fs.getNumberOfInstances());
-        Iterator<Instance> iterator = fs.getInstances().iterator();
+
+        assertEquals(1, instances.size());
+        Iterator<Instance> iterator = instances.iterator();
         int numFeatValueOne = 0;
         int numFeatValuesZero = 0;
         while (iterator.hasNext()) {
@@ -133,8 +136,8 @@ public class LuceneNgramDocumentTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(),
-                false, false, false, new ArrayList<>(), false, fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, 
+                false, false, false, false, false, Collections.emptyList(), fes);
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",

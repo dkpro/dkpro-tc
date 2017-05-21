@@ -29,7 +29,6 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
@@ -125,10 +124,13 @@ public class SVMHMMAdapter
 		return SvmhmmModelSerializationDescription.class;
 	}
 
-    @Override
-    public String getFeatureStore()
-    {
-        return SparseFeatureStore.class.getName();
-    }
+	@Override
+	public boolean useSparseFeatures() {
+		return true;
+	}
+	
+	public static String getFeatureNameMappingFilename() {
+		return "feature-name-mapping.txt";
+	}
 }
 

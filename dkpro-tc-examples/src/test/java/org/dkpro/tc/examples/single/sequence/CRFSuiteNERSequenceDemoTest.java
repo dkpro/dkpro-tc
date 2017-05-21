@@ -50,13 +50,13 @@ public class CRFSuiteNERSequenceDemoTest extends JavaDemosTest_Base
         pSpace = CRFSuiteNERSequenceDemo.getParameterSpace();
     }
 
-    @Test
-    public void testJavaCrossValidation()
-        throws Exception
-    {
+//    @Test
+//    public void testJavaCrossValidation()
+//        throws Exception
+//    {
 //        Assume.assumeTrue(Runtime.getRuntime().maxMemory() >= 2000000000);
-        javaExperiment.runCrossValidation(pSpace);
-    }
+//        javaExperiment.runCrossValidation(pSpace);
+//    }
     
     @Test
     public void testTrainTestWithResults() throws Exception{

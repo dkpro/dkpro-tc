@@ -82,7 +82,7 @@ public class LibsvmTwentyNewsgroups
 
         LibsvmTwentyNewsgroups experiment = new LibsvmTwentyNewsgroups();
         experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
+//        experiment.runTrainTest(pSpace);
     }
 
     public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)

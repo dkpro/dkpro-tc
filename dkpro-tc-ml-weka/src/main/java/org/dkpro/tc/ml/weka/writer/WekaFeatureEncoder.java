@@ -32,7 +32,7 @@ import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.api.features.MissingValue.MissingValueType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 
-/**
+/*
  * Converts the TC feature representation into the Weka representation.
  * 
  * Copyright (c) 2012, Regents of the University of Colorado <br>

@@ -41,7 +41,9 @@ import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.CollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -60,6 +62,7 @@ public class ExperimentCrossValidation
     protected int numFolds = 10;
 
     protected InitTask initTask;
+    protected CollectionTask collectionTask;
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask extractFeaturesTrainTask;
     protected ExtractFeaturesTask extractFeaturesTestTask;
@@ -209,6 +212,11 @@ public class ExperimentCrossValidation
         // ================== SUBTASKS OF THE INNER BATCH TASK =======================
 
         // collecting meta features only on the training data (numFolds times)
+        collectionTask = new CollectionTask();
+		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
+		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
+		collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
+        
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
@@ -221,6 +229,8 @@ public class ExperimentCrossValidation
                 + experimentName);
         extractFeaturesTrainTask.setMlAdapter(mlAdapter);
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
+                ExtractFeaturesTask.INPUT_KEY);
         extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // extracting features from test data (numFolds times)
@@ -231,6 +241,9 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
+        extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
+                ExtractFeaturesTask.INPUT_KEY);
+        
         extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
         // classification (numFolds times)
@@ -252,11 +265,13 @@ public class ExperimentCrossValidation
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TEST_DATA);
+        testTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
         crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
         crossValidationTask.setType(crossValidationTask.getType().replaceAll("\\$[0-9]+", "-") + experimentName);
+        crossValidationTask.addTask(collectionTask);
         crossValidationTask.addTask(metaTask);
         crossValidationTask.addTask(extractFeaturesTrainTask);
         crossValidationTask.addTask(extractFeaturesTestTask);

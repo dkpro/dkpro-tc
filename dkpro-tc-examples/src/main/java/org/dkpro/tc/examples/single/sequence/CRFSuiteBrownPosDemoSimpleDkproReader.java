@@ -40,9 +40,8 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
@@ -73,13 +72,13 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()));
+        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()),null);
 
         CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
         experiment.runCrossValidation(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace(String featureMode, String learningMode, Dimension<List<String>> dimClassificationArgs)
+    public static ParameterSpace getParameterSpace(String featureMode, String learningMode, Dimension<List<String>> dimClassificationArgs, Dimension<List<String>> dimFilters)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -98,22 +97,31 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         dimReaders.put(DIM_READER_TEST, test);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
+                new TcFeatureSet(TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
+            
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+        ParameterSpace pSpace;
+        if(dimFilters!=null){
+            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_LEARNING_MODE, learningMode),
+                    Dimension.create(DIM_FEATURE_MODE, featureMode),
+                    dimFilters,
+                    dimFeatureSets, dimClassificationArgs);
+        }
+        else{
+        pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, learningMode),
                 Dimension.create(DIM_FEATURE_MODE, featureMode),
-                Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
                 dimFeatureSets, dimClassificationArgs);
+        }
 
         return pSpace;
     }
 
     // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
+    public void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
 

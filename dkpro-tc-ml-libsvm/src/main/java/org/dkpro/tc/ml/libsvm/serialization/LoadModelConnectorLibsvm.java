@@ -45,7 +45,6 @@ import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
@@ -71,9 +70,6 @@ public class LoadModelConnectorLibsvm
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
-    private String featureStoreImpl;
-
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
     private String featureMode;
 
@@ -83,7 +79,7 @@ public class LoadModelConnectorLibsvm
     private svm_model model;
 
     private Map<String, String> integer2OutcomeMapping;
-    private Map<String, Integer> featName2id;
+	private Map<String, Integer> featureMapping;
 
     @Override
     public void initialize(UimaContext context)
@@ -95,7 +91,7 @@ public class LoadModelConnectorLibsvm
             model = svm
                     .svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
             integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
-            featName2id = loadFeatureName2IntegerMapping(tcModelLocation);
+            featureMapping = loadFeature2IntegerMapping(tcModelLocation);
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
         }
         catch (Exception e) {
@@ -103,6 +99,17 @@ public class LoadModelConnectorLibsvm
         }
 
     }
+    
+	private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
+		Map<String, Integer> map = new HashMap<>();
+		List<String> readLines = FileUtils
+				.readLines(new File(tcModelLocation, LibsvmAdapter.getFeatureNameMappingFilename()));
+		for (String l : readLines) {
+			String[] split = l.split("\t");
+			map.put(split[0],Integer.valueOf(split[1]));
+		}
+		return map;
+	}
 
     private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation)
         throws IOException
@@ -117,28 +124,12 @@ public class LoadModelConnectorLibsvm
         return map;
     }
 
-    private Map<String, Integer> loadFeatureName2IntegerMapping(File tcModelLocation)
-        throws IOException
-    {
-        Map<String, Integer> map = new HashMap<>();
-        List<String> readLines = FileUtils.readLines(
-                new File(tcModelLocation, LibsvmAdapter.getFeaturenameMappingFilename()));
-        for (String l : readLines) {
-            String[] split = l.split("\t");
-            map.put(split[0], Integer.valueOf(split[1]));
-        }
-        return map;
-    }
-
     @Override
     public void process(JCas jcas)
         throws AnalysisEngineProcessException
     {
         try {
-            FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
-                    .newInstance();
-
-            File tempFile = createInputFileFromFeatureStore(jcas, featureStore);
+            File tempFile = createInputFile(jcas);
 
             File prediction = runPrediction(tempFile);
 
@@ -198,27 +189,24 @@ public class LoadModelConnectorLibsvm
         return prediction;
     }
 
-    private File createInputFileFromFeatureStore(JCas jcas, FeatureStore featureStore)
+    private File createInputFile(JCas jcas)
         throws Exception
     {
-        File tempFile = FileUtil.createTempFile("libsvm", ".tmp_libsvm");
+        File tempFile = FileUtil.createTempFile("libsvm", ".txmt");
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
 
         List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
-                featureStore.supportsSparseFeatures());
-        for (Instance i : inst) {
-            featureStore.addInstance(i);
-        }
+                new LibsvmAdapter().useSparseFeatures());
 
-        for (Instance i : featureStore.getInstances()) {
+        for (Instance i : inst) {
             bw.write(OUTCOME_PLACEHOLDER);
             for (Feature f : i.getFeatures()) {
                 if (!sanityCheckValue(f)) {
                     continue;
                 }
                 bw.write("\t");
-                bw.write(featName2id.get(f.getName()) + ":" + f.getValue());
+                bw.write(featureMapping.get(f.getName()) + ":" + f.getValue());
             }
             bw.write("\n");
         }

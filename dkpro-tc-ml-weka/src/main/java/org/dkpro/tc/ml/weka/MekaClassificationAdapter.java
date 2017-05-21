@@ -29,7 +29,6 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
@@ -95,8 +94,9 @@ public class MekaClassificationAdapter
 	}
 
     @Override
-    public String getFeatureStore()
+    public boolean useSparseFeatures()
     {
-        return DenseFeatureStore.class.getName();
+        return false;
     }
+
 }

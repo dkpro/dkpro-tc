@@ -23,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,13 +37,13 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.dkpro.tc.api.features.FeatureStore;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,74 +54,88 @@ import com.google.gson.Gson;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LucenePOSNGramFeatureExtractorTest
-{
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+public class LucenePOSNGramFeatureExtractorTest {
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setupLogging()
-    {
-        System.setProperty("org.apache.uima.logger.class",
-                "org.apache.uima.util.impl.Log4jLogger_impl");
-    }
+	@Before
+	public void setupLogging() {
+		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+	}
 
-    @Test
-    public void luceneNGramFeatureExtractorTest()
-        throws Exception
-    {
+	@Test
+	public void luceneNGramFeatureExtractorTest() throws Exception {
 
-        File luceneFolder = folder.newFolder();
-        File outputPath = folder.newFolder();
+		File luceneFolder = folder.newFolder();
+		File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] {
-                LucenePOSNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LucenePOSNGram.PARAM_NGRAM_USE_TOP_K, "5",
-                LucenePOSNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-                LucenePOSNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString()};
+		Object[] parameters = new Object[] { LucenePOSNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+				LucenePOSNGram.PARAM_NGRAM_USE_TOP_K, "5", LucenePOSNGram.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), LucenePOSNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
-        ExternalResourceDescription featureExtractor = ExternalResourceFactory.createExternalResourceDescription(LucenePOSNGram.class, parameters);
-        List<ExternalResourceDescription> fes = new ArrayList<>();
-        fes.add(featureExtractor);
-        
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
-        
-        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-                "src/test/resources/ngrams/*.txt");
+		ExternalResourceDescription featureExtractor = ExternalResourceFactory
+				.createExternalResourceDescription(LucenePOSNGram.class, parameters);
+		List<ExternalResourceDescription> fes = new ArrayList<>();
+		fes.add(featureExtractor);
 
-        AnalysisEngineDescription segmenter = AnalysisEngineFactory
-                .createEngineDescription(BreakIteratorSegmenter.class);
+		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
-        AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(
-                OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, "en");
+		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+				"src/test/resources/ngrams/*.txt");
 
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LucenePOSNGramMetaCollector.class, parameterList.toArray());
+		AnalysisEngineDescription segmenter = AnalysisEngineFactory
+				.createEngineDescription(BreakIteratorSegmenter.class);
 
-        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, DenseFeatureStore.class.getName(), false,
-                false, false, new ArrayList<>(), false, fes);
+		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class,
+				OpenNlpPosTagger.PARAM_LANGUAGE, "en");
 
-        // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);
+		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+				.createEngineDescription(LucenePOSNGramMetaCollector.class, parameterList.toArray());
 
-        // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, posTagger, featExtractorConnector);
+		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
+				Constants.FM_DOCUMENT, false, false, false, false, false, Collections.emptyList(), fes);
 
-        Gson gson = new Gson();
-        FeatureStore fs = gson.fromJson(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)),
-                DenseFeatureStore.class);
-        assertEquals(4, fs.getNumberOfInstances());
-        assertEquals(1, fs.getUniqueOutcomes().size());
+		// run meta collector
+		SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);
 
-        Set<String> featureNames = new HashSet<String>(fs.getFeatureNames());
-        assertEquals(5, featureNames.size());
-        assertTrue(featureNames.contains("posngram_CARD"));
-        assertTrue(featureNames.contains("posngram_NN"));
-        assertTrue(featureNames.contains("posngram_CARD_CARD"));
+		// run FE(s)
+		SimplePipeline.runPipeline(reader, segmenter, posTagger, featExtractorConnector);
 
-    }
+		Gson gson = new Gson();
+		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+		List<Instance> instances = new ArrayList<>();
+		for (String l : lines) {
+			instances.add(gson.fromJson(l, Instance.class));
+		}
+
+		assertEquals(4, instances.size());
+		assertEquals(1, getUniqueOutcomes(instances));
+
+		Set<String> featureNames = new HashSet<String>(getUniqueFeatureNames(instances));
+		assertEquals(5, featureNames.size());
+		assertTrue(featureNames.contains("posngram_CARD"));
+		assertTrue(featureNames.contains("posngram_NN"));
+		assertTrue(featureNames.contains("posngram_CARD_CARD"));
+
+	}
+
+	private Collection<? extends String> getUniqueFeatureNames(List<Instance> instances) {
+		Set<String> s = new HashSet<>();
+
+		for (Instance i : instances) {
+			for (Feature f : i.getFeatures()) {
+				s.add(f.getName());
+			}
+		}
+
+		return s;
+	}
+
+	private int getUniqueOutcomes(List<Instance> instances) {
+		Set<String> outcomes = new HashSet<String>();
+		instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
+		return outcomes.size();
+	}
 }

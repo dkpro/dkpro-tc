@@ -44,7 +44,6 @@ import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -118,7 +117,6 @@ public class SVMHMMBrownPosDemo
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-                Dimension.create(Constants.DIM_FEATURE_STORE, SparseFeatureStore.class.getName()),
                 dimFeatureSets, dimClassificationArgs);
     }
 

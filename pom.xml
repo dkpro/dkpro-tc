@@ -75,7 +75,7 @@
 		<module>dkpro-tc-features-pair</module>
 		<module>dkpro-tc-features-pair-similarity</module>
 		<module>dkpro-tc-features-spelling</module>
-		<module>dkpro-tc-fstore-simple</module>
+		
 		<module>dkpro-tc-integrationtest</module>
 		<module>dkpro-tc-ml</module>
         <module>dkpro-tc-ml-crfsuite</module>

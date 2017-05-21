@@ -36,7 +36,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
@@ -56,9 +55,6 @@ public class LoadModelConnectorCRFSuite
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
-
-    @ConfigurationParameter(name = PARAM_FEATURE_STORE_CLASS, mandatory = true)
-    private String featureStoreImpl;
 
     private File model = null;
 
@@ -86,23 +82,17 @@ public class LoadModelConnectorCRFSuite
         throws AnalysisEngineProcessException
     {
         try {
-            FeatureStore featureStore = (FeatureStore) Class.forName(featureStoreImpl)
-                    .newInstance();
             int sequenceId = 0;
+            List<Instance> instance = new ArrayList<>();
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
 
-                List<Instance> instances = TaskUtils.getInstancesInSequence(featureExtractors,
-                        jcas, seq, true, sequenceId++);
-
-                for (Instance instance : instances) {
-                    featureStore.addInstance(instance);
-                }
-
+                instance.addAll(TaskUtils.getInstancesInSequence(featureExtractors,
+                        jcas, seq, true, sequenceId++));
             }
 
             CRFSuiteFeatureStoreSequenceIterator iterator = new CRFSuiteFeatureStoreSequenceIterator(
-                    featureStore);
+                    instance);
 
             //takes N sequences and classifies them - all results are hold in memory
             StringBuilder output = new StringBuilder();

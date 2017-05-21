@@ -25,10 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteFeatureStoreSequenceIterator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,21 +37,21 @@ public class CRFSuiteFeatureStoreSequenceIteratorTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    FeatureStore fs;
+    List<Instance> fs;
     File outputDirectory;
 
     @Before
     public void setUp()
         throws Exception
     {
-        buildFeatureStore();
+        buildFeatures();
         outputDirectory = folder.newFolder();
     }
 
-    private void buildFeatureStore()
+    private void buildFeatures()
         throws Exception
     {
-        fs = new DenseFeatureStore();
+        fs = new ArrayList<>();
 
         List<Feature> features1 = new ArrayList<Feature>();
         features1.add(new Feature("feature1", 1.0));
@@ -88,11 +85,11 @@ public class CRFSuiteFeatureStoreSequenceIteratorTest
         instance5.setSequenceId(1);
         instance5.setSequencePosition(1);
 
-        fs.addInstance(instance1);
-        fs.addInstance(instance2);
-        fs.addInstance(instance3);
-        fs.addInstance(instance4);
-        fs.addInstance(instance5);
+        fs.add(instance1);
+        fs.add(instance2);
+        fs.add(instance3);
+        fs.add(instance4);
+        fs.add(instance5);
     }
 
     @Test

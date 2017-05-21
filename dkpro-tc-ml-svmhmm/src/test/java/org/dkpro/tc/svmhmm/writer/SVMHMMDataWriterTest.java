@@ -31,21 +31,21 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
+import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.fstore.simple.SparseFeatureStore;
-import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
-import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 public class SVMHMMDataWriterTest
 {
@@ -57,8 +57,6 @@ public class SVMHMMDataWriterTest
 
     private Random random = new Random(System.currentTimeMillis());
 
-    private FeatureStore featureStore;
-
     @BeforeClass
     public static void setUpBeforeClass()
     {
@@ -68,7 +66,7 @@ public class SVMHMMDataWriterTest
 
     @Test
     public void testWrite()
-            throws Exception
+        throws Exception
     {
         Set<String> randomFeatureNames = new HashSet<>();
         int maxFeatureVectorSize = 100000;
@@ -76,18 +74,19 @@ public class SVMHMMDataWriterTest
             randomFeatureNames.add(String.valueOf(i));
         }
         List<String> allFeatureNames = new ArrayList<>(randomFeatureNames);
-
-        featureStore = new SparseFeatureStore();
+        FileUtils.writeLines(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES), "utf-8",
+                allFeatureNames);
 
         // add 100.000 instances
+        List<Instance> instances = new ArrayList<>();
         for (int i = 0; i < TESTING_INSTANCES; i++) {
             Instance instance = new Instance();
             instance.setOutcomes("outcome");
 
             // add 10 random features
             int offset = random.nextInt(maxFeatureVectorSize - TESTING_FEATURES_PER_INSTANCE);
-            List<String> featureNames = allFeatureNames
-                    .subList(offset, offset + TESTING_FEATURES_PER_INSTANCE);
+            List<String> featureNames = allFeatureNames.subList(offset,
+                    offset + TESTING_FEATURES_PER_INSTANCE);
 
             for (String featureName : featureNames) {
                 instance.addFeature(new Feature(featureName, 1));
@@ -96,33 +95,36 @@ public class SVMHMMDataWriterTest
             instance.addFeature(
                     new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT, "token"));
 
-            featureStore.addInstance(instance);
+            instances.add(instance);
         }
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-        List<String> lines = IOUtils.readLines(
-                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        List<String> lines = IOUtils
+                .readLines(new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
         System.out.println(lines.subList(0, 5));
     }
 
     @Test
     public void testWriteMultiLineComment()
-            throws Exception
+        throws Exception
     {
-        featureStore = new SparseFeatureStore();
-        featureStore.addInstance(new Instance(
-        		new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
-                        "multi line \n text").asSet()));
+        List<Instance> instances = new ArrayList<>();
+        instances.add(new Instance(
+                new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT, "multi line \n text")
+                        .asSet()));
+        
+        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+                OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n");
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-        List<String> lines = IOUtils.readLines(
-                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        List<String> lines = IOUtils
+                .readLines(new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
         System.out.println(lines);
 
         // each instance must be on one line!
@@ -131,56 +133,61 @@ public class SVMHMMDataWriterTest
 
     @Test
     public void testMetDataFeatures()
-            throws Exception
+        throws Exception
     {
         String longText = "rO0ABXNyABNqYXZhLnV0aWwuQXJyYXlMaXN0eIHSHZnHYZ0DAAFJAARzaXpleHAAAAAedwQAAAAedAABT3EAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJxAH4AAnEAfgACcQB%2BAAJ4";
 
-        featureStore = new SparseFeatureStore();
         Feature f1 = new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT,
                 "multi line \n text");
         Feature f2 = new Feature(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature",
                 longText);
 
+        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+                OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n"
+                        + SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature");
+
+        List<Instance> instances = new ArrayList<>();
         Instance instance = new Instance(Arrays.asList(f1, f2), "outcome");
-        featureStore.addInstance(instance);
+        instances.add(instance);
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.writeClassifierFormat(instances, false);
 
         File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
-        List<String> lines = IOUtils.readLines(new FileInputStream(featureVectorsFile));
-        System.out.println(lines);
 
-        assertEquals("outcome", SVMHMMUtils.extractOutcomeLabelsFromFeatureVectorFiles(
-                featureVectorsFile).iterator().next());
+        assertEquals("outcome", SVMHMMUtils
+                .extractOutcomeLabelsFromFeatureVectorFiles(featureVectorsFile).iterator().next());
 
         assertEquals(Integer.valueOf(0),
-                SVMHMMUtils.extractOriginalSequenceIDs(featureVectorsFile).iterator()
-                        .next());
+                SVMHMMUtils.extractOriginalSequenceIDs(featureVectorsFile).iterator().next());
 
         SortedMap<String, String> metaDataFeatures = SVMHMMUtils
                 .extractMetaDataFeatures(featureVectorsFile).get(0);
 
-        assertTrue(metaDataFeatures.containsKey(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
-        assertEquals(longText, metaDataFeatures.get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+        assertTrue(metaDataFeatures
+                .containsKey(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+        assertEquals(longText, metaDataFeatures
+                .get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
 
     }
 
     @Test
     public void testDoubleFeatures()
-            throws Exception
+        throws Exception
     {
-        featureStore = new SparseFeatureStore();
-        featureStore.addInstance(new Instance(new Feature("doubleFeature", 0.123456789).asSet()));
+        List<Instance> instances = new ArrayList<>();
+        instances.add(new Instance(new Feature("doubleFeature", 0.123456789).asSet()));
+        
+        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+                "doubleFeature\n");
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        System.out.println(featureStore.getNumberOfInstances());
-        svmhmmDataWriter.write(temporaryFolder.getRoot(), featureStore, false, null, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-        List<String> lines = IOUtils.readLines(
-                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
-        System.out.println(lines);
+        List<String> lines = IOUtils
+                .readLines(new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
 
         // each instance must be on one line!
         assertEquals(1, lines.size());

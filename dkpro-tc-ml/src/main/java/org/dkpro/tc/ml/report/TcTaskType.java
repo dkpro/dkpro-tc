@@ -21,6 +21,7 @@ public enum TcTaskType
 {
     INIT_TRAIN,
     INIT_TEST,
+    COLLECTION,
     META,
     FEATURE_EXTRACTION_TRAIN,
     FEATURE_EXTRACTION_TEST,

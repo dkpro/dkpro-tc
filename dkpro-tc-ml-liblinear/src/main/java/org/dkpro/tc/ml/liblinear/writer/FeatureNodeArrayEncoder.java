@@ -38,14 +38,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  */
-package org.dkpro.tc.ml.liblinear;
+package org.dkpro.tc.ml.liblinear.writer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 
 import de.bwaldvogel.liblinear.FeatureNode;
@@ -54,54 +55,62 @@ public class FeatureNodeArrayEncoder {
 
 	private static final String BIAS_NAME = FeatureNodeArrayEncoder.class.getName() + ".BIAS";
 
-	private Map<String, Integer> stringToInt;
+	Map<String, Integer> stringToInt;
 
 	private int biasIndex;
 
 	public FeatureNodeArrayEncoder() {
-		this.stringToInt = new HashMap<String, Integer>();
+		this.stringToInt = null;
 		this.biasIndex = 1;
-		this.stringToInt.put(BIAS_NAME, biasIndex);
 	}
 
-	public FeatureNode[][] featueStore2FeatureNode(FeatureStore store) 
-	{
+	public FeatureNodeArrayEncoder(Map<String, Integer> featureMapping) {
+		this.stringToInt = featureMapping;
+		this.biasIndex = 1;
+	}
+
+	public FeatureNode[][] featueStore2FeatureNode(Collection<Instance> instances, TreeSet<String> featureNames) {
 		// map feature indexes to feature nodes, sorting by index
 		Map<Integer, FeatureNode> featureNodes = new TreeMap<Integer, FeatureNode>();
+
+		if (this.stringToInt == null) {
+			this.stringToInt = new HashMap<>();
+			this.stringToInt.put(BIAS_NAME, biasIndex);
+			for (String name : featureNames) {
+				if (!this.stringToInt.containsKey(name)) {
+					this.stringToInt.put(name, this.stringToInt.size() + 1);
+				}
+			}
+		}
 
 		// add a "bias" feature node; otherwise LIBLINEAR is unable to predict
 		// the majority class for
 		// instances consisting entirely of features never seen during training
 		featureNodes.put(this.biasIndex, new FeatureNode(this.biasIndex, 1));
 
-		// convert the name String to an index
-		for (String featureName : store.getFeatureNames()) {
-			if (!this.stringToInt.containsKey(featureName)) {
-				this.stringToInt.put(featureName, this.stringToInt.size() + 1);
-			}
-		}
-		
-		FeatureNode[][] xValues = new FeatureNode[store.getNumberOfInstances()][];
-		
+		FeatureNode[][] xValues = new FeatureNode[instances.size()][];
+
 		int instanceOffset = 0;
-		for (Instance instance : store.getInstances()) {
-			for (Feature feature : instance.getFeatures()) {	
+		for (Instance instance : instances) {
+			for (Feature feature : instance.getFeatures()) {
+
 				String name = feature.getName();
-				
+
 				double value;
 				if (feature.getValue() instanceof Number) {
 					value = ((Number) feature.getValue()).doubleValue();
 				} else {
 					value = 1.0;
-				}			
+				}
 
 				int index = this.stringToInt.get(name);
 
 				// create a feature node for the given index
-				// NOTE: if there are duplicate features, only the last will be kept
+				// NOTE: if there are duplicate features, only the last will be
+				// kept
 				featureNodes.put(index, new FeatureNode(index, value));
 			}
-			
+
 			// put the feature nodes into an array, sorted by feature index
 			FeatureNode[] featureNodeArray = new FeatureNode[featureNodes.size()];
 			int i = 0;

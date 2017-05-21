@@ -169,9 +169,8 @@ public class MetaInfoTask
                 // Tell the meta collectors where to store their data
                 for (MetaCollectorConfiguration conf : feInstance
                         .getMetaCollectorClasses(parameterSettings)) {
-                    configureStorageLocations(aContext, conf.descriptor,
-                            (String) feClosure.getId(), conf.collectorOverrides,
-                            AccessMode.READWRITE);
+                    configureStorageLocations(aContext, conf.descriptor, (String) feClosure.getId(),
+                            conf.collectorOverrides, AccessMode.READWRITE);
                     metaCollectors.add(conf.descriptor);
                 }
             }

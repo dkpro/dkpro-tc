@@ -77,12 +77,12 @@ public interface Constants
      * Name of the discriminator that stores the reader for training data
      */
     public static final String DIM_READER_TRAIN = "readerTrain";
-    
+
     /**
      * Name of the discriminator that stores the reader for test data
      */
     public static final String DIM_READER_TEST = "readerTest";
-    
+
     /**
      * Name of the discriminator that stores the set of feature extractors
      */
@@ -139,7 +139,7 @@ public interface Constants
     /**
      * Name of the class that implements {@link org.dkpro.tc.api.features.FeatureStore}
      */
-    public static final String DIM_FEATURE_STORE = "featureStore";
+    public static final String DIM_FEATURE_USE_SPARSE = "featureStore";
 
     /**
      * Name of the discriminator which holds the classifier and arguments which serve as baseline
@@ -166,21 +166,24 @@ public interface Constants
      * Developer mode enables it to use unit feature extractors in documents
      */
     public static final String DIM_DEVELOPER_MODE = "developerMode";
-    
+
     /**
      * Records the context of a unit/sequence in either unit mode or sequence mode as debugging help
      */
     public static final String DIM_RECORD_CONTEXT = "recordContext";
     
+    
+    public static final String GENERIC_FEATURE_FILE = "JSON.txt";
+
     /**
      * Developer mode enables it to use unit feature extractors in documents
      */
     public static final String DIM_FILES_ROOT = "filesRoot";
-    
+
     public static final String DIM_FILES_TRAINING = "files_training";
-    
+
     public static final String DIM_FILES_VALIDATION = "files_validation";
-    
+
     /*
      * Learning modes
      */
@@ -309,7 +312,10 @@ public interface Constants
     /**
      * Name of the file which holds evaluation results from the machine learning framework
      */
-    public static final String FILENAME_FEATURES = "feature.names";
+    public static final String FILENAME_FEATURES = "featureNames.txt";
+
+    public static String FILENAME_OUTCOMES = "outcomes.txt";
+
     /**
      * Name of the attribute/label which stores the prediction values
      */
@@ -334,6 +340,14 @@ public interface Constants
      * For empty predictions (no label value above the bipartition threshold)
      */
     public static String EMPTY_PREDICTION = "$NO_PREDICTION$";
+
+    /**
+     * Alias for the training folder output location used during wiring of experiments to inform the
+     * extraction test-task about the output location of the extraction train-task
+     */
+    public static String TRAIN_OUTPUT = "TRAIN_OUTPUT";
+	public static String OUTCOMES_INPUT_KEY = "outcomesFolder";
+
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome
      */
@@ -346,10 +360,10 @@ public interface Constants
      * Name of the file which holds the model meta data
      */
     public static final String MODEL_META = "meta.txt";
-    
+
     public static final String META_COLLECTOR_OVERRIDE = "metaCollectorOverrides.txt";
     public static final String META_EXTRACTOR_OVERRIDE = "metaExtractorOverrides.txt";
-    
+
     /**
      * Tc version under which this model has been trained
      */
@@ -409,5 +423,5 @@ public interface Constants
      * on how the cross validation will be performed
      */
     public static final String DIM_CROSS_VALIDATION_MANUAL_FOLDS = "useCrossValidationManualFolds";
-    
+
 }

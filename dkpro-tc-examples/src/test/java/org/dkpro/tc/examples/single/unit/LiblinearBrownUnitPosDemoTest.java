@@ -68,6 +68,6 @@ public class LiblinearBrownUnitPosDemoTest extends JavaDemosTest_Base
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-        assertEquals(0.9381, result, 0.0001);
+        assertEquals(0.5309, result, 0.0001);
     }
 }

@@ -25,7 +25,7 @@ import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternal
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
@@ -61,15 +61,16 @@ public class TwitterSentimentRaw
                 createEngineDescription(ArktweetPosTagger.class, ArktweetPosTagger.PARAM_LANGUAGE,
                         "en", ArktweetPosTagger.PARAM_VARIANT, "default"),
                 // Feature extraction
-                createEngineDescription(ExtractFeaturesConnector.class,
-                        ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-                        ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
-                        ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
-                        ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
-                        ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
-                        ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[] {},
-                        ExtractFeaturesConnector.PARAM_IS_TESTING, false,
-                        ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
+                createEngineDescription(ExtractFeaturesStreamConnector.class,
+                		ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
+                		ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
+                		ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
+                		ExtractFeaturesStreamConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
+                        ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, true,
+                        ExtractFeaturesStreamConnector.PARAM_FEATURE_FILTERS, new String[] {},
+                        ExtractFeaturesStreamConnector.PARAM_IS_TESTING, false,
+                        ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, false,
+                        ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS,
                         asList(createExternalResourceDescription(EmoticonRatio.class,
                                 EmoticonRatio.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
                                 createExternalResourceDescription(NumberOfHashTags.class,

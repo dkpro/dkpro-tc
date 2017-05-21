@@ -61,8 +61,8 @@ public class CRFSuiteBrownPosDemoTest
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON }));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
-                Constants.LM_SINGLE_LABEL, dimClassificationArgs);
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
+                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
         javaExperiment.runCrossValidation(pSpace);
     }
@@ -76,8 +76,8 @@ public class CRFSuiteBrownPosDemoTest
         Dimension<List<String>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
-                Constants.LM_SINGLE_LABEL, dimClassificationArgs);
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
+                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
@@ -92,7 +92,7 @@ public class CRFSuiteBrownPosDemoTest
                 asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
                         "feature.minfreq=3", "-p", "gamma=5.0", "-p", "max_iterations=15"));
         pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
-                Constants.LM_SINGLE_LABEL, dimClassificationArgs);
+                Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);

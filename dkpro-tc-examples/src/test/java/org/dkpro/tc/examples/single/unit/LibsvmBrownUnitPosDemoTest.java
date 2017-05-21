@@ -62,7 +62,7 @@ public class LibsvmBrownUnitPosDemoTest extends JavaDemosTest_Base
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
         //test case is not deterministic - results vary from run to run we allow quite some error here
-        assertEquals(0.324742268, result, 0.09);
+        assertEquals(0.22680, result, 0.09);
     }
     
     @Test
@@ -75,6 +75,6 @@ public class LibsvmBrownUnitPosDemoTest extends JavaDemosTest_Base
         Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-        assertEquals(0.6752577, result, 0.0001);
+        assertEquals(0.577319, result, 0.0001);
     }
 }

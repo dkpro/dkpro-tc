@@ -145,17 +145,11 @@ public class LibsvmTestTask
             return;
         }
 
-        String outcomes = LibsvmAdapter.getOutcomesFile();
-
-        File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-        File trainOutcomes = new File(folder, outcomes);
-
-        folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        File testOutcomes = new File(folder, outcomes);
+        File outcomeFolder = aContext.getFolder(Constants.OUTCOMES_INPUT_KEY, AccessMode.READONLY);
+        File outcomeFile = new File(outcomeFolder, Constants.FILENAME_OUTCOMES);
 
         Set<String> uniqueOutcomes = new HashSet<>();
-        uniqueOutcomes.addAll(FileUtils.readLines(testOutcomes));
-        uniqueOutcomes.addAll(FileUtils.readLines(trainOutcomes));
+        uniqueOutcomes.addAll(FileUtils.readLines(outcomeFile, "utf-8"));
 
         int i = 0;
         for (String o : uniqueOutcomes) {

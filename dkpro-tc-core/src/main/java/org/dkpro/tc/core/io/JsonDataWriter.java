@@ -17,14 +17,18 @@
  ******************************************************************************/
 package org.dkpro.tc.core.io;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.apache.commons.io.FileUtils;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.core.Constants;
 
 import com.google.gson.Gson;
-
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.core.Constants;
 
 /**
  * Writes the feature store to a JSON file. Mainly used for testing purposes.
@@ -36,15 +40,75 @@ public class JsonDataWriter
      * Public name of the JSON dump file
      */
     public static final String JSON_FILE_NAME = "fs.json";
+    
+    BufferedWriter bw = null;
 
     private Gson gson = new Gson();
 
+    private File outputDirectory;
+
+
     @Override
-    public void write(File outputDirectory, FeatureStore featureStore, boolean useDenseInstances,
-            String learningMode, boolean applyWeighting)
+    public void writeGenericFormat(Collection<Instance> instances)
         throws Exception
     {
-        FileUtils.writeStringToFile(new File(outputDirectory, JSON_FILE_NAME),
-                gson.toJson(featureStore));
+        throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
+    }
+
+    @Override
+    public void transformFromGeneric()
+        throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
+    }
+
+    @Override
+    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+        throws Exception
+    {
+        init();
+
+        Iterator<Instance> iterator = instances.iterator();
+        while (iterator.hasNext()) {
+            Instance next = iterator.next();
+            bw.write(gson.toJson(next) + System.lineSeparator());
+        }
+        bw.close();
+        bw = null;   
+    }
+
+    private void init() throws IOException
+    {
+        if (bw != null) {
+            return;
+        }
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(outputDirectory, JSON_FILE_NAME), true), "utf-8"));        
+    }
+
+    @Override
+    public void init(File outputDirectory, boolean useSparse, String learningMode,
+            boolean applyWeighting)
+                throws Exception
+    {
+        this.outputDirectory = outputDirectory;
+    }
+
+    @Override
+    public boolean canStream()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean classiferReadsCompressed()
+    {
+        return false;
+    }
+
+    @Override
+    public String getGenericFileName()
+    {
+        throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
     }
 }

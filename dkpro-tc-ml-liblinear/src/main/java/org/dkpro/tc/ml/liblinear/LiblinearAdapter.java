@@ -28,9 +28,9 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
+import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 public class LiblinearAdapter 
@@ -43,6 +43,10 @@ public class LiblinearAdapter
 	
 	public static String getOutcomeMappingFilename() {
 		return "outcome-mapping.txt";
+	}
+	
+	public static String getFeatureNameMappingFilename() {
+		return "feature-name-mapping.txt";
 	}
 	
 	@Override
@@ -94,9 +98,8 @@ public class LiblinearAdapter
 	    return LiblinearModelSerializationDescription.class;
 	}
 
-    @Override
-    public String getFeatureStore()
-    {
-        return DenseFeatureStore.class.getName();
-    }
+	@Override
+	public boolean useSparseFeatures() {
+		return true;
+	}
 }
