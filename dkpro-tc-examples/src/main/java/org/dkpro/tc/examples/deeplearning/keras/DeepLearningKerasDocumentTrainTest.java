@@ -45,8 +45,8 @@ public class DeepLearningKerasDocumentTrainTest
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "/Users/toobee/Downloads/20news-bydate/20news-bydate-train/train";
-    public static final String corpusFilePathTest = "/Users/toobee/Downloads/20news-bydate/20news-bydate-train/test";
+    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
     public static void main(String[] args)
         throws Exception

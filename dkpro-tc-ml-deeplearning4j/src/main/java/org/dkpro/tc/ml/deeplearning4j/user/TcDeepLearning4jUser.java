@@ -20,7 +20,8 @@ package org.dkpro.tc.ml.deeplearning4j.user;
 import java.io.File;
 
 public interface TcDeepLearning4jUser {
-	
-	public void run(File trainFile, File testFile, File embedding, File prediction);
-	
+
+	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, File prediction)
+			throws Exception;
+
 }

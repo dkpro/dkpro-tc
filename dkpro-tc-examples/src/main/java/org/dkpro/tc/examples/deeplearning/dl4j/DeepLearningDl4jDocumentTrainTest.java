@@ -36,7 +36,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
-import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -45,8 +45,8 @@ public class DeepLearningDl4jDocumentTrainTest
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "/Users/toobee/Downloads/20news-bydate/20news-bydate-train/train";
-    public static final String corpusFilePathTest = "/Users/toobee/Downloads/20news-bydate/20news-bydate-train/test";
+    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
     public static void main(String[] args)
         throws Exception
@@ -89,7 +89,7 @@ public class DeepLearningDl4jDocumentTrainTest
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
+                        new Dl4jUserCodeStub()),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
                         "/Users/toobee/Desktop/glove.6B.100d.txt"));
