@@ -77,12 +77,13 @@ public class WekaTwitterSentimentDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(WekaTwitterSentimentDemo.class.getSimpleName());
+//        DemoUtils.setDkproHome(WekaTwitterSentimentDemo.class.getSimpleName());
+    	System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
 
         ParameterSpace pSpace = getParameterSpace();
 
         WekaTwitterSentimentDemo experiment = new WekaTwitterSentimentDemo();
-        experiment.runCrossValidation(pSpace);
+//        experiment.runCrossValidation(pSpace);
         experiment.runTrainTest(pSpace);
     }
 

@@ -25,6 +25,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.task.CollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -41,7 +42,8 @@ public class ExperimentSaveModel
     private File outputFolder;
 
     // tasks
-    private InitTask initTaskTrain;
+    private InitTask initTask;
+    private CollectionTask collectionTask;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private ModelSerializationTask saveModelTask;
@@ -78,48 +80,52 @@ public class ExperimentSaveModel
         }
 
         // init the train part of the experiment
-        initTaskTrain = new InitTask();
-        initTaskTrain.setMlAdapter(mlAdapter);
-        initTaskTrain.setPreprocessing(getPreprocessing());
-        initTaskTrain.setOperativeViews(operativeViews);
-        initTaskTrain.setTesting(false);
-        initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
-        initTaskTrain.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
+        initTask = new InitTask();
+        initTask.setMlAdapter(mlAdapter);
+        initTask.setPreprocessing(getPreprocessing());
+        initTask.setOperativeViews(operativeViews);
+        initTask.setTesting(false);
+        initTask.setType(initTask.getType() + "-Train-" + experimentName);
+        initTask.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
+        
+        collectionTask = new CollectionTask();
+		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
+		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
+		collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
 
-        // get some meta data depending on the whole document collection that we
-        // need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
         metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
-        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
+        metaTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
 
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
         featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
+        featuresTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // feature extraction and prediction on test data
-        try {
-		saveModelTask = mlAdapter.getSaveModelTask().newInstance();
-        saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
-        saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        saveModelTask.setOutputFolder(outputFolder);
-        saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
-        
-    	} catch (Exception e) {
+		try {
+			saveModelTask = mlAdapter.getSaveModelTask().newInstance();
+			saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
+			saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
+			saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+					Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+			saveModelTask.setOutputFolder(outputFolder);
+			saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
+
+		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
 
         // DKPro Lab issue 38: must be added as *first* task
-        addTask(initTaskTrain);
+        addTask(initTask);
+        addTask(collectionTask);
         addTask(metaTask);
         addTask(featuresTrainTask);
         addTask(saveModelTask);

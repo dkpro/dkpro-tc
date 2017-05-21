@@ -109,13 +109,11 @@ public class LibsvmModelSerializationDescription
     private void buildOutcome2IntegerMap(TaskContext aContext)
         throws IOException
     {
-        String outcomes = LibsvmAdapter.getOutcomesFile();
-
-        File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-        File trainOutcomes = new File(folder, outcomes);
+        File folder = aContext.getFolder(Constants.OUTCOMES_INPUT_KEY, AccessMode.READONLY);
+        File outcomes = new File(folder, Constants.FILENAME_OUTCOMES);
 
         Set<String> uniqueOutcomes = new HashSet<>();
-        uniqueOutcomes.addAll(FileUtils.readLines(trainOutcomes));
+        uniqueOutcomes.addAll(FileUtils.readLines(outcomes, "utf-8"));
 
         int i = 0;
         for (String o : uniqueOutcomes) {

@@ -346,6 +346,7 @@ public interface Constants
      * extraction test-task about the output location of the extraction train-task
      */
     public static String TRAIN_OUTPUT = "TRAIN_OUTPUT";
+	public static String OUTCOMES_INPUT_KEY = "outcomesFolder";
 
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome

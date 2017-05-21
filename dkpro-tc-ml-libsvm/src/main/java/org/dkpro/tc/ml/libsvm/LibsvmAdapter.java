@@ -71,11 +71,6 @@ public class LibsvmAdapter
 		return "feature-name-mapping.txt";
 	}
 
-    public static String getOutcomesFile()
-    {
-        return "outcomes.txt";
-    }
-    
     public static String getFeatureNames()
     {
         return "featurenames.txt";
