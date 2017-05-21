@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.keras;
+package org.dkpro.tc.examples.deeplearning.keras;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static java.util.Arrays.asList;
@@ -80,7 +80,7 @@ public class DeepLearningKerasSeq2SeqCrossValidation
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE,
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         "src/main/resources/kerasCode/posTaggingLstm.py")
                 );
 

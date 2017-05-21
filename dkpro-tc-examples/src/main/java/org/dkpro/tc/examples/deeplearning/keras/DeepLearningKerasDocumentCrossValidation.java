@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.keras;
+package org.dkpro.tc.examples.deeplearning.keras;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
@@ -72,7 +72,7 @@ public class DeepLearningKerasDocumentCrossValidation implements Constants {
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
-				Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE,
+				Dimension.create(DeepLearningConstants.DIM_USER_CODE,
 						"src/main/resources/kerasCode/imdb_cnn_lstm.py"),
 				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250), Dimension.create(
 						DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS, "/Users/toobee/Desktop/glove.6B.50d.txt"));

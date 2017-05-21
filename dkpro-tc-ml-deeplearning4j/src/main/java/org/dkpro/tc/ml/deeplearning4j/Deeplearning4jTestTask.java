@@ -22,6 +22,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.ml.deeplearning4j.user.TcDeepLearning4jUser;
 
 public class Deeplearning4jTestTask
     extends ExecutableTaskBase
@@ -29,8 +30,8 @@ public class Deeplearning4jTestTask
 {
     public static final String PREDICTION_FILE = "prediction.txt";
             
-    @Discriminator(name = DeepLearningConstants.DIM_PYTHON_USER_CODE)
-    private String userCode;
+    @Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
+    private TcDeepLearning4jUser userCode;
     
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
@@ -39,7 +40,7 @@ public class Deeplearning4jTestTask
     public void execute(TaskContext aContext)
         throws Exception
     {
-       throw new UnsupportedOperationException("Not yet implemented");
+    	userCode.run(null, null, null, null);
     }
 
 }

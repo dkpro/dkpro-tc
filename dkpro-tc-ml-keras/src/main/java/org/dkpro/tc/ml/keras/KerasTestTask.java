@@ -42,7 +42,7 @@ public class KerasTestTask
     @Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
     private String python;
     
-    @Discriminator(name = DeepLearningConstants.DIM_PYTHON_USER_CODE)
+    @Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
     private String userCode;
     
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)

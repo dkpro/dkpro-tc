@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.keras;
+package org.dkpro.tc.examples.deeplearning.dl4j;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
@@ -40,13 +40,13 @@ import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class DeepLearningKerasDocumentTrainTest
+public class DeepLearningDl4jDocumentTrainTest
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    public static final String corpusFilePathTrain = "/Users/toobee/Downloads/20news-bydate/20news-bydate-train/train";
+    public static final String corpusFilePathTest = "/Users/toobee/Downloads/20news-bydate/20news-bydate-train/test";
 
     public static void main(String[] args)
         throws Exception
@@ -57,7 +57,7 @@ public class DeepLearningKerasDocumentTrainTest
 
         ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningKerasDocumentTrainTest experiment = new DeepLearningKerasDocumentTrainTest();
+        DeepLearningDl4jDocumentTrainTest experiment = new DeepLearningDl4jDocumentTrainTest();
         experiment.runTrainTest(pSpace);
     }
 
@@ -88,11 +88,11 @@ public class DeepLearningKerasDocumentTrainTest
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_USER_CODE,
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "/Users/toobee/Desktop/glove.6B.50d.txt"));
+                        "/Users/toobee/Desktop/glove.6B.100d.txt"));
 
         return pSpace;
     }

@@ -42,7 +42,7 @@ public interface DeepLearningConstants
     String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
     String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
     String DIM_PYTHON_INSTALLATION = "dimPythonPath";
-    String DIM_PYTHON_USER_CODE = "dimPythonUserCode";
+    String DIM_USER_CODE = "dimPythonUserCode";
     String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
        
 }
