@@ -65,7 +65,11 @@ public class LiblinearModelSerializationDescription
         
         //create mapping and persist mapping
         File fileTrain = getTrainFile(aContext);
-        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(isRegression, fileTrain);
+        
+        File outcomeFolder = aContext.getFolder(Constants.OUTCOMES_INPUT_KEY, AccessMode.READONLY);
+        File outcomeFile = new File(outcomeFolder, Constants.FILENAME_OUTCOMES);
+        
+        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(outcomeFile, isRegression);
         File mappedTrainFile = LiblinearUtils.replaceOutcome(fileTrain, outcomeMapping);
         File mappingFile = new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename());
         FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));

@@ -143,7 +143,11 @@ public class LiblinearUtilTest
         String dummyData = "A\t1:1.0\t2:1.0\nB\t1:1.0\nC\t2:1.0";
         File tmpFile = FileUtil.createTempFile("junitTest", ".tmp");
         FileUtils.write(tmpFile, dummyData);
-        Map<String, Integer> map = LiblinearUtils.createMapping(false, tmpFile);
+        
+        File outcomes = FileUtil.createTempFile("junitTest", ".txt");
+        FileUtils.writeStringToFile(outcomes, "A\nB\nC\n","utf-8");
+        
+        Map<String, Integer> map = LiblinearUtils.createMapping(outcomes,false);
 
         assertEquals(3, map.size());
         assertEquals(new Integer(0), map.get("A"));

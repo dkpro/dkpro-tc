@@ -116,6 +116,7 @@ public class ExperimentSaveModel
 			saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
 			saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
 					Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+			saveModelTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
 			saveModelTask.setOutputFolder(outputFolder);
 			saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
