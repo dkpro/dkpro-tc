@@ -19,6 +19,6 @@
 /**
  * Support for Keras
  *
- * @since 0.9.0
+ * @since 1.0.0
  */
 package org.dkpro.tc.ml.keras;
