@@ -52,7 +52,7 @@ pool_size = 4
 lstm_output_size = 70
 
 # Training
-batch_size = 30
+batch_size = 2
 epochs = 2
 
 '''
@@ -81,7 +81,22 @@ def numpyizeOutcomeVector(vec):
 	file.close()
 	return v
 	
-
+def loadEmbeddings(emb):
+	matrix = {}	
+	f = open(emb, 'r')
+	embData = f.readlines()
+	f.close()
+	dim = len(embData[0].split())-1
+	matrix = np.zeros((len(embData)+1, dim))	
+	for e in embData:
+		e = e.strip()
+		if not e:
+			continue
+		idx = e.find(" ")
+		id = e[:idx]
+		vector = e[idx+1:]
+		matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
+	return matrix, dim
 
 def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength, predictionOut):
 
@@ -90,12 +105,22 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 	
 	testVecNump = numpyizeDataVector(testVec)
 	testOutcome = numpyizeOutcomeVector(testOutcome)
+	
+	if embedding:
+		print("Load pretrained embeddings")
+		embeddings,dim = loadEmbeddings(embedding)
+		EMBEDDING_DIM = dim
+	else:
+		print("Train embeddings on the fly")
+		EMBEDDING_DIM = 50
 
 	x_train = sequence.pad_sequences(trainVecNump, maxlen=int(maximumLength))
 	x_test = sequence.pad_sequences(testVecNump, maxlen=int(maximumLength))
 	
 	y_train = trainOutcome
 	y_test = testOutcome
+	
+	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 		
 	print(x_train.shape)
 	print(x_test.shape)	
@@ -103,7 +128,12 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 	print('Build model...')
 
 	model = Sequential()
-	model.add(Embedding(max_features, embedding_size, input_length=int(maximumLength)))
+	if embedding:
+		print("Using pre-trained embeddings")
+		model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
+	else:
+		print("Train embeddings on-the-fly")	
+		model.add(Embedding(vocabSize+1, EMBEDDING_DIM))	
 	model.add(Dropout(0.25))
 	model.add(Conv1D(filters,
                  kernel_size,
@@ -113,7 +143,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 	model.add(MaxPooling1D(pool_size=pool_size))
 	model.add(LSTM(lstm_output_size))
 	model.add(Dense(1))
-	model.add(Activation('sigmoid'))
+	model.add(Activation('softmax'))
 
 	model.compile(loss='binary_crossentropy',
               optimizer='adam',
@@ -123,7 +153,8 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 	model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
-          validation_data=(x_test, y_test))
+          validation_data=(x_test, y_test),
+          shuffle=True)
 	score, acc = model.evaluate(x_test, y_test, batch_size=batch_size)
 	
 	prediction = model.predict_classes(x_test)

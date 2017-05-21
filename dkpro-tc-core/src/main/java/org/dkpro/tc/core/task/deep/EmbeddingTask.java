@@ -102,7 +102,7 @@ public class EmbeddingTask
 
         for(String k : tokenIdMap.keySet()){
             initUnknown(lenVec);
-            writer.write(tokenIdMap.get(k) + "\t" + unknownVector + System.lineSeparator());
+            writer.write(tokenIdMap.get(k) + " " + unknownVector + System.lineSeparator());
         }
 
         writer.close();
