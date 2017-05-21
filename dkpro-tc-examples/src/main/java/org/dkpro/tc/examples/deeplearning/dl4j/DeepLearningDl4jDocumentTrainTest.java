@@ -103,7 +103,7 @@ public class DeepLearningDl4jDocumentTrainTest
     {
 
         DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DeepLearning",
-                KerasAdapter.class);
+                Deeplearning4jAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
