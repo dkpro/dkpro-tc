@@ -23,7 +23,6 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>dkpro-tc-ml-deeplearning4j</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <dependencies>
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
