@@ -202,7 +202,11 @@
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml-deeplearning4j</artifactId>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.nd4j</groupId>
+			<artifactId>nd4j-native</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

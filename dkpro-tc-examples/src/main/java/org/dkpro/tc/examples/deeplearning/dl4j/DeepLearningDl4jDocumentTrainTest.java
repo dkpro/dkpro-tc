@@ -86,13 +86,11 @@ public class DeepLearningDl4jDocumentTrainTest
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
-                        "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         new Dl4jUserCodeStub()),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 500),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "/Users/toobee/Desktop/glove.6B.100d.txt"));
+                        "/Users/toobee/Desktop/glove.6B.300d.txt"));
 
         return pSpace;
     }

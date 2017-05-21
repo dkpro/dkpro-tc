@@ -399,6 +399,11 @@
 				<artifactId>deeplearning4j-nlp</artifactId>
 				<version>0.8.0</version>
 			</dependency>
+			<dependency>
+				<groupId>org.nd4j</groupId>
+				<artifactId>nd4j-native</artifactId>
+				<version>0.8.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>

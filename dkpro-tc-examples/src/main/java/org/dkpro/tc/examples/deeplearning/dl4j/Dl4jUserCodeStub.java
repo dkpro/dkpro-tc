@@ -40,11 +40,11 @@ import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
-
+	
 	@Override
 	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, File prediction) throws Exception {
 		
-		int batchSize = 2;     //Number of examples in each minibatch
+		int batchSize = 4;     //Number of examples in each minibatch
         int nEpochs = 5;        //Number of epochs (full passes of training data) to train on
 
         //DataSetIterators for training and testing respectively
@@ -107,8 +107,7 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
                 //System.out.println("predicted : " + predicted);
                 evaluation.evalTimeSeries(lables, predicted, outMask);
             }
-            
-
+            iTest.reset();
             System.out.println(evaluation.stats());
         }
 		

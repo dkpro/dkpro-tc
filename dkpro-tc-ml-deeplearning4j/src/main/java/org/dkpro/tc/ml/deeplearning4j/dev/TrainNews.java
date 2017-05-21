@@ -32,20 +32,12 @@ import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
-import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 public class TrainNews {
-    public static String userDirectory = "";
-    public static String DATA_PATH = "";
-    public static String WORD_VECTORS_PATH = "";
     public static WordVectors wordVectors;
-    private static TokenizerFactory tokenizerFactory;
 
     public static void main(String[] args) throws Exception {
 //        DATA_PATH = "/Users/toobee/Documents/Eclipse/dl4j-examples/dl4j-examples/src/main/resources/NewsData/LabelledNews/";
@@ -56,16 +48,16 @@ public class TrainNews {
 
         //DataSetIterators for training and testing respectively
         //Using AsyncDataSetIterator to do data loading in a separate thread; this may improve performance vs. waiting for data to load
-        wordVectors = WordVectorSerializer.loadTxtVectors(new File("/Users/toobee/Desktop/org.dkpro.lab/repository/EmbeddingTask-DeepLearning-20170521182024802/output/prunedEmbedding.txt"));
+        wordVectors = WordVectorSerializer.loadTxtVectors(new File("/Users/toobee/Desktop/org.dkpro.lab/repository/EmbeddingTask-KerasTrainTest-20170521223652342/output/prunedEmbedding.txt"));
 
         NewsIterator iTrain = new NewsIterator.Builder()
-            .dataDirectory("/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521182025528/output")
+            .dataDirectory("/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-KerasTrainTest-20170521223653471/output")
             .wordVectors(wordVectors)
             .batchSize(batchSize)
             .build();
 
         NewsIterator iTest = new NewsIterator.Builder()
-            .dataDirectory("/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170521182026162/output")
+            .dataDirectory("/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-KerasTrainTest-20170521223654188/output")
             .wordVectors(wordVectors)
             .batchSize(batchSize)
             .build();
@@ -76,8 +68,6 @@ public class TrainNews {
         int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length; // 100 in our case
         int outputs = iTrain.getLabels().size();
 
-        tokenizerFactory = new DefaultTokenizerFactory();
-        tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
         //Set up network configuration
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
             .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
@@ -122,7 +112,6 @@ public class TrainNews {
             System.out.println(evaluation.stats());
         }
 
-        ModelSerializer.writeModel(net, userDirectory + "NewsModel.net", true);
         System.out.println("----- Example complete -----");
     }
 
