@@ -32,7 +32,9 @@ def loadEmbeddings(emb):
 		e = e.strip()
 		if not e:
 			continue
-		id, vector = e.split("\t")
+		idx = e.find(" ")
+		id = e[:idx]
+		vector = e[idx+1:]
 		matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
 	return matrix, dim
 

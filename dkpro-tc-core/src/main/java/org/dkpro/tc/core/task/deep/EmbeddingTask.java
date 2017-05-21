@@ -92,7 +92,7 @@ public class EmbeddingTask
             String vector = line.substring(indexOf+1);
             
             if (tokenIdMap.containsKey(token)) {
-                writer.write(tokenIdMap.get(token) + "\t" + vector + System.lineSeparator());
+                writer.write(tokenIdMap.get(token) + " " + vector + System.lineSeparator());
                 tokenIdMap.remove(token);
             }
             if(lenVec < 0){
