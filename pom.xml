@@ -389,6 +389,16 @@
 				<artifactId>libsvm</artifactId>
 				<version>3.21</version>
 			</dependency>
+			<dependency>
+				<groupId>org.deeplearning4j</groupId>
+				<artifactId>deeplearning4j-core</artifactId>
+				<version>0.8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.deeplearning4j</groupId>
+				<artifactId>deeplearning4j-nlp</artifactId>
+				<version>0.8.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>

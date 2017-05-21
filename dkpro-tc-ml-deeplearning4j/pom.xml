@@ -37,5 +37,18 @@
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-ml</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.deeplearning4j</groupId>
+  		<artifactId>deeplearning4j-core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.deeplearning4j</groupId>
+  		<artifactId>deeplearning4j-nlp</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.nd4j</groupId>
+  		<artifactId>nd4j-native</artifactId>
+  		<version>0.8.0</version>
+  	</dependency>
   </dependencies>
 </project>
