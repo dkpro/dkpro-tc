@@ -1,41 +1,24 @@
-/**-
- * This program trains a RNN to predict category of a news headlines. It uses word vector generated from PrepareWordVector.java.
- * - Labeled News are stored in \dl4j-examples\src\main\resources\NewsData\LabelledNews folder in train and test folders.
- * - categories.txt file in \dl4j-examples\src\main\resources\NewsData\LabelledNews folder contains category code and description.
- * - This categories are used along with actual news for training.
- * - news word vector is contained  in \dl4j-examples\src\main\resources\NewsData\NewsWordVector.txt file.
- * - Trained model is stored in \dl4j-examples\src\main\resources\NewsData\NewsModel.net file
- * - News Data contains only 3 categories currently.
- * - Data set structure is as given below
- * - categories.txt - this file contains various categories in category id,category description format. Sample categories are as below
- * 0,crime
- * 1,politics
- * 2,bollywood
- * 3,Business&Development
- * - For each category id above, there is a file containig actual news headlines, e.g.
- * 0.txt - contains news for crime headlines
- * 1.txt - contains news for politics headlines
- * 2.txt - contains news for bollywood
- * 3.txt - contains news for Business&Development
- * - You can add any new category by adding one line in categories.txt and respective news file in folder mentioned above.
- * - Below are training results with the news data given with this example.
- * ==========================Scores========================================
- * Accuracy:        0.9343
- * Precision:       0.9249
- * Recall:          0.9327
- * F1 Score:        0.9288
- * ========================================================================
- * <p>
- * Note :
- * - This code is a modification of original example named Word2VecSentimentRNN.java
- * - Results may vary with the data you use to train this network
- * <p>
- * <b>KIT Solutions Pvt. Ltd. (www.kitsol.com)</b>
- */
-
+/*******************************************************************************
+ * Copyright 2017
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.dkpro.tc.ml.deeplearning4j.dev;
 
-import org.datavec.api.util.ClassPathResource;
+import java.io.File;
+
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -56,8 +39,6 @@ import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-
-import java.io.File;
 
 public class TrainNews {
     public static String userDirectory = "";

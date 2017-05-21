@@ -1,15 +1,20 @@
-/**-
- * This program generates a word-vector from news items stored in resources folder.
- * News File is located at \dl4j-examples\src\main\resources\NewsData\RawNewsToGenerateWordVector.txt
- * Word vector file : \dl4j-examples\src\main\resources\NewsData\NewsWordVector.txt
- * Note :
- * 1) This code is modification of original example named Word2VecRawTextExample.java
- * 2) Word vector generated in this program is used in Training RNN to categorise news headlines.
- * <p>
- * <b></b>KIT Solutions Pvt. Ltd. (www.kitsol.com)</b>
- */
-
-
+/*******************************************************************************
+ * Copyright 2017
+ * Ubiquitous Knowledge Processing (UKP) Lab
+ * Technische Universität Darmstadt
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.dkpro.tc.ml.deeplearning4j.dev;
 
 import org.datavec.api.util.ClassPathResource;
