@@ -22,8 +22,6 @@ import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
-import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TEST_DATA;
-import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA;
 
 import java.io.File;
 import java.util.Arrays;
@@ -44,14 +42,11 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.InitTaskDeep;
-import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.dkpro.tc.ml.report.BatchBasicResultReport;
 import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
@@ -65,8 +60,6 @@ public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
 	protected int numFolds = 10;
 
 	protected InitTaskDeep initTask;
-//	protected InitTaskDeep initTaskTrain;
-//	protected InitTaskDeep initTaskTest;
 	protected PreparationTask preparationTask;
 	protected EmbeddingTask embeddingTask;
 	protected VectorizationTask vectorizationTrainTask;
@@ -218,20 +211,12 @@ public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
 //		initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
 //		initTaskTrain.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
 //
-//		// init the test part of the experiment
-//		initTaskTest = new InitTaskDeep();
-//		initTaskTest.setTesting(true);
-//		initTaskTest.setPreprocessing(getPreprocessing());
-//		initTaskTest.setOperativeViews(operativeViews);
-//		initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
-//		initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
-
 		// collecting meta features only on the training data (numFolds times)
 		// get some meta data depending on the whole document collection
 		preparationTask = new PreparationTask();
 		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
 		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
-		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
+//		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
 		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
 		embeddingTask = new EmbeddingTask();
@@ -285,9 +270,8 @@ public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
 
 		crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
 		crossValidationTask.setType(crossValidationTask.getType().replaceAll("\\$[0-9]+", "-") + experimentName);
-//		crossValidationTask.addTask(initTaskTrain);
-//		crossValidationTask.addTask(initTaskTest);
 		crossValidationTask.addTask(preparationTask);
+		crossValidationTask.addTask(embeddingTask);
 		crossValidationTask.addTask(vectorizationTrainTask);
 		crossValidationTask.addTask(vectorizationTestTask);
 		crossValidationTask.addTask(learningTask);

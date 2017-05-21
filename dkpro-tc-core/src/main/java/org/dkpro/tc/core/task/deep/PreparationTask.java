@@ -80,7 +80,7 @@ public class PreparationTask
         throws ResourceInitializationException, IOException
     {
         // TrainTest setup: input files are set as imports
-        if (filesRoot == null || files_training == null) {
+//        if (filesRoot == null || files_training == null) {
             File trainRoot = aContext.getFolder(INPUT_KEY_TRAIN, AccessMode.READONLY);
             Collection<File> files = FileUtils.listFiles(trainRoot, new String[] { "bin" }, true);
             File testRoot = aContext.getFolder(INPUT_KEY_TEST, AccessMode.READONLY);
@@ -88,13 +88,13 @@ public class PreparationTask
 
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
-        }
+//        }
         // FIXME: Ensure that we get all data form all folds for embedding creation
         // CV setup: filesRoot and files_atrining have to be set as dimension
-        else {
-            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
-                    files_training);
-        }
+//        else {
+//            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+//                    files_training);
+//        }
     }
 
     @Override
