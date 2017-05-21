@@ -141,8 +141,13 @@ public class KerasOutcomeIDReport
                 t.add("");
                 continue;
             }
-            String[] split = s.split("\t");
-            t.add(split[1]);
+            
+			String[] split = s.split("\t");
+			if (split[0].contains("_")) {
+				t.add(s.replaceAll("\t", "_"));
+			} else {
+				t.add(split[1]);
+			}
         }
 
         return t;
