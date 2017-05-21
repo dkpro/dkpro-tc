@@ -29,19 +29,18 @@ System.setProperty("DKPRO_HOME", "pathToYourDKproDirectory");
 
 DKPro TC comes with a collection of demo experiments which show various ways to define your experiment setups.
 
-Currently, there are two example projects which represent TC experiments in Java and Groovy:
+The easiest way to get started is by looking at the example projects for TC experiments:
 
 [source,java]
 ----
-de.tudarmstadt.ukp.dkpro.tc.examples-gpl
-de.tudarmstadt.ukp.dkpro.tc.examples-groovy-gpl
+dkpro-tc-examples
 ----
 
 They are sorted into packages based on their feature and learning modes, e.g.:
 
 [source,java]
 ----
-TwitterSentimentDemo
+WekaTwitterSentimentDemo
 ---- 
 
 can be found in the package
@@ -53,8 +52,8 @@ de.tudarmstadt.ukp.dkpro.tc.examples.single.document
 
 as it demonstrates a single-label classification experiment with entire documents (tweets) as classification objects. For an explanation of feature and learning modes, please see below. 
 
-All example projects come with a set of data and can be run right away. The _TwitterSentimentDemo_ and _TwentyNewsgroupsDemo_ experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
-If you don't know where to start, go with the TwitterSentimentDemo first, as it has the most extensive documentation.
+All example projects come with a set of data and can be run right away. The _WekaTwitterSentimentDemo_ and _WekaTwentyNewsgroupsDemo_ experiments are binary, single-label classification tasks. The _Reuters_ example is a multi-label classification task.  The _Regression_ demo shows how to use DKPro-TC for regression experiments. The _PairTwentyNewsgroups_ demo is a text-pair classification task (`pair` feature mode).
+If you don't know where to start, go with the WekaTwitterSentimentDemo first, as it has the most extensive documentation.
 
 [[TwitterSentimentDemo]]
 ### Binary Classification with DKPro-TC: TwitterSentiment Demo
@@ -62,7 +61,7 @@ If you don't know where to start, go with the TwitterSentimentDemo first, as it 
 There are two ways to run the experiment:
    
 * `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `dkpro-tc-examples-groovy` module)
-* `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
+* `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.WekaTwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
 
 In this tutorial, we will follow the Groovy version of the experiment, which is easier to read. The Java configuration is very similar.
 
@@ -105,10 +104,11 @@ ExperimentCrossValidation batchTask = [
     // learning mode; must be unique
     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
     // a list of feature extractors
-    Dimension.create(DIM_FEATURE_SET, [
-      EmoticonRatioDFE.name,
-      NumberOfHashTagsDFE.name
-    ]),
+    Dimension.create(DIM_FEATURE_SET, 
+      new TcFeatureSet(
+        TcFeatureFactory.create(EmoticonRatio.class),
+        TcFeatureFactory.create(NumberOfHashTags.class)
+      )),
     // machine learning classifiers; two classifiers will be tested
     Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
   ],
@@ -162,10 +162,11 @@ For more information on feature and learning modes, refer to the following paper
 .the feature extractors
 [source,java]
 ----
-Dimension.create(DIM_FEATURE_SET, [EmoticonRatioDFE.name, NumberOfHashTagsDFE.name])
+    Dimension.create(DIM_FEATURE_SET, 
+      new TcFeatureSet(TcFeatureFactory.create(EmoticonRatio.class), TcFeatureFactory.create(NumberOfHashTags.class))),
 ----
 
-The featureSet discriminator expects a list containing the feature extractor class names you want to use. If you specify a list of lists, different feature sets will be tested ("swept"). See also link:#FeatureExtractors[here].
+The featureSet discriminator expects an object of type `TcFeatureSet` containing a listof feature extractors created using e.g. `TcFeatureFactory` as in the example above. If you specify several `TcFeatureSet`s, different feature sets will be tested ("swept"). See also link:#FeatureExtractors[here].
 
 Any additional configuration parameters for the feature extractors (e.g. uni-, bi- or trigrams for n-gram features) could be defined as follows:
 
