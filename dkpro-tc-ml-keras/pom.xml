@@ -23,7 +23,6 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>dkpro-tc-ml-keras</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
   <dependencies>
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
@@ -38,8 +37,4 @@
   		<artifactId>dkpro-tc-ml</artifactId>
   	</dependency>
   </dependencies>
-  <properties>
-	  	<!-- This module should not be deployed to the repository -->
-    	<maven.deploy.skip>true</maven.deploy.skip>
-  	</properties>
 </project>
