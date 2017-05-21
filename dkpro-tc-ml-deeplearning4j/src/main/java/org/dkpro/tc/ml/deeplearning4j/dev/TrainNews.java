@@ -67,9 +67,10 @@ public class TrainNews {
     private static TokenizerFactory tokenizerFactory;
 
     public static void main(String[] args) throws Exception {
-        DATA_PATH = "/Users/toobee/Documents/Eclipse/dl4j-examples/dl4j-examples/src/main/resources/NewsData/LabelledNews/";
+//        DATA_PATH = "/Users/toobee/Documents/Eclipse/dl4j-examples/dl4j-examples/src/main/resources/NewsData/LabelledNews/";
+        DATA_PATH= "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170521171143046/output/";
 
-        int batchSize = 20;     //Number of examples in each minibatch
+        int batchSize = 2;     //Number of examples in each minibatch
         int nEpochs = 50;        //Number of epochs (full passes of training data) to train on
         int truncateReviewsToLength = 20;  //Truncate reviews with length (# words) greater than this
 
