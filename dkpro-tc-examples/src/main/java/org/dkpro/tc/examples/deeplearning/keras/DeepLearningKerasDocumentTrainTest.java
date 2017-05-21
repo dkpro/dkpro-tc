@@ -102,8 +102,8 @@ public class DeepLearningKerasDocumentTrainTest
         throws Exception
     {
 
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("Dl4j",
-                Deeplearnin.class);
+        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasTrainTest",
+                KerasAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

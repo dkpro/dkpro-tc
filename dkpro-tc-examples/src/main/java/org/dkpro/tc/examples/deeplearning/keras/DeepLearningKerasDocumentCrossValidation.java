@@ -83,7 +83,7 @@ public class DeepLearningKerasDocumentCrossValidation implements Constants {
 	// ##### TRAIN-TEST #####
 	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("DeepLearning",
+		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasCrossValidation",
 				KerasAdapter.class, 2);
 		batch.setPreprocessing(getPreprocessing());
 		batch.setParameterSpace(pSpace);
