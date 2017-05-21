@@ -44,7 +44,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DeepLearningKerasSeq2SeqPoSTestDummy
+public class DeepLearningKerasSeq2SeqTrainTest
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -63,7 +63,7 @@ public class DeepLearningKerasSeq2SeqPoSTestDummy
 
         ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningKerasSeq2SeqPoSTestDummy experiment = new DeepLearningKerasSeq2SeqPoSTestDummy();
+        DeepLearningKerasSeq2SeqTrainTest experiment = new DeepLearningKerasSeq2SeqTrainTest();
         experiment.runTrainTest(pSpace);
     }
 

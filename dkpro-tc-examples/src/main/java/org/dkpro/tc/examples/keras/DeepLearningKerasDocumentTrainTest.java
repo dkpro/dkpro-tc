@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class DeepLearningKerasDocumentTestDummy
+public class DeepLearningKerasDocumentTrainTest
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -57,7 +57,7 @@ public class DeepLearningKerasDocumentTestDummy
 
         ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningKerasDocumentTestDummy experiment = new DeepLearningKerasDocumentTestDummy();
+        DeepLearningKerasDocumentTrainTest experiment = new DeepLearningKerasDocumentTrainTest();
         experiment.runTrainTest(pSpace);
     }
 
