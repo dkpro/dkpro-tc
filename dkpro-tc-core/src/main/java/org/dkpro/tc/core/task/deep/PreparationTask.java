@@ -98,10 +98,6 @@ public class PreparationTask extends UimaTaskBase {
 
 		AggregateBuilder builder = new AggregateBuilder();
 
-		builder.add(AnalysisEngineFactory.createEngineDescription(PruneEmbeddingAnnotator.class,
-				PruneEmbeddingAnnotator.PARAM_TARGET_DIRECTORY, folder, PruneEmbeddingAnnotator.PARAM_EMBEDDING_PATH,
-				embedding));
-
 		builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
 				MappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
 
