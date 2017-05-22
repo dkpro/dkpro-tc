@@ -21,7 +21,9 @@ package org.dkpro.tc.examples.deeplearning.dl4j;
 
 import java.io.File;
 
-import org.deeplearning4j.eval.Evaluation;
+import org.apache.commons.io.FileUtils;
+import org.deeplearning4j.berkeley.Pair;
+import org.deeplearning4j.eval.EvaluationUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -37,62 +39,69 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.dkpro.tc.ml.deeplearning4j.user.TcDeepLearning4jUser;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
-    
-    public static void main(String[] args) throws Exception
-    {
-        String trainVec="/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170522153616437/output/instanceVectors.txt";
-        String trainOutc="/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170522153616437/output/outcomeVectors.txt";
-        String testVec="/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170522153623740/output/instanceVectors.txt";
-        String testOutc="/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170522153623740/output/outcomeVectors.txt";
-        String embedding="/Users/toobee/Desktop/org.dkpro.lab/repository/EmbeddingTask-DeepLearning-20170522153615623/output/prunedEmbedding.txt";
-        String pred="/Users/toobee/Desktop/pred.txt";
-        new Dl4jUserCodeStub().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc), new File(embedding), new File(pred));
-    }
-	
-	@Override
-	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, File prediction) throws Exception {
-		
-		int batchSize = 50;     //Number of examples in each minibatch
-        int nEpochs = 100;        //Number of epochs (full passes of training data) to train on
+public class Dl4jUserCodeStub
+    implements TcDeepLearning4jUser
+{
 
-        //DataSetIterators for training and testing respectively
-        //Using AsyncDataSetIterator to do data loading in a separate thread; this may improve performance vs. waiting for data to load
+    public static void main(String[] args)
+        throws Exception
+    {
+        String trainVec = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170522162810560/output/instanceVectors.txt";
+        String trainOutc = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170522162810560/output/outcomeVectors.txt";
+        String testVec = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170522162815269/output/instanceVectors.txt";
+        String testOutc = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170522162815269/output/outcomeVectors.txt";
+        String embedding = "/Users/toobee/Desktop/org.dkpro.lab/repository/EmbeddingTask-DeepLearning-20170522162809768/output/prunedEmbedding.txt";
+        String pred = "/Users/toobee/Desktop/pred.txt";
+        new Dl4jUserCodeStub().run(new File(trainVec), new File(trainOutc), new File(testVec),
+                new File(testOutc), new File(embedding), new File(pred));
+    }
+
+    @Override
+    public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
+            File embedding, File prediction)
+                throws Exception
+    {
+
+        int batchSize = 50; // Number of examples in each minibatch
+        int nEpochs = 1; // Number of epochs (full passes of training data) to train on
+
+        // DataSetIterators for training and testing respectively
+        // Using AsyncDataSetIterator to do data loading in a separate thread; this may improve
+        // performance vs. waiting for data to load
         WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
 
-        NewsIterator iTrain = new NewsIterator.Builder()
-            .dataDirectory(trainVec.getParent())
-            .wordVectors(wordVectors)
-            .batchSize(batchSize)
-            .build();
+        NewsIterator iTrain = new NewsIterator.Builder().dataDirectory(trainVec.getParent())
+                .wordVectors(wordVectors).batchSize(batchSize).build();
 
-        NewsIterator iTest = new NewsIterator.Builder()
-            .dataDirectory(testVec.getParent())
-            .wordVectors(wordVectors)
-            .batchSize(batchSize)
-            .build();
+        NewsIterator iTest = new NewsIterator.Builder().dataDirectory(testVec.getParent())
+                .wordVectors(wordVectors).batchSize(batchSize).build();
 
-        //DataSetIterator train = new AsyncDataSetIterator(iTrain,1);
-        //DataSetIterator test = new AsyncDataSetIterator(iTest,1);
+        // DataSetIterator train = new AsyncDataSetIterator(iTrain,1);
+        // DataSetIterator test = new AsyncDataSetIterator(iTest,1);
 
-        int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length; // 100 in our case
+        int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length; // 100
+                                                                                                 // in
+                                                                                                 // our
+                                                                                                 // case
         int outputs = iTrain.getLabels().size();
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
-            .updater(Updater.RMSPROP)
-            .regularization(true).l2(1e-5)
-            .weightInit(WeightInit.XAVIER)
-            .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue).gradientNormalizationThreshold(1.0)
-            .learningRate(0.0018)
-            .list()
-            .layer(0, new GravesLSTM.Builder().nIn(inputNeurons).nOut(200)
-                .activation("softsign").build())
-            .layer(1, new RnnOutputLayer.Builder().activation("softmax")
-                .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(outputs).build())
-            .pretrain(false).backprop(true).build();
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
+                .updater(Updater.RMSPROP).regularization(true).l2(1e-5)
+                .weightInit(WeightInit.XAVIER)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0).learningRate(0.0018).list()
+                .layer(0,
+                        new GravesLSTM.Builder().nIn(inputNeurons).nOut(200).activation("softsign")
+                                .build())
+                .layer(1,
+                        new RnnOutputLayer.Builder().activation("softmax")
+                                .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200)
+                                .nOut(outputs).build())
+                .pretrain(false).backprop(true).build();
 
         MultiLayerNetwork net = new MultiLayerNetwork(conf);
         net.init();
@@ -102,26 +111,48 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
         for (int i = 0; i < nEpochs; i++) {
             net.fit(iTrain);
             iTrain.reset();
-            System.out.println("Epoch " + i + " complete. Starting evaluation:");
-
-            //Run evaluation. This is on 25k reviews, so can take some time
-            Evaluation evaluation = new Evaluation();
-            while (iTest.hasNext()) {
-                DataSet t = iTest.next();
-                INDArray features = t.getFeatureMatrix();
-                INDArray lables = t.getLabels();
-                //System.out.println("labels : " + lables);
-                INDArray inMask = t.getFeaturesMaskArray();
-                INDArray outMask = t.getLabelsMaskArray();
-                INDArray predicted = net.output(features, false);
-
-                //System.out.println("predicted : " + predicted);
-                evaluation.evalTimeSeries(lables, predicted, outMask);
-            }
-            iTest.reset();
-            System.out.println(evaluation.stats());
+            System.out.println("Epoch " + i + " complete");
         }
-		
-	}
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Gold\tPrediction" + System.lineSeparator());
+        // Run evaluation. This is on 25k reviews, so can take some time
+        while (iTest.hasNext()) {
+            DataSet t = iTest.next();
+            INDArray features = t.getFeatureMatrix();
+            INDArray lables = t.getLabels();
+            // System.out.println("labels : " + lables);
+            INDArray outMask = t.getLabelsMaskArray();
+            INDArray predicted = net.output(features, false);
+            // System.out.println("predicted : " + predicted);
+            eval(lables, predicted, outMask, sb);
+        }
+        iTest.reset();
+
+        FileUtils.writeStringToFile(prediction, sb.toString(), "utf-8");
+    }
+
+    private static void eval(INDArray labels, INDArray p, INDArray outMask, StringBuilder sb)
+    {
+        Pair<INDArray, INDArray> pair = EvaluationUtils.extractNonMaskedTimeSteps(labels, p,
+                outMask);
+
+        INDArray realOutcomes = pair.getFirst();
+        INDArray guesses = pair.getSecond();
+
+        // Length of real labels must be same as length of predicted labels
+        if (realOutcomes.length() != guesses.length())
+            throw new IllegalArgumentException(
+                    "Unable to evaluate. Outcome matrices not same length");
+
+        INDArray guessIndex = Nd4j.argMax(guesses, 1);
+        INDArray realOutcomeIndex = Nd4j.argMax(realOutcomes, 1);
+
+        int nExamples = guessIndex.length();
+        for (int i = 0; i < nExamples; i++) {
+            int actual = (int) realOutcomeIndex.getDouble(i);
+            int predicted = (int) guessIndex.getDouble(i);
+            sb.append(actual + "\t" + predicted + System.lineSeparator());
+        }
+    }
 }
