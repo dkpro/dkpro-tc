@@ -223,41 +223,6 @@ public class NewsIterator implements DataSetIterator {
 		return features;
 	}
 
-	/*
-	 * This function loads news headlines from files stored in resources into
-	 * categoryData List.
-	 */
-	// private void populateData(boolean train) {
-	// File categories = new File(this.dataDirectory + File.separator +
-	// "categories.txt");
-	//
-	// try (BufferedReader brCategories = new BufferedReader(new
-	// FileReader(categories))) {
-	// String temp = "";
-	// while ((temp = brCategories.readLine()) != null) {
-	// String curFileName = train == true ?
-	// this.dataDirectory + File.separator + "train" + File.separator +
-	// temp.split(",")[0] + ".txt" :
-	// this.dataDirectory + File.separator + "test" + File.separator +
-	// temp.split(",")[0] + ".txt";
-	// File currFile = new File(curFileName);
-	// BufferedReader currBR = new BufferedReader((new FileReader(currFile)));
-	// String tempCurrLine = "";
-	// List<String> tempList = new ArrayList<>();
-	// while ((tempCurrLine = currBR.readLine()) != null) {
-	// tempList.add(tempCurrLine);
-	// this.totalNews++;
-	// }
-	// currBR.close();
-	// Pair<String, List<String>> tempPair = Pair.of(temp, tempList);
-	// this.categoryData.add(tempPair);
-	// }
-	// brCategories.close();
-	// } catch (Exception e) {
-	// System.out.println("Exception in reading file :" + e.getMessage());
-	// }
-	// }
-
 	private void populateData() throws Exception {
 
 		//FIXME: Implement me a bit more efficiently :)
