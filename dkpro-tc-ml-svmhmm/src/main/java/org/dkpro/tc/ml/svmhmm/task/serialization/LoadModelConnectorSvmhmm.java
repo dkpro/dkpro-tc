@@ -75,6 +75,7 @@ public class LoadModelConnectorSvmhmm
 
     SVMHMMDataWriter svmhmmDataWriter;
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
@@ -90,9 +91,10 @@ public class LoadModelConnectorSvmhmm
             FileUtils.copyFile(new File(tcModelLocation, Constants.FILENAME_FEATURES), new File(tmpFolderForFeatureFile.toFile(), Constants.FILENAME_FEATURES));
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
 
+            String[] outcomes = (String[]) loadMapping.keySet().toArray(new String[0]);
             svmhmmDataWriter = new SVMHMMDataWriter();
             svmhmmDataWriter.init(tmpFolderForFeatureFile.toFile(), new SVMHMMAdapter().useSparseFeatures(),
-                    learningMode, false);
+                    learningMode, false, outcomes);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
