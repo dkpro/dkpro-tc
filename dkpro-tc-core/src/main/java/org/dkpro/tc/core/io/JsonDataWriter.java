@@ -111,4 +111,11 @@ public class JsonDataWriter
     {
         throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
     }
+
+    @Override
+    public void close()
+        throws Exception
+    {
+        
+    }
 }

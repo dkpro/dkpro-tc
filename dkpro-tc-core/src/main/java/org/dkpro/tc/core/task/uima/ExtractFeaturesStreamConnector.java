@@ -20,7 +20,10 @@ package org.dkpro.tc.core.task.uima;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -222,14 +225,6 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 
 	    return new FeatureDescription(FeatureType.UNKNOWN);
     }
-
-    private void trackOutcomes(List<Instance> instances) {
-		for (Instance i : instances) {
-			for (String o : i.getOutcomes()) {
-				uniqueOutcomes.add(o);
-			}
-		}
-	}
 
 	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
 		if (!isTesting) {
