@@ -209,13 +209,13 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqInst.write(" ");
                 }
             }
-            if (i + 1 >= instances.size() && i+1 < maximumLength) {
-                i--;// if we reached the limit of the data correct index by one to pad enough zeros
-            }
-            while (i + 1 < maximumLength) {
-                writerSeqInst.write(" 0");
-                i++;
-            }
+//            if (i + 1 >= instances.size() && i+1 < maximumLength) {
+//                i--;// if we reached the limit of the data correct index by one to pad enough zeros
+//            }
+//            while (i + 1 < maximumLength) {
+//                writerSeqInst.write(" 0");
+//                i++;
+//            }
 
             writerSeqInst.write("]" + System.lineSeparator());
         }
