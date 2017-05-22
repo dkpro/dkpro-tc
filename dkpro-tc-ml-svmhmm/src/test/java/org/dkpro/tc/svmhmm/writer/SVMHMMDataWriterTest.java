@@ -74,8 +74,8 @@ public class SVMHMMDataWriterTest
             randomFeatureNames.add(String.valueOf(i));
         }
         List<String> allFeatureNames = new ArrayList<>(randomFeatureNames);
-        FileUtils.writeLines(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES), "utf-8",
-                allFeatureNames);
+        FileUtils.writeLines(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+                "utf-8", allFeatureNames);
 
         // add 100.000 instances
         List<Instance> instances = new ArrayList<>();
@@ -99,11 +99,12 @@ public class SVMHMMDataWriterTest
         }
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
+                new String[] { "outcome" });
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-        List<String> lines = IOUtils
-                .readLines(new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        List<String> lines = IOUtils.readLines(
+                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
         System.out.println(lines.subList(0, 5));
     }
 
@@ -115,16 +116,18 @@ public class SVMHMMDataWriterTest
         instances.add(new Instance(
                 new Feature(OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT, "multi line \n text")
                         .asSet()));
-        
-        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+
+        FileUtils.writeStringToFile(
+                new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
                 OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n");
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
+                new String[] {});
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-        List<String> lines = IOUtils
-                .readLines(new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        List<String> lines = IOUtils.readLines(
+                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
         System.out.println(lines);
 
         // each instance must be on one line!
@@ -142,7 +145,8 @@ public class SVMHMMDataWriterTest
         Feature f2 = new Feature(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature",
                 longText);
 
-        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+        FileUtils.writeStringToFile(
+                new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
                 OriginalTextHolderFeatureExtractor.ORIGINAL_TEXT + "\n"
                         + SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature");
 
@@ -151,7 +155,8 @@ public class SVMHMMDataWriterTest
         instances.add(instance);
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
+                new String[] {});
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
         File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
@@ -167,8 +172,8 @@ public class SVMHMMDataWriterTest
 
         assertTrue(metaDataFeatures
                 .containsKey(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
-        assertEquals(longText, metaDataFeatures
-                .get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
+        assertEquals(longText,
+                metaDataFeatures.get(SVMHMMDataWriter.META_DATA_FEATURE_PREFIX + "someFeature"));
 
     }
 
@@ -178,16 +183,17 @@ public class SVMHMMDataWriterTest
     {
         List<Instance> instances = new ArrayList<>();
         instances.add(new Instance(new Feature("doubleFeature", 0.123456789).asSet()));
-        
-        FileUtils.writeStringToFile(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
+
+        FileUtils.writeStringToFile(
+                new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES),
                 "doubleFeature\n");
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
-        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false);
+        svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false, new String []{});
         svmhmmDataWriter.writeClassifierFormat(instances, false);
 
-        List<String> lines = IOUtils
-                .readLines(new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
+        List<String> lines = IOUtils.readLines(
+                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
 
         // each instance must be on one line!
         assertEquals(1, lines.size());

@@ -86,7 +86,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false, false, false, false,
-                Collections.emptyList(), fes);
+                Collections.emptyList(), fes, new String[] {});
 
         SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
@@ -138,7 +138,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false, false, false, false,
-                Collections.emptyList(), fes);
+                Collections.emptyList(), fes, new String[] {});
 
         SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
@@ -186,7 +186,7 @@ public class ExtractFeaturesConnectorTest
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_DOCUMENT, false, false, false, false, false,
-                Collections.emptyList(), fes);
+                Collections.emptyList(), fes, new String[] {});
 
         SimplePipeline.runPipeline(reader, segmenter, doc, featExtractorConnector);
 
