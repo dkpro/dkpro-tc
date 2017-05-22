@@ -20,7 +20,10 @@ package org.dkpro.tc.core.task.uima;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -60,11 +63,15 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 	 * Whether an ID should be added to each instance in the feature file
 	 */
 	public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+
 	@ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
 	private boolean addInstanceId;
 
 	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
 	private String[] featureFilters;
+	
+	@ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
+    private String[] outcomes;
 
 	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
 	private boolean useSparseFeatures;
@@ -111,7 +118,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 			}
 
 			dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
-			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
+			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
@@ -174,16 +181,54 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 						addInstanceId, false));
 			}
 
-			featureNames = new TreeSet<>();
-			for (Feature f : instances.get(0).getFeatures()) {
-				featureNames.add(f.getName());
-			}
-			
-			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+            Map<String, FeatureDescription> featDesc = new HashMap<>();
+            featureNames = new TreeSet<>();
+            for (Feature f : instances.get(0).getFeatures()) {
+                featureNames.add(f.getName());
+
+                if (!featDesc.containsKey(f.getName())) {
+                    featDesc.put(f.getName(), determineType(f));
+                }
+            }
+
+            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8",
+                    featureNames);
+
+            StringBuilder sb = new StringBuilder();
+            List<String> keyList = new ArrayList<String>(featDesc.keySet());
+            Collections.sort(keyList);
+            for (String k : keyList) {
+                sb.append(k + "\t" + featDesc.get(k).getDescription() + "\n");
+            }
+            FileUtils.writeStringToFile(
+                    new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION), sb.toString(), "utf-8");
+
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
 	}
+
+
+	private FeatureDescription determineType(Feature f)
+    {
+	    Object value = f.getValue();
+	    if(value instanceof Double){
+	        return new FeatureDescription(FeatureType.NUM_FLOATING_POINT);
+	    }else if (value instanceof Integer){
+	        return new FeatureDescription(FeatureType.NUM_INTEGER);
+	    }else if (value instanceof Number){
+	        return new FeatureDescription(FeatureType.NUM);
+        }else if (value instanceof Enum){
+            FeatureDescription featureDescription = new FeatureDescription(FeatureType.ENUM);
+            featureDescription.setEnumType((Enum)value);
+            return featureDescription;
+        }else if (value instanceof Boolean){
+            return new FeatureDescription(FeatureType.BOOLEAN);
+        }
+
+	    return new FeatureDescription(FeatureType.UNKNOWN);
+    }
 
 	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
 		if (!isTesting) {
@@ -226,7 +271,9 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				// the generic file into the classifier-specific data format
 				dsw.transformFromGeneric();
 			}
-
+			
+			dsw.close();
+			
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}

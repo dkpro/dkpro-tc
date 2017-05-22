@@ -195,7 +195,7 @@ public class TaskUtils {
 	public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter,
 			String learningMode, String featureMode, boolean useSparseFeatures, boolean addInstanceId,
 			boolean developerMode, boolean isTesting, boolean applyWeighting, List<String> filters,
-			List<ExternalResourceDescription> extractorResources) throws ResourceInitializationException {
+			List<ExternalResourceDescription> extractorResources, String [] outcomes) throws ResourceInitializationException {
 		List<Object> parameters = new ArrayList<>();
 		parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
 				ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
@@ -207,7 +207,8 @@ public class TaskUtils {
 				ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, learningMode,
 				ExtractFeaturesStreamConnector.PARAM_IS_TESTING, isTesting,
 				ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures,
-				ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, extractorResources));
+				ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+				ExtractFeaturesStreamConnector.PARAM_OUTCOMES, outcomes));
 
 		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
 				parameters.toArray());

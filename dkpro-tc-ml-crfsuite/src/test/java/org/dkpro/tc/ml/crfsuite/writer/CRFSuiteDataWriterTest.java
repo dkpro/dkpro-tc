@@ -45,15 +45,21 @@ public class CRFSuiteDataWriterTest
     CRFSuiteDataWriter writer;
     File outputDirectory;
     List<Instance> instances;
-
+    List<String> outcomes;
     @Before
     public void setUp()
         throws Exception
     {
         outputDirectory = folder.newFolder();
         writer = new CRFSuiteDataWriter();
-        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false);
-        
+        outcomes = new ArrayList<>();
+        outcomes.add("1");
+        outcomes.add("2");
+        outcomes.add("3");
+        outcomes.add("4");
+        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false,
+                outcomes.toArray(new String[0]));
+
         instances = new ArrayList<>();
         prepareFeatures();
     }
@@ -132,7 +138,7 @@ public class CRFSuiteDataWriterTest
     private void writeFeaturesWithDataWriter()
         throws Exception
     {
-        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false);
+        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false, outcomes.toArray(new String[0]));
         writer.writeClassifierFormat(instances, false);
     }
 }

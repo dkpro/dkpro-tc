@@ -62,6 +62,8 @@ public class LibsvmDataWriter implements DataWriter {
 	Map<String, String> index2instanceId = new HashMap<>();
 	Map<String, Integer> featureNameMap = new HashMap<>();
 
+    private String[] outcomes;
+
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -169,9 +171,10 @@ public class LibsvmDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
+	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
+        this.outcomes = outcomes;
 		classifierFormatOutputFile = new File(outputDirectory,
 				LibsvmAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
@@ -240,4 +243,11 @@ public class LibsvmDataWriter implements DataWriter {
 		}
 		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
 	}
+
+    @Override
+    public void close()
+        throws Exception
+    {
+    }
+
 }

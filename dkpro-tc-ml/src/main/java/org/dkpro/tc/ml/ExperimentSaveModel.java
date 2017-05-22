@@ -108,6 +108,8 @@ public class ExperimentSaveModel
         featuresTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+        featuresTrainTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY,
+                ExtractFeaturesTask.COLLECTION_INPUT_KEY);
 
         // feature extraction and prediction on test data
 		try {

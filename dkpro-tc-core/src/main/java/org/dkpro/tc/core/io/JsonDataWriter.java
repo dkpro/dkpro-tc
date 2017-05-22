@@ -88,7 +88,7 @@ public class JsonDataWriter
 
     @Override
     public void init(File outputDirectory, boolean useSparse, String learningMode,
-            boolean applyWeighting)
+            boolean applyWeighting, String [] outcomes)
                 throws Exception
     {
         this.outputDirectory = outputDirectory;
@@ -110,5 +110,12 @@ public class JsonDataWriter
     public String getGenericFileName()
     {
         throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
+    }
+
+    @Override
+    public void close()
+        throws Exception
+    {
+        
     }
 }

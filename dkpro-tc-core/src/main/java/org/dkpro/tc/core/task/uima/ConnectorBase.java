@@ -32,6 +32,11 @@ public abstract class ConnectorBase
     public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
 
     /**
+     * Array of outcomes
+     */
+    public static final String PARAM_OUTCOMES = "occurringOutcomes";
+    
+    /**
      * Array of feature filters to be used
      */
     public static final String PARAM_FEATURE_FILTERS = "featureFilters";

@@ -33,12 +33,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
@@ -55,239 +57,280 @@ import weka.core.converters.Saver;
 /**
  * Datawriter for the Weka machine learning tool.
  */
-public class MekaDataWriter implements DataWriter, Constants {
-	BufferedWriter bw = null;
-	Gson gson = new Gson();
-	private boolean useSparse;
-	private String learningMode;
-	private boolean applyWeighting;
-	private File outputFolder;
-	private File arffTarget;
+public class MekaDataWriter
+    implements DataWriter, Constants
+{
+    BufferedWriter bw = null;
+    Gson gson = new Gson();
+    private boolean useSparse;
+    private String learningMode;
+    private boolean applyWeighting;
+    private File outputFolder;
+    private File arffTarget;
 
-	@Override
-	public void init(File outputFolder, boolean useSparse, String learningMode, boolean applyWeighting)
-			throws Exception {
-		this.outputFolder = outputFolder;
-		this.useSparse = useSparse;
-		this.learningMode = learningMode;
-		this.applyWeighting = applyWeighting;
+    AttributeStore attributeStore;
+    List<Attribute> outcomeAttributes;
+    ArffSaver saver;
+    Instances masterInstance;
+    private String[] outcomes;
 
-		arffTarget = new File(outputFolder,
-				MekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+    @Override
+    public void init(File outputFolder, boolean useSparse, String learningMode,
+            boolean applyWeighting, String[] outcomes)
+                throws Exception
+    {
+        this.outputFolder = outputFolder;
+        this.useSparse = useSparse;
+        this.learningMode = learningMode;
+        this.applyWeighting = applyWeighting;
+        this.outcomes = outcomes;
 
-		// Caution: DKPro Lab imports (aka copies!) the data of the train task
-		// as test task. We use
-		// appending mode for streaming. We might errornously append the old
-		// training file with
-		// testing data!
-		// Force delete the old training file to make sure we start with a
-		// clean, empty file
-		if (arffTarget.exists()) {
-			FileUtils.forceDelete(arffTarget);
-		}
-	}
+        arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
-	@Override
-	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
-		initGeneric();
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task
+        // as test task. We use
+        // appending mode for streaming. We might errornously append the old
+        // training file with
+        // testing data!
+        // Force delete the old training file to make sure we start with a
+        // clean, empty file
+        if (arffTarget.exists()) {
+            FileUtils.forceDelete(arffTarget);
+        }
+    }
 
-		bw.write(gson.toJson(instances.toArray(new Instance[0])) + System.lineSeparator());
+    @Override
+    public void writeGenericFormat(Collection<Instance> instances)
+        throws Exception
+    {
+        initGeneric();
 
-		bw.close();
-		bw = null;
-	}
+        bw.write(gson.toJson(instances.toArray(new Instance[0])) + System.lineSeparator());
 
-	private void initGeneric() throws IOException {
-		if (bw != null) {
-			return;
-		}
-		bw = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
+        bw.close();
+        bw = null;
+    }
 
-	}
+    private void initGeneric()
+        throws IOException
+    {
+        if (bw != null) {
+            return;
+        }
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
 
-	@Override
-	public void transformFromGeneric() throws Exception {
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
+    }
 
-		AttributeStore attributeStore = new AttributeStore();
+    @Override
+    public void transformFromGeneric()
+        throws Exception
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
 
-		String line = null;
-		int numInstances = 0;
-		while ((line = reader.readLine()) != null) {
-			Instance[] restoredInstance = gson.fromJson(line, Instance[].class);
-			for (Instance inst : restoredInstance) {
-				for (Feature feature : inst.getFeatures()) {
-					if (!attributeStore.containsAttributeName(feature.getName())) {
-						Attribute attribute = WekaFeatureEncoder.featureToAttribute(feature);
-						attributeStore.addAttribute(feature.getName(), attribute);
-					}
-				}
-			}
-			numInstances++;
-		}
-		reader.close();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            Instance[] restoredInstance = gson.fromJson(line, Instance[].class);
+            writeClassifierFormat(Arrays.asList(restoredInstance), classiferReadsCompressed());
+        }
+        reader.close();
 
-		// Make sure "outcome" is not the name of an attribute
-		List<String> outcomeList = FileUtils.readLines(new File(outputFolder, Constants.FILENAME_OUTCOMES), "utf-8");
+        FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
+    }
 
-		List<Attribute> outcomeAttributes = createOutcomeAttributes(outcomeList);
+    private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
+    {
+        // make the order of the attributes predictable
+        Collections.sort(outcomeValues);
+        List<Attribute> atts = new ArrayList<Attribute>();
 
-		// in Meka, class label attributes have to go on top
-		for (Attribute attribute : outcomeAttributes) {
-			attributeStore.addAttributeAtBegin(attribute.name(), attribute);
-		}
+        for (String outcome : outcomeValues) {
+            String name = outcome.contains(CLASS_ATTRIBUTE_PREFIX) ? outcome
+                    : CLASS_ATTRIBUTE_PREFIX + outcome;
+            atts.add(new Attribute(name, Arrays.asList(new String[] { "0", "1" })));
+        }
+        return atts;
+    }
 
-		// for Meka-internal use
-		Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
-				attributeStore.getAttributes(), numInstances);
-		wekaInstances.setClassIndex(outcomeAttributes.size());
+    private double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
+    {
+        double[] featureValues = new double[attributeStore.getAttributes().size()];
 
-		writeArff(arffTarget, attributeStore, wekaInstances, outcomeAttributes);
+        for (Feature feature : instance.getFeatures()) {
 
-		FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
-	}
+            try {
+                Attribute attribute = attributeStore.getAttribute(feature.getName());
+                Object featureValue = feature.getValue();
 
-	private void writeArff(File arffTarget, AttributeStore attributeStore, Instances wekaInstances,
-			List<Attribute> outcomeAttributes) throws Exception {
-		if (!arffTarget.exists()) {
-			arffTarget.mkdirs();
-			arffTarget.createNewFile();
-		}
+                double attributeValue;
+                if (featureValue instanceof Number) {
+                    // numeric attribute
+                    attributeValue = ((Number) feature.getValue()).doubleValue();
+                }
+                else if (featureValue instanceof Boolean) {
+                    // boolean attribute
+                    attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
+                }
+                else if (featureValue instanceof MissingValue) {
+                    // missing value
+                    attributeValue = WekaFeatureEncoder.getMissingValueConversionMap()
+                            .get(((MissingValue) featureValue).getType());
+                }
+                else if (featureValue == null) {
+                    // null
+                    throw new IllegalArgumentException(
+                            "You have an instance which doesn't specify a value for the feature "
+                                    + feature.getName());
+                }
+                else {
+                    // nominal or string
+                    Object stringValue = feature.getValue();
+                    if (!attribute.isNominal() && !attribute.isString()) {
+                        throw new IllegalArgumentException(
+                                "Attribute neither nominal nor string: " + stringValue);
+                    }
 
-		ArffSaver saver = new ArffSaver();
-		// preprocessingFilter.setInputFormat(wekaInstances);
-		saver.setRetrieval(Saver.INCREMENTAL);
-		saver.setFile(arffTarget);
-		saver.setCompressOutput(classiferReadsCompressed());
-		saver.setInstances(wekaInstances);
+                    int valIndex = attribute.indexOfValue(stringValue.toString());
+                    if (valIndex == -1) {
+                        if (attribute.isNominal()) {
+                            throw new IllegalArgumentException(
+                                    "Value not defined for given nominal attribute!");
+                        }
+                        else {
+                            attribute.addStringValue(stringValue.toString());
+                            valIndex = attribute.indexOfValue(stringValue.toString());
+                        }
+                    }
+                    attributeValue = valIndex;
+                }
+                int offset = attributeStore.getAttributeOffset(attribute.name());
 
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			Instance[] instances = gson.fromJson(line, Instance[].class);
+                if (offset != -1) {
+                    featureValues[offset] = attributeValue;
+                }
+            }
+            catch (NullPointerException e) {
+                // ignore unseen attributes
+            }
+        }
+        return featureValues;
+    }
 
-			for (Instance instance : instances) {
-				double[] featureValues = getFeatureValues(attributeStore, instance);
+    @Override
+    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+        throws Exception
+    {
 
-				// set class label values
-				List<String> instanceOutcome = instance.getOutcomes();
-				for (Attribute label : outcomeAttributes) {
-					String labelname = label.name();
-					featureValues[attributeStore.getAttributeOffset(labelname)] = instanceOutcome
-							.contains(labelname.split(CLASS_ATTRIBUTE_PREFIX)[1]) ? 1.0d : 0.0d;
-				}
+        Instances masterInstance = initalConfiguration(instances);
 
-				weka.core.Instance wekaInstance;
+        for (Instance instance : instances) {
+            double[] featureValues = getFeatureValues(attributeStore, instance);
 
-				if (useSparse) {
-					wekaInstance = new SparseInstance(1.0, featureValues);
-				} else {
-					wekaInstance = new DenseInstance(1.0, featureValues);
-				}
+            // set class label values
+            List<String> instanceOutcome = instance.getOutcomes();
+            for (Attribute label : outcomeAttributes) {
+                String labelname = label.name();
+                featureValues[attributeStore.getAttributeOffset(labelname)] = instanceOutcome
+                        .contains(labelname.split(CLASS_ATTRIBUTE_PREFIX)[1]) ? 1.0d : 0.0d;
+            }
 
-				wekaInstance.setDataset(wekaInstances);
+            weka.core.Instance wekaInstance;
 
-				Double instanceWeight = instance.getWeight();
-				if (applyWeighting) {
-					wekaInstance.setWeight(instanceWeight);
-				}
+            if (useSparse) {
+                wekaInstance = new SparseInstance(1.0, featureValues);
+            }
+            else {
+                wekaInstance = new DenseInstance(1.0, featureValues);
+            }
 
-				saver.writeIncremental(wekaInstance);
-			}
-		}
+            wekaInstance.setDataset(masterInstance);
 
-		saver.writeIncremental(null);
-		reader.close();
-	}
+            Double instanceWeight = instance.getWeight();
+            if (applyWeighting) {
+                wekaInstance.setWeight(instanceWeight);
+            }
 
-	private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues) {
-		// make the order of the attributes predictable
-		Collections.sort(outcomeValues);
-		List<Attribute> atts = new ArrayList<Attribute>();
+            saver.writeIncremental(wekaInstance);
+        }
 
-		for (String outcome : outcomeValues) {
-			String name = outcome.contains(CLASS_ATTRIBUTE_PREFIX) ? outcome : CLASS_ATTRIBUTE_PREFIX + outcome;
-			atts.add(new Attribute(name, Arrays.asList(new String[] { "0", "1" })));
-		}
-		return atts;
-	}
+    }
 
-	private double[] getFeatureValues(AttributeStore attributeStore, Instance instance) {
-		double[] featureValues = new double[attributeStore.getAttributes().size()];
+    private Instances initalConfiguration(Collection<Instance> instances)
+        throws TextClassificationException, IOException
+    {
+        if (saver != null) {
+            return masterInstance;
+        }
+        saver = new ArffSaver();
+        saver.setRetrieval(Saver.INCREMENTAL);
+        saver.setFile(arffTarget);
+        saver.setCompressOutput(true);
 
-		for (Feature feature : instance.getFeatures()) {
+        attributeStore = new AttributeStore();
 
-			try {
-				Attribute attribute = attributeStore.getAttribute(feature.getName());
-				Object featureValue = feature.getValue();
+        List<String> lines = FileUtils.readLines(
+                new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), "utf-8");
 
-				double attributeValue;
-				if (featureValue instanceof Number) {
-					// numeric attribute
-					attributeValue = ((Number) feature.getValue()).doubleValue();
-				} else if (featureValue instanceof Boolean) {
-					// boolean attribute
-					attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
-				} else if (featureValue instanceof MissingValue) {
-					// missing value
-					attributeValue = WekaFeatureEncoder.getMissingValueConversionMap()
-							.get(((MissingValue) featureValue).getType());
-				} else if (featureValue == null) {
-					// null
-					throw new IllegalArgumentException(
-							"You have an instance which doesn't specify a value for the feature " + feature.getName());
-				} else {
-					// nominal or string
-					Object stringValue = feature.getValue();
-					if (!attribute.isNominal() && !attribute.isString()) {
-						throw new IllegalArgumentException("Attribute neither nominal nor string: " + stringValue);
-					}
+        for (String l : lines) {
+            String[] split = l.split("\t");
+            String featureName = split[0];
 
-					int valIndex = attribute.indexOfValue(stringValue.toString());
-					if (valIndex == -1) {
-						if (attribute.isNominal()) {
-							throw new IllegalArgumentException("Value not defined for given nominal attribute!");
-						} else {
-							attribute.addStringValue(stringValue.toString());
-							valIndex = attribute.indexOfValue(stringValue.toString());
-						}
-					}
-					attributeValue = valIndex;
-				}
-				int offset = attributeStore.getAttributeOffset(attribute.name());
+            if (!attributeStore.containsAttributeName(featureName)) {
+                FeatureType type = FeatureType.valueOf(split[1]);
+                String enumType = null;
+                if (type == FeatureType.ENUM) {
+                    enumType = split[2];
+                }
+                Attribute attribute = WekaFeatureEncoder
+                        .featureToAttributeUsingFeatureDescription(featureName, type, enumType);
+                attributeStore.addAttribute(featureName, attribute);
+            }
 
-				if (offset != -1) {
-					featureValues[offset] = attributeValue;
-				}
-			} catch (NullPointerException e) {
-				// ignore unseen attributes
-			}
-		}
-		return featureValues;
-	}
+        }
 
-	@Override
-	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
-		throw new UnsupportedOperationException("Weka/Meka cannot write directly into classifier format. "
-				+ "The feature file has a header which requires knowing all feature names and outcomes"
-				+ " before the feature file can be written.");
-	}
+        // Make sure "outcome" is not the name of an attribute
+        List<String> outcomeList = Arrays.asList(outcomes);
+        outcomeAttributes = createOutcomeAttributes(outcomeList);
+        // in Meka, class label attributes have to go on top
+        for (Attribute attribute : outcomeAttributes) {
+            attributeStore.addAttributeAtBegin(attribute.name(), attribute);
+        }
 
-	@Override
-	public boolean canStream() {
-		return false;
-	}
+        // for Meka-internal use
+        masterInstance = new Instances(
+                WekaUtils.RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
+                attributeStore.getAttributes(), instances.size());
+        masterInstance.setClassIndex(outcomeAttributes.size());
+        saver.setInstances(masterInstance);
 
-	@Override
-	public boolean classiferReadsCompressed() {
-		return true;
-	}
+        return masterInstance;
 
-	@Override
-	public String getGenericFileName() {
-		return GENERIC_FEATURE_FILE;
-	}
+    }
+
+    @Override
+    public boolean canStream()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean classiferReadsCompressed()
+    {
+        return true;
+    }
+
+    @Override
+    public String getGenericFileName()
+    {
+        return GENERIC_FEATURE_FILE;
+    }
+
+    @Override
+    public void close()
+        throws Exception
+    {
+        saver.writeIncremental(null);
+    }
 }
