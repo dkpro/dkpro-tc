@@ -43,6 +43,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 
 //Slightly modified version taken from the official deeplearning4j-example project
+@SuppressWarnings("serial")
 public class NewsIterator implements DataSetIterator {
 	private final WordVectors wordVectors;
 	private final int batchSize;

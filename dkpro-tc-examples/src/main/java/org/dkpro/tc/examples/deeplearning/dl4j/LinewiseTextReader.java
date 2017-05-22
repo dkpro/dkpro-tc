@@ -1,7 +1,5 @@
-package org.dkpro.tc.examples.deeplearning.dl4j;
-
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2017
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universit??t Darmstadt
  *
@@ -18,6 +16,9 @@ package org.dkpro.tc.examples.deeplearning.dl4j;
  * limitations under the License.
  ******************************************************************************/
 
+package org.dkpro.tc.examples.deeplearning.dl4j;
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,6 @@ import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
