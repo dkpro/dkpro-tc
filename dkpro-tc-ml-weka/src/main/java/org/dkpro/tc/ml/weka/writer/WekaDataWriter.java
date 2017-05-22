@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,16 +72,18 @@ public class WekaDataWriter
     Attribute outcomeAttribute;
     ArffSaver saver;
     Instances masterInstance;
+    private String[] outcomes;
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
-            boolean applyWeighting)
+            boolean applyWeighting, String [] outcomes)
                 throws Exception
     {
         this.outputFolder = outputFolder;
         this.useSparse = useSparse;
         this.learningMode = learningMode;
         this.applyWeighting = applyWeighting;
+        this.outcomes = outcomes;
 
         arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
                 .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -163,7 +164,7 @@ public class WekaDataWriter
         double[] featureValues = new double[attributeStore.getAttributes().size()];
 
         for (Feature feature : instance.getFeatures()) {
-
+            
             try {
                 Attribute attribute = attributeStore.getAttribute(feature.getName());
                 Object featureValue = feature.getValue();
@@ -300,11 +301,7 @@ public class WekaDataWriter
         }
 
         // Make sure "outcome" is not the name of an attribute
-        // List<String> outcomeList = FileUtils.readLines(new File(outputFolder,
-        // Constants.FILENAME_OUTCOMES), "utf-8");
-        List<String> outcomeList = new ArrayList<String>();
-        outcomeList.add("alt.atheism");
-        outcomeList.add("comp.graphics");
+         List<String> outcomeList = Arrays.asList(outcomes);
         // FIXME: Das muss wieder raus später
         outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {

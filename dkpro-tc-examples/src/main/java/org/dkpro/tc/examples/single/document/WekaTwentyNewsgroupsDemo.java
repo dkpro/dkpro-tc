@@ -89,8 +89,8 @@ public class WekaTwentyNewsgroupsDemo
         ParameterSpace pSpace = getParameterSpace();
 
         WekaTwentyNewsgroupsDemo experiment = new WekaTwentyNewsgroupsDemo();
-        experiment.runCrossValidation(pSpace);
-//        experiment.runTrainTest(pSpace);
+//        experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest(pSpace);
     }
 
     @SuppressWarnings("unchecked")

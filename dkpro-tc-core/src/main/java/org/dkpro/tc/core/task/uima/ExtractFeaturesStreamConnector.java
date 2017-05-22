@@ -63,11 +63,15 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 	 * Whether an ID should be added to each instance in the feature file
 	 */
 	public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+
 	@ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
 	private boolean addInstanceId;
 
 	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
 	private String[] featureFilters;
+	
+	@ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
+    private String[] outcomes;
 
 	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
 	private boolean useSparseFeatures;
@@ -114,7 +118,7 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 			}
 
 			dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
-			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting);
+			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}

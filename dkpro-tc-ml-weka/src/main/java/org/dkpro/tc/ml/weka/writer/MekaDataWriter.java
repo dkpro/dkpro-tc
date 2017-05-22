@@ -63,14 +63,16 @@ public class MekaDataWriter implements DataWriter, Constants {
 	private boolean applyWeighting;
 	private File outputFolder;
 	private File arffTarget;
+    private String[] outcomes;
 
 	@Override
-	public void init(File outputFolder, boolean useSparse, String learningMode, boolean applyWeighting)
+	public void init(File outputFolder, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputFolder = outputFolder;
 		this.useSparse = useSparse;
 		this.learningMode = learningMode;
 		this.applyWeighting = applyWeighting;
+        this.outcomes = outcomes;
 
 		arffTarget = new File(outputFolder,
 				MekaClassificationAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -295,7 +297,6 @@ public class MekaDataWriter implements DataWriter, Constants {
     public void close()
         throws Exception
     {
-        // TODO Auto-generated method stub
         
     }
 }

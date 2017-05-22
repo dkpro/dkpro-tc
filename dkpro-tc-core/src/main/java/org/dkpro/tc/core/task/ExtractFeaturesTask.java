@@ -53,6 +53,7 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 import org.dkpro.tc.core.util.TaskUtils;
@@ -75,6 +76,7 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 	 * task
 	 */
 	public static final String INPUT_KEY = "input";
+    public static String COLLECTION_INPUT_KEY = "collectionInput";
 
 	@Discriminator(name = DIM_FEATURE_FILTERS)
 	private List<String> featureFilters = Collections.<String> emptyList();
@@ -166,6 +168,11 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 		if (featureFilters == null) {
 			featureFilters = Collections.<String> emptyList();
 		}
+		
+		//ensure that outcomes file is copied into this folder
+		File folder = aContext.getFolder(COLLECTION_INPUT_KEY, AccessMode.READONLY);
+		File file = new File(folder, Constants.FILENAME_OUTCOMES);
+		String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
 
 		List<Object> parameters = new ArrayList<>();
 		parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, true,
@@ -178,7 +185,7 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 				ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, learningMode,
 				ExtractFeaturesStreamConnector.PARAM_IS_TESTING, isTesting,
 				ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, mlAdapter.useSparseFeatures(),
-
+				ExtractFeaturesStreamConnector.PARAM_OUTCOMES, outcomes,
 		ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions));
 
 		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,

@@ -67,6 +67,7 @@ public class LiblinearDataWriter implements DataWriter {
 	Gson gson = new Gson();
 	private int maxId = 0;
 	private TreeSet<String> featureNames;
+    private String[] outcomes;
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -178,12 +179,13 @@ public class LiblinearDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
+	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
 		this.useSparse = useSparse;
 		this.learningMode = learningMode;
 		this.applyWeighting = applyWeighting;
+        this.outcomes = outcomes;
 		encoder = new FeatureNodeArrayEncoder();
 		classifierFormatOutputFile = new File(outputDirectory,
 				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));

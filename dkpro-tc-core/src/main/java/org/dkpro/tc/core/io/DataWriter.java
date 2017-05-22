@@ -54,7 +54,7 @@ public interface DataWriter
      * Lazy initialization of the writer component which writes either a generic file or the
      * classifier file
      */
-    public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
+    public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
         throws Exception;
 
     public boolean canStream();

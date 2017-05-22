@@ -80,6 +80,8 @@ public class SVMHMMDataWriter implements DataWriter {
 
 	private Map<String, Integer> featureNameMap;
 
+    private String[] outcomes;
+
 
 	private Integer getUniqueSequenceId(Instance instance) {
 		String key = instance.getJcasId() + "-" + instance.getSequenceId();
@@ -273,9 +275,10 @@ public class SVMHMMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting)
+	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
+        this.outcomes = outcomes;
 		classifierFormatOutputFile = new File(outputDirectory,
 				new SVMHMMAdapter().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
@@ -310,7 +313,6 @@ public class SVMHMMDataWriter implements DataWriter {
     public void close()
         throws Exception
     {
-        // TODO Auto-generated method stub
         
     }
 }
