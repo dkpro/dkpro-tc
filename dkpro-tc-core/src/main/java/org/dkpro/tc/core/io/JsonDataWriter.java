@@ -88,7 +88,7 @@ public class JsonDataWriter
 
     @Override
     public void init(File outputDirectory, boolean useSparse, String learningMode,
-            boolean applyWeighting)
+            boolean applyWeighting, String [] outcomes)
                 throws Exception
     {
         this.outputDirectory = outputDirectory;
