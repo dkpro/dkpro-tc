@@ -33,10 +33,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tools.bzip2.CBZip2InputStream;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.api.features.MissingValue;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.task.WekaTestTask;
+import org.dkpro.tc.ml.weka.writer.WekaFeatureEncoder;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.MLUtils;
@@ -50,13 +67,6 @@ import mulan.data.MultiLabelInstances;
 import mulan.dimensionalityReduction.BinaryRelevanceAttributeEvaluator;
 import mulan.dimensionalityReduction.LabelPowersetAttributeEvaluator;
 import mulan.dimensionalityReduction.Ranker;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.tools.bzip2.CBZip2InputStream;
-import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.storage.StorageService.AccessMode;
-
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.AttributeEvaluator;
@@ -74,17 +84,6 @@ import weka.core.converters.Saver;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
-
-import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.features.MissingValue;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
-import org.dkpro.tc.ml.weka.task.WekaTestTask;
-import org.dkpro.tc.ml.weka.writer.WekaFeatureEncoder;
 
 /**
  * Utils for WEKA
@@ -235,13 +234,13 @@ public class WekaUtils
     /*
      * Converts a feature store to a list of instances. Single-label case.
      */
-    public static void instanceListToArffFile(File outputFile, FeatureStore instanceList)
+    public static void instanceListToArffFile(File outputFile, List<Instance> instanceList)
         throws Exception
     {
         instanceListToArffFile(outputFile, instanceList, false, false);
     }
 
-    public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
+    public static void instanceListToArffFile(File outputFile, List<Instance> instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception
     {
@@ -252,13 +251,18 @@ public class WekaUtils
     /*
      * Converts a feature store to a list of instances. Single-label case.
      */
-    public static void instanceListToArffFile(File outputFile, FeatureStore instanceList,
+    public static void instanceListToArffFile(File outputFile, List<Instance> instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment, boolean useWeights)
         throws Exception
     {
+        
+        List<String> outcomeList = new ArrayList<>();
+        for(Instance i : instanceList){
+            outcomeList.add(i.getOutcome());
+        }
 
         // check for error conditions
-        if (instanceList.getUniqueOutcomes().isEmpty()) {
+        if (outcomeList.isEmpty()) {
             throw new IllegalArgumentException("List of instance outcomes is empty.");
         }
 
@@ -267,7 +271,6 @@ public class WekaUtils
         AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instanceList);
 
         // Make sure "outcome" is not the name of an attribute
-        List<String> outcomeList = new ArrayList<String>(instanceList.getUniqueOutcomes());
         Attribute outcomeAttribute = createOutcomeAttribute(outcomeList, isRegressionExperiment);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
             System.err
@@ -277,7 +280,7 @@ public class WekaUtils
         attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
 
         Instances wekaInstances = new Instances(RELATION_NAME, attributeStore.getAttributes(),
-                instanceList.getNumberOfInstances());
+                instanceList.size());
         wekaInstances.setClass(outcomeAttribute);
 
         if (!outputFile.exists()) {
@@ -291,9 +294,9 @@ public class WekaUtils
         saver.setFile(outputFile);
         saver.setCompressOutput(true);
         saver.setInstances(wekaInstances);
-
-        for (int i = 0; i < instanceList.getNumberOfInstances(); i++) {
-            Instance instance = instanceList.getInstance(i);
+        
+        for (int i = 0; i < instanceList.size(); i++) {
+            Instance instance = instanceList.get(i);
 
             double[] featureValues = getFeatureValues(attributeStore, instance);
 
@@ -308,7 +311,7 @@ public class WekaUtils
 
             wekaInstance.setDataset(wekaInstances);
 
-            String outcome = instanceList.getOutcomes(i).get(0);
+            String outcome = outcomeList.get(i);
             if (isRegressionExperiment) {
                 wekaInstance.setClassValue(Double.parseDouble(outcome));
             }
@@ -316,7 +319,7 @@ public class WekaUtils
                 wekaInstance.setClassValue(outcome);
             }
 
-            Double instanceWeight = instanceList.getWeight(i);
+            Double instanceWeight = instance.getWeight();
             if (useWeights) {
                 wekaInstance.setWeight(instanceWeight);
             }
@@ -330,27 +333,32 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
-    public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
+    public static void instanceListToArffFileMultiLabel(File outputFile, List<Instance> instances,
             boolean useDenseInstances)
         throws Exception
     {
-        instanceListToArffFileMultiLabel(outputFile, featureStore, useDenseInstances, false);
+        instanceListToArffFileMultiLabel(outputFile, instances, useDenseInstances, false);
     }
 
     /*
      * Converts a feature store to a list of instances. Multi-label case.
      */
-    public static void instanceListToArffFileMultiLabel(File outputFile, FeatureStore featureStore,
+    public static void instanceListToArffFileMultiLabel(File outputFile, List<Instance> instances,
             boolean useDenseInstances, boolean useWeights)
         throws Exception
     {
 
         // Filter preprocessingFilter = new ReplaceMissingValuesWithZeroFilter();
 
-        AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(featureStore);
+        AttributeStore attributeStore = WekaFeatureEncoder.getAttributeStore(instances);
+        
+        List<String> outcomes = new ArrayList<>();
+        for(Instance i : instances){
+            outcomes.add(i.getOutcome());
+        }
 
         List<Attribute> outcomeAttributes = createOutcomeAttributes(new ArrayList<String>(
-                featureStore.getUniqueOutcomes()));
+                outcomes));
 
         // in Meka, class label attributes have to go on top
         for (Attribute attribute : outcomeAttributes) {
@@ -359,7 +367,7 @@ public class WekaUtils
 
         // for Meka-internal use
         Instances wekaInstances = new Instances(RELATION_NAME + ": -C " + outcomeAttributes.size()
-                + " ", attributeStore.getAttributes(), featureStore.getNumberOfInstances());
+                + " ", attributeStore.getAttributes(), instances.size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
 
         if (!outputFile.exists()) {
@@ -374,8 +382,9 @@ public class WekaUtils
         saver.setCompressOutput(true);
         saver.setInstances(wekaInstances);
 
-        for (int i = 0; i < featureStore.getNumberOfInstances(); i++) {
-            Instance instance = featureStore.getInstance(i);
+        
+        for (int i = 0; i < instances.size(); i++) {
+            Instance instance = instances.get(i);
 
             double[] featureValues = getFeatureValues(attributeStore, instance);
 
@@ -398,7 +407,7 @@ public class WekaUtils
 
             wekaInstance.setDataset(wekaInstances);
 
-            Double instanceWeight = featureStore.getWeight(i);
+            Double instanceWeight = instance.getWeight();
             if (useWeights) {
                 wekaInstance.setWeight(instanceWeight);
             }
@@ -447,6 +456,8 @@ public class WekaUtils
         }
         else {
             // make the order of the attributes predictable
+            Set<String> outcomesUnique = new HashSet<>(outcomeValues);
+            outcomeValues = new ArrayList<>(outcomesUnique);
             Collections.sort(outcomeValues);
             return new Attribute(CLASS_ATTRIBUTE_NAME, outcomeValues);
         }
