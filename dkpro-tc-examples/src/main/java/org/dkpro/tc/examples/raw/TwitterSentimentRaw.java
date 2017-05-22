@@ -70,6 +70,7 @@ public class TwitterSentimentRaw
                         ExtractFeaturesStreamConnector.PARAM_FEATURE_FILTERS, new String[] {},
                         ExtractFeaturesStreamConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, false,
+                        ExtractFeaturesStreamConnector.PARAM_OUTCOMES, new String [] {"emotional", "neutral"},
                         ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS,
                         asList(createExternalResourceDescription(EmoticonRatio.class,
                                 EmoticonRatio.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
