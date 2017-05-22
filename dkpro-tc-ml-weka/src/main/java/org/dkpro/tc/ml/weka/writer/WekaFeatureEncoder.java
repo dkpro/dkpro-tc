@@ -19,6 +19,7 @@
 package org.dkpro.tc.ml.weka.writer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,12 +44,12 @@ import org.dkpro.tc.ml.weka.util.AttributeStore;
 public class WekaFeatureEncoder
 {
 
-    public static AttributeStore getAttributeStore(FeatureStore instanceList)
+    public static AttributeStore getAttributeStore(Collection<Instance> instances)
         throws TextClassificationException
     {
         AttributeStore attributeStore = new AttributeStore();
 
-        for (Instance instance : instanceList.getInstances()) {
+        for (Instance instance : instances) {
             for (Feature feature : instance.getFeatures()) {
                 if (!attributeStore.containsAttributeName(feature.getName())) {
                     Attribute attribute = featureToAttribute(feature);

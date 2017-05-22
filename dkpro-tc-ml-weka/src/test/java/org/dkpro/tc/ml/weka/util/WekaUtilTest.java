@@ -26,13 +26,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
-import org.dkpro.tc.fstore.simple.DenseFeatureStore;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
+import org.junit.Test;
 
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -75,11 +73,11 @@ public class WekaUtilTest
         i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
         i4.setOutcomes("2");
 
-        DenseFeatureStore iList = new DenseFeatureStore();
-        iList.addInstance(i1);
-        iList.addInstance(i2);
-        iList.addInstance(i3);
-        iList.addInstance(i4);
+        List<Instance> iList = new ArrayList<>();
+        iList.add(i1);
+        iList.add(i2);
+        iList.add(i3);
+        iList.add(i4);
 
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();
@@ -125,18 +123,19 @@ public class WekaUtilTest
         i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
         i4.setOutcomes("1", "3");
 
-        DenseFeatureStore iList = new DenseFeatureStore();
-        iList.addInstance(i1);
-        iList.addInstance(i2);
-        iList.addInstance(i3);
-        iList.addInstance(i4);
+        
+        List<Instance> instances = new ArrayList<>();
+        instances.add(i1);
+        instances.add(i2);
+        instances.add(i3);
+        instances.add(i4);
 
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();
         outfile.createNewFile();
         outfile.deleteOnExit();
 
-        WekaUtils.instanceListToArffFileMultiLabel(outfile, iList, false);
+        WekaUtils.instanceListToArffFileMultiLabel(outfile, instances, false);
 
         System.out.println(FileUtils.readFileToString(outfile));
     }
