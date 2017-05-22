@@ -145,7 +145,7 @@ public class CosineSimilarityTest
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_REGRESSION, Constants.FM_PAIR, 
-                false, false, false,false,false, Collections.emptyList(), fes);
+                false, false, false,false,false, Collections.emptyList(), fes, new String[0]);
         
     }
     @Override
