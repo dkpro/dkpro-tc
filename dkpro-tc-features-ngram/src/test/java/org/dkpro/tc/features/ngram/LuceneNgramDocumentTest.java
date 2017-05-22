@@ -64,7 +64,7 @@ public class LuceneNgramDocumentTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    
+
     private static String EXTRACTOR_ID = "123";
 
     @Test
@@ -84,13 +84,11 @@ public class LuceneNgramDocumentTest
         throws Exception
     {
         Gson gson = new Gson();
-        List<String> lines = FileUtils
-                .readLines(new File(output, JsonDataWriter.JSON_FILE_NAME));
+        List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME));
         List<Instance> instances = new ArrayList<>();
         for (String l : lines) {
             instances.add(gson.fromJson(l, Instance.class));
         }
-
 
         assertEquals(1, instances.size());
         Iterator<Instance> iterator = instances.iterator();
@@ -136,8 +134,8 @@ public class LuceneNgramDocumentTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, 
-                false, false, false, false, false, Collections.emptyList(), fes);
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
                 TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
@@ -201,7 +199,7 @@ public class LuceneNgramDocumentTest
     {
         @SuppressWarnings("deprecation")
         IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
-        Term term = new Term("ngram"+EXTRACTOR_ID, string);
+        Term term = new Term("ngram" + EXTRACTOR_ID, string);
         return (int) idxReader.totalTermFreq(term);
     }
 

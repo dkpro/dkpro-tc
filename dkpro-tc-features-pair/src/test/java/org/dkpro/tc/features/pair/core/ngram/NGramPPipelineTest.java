@@ -221,7 +221,7 @@ public class NGramPPipelineTest extends PPipelineTestBase {
 
 		featExtractorConnector = TaskUtils.getFeatureExtractorConnector(outputPath.getAbsolutePath(),
 				JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false, false,
-				false, false, Collections.emptyList(), fes);
+				false, false, Collections.emptyList(), fes, new String[]{});
 	}
 
 	private Object[] toString(Object[] array) {
