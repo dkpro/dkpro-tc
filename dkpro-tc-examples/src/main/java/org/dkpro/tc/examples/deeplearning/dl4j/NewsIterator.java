@@ -110,7 +110,7 @@ public class NewsIterator implements DataSetIterator {
 	        for (int i = 0; i < num && cursor < totalExamples(); i++) {
 	            if (currCategory < categoryData.size()) {
 	                news.add(this.categoryData.get(currCategory).getValue().get(newsPosition));
-	                category[i] = Integer.parseInt(this.categoryData.get(currCategory).getKey().split(",")[0]);
+	                category[i] = Integer.parseInt(this.categoryData.get(currCategory).getKey());
 	                currCategory++;
 	                cursor++;
 	            } else {
@@ -129,9 +129,10 @@ public class NewsIterator implements DataSetIterator {
 //	            for (String t : tokens) {
 //	                if (wordVectors.hasWord(t)) tokensFiltered.add(t);
 //	            }
-	            allTokens.add(Arrays.asList(s.split(" ")));
+	            List<String> asList = Arrays.asList(s.replaceAll(" 0", "").split(" "));
+	            maxLength = maxLength < asList.size() ? asList.size() : maxLength;
+	            allTokens.add(asList);
 	        }
-	        maxLength = allTokens.get(0).size();
 
 	        //If longest news exceeds 'truncateLength': only take the first 'truncateLength' words
 	        //System.out.println("maxLength : " + maxLength);

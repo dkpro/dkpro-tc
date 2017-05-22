@@ -45,8 +45,8 @@ public class DeepLearningDl4jDocumentTrainTest
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    public static final String corpusFilePathTrain = "src/main/resources/data/LabelledNews/train";
+    public static final String corpusFilePathTest = "src/main/resources/data/LabelledNews/test";
 
     public static void main(String[] args)
         throws Exception
@@ -69,28 +69,26 @@ public class DeepLearningDl4jDocumentTrainTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+                LinewiseTextReader.class,
+                LinewiseTextReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+                LinewiseTextReader.class,
+                LinewiseTextReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         new Dl4jUserCodeStub()),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 500),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 15),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "/Users/toobee/Desktop/glove.6B.300d.txt"));
+                        "/Users/toobee/Desktop/glove.6B.50d.txt"));
 
         return pSpace;
     }
