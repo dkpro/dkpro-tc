@@ -174,14 +174,60 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 						addInstanceId, false));
 			}
 
-			featureNames = new TreeSet<>();
-			for (Feature f : instances.get(0).getFeatures()) {
-				featureNames.add(f.getName());
+            Map<String, FeatureDescription> featDesc = new HashMap<>();
+            featureNames = new TreeSet<>();
+            for (Feature f : instances.get(0).getFeatures()) {
+                featureNames.add(f.getName());
+
+                if (!featDesc.containsKey(f.getName())) {
+                    featDesc.put(f.getName(), determineType(f));
+                }
+            }
+
+            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8",
+                    featureNames);
+
+            StringBuilder sb = new StringBuilder();
+            List<String> keyList = new ArrayList<String>(featDesc.keySet());
+            Collections.sort(keyList);
+            for (String k : keyList) {
+                sb.append(k + "\t" + featDesc.get(k).getDescription() + "\n");
+            }
+            FileUtils.writeStringToFile(
+                    new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION), sb.toString(), "utf-8");
+
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+	}
+
+
+	private FeatureDescription determineType(Feature f)
+    {
+	    Object value = f.getValue();
+	    if(value instanceof Double){
+	        return new FeatureDescription(FeatureType.NUM_FLOATING_POINT);
+	    }else if (value instanceof Integer){
+	        return new FeatureDescription(FeatureType.NUM_INTEGER);
+	    }else if (value instanceof Number){
+	        return new FeatureDescription(FeatureType.NUM);
+        }else if (value instanceof Enum){
+            FeatureDescription featureDescription = new FeatureDescription(FeatureType.ENUM);
+            featureDescription.setEnumType((Enum)value);
+            return featureDescription;
+        }else if (value instanceof Boolean){
+            return new FeatureDescription(FeatureType.BOOLEAN);
+        }
+
+	    return new FeatureDescription(FeatureType.UNKNOWN);
+    }
+
+    private void trackOutcomes(List<Instance> instances) {
+		for (Instance i : instances) {
+			for (String o : i.getOutcomes()) {
+				uniqueOutcomes.add(o);
 			}
-			
-			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
@@ -226,7 +272,9 @@ public class ExtractFeaturesStreamConnector extends ConnectorBase {
 				// the generic file into the classifier-specific data format
 				dsw.transformFromGeneric();
 			}
-
+			
+			dsw.close();
+			
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}

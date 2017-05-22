@@ -165,4 +165,12 @@ public class CRFSuiteDataWriter implements DataWriter {
 		return Constants.GENERIC_FEATURE_FILE;
 	}
 
+    @Override
+    public void close()
+        throws Exception
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

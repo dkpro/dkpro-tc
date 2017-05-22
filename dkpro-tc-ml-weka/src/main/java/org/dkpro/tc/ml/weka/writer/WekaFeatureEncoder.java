@@ -30,6 +30,7 @@ import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.api.features.MissingValue.MissingValueType;
+import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 
 /*
@@ -59,6 +60,39 @@ public class WekaFeatureEncoder
         return attributeStore;
     }
 
+    public static Attribute featureToAttributeUsingFeatureDescription(String featureName,
+            FeatureType value, String enumType)
+                throws TextClassificationException
+    {
+        String name = Utils.quote(featureName);
+        Attribute attribute;
+        // if value is a number then create a numeric attribute
+        if (value.equals(FeatureType.NUM) || value.equals(FeatureType.NUM_FLOATING_POINT)
+                || value.equals(FeatureType.NUM_INTEGER) || value.equals(FeatureType.BOOLEAN)|| value.equals(FeatureType.STRING)) {
+            attribute = new Attribute(name);
+        }
+        // if value is an Enum thene create a nominal attribute
+        else if (value.equals(FeatureType.ENUM)) {
+            Class<?> forName=null;
+            try {
+                forName = Class.forName(enumType);
+            }
+            catch (ClassNotFoundException e) {
+                throw new TextClassificationException(e);
+            }
+            Object[] enumConstants = forName.getEnumConstants();
+            ArrayList<String> attributeValues = new ArrayList<String>(enumConstants.length);
+            for (Object enumConstant : enumConstants) {
+                attributeValues.add(enumConstant.toString());
+            }
+            attribute = new Attribute(name, attributeValues);
+        }
+        else {
+            attribute = new Attribute(name, (ArrayList<String>) null);
+        }
+        return attribute;
+    }
+
     public static Attribute featureToAttribute(Feature feature)
         throws TextClassificationException
     {
@@ -68,7 +102,7 @@ public class WekaFeatureEncoder
         // if value is a number then create a numeric attribute
         if (value instanceof Number) {
             attribute = new Attribute(name);
-        }// if value is a boolean then create a numeric attribute
+        } // if value is a boolean then create a numeric attribute
         else if (value instanceof Boolean) {
             attribute = new Attribute(name);
         }
