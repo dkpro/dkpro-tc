@@ -50,10 +50,6 @@
             <groupId>org.dkpro.tc</groupId>
             <artifactId>dkpro-tc-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.dkpro.tc</groupId>
-            <artifactId>dkpro-tc-fstore-simple</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
