@@ -70,7 +70,7 @@ public class TwentyNewsgroupsRaw
                         ExtractFeaturesStreamConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, false,
                         ExtractFeaturesStreamConnector.PARAM_OUTCOMES,
-                        new String[] { "alt.athesim", "comp.graphics" },
+                        new String[] { "alt.atheism", "comp.graphics" },
                         ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS,
                         asList(createExternalResourceDescription(NrOfTokens.class,
                                 NrOfTokens.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
