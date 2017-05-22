@@ -79,6 +79,8 @@ public class LinewiseTextReader
     private int instanceId = 1;
 
     private String nextLine = null;
+    
+    List<String> names = new ArrayList<>();
 
     @Override
     public void initialize(UimaContext context)
@@ -89,6 +91,7 @@ public class LinewiseTextReader
         try {
             for (Resource r : getResources()) {
                 String name = r.getResource().getFile().getName();
+                names.add(r.getResource().getFile().getAbsolutePath());
                 InputStreamReader is = null;
                 if (name.endsWith(".gz")) {
                     is = new InputStreamReader(new GZIPInputStream(r.getInputStream()), encoding);

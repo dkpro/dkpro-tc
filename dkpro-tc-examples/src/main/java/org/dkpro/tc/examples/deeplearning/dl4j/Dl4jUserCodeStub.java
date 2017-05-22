@@ -66,7 +66,7 @@ public class Dl4jUserCodeStub
     {
 
         int batchSize = 50; // Number of examples in each minibatch
-        int nEpochs = 1; // Number of epochs (full passes of training data) to train on
+        int nEpochs = 10; // Number of epochs (full passes of training data) to train on
 
         // DataSetIterators for training and testing respectively
         // Using AsyncDataSetIterator to do data loading in a separate thread; this may improve
