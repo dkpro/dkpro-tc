@@ -138,6 +138,9 @@ public class DocumentIdTracer extends JCasAnnotator_ImplBase {
 		int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
 		try {
 			String documentFile = DocumentMetaData.get(aJCas).getDocumentUri();
+			if(documentFile==null){
+				documentFile = DocumentMetaData.get(aJCas).getDocumentId();
+			}
 			writer.write(jcasId + "\t" + documentFile + System.lineSeparator());
 		} catch (IOException e) {
 			throw new AnalysisEngineProcessException(e);

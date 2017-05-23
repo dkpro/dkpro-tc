@@ -48,6 +48,7 @@ import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
+import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
@@ -269,7 +270,7 @@ public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
 		// =======================
 
 		crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
-		crossValidationTask.setType(crossValidationTask.getType().replaceAll("\\$[0-9]+", "-") + experimentName);
+		crossValidationTask.setType(crossValidationTask.getType() + "-" + experimentName);
 		crossValidationTask.addTask(preparationTask);
 		crossValidationTask.addTask(embeddingTask);
 		crossValidationTask.addTask(vectorizationTrainTask);
@@ -280,7 +281,7 @@ public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
 		// we want to re-use the old CV report, we need to collect the
 		// evaluation.bin files from
 		// the test task here (with another report)
-//		crossValidationTask.addReport(mlAdapter.getBatchTrainTestReportClass());
+		crossValidationTask.addReport(InnerBatchReport.class);
 		crossValidationTask.setAttribute(TC_TASK_TYPE, TcTaskType.CROSS_VALIDATION.toString());
 
 		// DKPro Lab issue 38: must be added as *first* task

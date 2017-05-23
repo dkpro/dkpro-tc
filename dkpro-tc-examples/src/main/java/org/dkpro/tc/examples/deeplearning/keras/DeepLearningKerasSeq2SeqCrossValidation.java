@@ -38,70 +38,59 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DeepLearningKerasSeq2SeqCrossValidation
-    implements Constants
-{
-    public static final String LANGUAGE_CODE = "en";
+public class DeepLearningKerasSeq2SeqCrossValidation implements Constants {
+	public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
+	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
 
-    public static void main(String[] args)
-        throws Exception
-    {
+	public static void main(String[] args) throws Exception {
 
-//        DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+		// DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
+		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-        ParameterSpace pSpace = getParameterSpace();
+		ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningKerasSeq2SeqCrossValidation experiment = new DeepLearningKerasSeq2SeqCrossValidation();
-        experiment.runCrossValidation(pSpace);
-    }
+		DeepLearningKerasSeq2SeqCrossValidation experiment = new DeepLearningKerasSeq2SeqCrossValidation();
+		experiment.runCrossValidation(pSpace);
+	}
 
-    public static ParameterSpace getParameterSpace()
-                throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
-        dimReaders.put(DIM_READER_TRAIN, train);
+		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
+		dimReaders.put(DIM_READER_TRAIN, train);
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
-                        "/usr/local/bin/python3"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/posTaggingLstm.py")
-                );
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS),
+				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
+				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75), Dimension
+						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/kerasCode/posTaggingLstm.py"));
 
-        return pSpace;
-    }
+		return pSpace;
+	}
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
-        return createEngineDescription(SequenceOutcomeAnnotator.class);
-    }
+	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+		return createEngineDescription(SequenceOutcomeAnnotator.class);
+	}
 
-    public void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
-        DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasSeq2Seq",
-                KerasAdapter.class,2);
-        batch.setParameterSpace(pSpace);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
+		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasSeq2SeqCv",
+				KerasAdapter.class, 2);
+		batch.setParameterSpace(pSpace);
+		batch.setPreprocessing(getPreprocessing());
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchCrossValidationReport.class);
 
-        Lab.getInstance().run(batch);
-    }
+		Lab.getInstance().run(batch);
+	}
 }
