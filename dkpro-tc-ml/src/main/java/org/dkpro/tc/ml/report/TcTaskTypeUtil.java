@@ -23,7 +23,7 @@ import java.util.Map;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.impl.TaskBase;
-import org.dkpro.tc.ml.Experiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 
 public class TcTaskTypeUtil
 {

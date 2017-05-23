@@ -45,7 +45,7 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 
 public class TcAnnotator
@@ -69,7 +69,7 @@ public class TcAnnotator
 
     // private List<FeatureExtractorResource_ImplBase> featureExtractors;
 
-    private TCMachineLearningAdapter mlAdapter;
+    private TcShallowLearningAdapter mlAdapter;
 
     private AnalysisEngine engine;
 
@@ -135,7 +135,7 @@ public class TcAnnotator
      * @return A fully configured feature extractor connector
      * @throws ResourceInitializationException
      */
-    private AnalysisEngineDescription getSaveModelConnector(String outputPath, TCMachineLearningAdapter adapter, String learningMode, String featureMode, List<ExternalResourceDescription> featureExtractor)
+    private AnalysisEngineDescription getSaveModelConnector(String outputPath, TcShallowLearningAdapter adapter, String learningMode, String featureMode, List<ExternalResourceDescription> featureExtractor)
                 throws ResourceInitializationException
     {
         List<Object> parameters=new ArrayList<>();

@@ -27,7 +27,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
@@ -63,7 +63,7 @@ import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
  * </pre>
  */
 public class SVMHMMAdapter
-	implements TCMachineLearningAdapter
+	implements TcShallowLearningAdapter
 {
 
     @Override

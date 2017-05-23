@@ -33,7 +33,7 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
@@ -66,7 +66,7 @@ public class SVMHMMOutcomeIDReport
         File testDataStorage = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
         String fileName = new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+                TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile);
         return new File(testDataStorage, fileName);
     }
 
@@ -80,7 +80,7 @@ public class SVMHMMOutcomeIDReport
     {
         // predictions
         String predictionFileName = new SVMHMMAdapter()
-                .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
+                .getFrameworkFilename(TcShallowLearningAdapter.AdapterNameEntries.predictionsFile);
         
         File predictionsFile = getContext().getFile(predictionFileName, AccessMode.READONLY);
 

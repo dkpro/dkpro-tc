@@ -28,7 +28,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 /**
  * Interface for machine learning frameworks in TC
  */
-public interface TCMachineLearningAdapter
+public interface TcShallowLearningAdapter
 {
 
     public enum AdapterNameEntries

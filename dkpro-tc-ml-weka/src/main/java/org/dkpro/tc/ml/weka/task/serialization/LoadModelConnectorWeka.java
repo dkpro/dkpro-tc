@@ -43,7 +43,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -84,7 +84,7 @@ public class LoadModelConnectorWeka
         super.initialize(context);
 
         try {
-            TCMachineLearningAdapter initMachineLearningAdapter = SaveModelUtils
+            TcShallowLearningAdapter initMachineLearningAdapter = SaveModelUtils
                     .initMachineLearningAdapter(tcModelLocation);
             bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
             useSparse = initMachineLearningAdapter.useSparseFeatures();

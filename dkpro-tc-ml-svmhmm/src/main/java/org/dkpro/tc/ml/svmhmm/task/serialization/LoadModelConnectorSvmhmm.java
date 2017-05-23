@@ -44,7 +44,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
@@ -128,7 +128,7 @@ public class LoadModelConnectorSvmhmm
 
             File featureFile = new File(tmpFolderForFeatureFile.toFile() + "/"
                     + new SVMHMMAdapter().getFrameworkFilename(
-                            TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile));
+                            TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile));
             File augmentedTestFile = SVMHMMUtils.replaceLabelsWithIntegers(featureFile,
                     loadMapping);
 

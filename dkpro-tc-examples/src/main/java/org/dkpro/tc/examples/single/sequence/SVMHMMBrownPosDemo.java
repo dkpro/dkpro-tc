@@ -39,7 +39,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
@@ -121,7 +121,7 @@ public class SVMHMMBrownPosDemo
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,
-            Class<? extends TCMachineLearningAdapter> machineLearningAdapter)
+            Class<? extends TcShallowLearningAdapter> machineLearningAdapter)
                 throws Exception
     {
         final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
@@ -135,7 +135,7 @@ public class SVMHMMBrownPosDemo
     }
 
     protected void runTrainTest(ParameterSpace pSpace,
-            Class<? extends TCMachineLearningAdapter> machineLearningAdapter)
+            Class<? extends TcShallowLearningAdapter> machineLearningAdapter)
                 throws Exception
     {
         final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",

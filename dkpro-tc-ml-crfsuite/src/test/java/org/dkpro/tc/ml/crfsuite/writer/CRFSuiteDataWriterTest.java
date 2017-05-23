@@ -29,7 +29,7 @@ import java.util.List;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.junit.Before;
 import org.junit.Rule;

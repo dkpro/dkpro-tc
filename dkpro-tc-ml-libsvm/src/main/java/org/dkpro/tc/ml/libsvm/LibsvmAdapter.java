@@ -26,7 +26,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
@@ -54,10 +54,10 @@ import org.dkpro.tc.ml.report.InnerBatchReport;
  * </pre>
  */
 public class LibsvmAdapter
-    implements TCMachineLearningAdapter
+    implements TcShallowLearningAdapter
 {
 
-    public static TCMachineLearningAdapter getInstance()
+    public static TcShallowLearningAdapter getInstance()
     {
         return new LibsvmAdapter();
     }

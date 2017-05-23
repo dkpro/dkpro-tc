@@ -47,7 +47,7 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
@@ -98,7 +98,7 @@ public class InitTask
 
     private List<String> operativeViews;
 
-    private TCMachineLearningAdapter mlAdapter;
+    private TcShallowLearningAdapter mlAdapter;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -246,7 +246,7 @@ public class InitTask
         this.isTesting = isTesting;
     }
 
-    public void setMlAdapter(TCMachineLearningAdapter mlAdapter)
+    public void setMlAdapter(TcShallowLearningAdapter mlAdapter)
     {
         this.mlAdapter = mlAdapter;
     }

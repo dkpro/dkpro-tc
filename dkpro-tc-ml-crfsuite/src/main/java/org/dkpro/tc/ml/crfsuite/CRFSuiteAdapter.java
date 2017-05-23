@@ -26,7 +26,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
@@ -39,10 +39,10 @@ import org.dkpro.tc.ml.report.InnerBatchReport;
  * provided in this class see constants prefixed with ALGORITHM.
  */
 public class CRFSuiteAdapter
-    implements TCMachineLearningAdapter
+    implements TcShallowLearningAdapter
 {
 
-    public static TCMachineLearningAdapter getInstance()
+    public static TcShallowLearningAdapter getInstance()
     {
         return new CRFSuiteAdapter();
     }

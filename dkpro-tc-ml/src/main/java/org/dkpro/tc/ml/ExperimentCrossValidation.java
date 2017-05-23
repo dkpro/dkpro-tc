@@ -42,11 +42,12 @@ import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.CollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
+import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BatchBasicResultReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
@@ -55,7 +56,7 @@ import org.dkpro.tc.ml.report.TcTaskType;
  * 
  */
 public class ExperimentCrossValidation
-    extends Experiment_ImplBase
+    extends ShallowLearningExperiment_ImplBase
 {
 
     protected Comparator<String> comparator;
@@ -76,7 +77,7 @@ public class ExperimentCrossValidation
      * Preconfigured crossvalidation setup. Pseudo-random assignment of instances to folds.
      */
     public ExperimentCrossValidation(String aExperimentName,
-            Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds)
+            Class<? extends TcShallowLearningAdapter> mlAdapter, int aNumFolds)
         throws TextClassificationException
     {
         this(aExperimentName, mlAdapter, aNumFolds, null);
@@ -87,7 +88,7 @@ public class ExperimentCrossValidation
      * must occur together in the same CV fold.
      */
     public ExperimentCrossValidation(String aExperimentName,
-            Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds,
+            Class<? extends TcShallowLearningAdapter> mlAdapter, int aNumFolds,
             Comparator<String> aComparator)
         throws TextClassificationException
     {

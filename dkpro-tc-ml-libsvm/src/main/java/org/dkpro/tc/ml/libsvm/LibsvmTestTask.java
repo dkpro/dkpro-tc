@@ -41,7 +41,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 

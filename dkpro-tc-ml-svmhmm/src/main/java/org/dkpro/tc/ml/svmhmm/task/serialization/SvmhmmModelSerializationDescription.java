@@ -27,7 +27,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
@@ -67,7 +67,7 @@ public class SvmhmmModelSerializationDescription
         // file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND
         // TESTING!!!!!!
         String fileName = new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+                TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile);
 
         File trainingFile = new File(trainingDataStorage, fileName);
 

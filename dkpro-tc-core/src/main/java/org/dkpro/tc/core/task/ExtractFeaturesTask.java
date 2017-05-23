@@ -54,7 +54,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
 import org.dkpro.tc.core.util.TaskUtils;
 
@@ -106,9 +106,9 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 	@SuppressWarnings("unused")
 	private Set<String> requiredTypes;
 
-	private TCMachineLearningAdapter mlAdapter;
+	private TcShallowLearningAdapter mlAdapter;
 
-	public void setMlAdapter(TCMachineLearningAdapter mlAdapter) {
+	public void setMlAdapter(TcShallowLearningAdapter mlAdapter) {
 		this.mlAdapter = mlAdapter;
 	}
 

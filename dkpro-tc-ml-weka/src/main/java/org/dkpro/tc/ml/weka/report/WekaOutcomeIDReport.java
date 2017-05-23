@@ -32,7 +32,7 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;

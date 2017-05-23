@@ -31,7 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 

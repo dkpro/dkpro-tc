@@ -44,7 +44,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 
@@ -104,7 +104,7 @@ public class SVMHMMTestTask
         // file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND
         // TESTING!!!!!!
         String fileName = new SVMHMMAdapter().getFrameworkFilename(
-                TCMachineLearningAdapter.AdapterNameEntries.featureVectorsFile);
+                TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile);
 
         File trainingFile = new File(trainingDataStorage, fileName);
         File testFile = new File(testDataStorage, fileName);
@@ -151,7 +151,7 @@ public class SVMHMMTestTask
 
     /**
      * Tests the model against the test data and stores the outcomes in the
-     * {@link org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries#predictionsFile}
+     * {@link org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries#predictionsFile}
      * file.
      *
      * @param taskContext
@@ -165,7 +165,7 @@ public class SVMHMMTestTask
     {
         // file to hold prediction results
         String predictionFileName = new SVMHMMAdapter()
-                .getFrameworkFilename(TCMachineLearningAdapter.AdapterNameEntries.predictionsFile);
+                .getFrameworkFilename(TcShallowLearningAdapter.AdapterNameEntries.predictionsFile);
         File predictionsFile = taskContext.getFile(predictionFileName, AccessMode.READWRITE);
 
         // location of the trained model

@@ -26,7 +26,7 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
@@ -34,10 +34,10 @@ import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 public class LiblinearAdapter 
-	implements TCMachineLearningAdapter
+	implements TcShallowLearningAdapter
 {
 
-	public static TCMachineLearningAdapter getInstance() {
+	public static TcShallowLearningAdapter getInstance() {
 		return new LiblinearAdapter();
 	}
 	

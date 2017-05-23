@@ -21,15 +21,15 @@ import java.io.File;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.CollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
@@ -37,7 +37,7 @@ import org.dkpro.tc.ml.report.TcTaskType;
  * 
  */
 public class ExperimentSaveModel
-    extends Experiment_ImplBase
+    extends ShallowLearningExperiment_ImplBase
 {
     private File outputFolder;
 
@@ -53,7 +53,7 @@ public class ExperimentSaveModel
     }
 
     public ExperimentSaveModel(String aExperimentName,
-            Class<? extends TCMachineLearningAdapter> mlAdapter, File outputFolder)
+            Class<? extends TcShallowLearningAdapter> mlAdapter, File outputFolder)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
@@ -151,7 +151,7 @@ public class ExperimentSaveModel
         this.operativeViews = operativeViews;
     }
 
-    public void setTcMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
+    public void setTcMachineLearningAdapter(Class<? extends TcShallowLearningAdapter> mlAdapter)
         throws TextClassificationException
     {
         try {

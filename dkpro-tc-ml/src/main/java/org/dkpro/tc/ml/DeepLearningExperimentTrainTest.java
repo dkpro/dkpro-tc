@@ -27,13 +27,14 @@ import org.dkpro.tc.core.task.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
+import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
  * Train-Test setup
  */
-public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
+public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_ImplBase {
 
 	protected InitTaskDeep initTaskTrain;
 	protected InitTaskDeep initTaskTest;
@@ -42,12 +43,6 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 	protected VectorizationTask vectorizationTrainTask;
 	protected VectorizationTask vectorizationTestTask;
 	protected TaskBase learningTask;
-
-	private TcDeepLearningAdapter mlDeepLearningAdapter;
-	// FIXME: belongs into super class - requires interface changes - will be
-	// huge pain to merge
-	// that
-	// because of work on other branches - to be fixed after merge into master
 
 	public DeepLearningExperimentTrainTest() {/* needed for Groovy */
 	}
@@ -58,7 +53,7 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 	public DeepLearningExperimentTrainTest(String aExperimentName, Class<? extends TcDeepLearningAdapter> mlAdapter)
 			throws TextClassificationException {
 		try {
-			mlDeepLearningAdapter = mlAdapter.newInstance();
+			this.mlAdapter = mlAdapter.newInstance();
 		} catch (Exception e) {
 			throw new TextClassificationException(e);
 		}
@@ -104,7 +99,7 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 		// get some meta data depending on the whole document collection
 		preparationTask = new PreparationTask();
 		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
-		preparationTask.setMachineLearningAdapter(mlDeepLearningAdapter);
+		preparationTask.setMachineLearningAdapter(mlAdapter);
 		preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
 		preparationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
 		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
@@ -134,7 +129,7 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 
 		// test task operating on the models of the feature extraction train and
 		// test tasks
-		learningTask = mlDeepLearningAdapter.getTestTask();
+		learningTask = mlAdapter.getTestTask();
 		learningTask.setType(learningTask.getType() + "-" + experimentName);
 		learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
@@ -145,7 +140,7 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 		}
 
 		// // always add OutcomeIdReport
-		learningTask.addReport(mlDeepLearningAdapter.getOutcomeIdReportClass());
+		learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
 		learningTask.addReport(DeeplearningBasicResultReport.class);
 		learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, TcDeepLearningAdapter.PREPARATION_FOLDER);
 		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,

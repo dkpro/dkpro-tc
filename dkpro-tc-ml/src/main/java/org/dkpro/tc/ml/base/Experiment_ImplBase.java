@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml;
+package org.dkpro.tc.ml.base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.ml.DiscriminableNameConverter;
 
 /**
  * Base class for TC experiment setups
@@ -49,7 +49,6 @@ public abstract class Experiment_ImplBase
                                                      // discriminator
     protected List<String> operativeViews;
     protected List<Class<? extends Report>> innerReports;
-    protected TCMachineLearningAdapter mlAdapter;
 
     Log log = LogFactory.getLog(Experiment_ImplBase.class);
     
@@ -123,20 +122,6 @@ public abstract class Experiment_ImplBase
             return false;
         }
         return true;
-    }
-
-    public void setMachineLearningAdapter(Class<? extends TCMachineLearningAdapter> mlAdapter)
-        throws IllegalArgumentException
-    {
-        try {
-            this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
     public void setPreprocessing(AnalysisEngineDescription preprocessing)

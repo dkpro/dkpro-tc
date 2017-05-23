@@ -19,14 +19,14 @@ package org.dkpro.tc.ml;
 
 import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.impl.TaskBase;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.CollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
+import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BatchBasicResultReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
@@ -35,7 +35,7 @@ import org.dkpro.tc.ml.report.TcTaskType;
  * 
  */
 public class ExperimentTrainTest
-    extends Experiment_ImplBase
+    extends ShallowLearningExperiment_ImplBase
 {
 
     protected InitTask initTaskTrain;
@@ -54,7 +54,7 @@ public class ExperimentTrainTest
      * Preconfigured train-test setup.
      * 
      */
-    public ExperimentTrainTest(String aExperimentName, Class<? extends TCMachineLearningAdapter> mlAdapter)
+    public ExperimentTrainTest(String aExperimentName, Class<? extends TcShallowLearningAdapter> mlAdapter)
             throws TextClassificationException
     {
         setExperimentName(aExperimentName);

@@ -40,13 +40,13 @@ import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
+import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.report.TcTaskType;
@@ -55,7 +55,7 @@ import org.dkpro.tc.ml.report.TcTaskType;
  * Crossvalidation setup
  * 
  */
-public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
+public class DeepLearningExperimentCrossValidation extends DeepLearningExperiment_ImplBase {
 
 	protected Comparator<String> comparator;
 	protected int numFolds = 10;
@@ -90,11 +90,11 @@ public class DeepLearningExperimentCrossValidation extends Experiment_ImplBase {
 	 * determine which instances must occur together in the same CV fold.
 	 */
 	public DeepLearningExperimentCrossValidation(String aExperimentName,
-			Class<? extends TCMachineLearningAdapter> mlAdapter, int aNumFolds, Comparator<String> aComparator)
+			Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds, Comparator<String> aComparator)
 					throws TextClassificationException {
 		setExperimentName(aExperimentName);
 		//FIXME
-//		setMachineLearningAdapter(mlAdapter);
+		setMachineLearningAdapter(mlAdapter);
 		setNumFolds(aNumFolds);
 		setComparator(aComparator);
 		// set name of overall batch task

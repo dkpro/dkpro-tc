@@ -36,7 +36,7 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSink;
 import weka.filters.unsupervised.attribute.Remove;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 

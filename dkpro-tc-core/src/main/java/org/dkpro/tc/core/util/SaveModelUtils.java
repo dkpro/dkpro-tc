@@ -62,7 +62,7 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TCMachineLearningAdapter;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
 /**
  * Demo to show case how to train and save a model in document mode and multi-label classification
@@ -455,13 +455,13 @@ public class SaveModelUtils
         return prop.getProperty(DIM_LEARNING_MODE);
     }
 
-    public static TCMachineLearningAdapter initMachineLearningAdapter(File tcModelLocation)
+    public static TcShallowLearningAdapter initMachineLearningAdapter(File tcModelLocation)
         throws Exception
     {
         File modelMeta = new File(tcModelLocation, MODEL_META);
         String fileContent = FileUtils.readFileToString(modelMeta);
         Class<?> classObj = Class.forName(fileContent);
-        return (TCMachineLearningAdapter) classObj.newInstance();
+        return (TcShallowLearningAdapter) classObj.newInstance();
     }
 
     public static List<Object> initParameters(File tcModelLocation)
