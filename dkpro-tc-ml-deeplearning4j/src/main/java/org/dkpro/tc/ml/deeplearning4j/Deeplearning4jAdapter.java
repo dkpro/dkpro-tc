@@ -38,5 +38,11 @@ public class Deeplearning4jAdapter
         return Deeplearning4jOutcomeIDReport.class;
     }
 
+    @Override
+    public int lowestIndex()
+    {
+        return 0;
+    }
+
 
 }

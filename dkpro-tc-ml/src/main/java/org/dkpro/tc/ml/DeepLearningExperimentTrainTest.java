@@ -104,6 +104,7 @@ public class DeepLearningExperimentTrainTest extends Experiment_ImplBase {
 		// get some meta data depending on the whole document collection
 		preparationTask = new PreparationTask();
 		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
+		preparationTask.setMachineLearningAdapter(mlDeepLearningAdapter);
 		preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
 		preparationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
 		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());

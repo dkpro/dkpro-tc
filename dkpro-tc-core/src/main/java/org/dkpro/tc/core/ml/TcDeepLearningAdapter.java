@@ -33,7 +33,7 @@ public interface TcDeepLearningAdapter
      */
     public static final String TARGET_ID_MAPPING = "targetIdFolder";
 
-	public static final String EMBEDDING_FOLDER = "embeddingFolder";
+    public static final String EMBEDDING_FOLDER = "embeddingFolder";
 
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
@@ -48,5 +48,13 @@ public interface TcDeepLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     public Class<? extends ReportBase> getOutcomeIdReportClass();
+
+    /**
+     * The lowest index from which transformation into integer values will start. Normally, this
+     * value will be zero. Unless, zero values have a special meaning in the respective deep
+     * learning framework. For instance, zero should not be used if vectors are zero-padded
+     * otherwise distinction between padded-value and actual-value is no longer possible.
+     */
+    public int lowestIndex();
 
 }

@@ -51,6 +51,10 @@ public class MappingAnnotator
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
+    
+    public static final String PARAM_START_INDEX = "startIndexMllowestIdx";
+    @ConfigurationParameter(name = PARAM_START_INDEX, mandatory = true)
+    protected int startIndex;
 
     TreeSet<String> token;
 
@@ -62,14 +66,17 @@ public class MappingAnnotator
     Map<String, Integer> outcomeMap;
 
     // We start to count at 1 as zero might be reserved
-    int instanceIdx = 1;
-    int outcomeIdx = 1;
+    int instanceIdx = -1;
+    int outcomeIdx = -1;
 
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
+        
+        instanceIdx = startIndex;
+        outcomeIdx = startIndex;
 
         instanceMappingFile = new File(targetFolder,
                 DeepLearningConstants.FILENAME_INSTANCE_MAPPING);

@@ -38,5 +38,11 @@ public class KerasAdapter
         return KerasOutcomeIDReport.class;
     }
 
+    @Override
+    public int lowestIndex()
+    {
+        return 1;
+    }
+
 
 }

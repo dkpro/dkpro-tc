@@ -158,7 +158,6 @@ public class VectorizationAnnotatorDocument2Label
     private void processInstances(JCas aJCas)
         throws Exception
     {
-        int writtenInstances = 0;
 
         List<AnnotationFS> annos = new ArrayList<AnnotationFS>(
                 CasUtil.select(aJCas.getCas(), instanceType));
@@ -171,27 +170,10 @@ public class VectorizationAnnotatorDocument2Label
                 writerInstance.write(" ");
             }
 
-            writtenInstances++;    
             if (i + 1 >= maximumLength) {
                 break;
             }
         }
-
-//        // zero padding
-//        if (writtenInstances < maximumLength) {
-//            writerInstance.write(" ");
-//        }
-//        
-//        while (writtenInstances < maximumLength) {
-//            writerInstance.write("0");
-//            if (writtenInstances + 1 < maximumLength) {
-//                writerInstance.write(" ");
-//            }
-//            if (writtenInstances + 1 >= maximumLength) {
-//                break;
-//            }
-//            writtenInstances++;
-//        }
 
         writerInstance.write("]");
         writerInstance.write(System.lineSeparator());

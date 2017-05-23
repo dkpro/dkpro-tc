@@ -92,7 +92,7 @@ public class DeepLearningKerasDocumentTrainTest
                         "src/main/resources/kerasCode/imdb_cnn_lstm.py"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "/Users/toobee/Desktop/glove.6B.100d.txt"));
+                        "/Users/toobee/Desktop/glove.6B.50d.txt"));
 
         return pSpace;
     }

@@ -39,6 +39,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
@@ -73,6 +74,8 @@ public class PreparationTask extends UimaTaskBase {
 
 	@Discriminator(name = DIM_FILES_TRAINING)
 	private Collection<String> files_training;
+	
+    private TcDeepLearningAdapter mlDeepLearningAdapter;
 
 	@Override
 	public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -99,7 +102,8 @@ public class PreparationTask extends UimaTaskBase {
 		AggregateBuilder builder = new AggregateBuilder();
 
 		builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
-				MappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
+				MappingAnnotator.PARAM_TARGET_DIRECTORY, folder,
+				MappingAnnotator.PARAM_START_INDEX, mlDeepLearningAdapter.lowestIndex()));
 
 		builder.add(getMaximumLengthDeterminer(folder));
 		return builder.createAggregateDescription();
@@ -141,4 +145,9 @@ public class PreparationTask extends UimaTaskBase {
 			throw new ResourceInitializationException(e);
 		}
 	}
+
+    public void setMachineLearningAdapter(TcDeepLearningAdapter mlDeepLearningAdapter)
+    {
+        this.mlDeepLearningAdapter = mlDeepLearningAdapter;
+    }
 }
