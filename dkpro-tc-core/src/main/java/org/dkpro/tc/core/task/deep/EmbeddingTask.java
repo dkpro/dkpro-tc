@@ -27,7 +27,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -101,26 +103,12 @@ public class EmbeddingTask
         }
 
         for(String k : tokenIdMap.keySet()){
-            initUnknown(lenVec);
-            writer.write(tokenIdMap.get(k) + " " + unknownVector + System.lineSeparator());
+            writer.write(tokenIdMap.get(k) + " " + randomVector(lenVec) + System.lineSeparator());
         }
 
         writer.close();
         reader.close();
 
-    }
-
-    private void initUnknown(int len)
-    {
-        if(unknownVector!=null){
-            return;
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i < len; i++){
-            sb.append("1.0 ");
-        }
-        unknownVector = sb.toString().trim();
     }
 
     private BufferedReader getReader(TaskContext aContext)
@@ -159,5 +147,24 @@ public class EmbeddingTask
         }
 
         return m;
+    }
+    
+    public static String randomVector(int aSize, long seed)
+    {
+        Random rand = new Random(seed);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < aSize; i++) {
+            float f = (rand.nextFloat() - 0.5f) / aSize;
+            sb.append(String.format(Locale.US, "%.5f", f));
+            if (i+1 < aSize){
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String randomVector(int aSize)
+    {
+        return randomVector(aSize, 123456789);
     }
 }
