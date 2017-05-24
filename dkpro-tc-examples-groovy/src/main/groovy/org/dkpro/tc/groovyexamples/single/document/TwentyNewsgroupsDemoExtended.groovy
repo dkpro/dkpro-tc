@@ -157,7 +157,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         WekaTestTask testTask = [
             type:"TestTask-TwentyNewsgroups",
             reports: [
-                WekaOutcomeIDReport]
+                WekaOutcomeIDReport.newInstance()]
         ]
 
 
@@ -201,7 +201,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport
+                BatchTrainTestReport.newInstance()
                 ]
         ]
 
