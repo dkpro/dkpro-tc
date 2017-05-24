@@ -99,7 +99,7 @@ public class ManyInstancesExperiment implements Constants {
                 dimFeatureSets
             ],
             reports:         [
-                BatchCrossValidationReport
+                BatchCrossValidationReport.newInstance()
             ],
             numFolds: numFolds]
 
