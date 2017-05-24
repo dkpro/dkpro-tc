@@ -47,7 +47,7 @@ public interface TcDeepLearningAdapter
      *
      * @return The report that collects the outcomeId to prediction values.
      */
-    public Class<? extends ReportBase> getOutcomeIdReportClass();
+    public ReportBase getOutcomeIdReportClass();
 
     /**
      * The lowest index from which transformation into integer values will start. Normally, this

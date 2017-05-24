@@ -33,9 +33,9 @@ public class Deeplearning4jAdapter
     }
 
     @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    public ReportBase getOutcomeIdReportClass()
     {
-        return Deeplearning4jOutcomeIDReport.class;
+        return new Deeplearning4jOutcomeIDReport();
     }
 
     @Override

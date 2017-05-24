@@ -33,9 +33,9 @@ public class KerasAdapter
     }
 
     @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    public ReportBase getOutcomeIdReportClass()
     {
-        return KerasOutcomeIDReport.class;
+        return new KerasOutcomeIDReport(lowestIndex());
     }
 
     @Override

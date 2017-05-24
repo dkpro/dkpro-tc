@@ -89,23 +89,9 @@ public class Deeplearning4jOutcomeIDReport
 
             String[] split = p.split("\t");
             Integer v = Integer.valueOf(Integer.valueOf(split[0]));
-            v = (v > 0) ? v - 1 : 0;
-            String gold = v.toString(); // FIXME: Shift
-                                        // index to
-                                        // start at
-                                        // zero ...
-                                        // urghs
+            String gold = v.toString(); 
             v = Integer.valueOf(Integer.valueOf(split[1]));
-            v = (v > 0) ? v - 1 : 0;
-            String prediction = v.toString(); // FIXME:
-                                              // Shift
-                                              // index
-                                              // to
-                                              // start
-                                              // at
-                                              // zero
-                                              // ...
-                                              // urghs
+            String prediction = v.toString();  
             prop.setProperty("" + id,
                     prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }

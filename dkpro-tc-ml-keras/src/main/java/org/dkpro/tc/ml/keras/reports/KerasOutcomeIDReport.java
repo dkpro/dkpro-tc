@@ -46,6 +46,12 @@ public class KerasOutcomeIDReport
 
     private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
 
+	private int shiftIdx;
+    
+    public KerasOutcomeIDReport(int shiftIdx) {
+		this.shiftIdx = shiftIdx;
+	}
+
     @Override
     public void execute()
         throws Exception
@@ -59,8 +65,7 @@ public class KerasOutcomeIDReport
         header.append("labels ");
         for (String m : outcomeMappings) {
             String[] split = m.split("\t");
-            int val = Integer.valueOf(split[1]) - 1; // FIXME: The evaluation module expects the
-                                                     // counting to start at zero...
+            int val = Integer.valueOf(split[1]) - shiftIdx;
             header.append(val + "=" + split[0] + " ");
         }
 
@@ -87,24 +92,10 @@ public class KerasOutcomeIDReport
             String id = nameOfTargets.get(i - shift);
 
             String[] split = p.split("\t");
-            Integer v = Integer.valueOf(Integer.valueOf(split[0]));
-            v = (v > 0) ? v - 1 : 0;
-            String gold = v.toString(); // FIXME: Shift
-                                        // index to
-                                        // start at
-                                        // zero ...
-                                        // urghs
-            v = Integer.valueOf(Integer.valueOf(split[1]));
-            v = (v > 0) ? v - 1 : 0;
-            String prediction = v.toString(); // FIXME:
-                                              // Shift
-                                              // index
-                                              // to
-                                              // start
-                                              // at
-                                              // zero
-                                              // ...
-                                              // urghs
+            Integer v = Integer.valueOf(Integer.valueOf(split[0])) - shiftIdx;
+            String gold = v.toString();  
+            v = Integer.valueOf(Integer.valueOf(split[1])) - shiftIdx;
+            String prediction = v.toString();  
             prop.setProperty("" + id,
                     prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
