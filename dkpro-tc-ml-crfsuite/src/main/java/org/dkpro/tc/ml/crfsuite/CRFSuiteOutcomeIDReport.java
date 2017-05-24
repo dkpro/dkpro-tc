@@ -50,6 +50,10 @@ public class CRFSuiteOutcomeIDReport
     private static final String ID_CONSTANT_VALUE = Constants.ID_FEATURE_NAME + "=";
 
     private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+    
+    public CRFSuiteOutcomeIDReport(){
+        //requried by groovy
+    }
 
     @Override
     public void execute()

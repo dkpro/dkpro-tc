@@ -47,6 +47,10 @@ public class LibsvmOutcomeIdReport
     // constant dummy value for setting as threshold which is an expected field in the evaluation
     // module but is not needed/provided by liblinear
     private static final String THRESHOLD_CONSTANT = "-1";
+    
+    public LibsvmOutcomeIdReport(){
+        //required by groovy
+    }
 
     @Override
     public void execute()
