@@ -54,6 +54,10 @@ public class SVMHMMOutcomeIDReport
      * SvmHmm
      */
     private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+    
+    public SVMHMMOutcomeIDReport(){
+        //required by groovy
+    }
 
     /**
      * Returns the current test file

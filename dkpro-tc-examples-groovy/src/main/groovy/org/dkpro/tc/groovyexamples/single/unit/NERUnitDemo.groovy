@@ -97,7 +97,7 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchCrossValidationReport
+                BatchCrossValidationReport.newInstance()
             ],
             numFolds: NUM_FOLDS]
 

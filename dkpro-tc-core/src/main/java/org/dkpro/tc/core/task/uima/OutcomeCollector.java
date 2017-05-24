@@ -49,7 +49,9 @@ public class OutcomeCollector extends JCasAnnotator_ImplBase implements Constant
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		Collection<TextClassificationOutcome> tcos = JCasUtil.select(aJCas, TextClassificationOutcome.class);
-		tcos.forEach(x -> outcomes.add(x.getOutcome()));
+		for(TextClassificationOutcome o : tcos){
+			outcomes.add(o.getOutcome());
+		}
 	}
 
 	@Override

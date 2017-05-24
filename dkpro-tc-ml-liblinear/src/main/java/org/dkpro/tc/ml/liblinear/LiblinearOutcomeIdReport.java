@@ -46,6 +46,10 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 	// in the evaluation
 	// module but is not needed/provided by liblinear
 	private static final String THRESHOLD_CONSTANT = "-1";
+	
+    public LiblinearOutcomeIdReport(){
+        //required by groovy
+    }
 
 	@Override
 	public void execute() throws Exception {

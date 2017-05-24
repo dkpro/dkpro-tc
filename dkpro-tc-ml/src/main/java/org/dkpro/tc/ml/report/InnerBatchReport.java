@@ -50,6 +50,10 @@ public class InnerBatchReport
     extends BatchReportBase
     implements Constants
 {
+    public InnerBatchReport(){
+        //required by groovy
+    }
+    
     @Override
     public void execute()
         throws Exception

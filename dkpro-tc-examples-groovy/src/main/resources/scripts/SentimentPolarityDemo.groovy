@@ -107,7 +107,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [BatchCrossValidationReport.newInstance()],
             numFolds: numFolds];
 
         Lab.getInstance().run(batchTask);
@@ -135,7 +135,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport
+                BatchTrainTestReport.newInstance()
                 ]
         ];
 

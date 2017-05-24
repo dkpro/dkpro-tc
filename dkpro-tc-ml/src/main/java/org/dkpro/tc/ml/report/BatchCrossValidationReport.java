@@ -40,6 +40,11 @@ public class BatchCrossValidationReport
     boolean softEvaluation = true;
     boolean individualLabelMeasures = false;
 
+    public BatchCrossValidationReport()
+    {
+        // required by groovy
+    }
+    
     @Override
     public void execute()
         throws Exception

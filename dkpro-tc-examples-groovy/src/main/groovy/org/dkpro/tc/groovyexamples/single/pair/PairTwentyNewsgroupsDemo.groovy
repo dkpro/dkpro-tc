@@ -124,7 +124,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport
+                BatchTrainTestReport.newInstance()
                 ]
         ]
 
