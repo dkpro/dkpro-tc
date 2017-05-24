@@ -45,6 +45,11 @@ public class BatchTrainTestReport
             .asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
     private boolean softEvaluation = true;
     private boolean individualLabelMeasures = false;
+    
+    public BatchTrainTestReport()
+    {
+        // required by groovy
+    }
 
     @Override
     public void execute()

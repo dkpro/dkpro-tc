@@ -139,7 +139,7 @@ public class ReutersDemo implements Constants {
                 dimFeatureSets,
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport],
+            reports:         [BatchCrossValidationReport.newInstance()],
             numFolds: numFolds]
 
         Lab.getInstance().run(batchTask)
@@ -168,7 +168,7 @@ public class ReutersDemo implements Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchTrainTestReport]]
+            reports:         [BatchTrainTestReport.newInstance()]]
 
         // Run
         Lab.getInstance().run(batchTask)

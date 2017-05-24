@@ -55,6 +55,11 @@ public class WekaOutcomeIDReport
     public static final String SEPARATOR_CHAR = ";";
 
     private File mlResults;
+    
+    public WekaOutcomeIDReport()
+    {
+        // required by groovy
+    }
 
     @Override
     public void execute()
