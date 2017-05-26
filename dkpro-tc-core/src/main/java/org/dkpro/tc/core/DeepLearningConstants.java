@@ -41,17 +41,47 @@ public interface DeepLearningConstants {
 
 	String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
 	String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
+	
+	/**
+	 * Path to the Python installation which should be used to execute the Python code.
+	 */
 	String DIM_PYTHON_INSTALLATION = "dimPythonPath";
-	String DIM_USER_CODE = "dimPythonUserCode";
+	
+	/**
+	 * Path to the user-code snippet. Must be provided if called framework is not a Java-based technology.
+	 */
+	String DIM_USER_CODE = "dimUserCode";
+
+	/**
+	 * File that holds the mapping of the input unit, i.e. which document, word
+	 * or sequence to the position within the processing sequence. This file
+	 * assumes that the later result output is FIFO and thus, the first result
+	 * is the first unit of the processing pipeline, which allows later on to
+	 * identify which unit/target was classified
+	 */
 	String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
 
 	/**
-	 * When creating the vectorized representation of the input data one can directly vectorize
-	 * and output integer-mapped vectors. Depending on the framework used this
-	 * allows reducing the boiler plate code for preparing the vectors.
+	 * When creating the vectorized representation of the input data one can
+	 * directly vectorize and output integer-mapped vectors. Depending on the
+	 * framework used this allows reducing the boiler plate code for preparing
+	 * the vectors.
 	 */
 	String DIM_VECTORIZE_TO_INTEGER = "dimVectorizeToInteger";
 
-	
+	/**
+	 * For specifying a certain seed initialization value. If not provided, this
+	 * value is initialized with a fixed constant value which is passed to the
+	 * deep learning code. Depending on the framework used, the user code is
+	 * responsible to call the initialization of the framework with this value.
+	 */
+	String DIM_RANDOM_SEED = "randomSeed";
+
+	/**
+	 * For specifying the working memory. Depending on the framework used, the
+	 * user code is responsible to call the initialization of the framework with
+	 * this value.
+	 */
+	String DIM_RAM_WORKING_MEMORY = "workingMemory";
 
 }
