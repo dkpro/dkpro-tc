@@ -69,6 +69,7 @@ public class LiblinearDataWriterTest {
 		LiblinearDataWriter writer = new LiblinearDataWriter();
 		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false, new String[]{"0", "1"});
 		writer.writeClassifierFormat(fs, false);
+		writer.close();
 
 		Problem problem = Problem.readFromFile(outputFile, 1.0);
 		assertEquals(2, problem.l);
