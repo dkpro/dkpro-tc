@@ -67,6 +67,7 @@ public class LiblinearDataWriter implements DataWriter {
 	Gson gson = new Gson();
 	private int maxId = 0;
 	private TreeSet<String> featureNames;
+    private String[] outcomes;
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -77,6 +78,8 @@ public class LiblinearDataWriter implements DataWriter {
 		Instance[] array = instances.toArray(new Instance[0]);
 		bw.write(gson.toJson(array) + System.lineSeparator());
 
+		bw.close();
+		bw = null;
 	}
 
 	private void initGeneric() throws IOException {
@@ -89,10 +92,6 @@ public class LiblinearDataWriter implements DataWriter {
 
 	@Override
 	public void transformFromGeneric() throws Exception {
-		
-		bw.close();
-		bw = null;
-		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
 		
@@ -142,6 +141,9 @@ public class LiblinearDataWriter implements DataWriter {
 			bw.append("\n");
 		}
 
+		bw.close();
+		bw = null;
+
 		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
 		writeFeatureName2idMapping(outputDirectory, LiblinearAdapter.getFeatureNameMappingFilename(),
 				encoder.stringToInt);
@@ -183,6 +185,7 @@ public class LiblinearDataWriter implements DataWriter {
 		this.useSparse = useSparse;
 		this.learningMode = learningMode;
 		this.applyWeighting = applyWeighting;
+        this.outcomes = outcomes;
 		encoder = new FeatureNodeArrayEncoder();
 		classifierFormatOutputFile = new File(outputDirectory,
 				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -242,10 +245,8 @@ public class LiblinearDataWriter implements DataWriter {
     public void close()
         throws Exception
     {
-    	if(bw != null){
-    		bw.close();
-    		bw = null;
-    	}
+        // TODO Auto-generated method stub
+        
     }
 
 }

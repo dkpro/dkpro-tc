@@ -50,6 +50,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 	private BufferedWriter bw = null;
 	private Gson gson = new Gson();
 	private File classifierFormatOutputFile;
+    private String[] outcomes;
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -59,6 +60,9 @@ public class CRFSuiteDataWriter implements DataWriter {
 		// belong to the same sequence!
 		Instance[] array = instances.toArray(new Instance[0]);
 		bw.write(gson.toJson(array) + System.lineSeparator());
+
+		bw.close();
+		bw = null;
 	}
 
 	private void initGeneric() throws IOException {
@@ -72,11 +76,6 @@ public class CRFSuiteDataWriter implements DataWriter {
 
 	@Override
 	public void transformFromGeneric() throws Exception {
-		
-		//close generic stream - we're done
-		bw.close();
-		bw = null;
-		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
 
@@ -115,6 +114,8 @@ public class CRFSuiteDataWriter implements DataWriter {
 			bw.write("\n");
 		}
 
+		bw.close();
+		bw = null;
 	}
 
 	private void initClassifierFormat() throws Exception {
@@ -134,6 +135,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 		this.useSparse = useSparse;
 		this.learningMode = learningMode;
 		this.applyWeigthing = applyWeighting;
+        this.outcomes = outcomes;
 
 		classifierFormatOutputFile = new File(outputDirectory,
 				CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -169,10 +171,8 @@ public class CRFSuiteDataWriter implements DataWriter {
     public void close()
         throws Exception
     {
-		if (bw != null) {
-			bw.close();
-			bw = null;
-		}
+        // TODO Auto-generated method stub
+        
     }
 
 }
