@@ -59,6 +59,9 @@ public class VectorizationTask
     private String learningMode;
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private int maximumLength;
+    
+    @Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
+    private boolean integerVectorization;
 
     private boolean isTesting = false;
 
@@ -91,7 +94,8 @@ public class VectorizationTask
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorDocument2Label.class,
                     VectorizationAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, outputDir,
-                    VectorizationAnnotatorDocument2Label.PARAM_PREPARATION_DIRECTORY, mappingDir);
+                    VectorizationAnnotatorDocument2Label.PARAM_PREPARATION_DIRECTORY, mappingDir,
+                    VectorizationAnnotatorDocument2Label.PARAM_TO_INTEGER, integerVectorization);
         case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorSequence2SequenceOfLabel.class,

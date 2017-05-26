@@ -43,154 +43,153 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VectorizationAnnotatorDocument2Label
-    extends JCasAnnotator_ImplBase
-{
-    public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
-    @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
-    protected File targetFolder;
+public class VectorizationAnnotatorDocument2Label extends JCasAnnotator_ImplBase {
+	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
+	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
+	protected File targetFolder;
 
-    public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
-    @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
-    protected String instanceTypeName;
+	public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
+	@ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
+	protected String instanceTypeName;
 
-    public static final String PARAM_PREPARATION_DIRECTORY = "mappingDirectory";
-    @ConfigurationParameter(name = PARAM_PREPARATION_DIRECTORY, mandatory = true)
-    protected File preparationFolder;
+	public static final String PARAM_PREPARATION_DIRECTORY = "mappingDirectory";
+	@ConfigurationParameter(name = PARAM_PREPARATION_DIRECTORY, mandatory = true)
+	protected File preparationFolder;
 
-    File instanceVectorFile;
-    File outcomeVectorFile;
+	public static final String PARAM_TO_INTEGER = "mapToInteger";
+	@ConfigurationParameter(name = PARAM_TO_INTEGER, mandatory = true, defaultValue = "false")
+	protected boolean toInteger;
 
-    Map<String, Integer> instanceMap = new HashMap<>();
-    Map<String, Integer> outcomeMap = new HashMap<>();
-    private Type instanceType;
+	File instanceVectorFile;
+	File outcomeVectorFile;
 
-    BufferedWriter writerInstance;
-    BufferedWriter writerOutcome;
+	Map<String, Integer> instanceMap = new HashMap<>();
+	Map<String, Integer> outcomeMap = new HashMap<>();
+	private Type instanceType;
 
-    int maximumLength = 0;
+	BufferedWriter writerInstance;
+	BufferedWriter writerOutcome;
 
-    StringBuilder outcomeVector = new StringBuilder();
-    
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
+	int maximumLength = 0;
 
-        instanceVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
-        outcomeVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
+	StringBuilder outcomeVector = new StringBuilder();
 
-        try {
-            loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
-            loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
 
-            // load the type of the annotation that holds the instances
-            JCas typeFactory = JCasFactory.createJCas();
-            Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
-            AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
-            instanceType = createAnnotation.getType();
+		instanceVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
+		outcomeVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
 
-            writerInstance = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
-            writerOutcome = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
+		try {
+			if (toInteger) {
+				loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
+				loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+			}
 
-            maximumLength = getMaximumLength();
+			// load the type of the annotation that holds the instances
+			JCas typeFactory = JCasFactory.createJCas();
+			Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
+			AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
+			instanceType = createAnnotation.getType();
 
-            
-            outcomeVector.append("[");
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-    }
+			writerInstance = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
+			writerOutcome = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
 
-    private int getMaximumLength()
-        throws IOException
-    {
-        String text = FileUtils.readFileToString(
-                new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH),
-                "utf-8");
-        return Integer.valueOf(text);
-    }
+			maximumLength = getMaximumLength();
 
-    private void loadMapping(Map<String, Integer> m, String f)
-        throws IOException
-    {
-        List<String> lines = FileUtils.readLines(new File(preparationFolder, f), "utf-8");
-        for (String s : lines) {
-            if (s.isEmpty()) {
-                continue;
-            }
-            String[] split = s.split("\t");
-            m.put(split[0], Integer.valueOf(split[1]));
-        }
+			outcomeVector.append("[");
+		} catch (Exception e)
+		{
+			throw new ResourceInitializationException(e);
+		}
 
-    }
+	}
 
-    @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
-    {
-        try {
-            processInstances(aJCas);
-            processOutcome(aJCas);
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+	private int getMaximumLength() throws IOException {
+		String text = FileUtils
+				.readFileToString(new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+		return Integer.valueOf(text);
+	}
 
-    }
+	private void loadMapping(Map<String, Integer> m, String f) throws IOException {
+		List<String> lines = FileUtils.readLines(new File(preparationFolder, f), "utf-8");
+		for (String s : lines) {
+			if (s.isEmpty()) {
+				continue;
+			}
+			String[] split = s.split("\t");
+			m.put(split[0], Integer.valueOf(split[1]));
+		}
 
-    private void processOutcome(JCas aJCas) throws Exception
-    {
-        List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
-                JCasUtil.select(aJCas, TextClassificationOutcome.class));
-        
-        for(int i=0; i < outcomes.size(); i++){
-            String outcome = outcomes.get(i).getOutcome();
-            outcomeVector.append(outcomeMap.get(outcome).toString());
-        }
-        outcomeVector.append(" ");
-    }
+	}
 
-    private void processInstances(JCas aJCas)
-        throws Exception
-    {
+	@Override
+	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		try {
+			processInstances(aJCas);
+			processOutcome(aJCas);
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 
-        List<AnnotationFS> annos = new ArrayList<AnnotationFS>(
-                CasUtil.select(aJCas.getCas(), instanceType));
-        writerInstance.write("[");
-        for (int i = 0; i < annos.size(); i++) {
-            AnnotationFS a = annos.get(i);
-            Integer intIdOfInstance = instanceMap.get(a.getCoveredText());
-            writerInstance.write(intIdOfInstance.toString());
-            if (i + 1 < annos.size() && i + 1 < maximumLength) {
-                writerInstance.write(" ");
-            }
+	}
 
-            if (i + 1 >= maximumLength) {
-                break;
-            }
-        }
+	private void processOutcome(JCas aJCas) throws Exception {
+		List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
+				JCasUtil.select(aJCas, TextClassificationOutcome.class));
 
-        writerInstance.write("]");
-        writerInstance.write(System.lineSeparator());
-    }
+		for (int i = 0; i < outcomes.size(); i++) {
+			String outcome = outcomes.get(i).getOutcome();
 
-    @Override
-    public void collectionProcessComplete()
-    {
-        try {
-            writerOutcome.write(outcomeVector.toString().trim() + "]");
-        }
-        catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-        
-        IOUtils.closeQuietly(writerInstance);
-        IOUtils.closeQuietly(writerOutcome);
-    }
+			if (toInteger) {
+				outcomeVector.append(outcomeMap.get(outcome).toString());
+			} else {
+				outcomeVector.append(outcome);
+			}
+		}
+		outcomeVector.append(" ");
+	}
+
+	private void processInstances(JCas aJCas) throws Exception {
+
+		List<AnnotationFS> annos = new ArrayList<AnnotationFS>(CasUtil.select(aJCas.getCas(), instanceType));
+		writerInstance.write("[");
+		for (int i = 0; i < annos.size(); i++) {
+			AnnotationFS a = annos.get(i);
+
+			if (toInteger) {
+				Integer intIdOfInstance = instanceMap.get(a.getCoveredText());
+				writerInstance.write(intIdOfInstance.toString());
+			} else {
+				writerInstance.write(a.getCoveredText());
+			}
+
+			if (i + 1 < annos.size() && i + 1 < maximumLength) {
+				writerInstance.write(" ");
+			}
+
+			if (i + 1 >= maximumLength) {
+				break;
+			}
+		}
+
+		writerInstance.write("]");
+		writerInstance.write(System.lineSeparator());
+	}
+
+	@Override
+	public void collectionProcessComplete() {
+		try {
+			writerOutcome.write(outcomeVector.toString().trim() + "]");
+		} catch (IOException e) {
+			throw new UnsupportedOperationException(e);
+		}
+
+		IOUtils.closeQuietly(writerInstance);
+		IOUtils.closeQuietly(writerOutcome);
+	}
 
 }

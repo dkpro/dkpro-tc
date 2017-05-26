@@ -45,7 +45,6 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
 /**
  * Collects information about the entire document
- * 
  */
 public class PreparationTask extends UimaTaskBase {
 
@@ -74,8 +73,11 @@ public class PreparationTask extends UimaTaskBase {
 
 	@Discriminator(name = DIM_FILES_TRAINING)
 	private Collection<String> files_training;
-	
-    private TcDeepLearningAdapter mlDeepLearningAdapter;
+
+	@Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
+	private boolean integerVectorization;
+
+	private TcDeepLearningAdapter mlDeepLearningAdapter;
 
 	@Override
 	public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -101,9 +103,14 @@ public class PreparationTask extends UimaTaskBase {
 
 		AggregateBuilder builder = new AggregateBuilder();
 
-		builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
-				MappingAnnotator.PARAM_TARGET_DIRECTORY, folder,
-				MappingAnnotator.PARAM_START_INDEX, mlDeepLearningAdapter.lowestIndex()));
+		if (integerVectorization) {
+			builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
+					MappingAnnotator.PARAM_TARGET_DIRECTORY, folder, MappingAnnotator.PARAM_START_INDEX,
+					mlDeepLearningAdapter.lowestIndex()));
+		}else{
+			builder.add(AnalysisEngineFactory.createEngineDescription(VocabularyOutcomeCollector.class,
+					VocabularyOutcomeCollector.PARAM_TARGET_DIRECTORY, folder));
+		}
 
 		builder.add(getMaximumLengthDeterminer(folder));
 		return builder.createAggregateDescription();
@@ -146,8 +153,7 @@ public class PreparationTask extends UimaTaskBase {
 		}
 	}
 
-    public void setMachineLearningAdapter(TcDeepLearningAdapter mlDeepLearningAdapter)
-    {
-        this.mlDeepLearningAdapter = mlDeepLearningAdapter;
-    }
+	public void setMachineLearningAdapter(TcDeepLearningAdapter mlDeepLearningAdapter) {
+		this.mlDeepLearningAdapter = mlDeepLearningAdapter;
+	}
 }

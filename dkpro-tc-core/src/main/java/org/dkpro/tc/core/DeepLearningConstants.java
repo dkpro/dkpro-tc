@@ -20,29 +20,38 @@ package org.dkpro.tc.core;
 /**
  * Basic constants that are used throughout the project
  */
-public interface DeepLearningConstants
-{
+public interface DeepLearningConstants {
 
-    String FILENAME_TOKEN = "occurringToken.txt";
-    
+	String FILENAME_TOKEN = "occurringToken.txt";
 
-    String LM_DOCUMENT_TO_LABEL = "document2label";
-    String LM_SEQUENCE_TO_SEQUENCE_OF_LABELS = "sequence2sequenceOfLabels";
+	String LM_DOCUMENT_TO_LABEL = "document2label";
+	String LM_SEQUENCE_TO_SEQUENCE_OF_LABELS = "sequence2sequenceOfLabels";
 
-    String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
+	String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
 
 	String FILENAME_INSTANCE_VECTOR = "instanceVectors.txt";
 	String FILENAME_OUTCOME_VECTOR = "outcomeVectors.txt";
 
 	String FILENAME_INSTANCE_MAPPING = "instanceMapping.txt";
 	String FILENAME_OUTCOME_MAPPING = "outcomeMapping.txt";
+	String FILENAME_VOCABULARY = "vocabulary.txt";
+	String FILENAME_OUTCOMES = "outcomes.txt";
 
-    String FILENAME_MAXIMUM_LENGTH = "maxLen.txt";
+	String FILENAME_MAXIMUM_LENGTH = "maxLen.txt";
 
-    String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
-    String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
-    String DIM_PYTHON_INSTALLATION = "dimPythonPath";
-    String DIM_USER_CODE = "dimPythonUserCode";
-    String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
-       
+	String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
+	String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
+	String DIM_PYTHON_INSTALLATION = "dimPythonPath";
+	String DIM_USER_CODE = "dimPythonUserCode";
+	String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
+
+	/**
+	 * When creating the vectorized representation of the input data one can directly vectorize
+	 * and output integer-mapped vectors. Depending on the framework used this
+	 * allows reducing the boiler plate code for preparing the vectors.
+	 */
+	String DIM_VECTORIZE_TO_INTEGER = "dimVectorizeToInteger";
+
+	
+
 }

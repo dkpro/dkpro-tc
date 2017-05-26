@@ -87,6 +87,7 @@ public class DeepLearningDl4jDocumentTrainTest
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         new Dl4jUserCodeStub()),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 15),
+                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
                         "/Users/toobee/Desktop/glove.6B.50d.txt"));
 
