@@ -266,7 +266,7 @@ def evaluate():
 
 
 num_tagged = cum_loss = 0
-for ITER in range(20):
+for ITER in range(1):
     random.shuffle(train)
     for i,s in enumerate(train,1):
         if i > 0 and i % 500 == 0:   # print status

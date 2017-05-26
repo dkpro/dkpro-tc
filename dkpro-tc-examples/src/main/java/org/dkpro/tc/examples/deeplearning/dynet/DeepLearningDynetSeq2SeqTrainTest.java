@@ -48,9 +48,6 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
 	public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
 	
-//	public static final String corpusFilePathTrain = "/Users/toobee/Desktop/brown_tei/train";
-//	public static final String corpusFilePathTest = "/Users/toobee/Desktop/brown_tei/test";
-
 	public static void main(String[] args) throws Exception {
 
 		// This is used to ensure that the required DKPRO_HOME environment
@@ -87,7 +84,8 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 				Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"/Users/toobee/Desktop/glove.6B.100d.txt"),
+						"/Users/toobee/Desktop/glove.6B.50d.txt"),
+				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), Dimension
 						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetPoStagger.py"));
 
