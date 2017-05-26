@@ -7,19 +7,24 @@ import dynet as dy
 import numpy as np
 
 if  __name__ =='__main__':
-	print("Train Data: ", argv[1])
-	print("Train Label: ", argv[2])
-	print("Test Data: ", argv[3])	
-	print("Test Label: ", argv[4])	
-	print("Embedding: ", argv[5])	
-	print("Result-Out: ", argv[6])	
 
-	trainSeq = argv[1]
-	trainLabel = argv[2]
-	testSeq = argv[3]
-	testLabel = argv[4]	
-	embedding = argv[5]
-	prediction = argv[6]
+	# argv[1] is the constant to which dynet reachts to set the seed value
+	print("Seed: ", argv[2])
+	# argv[3] is the constant to which dynet reachts to set the working memory
+	print("Memory: ", argv[4])	
+	print("Train Data: ", argv[5])
+	print("Train Label: ", argv[6])
+	print("Test Data: ", argv[7])	
+	print("Test Label: ", argv[8])	
+	print("Embedding: ", argv[9])	
+	print("Result-Out: ", argv[10])	
+
+	trainSeq = argv[5]
+	trainLabel = argv[6]
+	testSeq = argv[7]
+	testLabel = argv[8]	
+	embedding = argv[9]
+	prediction = argv[10]
 
 class Vocab:
     def __init__(self, w2i=None):

@@ -18,8 +18,6 @@
  */
 package org.dkpro.tc.examples.deeplearning.dynet;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
@@ -48,6 +46,10 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
 	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
+	public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
+	
+//	public static final String corpusFilePathTrain = "/Users/toobee/Desktop/brown_tei/train";
+//	public static final String corpusFilePathTest = "/Users/toobee/Desktop/brown_tei/test";
 
 	public static void main(String[] args) throws Exception {
 
@@ -71,14 +73,14 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 
 		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
+				TeiReader.PARAM_PATTERNS, "*.xml");
 		dimReaders.put(DIM_READER_TRAIN, train);
 
 		// Careful - we need at least 2 sequences in the testing file otherwise
 		// things will crash
 		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
-				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
+				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+				TeiReader.PARAM_PATTERNS, "*.xml");
 		dimReaders.put(DIM_READER_TEST, test);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
