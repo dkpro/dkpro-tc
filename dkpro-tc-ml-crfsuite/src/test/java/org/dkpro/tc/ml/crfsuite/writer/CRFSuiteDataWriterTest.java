@@ -140,6 +140,5 @@ public class CRFSuiteDataWriterTest
     {
         writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false, outcomes.toArray(new String[0]));
         writer.writeClassifierFormat(instances, false);
-        writer.close();
     }
 }

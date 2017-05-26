@@ -102,7 +102,6 @@ public class SVMHMMDataWriterTest
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
                 new String[] { "outcome" });
         svmhmmDataWriter.writeClassifierFormat(instances, false);
-        svmhmmDataWriter.close();
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")));
