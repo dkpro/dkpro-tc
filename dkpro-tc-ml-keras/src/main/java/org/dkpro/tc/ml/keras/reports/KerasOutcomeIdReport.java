@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.dynet.report;
+package org.dkpro.tc.ml.keras.reports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,10 +38,10 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.deep.PreparationTask;
-import org.dkpro.tc.ml.dynet.DynetTestTask;
+import org.dkpro.tc.ml.keras.KerasTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DynetOutcomeIdReport extends ReportBase {
+public class KerasOutcomeIdReport extends ReportBase {
 
 	/**
 	 * Character that is used for separating fields in the output file
@@ -61,6 +61,7 @@ public class DynetOutcomeIdReport extends ReportBase {
 
 		StringBuilder header = new StringBuilder();
 		header.append("labels ");
+
 		List<String> sortedKeys = new ArrayList<>(map.keySet());
 		Collections.sort(sortedKeys);
 		for (String m : sortedKeys) {
@@ -68,7 +69,7 @@ public class DynetOutcomeIdReport extends ReportBase {
 			header.append(val + "=" + m + " ");
 		}
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
 
 		List<String> nameOfTargets = getNameOfTargets();
@@ -96,9 +97,11 @@ public class DynetOutcomeIdReport extends ReportBase {
 			String gold = null;
 			String prediction = null;
 			if (isIntegerMode) {
-				Integer v = Integer.valueOf(Integer.valueOf(split[0]));
+				// Keras starts counting at 1 for 'content' - zero is reserved
+				// as padding value - we have to shift-correct the index
+				Integer v = Integer.valueOf(Integer.valueOf(split[0])) - 1;
 				gold = v.toString();
-				v = Integer.valueOf(Integer.valueOf(split[1]));
+				v = Integer.valueOf(Integer.valueOf(split[1])) - 1;
 				prediction = v.toString();
 			} else {
 				// we have non-integer labels so we have to map them to integers
@@ -132,11 +135,11 @@ public class DynetOutcomeIdReport extends ReportBase {
 			return m;
 		}
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
 		List<String> readLines = FileUtils.readLines(file);
 
 		Set<String> keys = new HashSet<>();
-		
+
 		int mapIdx = 0;
 		for (int i = 1; i < readLines.size(); i++) {
 			String l = readLines.get(i);
@@ -144,15 +147,15 @@ public class DynetOutcomeIdReport extends ReportBase {
 				continue;
 			}
 			String[] e = l.split("\t");
-		
+
 			keys.add(e[0]);
 			keys.add(e[1]);
 		}
-		
+
 		List<String> sortedKeys = new ArrayList<String>(keys);
 		Collections.sort(sortedKeys);
 
-		for(String k : sortedKeys){
+		for (String k : sortedKeys) {
 			String string = m.get(k);
 			if (string == null) {
 				m.put(k, "" + (mapIdx++));
@@ -161,7 +164,6 @@ public class DynetOutcomeIdReport extends ReportBase {
 
 		return m;
 	}
-
 
 	private List<String> getPredictions(File file) throws IOException {
 		List<String> readLines = FileUtils.readLines(file, "utf-8");
