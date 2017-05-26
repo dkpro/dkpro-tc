@@ -203,6 +203,10 @@
 			<groupId>org.nd4j</groupId>
 			<artifactId>nd4j-native</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml-dynet</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

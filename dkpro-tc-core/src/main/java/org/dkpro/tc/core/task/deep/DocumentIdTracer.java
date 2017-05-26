@@ -61,7 +61,7 @@ public class DocumentIdTracer extends JCasAnnotator_ImplBase {
 	protected String learningMode;
 
 	public static final String PARAM_USER_SET_MAXIMUM_LENGTH = "maxLen";
-	@ConfigurationParameter(name = PARAM_USER_SET_MAXIMUM_LENGTH, mandatory = true)
+	@ConfigurationParameter(name = PARAM_USER_SET_MAXIMUM_LENGTH, mandatory = false)
 	protected Integer maximumLength;
 
 	BufferedWriter writer;

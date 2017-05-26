@@ -61,6 +61,10 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
     public static final String PARAM_PREPARATION_DIRECTORY = "mappingDirectory";
     @ConfigurationParameter(name = PARAM_PREPARATION_DIRECTORY, mandatory = true)
     protected File preparationFolder;
+    
+    public static final String PARAM_TO_INTEGER = "mapToInteger";
+	@ConfigurationParameter(name = PARAM_TO_INTEGER, mandatory = true, defaultValue = "false")
+	protected boolean toInteger;
 
     File instanceVectorFile;
     File outcomeVectorFile;
@@ -86,8 +90,10 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
         outcomeVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
 
         try {
-            loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
-            loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+        	if (toInteger) {
+        		loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
+        		loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+        	}
 
             // load the type of the annotation that holds the instances
             JCas typeFactory = JCasFactory.createJCas();
@@ -164,7 +170,12 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
             int i = 0;
             for (; i < instances.size(); i++) {
                 TextClassificationOutcome tco = instances.get(i);
-                writerSeqOutcome.write(outcomeMap.get(tco.getOutcome()).toString());
+                
+                if(toInteger){
+                	writerSeqOutcome.write(outcomeMap.get(tco.getOutcome()).toString());
+                }else{
+                	writerSeqOutcome.write(tco.getOutcome());
+                }
 
                 if (i + 1 >= maximumLength) {
                     break;
@@ -200,7 +211,12 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
             int i = 0;
             for (; i < instances.size(); i++) {
                 AnnotationFS annotationFS = instances.get(i);
-                writerSeqInst.write(instanceMap.get(annotationFS.getCoveredText()).toString());
+                
+                if(toInteger){
+                	writerSeqInst.write(instanceMap.get(annotationFS.getCoveredText()).toString());
+                }else{
+                	writerSeqInst.write(annotationFS.getCoveredText());
+                }
 
                 if (i + 1 >= maximumLength) {
                     break;
@@ -209,13 +225,6 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqInst.write(" ");
                 }
             }
-//            if (i + 1 >= instances.size() && i+1 < maximumLength) {
-//                i--;// if we reached the limit of the data correct index by one to pad enough zeros
-//            }
-//            while (i + 1 < maximumLength) {
-//                writerSeqInst.write(" 0");
-//                i++;
-//            }
 
             writerSeqInst.write("]" + System.lineSeparator());
         }
