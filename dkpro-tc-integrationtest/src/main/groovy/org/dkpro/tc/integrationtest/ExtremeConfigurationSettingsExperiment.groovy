@@ -118,7 +118,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSets
             ],
             reports:         [
-                BatchCrossValidationReport
+                BatchCrossValidationReport.newInstance()
             ],
             numFolds: numFolds]
 
@@ -137,7 +137,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSets
             ],
             reports:         [
-                BatchTrainTestReport
+                BatchTrainTestReport.newInstance()
                 ]
         ]
 
@@ -161,7 +161,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSetsEmpty
             ],
             reports:         [
-                BatchCrossValidationReport
+                BatchCrossValidationReport.newInstance()
             ],
             numFolds: numFolds]
 
@@ -180,7 +180,7 @@ public class ExtremeConfigurationSettingsExperiment implements Constants {
                 dimFeatureSetsEmpty
             ],
             reports:         [
-                BatchTrainTestReport]
+                BatchTrainTestReport.newInstance()]
         ]
 
         // Run

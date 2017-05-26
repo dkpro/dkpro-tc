@@ -94,7 +94,7 @@ public class NumberOfFoldsSetting implements Constants {
                 dimFeatureSets
             ],
             reports:         [
-                BatchCrossValidationReport
+                BatchCrossValidationReport.newInstance()
             ],
             numFolds: numFolds]
 
