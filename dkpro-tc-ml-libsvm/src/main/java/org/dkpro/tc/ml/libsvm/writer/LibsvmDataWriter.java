@@ -62,9 +62,6 @@ public class LibsvmDataWriter implements DataWriter {
 	Map<String, String> index2instanceId = new HashMap<>();
 	Map<String, Integer> featureNameMap = new HashMap<>();
 
-    private String[] outcomes;
-
-
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
 		initGeneric();
@@ -73,9 +70,6 @@ public class LibsvmDataWriter implements DataWriter {
 		// belong to the same sequence!
 		Instance[] array = instances.toArray(new Instance[0]);
 		bw.write(gson.toJson(array) + System.lineSeparator());
-
-		bw.close();
-		bw = null;
 	}
 
 	private void initGeneric() throws IOException {
@@ -88,6 +82,10 @@ public class LibsvmDataWriter implements DataWriter {
 
 	@Override
 	public void transformFromGeneric() throws Exception {
+		
+		bw.close();
+		bw = null;
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
 
@@ -126,9 +124,6 @@ public class LibsvmDataWriter implements DataWriter {
 			}
 			bw.write("\n");
 		}
-
-		bw.close();
-		bw = null;
 
 		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
 
@@ -174,7 +169,6 @@ public class LibsvmDataWriter implements DataWriter {
 	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
-        this.outcomes = outcomes;
 		classifierFormatOutputFile = new File(outputDirectory,
 				LibsvmAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
@@ -248,6 +242,10 @@ public class LibsvmDataWriter implements DataWriter {
     public void close()
         throws Exception
     {
+    	if(bw != null){
+    		bw.close();
+    		bw = null;
+    	}
     }
 
 }

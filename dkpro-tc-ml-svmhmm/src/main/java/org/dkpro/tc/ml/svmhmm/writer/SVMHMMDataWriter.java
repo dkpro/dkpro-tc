@@ -80,9 +80,6 @@ public class SVMHMMDataWriter implements DataWriter {
 
 	private Map<String, Integer> featureNameMap;
 
-    private String[] outcomes;
-
-
 	private Integer getUniqueSequenceId(Instance instance) {
 		String key = instance.getJcasId() + "-" + instance.getSequenceId();
 		Integer consecSeqId = uniqueId.get(key);
@@ -105,9 +102,6 @@ public class SVMHMMDataWriter implements DataWriter {
 		// belong to the same sequence!
 		Instance[] array = instances.toArray(new Instance[0]);
 		bw.write(gson.toJson(array) + System.lineSeparator());
-
-		bw.close();
-		bw = null;
 	}
 
 	private void initGeneric() throws IOException {
@@ -120,6 +114,10 @@ public class SVMHMMDataWriter implements DataWriter {
 
 	@Override
 	public void transformFromGeneric() throws Exception {
+
+		bw.close();
+		bw = null;
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
 
@@ -278,7 +276,6 @@ public class SVMHMMDataWriter implements DataWriter {
 	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
-        this.outcomes = outcomes;
 		classifierFormatOutputFile = new File(outputDirectory,
 				new SVMHMMAdapter().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
@@ -313,6 +310,9 @@ public class SVMHMMDataWriter implements DataWriter {
     public void close()
         throws Exception
     {
-        
+        if(bw != null){
+        	bw.close();
+        	bw = null;
+        }
     }
 }
