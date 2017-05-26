@@ -80,8 +80,6 @@ public class DynetTestTask
         
         File embeddingPath = getEmbedding(aContext);
         
-        String maxLen = getMaximumLength(aContext);
-
         python = (python == null) ? "python" : python;
 
         List<String> command = new ArrayList<>();
@@ -92,22 +90,9 @@ public class DynetTestTask
         command.add(testDataVector.getAbsolutePath());
         command.add(testOutcomeVector.getAbsolutePath());
         command.add(embeddingPath!=null ? embeddingPath.getAbsolutePath() : "");
-        command.add(maxLen);
         command.add(resultOut.getAbsolutePath());
         
         return command;
-    }
-
-    private String getMaximumLength(TaskContext aContext) throws IOException
-    {
-        if(maximumLength!=null){
-            return maximumLength.toString();
-        }
-        
-        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
-        String maxLenFromFile = FileUtils.readFileToString(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
-        
-        return maxLenFromFile;
     }
 
     private File getDataOutcome(TaskContext aContext, String key)

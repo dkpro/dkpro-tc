@@ -140,14 +140,17 @@ p_t1  = model.add_lookup_parameters((ntags, 30))
 pH = model.add_parameters((32, 50*2))
 pO = model.add_parameters((ntags, 32))
 
+char_emb_dim=50
+
 # word-level LSTMs
 # input dimension is word-vector+fwd.CharVector+bckwd.CharVector-Length
-fwdRNN = dy.LSTMBuilder(NUM_LAYERS, 50+50+50, 50, model) # layers, in-dim, out-dim, model
-bwdRNN = dy.LSTMBuilder(NUM_LAYERS, 50+50+50, 50, model)
+fwdRNN = dy.LSTMBuilder(NUM_LAYERS, emb_dim+(char_emb_dim*2), 50, model) # layers, in-dim, out-dim, model
+bwdRNN = dy.LSTMBuilder(NUM_LAYERS, emb_dim+(char_emb_dim*2), 50, model)
+
 
 # char-level LSTMs
-cFwdRNN = dy.LSTMBuilder(NUM_LAYERS, 20, 50, model)
-cBwdRNN = dy.LSTMBuilder(NUM_LAYERS, 20, 50, model)
+cFwdRNN = dy.LSTMBuilder(NUM_LAYERS, 20, char_emb_dim, model)
+cBwdRNN = dy.LSTMBuilder(NUM_LAYERS, 20, char_emb_dim, model)
 
 def word_rep(w, cf_init, cb_init):
     pad_char = vc.w2i["<*>"]
@@ -284,6 +287,7 @@ print("Finish")
 w,g,p = evaluate()
 
 with open(prediction, mode="w") as out:
+    out.write("#Gold\tPrediction\n")
     for w_sent, g_sent,p_sent in zip(w,g,p):
         assert(len(p_sent) == len(g_sent) == len(w_sent))
         for i in range(0, len(p_sent)):

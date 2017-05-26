@@ -38,14 +38,13 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
-import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DynetSeq2SeqTrainTest implements Constants {
+public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
 	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
@@ -62,7 +61,7 @@ public class DynetSeq2SeqTrainTest implements Constants {
 
 		ParameterSpace pSpace = getParameterSpace();
 
-		DynetSeq2SeqTrainTest experiment = new DynetSeq2SeqTrainTest();
+		DeepLearningDynetSeq2SeqTrainTest experiment = new DeepLearningDynetSeq2SeqTrainTest();
 		experiment.runTrainTest(pSpace);
 	}
 
@@ -86,7 +85,7 @@ public class DynetSeq2SeqTrainTest implements Constants {
 				Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"/Users/toobee/Desktop/glove.6B.50d.txt"),
+						"/Users/toobee/Desktop/glove.6B.100d.txt"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), Dimension
 						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetPoStagger.py"));
 
