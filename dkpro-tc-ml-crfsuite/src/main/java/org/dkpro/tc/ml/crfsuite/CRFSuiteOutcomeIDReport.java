@@ -162,9 +162,10 @@ public class CRFSuiteOutcomeIDReport
             String id = extractTCId(featureEntry);
             String[] idsplit = id.split("_");
             // make ids sortable by enforcing zero-prefixing
-            String zeroPaddedId = String.format("%04d_%04d_%04d", Integer.valueOf(idsplit[0]),
-                    Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]));
-            int numGold = aMapping.get(split[0]);
+			String zeroPaddedId = String.format("%04d_%04d_%04d%s", Integer.valueOf(idsplit[0]),
+					Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]),
+					idsplit.length > 3 ? "_" + idsplit[3] : "");
+			int numGold = aMapping.get(split[0]);
             int numPred = aMapping.get(split[1]);
             p.setProperty(zeroPaddedId,
                     numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
