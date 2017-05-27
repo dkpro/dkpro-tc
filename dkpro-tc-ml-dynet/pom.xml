@@ -19,5 +19,9 @@
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-ml</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  	</dependency>
   </dependencies>
 </project>
