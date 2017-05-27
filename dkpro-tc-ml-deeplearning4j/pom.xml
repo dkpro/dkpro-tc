@@ -48,5 +48,27 @@
   		<groupId>org.nd4j</groupId>
   		<artifactId>nd4j-native</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  	</dependency>  	
   </dependencies>
+  <build>
+  <pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<configuration>
+						<usedDependencies>
+							<!-- DL4J dependencies which are not used by the module but should be imported when importing the module -->
+							<usedDependency>org.deeplearning4j:deeplearning4j-core</usedDependency>
+							<usedDependency>org.deeplearning4j:deeplearning4j-nlp</usedDependency>
+							<usedDependency>org.nd4j:nd4j-native</usedDependency>
+						</usedDependencies>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		</build>
 </project>
