@@ -63,7 +63,7 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
-import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
+import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -197,20 +197,20 @@ public class TaskUtils {
 			boolean developerMode, boolean isTesting, boolean applyWeighting, List<String> filters,
 			List<ExternalResourceDescription> extractorResources, String [] outcomes) throws ResourceInitializationException {
 		List<Object> parameters = new ArrayList<>();
-		parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-				ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-				ExtractFeaturesStreamConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-				ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
-				ExtractFeaturesStreamConnector.PARAM_FEATURE_FILTERS, filters.toArray(new String[0]),
-				ExtractFeaturesStreamConnector.PARAM_DEVELOPER_MODE, developerMode,
-				ExtractFeaturesStreamConnector.PARAM_FEATURE_MODE, featureMode,
-				ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, learningMode,
-				ExtractFeaturesStreamConnector.PARAM_IS_TESTING, isTesting,
-				ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures,
-				ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
-				ExtractFeaturesStreamConnector.PARAM_OUTCOMES, outcomes));
+		parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
+				ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
+				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
+				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(new String[0]),
+				ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
+				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
+				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
+				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
+				ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures,
+				ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+				ExtractFeaturesConnector.PARAM_OUTCOMES, outcomes));
 
-		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
+		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
 				parameters.toArray());
 
 	}

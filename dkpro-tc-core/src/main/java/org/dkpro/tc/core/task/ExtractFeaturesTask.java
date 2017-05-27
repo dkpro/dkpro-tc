@@ -55,7 +55,7 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.uima.ExtractFeaturesStreamConnector;
+import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -175,20 +175,20 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 		String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
 
 		List<Object> parameters = new ArrayList<>();
-		parameters.addAll(Arrays.asList(ExtractFeaturesStreamConnector.PARAM_ADD_INSTANCE_ID, true,
-				ExtractFeaturesStreamConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
-				ExtractFeaturesStreamConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-				ExtractFeaturesStreamConnector.PARAM_DATA_WRITER_CLASS, mlAdapter.getDataWriterClass().getName(),
-				ExtractFeaturesStreamConnector.PARAM_FEATURE_FILTERS, featureFilters,
-				ExtractFeaturesStreamConnector.PARAM_DEVELOPER_MODE, developerMode,
-				ExtractFeaturesStreamConnector.PARAM_FEATURE_MODE, featureMode,
-				ExtractFeaturesStreamConnector.PARAM_LEARNING_MODE, learningMode,
-				ExtractFeaturesStreamConnector.PARAM_IS_TESTING, isTesting,
-				ExtractFeaturesStreamConnector.PARAM_USE_SPARSE_FEATURES, mlAdapter.useSparseFeatures(),
-				ExtractFeaturesStreamConnector.PARAM_OUTCOMES, outcomes,
-		ExtractFeaturesStreamConnector.PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions));
+		parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
+				ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
+				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
+				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, mlAdapter.getDataWriterClass().getName(),
+				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, featureFilters,
+				ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
+				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
+				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
+				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
+				ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, mlAdapter.useSparseFeatures(),
+				ExtractFeaturesConnector.PARAM_OUTCOMES, outcomes,
+		ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions));
 
-		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesStreamConnector.class,
+		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
 				parameters.toArray());
 	}
 

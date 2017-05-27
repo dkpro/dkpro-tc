@@ -49,7 +49,7 @@ import org.dkpro.tc.core.util.TaskUtils;
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
  * the feature extractors on each CAS.
  */
-public class ExtractFeaturesStreamConnector extends ConnectorBase {
+public class ExtractFeaturesConnector extends ConnectorBase {
 
 	/**
 	 * Directory in which the extracted features will be stored
