@@ -68,6 +68,7 @@
 							<!-- DL4J dependencies which are not used by the module but should be imported when importing the module -->
 							<usedDependency>org.deeplearning4j:deeplearning4j-core</usedDependency>
 							<usedDependency>org.deeplearning4j:deeplearning4j-nlp</usedDependency>
+							<usedDependency>org.nd4j:nd4j-api</usedDependency>
 						</usedDependencies>
 					</configuration>
 				</plugin>
