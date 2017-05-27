@@ -36,5 +36,13 @@
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-ml</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-logging</groupId>
+  		<artifactId>commons-logging</artifactId>
+  	</dependency>
   </dependencies>
 </project>
