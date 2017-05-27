@@ -200,10 +200,6 @@
 			<artifactId>dkpro-tc-ml-deeplearning4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.nd4j</groupId>
-			<artifactId>nd4j-native</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml-dynet</artifactId>
 		</dependency>
@@ -214,17 +210,14 @@
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-nn</artifactId>
-			<version>0.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nd4j</groupId>
 			<artifactId>nd4j-api</artifactId>
-			<version>0.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>0.8.0</version>
 		</dependency>		
 	</dependencies>
 	<dependencyManagement>
