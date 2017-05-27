@@ -7,6 +7,10 @@
   </parent>
   <artifactId>dkpro-tc-ml-dynet</artifactId>
   <dependencies>
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging-api</artifactId>
+	</dependency>  
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-core</artifactId>
@@ -22,10 +26,6 @@
   	<dependency>
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-logging</groupId>
-  		<artifactId>commons-logging</artifactId>
-  	</dependency>  	
+  	</dependency>	
   </dependencies>
 </project>
