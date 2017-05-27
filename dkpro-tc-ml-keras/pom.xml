@@ -23,15 +23,19 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>dkpro-tc-ml-keras</artifactId>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.lab</groupId>
-  		<artifactId>dkpro-lab-core</artifactId>
-  	</dependency>
+	<dependencies>
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging-api</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.dkpro.tc</groupId>
+		<artifactId>dkpro-tc-core</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.dkpro.lab</groupId>
+		<artifactId>dkpro-lab-core</artifactId>
+	</dependency>
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-ml</artifactId>
@@ -40,9 +44,6 @@
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
   	</dependency>
-  	<dependency>
-  		<groupId>commons-logging</groupId>
-  		<artifactId>commons-logging-api</artifactId>
-  	</dependency>
+
   </dependencies>
 </project>
