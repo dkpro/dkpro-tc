@@ -33,7 +33,9 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.examples.crossvalidation.WekaManualFoldCrossValidation;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
 
@@ -94,6 +96,9 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 	}
 
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+		
+		DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
+		
 		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("dl4jSeq2Seq", Deeplearning4jAdapter.class);
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(getPreprocessing());
