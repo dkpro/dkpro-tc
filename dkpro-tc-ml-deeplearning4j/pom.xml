@@ -73,7 +73,7 @@
 								be imported when importing the module -->
 							<usedDependency>org.deeplearning4j:deeplearning4j-core</usedDependency>
 							<usedDependency>org.deeplearning4j:deeplearning4j-nlp</usedDependency>
-							<usedDependency>org.deeplearning4j:deeplearning4j-native-platform</usedDependency>
+							<usedDependency>org.nd4j:nd4j-native-platform</usedDependency>
 							<usedDependency>org.nd4j:nd4j-api</usedDependency>
 						</usedDependencies>
 					</configuration>
