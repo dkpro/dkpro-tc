@@ -175,7 +175,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 			int actual = (int) realOutcomeIndex.getDouble(i);
 			int predicted = (int) guessIndex.getDouble(i);
 			sb.append(vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted] + System.lineSeparator());
-			System.out.println(vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted]);
+//			System.out.println(vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted]);
 		}
 	}
 
