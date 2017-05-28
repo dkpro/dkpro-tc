@@ -183,6 +183,7 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqOutcome.write(" ");
                 }
             }
+            writerSeqOutcome.write(System.lineSeparator());
         }
     }
 
@@ -215,7 +216,7 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqInst.write(" ");
                 }
             }
-
+            writerSeqInst.write(System.lineSeparator());
         }
 
     }
