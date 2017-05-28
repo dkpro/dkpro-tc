@@ -229,7 +229,9 @@ public class NewsIterator implements DataSetIterator {
 		//FIXME: Implement me a bit more efficiently :)
 		List<String> vectors = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_INSTANCE_VECTOR));
 		String outcomes = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_OUTCOME_VECTOR)).get(0);
-		outcomes = outcomes.substring(1, outcomes.length()-1).replaceAll(" ", "");
+		
+		//FIXME: We assume that our outcomes have only 1 digit ....
+		outcomes = outcomes.replaceAll(" ", "");
 		
 		Map<String,List<String>> m = new HashMap<>();
 		

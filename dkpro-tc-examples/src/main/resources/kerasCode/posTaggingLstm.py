@@ -14,7 +14,6 @@ def numpyizeVector(vec):
 	file = open(vec, 'r')
 	for l in file.readlines():
 		l = l.strip()
-		l = l[1:-1] # strip the brackets
 		v = [int(x) for x in l.split()]
 		vout.append(v)
 		#vout.append(np.fromstring(l, dtype=int, sep=' '))

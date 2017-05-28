@@ -100,7 +100,6 @@ public class VectorizationAnnotatorDocument2Label extends JCasAnnotator_ImplBase
 
 			maximumLength = getMaximumLength();
 
-			outcomeVector.append("[");
 		} catch (Exception e)
 		{
 			throw new ResourceInitializationException(e);
@@ -156,7 +155,6 @@ public class VectorizationAnnotatorDocument2Label extends JCasAnnotator_ImplBase
 	private void processInstances(JCas aJCas) throws Exception {
 
 		List<AnnotationFS> annos = new ArrayList<AnnotationFS>(CasUtil.select(aJCas.getCas(), instanceType));
-		writerInstance.write("[");
 		for (int i = 0; i < annos.size(); i++) {
 			AnnotationFS a = annos.get(i);
 
@@ -176,7 +174,6 @@ public class VectorizationAnnotatorDocument2Label extends JCasAnnotator_ImplBase
 			}
 		}
 
-		writerInstance.write("]");
 		writerInstance.write(System.lineSeparator());
 	}
 

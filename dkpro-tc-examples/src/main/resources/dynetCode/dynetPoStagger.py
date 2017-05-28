@@ -75,8 +75,8 @@ def read(data, labels):
     f.close()
     
     for seq, labels in zip(sentences,labels):
-        s = seq.strip()[1:-1].split()
-        l = labels.strip()[1:-1].split()
+        s = seq.strip().split()
+        l = labels.strip().split()
         
         sent=[]
         for se, le in zip(s,l):

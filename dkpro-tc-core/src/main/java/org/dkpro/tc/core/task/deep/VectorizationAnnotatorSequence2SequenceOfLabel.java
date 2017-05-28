@@ -166,7 +166,6 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
             if (instances.isEmpty()) {
                 continue;
             }
-            writerSeqOutcome.write("[");
             int i = 0;
             for (; i < instances.size(); i++) {
                 TextClassificationOutcome tco = instances.get(i);
@@ -184,14 +183,6 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                     writerSeqOutcome.write(" ");
                 }
             }
-            if (i + 1 >= instances.size() && i+1 < maximumLength) {
-                i--;// if we reached the limit of the data correct index by one to pad enough zeros
-            }
-            while (i + 1 < maximumLength) {
-                writerSeqOutcome.write(" 0");
-                i++;
-            }
-            writerSeqOutcome.write("]" + System.lineSeparator());
         }
     }
 
@@ -207,7 +198,6 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                 continue;
             }
 
-            writerSeqInst.write("[");
             int i = 0;
             for (; i < instances.size(); i++) {
                 AnnotationFS annotationFS = instances.get(i);
@@ -226,7 +216,6 @@ public class VectorizationAnnotatorSequence2SequenceOfLabel
                 }
             }
 
-            writerSeqInst.write("]" + System.lineSeparator());
         }
 
     }

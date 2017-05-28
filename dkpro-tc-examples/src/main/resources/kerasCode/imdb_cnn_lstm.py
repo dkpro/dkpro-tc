@@ -76,7 +76,6 @@ def numpyizeOutcomeVector(vec):
 	v=""
 	for l in file.readlines():
 		l = l.strip()
-		l = l[1:-1] # strip the brackets
 		v=np.fromstring(l, dtype=int, sep=' ')
 	file.close()
 	return v
