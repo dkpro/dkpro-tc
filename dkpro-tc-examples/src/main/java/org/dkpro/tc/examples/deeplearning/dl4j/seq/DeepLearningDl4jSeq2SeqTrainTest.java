@@ -45,8 +45,8 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
-	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
-    public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/";
+    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
+    public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
 	
 	public static void main(String[] args) throws Exception {
 
@@ -70,12 +70,12 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 
 		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "a01.xml");
+				TeiReader.PARAM_PATTERNS, "*.xml");
 		dimReaders.put(DIM_READER_TRAIN, train);
 
 		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				TeiReader.PARAM_PATTERNS, "a02.xml");
+				TeiReader.PARAM_PATTERNS, "*.xml");
 		dimReaders.put(DIM_READER_TEST, test);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
