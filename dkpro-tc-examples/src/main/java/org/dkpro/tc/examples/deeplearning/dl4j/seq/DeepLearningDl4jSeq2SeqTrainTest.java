@@ -83,7 +83,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"/Users/toobee/Desktop/glove.6B.50d.txt"),
+						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), 
 				Dimension
 						.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jSeq2SeqUserCode()));
