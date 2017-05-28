@@ -95,7 +95,7 @@ public class DeepLearningDl4jDocumentTrainTest
     }
 
     // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
+    public void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
     	

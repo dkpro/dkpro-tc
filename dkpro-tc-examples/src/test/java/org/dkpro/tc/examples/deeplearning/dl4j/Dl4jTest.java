@@ -18,13 +18,20 @@
  */
 package org.dkpro.tc.examples.deeplearning.dl4j;
 
+import org.dkpro.tc.examples.deeplearning.dl4j.doc.DeepLearningDl4jDocumentTrainTest;
 import org.dkpro.tc.examples.deeplearning.dl4j.seq.DeepLearningDl4jSeq2SeqTrainTest;
 import org.junit.Test;
 
-public class Dl4jSequenceTest {
+public class Dl4jTest {
 	@Test
 	public void runSequenceTest() throws Exception {
 		DeepLearningDl4jSeq2SeqTrainTest dl4j = new DeepLearningDl4jSeq2SeqTrainTest();
 		dl4j.runTrainTest(DeepLearningDl4jSeq2SeqTrainTest.getParameterSpace());
+	}
+	
+	@Test
+	public void runDocumentTest() throws Exception {
+		DeepLearningDl4jDocumentTrainTest dl4j = new DeepLearningDl4jDocumentTrainTest();
+		dl4j.runTrainTest(DeepLearningDl4jDocumentTrainTest.getParameterSpace());
 	}
 }
