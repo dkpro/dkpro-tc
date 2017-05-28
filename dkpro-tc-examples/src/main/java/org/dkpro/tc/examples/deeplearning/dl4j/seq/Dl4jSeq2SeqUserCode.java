@@ -64,11 +64,11 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 	public static void main(String[] args) throws Exception {
 
 		String root = "/Users/toobee/Desktop/org.dkpro.lab/repository/";
-		String trainVec = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528131512410/output/instanceVectors.txt";
-		String trainOutc = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528131512410/output/outcomeVectors.txt";
-		String testVec = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528131513352/output/instanceVectors.txt";
-		String testOutc = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528131513352/output/outcomeVectors.txt";
-		String embedding = root + "/EmbeddingTask-DynetSeq2Seq-20170528131511333/output/prunedEmbedding.txt";
+		String trainVec = root + "/VectorizationTask-Train-dl4jSeq2Seq-20170528135819335/output/instanceVectors.txt";
+		String trainOutc = root + "/VectorizationTask-Train-dl4jSeq2Seq-20170528135819335/output/outcomeVectors.txt";
+		String testVec = root + "/VectorizationTask-Test-dl4jSeq2Seq-20170528135821892/output/instanceVectors.txt";
+		String testOutc = root + "/VectorizationTask-Test-dl4jSeq2Seq-20170528135821892/output/outcomeVectors.txt";
+		String embedding = root + "/EmbeddingTask-dl4jSeq2Seq-20170528135817238/output/prunedEmbedding.txt";
 		String pred = "/Users/toobee/Desktop/pred.txt";
 		new Dl4jSeq2SeqUserCode().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc),
 				new File(embedding), new File(pred));
@@ -84,8 +84,8 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
 		int featuresSize = getEmbeddingsSize(embedding);
 		int maxTagsetSize = getNumberOfOutcomes(trainOutcome, testOutcome);
-		int batchSize = 30;
-		int epochs = 1;
+		int batchSize = 50;
+		int epochs = 20;
 		int iterations = 1;
 		double learningRate = 0.1;
 
@@ -102,7 +102,8 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
 		int maxLen = getLongestSentence(trainVec, testVec);
 
-		List<DataSet> trainDataSet = new ArrayList<DataSet>(toDataSet(trainVec, trainOutcome, maxLen, embedding));
+		List<DataSet> trainDataSet = new ArrayList<DataSet>(
+				toDataSet(trainVec, trainOutcome, maxLen, maxTagsetSize, embedding));
 		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
 		mln.init();
 		mln.setListeners(new ScoreIterationListener(1));
@@ -114,7 +115,8 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 			mln.fit(train);
 		}
 
-		List<DataSet> testDataSet = new ArrayList<DataSet>(toDataSet(testVec, testOutcome, maxLen, embedding));
+		List<DataSet> testDataSet = new ArrayList<DataSet>(
+				toDataSet(testVec, testOutcome, maxLen, maxTagsetSize, embedding));
 		DataSetIterator iTest = new ListDataSetIterator(testDataSet, batchSize);
 		StringBuilder sb = new StringBuilder();
 		sb.append("#Gold\tPrediction" + System.lineSeparator());
@@ -188,16 +190,11 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		return outcomes.size();
 	}
 
-	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, int maxLen, File embedding)
+	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, int maxLen, int numOutcomes, File embedding)
 			throws IOException {
 
 		List<String> sentences = FileUtils.readLines(trainVec);
 		List<String> outcomes = FileUtils.readLines(trainOutcome);
-
-		Set<String> labels = new HashSet<>();
-		for (String s : outcomes) {
-			labels.addAll(asList(s.split(" ")));
-		}
 
 		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
 		File f = File.createTempFile("embedding", ".emb");
@@ -210,7 +207,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 			List<String> singleSent = Arrays.asList(sentences.get(i));
 			List<String> singleOutcome = Arrays.asList(outcomes.get(i));
 			data.add(vectorize.vectorize(transformToList(singleSent), transformToList(singleOutcome), bw, maxLen,
-					labels.size(), true));
+					numOutcomes, true));
 		}
 
 		return data;
