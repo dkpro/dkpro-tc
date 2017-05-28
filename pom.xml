@@ -35,6 +35,8 @@
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 		<spring.version>3.2.16.RELEASE</spring.version>
 		<dkpro.lab.version>0.14.0-SNAPSHOT</dkpro.lab.version>
+		<deeplearning4j>0.8.0</deeplearning4j>
+		<nd4j>0.8.0</nd4j>
 	</properties>
 	<scm>
 	  	<connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
@@ -393,23 +395,33 @@
 			<dependency>
 				<groupId>org.deeplearning4j</groupId>
 				<artifactId>deeplearning4j-core</artifactId>
-				<version>0.8.0</version>
+				<version>${deeplearning4j}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.deeplearning4j</groupId>
 				<artifactId>deeplearning4j-nlp</artifactId>
-				<version>0.8.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.nd4j</groupId>
-				<artifactId>nd4j-api</artifactId>
-				<version>0.8.0</version>
+				<version>${deeplearning4j}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.deeplearning4j</groupId>
 				<artifactId>deeplearning4j-nn</artifactId>
-				<version>0.8.0</version>
+				<version>${deeplearning4j}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.nd4j</groupId>
+				<artifactId>nd4j-native</artifactId>
+				<version>${nd4j}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.nd4j</groupId>
+				<artifactId>nd4j-api</artifactId>
+				<version>${nd4j}</version>
+			</dependency>			
 		</dependencies>
 	</dependencyManagement>
 	<build>

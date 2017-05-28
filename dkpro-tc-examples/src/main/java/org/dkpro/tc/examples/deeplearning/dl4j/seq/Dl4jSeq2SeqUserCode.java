@@ -72,7 +72,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		int featuresSize = getEmbeddingsSize(embedding);
 		int maxTagsetSize = getNumberOfOutcomes(trainOutcome, testOutcome);
 		int batchSize = 1;
-		int epochs = 1;
+		int epochs = 2;
 		int iterations = 1;
 		double learningRate = 0.1;
 
