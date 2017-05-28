@@ -37,6 +37,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
@@ -47,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * after prediction - to restore which instance has which prediction result. The
  * identity of the target is, thus, determined by the processing order
  */
-public class DocumentIdTracer extends JCasAnnotator_ImplBase {
+public class IdentificationCollector extends JCasAnnotator_ImplBase {
 	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
 	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
 	protected File targetFolder;
@@ -56,9 +57,9 @@ public class DocumentIdTracer extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name = PARAM_SEQUENCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence")
 	protected String sequenceSpanTypeName;
 
-	public static final String PARAM_LEARNING_MODE = "learningMode";
-	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
-	protected String learningMode;
+	public static final String PARAM_MODE = "mode";
+	@ConfigurationParameter(name = PARAM_MODE, mandatory = true)
+	protected String mode;
 
 	public static final String PARAM_USER_SET_MAXIMUM_LENGTH = "maxLen";
 	@ConfigurationParameter(name = PARAM_USER_SET_MAXIMUM_LENGTH, mandatory = false)
@@ -92,11 +93,11 @@ public class DocumentIdTracer extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		switch (learningMode) {
-		case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
+		switch (mode) {
+		case Constants.FM_DOCUMENT:
 			processDocumentMode(aJCas);
 			return;
-		case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:
+		case Constants.FM_SEQUENCE:
 			processSequenceMode(aJCas);
 			return;
 		}

@@ -18,10 +18,7 @@
 package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
-import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
+import static org.dkpro.tc.core.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +33,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -55,8 +53,8 @@ public class VectorizationTask
     private Collection<String> files_training;
     @Discriminator(name = DIM_FILES_VALIDATION)
     private Collection<String> files_validation;
-    @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
+    @Discriminator(name = DIM_FEATURE_MODE)
+    private String mode;
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private int maximumLength;
     
@@ -84,26 +82,26 @@ public class VectorizationTask
             File mappingDir)
                 throws ResourceInitializationException
     {
-        if (learningMode == null) {
+        if (mode == null) {
             throw new ResourceInitializationException(
                     new IllegalStateException("Learning model is [null]"));
         }
 
-        switch (learningMode) {
-        case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
+        switch (mode) {
+        case Constants.FM_DOCUMENT:
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorDocument2Label.class,
                     VectorizationAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, outputDir,
                     VectorizationAnnotatorDocument2Label.PARAM_PREPARATION_DIRECTORY, mappingDir,
                     VectorizationAnnotatorDocument2Label.PARAM_TO_INTEGER, integerVectorization);
-        case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:
+        case Constants.FM_SEQUENCE:
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorSequence2SequenceOfLabel.class,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir);
         default:
             throw new ResourceInitializationException(
-                    new IllegalStateException("Learning mode [" + learningMode + "] not defined"));
+                    new IllegalStateException("Mode [" + mode + "] not defined"));
         }
 
     }

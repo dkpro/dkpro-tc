@@ -24,9 +24,6 @@ public interface DeepLearningConstants {
 
 	String FILENAME_TOKEN = "occurringToken.txt";
 
-	String LM_DOCUMENT_TO_LABEL = "document2label";
-	String LM_SEQUENCE_TO_SEQUENCE_OF_LABELS = "sequence2sequenceOfLabels";
-
 	String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
 
 	String FILENAME_INSTANCE_VECTOR = "instanceVectors.txt";

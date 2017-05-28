@@ -81,7 +81,7 @@ public class DeepLearningDl4jDocumentTrainTest
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         new Dl4jDocumentUserCode()),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 15),

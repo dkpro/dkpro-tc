@@ -59,8 +59,8 @@ public class PreparationTask extends UimaTaskBase {
 	public static final String INPUT_KEY_TRAIN = "inputTrain";
 	public static final String INPUT_KEY_TEST = "inputTest";
 
-	@Discriminator(name = Constants.DIM_LEARNING_MODE)
-	private String learningMode;
+	@Discriminator(name = Constants.DIM_FEATURE_MODE)
+	private String mode;
 
 	@Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
 	private File embedding;
@@ -118,7 +118,7 @@ public class PreparationTask extends UimaTaskBase {
 	}
 
 	private AnalysisEngineDescription getMaximumLengthDeterminer(File folder) throws ResourceInitializationException {
-		if (learningMode == null) {
+		if (mode == null) {
 			throw new ResourceInitializationException(new IllegalStateException("Learning model is [null]"));
 		}
 
@@ -130,16 +130,16 @@ public class PreparationTask extends UimaTaskBase {
 			return AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
 		}
 
-		switch (learningMode) {
-		case DeepLearningConstants.LM_DOCUMENT_TO_LABEL:
+		switch (mode) {
+		case Constants.FM_DOCUMENT:
 			return AnalysisEngineFactory.createEngineDescription(MaximumLengthAnnotatorDocument2Label.class,
 					MaximumLengthAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, folder);
-		case DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS:
+		case Constants.FM_SEQUENCE:
 			return AnalysisEngineFactory.createEngineDescription(MaximumLengthAnnotatorSequence2Label.class,
 					MaximumLengthAnnotatorSequence2Label.PARAM_TARGET_DIRECTORY, folder);
 		default:
 			throw new ResourceInitializationException(
-					new IllegalStateException("Learning mode [" + learningMode + "] not defined"));
+					new IllegalStateException("Mode [" + mode + "] not defined for deep learning experiements"));
 		}
 
 	}

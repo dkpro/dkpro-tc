@@ -70,7 +70,7 @@ public class DeepLearningKerasDocumentCrossValidation implements Constants {
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_DOCUMENT_TO_LABEL),
+				Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_USER_CODE,
 						"src/main/resources/kerasCode/imdb_cnn_lstm.py"),

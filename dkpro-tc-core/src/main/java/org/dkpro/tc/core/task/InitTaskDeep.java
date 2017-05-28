@@ -18,9 +18,7 @@
 package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
-import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
-import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
+import static org.dkpro.tc.core.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +35,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.core.task.deep.DocumentIdTracer;
+import org.dkpro.tc.core.task.deep.IdentificationCollector;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 
@@ -51,8 +49,8 @@ public class InitTaskDeep
     protected CollectionReaderDescription readerTrain;
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
+    @Discriminator(name = DIM_FEATURE_MODE)
+    private String mode;
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
 
@@ -144,9 +142,9 @@ public class InitTaskDeep
                 xmiWriter,
 
         // identity tracker to know later on that document N is file ABC.txt
-                createEngine(DocumentIdTracer.class, DocumentIdTracer.PARAM_TARGET_DIRECTORY,
-                        folder, DocumentIdTracer.PARAM_LEARNING_MODE, learningMode, 
-                        DocumentIdTracer.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
+                createEngine(IdentificationCollector.class, IdentificationCollector.PARAM_TARGET_DIRECTORY,
+                        folder, IdentificationCollector.PARAM_MODE, mode, 
+                        IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
     }
 
     public void setTesting(boolean isTesting)

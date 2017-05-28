@@ -81,7 +81,7 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 		dimReaders.put(DIM_READER_TEST, test);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_LEARNING_MODE, DeepLearningConstants.LM_SEQUENCE_TO_SEQUENCE_OF_LABELS),
+				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
 						"/Users/toobee/Desktop/glove.6B.50d.txt"),
