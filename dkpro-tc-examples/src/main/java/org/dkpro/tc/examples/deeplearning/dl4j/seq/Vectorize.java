@@ -102,7 +102,7 @@ public class Vectorize
                 // Word is present (not padding) -> 1.0 in features mask
                 featuresMask.putScalar(new int[] { s, t }, 1.0);
 
-                String tag = tokLabels.get(s);
+                String tag = tokLabels.get(t);
                 // Grow tagset if necessary
                 if (!tagset.containsKey(tag)) {
                     tagset.put(tag, tagset.size());

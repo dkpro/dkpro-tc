@@ -36,13 +36,12 @@ import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
-import org.deeplearning4j.models.embeddings.wordvectors.WordVectorsImpl;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
-import org.deeplearning4j.nn.conf.layers.GravesBidirectionalLSTM;
+import org.deeplearning4j.nn.conf.layers.GravesLSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
@@ -52,18 +51,16 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import com.google.common.io.Files;
-
 public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 
 	public static void main(String[] args) throws Exception {
 		
 		String root = "/Users/toobee/Desktop/org.dkpro.lab/repository/";
-		String trainVec = root + "/VectorizationTask-Train-DynetSeq2Seq-20170527192957504/output/instanceVectors.txt";
-		String trainOutc = root + "/VectorizationTask-Train-DynetSeq2Seq-20170527192957504/output/outcomeVectors.txt";
-		String testVec = root + "/VectorizationTask-Test-DynetSeq2Seq-20170527192958054/output/instanceVectors.txt";
-		String testOutc = root + "/VectorizationTask-Test-DynetSeq2Seq-20170527192958054/output/outcomeVectors.txt";
-		String embedding = root + "/EmbeddingTask-DynetSeq2Seq-20170527192956694/output/prunedEmbedding.txt";
+		String trainVec = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528101511705/output/instanceVectors.txt";
+		String trainOutc = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528101511705/output/outcomeVectors.txt";
+		String testVec = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528101512389/output/instanceVectors.txt";
+		String testOutc = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528101512389/output/outcomeVectors.txt";
+		String embedding = root + "/EmbeddingTask-DynetSeq2Seq-20170528101510588/output/prunedEmbedding.txt";
 		String pred = "/Users/toobee/Desktop/pred.txt";
 		new Dl4jUserCodeStub().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc),
 				new File(embedding), new File(pred));
@@ -82,17 +79,27 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 		double learningRate = 0.1;
 
 		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(iterations).seed(12345l)
-				.updater(Updater.RMSPROP).regularization(true).l2(1e-5).weightInit(WeightInit.RELU)
-				.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
-				.gradientNormalizationThreshold(1.0).learningRate(learningRate).list()
-				.layer(0,
-						new GravesBidirectionalLSTM.Builder().activation("softsign").nIn(featuresSize).nOut(200)
-								.build())
-				.layer(1,
-						new RnnOutputLayer.Builder().activation("softmax")
-								.lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(maxTagsetSize).build())
-				.pretrain(false).backprop(true).build();
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .iterations(iterations)
+                .seed(12345l)
+                .updater(Updater.RMSPROP).regularization(true).l2(1e-5)
+                .weightInit(WeightInit.RELU)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0)
+                .learningRate(learningRate)
+                .list()
+                .layer(0, new GravesLSTM.Builder()
+                            .activation("softsign")
+                            .nIn(featuresSize)
+                            .nOut(200)
+                            .build())
+                .layer(1, new RnnOutputLayer.Builder()
+                            .activation("softmax")
+                            .lossFunction(LossFunctions.LossFunction.MCXENT)
+                            .nIn(200)
+                            .nOut(maxTagsetSize)
+                            .build())
+                .pretrain(false).backprop(true).build();
 
 		DataSetIterator train = new ListDataSetIterator(toDataSet(trainVec, trainOutcome, embedding), batchSize);
 		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
@@ -110,7 +117,7 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 
 		Set<String> labels = new HashSet<>();
 		for (String s : outcomes) {
-			labels.addAll(asList(s.substring(1, s.length() - 1).split(" ")));
+			labels.addAll(asList(s.split(" ")));
 		}
 
 		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
@@ -129,7 +136,7 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 		List<List<String>> out = new ArrayList<>();
 		
 		for(String s : sentences){
-			out.add(asList(s.substring(1, s.length()-1).split(" ")));
+			out.add(asList(s.split(" ")));
 		}
 		
 		return out;
