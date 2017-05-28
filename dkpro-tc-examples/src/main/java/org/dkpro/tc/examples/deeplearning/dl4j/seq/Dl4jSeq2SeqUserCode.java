@@ -73,13 +73,17 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		new Dl4jSeq2SeqUserCode().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc),
 				new File(embedding), new File(pred));
 	}
+	
+	Vectorize vectorize = new Vectorize();
 
 	@Override
 	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, File prediction)
 			throws Exception {
+		
+		vectorize = new Vectorize(getOutcomes(trainOutcome, testOutcome));
 
 		int featuresSize = getEmbeddingsSize(embedding);
-		int maxTagsetSize = getNumberOfOutcomes(trainOutcome);
+		int maxTagsetSize = getNumberOfOutcomes(trainOutcome, testOutcome);
 		int batchSize = 30;
 		int epochs = 1;
 		int iterations = 1;
@@ -95,8 +99,11 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 						new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
 								.lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(maxTagsetSize).build())
 				.pretrain(false).backprop(true).build();
+		
+		
+		int maxLen = getLongestSentence(trainVec, testVec);
 
-		List<DataSet> trainDataSet = new ArrayList<DataSet>(toDataSet(trainVec, trainOutcome, embedding));
+		List<DataSet> trainDataSet = new ArrayList<DataSet>(toDataSet(trainVec, trainOutcome, maxLen, embedding));
 		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
 		mln.init();
 		mln.setListeners(new ScoreIterationListener(1));
@@ -108,7 +115,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 			mln.fit(train);
 		}
 
-		List<DataSet> testDataSet = new ArrayList<DataSet>(toDataSet(testVec, testOutcome, embedding));
+		List<DataSet> testDataSet = new ArrayList<DataSet>(toDataSet(testVec, testOutcome, maxLen, embedding));
 		DataSetIterator iTest = new ListDataSetIterator(testDataSet, batchSize);
 		StringBuilder sb = new StringBuilder();
 		sb.append("#Gold\tPrediction" + System.lineSeparator());
@@ -126,6 +133,27 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		iTest.reset();
 
 		FileUtils.writeStringToFile(prediction, sb.toString(), "utf-8");
+	}
+
+	private String[] getOutcomes(File trainOutcome, File testOutcome) throws IOException {
+		
+		List<String> trainOutcomes = FileUtils.readLines(trainOutcome);
+		List<String> testOutcomes = FileUtils.readLines(testOutcome);
+		
+		Set<String> s = new HashSet<>();
+		trainOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
+		testOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
+		
+		return s.toArray(new String [0]);
+	}
+
+	private int getLongestSentence(File trainVec, File testVec) throws IOException {
+		List<String> trainSent = FileUtils.readLines(trainVec);
+		List<String> testSent = FileUtils.readLines(testVec);
+		
+		int maxTrain = trainSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
+		int maxTest = testSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
+		return Math.max(maxTrain, maxTest);
 	}
 
 	private static void eval(INDArray labels, INDArray p, INDArray outMask, StringBuilder sb) {
@@ -150,21 +178,21 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		}
 	}
 
-	private int getNumberOfOutcomes(File trainOutcome) throws IOException {
+	private int getNumberOfOutcomes(File trainOutcome, File testOutcome) throws IOException {
 		Set<String> outcomes = new HashSet<>();
 		List<String> lines = FileUtils.readLines(trainOutcome, "utf-8");
 		lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+		
+		lines = FileUtils.readLines(testOutcome, "utf-8");
+		lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+		
 		return outcomes.size();
 	}
 
-	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, File embedding) throws IOException {
+	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, int maxLen, File embedding) throws IOException {
 
 		List<String> sentences = FileUtils.readLines(trainVec);
 		List<String> outcomes = FileUtils.readLines(trainOutcome);
-
-		Vectorize vectorize = new Vectorize();
-
-		int maxLen = sentences.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
 
 		Set<String> labels = new HashSet<>();
 		for (String s : outcomes) {
