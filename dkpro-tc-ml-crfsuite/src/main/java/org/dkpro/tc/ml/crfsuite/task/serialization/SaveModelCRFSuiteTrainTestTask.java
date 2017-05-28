@@ -44,9 +44,6 @@ public class SaveModelCRFSuiteTrainTestTask
 
     /**
      * Preconfigured train-test setup that also stores the trained classifier.
-     * 
-     * @param aExperimentName
-     *            name of the experiment
      */
     public SaveModelCRFSuiteTrainTestTask(String aExperimentName,  File outputFolder, Class<? extends TcShallowLearningAdapter> mlAdapter)
             throws TextClassificationException
@@ -59,9 +56,6 @@ public class SaveModelCRFSuiteTrainTestTask
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * arguments in the constructor.
-     * 
-     * @throws IllegalStateException
-     *             if not all necessary arguments have been set.
      */
     protected void init()
     {

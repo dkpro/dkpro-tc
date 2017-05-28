@@ -153,12 +153,6 @@ public class SVMHMMTestTask
      * Tests the model against the test data and stores the outcomes in the
      * {@link org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries#predictionsFile}
      * file.
-     *
-     * @param taskContext
-     *            context
-     * @param testFile
-     *            test file
-     * @throws Exception
      */
     public void testModel(TaskContext taskContext, File testFile)
         throws Exception
@@ -208,10 +202,6 @@ public class SVMHMMTestTask
 
     /**
      * Trains the model and stores it into the task context
-     *
-     * @param taskContext
-     *            context
-     * @throws Exception
      */
     public void trainModel(TaskContext taskContext, File trainingFile, double paramC,
             int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
@@ -278,14 +268,6 @@ public class SVMHMMTestTask
 
     /**
      * Builds command line parameters for testing predictions
-     *
-     * @param testFile
-     *            test file
-     * @param modelLocation
-     *            trained model file
-     * @param outputPredictions
-     *            where the results will be stored
-     * @return command as a list of Strings
      */
     private static List<String> buildTestCommand(File testFile, String modelLocation,
             String outputPredictions)
@@ -303,8 +285,6 @@ public class SVMHMMTestTask
 
     /**
      * Returns absolute path to svm_hmm_classify binary
-     *
-     * @return binary path
      */
     public static String resolveSVMHmmClassifyCommand()
     {
@@ -335,12 +315,6 @@ public class SVMHMMTestTask
 
     /**
      * Builds the cmd with parameters to run svm_hmm_train
-     *
-     * @param trainingFile
-     *            training file
-     * @param targetModelLocation
-     *            where the trained model will be stored
-     * @return command as list of Strings
      */
     private List<String> buildTrainCommand(File trainingFile, String targetModelLocation,
             double paramC, int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
@@ -371,9 +345,6 @@ public class SVMHMMTestTask
 
     /**
      * Executes the command (runs a new process outside the JVM and waits for its completion)
-     *
-     * @param command
-     *            command as list of Strings
      */
     private static void runCommand(List<String> command)
         throws Exception
