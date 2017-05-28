@@ -37,27 +37,15 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.dkpro.tc.ml.deeplearning4j.user.TcDeepLearning4jUser;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-public class Dl4jUserCodeStub
+public class Dl4jDocumentUserCode
     implements TcDeepLearning4jUser
 {
-
-    public static void main(String[] args)
-        throws Exception
-    {
-        String trainVec = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170522162810560/output/instanceVectors.txt";
-        String trainOutc = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Train-DeepLearning-20170522162810560/output/outcomeVectors.txt";
-        String testVec = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170522162815269/output/instanceVectors.txt";
-        String testOutc = "/Users/toobee/Desktop/org.dkpro.lab/repository/VectorizationTask-Test-DeepLearning-20170522162815269/output/outcomeVectors.txt";
-        String embedding = "/Users/toobee/Desktop/org.dkpro.lab/repository/EmbeddingTask-DeepLearning-20170522162809768/output/prunedEmbedding.txt";
-        String pred = "/Users/toobee/Desktop/pred.txt";
-        new Dl4jUserCodeStub().run(new File(trainVec), new File(trainOutc), new File(testVec),
-                new File(testOutc), new File(embedding), new File(pred));
-    }
 
     @Override
     public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
@@ -71,7 +59,7 @@ public class Dl4jUserCodeStub
         // DataSetIterators for training and testing respectively
         // Using AsyncDataSetIterator to do data loading in a separate thread; this may improve
         // performance vs. waiting for data to load
-        WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
+		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
 
         NewsIterator iTrain = new NewsIterator.Builder().dataDirectory(trainVec.getParent())
                 .wordVectors(wordVectors).batchSize(batchSize).build();
@@ -79,8 +67,6 @@ public class Dl4jUserCodeStub
         NewsIterator iTest = new NewsIterator.Builder().dataDirectory(testVec.getParent())
                 .wordVectors(wordVectors).batchSize(batchSize).build();
 
-        // DataSetIterator train = new AsyncDataSetIterator(iTrain,1);
-        // DataSetIterator test = new AsyncDataSetIterator(iTest,1);
 
         int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length; // 100
                                                                                                  // in
@@ -95,10 +81,10 @@ public class Dl4jUserCodeStub
                 .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
                 .gradientNormalizationThreshold(1.0).learningRate(0.0018).list()
                 .layer(0,
-                        new GravesLSTM.Builder().nIn(inputNeurons).nOut(200).activation("softsign")
+                        new GravesLSTM.Builder().nIn(inputNeurons).nOut(200).activation(Activation.SOFTSIGN)
                                 .build())
                 .layer(1,
-                        new RnnOutputLayer.Builder().activation("softmax")
+                        new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
                                 .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200)
                                 .nOut(outputs).build())
                 .pretrain(false).backprop(true).build();
