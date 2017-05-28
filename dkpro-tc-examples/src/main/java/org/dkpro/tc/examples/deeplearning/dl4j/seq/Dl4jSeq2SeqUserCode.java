@@ -30,10 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -61,18 +59,18 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
+public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
 	public static void main(String[] args) throws Exception {
 
 		String root = "/Users/toobee/Desktop/org.dkpro.lab/repository/";
-		String trainVec = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528101511705/output/instanceVectors.txt";
-		String trainOutc = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528101511705/output/outcomeVectors.txt";
-		String testVec = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528101512389/output/instanceVectors.txt";
-		String testOutc = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528101512389/output/outcomeVectors.txt";
-		String embedding = root + "/EmbeddingTask-DynetSeq2Seq-20170528101510588/output/prunedEmbedding.txt";
+		String trainVec = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528131512410/output/instanceVectors.txt";
+		String trainOutc = root + "/VectorizationTask-Train-DynetSeq2Seq-20170528131512410/output/outcomeVectors.txt";
+		String testVec = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528131513352/output/instanceVectors.txt";
+		String testOutc = root + "/VectorizationTask-Test-DynetSeq2Seq-20170528131513352/output/outcomeVectors.txt";
+		String embedding = root + "/EmbeddingTask-DynetSeq2Seq-20170528131511333/output/prunedEmbedding.txt";
 		String pred = "/Users/toobee/Desktop/pred.txt";
-		new Dl4jUserCodeStub().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc),
+		new Dl4jSeq2SeqUserCode().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc),
 				new File(embedding), new File(pred));
 	}
 
@@ -84,7 +82,6 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 		int maxTagsetSize = getNumberOfOutcomes(trainOutcome);
 		int batchSize = 30;
 		int epochs = 1;
-		boolean shuffle = true;
 		int iterations = 1;
 		double learningRate = 0.1;
 
@@ -99,19 +96,20 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 								.lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(maxTagsetSize).build())
 				.pretrain(false).backprop(true).build();
 
-		List<DataSet> dataSet = new ArrayList<DataSet>(toDataSet(trainVec, trainOutcome, embedding));
+		List<DataSet> trainDataSet = new ArrayList<DataSet>(toDataSet(trainVec, trainOutcome, embedding));
 		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
 		mln.init();
 		mln.setListeners(new ScoreIterationListener(1));
 
 		for (int i = 0; i < epochs; i++) {
 			System.out.println("Epoche " + (i + 1));
-			Collections.shuffle(dataSet);
-			DataSetIterator train = new ListDataSetIterator(dataSet, batchSize);
+			Collections.shuffle(trainDataSet);
+			DataSetIterator train = new ListDataSetIterator(trainDataSet, batchSize);
 			mln.fit(train);
 		}
 
-		DataSetIterator iTest = new ListDataSetIterator(dataSet, batchSize);
+		List<DataSet> testDataSet = new ArrayList<DataSet>(toDataSet(testVec, testOutcome, embedding));
+		DataSetIterator iTest = new ListDataSetIterator(testDataSet, batchSize);
 		StringBuilder sb = new StringBuilder();
 		sb.append("#Gold\tPrediction" + System.lineSeparator());
 		// Run evaluation. This is on 25k reviews, so can take some time
