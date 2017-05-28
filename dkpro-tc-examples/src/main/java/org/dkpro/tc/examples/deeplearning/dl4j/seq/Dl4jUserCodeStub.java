@@ -27,9 +27,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -71,7 +74,7 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 			throws Exception {
 
 		int featuresSize = getEmbeddingsSize(embedding);
-		int maxTagsetSize = 70;
+		int maxTagsetSize = getNumberOfOutcomes(trainOutcome);
 		int batchSize = 1;
 		int epochs = 1;
 		boolean shuffle = true;
@@ -103,7 +106,15 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 
 		DataSetIterator train = new ListDataSetIterator(toDataSet(trainVec, trainOutcome, embedding), batchSize);
 		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
+		mln.init();
 		mln.fit(train);
+	}
+
+	private int getNumberOfOutcomes(File trainOutcome) throws IOException {
+		Set<String> outcomes = new HashSet<>();
+		List<String> lines = FileUtils.readLines(trainOutcome, "utf-8");
+		lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+		return outcomes.size();
 	}
 
 	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, File embedding) throws IOException {
