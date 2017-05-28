@@ -278,6 +278,8 @@
 							<usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-de-maxent</usedDependency>
 							<usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent</usedDependency>
 							<usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default</usedDependency>
+							<!-- Needed when running DL4j experiments -->
+							<usedDependency>org.deeplearning4j:deeplearning4j-native-platform</usedDependency>
 						</usedDependencies>
 					</configuration>
 				</plugin>
