@@ -421,7 +421,22 @@
 				<groupId>org.nd4j</groupId>
 				<artifactId>nd4j-api</artifactId>
 				<version>${nd4j}</version>
-			</dependency>			
+			</dependency>
+			<dependency>
+				<groupId>org.nd4j</groupId>
+				<artifactId>nd4j-common</artifactId>
+				<version>${nd4j}</version>
+			</dependency>				
+			<dependency>
+				<groupId>org.nd4j</groupId>
+				<artifactId>nd4j-buffer</artifactId>
+				<version>${nd4j}</version>
+			</dependency>
+			<dependency>
+				<groupId>it.unimi.dsi</groupId>
+				<artifactId>fastutil</artifactId>
+				<version>7.0.9</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
