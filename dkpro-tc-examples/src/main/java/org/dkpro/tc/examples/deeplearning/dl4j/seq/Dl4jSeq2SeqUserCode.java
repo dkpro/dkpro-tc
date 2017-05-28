@@ -61,19 +61,6 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
-	public static void main(String[] args) throws Exception {
-
-		String root = "/Users/toobee/Desktop/org.dkpro.lab/repository/";
-		String trainVec = root + "/VectorizationTask-Train-dl4jSeq2Seq-20170528135819335/output/instanceVectors.txt";
-		String trainOutc = root + "/VectorizationTask-Train-dl4jSeq2Seq-20170528135819335/output/outcomeVectors.txt";
-		String testVec = root + "/VectorizationTask-Test-dl4jSeq2Seq-20170528135821892/output/instanceVectors.txt";
-		String testOutc = root + "/VectorizationTask-Test-dl4jSeq2Seq-20170528135821892/output/outcomeVectors.txt";
-		String embedding = root + "/EmbeddingTask-dl4jSeq2Seq-20170528135817238/output/prunedEmbedding.txt";
-		String pred = "/Users/toobee/Desktop/pred.txt";
-		new Dl4jSeq2SeqUserCode().run(new File(trainVec), new File(trainOutc), new File(testVec), new File(testOutc),
-				new File(embedding), new File(pred));
-	}
-
 	Vectorize vectorize = new Vectorize();
 
 	@Override
@@ -196,6 +183,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		List<String> sentences = FileUtils.readLines(trainVec);
 		List<String> outcomes = FileUtils.readLines(trainOutcome);
 
+		@SuppressWarnings("deprecation")
 		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
 		File f = File.createTempFile("embedding", ".emb");
 		BinaryWordVectorSerializer.convertWordVectorsToBinary(wordVectors, f.toPath());
