@@ -101,9 +101,9 @@ public class Deeplearning4jOutcomeIDReport
 			if (isIntegerMode) {
 				// Keras starts counting at 1 for 'content' - zero is reserved
 				// as padding value - we have to shift-correct the index
-				Integer v = Integer.valueOf(Integer.valueOf(split[0])) - 1;
+				Integer v = Integer.valueOf(Integer.valueOf(split[0]));
 				gold = v.toString();
-				v = Integer.valueOf(Integer.valueOf(split[1])) - 1;
+				v = Integer.valueOf(Integer.valueOf(split[1]));
 				prediction = v.toString();
 			} else {
 				// we have non-integer labels so we have to map them to integers
