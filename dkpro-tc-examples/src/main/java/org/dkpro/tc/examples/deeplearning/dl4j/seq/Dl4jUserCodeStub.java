@@ -75,7 +75,7 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
 
 		int featuresSize = getEmbeddingsSize(embedding);
 		int maxTagsetSize = getNumberOfOutcomes(trainOutcome);
-		int batchSize = 1;
+		int batchSize = 5;
 		int epochs = 1;
 		boolean shuffle = true;
 		int iterations = 1;
@@ -104,7 +104,9 @@ public class Dl4jUserCodeStub implements TcDeepLearning4jUser {
                             .build())
                 .pretrain(false).backprop(true).build();
 
-		DataSetIterator train = new ListDataSetIterator(toDataSet(trainVec, trainOutcome, embedding), batchSize);
+		
+		Collection<DataSet> dataSet = toDataSet(trainVec, trainOutcome, embedding);
+		DataSetIterator train = new ListDataSetIterator(dataSet, batchSize);
 		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
 		mln.init();
 		mln.fit(train);
