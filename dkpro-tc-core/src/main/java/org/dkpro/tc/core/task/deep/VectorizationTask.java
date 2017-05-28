@@ -98,7 +98,8 @@ public class VectorizationTask
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorSequence2SequenceOfLabel.class,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
-                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir);
+                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
+                    VectorizationAnnotatorDocument2Label.PARAM_TO_INTEGER, integerVectorization);
         default:
             throw new ResourceInitializationException(
                     new IllegalStateException("Mode [" + mode + "] not defined"));

@@ -23,23 +23,15 @@ import java.util.Properties;
 
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
-import org.dkpro.lab.storage.impl.PropertiesAdapter;
-import org.dkpro.lab.task.Task;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.evaluation.measures.label.MacroFScore;
 import org.dkpro.tc.evaluation.measures.label.MicroFScore;
-import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
-import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
-import org.dkpro.tc.evaluation.measures.regression.SpearmanCorrelation;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
-
-import de.tudarmstadt.ukp.dkpro.statistics.correlation.PearsonCorrelation;
 
 /**
  * A result report which creates a few basic measures and writes them to the output folder of a run

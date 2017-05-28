@@ -36,7 +36,7 @@
 		<spring.version>3.2.16.RELEASE</spring.version>
 		<dkpro.lab.version>0.14.0-SNAPSHOT</dkpro.lab.version>
 		<deeplearning4j>0.8.0</deeplearning4j>
-		<nd4j>0.8.0</nd4j>
+		<nd4j.version>0.8.0</nd4j.version>
 	</properties>
 	<scm>
 	  	<connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
@@ -415,22 +415,27 @@
 			<dependency>
 				<groupId>org.nd4j</groupId>
 				<artifactId>nd4j-native</artifactId>
-				<version>${nd4j}</version>
+				<version>${nd4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.nd4j</groupId>
 				<artifactId>nd4j-api</artifactId>
-				<version>${nd4j}</version>
+				<version>${nd4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.nd4j</groupId>
+				<artifactId>nd4j-native-platform</artifactId>
+				<version>${nd4j.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>org.nd4j</groupId>
 				<artifactId>nd4j-common</artifactId>
-				<version>${nd4j}</version>
+				<version>${nd4j.version}</version>
 			</dependency>				
 			<dependency>
 				<groupId>org.nd4j</groupId>
 				<artifactId>nd4j-buffer</artifactId>
-				<version>${nd4j}</version>
+				<version>${nd4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>it.unimi.dsi</groupId>
