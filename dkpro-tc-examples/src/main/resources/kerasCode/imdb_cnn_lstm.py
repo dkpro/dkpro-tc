@@ -142,7 +142,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 	model.add(MaxPooling1D(pool_size=pool_size))
 	model.add(LSTM(lstm_output_size))
 	model.add(Dense(1))
-	model.add(Activation('softmax'))
+	model.add(Activation('sigmoid'))
 
 	model.compile(loss='binary_crossentropy',
               optimizer='adam',

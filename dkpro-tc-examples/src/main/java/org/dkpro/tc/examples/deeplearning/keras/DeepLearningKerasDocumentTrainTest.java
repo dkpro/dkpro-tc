@@ -93,7 +93,7 @@ public class DeepLearningKerasDocumentTrainTest
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "/Users/toobee/Desktop/glove.6B.50d.txt"));
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
 
         return pSpace;
     }
