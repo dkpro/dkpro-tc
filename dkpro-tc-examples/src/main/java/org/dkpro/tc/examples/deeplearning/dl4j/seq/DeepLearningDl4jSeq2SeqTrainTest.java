@@ -35,6 +35,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.crossvalidation.WekaManualFoldCrossValidation;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
@@ -102,6 +103,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("dl4jSeq2Seq", Deeplearning4jAdapter.class);
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(getPreprocessing());
+		batch.addReport(LabFolderTrackerReport.class);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		Lab.getInstance().run(batch);
