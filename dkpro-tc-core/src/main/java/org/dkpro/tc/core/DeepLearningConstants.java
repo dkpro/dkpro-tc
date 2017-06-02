@@ -20,65 +20,71 @@ package org.dkpro.tc.core;
 /**
  * Basic constants that are used throughout the project
  */
-public interface DeepLearningConstants {
+public interface DeepLearningConstants
+{
 
-	String FILENAME_TOKEN = "occurringToken.txt";
+    String FILENAME_TOKEN = "occurringToken.txt";
 
-	String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
+    String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
 
-	String FILENAME_INSTANCE_VECTOR = "instanceVectors.txt";
-	String FILENAME_OUTCOME_VECTOR = "outcomeVectors.txt";
+    String FILENAME_INSTANCE_VECTOR = "instanceVectors.txt";
+    String FILENAME_OUTCOME_VECTOR = "outcomeVectors.txt";
 
-	String FILENAME_INSTANCE_MAPPING = "instanceMapping.txt";
-	String FILENAME_OUTCOME_MAPPING = "outcomeMapping.txt";
-	String FILENAME_VOCABULARY = "vocabulary.txt";
-	String FILENAME_OUTCOMES = "outcomes.txt";
+    String FILENAME_INSTANCE_MAPPING = "instanceMapping.txt";
+    String FILENAME_OUTCOME_MAPPING = "outcomeMapping.txt";
+    String FILENAME_VOCABULARY = "vocabulary.txt";
+    String FILENAME_OUTCOMES = "outcomes.txt";
 
-	String FILENAME_MAXIMUM_LENGTH = "maxLen.txt";
+    String FILENAME_MAXIMUM_LENGTH = "maxLen.txt";
 
-	String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
-	String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
-	
-	/**
-	 * Path to the Python installation which should be used to execute the Python code.
-	 */
-	String DIM_PYTHON_INSTALLATION = "dimPythonPath";
-	
-	/**
-	 * Path to the user-code snippet. Must be provided if called framework is not a Java-based technology.
-	 */
-	String DIM_USER_CODE = "dimUserCode";
+    String DIM_MAXIMUM_LENGTH = "dimMaximumLength";
+    String DIM_PRETRAINED_EMBEDDINGS = "dimEmbedding";
 
-	/**
-	 * File that holds the mapping of the input unit, i.e. which document, word
-	 * or sequence to the position within the processing sequence. This file
-	 * assumes that the later result output is FIFO and thus, the first result
-	 * is the first unit of the processing pipeline, which allows later on to
-	 * identify which unit/target was classified
-	 */
-	String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
+    /**
+     * Path to the Python installation which should be used to execute the Python code.
+     */
+    String DIM_PYTHON_INSTALLATION = "dimPythonPath";
 
-	/**
-	 * When creating the vectorized representation of the input data one can
-	 * directly vectorize and output integer-mapped vectors. Depending on the
-	 * framework used this allows reducing the boiler plate code for preparing
-	 * the vectors.
-	 */
-	String DIM_VECTORIZE_TO_INTEGER = "dimVectorizeToInteger";
+    /**
+     * Path to the user-code snippet. Must be provided if called framework is not a Java-based
+     * technology.
+     */
+    String DIM_USER_CODE = "dimUserCode";
 
-	/**
-	 * For specifying a certain seed initialization value. If not provided, this
-	 * value is initialized with a fixed constant value which is passed to the
-	 * deep learning code. Depending on the framework used, the user code is
-	 * responsible to call the initialization of the framework with this value.
-	 */
-	String DIM_RANDOM_SEED = "randomSeed";
+    /**
+     * File that holds the mapping of the input unit, i.e. which document, word or sequence to the
+     * position within the processing sequence. This file assumes that the later result output is
+     * FIFO and thus, the first result is the first unit of the processing pipeline, which allows
+     * later on to identify which unit/target was classified
+     */
+    String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
 
-	/**
-	 * For specifying the working memory. Depending on the framework used, the
-	 * user code is responsible to call the initialization of the framework with
-	 * this value.
-	 */
-	String DIM_RAM_WORKING_MEMORY = "workingMemory";
+    /**
+     * When creating the vectorized representation of the input data one can directly vectorize and
+     * output integer-mapped vectors. Depending on the framework used this allows reducing the
+     * boiler plate code for preparing the vectors.
+     */
+    String DIM_VECTORIZE_TO_INTEGER = "dimVectorizeToInteger";
+
+    /**
+     * For specifying a certain seed initialization value. If not provided, this value is
+     * initialized with a fixed constant value which is passed to the deep learning code. Depending
+     * on the framework used, the user code is responsible to call the initialization of the
+     * framework with this value.
+     */
+    String DIM_RANDOM_SEED = "randomSeed";
+
+    /**
+     * For specifying the working memory. Depending on the framework used, the user code is
+     * responsible to call the initialization of the framework with this value.
+     */
+    String DIM_RAM_WORKING_MEMORY = "workingMemory";
+
+    /**
+     * Words which are not contained in the embedding file will be removed. The embedding, thus,
+     * defines which words will remain. Small embeddings will consequently lead to a drastically
+     * reduction of the vocabulary size if this parameter is used.
+     */
+    String DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING = "useOnlyVocabularyContainedInEmbedding";
 
 }

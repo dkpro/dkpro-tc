@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.task.deep;
+package org.dkpro.tc.core.task.deep.anno;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
@@ -33,22 +34,26 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class MaximumLengthAnnotatorDocument2Label
+public class MaximumLengthAnnotatorSequence2Label
     extends JCasAnnotator_ImplBase
 {
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
-    
+
+    public static final String PARAM_SEQUENCE_ANNOTATION = "sequenceAnnotation";
+    @ConfigurationParameter(name = PARAM_SEQUENCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence")
+    protected String sequenceSpanTypeName;
+
     public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
     @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     protected String instanceTypeName;
-    
 
     File outputFile;
     Type instanceType;
-    
-    int maximumLength=-1;
+    Type sequenceSpanType;
+
+    int maximumLength = -1;
 
     @Override
     public void initialize(UimaContext context)
@@ -60,23 +65,31 @@ public class MaximumLengthAnnotatorDocument2Label
 
         try {
             JCas typeFactory = JCasFactory.createJCas();
-            Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
-            AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
-            instanceType = createAnnotation.getType();
+            Type type = JCasUtil.getType(typeFactory, Class.forName(sequenceSpanTypeName));
+            AnnotationFS sequenceAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
+            sequenceSpanType = sequenceAnno.getType();
+
+            type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
+            AnnotationFS tokenAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
+            instanceType = tokenAnno.getType();
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-        
+
     }
 
     @Override
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        int docSize = CasUtil.select(aJCas.getCas(), instanceType).size();
-        if(docSize > maximumLength){
-            maximumLength = docSize;
+        Collection<AnnotationFS> sequences = CasUtil.select(aJCas.getCas(), sequenceSpanType);
+
+        for (AnnotationFS s : sequences) {
+            int seqSize = CasUtil.selectCovered(aJCas.getCas(), instanceType, s).size();
+            if (seqSize > maximumLength) {
+                maximumLength = seqSize;
+            }
         }
     }
 
@@ -84,7 +97,7 @@ public class MaximumLengthAnnotatorDocument2Label
     public void collectionProcessComplete()
     {
         try {
-            FileUtils.writeStringToFile(outputFile, maximumLength+"", "utf-8");
+            FileUtils.writeStringToFile(outputFile, maximumLength + "", "utf-8");
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);

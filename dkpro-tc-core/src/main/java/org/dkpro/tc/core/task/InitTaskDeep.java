@@ -35,7 +35,8 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.core.task.deep.IdentificationCollector;
+import org.dkpro.tc.core.task.deep.anno.FilterVocabularyByEmbeddingAnnotator;
+import org.dkpro.tc.core.task.deep.anno.IdentificationCollector;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 
@@ -53,6 +54,8 @@ public class InitTaskDeep
     private String mode;
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
+    @Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
+    private File embedding;
 
     private boolean isTesting = false;
 
@@ -102,12 +105,11 @@ public class InitTaskDeep
         throws ResourceInitializationException, IOException
     {
         String output = isTesting ? OUTPUT_KEY_TEST : OUTPUT_KEY_TRAIN;
-        
+
         File folder = aContext.getFolder(output, AccessMode.READWRITE);
-        
+
         AnalysisEngineDescription xmiWriter = createEngineDescription(BinaryCasWriter.class,
-                BinaryCasWriter.PARAM_TARGET_LOCATION,
-                folder.getPath(),
+                BinaryCasWriter.PARAM_TARGET_LOCATION, folder.getPath(),
                 BinaryCasWriter.PARAM_FORMAT, "6+");
 
         // special connector that just checks whether there are no instances and outputs a
@@ -126,6 +128,8 @@ public class InitTaskDeep
         }
 
         return createEngineDescription(
+                createEngine(FilterVocabularyByEmbeddingAnnotator.class,
+                        FilterVocabularyByEmbeddingAnnotator.PARAM_EMBEDDING, embedding),
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
 
@@ -142,8 +146,9 @@ public class InitTaskDeep
                 xmiWriter,
 
         // identity tracker to know later on that document N is file ABC.txt
-                createEngine(IdentificationCollector.class, IdentificationCollector.PARAM_TARGET_DIRECTORY,
-                        folder, IdentificationCollector.PARAM_MODE, mode, 
+                createEngine(IdentificationCollector.class,
+                        IdentificationCollector.PARAM_TARGET_DIRECTORY, folder,
+                        IdentificationCollector.PARAM_MODE, mode,
                         IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
     }
 

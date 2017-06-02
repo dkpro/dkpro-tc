@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.task.deep;
+package org.dkpro.tc.core.task.deep.anno;
 
 import java.io.File;
 import java.util.ArrayList;

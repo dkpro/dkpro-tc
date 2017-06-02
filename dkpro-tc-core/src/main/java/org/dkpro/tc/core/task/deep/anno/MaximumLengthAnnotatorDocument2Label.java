@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.task.deep;
+package org.dkpro.tc.core.task.deep.anno;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
@@ -33,39 +31,32 @@ import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VocabularyOutcomeCollector
+public class MaximumLengthAnnotatorDocument2Label
     extends JCasAnnotator_ImplBase
 {
-    public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
-    @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
-    protected String instanceTypeName;
-
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
     
-    TreeSet<String> token;
-    TreeSet<String> outcomes;
+    public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
+    @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
+    protected String instanceTypeName;
+    
 
+    File outputFile;
     Type instanceType;
-	
-    private File vocabularyFile;
-	private File outcomeFile;
-
+    
+    int maximumLength=-1;
 
     @Override
     public void initialize(UimaContext context)
         throws ResourceInitializationException
     {
         super.initialize(context);
-        token = new TreeSet<>();
-        outcomes = new TreeSet<>();
-        
-        vocabularyFile = new File(targetFolder, DeepLearningConstants.FILENAME_VOCABULARY);
-		outcomeFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOMES);
+
+        outputFile = new File(targetFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH);
 
         try {
             JCas typeFactory = JCasFactory.createJCas();
@@ -76,33 +67,16 @@ public class VocabularyOutcomeCollector
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-
+        
     }
 
     @Override
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        collectInstances(aJCas);
-        collectOutcomes(aJCas);
-    }
-
-    private void collectOutcomes(JCas aJCas)
-    {
-        Collection<TextClassificationOutcome> tcos = JCasUtil.select(aJCas,
-                TextClassificationOutcome.class);
-        for (TextClassificationOutcome o : tcos) {
-            String outcome = o.getOutcome();
-            outcomes.add(outcome);
-        }
-    }
-
-    private void collectInstances(JCas aJCas)
-    {
-        Collection<AnnotationFS> select = CasUtil.select(aJCas.getCas(), instanceType);
-        for (AnnotationFS afs : select) {
-            String instance = afs.getCoveredText();
-            token.add(instance);
+        int docSize = CasUtil.select(aJCas.getCas(), instanceType).size();
+        if(docSize > maximumLength){
+            maximumLength = docSize;
         }
     }
 
@@ -110,21 +84,11 @@ public class VocabularyOutcomeCollector
     public void collectionProcessComplete()
     {
         try {
-            FileUtils.writeStringToFile(vocabularyFile, toString(token), "utf-8");
-            FileUtils.writeStringToFile(outcomeFile, toString(outcomes), "utf-8");
+            FileUtils.writeStringToFile(outputFile, maximumLength+"", "utf-8");
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);
         }
     }
-    
-    private String toString(TreeSet<String> tokens)
-    {
-        StringBuilder sb = new StringBuilder();
 
-        for (String e : tokens) {
-            sb.append(e + System.lineSeparator());
-        }
-        return sb.toString();
-    }
 }

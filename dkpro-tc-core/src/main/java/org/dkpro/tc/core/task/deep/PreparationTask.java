@@ -40,6 +40,10 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.core.task.deep.anno.MappingAnnotator;
+import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorDocument2Label;
+import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorSequence2Label;
+import org.dkpro.tc.core.task.deep.anno.VocabularyOutcomeCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
