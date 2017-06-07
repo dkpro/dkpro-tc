@@ -1,19 +1,24 @@
 package org.dkpro.tc.examples.deeplearning.keras;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.ivy.util.FileUtil;
 import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.io.Files;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
@@ -84,45 +89,56 @@ public class KerasTest
                 "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
                         .getAbsolutePath();
 
-        createFolderInContainer();
-
-        copyFiles(LabFolderTrackerReport.vectorizationTaskTrain, "/root/train");
-        copyFiles(LabFolderTrackerReport.vectorizationTaskTest, "/root/test");
-        System.err.println("Copied folders");
-        copyCode("src/main/resources/kerasCode/seq/", "/root");
-        System.err.println("Copied code");
+        
+        prepareDockerExperimentExecution();
+        System.err.println("Experiment prepared");
 
         runCode();
-        System.err.println("Ran code");
-        retrievePredictions();
-        System.err.println("Retrieved prediction");
-
-        // final String[] command = { "bash", "-c", "cd /root/train/; ls" };
-        // final ExecCreation execCreation = docker.execCreate(id, command,
-        // DockerClient.ExecCreateParam.attachStdout(),
-        // DockerClient.ExecCreateParam.attachStderr());
-        // final LogStream output = docker.execStart(execCreation.id());
-        // final String execOutput = output.readFully();
-        // System.out.println(execOutput);
-
+        System.err.println("Experiment executed");
+        
+        sanityCheckPredictionFile(retrievePredictions());
+        System.err.println("Experiment results validated");
     }
 
-    private void retrievePredictions()
+    private void prepareDockerExperimentExecution() throws Exception
+    {
+        createFolderInContainer();
+        copyFiles(LabFolderTrackerReport.vectorizationTaskTrain, "/root/train");
+        copyFiles(LabFolderTrackerReport.vectorizationTaskTest, "/root/test");
+        copyCode("src/main/resources/kerasCode/seq/", "/root");
+    }
+
+    private void sanityCheckPredictionFile(File f)
+        throws IOException
+    {
+        List<String> lines = FileUtils.readLines(f, "utf-8");
+        assertEquals(51, lines.size());
+        assertTrue(lines.get(0).startsWith("#"));
+
+        for (int i = 1; i < lines.size() - 1; i++) {
+            // validate tab-separated format
+            if (i == 25) {
+                assertTrue(lines.get(i).isEmpty());
+                continue;
+            }
+            assertEquals(2, lines.get(i).split("\t").length);
+        }
+    }
+
+    private File retrievePredictions()
         throws Exception
     {
+        File f = File.createTempFile("predictionRetrieved", ".txt");
         TarArchiveInputStream tarStream = new TarArchiveInputStream(
                 docker.archiveContainer(id, PREDICTION_FILE));
 
-        TarArchiveEntry entry = null;
-        while ((entry = (TarArchiveEntry) tarStream.getNextEntry()) != null) {
-            OutputStream outputFileStream = new FileOutputStream(
-                    new File("/Users/toobee/Desktop/" + entry.getName()));
+        tarStream.getNextEntry();
+            OutputStream outputFileStream = new FileOutputStream(f);
             IOUtils.copy(tarStream, outputFileStream);
             outputFileStream.close();
-
-            // FileUtils.copyFile(file, new File("/Users/toobee/Desktop/"+entry.getName()));
-        }
         tarStream.close();
+
+        return f;
     }
 
     private void runCode()
@@ -131,11 +147,6 @@ public class KerasTest
         String[] command = { "bash", "-c",
                 "python3 /root/posTaggingLstm.py /root/train/instanceVectors.txt /root/train/outcomeVectors.txt /root/test/instanceVectors.txt /root/test/outcomeVectors.txt '' 75 "
                         + PREDICTION_FILE };
-
-        // String[] command = { "bash", "-c", "python3", "/root/posTaggingLstm.py",
-        // "/root/train/instanceVectors.txt", "/root/train/outcomeVectors.txt",
-        // "/root/test/instanceVectors.txt", "/root/test/outcomeVectors.txt", "", "75",
-        // PREDICTION_FILE };
 
         ExecCreation execCreation = docker.execCreate(id, command,
                 DockerClient.ExecCreateParam.attachStdout(),
