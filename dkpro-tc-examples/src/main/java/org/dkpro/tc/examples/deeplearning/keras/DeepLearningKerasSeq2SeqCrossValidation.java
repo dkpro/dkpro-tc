@@ -76,7 +76,7 @@ public class DeepLearningKerasSeq2SeqCrossValidation implements Constants {
 				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
 				Dimension
-						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/kerasCode/posTaggingLstm.py"));
+						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/kerasCode/seq/posTaggingLstm.py"));
 
 		return pSpace;
 	}
