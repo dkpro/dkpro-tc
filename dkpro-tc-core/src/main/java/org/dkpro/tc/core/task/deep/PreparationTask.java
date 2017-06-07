@@ -66,9 +66,6 @@ public class PreparationTask extends UimaTaskBase {
 	@Discriminator(name = Constants.DIM_FEATURE_MODE)
 	private String mode;
 
-	@Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
-	private File embedding;
-
 	@Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
 	private Integer maximumLength;
 

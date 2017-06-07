@@ -43,7 +43,7 @@ public class FilterVocabularyByEmbeddingAnnotator
 {
 
     public static final String PARAM_EMBEDDING = "embedding";
-    @ConfigurationParameter(name = PARAM_EMBEDDING, mandatory = true)
+    @ConfigurationParameter(name = PARAM_EMBEDDING, mandatory = false)
     protected File embedding;
 
     Set<String> vocab = new HashSet<>();
