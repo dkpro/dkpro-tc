@@ -52,7 +52,7 @@ public class LabFolderTrackerReport
                 vectorizationTaskTrain = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
             }
             if(type.contains(VectorizationTask.class.getName()) && type.contains("-Test-")){
-                vectorizationTaskTrain = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
+                vectorizationTaskTest = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
             }
             if(type.contains(PreparationTask.class.getName())){
                 preparationTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
