@@ -250,9 +250,8 @@
 			<version>8.7.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
