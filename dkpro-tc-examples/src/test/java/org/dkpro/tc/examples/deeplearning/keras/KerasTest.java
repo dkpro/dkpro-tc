@@ -53,20 +53,11 @@ public class KerasTest
     ContainerConfig containerConfig;
     ContainerCreation creation;
     String id;
-
+    
     @Before
     public void setup()
         throws Exception
     {
-
-        try {
-            DeepLearningKerasSeq2SeqTrainTest.main(null);
-        }
-        catch (Exception e) {
-            // Ignore silently, this will crash for sure on systems where Keras is not installed at
-            // the expected location
-        }
-
         docker = DefaultDockerClient.fromEnv().build();
 
         containerConfig = ContainerConfig.builder().image(IMAGE_NAME).attachStdout(Boolean.TRUE)
@@ -91,7 +82,8 @@ public class KerasTest
     public void runKerasTrainTest()
         throws Exception
     {
-         verifyOutputFolders();
+        LabFolderTrackerReport filePointers = createFiles();
+        verifyOutputFolders(filePointers);
 
 //        LabFolderTrackerReport.vectorizationTaskTrain = new File(
 //                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
@@ -104,7 +96,7 @@ public class KerasTest
 //                        .getAbsolutePath();
 
         
-        prepareDockerExperimentExecution();
+        prepareDockerExperimentExecution(filePointers);
         System.err.println("Experiment prepared");
 
         runCode();
@@ -114,11 +106,25 @@ public class KerasTest
         System.err.println("Experiment results validated");
     }
 
-    private void prepareDockerExperimentExecution() throws Exception
+    private LabFolderTrackerReport createFiles()
+    {
+        LabFolderTrackerReport labTracker = new LabFolderTrackerReport();
+        try {
+            DeepLearningKerasSeq2SeqTrainTest.runTrainTest(DeepLearningKerasSeq2SeqTrainTest.getParameterSpace(), labTracker);
+        }
+        catch (Exception e) {
+//            e.printStackTrace();
+            // Ignore silently, this will crash for sure on systems where Keras is not installed at
+            // the expected location
+        }
+        return labTracker;
+    }
+
+    private void prepareDockerExperimentExecution(LabFolderTrackerReport filePointers) throws Exception
     {
         createFolderInContainer();
-        copyFiles(LabFolderTrackerReport.vectorizationTaskTrain, "/root/train");
-        copyFiles(LabFolderTrackerReport.vectorizationTaskTest, "/root/test");
+        copyFiles(filePointers.vectorizationTaskTrain, "/root/train");
+        copyFiles(filePointers.vectorizationTaskTest, "/root/test");
         copyCode("src/main/resources/kerasCode/seq/", "/root");
     }
 
@@ -147,9 +153,9 @@ public class KerasTest
                 docker.archiveContainer(id, PREDICTION_FILE));
 
         tarStream.getNextEntry();
-            OutputStream outputFileStream = new FileOutputStream(f);
-            IOUtils.copy(tarStream, outputFileStream);
-            outputFileStream.close();
+        OutputStream outputFileStream = new FileOutputStream(f);
+        IOUtils.copy(tarStream, outputFileStream);
+        outputFileStream.close();
         tarStream.close();
 
         return f;
@@ -210,10 +216,18 @@ public class KerasTest
         docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
     }
 
-    private void verifyOutputFolders()
+    private void verifyOutputFolders(LabFolderTrackerReport filePointers)
     {
-        assertTrue(new File(LabFolderTrackerReport.vectorizationTaskTrain).exists());
-        assertTrue(new File(LabFolderTrackerReport.vectorizationTaskTest).exists());
-        assertTrue(new File(LabFolderTrackerReport.preparationTask).exists());
+        System.out.println(filePointers.vectorizationTaskTrain);
+        System.out.println(filePointers.vectorizationTaskTest);
+        System.out.println(filePointers.preparationTask);
+        
+        assertTrue(filePointers.vectorizationTaskTrain != null);
+        assertTrue(filePointers.vectorizationTaskTest != null);
+        assertTrue(filePointers.preparationTask != null);
+        
+        assertTrue(new File(filePointers.vectorizationTaskTrain).exists());
+        assertTrue(new File(filePointers.vectorizationTaskTest).exists());
+        assertTrue(new File(filePointers.preparationTask).exists());
     }
 }

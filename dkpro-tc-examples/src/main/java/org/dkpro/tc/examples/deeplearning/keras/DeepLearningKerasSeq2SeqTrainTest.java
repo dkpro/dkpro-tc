@@ -30,13 +30,13 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
+import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
-import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
@@ -56,16 +56,8 @@ public class DeepLearningKerasSeq2SeqTrainTest
     public static void main(String[] args)
         throws Exception
     {
-
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqTrainTest.class.getSimpleName());
-
         ParameterSpace pSpace = getParameterSpace();
-
-        DeepLearningKerasSeq2SeqTrainTest experiment = new DeepLearningKerasSeq2SeqTrainTest();
-        experiment.runTrainTest(pSpace);
+        DeepLearningKerasSeq2SeqTrainTest.runTrainTest(pSpace, null);
     }
 
     public static ParameterSpace getParameterSpace()
@@ -98,21 +90,28 @@ public class DeepLearningKerasSeq2SeqTrainTest
         return pSpace;
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
+    protected static AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public void runTrainTest(ParameterSpace pSpace)
+    public static void runTrainTest(ParameterSpace pSpace, ReportBase r)
         throws Exception
     {
+        
+        // This is used to ensure that the required DKPRO_HOME environment variable is set.
+        // Ensures that people can run the experiments even if they haven't read the setup
+        // instructions first :)
+        DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqTrainTest.class.getSimpleName());
         
         DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
                 KerasAdapter.class);
         batch.setParameterSpace(pSpace);
         batch.setPreprocessing(getPreprocessing());
-        batch.addReport(LabFolderTrackerReport.class);
+        if (r != null) {
+            batch.addReport(r);
+        }
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(batch);

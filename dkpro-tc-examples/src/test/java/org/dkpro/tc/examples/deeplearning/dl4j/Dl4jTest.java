@@ -31,16 +31,24 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.deeplearning.dl4j.doc.DeepLearningDl4jDocumentTrainTest;
 import org.dkpro.tc.examples.deeplearning.dl4j.seq.DeepLearningDl4jSeq2SeqTrainTest;
 import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
+import org.junit.Before;
 import org.junit.Test;
 
 public class Dl4jTest
 {
+    LabFolderTrackerReport folderTracker;
+    
+    @Before
+    public void setup(){
+        folderTracker = new LabFolderTrackerReport();
+    }
+    
     @Test
     public void runSequenceTest()
         throws Exception
     {
         DeepLearningDl4jSeq2SeqTrainTest dl4j = new DeepLearningDl4jSeq2SeqTrainTest();
-        dl4j.runTrainTest(DeepLearningDl4jSeq2SeqTrainTest.getParameterSpace());
+        dl4j.runTrainTest(DeepLearningDl4jSeq2SeqTrainTest.getParameterSpace(), folderTracker);
 
         List<String> vocabulary = getPreparationVocabulary();
         assertEquals(18, vocabulary.size());
@@ -87,7 +95,7 @@ public class Dl4jTest
     private List<String> getPreparationOutcomes()
         throws IOException
     {
-        File f = new File(LabFolderTrackerReport.preparationTask + "/output/"
+        File f = new File(folderTracker.preparationTask + "/output/"
                 + DeepLearningConstants.FILENAME_OUTCOMES);
         return FileUtils.readLines(f, "utf-8");
     }
@@ -95,7 +103,7 @@ public class Dl4jTest
     private List<String> getPreparationVocabulary()
         throws IOException
     {
-        File f = new File(LabFolderTrackerReport.preparationTask + "/output/"
+        File f = new File(folderTracker.preparationTask + "/output/"
                 + DeepLearningConstants.FILENAME_VOCABULARY);
         return FileUtils.readLines(f, "utf-8");
     }
@@ -140,7 +148,7 @@ public class Dl4jTest
     private String getVectorizationTrainOutcome()
         throws IOException
     {
-        File f = new File(LabFolderTrackerReport.vectorizationTaskTrain + "/output/"
+        File f = new File(folderTracker.vectorizationTaskTrain + "/output/"
                 + DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
         return FileUtils.readFileToString(f, "utf-8");
     }
@@ -148,7 +156,7 @@ public class Dl4jTest
     private String getVectorizationTrainData()
         throws IOException
     {
-        File f = new File(LabFolderTrackerReport.vectorizationTaskTrain + "/output/"
+        File f = new File(folderTracker.vectorizationTaskTrain + "/output/"
                 + DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
         return FileUtils.readFileToString(f, "utf-8");
     }

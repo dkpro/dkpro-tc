@@ -28,6 +28,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
+import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
@@ -64,7 +65,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		ParameterSpace pSpace = getParameterSpace();
 
 		DeepLearningDl4jSeq2SeqTrainTest experiment = new DeepLearningDl4jSeq2SeqTrainTest();
-		experiment.runTrainTest(pSpace);
+		experiment.runTrainTest(pSpace, null);
 	}
 
 	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
@@ -96,14 +97,16 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		return createEngineDescription(SequenceOutcomeAnnotator.class);
 	}
 
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+	public void runTrainTest(ParameterSpace pSpace, ReportBase r) throws Exception {
 		
 		DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
 		
 		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("dl4jSeq2Seq", Deeplearning4jAdapter.class);
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(getPreprocessing());
-		batch.addReport(LabFolderTrackerReport.class);
+		if(r != null){
+		    batch.addReport(r);
+		}
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		Lab.getInstance().run(batch);

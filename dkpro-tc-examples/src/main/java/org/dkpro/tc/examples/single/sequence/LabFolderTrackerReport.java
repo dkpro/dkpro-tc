@@ -33,10 +33,10 @@ public class LabFolderTrackerReport
     extends BatchReportBase
 {
  
-    public static String preparationTask=null;
-    public static String vectorizationTaskTrain = null;
-    public static String vectorizationTaskTest = null;
-    public static String embeddingTask=null;
+    public String preparationTask=null;
+    public String vectorizationTaskTrain = null;
+    public String vectorizationTaskTest = null;
+    public String embeddingTask=null;
     
 
     @Override
