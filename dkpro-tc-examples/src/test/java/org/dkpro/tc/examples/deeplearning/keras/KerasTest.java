@@ -44,7 +44,8 @@ import com.spotify.docker.client.messages.ExecCreation;
 
 public class KerasTest
 {
-    public static String IMAGE_NAME = "dkpro-tc-keras-dynet"; 
+    final public static String IMAGE_NAME = "dkpro-tc-keras-dynet"; 
+    final public static String USER_NAME = "root";
     
     private static final String PREDICTION_FILE = "/root/prediction.txt";
 
@@ -69,7 +70,7 @@ public class KerasTest
         docker = DefaultDockerClient.fromEnv().build();
 
         containerConfig = ContainerConfig.builder().image(IMAGE_NAME).attachStdout(Boolean.TRUE)
-                .attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE).tty(true).user("root")
+                .attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE).tty(true).user(USER_NAME)
                 .build();
 
         creation = docker.createContainer(containerConfig);
