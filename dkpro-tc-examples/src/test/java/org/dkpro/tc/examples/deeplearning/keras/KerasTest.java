@@ -44,6 +44,8 @@ import com.spotify.docker.client.messages.ExecCreation;
 
 public class KerasTest
 {
+    public static String IMAGE_NAME = "dkpro-tc-keras-dynet"; 
+    
     private static final String PREDICTION_FILE = "/root/prediction.txt";
 
     DockerClient docker;
@@ -56,17 +58,17 @@ public class KerasTest
         throws Exception
     {
 
-        // try {
-        // DeepLearningKerasSeq2SeqTrainTest.main(null);
-        // }
-        // catch (Exception e) {
-        // // Ignore silently, this will crash for sure on systems where Keras is not installed at
-        // // the expected location
-        // }
+        try {
+            DeepLearningKerasSeq2SeqTrainTest.main(null);
+        }
+        catch (Exception e) {
+            // Ignore silently, this will crash for sure on systems where Keras is not installed at
+            // the expected location
+        }
 
         docker = DefaultDockerClient.fromEnv().build();
 
-        containerConfig = ContainerConfig.builder().image("dkprotc").attachStdout(Boolean.TRUE)
+        containerConfig = ContainerConfig.builder().image(IMAGE_NAME).attachStdout(Boolean.TRUE)
                 .attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE).tty(true).user("root")
                 .build();
 
@@ -79,13 +81,8 @@ public class KerasTest
     public void cleanUp()
         throws Exception
     {
-        // Kill container
         docker.killContainer(id);
-
-        // Remove container
-        // docker.removeContainer(id);
-
-        // Close the docker client
+        docker.removeContainer(id);
         docker.close();
     }
 
@@ -93,17 +90,17 @@ public class KerasTest
     public void runKerasTrainTest()
         throws Exception
     {
-        // verifyOutputFolders();
+         verifyOutputFolders();
 
-        LabFolderTrackerReport.vectorizationTaskTrain = new File(
-                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
-                        .getAbsolutePath();
-        LabFolderTrackerReport.vectorizationTaskTest = new File(
-                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
-                        .getAbsolutePath();
-        LabFolderTrackerReport.preparationTask = new File(
-                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
-                        .getAbsolutePath();
+//        LabFolderTrackerReport.vectorizationTaskTrain = new File(
+//                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
+//                        .getAbsolutePath();
+//        LabFolderTrackerReport.vectorizationTaskTest = new File(
+//                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
+//                        .getAbsolutePath();
+//        LabFolderTrackerReport.preparationTask = new File(
+//                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
+//                        .getAbsolutePath();
 
         
         prepareDockerExperimentExecution();
@@ -182,7 +179,7 @@ public class KerasTest
     private void createFolderInContainer()
         throws Exception
     {
-        final ContainerConfig containerConfig = ContainerConfig.builder().image("dkprotc")
+        final ContainerConfig containerConfig = ContainerConfig.builder().image(IMAGE_NAME)
                 .user("root").attachStdout(Boolean.TRUE).attachStderr(Boolean.TRUE)
                 .attachStdin(Boolean.TRUE).tty(true).build();
 
