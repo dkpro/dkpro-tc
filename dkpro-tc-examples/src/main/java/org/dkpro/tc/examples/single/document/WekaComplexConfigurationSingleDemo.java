@@ -70,9 +70,6 @@ public class WekaComplexConfigurationSingleDemo
 
     /**
      * Starts the experiment.
-     * 
-     * @param args
-     * @throws Exception
      */
     public static void main(String[] args)
         throws Exception

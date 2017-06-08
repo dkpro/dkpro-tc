@@ -70,9 +70,6 @@ public class MekaComplexConfigurationMultiDemo
 
     /**
      * Starts the experiment.
-     * 
-     * @param args
-     * @throws Exception
      */
     public static void main(String[] args)
         throws Exception
@@ -90,10 +87,6 @@ public class MekaComplexConfigurationMultiDemo
         experiment.runTrainTest(pSpace);
     }
 
-    /**
-     * @return
-     * @throws ResourceInitializationException
-     */
     @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace()
         throws ResourceInitializationException
