@@ -132,11 +132,14 @@ public class KerasTest
             }
         }
 
-        System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath());
+        System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath() + "- (exist ["
+                + (new File(tempDkproHome, "/org.dkpro.lab/repository/").exists() ? "true"
+                        : "false" + "])"));
         for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
             if (!f.isDirectory()) {
                 continue;
             }
+            System.err.println("Folder: ["+f.getAbsolutePath()+"]");
             if (f.getName().contains(VectorizationTask.class.getSimpleName())
                     && f.getName().contains("-Train-")) {
                 vectorTrainFolder = f.getAbsolutePath();
