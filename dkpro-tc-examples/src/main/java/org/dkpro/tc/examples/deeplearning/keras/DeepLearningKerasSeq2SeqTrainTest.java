@@ -22,6 +22,7 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,6 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
@@ -96,22 +96,23 @@ public class DeepLearningKerasSeq2SeqTrainTest
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public static void runTrainTest(ParameterSpace pSpace, ReportBase r)
+    public static void runTrainTest(ParameterSpace pSpace, File dkproHome)
         throws Exception
     {
         
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
+        if(dkproHome == null){
         DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqTrainTest.class.getSimpleName());
+        }else{
+            System.setProperty("DKPRO_HOME", dkproHome.getAbsolutePath());
+        }
         
         DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
                 KerasAdapter.class);
         batch.setParameterSpace(pSpace);
         batch.setPreprocessing(getPreprocessing());
-        if (r != null) {
-            batch.addReport(r);
-        }
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(batch);
