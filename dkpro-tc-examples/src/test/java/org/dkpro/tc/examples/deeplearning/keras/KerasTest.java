@@ -124,6 +124,7 @@ public class KerasTest
             // the expected location
         }
         
+        System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath());
         for(File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()){
             if(!f.isDirectory()){
                 continue;
