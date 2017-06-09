@@ -124,7 +124,7 @@ public class KerasTest
         }
         catch (Exception e) {
             if (e.getCause().getCause() instanceof IOException) {
-                LogFactory.getLog(getClass()).info(
+                System.err.println(
                         "Catched IOException this means the Python installation was either not found or not setup with Keras - everything ok");
             }
             else {
