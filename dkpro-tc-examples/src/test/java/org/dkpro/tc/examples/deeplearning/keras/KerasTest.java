@@ -242,7 +242,9 @@ public class KerasTest
                 DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
         LogStream output = docker.execStart(execCreation.id());
-        output.readFully();
+        if(output.hasNext()){
+            output.readFully();
+        }
     }
 
     private void copyFiles(String folder, String out)
