@@ -30,6 +30,8 @@ import java.util.List;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.LogFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.junit.After;
 import org.junit.Before;
@@ -45,21 +47,21 @@ import com.spotify.docker.client.messages.ExecCreation;
 
 public class KerasTest
 {
-    final public static String IMAGE_NAME = "dkpro-tc-keras-dynet"; 
+    final public static String IMAGE_NAME = "dkpro-tc-keras-dynet";
     final public static String USER_NAME = "root";
-    
+
     private static final String PREDICTION_FILE = "/root/prediction.txt";
 
     DockerClient docker;
     ContainerConfig containerConfig;
     ContainerCreation creation;
     String id;
-    
+
     File tempDkproHome;
-    
+
     String vectorTrainFolder;
     String vectorTestFolder;
-    
+
     @Before
     public void setup()
         throws Exception
@@ -83,7 +85,7 @@ public class KerasTest
         docker.killContainer(id);
         docker.removeContainer(id);
         docker.close();
-        
+
         tempDkproHome.delete();
     }
 
@@ -93,55 +95,64 @@ public class KerasTest
     {
         createFiles();
 
-//        LabFolderTrackerReport.vectorizationTaskTrain = new File(
-//                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
-//                        .getAbsolutePath();
-//        LabFolderTrackerReport.vectorizationTaskTest = new File(
-//                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
-//                        .getAbsolutePath();
-//        LabFolderTrackerReport.preparationTask = new File(
-//                "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
-//                        .getAbsolutePath();
+        // LabFolderTrackerReport.vectorizationTaskTrain = new File(
+        // "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
+        // .getAbsolutePath();
+        // LabFolderTrackerReport.vectorizationTaskTest = new File(
+        // "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
+        // .getAbsolutePath();
+        // LabFolderTrackerReport.preparationTask = new File(
+        // "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
+        // .getAbsolutePath();
 
-        
         prepareDockerExperimentExecution();
         System.err.println("Experiment prepared");
 
         runCode();
         System.err.println("Experiment executed");
-        
+
         sanityCheckPredictionFile(retrievePredictions());
         System.err.println("Experiment results validated");
     }
 
     private void createFiles()
+        throws ResourceInitializationException, Exception
     {
         try {
-            DeepLearningKerasSeq2SeqTrainTest.runTrainTest(DeepLearningKerasSeq2SeqTrainTest.getParameterSpace(), tempDkproHome);
+            DeepLearningKerasSeq2SeqTrainTest.runTrainTest(
+                    DeepLearningKerasSeq2SeqTrainTest.getParameterSpace(), tempDkproHome);
         }
         catch (Exception e) {
-            // Ignore silently, this will crash for sure on systems where Keras is not installed at
-            // the expected location
+            if (e.getCause().getCause() instanceof IOException) {
+                LogFactory.getLog(getClass()).info(
+                        "Catched IOException this means the Python installation was either not found or not setup with Keras - everything ok");
+            }
+            else {
+                throw e;
+            }
         }
-        
+
         System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath());
-        for(File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()){
-            if(!f.isDirectory()){
+        for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
+            if (!f.isDirectory()) {
                 continue;
             }
-            if (f.getName().contains(VectorizationTask.class.getSimpleName()) && f.getName().contains("-Train-")){
+            if (f.getName().contains(VectorizationTask.class.getSimpleName())
+                    && f.getName().contains("-Train-")) {
                 vectorTrainFolder = f.getAbsolutePath();
                 continue;
             }
-            if (f.getName().contains(VectorizationTask.class.getSimpleName()) && f.getName().contains("-Test-")){
+            if (f.getName().contains(VectorizationTask.class.getSimpleName())
+                    && f.getName().contains("-Test-")) {
                 vectorTestFolder = f.getAbsolutePath();
                 continue;
             }
         }
-        
+
     }
 
-    private void prepareDockerExperimentExecution() throws Exception
+    private void prepareDockerExperimentExecution()
+        throws Exception
     {
         createFolderInContainer();
         copyFiles(vectorTrainFolder, "/root/train");
