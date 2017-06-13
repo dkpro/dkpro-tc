@@ -19,12 +19,20 @@
 package org.dkpro.tc.ml.keras.reports;
 
 import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.ml.keras.KerasTestTask;
 
 public class KerasMetaReport extends ReportBase {
 
 	@Override
 	public void execute() throws Exception {
-
+	    String string = getDiscriminators()
+                .get(KerasTestTask.class.getName() + "|" + DeepLearningConstants.DIM_PYTHON_INSTALLATION);
+	    
+	    System.out.println(string);
+	    
+	    int a=0;
+	    a++;
 	}
 
 }
