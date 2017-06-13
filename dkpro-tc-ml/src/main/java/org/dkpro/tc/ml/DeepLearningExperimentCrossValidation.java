@@ -66,7 +66,6 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	protected VectorizationTask vectorizationTrainTask;
 	protected VectorizationTask vectorizationTestTask;
 	protected TaskBase learningTask;
-	private TcDeepLearningAdapter mlDeepLearningAdapter;
 
 	public DeepLearningExperimentCrossValidation() {/* needed for Groovy */
 	}
@@ -79,7 +78,7 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 			Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds) throws TextClassificationException {
 		this(aExperimentName, null, aNumFolds, null);
 		try {
-			this.mlDeepLearningAdapter = mlAdapter.newInstance();
+			this.mlAdapter = mlAdapter.newInstance();
 		} catch (Exception e) {
 			throw new TextClassificationException();
 		}
@@ -204,20 +203,11 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		// ================== SUBTASKS OF THE INNER BATCH TASK
 		// =======================
 
-		// init the train part of the experiment
-//		initTaskTrain = new InitTaskDeep();
-//		initTaskTrain.setPreprocessing(getPreprocessing());
-//		initTaskTrain.setOperativeViews(operativeViews);
-//		initTaskTrain.setTesting(false);
-//		initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
-//		initTaskTrain.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
-//
 		// collecting meta features only on the training data (numFolds times)
 		// get some meta data depending on the whole document collection
 		preparationTask = new PreparationTask();
 		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
 		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
-//		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
 		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
 		embeddingTask = new EmbeddingTask();
@@ -228,8 +218,6 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		vectorizationTrainTask = new VectorizationTask();
 		vectorizationTrainTask.setType(vectorizationTrainTask.getType() + "-Train-" + experimentName);
 		vectorizationTrainTask.setTesting(false);
-//		vectorizationTrainTask.addImport(initTaskTrain, InitTaskDeep.OUTPUT_KEY_TRAIN,
-//				VectorizationTask.DATA_INPUT_KEY);
 		vectorizationTrainTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
 				VectorizationTask.MAPPING_INPUT_KEY);
 		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
@@ -238,14 +226,13 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		vectorizationTestTask = new VectorizationTask();
 		vectorizationTestTask.setType(vectorizationTestTask.getType() + "-Test-" + experimentName);
 		vectorizationTestTask.setTesting(true);
-//		vectorizationTestTask.addImport(initTaskTest, InitTaskDeep.OUTPUT_KEY_TEST, VectorizationTask.DATA_INPUT_KEY);
 		vectorizationTestTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
 				VectorizationTask.MAPPING_INPUT_KEY);
 		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
 		// test task operating on the models of the feature extraction train and
 		// test tasks
-		learningTask = mlDeepLearningAdapter.getTestTask();
+		learningTask = mlAdapter.getTestTask();
 		learningTask.setType(learningTask.getType() + "-" + experimentName);
 		learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
@@ -256,7 +243,8 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		}
 
 		// // always add OutcomeIdReport
-		learningTask.addReport(mlDeepLearningAdapter.getOutcomeIdReportClass());
+		learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
+		learningTask.addReport(mlAdapter.getMetaCollectionReport());
 		learningTask.addReport(DeeplearningBasicResultReport.class);
 		learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, TcDeepLearningAdapter.PREPARATION_FOLDER);
 		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,

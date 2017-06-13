@@ -141,6 +141,7 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 
 		// // always add OutcomeIdReport
 		learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
+		learningTask.addReport(mlAdapter.getMetaCollectionReport());
 		learningTask.addReport(DeeplearningBasicResultReport.class);
 		learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, TcDeepLearningAdapter.PREPARATION_FOLDER);
 		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
