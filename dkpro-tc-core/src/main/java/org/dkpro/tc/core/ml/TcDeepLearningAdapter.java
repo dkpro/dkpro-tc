@@ -57,4 +57,10 @@ public interface TcDeepLearningAdapter
      */
     public int lowestIndex();
 
+    /**
+     * An optional report which is intended to record the environment versions of non-Java
+     * frameworks e.g. Keras version, Python version , etc.
+     */
+    public ReportBase getMetaCollectionReport();
+
 }

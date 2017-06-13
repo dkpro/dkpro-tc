@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.deeplearning4j;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.ml.deeplearning4j.reports.Deeplearning4jMetaReport;
 import org.dkpro.tc.ml.deeplearning4j.reports.Deeplearning4jOutcomeIDReport;
 
 public class Deeplearning4jAdapter
@@ -42,6 +43,12 @@ public class Deeplearning4jAdapter
     public int lowestIndex()
     {
         return 0;
+    }
+
+    @Override
+    public ReportBase getMetaCollectionReport()
+    {
+        return new Deeplearning4jMetaReport();
     }
 
 

@@ -15,40 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.keras;
+
+package org.dkpro.tc.ml.dynet.report;
 
 import org.dkpro.lab.reporting.ReportBase;
-import org.dkpro.lab.task.impl.TaskBase;
-import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.ml.keras.reports.KerasOutcomeIdReport;
 
-public class KerasAdapter
-    implements TcDeepLearningAdapter
-{
+public class DynetMetaReport extends ReportBase {
 
-    @Override
-    public TaskBase getTestTask()
-    {
-        return new KerasTestTask();
-    }
+	@Override
+	public void execute() throws Exception {
 
-    @Override
-    public ReportBase getOutcomeIdReportClass()
-    {
-        return new KerasOutcomeIdReport();
-    }
-
-    @Override
-    public int lowestIndex()
-    {
-        return 1;
-    }
-
-    @Override
-    public ReportBase getMetaCollectionReport()
-    {
-        return null;
-    }
-
+	}
 
 }
