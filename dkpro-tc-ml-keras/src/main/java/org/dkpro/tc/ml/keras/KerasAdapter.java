@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.keras;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.ml.keras.reports.KerasMetaReport;
 import org.dkpro.tc.ml.keras.reports.KerasOutcomeIdReport;
 
 public class KerasAdapter
@@ -47,7 +48,7 @@ public class KerasAdapter
     @Override
     public ReportBase getMetaCollectionReport()
     {
-        return null;
+        return new KerasMetaReport();
     }
 
 
