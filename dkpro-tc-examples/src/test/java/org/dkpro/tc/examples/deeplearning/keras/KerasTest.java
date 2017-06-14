@@ -64,8 +64,8 @@ public class KerasTest
 
     @Before
     public void setup()
-        throws Exception
     {
+        try{
         docker = DefaultDockerClient.fromEnv().build();
 
         containerConfig = ContainerConfig.builder().image(IMAGE_NAME).attachStdout(Boolean.TRUE)
@@ -76,6 +76,9 @@ public class KerasTest
         id = creation.id();
 
         tempDkproHome = Files.createTempDir();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @After
