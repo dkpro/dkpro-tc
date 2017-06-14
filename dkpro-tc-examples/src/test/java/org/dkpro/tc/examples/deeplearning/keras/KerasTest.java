@@ -60,7 +60,6 @@ public class KerasTest
     String vectorTrainFolder;
     String vectorTestFolder;
 
-    @Before
     public void setup()
     {
         try {
@@ -86,6 +85,9 @@ public class KerasTest
     public void runKerasTrainTest()
         throws Exception
     {
+    	setup();
+    	
+    	
         createFiles();
 
         // LabFolderTrackerReport.vectorizationTaskTrain = new File(
