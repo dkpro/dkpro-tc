@@ -228,7 +228,6 @@ public class KerasTest
     private void copyCode(String source, String target)
         throws Exception
     {
-    	docker.startContainer(id); //FIXME: remove me maybe
         docker.copyToContainer(new File(source).toPath(), id, target);
     }
 
