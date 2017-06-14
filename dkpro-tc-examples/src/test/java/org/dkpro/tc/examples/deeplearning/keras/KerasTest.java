@@ -72,17 +72,7 @@ public class KerasTest
         try {
             docker = DefaultDockerClient.fromEnv().build();
 
-            final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-            final String[] ports = { "80", "22" };
-            for (String port : ports) {
-                List<PortBinding> hostPorts = new ArrayList<>();
-                hostPorts.add(PortBinding.of("0.0.0.0", port));
-                portBindings.put(port, hostPorts);
-            }
-
-            HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
-
-            containerConfig = ContainerConfig.builder().hostConfig(hostConfig).image(IMAGE_NAME)
+            containerConfig = ContainerConfig.builder().image(IMAGE_NAME)
                     .attachStdout(Boolean.TRUE).attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE)
                     .tty(true).user(USER_NAME).build();
 
