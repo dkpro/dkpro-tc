@@ -87,20 +87,20 @@ public class KerasTest
         }
     }
 
-    @After
-    public void cleanUp()
-    {
-        try {
-            docker.killContainer(id);
-            docker.removeContainer(id);
-            docker.close();
-
-            tempDkproHome.delete();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @After
+//    public void cleanUp()
+//    {
+//        try {
+//            docker.killContainer(id);
+//            docker.removeContainer(id);
+//            docker.close();
+//
+//            tempDkproHome.delete();
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Test
     public void runKerasTrainTest()
