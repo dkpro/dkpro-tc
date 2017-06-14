@@ -32,7 +32,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,20 +81,6 @@ public class KerasTest
         }
     }
 
-    @After
-    public void cleanUp()
-    {
-        try {
-            docker.killContainer(id);
-            docker.removeContainer(id);
-            docker.close();
-
-            tempDkproHome.delete();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void runKerasTrainTest()
@@ -121,6 +106,8 @@ public class KerasTest
 
         sanityCheckPredictionFile(retrievePredictions());
         System.err.println("Experiment results validated");
+        
+        cleanUp();
     }
 
     private void createFiles()
@@ -250,4 +237,17 @@ public class KerasTest
         docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
     }
 
+    public void cleanUp()
+    {
+        try {
+            docker.killContainer(id);
+            docker.removeContainer(id);
+            docker.close();
+
+            tempDkproHome.delete();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
