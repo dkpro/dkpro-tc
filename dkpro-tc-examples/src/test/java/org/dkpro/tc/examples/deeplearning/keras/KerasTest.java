@@ -250,13 +250,11 @@ public class KerasTest
         throws Exception
     {
         String[] command = { "bash", "-c", "mkdir " + folder };
-        ExecCreation execCreation = docker.execCreate(id, command,
-                DockerClient.ExecCreateParam.attachStdout(),
-                DockerClient.ExecCreateParam.attachStderr());
-        LogStream output = docker.execStart(execCreation.id());
-        if (output.hasNext()) {
-            output.readFully();
-        }
+        ExecCreation execCreation = docker.execCreate(id, command);
+        docker.execStart(execCreation.id());
+//        if (output.hasNext()) {
+//            output.readFully();
+//        }
     }
 
     private void copyFiles(String folder, String out)
