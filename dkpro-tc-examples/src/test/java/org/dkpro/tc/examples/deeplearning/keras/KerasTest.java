@@ -25,10 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
@@ -46,8 +43,6 @@ import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
-import com.spotify.docker.client.messages.HostConfig;
-import com.spotify.docker.client.messages.PortBinding;
 
 public class KerasTest
 {
@@ -87,20 +82,20 @@ public class KerasTest
         }
     }
 
-//    @After
-//    public void cleanUp()
-//    {
-//        try {
-//            docker.killContainer(id);
-//            docker.removeContainer(id);
-//            docker.close();
-//
-//            tempDkproHome.delete();
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @After
+    public void cleanUp()
+    {
+        try {
+            docker.killContainer(id);
+            docker.removeContainer(id);
+            docker.close();
+
+            tempDkproHome.delete();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void runKerasTrainTest()
