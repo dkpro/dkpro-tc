@@ -78,6 +78,7 @@ public class KerasTest
 
             creation = docker.createContainer(containerConfig);
             id = creation.id();
+            System.err.println("Created id ["+id+"]");
 
             tempDkproHome = Files.createTempDir();
         }
@@ -233,13 +234,6 @@ public class KerasTest
     private void createFolderInContainer()
         throws Exception
     {
-        final ContainerConfig containerConfig = ContainerConfig.builder().image(IMAGE_NAME)
-                .user("root").attachStdout(Boolean.TRUE).attachStderr(Boolean.TRUE)
-                .attachStdin(Boolean.TRUE).tty(true).build();
-
-        final ContainerCreation creation = docker.createContainer(containerConfig);
-        id = creation.id();
-
         docker.startContainer(id);
 
         mkdir(docker, id, "/root/train");
