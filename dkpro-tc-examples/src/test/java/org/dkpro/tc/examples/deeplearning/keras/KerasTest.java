@@ -25,12 +25,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.junit.After;
@@ -44,6 +46,8 @@ import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
+import com.spotify.docker.client.messages.HostConfig;
+import com.spotify.docker.client.messages.PortBinding;
 
 public class KerasTest
 {
@@ -65,31 +69,46 @@ public class KerasTest
     @Before
     public void setup()
     {
-        try{
-        docker = DefaultDockerClient.fromEnv().build();
+        try {
+            docker = DefaultDockerClient.fromEnv().build();
 
-        containerConfig = ContainerConfig.builder().image(IMAGE_NAME).attachStdout(Boolean.TRUE)
-                .attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE).tty(true).user(USER_NAME)
-                .build();
+            final Map<String, List<PortBinding>> portBindings = new HashMap<>();
+            final String[] ports = { "80", "22" };
+            for (String port : ports) {
+                List<PortBinding> hostPorts = new ArrayList<>();
+                hostPorts.add(PortBinding.of("0.0.0.0", port));
+                portBindings.put(port, hostPorts);
+            }
 
-        creation = docker.createContainer(containerConfig);
-        id = creation.id();
+            HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
-        tempDkproHome = Files.createTempDir();
-        }catch(Exception e){
+            containerConfig = ContainerConfig.builder().hostConfig(hostConfig).image(IMAGE_NAME)
+                    .attachStdout(Boolean.TRUE).attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE)
+                    .tty(true).user(USER_NAME).build();
+
+            creation = docker.createContainer(containerConfig);
+            id = creation.id();
+
+            tempDkproHome = Files.createTempDir();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @After
     public void cleanUp()
-        throws Exception
     {
-        docker.killContainer(id);
-        docker.removeContainer(id);
-        docker.close();
+        try {
+            docker.killContainer(id);
+            docker.removeContainer(id);
+            docker.close();
 
-        tempDkproHome.delete();
+            tempDkproHome.delete();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -142,7 +161,7 @@ public class KerasTest
             if (!f.isDirectory()) {
                 continue;
             }
-            System.err.println("Folder: ["+f.getAbsolutePath()+"]");
+            System.err.println("Folder: [" + f.getAbsolutePath() + "]");
             if (f.getName().contains(VectorizationTask.class.getSimpleName())
                     && f.getName().contains("-Train-")) {
                 vectorTrainFolder = f.getAbsolutePath();
@@ -245,7 +264,7 @@ public class KerasTest
                 DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
         LogStream output = docker.execStart(execCreation.id());
-        if(output.hasNext()){
+        if (output.hasNext()) {
             output.readFully();
         }
     }
