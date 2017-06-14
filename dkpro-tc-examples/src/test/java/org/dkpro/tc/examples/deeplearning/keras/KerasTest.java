@@ -107,7 +107,7 @@ public class KerasTest
         sanityCheckPredictionFile(retrievePredictions());
         System.err.println("Experiment results validated");
         
-//        cleanUp();
+        cleanUp();
     }
 
     private void createFiles()
