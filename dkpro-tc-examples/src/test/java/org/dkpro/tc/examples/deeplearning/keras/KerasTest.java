@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
+import org.jfree.util.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +61,7 @@ public class KerasTest {
 
 	String vectorTrainFolder;
 	String vectorTestFolder;
-
+	
 	@Before
 	public void setup() throws Exception {
 		Logger.getLogger(getClass()).info("Setup of Keras Docker test");
@@ -82,6 +83,7 @@ public class KerasTest {
 		Logger.getLogger(getClass()).info("Keras Docker Start");
 
 		createFiles();
+		Log.info("bing bong");
 		Logger.getLogger(getClass()).info("Keras Docker createFiles() completed");
 
 		// LabFolderTrackerReport.vectorizationTaskTrain = new File(
