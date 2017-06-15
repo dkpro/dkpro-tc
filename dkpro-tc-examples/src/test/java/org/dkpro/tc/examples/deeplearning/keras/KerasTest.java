@@ -128,7 +128,11 @@ public class KerasTest {
 		
 		assertTrue(dkproHome != null);
 		
-		for (File f : dkproHome.listFiles()) {
+		File[] listFiles = dkproHome.listFiles();
+		
+		assertTrue(listFiles != null);
+		
+		for (File f : listFiles) {
 			if (!f.isDirectory()) {
 				continue;
 			}
