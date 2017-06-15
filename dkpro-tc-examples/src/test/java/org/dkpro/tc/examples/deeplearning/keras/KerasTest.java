@@ -39,6 +39,7 @@ import com.google.common.io.Files;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
@@ -61,9 +62,8 @@ public class KerasTest
     String vectorTestFolder;
 
     @Before
-    public void setup()
+    public void setup() throws Exception
     {
-        try {
             docker = DefaultDockerClient.fromEnv().build();
 
             containerConfig = ContainerConfig.builder().image(IMAGE_NAME)
@@ -75,18 +75,13 @@ public class KerasTest
             System.err.println("Created id ["+id+"]");
 
             tempDkproHome = Files.createTempDir();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
     @Test
     public void runKerasTrainTest()
-        throws Exception
     {
-    	
+    	try{
         createFiles();
 
         // LabFolderTrackerReport.vectorizationTaskTrain = new File(
@@ -107,7 +102,9 @@ public class KerasTest
 
         sanityCheckPredictionFile(retrievePredictions());
         System.err.println("Experiment results validated");
-        
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
 //        cleanUp();
     }
 
