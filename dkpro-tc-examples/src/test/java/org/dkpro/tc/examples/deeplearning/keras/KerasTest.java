@@ -18,6 +18,9 @@
  */
 package org.dkpro.tc.examples.deeplearning.keras;
 
+import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -25,15 +28,30 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
+import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.jfree.util.Log;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,6 +64,7 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
 
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.testing.DkproTestContext;
 
 public class KerasTest {
@@ -63,10 +82,10 @@ public class KerasTest {
 
 	String vectorTrainFolder;
 	String vectorTestFolder;
-	
+
 	@Rule
 	public DkproTestContext testContext = new DkproTestContext();
-	
+
 	@Before
 	public void setup() throws Exception {
 		Logger.getLogger(getClass()).info("Setup of Keras Docker test");
@@ -84,10 +103,10 @@ public class KerasTest {
 	}
 
 	@Test
-	public void runKerasTrainTest() throws Exception {
+	public void runFileCreation() throws Exception {
 		Logger.getLogger(getClass()).info("Keras Docker Start");
 
-		createFiles();
+		runExperimentToCreateFiles();
 		Log.info("bing bong");
 		Logger.getLogger(getClass()).info("Keras Docker createFiles() completed");
 
@@ -117,28 +136,19 @@ public class KerasTest {
 		// cleanUp();
 	}
 
-	private void createFiles() throws ResourceInitializationException, Exception {
-		try {
-			DeepLearningKerasSeq2SeqTrainTest.runTrainTest(DeepLearningKerasSeq2SeqTrainTest.getParameterSpace(),
-					tempDkproHome);
-		} catch (Exception e) {
-			if (e.getCause().getCause() instanceof IOException) {
-				System.err.println(
-						"Catched IOException this means the Python installation was either not found or not setup with Keras - everything ok");
-			} else {
-				throw e;
-			}
-		}
+	private void runExperimentToCreateFiles() throws ResourceInitializationException, Exception {
 
+		runTrainTest();
+		
 		File dkproHome = new File(tempDkproHome, "/org.dkpro.lab/repository/");
-		LogFactory.getLog(getClass()).info("Temporary DKPRO_HOME: ["+dkproHome+"]");
-		
+		LogFactory.getLog(getClass()).info("Temporary DKPRO_HOME: [" + dkproHome + "]");
+
 		assertTrue(dkproHome != null);
-		
+
 		File[] listFiles = dkproHome.listFiles();
-		
+
 		assertTrue(listFiles != null);
-		
+
 		for (File f : listFiles) {
 			if (!f.isDirectory()) {
 				continue;
@@ -158,7 +168,7 @@ public class KerasTest {
 
 	private void prepareDockerExperimentExecution() throws Exception {
 		createFolderInContainer();
-		
+
 		copyFiles(vectorTrainFolder, "/root/train");
 		copyFiles(vectorTestFolder, "/root/test");
 		copyCode("src/main/resources/kerasCode/seq/", "/root");
@@ -193,9 +203,9 @@ public class KerasTest {
 	}
 
 	private void runCode() throws Exception {
-		
+
 		docker.startContainer(id);
-		
+
 		String[] command = { "bash", "-c",
 				"python3 /root/posTaggingLstm.py /root/train/instanceVectors.txt /root/train/outcomeVectors.txt /root/test/instanceVectors.txt /root/test/outcomeVectors.txt '' 75 "
 						+ PREDICTION_FILE };
@@ -207,7 +217,7 @@ public class KerasTest {
 		System.err.println("[" + readFully + "]");
 		Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
 
-		docker.stopContainer(id,10);
+		docker.stopContainer(id, 10);
 	}
 
 	private void copyCode(String source, String target) throws Exception {
@@ -221,7 +231,7 @@ public class KerasTest {
 
 		mkdir(docker, id, "/root/train");
 		mkdir(docker, id, "/root/test");
-		
+
 		docker.stopContainer(id, 1);
 	}
 
@@ -235,14 +245,58 @@ public class KerasTest {
 	private void copyFiles(String folder, String out) throws Exception {
 		docker.startContainer(id);
 		docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
-		docker.stopContainer(id,1);
+		docker.stopContainer(id, 1);
 	}
 
 	public void cleanUp() throws Exception {
-			docker.killContainer(id);
-			docker.removeContainer(id);
-			docker.close();
+		docker.killContainer(id);
+		docker.removeContainer(id);
+		docker.close();
 
-			tempDkproHome.delete();
+		tempDkproHome.delete();
+	}
+
+	public ParameterSpace getParameterSpace() throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
+
+		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/brown_tei/keras", TeiReader.PARAM_PATTERNS,
+				asList(INCLUDE_PREFIX + "a01.xml"));
+		dimReaders.put(Constants.DIM_READER_TRAIN, train);
+
+		// Careful - we need at least 2 sequences in the testing file otherwise
+		// things will crash
+		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/brown_tei/keras", TeiReader.PARAM_PATTERNS,
+				asList(INCLUDE_PREFIX + "a01.xml"));
+		dimReaders.put(Constants.DIM_READER_TEST, test);
+
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
+				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
+				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true), Dimension.create(
+						DeepLearningConstants.DIM_USER_CODE, "src/main/resources/kerasCode/seq/posTaggingLstm.py"));
+
+		return pSpace;
+	}
+
+	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+		return createEngineDescription(SequenceOutcomeAnnotator.class);
+	}
+
+	public void runTrainTest() throws Exception {
+		System.setProperty("DKPRO_HOME", tempDkproHome.getAbsolutePath());
+		System.err.println("Setting DKPRO_HOME to [" + tempDkproHome.getAbsolutePath() + "]");
+
+		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq", KerasAdapter.class);
+		batch.setParameterSpace(getParameterSpace());
+		batch.setPreprocessing(getPreprocessing());
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+
+		Lab.getInstance().run(batch);
 	}
 }
