@@ -38,15 +38,15 @@ import org.jfree.util.Log;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
-import com.google.common.io.Files;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
+
+import de.tudarmstadt.ukp.dkpro.core.testing.DkproTestContext;
 
 public class KerasTest {
 	final public static String IMAGE_NAME = "dkpro-tc-keras-dynet";
@@ -65,7 +65,7 @@ public class KerasTest {
 	String vectorTestFolder;
 	
 	@Rule
-	public TemporaryFolder folder= new TemporaryFolder();
+	public DkproTestContext testContext = new DkproTestContext();
 	
 	@Before
 	public void setup() throws Exception {
@@ -80,8 +80,7 @@ public class KerasTest {
 		id = creation.id();
 		System.err.println("Created container with id: [" + id + "]");
 
-		tempDkproHome = new File("target/outXXX/");
-		tempDkproHome.mkdirs();
+		tempDkproHome = testContext.getTestOutputFolder();
 	}
 
 	@Test
