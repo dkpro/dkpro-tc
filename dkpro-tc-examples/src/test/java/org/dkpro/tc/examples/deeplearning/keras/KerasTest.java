@@ -36,7 +36,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.jfree.util.Log;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.google.common.io.Files;
 import com.spotify.docker.client.DefaultDockerClient;
@@ -44,7 +46,6 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
-import com.spotify.docker.client.messages.ContainerExit;
 import com.spotify.docker.client.messages.ExecCreation;
 
 public class KerasTest {
@@ -63,6 +64,9 @@ public class KerasTest {
 	String vectorTrainFolder;
 	String vectorTestFolder;
 	
+	@Rule
+	public TemporaryFolder folder= new TemporaryFolder();
+	
 	@Before
 	public void setup() throws Exception {
 		Logger.getLogger(getClass()).info("Setup of Keras Docker test");
@@ -76,7 +80,7 @@ public class KerasTest {
 		id = creation.id();
 		System.err.println("Created container with id: [" + id + "]");
 
-		tempDkproHome = Files.createTempDir();
+		tempDkproHome = folder.getRoot();
 	}
 
 	@Test
