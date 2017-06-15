@@ -126,7 +126,9 @@ public class KerasTest {
 		File dkproHome = new File(tempDkproHome, "/org.dkpro.lab/repository/");
 		LogFactory.getLog(getClass()).info("Temporary DKPRO_HOME: ["+dkproHome+"]");
 		
-		for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
+		assertTrue(dkproHome != null);
+		
+		for (File f : dkproHome.listFiles()) {
 			if (!f.isDirectory()) {
 				continue;
 			}
