@@ -60,6 +60,7 @@ public class KerasTest
     String vectorTrainFolder;
     String vectorTestFolder;
 
+    @Before
     public void setup()
     {
         try {
@@ -85,8 +86,6 @@ public class KerasTest
     public void runKerasTrainTest()
         throws Exception
     {
-    	setup();
-    	
     	
         createFiles();
 
@@ -109,7 +108,7 @@ public class KerasTest
         sanityCheckPredictionFile(retrievePredictions());
         System.err.println("Experiment results validated");
         
-        cleanUp();
+//        cleanUp();
     }
 
     private void createFiles()
