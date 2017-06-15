@@ -199,6 +199,7 @@ public class KerasTest {
 		ExecCreation execCreation = docker.execCreate(id, command, DockerClient.ExecCreateParam.attachStdout(),
 				DockerClient.ExecCreateParam.attachStderr());
 		LogStream output = docker.execStart(execCreation.id());
+		docker.wait(10);
 		String readFully = output.readFully();
 		System.err.println("[" + readFully + "]");
 		Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
