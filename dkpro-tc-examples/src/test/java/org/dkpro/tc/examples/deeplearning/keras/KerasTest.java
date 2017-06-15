@@ -201,6 +201,7 @@ public class KerasTest {
 	}
 
 	private void copyCode(String source, String target) throws Exception {
+		docker.attachContainer(id);
 		docker.copyToContainer(new File(source).toPath(), id, target);
 	}
 
