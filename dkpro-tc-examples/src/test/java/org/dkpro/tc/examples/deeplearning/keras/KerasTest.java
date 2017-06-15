@@ -80,7 +80,8 @@ public class KerasTest {
 		id = creation.id();
 		System.err.println("Created container with id: [" + id + "]");
 
-		tempDkproHome = new File("target/outXXX");
+		tempDkproHome = new File("target/outXXX/");
+		tempDkproHome.mkdirs();
 	}
 
 	@Test
