@@ -104,9 +104,10 @@ public class DeepLearningKerasSeq2SeqTrainTest
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
         if(dkproHome == null){
-        DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqTrainTest.class.getSimpleName());
+        	DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqTrainTest.class.getSimpleName());
         }else{
             System.setProperty("DKPRO_HOME", dkproHome.getAbsolutePath());
+            System.err.println("Setting DKPRO_HOME to ["+dkproHome.getAbsolutePath()+"]");
         }
         
         DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
