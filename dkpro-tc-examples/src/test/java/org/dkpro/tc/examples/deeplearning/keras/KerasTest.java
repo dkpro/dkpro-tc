@@ -44,6 +44,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
+import com.spotify.docker.client.messages.ContainerExit;
 import com.spotify.docker.client.messages.ExecCreation;
 
 public class KerasTest {
@@ -153,6 +154,7 @@ public class KerasTest {
 
 	private void prepareDockerExperimentExecution() throws Exception {
 		createFolderInContainer();
+		
 		copyFiles(vectorTrainFolder, "/root/train");
 		copyFiles(vectorTestFolder, "/root/test");
 		copyCode("src/main/resources/kerasCode/seq/", "/root");
@@ -187,6 +189,9 @@ public class KerasTest {
 	}
 
 	private void runCode() throws Exception {
+		
+		docker.startContainer(id);
+		
 		String[] command = { "bash", "-c",
 				"python3 /root/posTaggingLstm.py /root/train/instanceVectors.txt /root/train/outcomeVectors.txt /root/test/instanceVectors.txt /root/test/outcomeVectors.txt '' 75 "
 						+ PREDICTION_FILE };
@@ -198,11 +203,13 @@ public class KerasTest {
 		System.err.println("[" + readFully + "]");
 		Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
 
+		docker.stopContainer(id,1);
 	}
 
 	private void copyCode(String source, String target) throws Exception {
-		docker.attachContainer(id);
+		docker.startContainer(id);
 		docker.copyToContainer(new File(source).toPath(), id, target);
+		docker.stopContainer(id, 1);
 	}
 
 	private void createFolderInContainer() throws Exception {
@@ -210,6 +217,8 @@ public class KerasTest {
 
 		mkdir(docker, id, "/root/train");
 		mkdir(docker, id, "/root/test");
+		
+		docker.stopContainer(id, 1);
 	}
 
 	private void mkdir(DockerClient docker, String id, String folder) throws Exception {
@@ -220,7 +229,9 @@ public class KerasTest {
 	}
 
 	private void copyFiles(String folder, String out) throws Exception {
+		docker.startContainer(id);
 		docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
+		docker.stopContainer(id,1);
 	}
 
 	public void cleanUp() throws Exception {
