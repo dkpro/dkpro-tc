@@ -40,7 +40,6 @@ import com.google.common.io.Files;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
-import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
@@ -72,43 +71,39 @@ public class KerasTest {
 
 		creation = docker.createContainer(containerConfig);
 		id = creation.id();
-		System.err.println("Created id [" + id + "]");
+		System.err.println("Created container with id: [" + id + "]");
 
 		tempDkproHome = Files.createTempDir();
 	}
 
 	@Test
-	public void runKerasTrainTest() {
+	public void runKerasTrainTest() throws Exception {
 		Logger.getLogger(getClass()).info("Keras Docker Start");
 
-		try {
-			createFiles();
-			Logger.getLogger(getClass()).info("Keras Docker createFiles() completed");
+		createFiles();
+		Logger.getLogger(getClass()).info("Keras Docker createFiles() completed");
 
-			// LabFolderTrackerReport.vectorizationTaskTrain = new File(
-			// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
-			// .getAbsolutePath();
-			// LabFolderTrackerReport.vectorizationTaskTest = new File(
-			// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
-			// .getAbsolutePath();
-			// LabFolderTrackerReport.preparationTask = new File(
-			// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
-			// .getAbsolutePath();
+		// LabFolderTrackerReport.vectorizationTaskTrain = new File(
+		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
+		// .getAbsolutePath();
+		// LabFolderTrackerReport.vectorizationTaskTest = new File(
+		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
+		// .getAbsolutePath();
+		// LabFolderTrackerReport.preparationTask = new File(
+		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
+		// .getAbsolutePath();
 
-			prepareDockerExperimentExecution();
-			Logger.getLogger(getClass()).info("Keras Docker prepareDockerExperimentExecution() completed");
-			System.err.println("Experiment prepared");
+		prepareDockerExperimentExecution();
+		Logger.getLogger(getClass()).info("Keras Docker prepareDockerExperimentExecution() completed");
+		System.err.println("Experiment prepared");
 
-			runCode();
-			Logger.getLogger(getClass()).info("Keras Docker runCode() completed");
-			System.err.println("Experiment executed");
+		runCode();
+		Logger.getLogger(getClass()).info("Keras Docker runCode() completed");
+		System.err.println("Experiment executed");
 
-			sanityCheckPredictionFile(retrievePredictions());
-			Logger.getLogger(getClass()).info("Keras Docker sanityCheckPredictionFile() completed");
-			System.err.println("Experiment results validated");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		sanityCheckPredictionFile(retrievePredictions());
+		Logger.getLogger(getClass()).info("Keras Docker sanityCheckPredictionFile() completed");
+		System.err.println("Experiment results validated");
 
 		Logger.getLogger(getClass()).info("Keras Docker End");
 		// cleanUp();
@@ -128,7 +123,7 @@ public class KerasTest {
 		}
 
 		System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath() + "- (exist ["
-				+ (new File(tempDkproHome, "/org.dkpro.lab/repository/").exists() ? "true" : "false" + "])"));
+				+ (new File(tempDkproHome, "/org.dkpro.lab/repository/").exists() ? "true" : "false") + "])");
 		for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
 			if (!f.isDirectory()) {
 				continue;
@@ -190,7 +185,7 @@ public class KerasTest {
 				DockerClient.ExecCreateParam.attachStderr());
 		LogStream output = docker.execStart(execCreation.id());
 		String readFully = output.readFully();
-		// System.out.println("[" + readFully + "]");
+		System.err.println("[" + readFully + "]");
 		Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
 
 	}
@@ -217,15 +212,11 @@ public class KerasTest {
 		docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
 	}
 
-	public void cleanUp() {
-		try {
+	public void cleanUp() throws Exception {
 			docker.killContainer(id);
 			docker.removeContainer(id);
 			docker.close();
 
 			tempDkproHome.delete();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }
