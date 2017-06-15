@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
@@ -122,8 +123,9 @@ public class KerasTest {
 			}
 		}
 
-		System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath() + "- (exist ["
-				+ (new File(tempDkproHome, "/org.dkpro.lab/repository/").exists() ? "true" : "false") + "])");
+		File dkproHome = new File(tempDkproHome, "/org.dkpro.lab/repository/");
+		LogFactory.getLog(getClass()).info("Temporary DKPRO_HOME: ["+dkproHome+"]");
+		
 		for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
 			if (!f.isDirectory()) {
 				continue;
