@@ -49,7 +49,6 @@ public class KerasMetaReport
         String numpyVersion = getNumpyVersion(python);
         String tensorFlowVersion = getTensorflowVersion(python);
         String theanoVersion = getTheanoVersion(python);
-        System.out.println(kerasVersion+"\n" + numpyVersion + "\n"+tensorFlowVersion + "\n" + theanoVersion);
 
         Properties p = new SortedKeyProperties();
         p.setProperty("KerasVersion", kerasVersion);
@@ -57,7 +56,7 @@ public class KerasMetaReport
         p.setProperty("TensorFlowVersion", tensorFlowVersion);
         p.setProperty("TheanoFlowVersion", theanoVersion);
         
-        File file = getContext().getFile("libaryVersion.txt", AccessMode.READWRITE);
+        File file = getContext().getFile("softwareVersions.txt", AccessMode.READWRITE);
         FileOutputStream fos = new FileOutputStream(file);
         p.store(fos, "Version information");
         fos.close();
