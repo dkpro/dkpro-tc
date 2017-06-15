@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.junit.Before;
@@ -44,208 +45,187 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
 
-public class KerasTest
-{
-    final public static String IMAGE_NAME = "dkpro-tc-keras-dynet";
-    final public static String USER_NAME = "root";
+public class KerasTest {
+	final public static String IMAGE_NAME = "dkpro-tc-keras-dynet";
+	final public static String USER_NAME = "root";
 
-    private static final String PREDICTION_FILE = "/root/prediction.txt";
+	private static final String PREDICTION_FILE = "/root/prediction.txt";
 
-    DockerClient docker;
-    ContainerConfig containerConfig;
-    ContainerCreation creation;
-    String id;
+	DockerClient docker;
+	ContainerConfig containerConfig;
+	ContainerCreation creation;
+	String id;
 
-    File tempDkproHome;
+	File tempDkproHome;
 
-    String vectorTrainFolder;
-    String vectorTestFolder;
+	String vectorTrainFolder;
+	String vectorTestFolder;
 
-    @Before
-    public void setup() throws Exception
-    {
-            docker = DefaultDockerClient.fromEnv().build();
+	@Before
+	public void setup() throws Exception {
+		Logger.getLogger(getClass()).info("Setup of Keras Docker test");
 
-            containerConfig = ContainerConfig.builder().image(IMAGE_NAME)
-                    .attachStdout(Boolean.TRUE).attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE)
-                    .tty(true).user(USER_NAME).build();
+		docker = DefaultDockerClient.fromEnv().build();
 
-            creation = docker.createContainer(containerConfig);
-            id = creation.id();
-            System.err.println("Created id ["+id+"]");
+		containerConfig = ContainerConfig.builder().image(IMAGE_NAME).attachStdout(Boolean.TRUE)
+				.attachStderr(Boolean.TRUE).attachStdin(Boolean.TRUE).tty(true).user(USER_NAME).build();
 
-            tempDkproHome = Files.createTempDir();
-    }
+		creation = docker.createContainer(containerConfig);
+		id = creation.id();
+		System.err.println("Created id [" + id + "]");
 
+		tempDkproHome = Files.createTempDir();
+	}
 
-    @Test
-    public void runKerasTrainTest()
-    {
-    	try{
-        createFiles();
+	@Test
+	public void runKerasTrainTest() {
+		Logger.getLogger(getClass()).info("Keras Docker Start");
 
-        // LabFolderTrackerReport.vectorizationTaskTrain = new File(
-        // "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
-        // .getAbsolutePath();
-        // LabFolderTrackerReport.vectorizationTaskTest = new File(
-        // "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
-        // .getAbsolutePath();
-        // LabFolderTrackerReport.preparationTask = new File(
-        // "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
-        // .getAbsolutePath();
+		try {
+			createFiles();
+			Logger.getLogger(getClass()).info("Keras Docker createFiles() completed");
 
-        prepareDockerExperimentExecution();
-        System.err.println("Experiment prepared");
+			// LabFolderTrackerReport.vectorizationTaskTrain = new File(
+			// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
+			// .getAbsolutePath();
+			// LabFolderTrackerReport.vectorizationTaskTest = new File(
+			// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
+			// .getAbsolutePath();
+			// LabFolderTrackerReport.preparationTask = new File(
+			// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
+			// .getAbsolutePath();
 
-        runCode();
-        System.err.println("Experiment executed");
+			prepareDockerExperimentExecution();
+			Logger.getLogger(getClass()).info("Keras Docker prepareDockerExperimentExecution() completed");
+			System.err.println("Experiment prepared");
 
-        sanityCheckPredictionFile(retrievePredictions());
-        System.err.println("Experiment results validated");
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-//        cleanUp();
-    }
+			runCode();
+			Logger.getLogger(getClass()).info("Keras Docker runCode() completed");
+			System.err.println("Experiment executed");
 
-    private void createFiles()
-        throws ResourceInitializationException, Exception
-    {
-        try {
-            DeepLearningKerasSeq2SeqTrainTest.runTrainTest(
-                    DeepLearningKerasSeq2SeqTrainTest.getParameterSpace(), tempDkproHome);
-        }
-        catch (Exception e) {
-            if (e.getCause().getCause() instanceof IOException) {
-                System.err.println(
-                        "Catched IOException this means the Python installation was either not found or not setup with Keras - everything ok");
-            }
-            else {
-                throw e;
-            }
-        }
+			sanityCheckPredictionFile(retrievePredictions());
+			Logger.getLogger(getClass()).info("Keras Docker sanityCheckPredictionFile() completed");
+			System.err.println("Experiment results validated");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath() + "- (exist ["
-                + (new File(tempDkproHome, "/org.dkpro.lab/repository/").exists() ? "true"
-                        : "false" + "])"));
-        for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
-            if (!f.isDirectory()) {
-                continue;
-            }
-            System.err.println("Folder: [" + f.getAbsolutePath() + "]");
-            if (f.getName().contains(VectorizationTask.class.getSimpleName())
-                    && f.getName().contains("-Train-")) {
-                vectorTrainFolder = f.getAbsolutePath();
-                continue;
-            }
-            if (f.getName().contains(VectorizationTask.class.getSimpleName())
-                    && f.getName().contains("-Test-")) {
-                vectorTestFolder = f.getAbsolutePath();
-                continue;
-            }
-        }
+		Logger.getLogger(getClass()).info("Keras Docker End");
+		// cleanUp();
+	}
 
-    }
+	private void createFiles() throws ResourceInitializationException, Exception {
+		try {
+			DeepLearningKerasSeq2SeqTrainTest.runTrainTest(DeepLearningKerasSeq2SeqTrainTest.getParameterSpace(),
+					tempDkproHome);
+		} catch (Exception e) {
+			if (e.getCause().getCause() instanceof IOException) {
+				System.err.println(
+						"Catched IOException this means the Python installation was either not found or not setup with Keras - everything ok");
+			} else {
+				throw e;
+			}
+		}
 
-    private void prepareDockerExperimentExecution()
-        throws Exception
-    {
-        createFolderInContainer();
-        copyFiles(vectorTrainFolder, "/root/train");
-        copyFiles(vectorTestFolder, "/root/test");
-        copyCode("src/main/resources/kerasCode/seq/", "/root");
-    }
+		System.err.println("DKProHome: " + tempDkproHome.getAbsolutePath() + "- (exist ["
+				+ (new File(tempDkproHome, "/org.dkpro.lab/repository/").exists() ? "true" : "false" + "])"));
+		for (File f : new File(tempDkproHome, "/org.dkpro.lab/repository/").listFiles()) {
+			if (!f.isDirectory()) {
+				continue;
+			}
+			System.err.println("Folder: [" + f.getAbsolutePath() + "]");
+			if (f.getName().contains(VectorizationTask.class.getSimpleName()) && f.getName().contains("-Train-")) {
+				vectorTrainFolder = f.getAbsolutePath();
+				continue;
+			}
+			if (f.getName().contains(VectorizationTask.class.getSimpleName()) && f.getName().contains("-Test-")) {
+				vectorTestFolder = f.getAbsolutePath();
+				continue;
+			}
+		}
 
-    private void sanityCheckPredictionFile(File f)
-        throws IOException
-    {
-        List<String> lines = FileUtils.readLines(f, "utf-8");
-        assertEquals(51, lines.size());
-        assertTrue(lines.get(0).startsWith("#"));
+	}
 
-        for (int i = 1; i < lines.size() - 1; i++) {
-            // validate tab-separated format
-            if (i == 25) {
-                assertTrue(lines.get(i).isEmpty());
-                continue;
-            }
-            assertEquals(2, lines.get(i).split("\t").length);
-        }
-    }
+	private void prepareDockerExperimentExecution() throws Exception {
+		createFolderInContainer();
+		copyFiles(vectorTrainFolder, "/root/train");
+		copyFiles(vectorTestFolder, "/root/test");
+		copyCode("src/main/resources/kerasCode/seq/", "/root");
+	}
 
-    private File retrievePredictions()
-        throws Exception
-    {
-        File f = File.createTempFile("predictionRetrieved", ".txt");
-        TarArchiveInputStream tarStream = new TarArchiveInputStream(
-                docker.archiveContainer(id, PREDICTION_FILE));
+	private void sanityCheckPredictionFile(File f) throws IOException {
+		List<String> lines = FileUtils.readLines(f, "utf-8");
+		assertEquals(51, lines.size());
+		assertTrue(lines.get(0).startsWith("#"));
 
-        tarStream.getNextEntry();
-        OutputStream outputFileStream = new FileOutputStream(f);
-        IOUtils.copy(tarStream, outputFileStream);
-        outputFileStream.close();
-        tarStream.close();
+		for (int i = 1; i < lines.size() - 1; i++) {
+			// validate tab-separated format
+			if (i == 25) {
+				assertTrue(lines.get(i).isEmpty());
+				continue;
+			}
+			assertEquals(2, lines.get(i).split("\t").length);
+		}
+	}
 
-        return f;
-    }
+	private File retrievePredictions() throws Exception {
+		File f = File.createTempFile("predictionRetrieved", ".txt");
+		TarArchiveInputStream tarStream = new TarArchiveInputStream(docker.archiveContainer(id, PREDICTION_FILE));
 
-    private void runCode()
-        throws Exception
-    {
-        String[] command = { "bash", "-c",
-                "python3 /root/posTaggingLstm.py /root/train/instanceVectors.txt /root/train/outcomeVectors.txt /root/test/instanceVectors.txt /root/test/outcomeVectors.txt '' 75 "
-                        + PREDICTION_FILE };
+		tarStream.getNextEntry();
+		OutputStream outputFileStream = new FileOutputStream(f);
+		IOUtils.copy(tarStream, outputFileStream);
+		outputFileStream.close();
+		tarStream.close();
 
-        ExecCreation execCreation = docker.execCreate(id, command,
-                DockerClient.ExecCreateParam.attachStdout(),
-                DockerClient.ExecCreateParam.attachStderr());
-        LogStream output = docker.execStart(execCreation.id());
-        String readFully = output.readFully();
-        System.out.println("[" + readFully + "]");
+		return f;
+	}
 
-    }
+	private void runCode() throws Exception {
+		String[] command = { "bash", "-c",
+				"python3 /root/posTaggingLstm.py /root/train/instanceVectors.txt /root/train/outcomeVectors.txt /root/test/instanceVectors.txt /root/test/outcomeVectors.txt '' 75 "
+						+ PREDICTION_FILE };
 
-    private void copyCode(String source, String target)
-        throws Exception
-    {
-        docker.copyToContainer(new File(source).toPath(), id, target);
-    }
+		ExecCreation execCreation = docker.execCreate(id, command, DockerClient.ExecCreateParam.attachStdout(),
+				DockerClient.ExecCreateParam.attachStderr());
+		LogStream output = docker.execStart(execCreation.id());
+		String readFully = output.readFully();
+		// System.out.println("[" + readFully + "]");
+		Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
 
-    private void createFolderInContainer()
-        throws Exception
-    {
-        docker.startContainer(id);
+	}
 
-        mkdir(docker, id, "/root/train");
-        mkdir(docker, id, "/root/test");
-    }
+	private void copyCode(String source, String target) throws Exception {
+		docker.copyToContainer(new File(source).toPath(), id, target);
+	}
 
-    private void mkdir(DockerClient docker, String id, String folder)
-        throws Exception
-    {
-        String[] command = { "bash", "-c", "mkdir " + folder };
-        ExecCreation execCreation = docker.execCreate(id, command);
-        docker.execStart(execCreation.id());
-        
-    }
+	private void createFolderInContainer() throws Exception {
+		docker.startContainer(id);
 
-    private void copyFiles(String folder, String out)
-        throws Exception
-    {
-        docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
-    }
+		mkdir(docker, id, "/root/train");
+		mkdir(docker, id, "/root/test");
+	}
 
-    public void cleanUp()
-    {
-        try {
-            docker.killContainer(id);
-            docker.removeContainer(id);
-            docker.close();
+	private void mkdir(DockerClient docker, String id, String folder) throws Exception {
+		String[] command = { "bash", "-c", "mkdir " + folder };
+		ExecCreation execCreation = docker.execCreate(id, command);
+		docker.execStart(execCreation.id());
 
-            tempDkproHome.delete();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	}
+
+	private void copyFiles(String folder, String out) throws Exception {
+		docker.copyToContainer(new File(folder + "/output/").toPath(), id, out);
+	}
+
+	public void cleanUp() {
+		try {
+			docker.killContainer(id);
+			docker.removeContainer(id);
+			docker.close();
+
+			tempDkproHome.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
