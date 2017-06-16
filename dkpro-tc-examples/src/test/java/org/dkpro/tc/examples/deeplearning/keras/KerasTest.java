@@ -51,6 +51,7 @@ import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.DeepLearningExperimentTrainTestBase;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.jfree.util.Log;
 import org.junit.Before;
@@ -292,7 +293,7 @@ public class KerasTest {
 		System.setProperty("DKPRO_HOME", tempDkproHome.getAbsolutePath());
 		System.err.println("Setting DKPRO_HOME to [" + tempDkproHome.getAbsolutePath() + "]");
 
-		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq", KerasAdapter.class);
+		DeepLearningExperimentTrainTestBase batch = new DeepLearningExperimentTrainTestBase("KerasSeq2Seq", KerasAdapter.class);
 		batch.setParameterSpace(getParameterSpace());
 		batch.setPreprocessing(getPreprocessing());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
