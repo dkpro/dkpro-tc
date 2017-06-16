@@ -129,7 +129,7 @@ public class KerasTest {
 		createFolderInContainer();
 
 		copyFiles(report.vectorizationTaskTrain, "/root/train");
-		copyFiles(report.vectorizationTaskTrain, "/root/test");
+		copyFiles(report.vectorizationTaskTest, "/root/test");
 		copyCode("src/main/resources/kerasCode/seq/", "/root");
 	}
 
@@ -171,15 +171,17 @@ public class KerasTest {
 
 		ExecCreation execCreation = docker.execCreate(id, command, DockerClient.ExecCreateParam.attachStdout(),
 				DockerClient.ExecCreateParam.attachStderr());
-		LogStream output = docker.execStart(execCreation.id());
-		try{
-		    String readFully = output.readFully();
-		    System.err.println("[" + readFully + "]");
-		    Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
-		}catch(Exception e){
-		    //ignore - connection reset by peer exception might occur
-		    //https://github.com/spotify/docker-client/issues/513
-		}
+        LogStream output = docker.execStart(execCreation.id());
+        try {
+            String readFully = output.readFully();
+            System.err.println("[" + readFully + "]");
+            Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
+        }
+        catch (Exception e) {
+            // ignore - connection reset by peer exception might occur
+            // issue seems to occur only on Linux OS
+            // https://github.com/spotify/docker-client/issues/513
+        }
 
 		docker.stopContainer(id, 10);
 	}
@@ -256,7 +258,7 @@ public class KerasTest {
 	    
 	    DemoUtils.setDkproHome(KerasTest.class.getSimpleName());
 		
-		DeepLearningExperimentTrainTestBase batch = new DeepLearningExperimentTrainTestBase("KerasSeq2Seq", KerasAdapter.class);
+		DeepLearningExperimentTrainTestBase batch = new DeepLearningExperimentTrainTestBase("KerasSeq2SeqTrainTest", KerasAdapter.class);
 		batch.setParameterSpace(getParameterSpace());
 		batch.setPreprocessing(getPreprocessing());
 		batch.addReport(report);
