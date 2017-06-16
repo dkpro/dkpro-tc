@@ -31,12 +31,10 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -48,14 +46,12 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTestBase;
 import org.dkpro.tc.ml.keras.KerasAdapter;
-import org.jfree.util.Log;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 import com.spotify.docker.client.DefaultDockerClient;
@@ -66,7 +62,6 @@ import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
-import de.tudarmstadt.ukp.dkpro.core.testing.DkproTestContext;
 
 public class KerasTest {
 	final public static String IMAGE_NAME = "dkpro-tc-keras-dynet";
@@ -81,11 +76,7 @@ public class KerasTest {
 
 	File tempDkproHome;
 
-	String vectorTrainFolder;
-	String vectorTestFolder;
-
-	@Rule
-	public DkproTestContext testContext = new DkproTestContext();
+	LabFolderTrackerReport report;
 
 	@Before
 	public void setup() throws Exception {
@@ -100,16 +91,13 @@ public class KerasTest {
 		id = creation.id();
 		System.err.println("Created container with id: [" + id + "]");
 
-		tempDkproHome = testContext.getTestOutputFolder();
+		report = new LabFolderTrackerReport();
 	}
 
 	@Test
 	public void runFileCreation() throws Exception {
-		Logger.getLogger(getClass()).info("Keras Docker Start");
-
-		runExperimentToCreateFiles();
-		Log.info("bing bong");
-		Logger.getLogger(getClass()).info("Keras Docker createFiles() completed");
+		runExperiment();
+		Logger.getLogger(getClass()).info("Keras Experiment finished");
 
 		// LabFolderTrackerReport.vectorizationTaskTrain = new File(
 		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
@@ -137,41 +125,11 @@ public class KerasTest {
 		// cleanUp();
 	}
 
-	private void runExperimentToCreateFiles() throws ResourceInitializationException, Exception {
-
-		runTrainTest();
-		
-		File dkproHome = new File(tempDkproHome, "/org.dkpro.lab/repository/");
-		LogFactory.getLog(getClass()).info("Temporary DKPRO_HOME: [" + dkproHome + "]");
-
-		assertTrue(dkproHome != null);
-
-		File[] listFiles = dkproHome.listFiles();
-
-		assertTrue(listFiles != null);
-
-		for (File f : listFiles) {
-			if (!f.isDirectory()) {
-				continue;
-			}
-			System.err.println("Folder: [" + f.getAbsolutePath() + "]");
-			if (f.getName().contains(VectorizationTask.class.getSimpleName()) && f.getName().contains("-Train-")) {
-				vectorTrainFolder = f.getAbsolutePath();
-				continue;
-			}
-			if (f.getName().contains(VectorizationTask.class.getSimpleName()) && f.getName().contains("-Test-")) {
-				vectorTestFolder = f.getAbsolutePath();
-				continue;
-			}
-		}
-
-	}
-
 	private void prepareDockerExperimentExecution() throws Exception {
 		createFolderInContainer();
 
-		copyFiles(vectorTrainFolder, "/root/train");
-		copyFiles(vectorTestFolder, "/root/test");
+		copyFiles(report.vectorizationTaskTrain, "/root/train");
+		copyFiles(report.vectorizationTaskTrain, "/root/test");
 		copyCode("src/main/resources/kerasCode/seq/", "/root");
 	}
 
@@ -289,23 +247,14 @@ public class KerasTest {
 		return createEngineDescription(SequenceOutcomeAnnotator.class);
 	}
 
-	public void runTrainTest() throws Exception {
+	public void runExperiment() throws Exception {
 	    
-	    String property = System.getProperty("DKPRO_HOME");
-	    System.err.println("DKPRO_HOME pointing to " + property);
-	    System.clearProperty("DKPRO_HOME");
-		System.setProperty("DKPRO_HOME", tempDkproHome.getAbsolutePath());
-		System.err.println("Setting DKPRO_HOME to [" + tempDkproHome.getAbsolutePath() + "]");
+	    DemoUtils.setDkproHome(KerasTest.class.getSimpleName());
 		
-		Properties properties = System.getProperties();
-        for(Object s : properties.keySet()){
-            System.err.println(s + " " + properties.get(s));
-        }
-
 		DeepLearningExperimentTrainTestBase batch = new DeepLearningExperimentTrainTestBase("KerasSeq2Seq", KerasAdapter.class);
 		batch.setParameterSpace(getParameterSpace());
 		batch.setPreprocessing(getPreprocessing());
-		batch.addReport(new LabFolderTrackerReport());
+		batch.addReport(report);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		Lab.getInstance().run(batch);
