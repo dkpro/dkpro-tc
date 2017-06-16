@@ -84,7 +84,7 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"/Users/toobee/Desktop/glove.6B.50d.txt"),
+						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
 				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), Dimension
 						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetPoStagger.py"));
