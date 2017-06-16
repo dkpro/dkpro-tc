@@ -49,6 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTestBase;
@@ -296,6 +297,7 @@ public class KerasTest {
 		DeepLearningExperimentTrainTestBase batch = new DeepLearningExperimentTrainTestBase("KerasSeq2Seq", KerasAdapter.class);
 		batch.setParameterSpace(getParameterSpace());
 		batch.setPreprocessing(getPreprocessing());
+		batch.addReport(new LabFolderTrackerReport());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		Lab.getInstance().run(batch);

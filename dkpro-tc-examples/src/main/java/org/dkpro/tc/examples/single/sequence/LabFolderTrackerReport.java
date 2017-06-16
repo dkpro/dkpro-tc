@@ -50,15 +50,19 @@ public class LabFolderTrackerReport
             String type = subcontext.getType();
             if(type.contains(VectorizationTask.class.getName()) && type.contains("-Train-")){
                 vectorizationTaskTrain = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
+                System.err.println(vectorizationTaskTrain);
             }
             if(type.contains(VectorizationTask.class.getName()) && type.contains("-Test-")){
-                vectorizationTaskTest = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
+                vectorizationTaskTest = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
+                System.err.println(vectorizationTaskTest);
             }
             if(type.contains(PreparationTask.class.getName())){
-                preparationTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
+                preparationTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
+                System.err.println(preparationTask);
             }
             if(type.contains(EmbeddingTask.class.getName())){
-                embeddingTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
+                embeddingTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
+                System.err.println(embeddingTask);
             }
         }
     }
