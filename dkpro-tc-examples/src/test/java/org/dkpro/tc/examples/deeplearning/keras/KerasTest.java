@@ -51,6 +51,7 @@ import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTestBase;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,13 +75,11 @@ public class KerasTest {
 	ContainerCreation creation;
 	String id;
 
-	File tempDkproHome;
-
 	LabFolderTrackerReport report;
 
 	@Before
 	public void setup() throws Exception {
-		Logger.getLogger(getClass()).info("Setup of Keras Docker test");
+		Logger.getLogger(getClass()).info("Setup of Docker test");
 
 		docker = DefaultDockerClient.fromEnv().build();
 
@@ -97,32 +96,21 @@ public class KerasTest {
 	@Test
 	public void runFileCreation() throws Exception {
 		runExperiment();
-		Logger.getLogger(getClass()).info("Keras Experiment finished");
-
-		// LabFolderTrackerReport.vectorizationTaskTrain = new File(
-		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Train-KerasSeq2Seq-20170607085853128")
-		// .getAbsolutePath();
-		// LabFolderTrackerReport.vectorizationTaskTest = new File(
-		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/VectorizationTask-Test-KerasSeq2Seq-20170607085853679")
-		// .getAbsolutePath();
-		// LabFolderTrackerReport.preparationTask = new File(
-		// "/Users/toobee/Documents/Eclipse/dkpro-tc/dkpro-tc-examples/target/results/DeepLearningKerasSeq2SeqTrainTest/org.dkpro.lab/repository/PreparationTask-KerasSeq2Seq-20170607085852347")
-		// .getAbsolutePath();
+		Logger.getLogger(getClass()).info("Experiment finished");
 
 		prepareDockerExperimentExecution();
-		Logger.getLogger(getClass()).info("Keras Docker prepareDockerExperimentExecution() completed");
+		Logger.getLogger(getClass()).info("Docker prepareDockerExperimentExecution() completed");
 		System.err.println("Experiment prepared");
 
 		runCode();
-		Logger.getLogger(getClass()).info("Keras Docker runCode() completed");
+		Logger.getLogger(getClass()).info("Docker runCode() completed");
 		System.err.println("Experiment executed");
 
 		sanityCheckPredictionFile(retrievePredictions());
-		Logger.getLogger(getClass()).info("Keras Docker sanityCheckPredictionFile() completed");
+		Logger.getLogger(getClass()).info("Docker sanityCheckPredictionFile() completed");
 		System.err.println("Experiment results validated");
 
-		Logger.getLogger(getClass()).info("Keras Docker End");
-		// cleanUp();
+		Logger.getLogger(getClass()).info("Docker End");
 	}
 
 	private void prepareDockerExperimentExecution() throws Exception {
@@ -175,7 +163,7 @@ public class KerasTest {
         try {
             String readFully = output.readFully();
             System.err.println("[" + readFully + "]");
-            Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
+            Logger.getLogger(getClass()).info("Docker output [" + readFully + "]");
         }
         catch (Exception e) {
             // ignore - connection reset by peer exception might occur
@@ -214,12 +202,11 @@ public class KerasTest {
 		docker.stopContainer(id, 1);
 	}
 
+	@After
 	public void cleanUp() throws Exception {
 		docker.killContainer(id);
 		docker.removeContainer(id);
 		docker.close();
-
-		tempDkproHome.delete();
 	}
 
 	public ParameterSpace getParameterSpace() throws ResourceInitializationException {
