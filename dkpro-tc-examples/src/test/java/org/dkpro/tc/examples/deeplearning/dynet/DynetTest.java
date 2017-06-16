@@ -176,9 +176,10 @@ public class DynetTest {
 		    // ignore - connection reset by peer exception might occur
 		    // issue seems to occur only on Linux OS
 		    // https://github.com/spotify/docker-client/issues/513
+		    System.err.println("Catched/Ignored message: ["+e.getMessage()+"]");
 		}
 
-		docker.stopContainer(id, 10);
+		docker.stopContainer(id, 20);
 	}
 
 	private void copyCode(String source, String target) throws Exception {
